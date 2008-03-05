@@ -1,4 +1,8 @@
 <?php
+	/**
+	 * Class: QueryBuilder
+	 * A generic SQL query builder. All methods are static so there's no point in instantiating.
+	 */
 	class QueryBuilder {
 		/**
 		 * Function: build_update_values
