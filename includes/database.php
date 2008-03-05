@@ -43,8 +43,9 @@
 		 * Creates a full insert query.
 		 */
 		public static function build_insert($table, $data) {
+			$sql = SQL::current();
 			return "
-				INSERT INTO `$table`
+				INSERT INTO `{$sql->prefix}$table`
 				".self::build_insert_header($data)."
 				VALUES
 				".self::build_insert_values($data)."
@@ -56,8 +57,22 @@
 		 * Creates a full update query.
 		 */
 		public static function build_update($table, $conds, $data) {
+			$sql = SQL::current();
 			return "
-				UPDATE `$table`
+				UPDATE `{$sql->prefix}$table`
+				SET ".self::build_update_values($data)."
+				".($conds ? "WHERE $conds" : "")."
+			";
+		}
+		
+		/**
+		 * Function: build_delete
+		 * Creates a full delete query.
+		 */
+		public static function build_delete($table, $conds) {
+			$sql = SQL::current();
+			return "
+				DELETE FROM `{$sql->prefix}$table`
 				SET ".self::build_update_values($data)."
 				".($conds ? "WHERE $conds" : "")."
 			";
@@ -243,6 +258,8 @@
 				$result = $q->execute($params);
 				if (!$result) throw PDOException();
 			} catch (PDOException $error) {
+				print $query;
+				print_r(debug_backtrace());
 				$message = preg_replace("/[A-Z]+\[[0-9]+\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
 				error(__("Database Error"), $message);
 				//throw $error;
@@ -267,6 +284,33 @@
 		public function select($tables, $fields, $conds, $order = null, $params = array(), $limit = null, $offset = null)
 		{
 			return $this->query(QueryBuilder::build_select($tables, $fields, $conds, $order, $limit, $offset), $params);
+		}
+		
+		/**
+		 * Function: insert
+		 * Performs an INSERT with given data.
+		 */
+		public function insert($table, $data, $params = array())
+		{
+			return $this->query(QueryBuilder::build_insert($table, $data), $params);
+		}
+		
+		/**
+		 * Function: update
+		 * Performs an UDATE with given criteria and data.
+		 */
+		public function update($table, $conds, $data, $params = array())
+		{
+			return $this->query(QueryBuilder::build_update($table, $conds, $data), $params);
+		}
+		
+		/**
+		 * Function: delete
+		 * Performs a DELETE with given criteria.
+		 */
+		public function delete($table, $conds, $params = array())
+		{
+			return $this->query(QueryBuilder::build_delete($table, $conds), $params);
 		}
 		
 		/**

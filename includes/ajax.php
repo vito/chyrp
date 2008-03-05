@@ -48,7 +48,7 @@
 			fallback($_POST['offset'], 0);
 			fallback($_POST['context']);
 			
-			$id = (isset($_POST['id'])) ? " and `id` = ".fix($_POST['id']) : "" ;
+			$id = (isset($_POST['id'])) ? " and `id` = ".$sql->quote($_POST['id']) : "" ;
 			$reason = (isset($_POST['reason'])) ? "_".$_POST['reason'] : "" ;
 			
 			switch($_POST['context']) {
@@ -59,10 +59,10 @@
 					$grab_post = $sql->query("select * from `".$sql->prefix."posts` where `status` = 'draft'".$enabled_feathers.$id." order by `pinned` desc, `created_at` desc, `id` desc limit ".$_POST['offset'].", 1");
 					break;
 				case "archive":
-					$grab_post = $sql->query("select * from `".$sql->prefix."posts` where `created_at` like '".fix($_POST['year']."-".$_POST['month'])."%' and ".$private.$enabled_feathers.$id." order by `pinned` desc, `created_at` desc, `id` desc limit ".$_POST['offset'].", 1");
+					$grab_post = $sql->query("select * from `".$sql->prefix."posts` where `created_at` like '".$sql->quote($_POST['year']."-".$_POST['month'])."%' and ".$private.$enabled_feathers.$id." order by `pinned` desc, `created_at` desc, `id` desc limit ".$_POST['offset'].", 1");
 					break;
 				case "search":
-					$grab_post = $sql->query("select * from `".$sql->prefix."posts` where `yaml` like '%".fix(urldecode($_POST['query']))."%' and ".$private.$enabled_feathers.$id." order by `pinned` desc, `created_at` desc, `id` desc limit ".$_POST['offset'].", 1");
+					$grab_post = $sql->query("select * from `".$sql->prefix."posts` where `yaml` like '%".$sql->quote(urldecode($_POST['query']))."%' and ".$private.$enabled_feathers.$id." order by `pinned` desc, `created_at` desc, `id` desc limit ".$_POST['offset'].", 1");
 					break;
 			}
 			
@@ -106,11 +106,11 @@
 			break;
 		case "organize_pages":
 			foreach ($_POST['parent'] as $id => $parent)
-				$sql->query("update `".$sql->prefix."pages` set `parent_id` = ".fix($parent)." where `id` = ".fix($id));
+				$sql->query("update `".$sql->prefix."pages` set `parent_id` = ".$sql->quote($parent)." where `id` = ".$sql->quote($id));
 			
 			foreach ($_POST['sort_pages'] as $index => $page) {
 				$id = str_replace("page_list_", "", $page);
-				$sql->query("update `".$sql->prefix."pages` set `list_order` = ".fix($index)." where `id` = ".fix($id));
+				$sql->query("update `".$sql->prefix."pages` set `list_order` = ".$sql->quote($index)." where `id` = ".$sql->quote($id));
 			}
 			
 			break;

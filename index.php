@@ -1,4 +1,4 @@
-<?php	
+<?php
 	require_once "includes/common.php";
 	
 	$trigger->call("top");

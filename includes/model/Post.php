@@ -28,17 +28,26 @@
 			$read_from = fallback($options["read_from"], array(), true);
 			
 			$sql = SQL::current();
-			$query = (!empty($where)) ? 
-			         "select * from `".$sql->prefix."posts`
-			          where ".$where."
-			          limit 1" : 
-			         "select * from `".$sql->prefix."posts`
-			          where `id` = :postid" ;
-			if (empty($where))
-				$params[':postid'] = $post_id;
-			
-			$read = (!empty($read_from)) ? $read_from : 
-			        	((isset($post_id) and $post_id == $current_post["id"]) ? $current_post : $sql->query($query, $params)->fetch()) ;
+			if ((!empty($read_from) && $read_from))
+				$read = $read_from;
+			elseif (isset($post_id) and $post_id == $current_post["id"])
+				$read = $current_post;
+			elseif (!empty($where))
+				$read = $sql->select("posts",
+				                     "*",
+				                     $where,
+				                     "id",
+				                     $params,
+				                     1)->fetch();
+			else
+				$read = $sql->select("posts",
+				                     "*",
+				                     "`id` = :postid",
+				                     "id",
+				                     array(
+				                     	":postid" => $post_id
+				                     ),
+				                     1)->fetch();
 			
 			if (!count($read) or !$read)
 				return $this->no_results = true;
@@ -93,33 +102,41 @@
 			}
 			
 			$sql = SQL::current();
-			$sql->query("insert into `".$sql->prefix."posts`
-			             (`yaml`, `feather`, `user_id`, `pinned`, `status`, `clean`, `url`, `created_at`)
-			             values
-			             (:yaml, :feather, :user_id, :pinned, :status, :clean, :url, :created_at)",
-			            array(
-			            	":yaml" => $yaml,
-			            	":feather" => $_POST['feather'],
-			            	":user_id" => $current_user,
-			            	":pinned" => $pinned,
-			            	":status" => $status,
-			            	":clean" => $clean,
-			            	":url" => $url,
-			            	":created_at" => $timestamp
-			            ));
+			$sql->insert("posts",
+			             array(
+			             	"yaml" => ":yaml",
+			             	"feather" => ":feather",
+			             	"user_id" => ":user_id",
+			             	"pinned" => ":pinned",
+			             	"status" => ":status",
+			             	"clean" => ":clean",
+			             	"url" => ":url",
+			             	"created_at" => ":created_at",
+			             ),
+			             array(
+			             	":yaml" => $yaml,
+			             	":feather" => $_POST['feather'],
+			             	":user_id" => $current_user,
+			             	":pinned" => $pinned,
+			             	":status" => $status,
+			             	":clean" => $clean,
+			             	":url" => $url,
+			             	":created_at" => $timestamp
+			             ));
 			$id = $sql->db->lastInsertId();
 			
 			if (empty($clean) or empty($url))
-				$sql->query("update `".$sql->prefix."posts`
-				             set
-				             	`clean` = :clean,
-				             	`url` = :url
-				             where `id` = :id",
-				            array(
-				            	':clean' => $_POST['feather'].".".$id,
-				            	':url' => $_POST['feather'].".".$id,
-				            	':id' => $id
-				            ));
+				$sql->update("posts",
+				             "`id` = :id",
+				             array(
+				             	"clean" => ":clean",
+				             	"url" => ":url"
+				             ),
+				             array(
+				             	':clean' => $_POST['feather'].".".$id,
+				             	':url' => $_POST['feather'].".".$id,
+				             	':id' => $id
+				             ));
 			
 			$trackbacks = explode(",", $trackbacks);
 			$trackbacks = array_map('trim', $trackbacks);
@@ -128,7 +145,7 @@
 			$trackbacks = array_diff($trackbacks, array(""));
 			foreach ($trackbacks as $url)
 				trackback_send($id, $url);
-				
+			
 			$trigger = Trigger::current();
 			$trigger->call("add_post", array($id, $options));
 			
@@ -167,27 +184,28 @@
 			}
 			
 			$sql = SQL::current();
-			$sql->query("update `".$sql->prefix."posts`
-			             set
-			             	`yaml` = :yaml,
-			             	`pinned` = :pinned, 
-			             	`status` = :status, 
-			             	`url` = :url, 
-			             	`created_at` = :created_at, 
-			             	`updated_at` = :updated_at
-			             where `id` = :id",
-			            array(
-			            	":yaml" => $yaml,
-			            	":pinned" => $pinned,
-			            	":status" => $status,
-			            	":url" => $slug,
-			            	":created_at" => $timestamp,
-			            	":updated_at" => datetime(),
-			            	':id' => $this->id
-			            ));
+			$sql->update("posts",
+			             "`id` = :id",
+			             array(
+			             	"yaml" => ":yaml",
+			             	"pinned" => ":pinned", 
+			             	"status" => ":status", 
+			             	"url" => ":url", 
+			             	"created_at" => ":created_at", 
+			             	"updated_at" => ":updated_at"
+			             ),
+			             array(
+			             	":yaml" => $yaml,
+			             	":pinned" => $pinned,
+			             	":status" => $status,
+			             	":url" => $slug,
+			             	":created_at" => $timestamp,
+			             	":updated_at" => datetime(),
+			             	":id" => $this->id
+			             ));
 			
 			$trigger = Trigger::current();
-			$trigger->call("update_post", array($this->id, $options));						
+			$trigger->call("update_post", array($this->id, $options));
 		}
 		
 		/**
@@ -204,11 +222,11 @@
 			$trigger->call("delete_post", $this->id);
 			
 			$sql = SQL::current();
-			$sql->query("delete from `".$sql->prefix."posts`
-			             where `id` = :id",
-			            array(
-			            	':id' => $this->id
-			            ));
+			$sql->delete("posts",
+			             "`id` = :id",
+			             array(
+			             	':id' => $this->id
+			             ));
 		}
 		
 		/**
@@ -357,7 +375,7 @@
 				$route = Route::current();
 				return $config->url."/".str_replace(array_keys($route->code), $vals, $config->post_url);
 			} else {
-				return $config->url."/?action=view&amp;url=".urlencode($this->url);
+				return $config->url."/?action=view&url=".urlencode($this->url);
 			}
 		}
 		
@@ -442,7 +460,7 @@
 			$next = new self($grab_next->fetchColumn());
 			$text = str_replace("(name)", $next->title(), $text);
 			
-			echo '<a href="'.$next->url().'" class="'.$class.'">'.truncate($text, $truncate).'</a>';
+			echo '<a href="'.htmlspecialchars($next->url(), 2, "utf-8").'" class="'.$class.'">'.truncate($text, $truncate).'</a>';
 			
 			new self($post->id);
 		}
@@ -474,7 +492,7 @@
 			$prev = new self($grab_prev->fetchColumn());
 			$text = str_replace("(name)", $prev->title(), $text);
 			
-			echo '<a href="'.$prev->url().'" class="'.$class.'">'.truncate($text, $truncate).'</a>';
+			echo '<a href="'.htmlspecialchars($prev->url(), 2, "utf-8").'" class="'.$class.'">'.truncate($text, $truncate).'</a>';
 			
 			new self($post->id);
 		}
