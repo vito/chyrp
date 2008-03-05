@@ -26,17 +26,26 @@
 			$params = isset($options["params"]) ? $options["params"] : array();
 			
 			$sql = SQL::current();
-			$query = (!empty($where)) ? 
-			         "select * from `".$sql->prefix."pages`
-			          where ".$where."
-			          limit 1" : 
-			         "select * from `".$sql->prefix."pages`
-			          where `id` = :id" ;
-			if (empty($where))
-				$params[':id'] = $page_id;
-			
-			$read = (!empty($read_from)) ? $read_from : 
-			        	((isset($page_id) and $page_id == $current_page["id"]) ? $current_page : $sql->query($query, $params)->fetch()) ;
+			if ((!empty($read_from) && $read_from))
+				$read = $read_from;
+			elseif (isset($post_id) and $post_id == $current_post["id"])
+				$read = $current_post;
+			elseif (!empty($where))
+				$read = $sql->select("pages",
+				                     "*",
+				                     $where,
+				                     "id",
+				                     $params,
+				                     1)->fetch();
+			else
+				$read = $sql->select("pages",
+				                     "*",
+				                     "`id` = :pageid",
+				                     "id",
+				                     array(
+				                     	":pageid" => $post_id
+				                     ),
+				                     1)->fetch();
 			
 			if (!count($read) or !$read)
 				return $this->no_results = true;
@@ -72,20 +81,27 @@
 		static function add($title, $body, $parent_id, $show_in_list, $clean, $url) {
 			global $current_user;
 			$sql = SQL::current();
-			$sql->query("insert into `".$sql->prefix."pages`
-			             (`title`, `body`, `user_id`, `parent_id`, `show_in_list`, `clean`, `url`, `created_at`)
-			             values
-			             (:title, :body, :user_id, :parent_id, :show_in_list, :clean, :url, :created_at)",
-			            array(
-			            	":title" => $title, 
-			            	":body" => $body,
-			            	":user_id" => $current_user, 
-			            	":parent_id" => $parent_id, 
-			            	":show_in_list" => $show_in_list, 
-			            	":clean" => $clean, 
-			            	":url" => $url, 
-			            	":created_at" => datetime()
-			            ));
+			$sql->insert("pages",
+			             array(
+			             	"title" => ":title",
+			             	"body" => ":body",
+			             	"user_id" => ":user_id",
+			             	"parent_id" => ":parent_id",
+			             	"show_in_list" => ":show_in_list",
+			             	"clean" => ":clean",
+			             	"url" => ":url",
+			             	"created_at" => ":created_at"
+			             ),
+			             array(
+			             	":title" => $title, 
+			             	":body" => $body,
+			             	":user_id" => $current_user, 
+			             	":parent_id" => $parent_id, 
+			             	":show_in_list" => $show_in_list, 
+			             	":clean" => $clean, 
+			             	":url" => $url, 
+			             	":created_at" => datetime()
+			             ));
 			$id = $sql->db->lastInsertId();
 			
 			$trigger = Trigger::current();
@@ -110,24 +126,25 @@
 			if (!isset($this->id)) return;
 			
 			$sql = SQL::current();
-			$sql->query("update `".$sql->prefix."pages`
-			             set 
-			             	`title` = :title, 
-			             	`body` = :body, 
-			             	`parent_id` = :parent_id, 
-			             	`show_in_list` = :show_in_list, 
-			             	`updated_at` = :updated_at, 
-			             	`url` = :url
-			             where `id` = :id",
-			            array(
-			            	":title" => $title, 
-			            	":body" => $body,
-			            	":parent_id" => $parent_id, 
-			            	":show_in_list" => $show_in_list, 
-			            	":updated_at" => datetime(),
-			            	":url" => $url, 
-			            	":id" => $this->id
-			            ));
+			$sql->update("pages",
+			             "`id` = :id",
+			             array(
+			             	"title" => ":title",
+			             	"body" => ":body",
+			             	"parent_id" => ":parent_id",
+			             	"show_in_list" => ":show_in_list",
+			             	"updated_at" => ":updated_at",
+			             	"url" => ":url"
+			             ),
+			             array(
+			             	":title" => $title, 
+			             	":body" => $body,
+			             	":parent_id" => $parent_id, 
+			             	":show_in_list" => $show_in_list, 
+			             	":updated_at" => datetime(),
+			             	":url" => $url, 
+			             	":id" => $this->id
+			             ));
 			
 			$trigger = Trigger::current();
 			$trigger->call("update_page", $this->id);
@@ -147,17 +164,19 @@
 			$trigger->call("delete_page", $id);
 			
 			$sql = SQL::current();
-			$sql->query("delete from `".$sql->prefix."pages`
-			             where `id` = :id",
-			            array(
-			            	":id" => $this->id
-			            ));
+			$sql->delete("pages",
+			             "`id` = :id",
+			             array(
+			             	":id" => $this->id
+			             ));
 			
-			$get_sub_pages = $sql->query("select `id` from `".$sql->prefix."pages`
-			                              where `parent_id` = :id",
-			                             array(
-			                             	":id" => $this->id
-			                             ));
+			$get_sub_pages = $sql->select("pages",
+			                              "id",
+			                              "`parent_id` = :id",
+			                              "id",
+			                              array(
+			                              	":id" => $this->id
+			                              ));
 			while ($sub_page = $get_sub_pages->fetchObject()) {
 				$sub = new self($sub_page->id);
 				$sub->delete();
@@ -185,11 +204,13 @@
 				return $current_page[$column];
 			
 			$sql = SQL::current();
-			$grab_column = $sql->query("select `".$column."` from `".$sql->prefix."pages`
-			                            where `id` = :id",
-			                           array(
-			                           	":id" => $page_id
-			                           ));
+			$grab_column = $sql->select("pages",
+			                            $column,
+			                            "`id` = :id",
+			                            "id",
+			                            array(
+			                            	":id" => $page_id
+			                            ));
 			return ($grab_column->rowCount() == 1) ? $grab_column->fetchColumn() : $fallback ;
 		}
 		
@@ -205,11 +226,13 @@
 		 */
 		static function exists($post_id) {
 			$sql = SQL::current();
-			$check = $sql->query("select `id` from `".$sql->prefix."pages`
-			                      where `id` = :id",
-			                     array(
-			                     	":id" => $page_id
-			                     ));
+			$check = $sql->select("pages",
+			                      "id",
+			                      "`id` = :id",
+			                      "id",
+			                      array(
+			                      	":id" => $page_id
+			                      ));
 			return $check->rowCount();
 		}
 		
@@ -225,11 +248,13 @@
 		 */
 		static function check_url($clean) {
 			$sql = SQL::current();
-			$check_url = $sql->query("select `id` from `".$sql->prefix."pages`
-			                          where `clean` = :clean",
-			                         array(
-			                         	':clean' => $clean
-			                         ));
+			$check_url = $sql->select("pages",
+			                          "id",
+			                          "`clean` = :clean",
+			                          "id",
+			                          array(
+			                          	':clean' => $clean
+			                          ));
 			$count = $check_url->rowCount() + 1;
 			return ($count == 1 or empty($clean)) ? $clean : $clean."_".$count ;
 		}

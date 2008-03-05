@@ -73,7 +73,6 @@
 			$sql = SQL::current();
 			return "
 				DELETE FROM `{$sql->prefix}$table`
-				SET ".self::build_update_values($data)."
 				".($conds ? "WHERE $conds" : "")."
 			";
 		}

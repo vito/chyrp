@@ -250,11 +250,13 @@
 				return $current_post[$column];
 			
 			$sql = SQL::current();
-			$grab_column = $sql->query("select `".$column."` from `".$sql->prefix."posts`
-			                            where `id` = :id",
-			                           array(
-			                           	':id' => $post_id
-			                           ));
+			$grab_column = $sql->select("posts",
+			                            $column,
+			                            "`id` = :id",
+			                            "id",
+			                            array(
+			                            	':id' => $post_id
+			                            ));
 			return ($grab_column->rowCount() == 1) ? $grab_column->fetchColumn() : $fallback ;
 		}
 		
@@ -270,8 +272,10 @@
 		 */
 		static function exists($post_id) {
 			$sql = SQL::current();
-			$check = $sql->query("select `id` from `".$sql->prefix."posts`
-			                      where `id` = :id",
+			$check = $sql->select("posts",
+			                     "id",
+			                     "`id` = :id",
+			                     "id",
 			                     array(
 			                     	':id' => $post_id
 			                     ));
@@ -290,11 +294,13 @@
 		 */
 		static function check_url($clean) {
 			$sql = SQL::current();
-			$check_url = $sql->query("select `id` from `".$sql->prefix."posts`
-			                          where `clean` = :clean",
-			                         array(
-			                         	':clean' => $clean
-			                         ));
+			$check_url = $sql->select("posts",
+			                          "id",
+			                          "`clean` = :clean",
+			                          "id",
+			                          array(
+			                          	':clean' => $clean
+			                          ));
 			$count = $check_url->rowCount() + 1;
 			return ($count == 1 or empty($clean)) ? $clean : $clean."_".$count ;
 		}
@@ -446,15 +452,15 @@
 				$temp_id = $this->id;
 			
 			$sql = SQL::current();
-			$grab_next = $sql->query("select `id` from `".$sql->prefix."posts`
-			                          where
-			                          	".$private.$enabled_feathers." and
-			                          	`created_at` > :created_at
-			                          order by `created_at` asc
-			                          limit 1",
-			                         array(
-			                         	":created_at" => $post->created_at
-			                         ));
+			$grab_next = $sql->select("posts",
+			                          "id",
+			                          $private.$enabled_feathers." and
+			                          `created_at` > :created_at",
+			                          "`created_at` asc",
+			                          array(
+			                          	":created_at" => $post->created_at
+			                          ),
+			                          1);
 			if (!$grab_next->rowCount()) return;
 			
 			$next = new self($grab_next->fetchColumn());
@@ -478,15 +484,15 @@
 				$temp_id = $this->id;
 			
 			$sql = SQL::current();
-			$grab_prev = $sql->query("select `id` from `".$sql->prefix."posts`
-			                          where
-			                          	".$private.$enabled_feathers." and
-			                          	`created_at` < :created_at
-			                          order by `created_at` desc
-			                          limit 1",
-			                         array(
-			                         	":created_at" => $post->created_at
-			                         ));
+			$grab_prev = $sql->select("posts",
+			                          "id",
+			                          $private.$enabled_feathers." and
+			                          `created_at` < :created_at",
+			                          "`created_at` desc",
+			                          array(
+			                          	":created_at" => $post->created_at
+			                          ),
+			                          1);
 			if (!$grab_prev->rowCount()) return;
 			
 			$prev = new self($grab_prev->fetchColumn());
