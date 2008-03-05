@@ -1,0 +1,10 @@
+name: Link
+url: http://chyrp.net/
+version: 1.0.5
+description: Link to other sites, name it, and add an optional description.
+author:
+  name: Alex Suraci
+  url: http://i.am.toogeneric.com/
+
+# 1.0.5: Updated for Chyrp v1.1
+# 1.0.4: Updated for Chyrp v1.0.4

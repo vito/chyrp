@@ -1,0 +1,146 @@
+controls:
+	
+sidebar:
+	
+head:
+	
+controls:
+	
+sidebar:
+	
+controls:
+	
+ajax:
+	
+top:
+	
+above_post:
+	
+below_post:
+	
+no_posts:
+	$action
+draft_view_top:
+	
+above_post:
+	
+below_post:
+	
+archive_list_top:
+	
+archive_month:
+	array(@date("F Y", mktime(0, 0, 0, $time->month + 1, 0, $time->year)), $route->url("archive/".when("Y/m/", $time->created_at)))
+archive_list_wrapper:
+	$time, true)
+archive_list_item:
+	
+archive_top:
+	array($year, $month)
+above_post:
+	
+below_post:
+	
+no_posts:
+	"archive"
+not_found:
+	
+bottom:
+	
+pingback:
+	array($id, $linked_to, $linked_from, $title, $excerpt)
+trackback_recieve:
+	
+feed_item:
+	$post->id
+javascript_domready:
+	
+javascript:
+	
+override_action:
+	
+add_user:
+	$id
+update_user:
+	array($user_id, $login, $password, $full_name, $email, $website, $group_id)
+delete_user:
+	$user_id
+parse_post:
+	
+add_post:
+	array($id, $options)
+update_post:
+	array($this->id, $options)
+delete_post:
+	$this->id
+add_page:
+	$id
+update_page:
+	$page_id
+delete_page:
+	$id
+add_group:
+	array($id, $name, $permissions)
+update_group:
+	array($group_id, $name, $permissions)
+delete_group:
+	$group_id
+change_settings:
+	$_GET['sub']
+stylesheets:
+	
+scripts:
+	
+parse_theme_file:
+	array($abs_file, $scope)
+read_more:
+	null, true).'</a>(((more)))', $text
+edit_post_options:
+	$post->id
+not_found:
+	
+below_post:
+	
+ajax:
+	
+import_wordpress_post:
+	array($the_post, $id)
+import_wordpress_page:
+	array($the_post, $id)
+import_tumble:
+	array($the_post, $id)
+import_textpattern_post:
+	array($the_post, $id)
+import_movabletype_post:
+	array($the_post, $id)
+below_post_fields:
+	
+new_post_options:
+	$sub
+new_page_options:
+	
+admin_settings_nav:
+	
+admin_manage_nav:
+	
+admin_manage_posts_column_header:
+	
+manage_posts:
+	
+admin_manage_posts_column:
+	$post->id
+admin_manage_nav:
+	
+edit_post_options:
+	$_GET['id']
+edit_page_options:
+	$_GET['id']
+admin_manage_nav:
+	
+user_delete_list:
+	
+admin_javascript:
+	
+admin_head:
+	
+admin_nav:
+	

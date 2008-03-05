@@ -1,0 +1,12 @@
+name: SmartyPants
+url: http://chyrp.net/
+version: 1.0.4
+description: A SmartyPants wrapper for posts, pages, and comments. Uses <a href="http://michelf.com/projects/php-smartypants/">SmartyPants Typographer 1.0</a>.
+author:
+  name: Alex Suraci
+  url: http://i.am.toogeneric.com/
+conflicts:
+  - textile
+
+# 1.0.4: Updated for Chyrp v1.1
+# 1.0.3: Name and description are now translatable

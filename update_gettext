@@ -1,0 +1,32 @@
+#!/bin/sh
+ruby gettext.rb > ~/Desktop/ruby/includes/locale/en_US.po
+ruby gettext.rb ./feathers/audio/ > ~/Desktop/ruby/feathers/audio/locale/en_US.po
+ruby gettext.rb ./feathers/chat/ > ~/Desktop/ruby/feathers/chat/locale/en_US.po
+ruby gettext.rb ./feathers/link/ > ~/Desktop/ruby/feathers/link/locale/en_US.po
+ruby gettext.rb ./feathers/photo/ > ~/Desktop/ruby/feathers/photo/locale/en_US.po
+ruby gettext.rb ./feathers/quote/ > ~/Desktop/ruby/feathers/quote/locale/en_US.po
+ruby gettext.rb ./feathers/text/ > ~/Desktop/ruby/feathers/text/locale/en_US.po
+ruby gettext.rb ./feathers/video/ > ~/Desktop/ruby/feathers/video/locale/en_US.po
+ruby gettext.rb ./modules/comments/ > ~/Desktop/ruby/modules/comments/locale/en_US.po
+ruby gettext.rb ./modules/markdown/ > ~/Desktop/ruby/modules/markdown/locale/en_US.po
+ruby gettext.rb ./modules/smartypants/ > ~/Desktop/ruby/modules/smartypants/locale/en_US.po
+ruby gettext.rb ./modules/tags/ > ~/Desktop/ruby/modules/tags/locale/en_US.po
+ruby gettext.rb ./modules/textile/ > ~/Desktop/ruby/modules/textile/locale/en_US.po
+ruby gettext.rb ./modules/wpformatting/ > ~/Desktop/ruby/modules/wpformatting/locale/en_US.po
+ruby gettext.rb ./themes/default/ > ~/Desktop/ruby/themes/default/locale/en_US.po
+
+msgfmt -v ~/Desktop/ruby/includes/locale/en_US.po -o ~/Desktop/ruby/includes/locale/en_US.mo
+msgfmt -v ~/Desktop/ruby/feathers/audio/locale/en_US.po -o ~/Desktop/ruby/feathers/audio/locale/en_US.mo
+msgfmt -v ~/Desktop/ruby/feathers/chat/locale/en_US.po -o ~/Desktop/ruby/feathers/chat/locale/en_US.mo
+msgfmt -v ~/Desktop/ruby/feathers/link/locale/en_US.po -o ~/Desktop/ruby/feathers/link/locale/en_US.mo
+msgfmt -v ~/Desktop/ruby/feathers/photo/locale/en_US.po -o ~/Desktop/ruby/feathers/photo/locale/en_US.mo
+msgfmt -v ~/Desktop/ruby/feathers/quote/locale/en_US.po -o ~/Desktop/ruby/feathers/quote/locale/en_US.mo
+msgfmt -v ~/Desktop/ruby/feathers/text/locale/en_US.po -o ~/Desktop/ruby/feathers/text/locale/en_US.mo
+msgfmt -v ~/Desktop/ruby/feathers/video/locale/en_US.po -o ~/Desktop/ruby/feathers/video/locale/en_US.mo
+msgfmt -v ~/Desktop/ruby/modules/comments/locale/en_US.po -o ~/Desktop/ruby/modules/comments/locale/en_US.mo
+msgfmt -v ~/Desktop/ruby/modules/markdown/locale/en_US.po -o ~/Desktop/ruby/modules/markdown/locale/en_US.mo
+msgfmt -v ~/Desktop/ruby/modules/smartypants/locale/en_US.po -o ~/Desktop/ruby/modules/smartypants/locale/en_US.mo
+msgfmt -v ~/Desktop/ruby/modules/tags/locale/en_US.po -o ~/Desktop/ruby/modules/tags/locale/en_US.mo
+msgfmt -v ~/Desktop/ruby/modules/textile/locale/en_US.po -o ~/Desktop/ruby/modules/textile/locale/en_US.mo
+msgfmt -v ~/Desktop/ruby/modules/wpformatting/locale/en_US.po -o ~/Desktop/ruby/modules/wpformatting/locale/en_US.mo
+msgfmt -v ~/Desktop/ruby/themes/default/locale/en_US.po -o ~/Desktop/ruby/themes/default/locale/en_US.mo

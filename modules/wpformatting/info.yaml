@@ -1,0 +1,12 @@
+name: WordPress Formatting
+url: http://wordpress.com/
+version: 1.0.1
+description: WordPress' default formatting, ported to Chyrp.
+author:
+  name: Matt Mullenweg
+  url: http://photomatt.net/
+conflicts:
+  - textile
+  - markdown
+
+# 1.0.1: Updated for Chyrp v1.1
