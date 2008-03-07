@@ -6,7 +6,7 @@
 	switch($action) {
 		case "index": case "search": case "drafts": case "feather":
 			$theme->title = ($action == "feather") ? ucfirst($_GET['action']) : "" ;
-			$theme->title = ($action == "search") ? sprintf(__("Search results for \"%s\""), urldecode($query)) : $theme->title ;
+			$theme->title = ($action == "search") ? fix(sprintf(__("Search results for \"%s\""), urldecode($query)), "html") : $theme->title ;
 			$theme->title = ($action == "drafts") ? __("Drafts") : $theme->title ;
 			$theme->load("layout/header.php", $GLOBALS);
 			
