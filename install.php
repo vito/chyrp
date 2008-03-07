@@ -26,10 +26,13 @@
 		require INCLUDES_DIR."/error.php";
 		exit;
 	}
-	
+
 	$url = "http://".$_SERVER['HTTP_HOST'].str_replace("/install.php", "", $_SERVER['REQUEST_URI']);
 	$index = (parse_url($url, PHP_URL_PATH)) ? "/".trim(parse_url($url, PHP_URL_PATH), "/")."/" : "/" ;
-	$htaccess = "<IfModule mod_rewrite.c>\nRewriteEngine On\nRewriteBase ".str_replace("install.php", "", $index)."\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule ^.+$ index.php [L]\n</IfModule>";
+	$htaccess = "<IfModule mod_rewrite.c>\nRewriteEngine On\nRewriteBase ".str_replace("install.php", "", $index)."\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule ^.+$ index.php [L]\n</IfModule>";	
+	
+	$errors = array();
+	$installed = false;
 	
 	if (file_exists(INCLUDES_DIR."/config.yaml.php") and file_exists(INCLUDES_DIR."/database.yaml.php") and file_exists(BASE_DIR."/.htaccess")) {
 		$sql->load(INCLUDES_DIR."/database.yaml.php");
@@ -38,10 +41,7 @@
 		if ($sql->connect(true) and !empty($config->url) and $sql->query("select count(`id`) from `".$sql->prefix."users`")->fetchColumn())
 			error(__("Already Installed"), __("Chyrp is already correctly installed and configured."));
 	} else if (!is_writable(INCLUDES_DIR) or !is_writable(BASE_DIR))
-		$errors[] = __("STOP! Before you go any further, you must complete the following steps:<ol><li>Create a .htaccess file in Chyrp's install directory and put this in it: <pre>".$htaccess."</pre></li><li>Create /includes/database.yaml.php and CHMOD it to 777</li><li>Create /includes/config.yaml.php and CHMOD it to 777</li></ol>");
-	
-	$errors = array();
-	$installed = false;
+		$errors[] = __("STOP! Before you go any further, you must complete the following steps:<ol><li>Create a .htaccess file in Chyrp's install directory and put this in it: <pre>".htmlspecialchars($htaccess)."</pre></li><li>Create /includes/database.yaml.php and CHMOD it to 777</li><li>Create /includes/config.yaml.php and CHMOD it to 777</li></ol>");
 	
 	if (!empty($_POST)) {
 		if (!@mysql_connect($_POST['host'], $_POST['username'], $_POST['password']))
