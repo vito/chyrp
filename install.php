@@ -27,14 +27,18 @@
 		exit;
 	}
 	
+	$url = "http://".$_SERVER['HTTP_HOST'].str_replace("/install.php", "", $_SERVER['REQUEST_URI']);
+	$index = (parse_url($url, PHP_URL_PATH)) ? "/".trim(parse_url($url, PHP_URL_PATH), "/")."/" : "/" ;
+	$htaccess = "<IfModule mod_rewrite.c>\nRewriteEngine On\nRewriteBase ".str_replace("install.php", "", $index)."\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule ^.+$ index.php [L]\n</IfModule>";
+	
 	if (file_exists(INCLUDES_DIR."/config.yaml.php") and file_exists(INCLUDES_DIR."/database.yaml.php") and file_exists(BASE_DIR."/.htaccess")) {
 		$sql->load(INCLUDES_DIR."/database.yaml.php");
 		$config->load(INCLUDES_DIR."/config.yaml.php");
 		
 		if ($sql->connect(true) and !empty($config->url) and $sql->query("select count(`id`) from `".$sql->prefix."users`")->fetchColumn())
 			error(__("Already Installed"), __("Chyrp is already correctly installed and configured."));
-	} else if (!is_writable(INCLUDES_DIR) or !@rename(BASE_DIR."/chyrp.htaccess", BASE_DIR."/.htaccess"))
-		$errors[] = __("STOP! Before you go any further, you must complete the following steps:<ol><li>CHMOD chyrp.htaccess to 777 and rename it to .htaccess</li><li>Create /includes/database.yaml.php and CHMOD it to 777</li><li>Create /includes/config.yaml.php and CHMOD it to 777</li></ol>");
+	} else if (!is_writable(INCLUDES_DIR) or !is_writable(BASE_DIR))
+		$errors[] = __("STOP! Before you go any further, you must complete the following steps:<ol><li>Create a .htaccess file in Chyrp's install directory and put this in it: <pre>".$htaccess."</pre></li><li>Create /includes/database.yaml.php and CHMOD it to 777</li><li>Create /includes/config.yaml.php and CHMOD it to 777</li></ol>");
 	
 	$errors = array();
 	$installed = false;
@@ -45,9 +49,6 @@
 		else
 			if (!@mysql_select_db($_POST['database']))
 				$errors[] = __("Could not switch to the MySQL database.");
-
-		if (empty($_POST['url']))
-			$errors[] = __("URL cannot be blank.");
 
 		if (empty($_POST['name']))
 			$errors[] = __("Please enter a name for your website.");
@@ -241,22 +242,17 @@
 			             `edit_group` = 0, 
 			             `delete_group` = 0");
 		
-			if (!file_exists(BASE_DIR."/.htaccess"))
-				$errors[] = __("Could not generate .htaccess file.");
-			else {
-				$parse = parse_url($_POST['url']);
-				$index = (isset($parse['path'])) ? "/".trim($parse['path'], "/")."/" : "/" ;
-				$read_htaccess = file_get_contents(BASE_DIR."/.htaccess");
-				$new_htaccess = str_replace("RewriteBase /", "RewriteBase ".str_replace("install.php", "", $index), $read_htaccess);
-	
+			if (!file_exists(BASE_DIR."/.htaccess") and !is_writable(BASE_DIR))
+				$errors[] = __("Could not generate .htaccess file. Clean URLs will not be available.");
+			else {	
 				$open_htaccess = fopen(BASE_DIR."/.htaccess", "w");
-				fwrite($open_htaccess, $new_htaccess);
+				fwrite($open_htaccess, $htaccess);
 				fclose($open_htaccess);
 			}
 		
 			$config->set("name", $_POST['name']);
 			$config->set("description", $_POST['description']);
-			$config->set("url", $_POST['url']);
+			$config->set("url", $url);
 			$config->set("email", $_POST['email']);
 			$config->set("locale", "en_US");
 			$config->set("theme", "default");
@@ -425,8 +421,6 @@
 				
 				<h1><?php echo __("Website Setup"); ?></h1>
 				<p class="extra">
-					<label for="url"><?php echo __("Website URL"); ?></label>
-					<input type="text" name="url" value="<?php value_fallback("url", "http://".$_SERVER['HTTP_HOST'].str_replace("/install.php", "", $_SERVER['REQUEST_URI'])); ?>" id="url" />
 					<label for="name"><?php echo __("Site Name"); ?></label>
 					<input type="text" name="name" value="<?php value_fallback("name", __("My Awesome Site")); ?>" id="name" />
 					<label for="description"><?php echo __("Description"); ?></label>

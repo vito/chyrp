@@ -276,10 +276,10 @@
 		$viewing = ($action == "view");
 		
 		if ($is_feed)
-			if (isset($get_posts)) # Are there already posts to show?
-				$action = "feed";
-			elseif ($trigger->exists($action."_feed")) # What about custom feeds?
+			if ($trigger->exists($action."_feed")) # What about custom feeds?
 				$trigger->call($action."_feed");
+			elseif (isset($get_posts)) # Are there already posts to show?
+				$action = "feed";
 			else
 				$route->redirect($route->url("feed/")); # Really? Nothing? Too bad. MAIN FEED 4 U.
 	}
