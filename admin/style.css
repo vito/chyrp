@@ -476,7 +476,7 @@ a.button.negative, button.negative {
 	color: #d12f19;
 }
 a.button.negative:hover, button.negative:hover, .failure, .conflict {
-	background: #fbe3e4;
+	background-color: #fbe3e4;
 	border: 1px solid #fbc2c4;
 	color: #d12f19;
 }
