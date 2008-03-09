@@ -252,7 +252,7 @@
 					</p>
 <?php
 		}
-		static function trackback_recieve() {
+		static function trackback_receive() {
 			global $comment, $url, $title, $excerpt, $blog_name;
 			
 			$sql = SQL::current();

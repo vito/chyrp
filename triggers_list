@@ -48,7 +48,7 @@ bottom:
 	
 pingback:
 	array($id, $linked_to, $linked_from, $title, $excerpt)
-trackback_recieve:
+trackback_receive:
 	
 feed_item:
 	$post->id
