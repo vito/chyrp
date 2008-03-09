@@ -30,6 +30,7 @@
 			$group->add_permission("delete_comment");
 			$group->add_permission("code_in_comments");
 		}
+		
 		static function __uninstall($confirm) {
 			global $group;
 		
@@ -49,6 +50,7 @@
 			$group->remove_permission("delete_comment");
 			$group->remove_permission("code_in_comments");
 		}
+		
 		static function show($id) {
 			global $theme, $paginate, $user, $comment, $current_user;
 			
@@ -100,6 +102,7 @@
 				$count++;
 			}
 		}
+		
 		static function route_add_comment() {
 			global $user, $comment;
 			# If the user can't add a comment, and if they can add a private comment
@@ -116,6 +119,7 @@
 			                 $_POST['body'], 
 			                 $_POST['post_id']);
 		}
+		
 		static function admin_update_comment($action) {
 			global $user, $comment;
 			if (!$user->can("edit_comment") or empty($_POST)) return;
@@ -133,6 +137,7 @@
 			$route = Route::current();
 			$route->redirect("/admin/?action=manage&sub=comment&updated");
 		}
+		
 		static function admin_delete_comment_real($action) {
 			global $user, $comment;
 			if (!$user->can("delete_comment") or empty($_POST)) return;
@@ -141,6 +146,7 @@
 			$route = Route::current();
 			$route->redirect("/admin/?action=manage&sub=comment&deleted");
 		}
+		
 		static function admin_mark_spam($action) {
 			global $user;
 			if (!$user->can("edit_comment")) return;
@@ -156,6 +162,7 @@
 			$route = Route::current();
 			$route->redirect("/admin/?action=manage&sub=comment&spammed");
 		}
+		
 		static function admin_approve_comment($action) {
 			global $user;
 			if (!$user->can("edit_comment")) return;
@@ -171,6 +178,7 @@
 			$route = Route::current();
 			$route->redirect("/admin/?action=manage&sub=comment&approved");
 		}
+		
 		static function admin_deny_comment($action) {
 			global $user;
 			if (!$user->can("edit_comment")) return;
@@ -187,6 +195,7 @@
 			$route = Route::current();
 			$route->redirect("/admin/?action=manage&sub=comment&denied");
 		}
+		
 		static function admin_manage_spam($action) {
 			global $user, $comment;
 			$config = Config::current();
@@ -213,6 +222,7 @@
 			}
 			$route->redirect("/admin/?action=manage&sub=spam");
 		}
+		
 		static function admin_purge_spam($action) {
 			global $user, $comment;
 			if (!$user->can("delete_comment")) return;
@@ -224,6 +234,7 @@
 			$route = Route::current();
 			$route->redirect("/admin/?action=manage&sub=spam&purged");
 		}
+		
 		static function new_post_options() {
 ?>
 					<p>
@@ -237,6 +248,7 @@
 					</p>
 <?php
 		}
+		
 		static function edit_post_options() {
 			global $post;
 			fallback($post->comment_status, "open");
@@ -252,6 +264,7 @@
 					</p>
 <?php
 		}
+		
 		static function trackback_receive() {
 			global $comment, $url, $title, $excerpt, $blog_name;
 			
@@ -267,8 +280,16 @@
 			if ($dupe->rowCount() == 1)
 				trackback_respond(true, __("A ping from that URL is already registered.", "comments"));
 			
-			$comment->add("<strong><a href=\"".$url."\">".$title."</a></strong>\n\n".$excerpt, $blog_name, $_POST['url'], '', '', '', "trackback", datetime(), $_GET['id'], 0);
+			$url = fix($url, "html");
+			$title = fix($title, "html");
+			$comment->create($blog_name,
+			                 "",
+			                 $_POST["url"],
+			                 "<strong><a href=\"$url\">$title</a></strong> $excerpt",
+			                 $_GET["id"],
+			                 "trackback");
 		}
+		
 		static function pingback($id, $to, $from, $title, $excerpt) {
 			global $comment;
 			
@@ -284,8 +305,14 @@
 			if ($dupe->rowCount() == 1)
 				return new IXR_Error(48, __("A ping from that URL is already registered.", "comments"));
 				
-			$comment->add($excerpt, $title, $from, '', '', '', "pingback", datetime(), $id, 0);
+			$comment->create($title,
+			                 "",
+			                 $from,
+			                 $excerpt,
+			                 $id,
+			                 "pingback");
 		}
+		
 		static function delete_post($id) {
 			$sql = SQL::current();
 			$sql->query("delete from `".$sql->prefix."comments`
@@ -294,6 +321,7 @@
 			            	":id" => $id
 			            ));
 		}
+		
 		static function change_settings($sub) {
 			# Don't do anything if they're not submitting to the "comments" page
 			if ($sub != "comments") return;
@@ -304,11 +332,13 @@
 			$config->set("default_comment_status", $_POST['default_comment_status']);
 			$config->set("comments_per_page", $_POST['comments_per_page']);
 		}
+		
 		static function admin_settings_nav() {
 ?>
 					<li<?php selected("settings", "comments"); ?>><a href="<?php url("settings", "comments"); ?>"><?php echo __("Comments", "comments"); ?></a></li>
 <?php
 		}
+		
 		static function admin_manage_nav() {
 			global $user;
 			if (!$user->can("edit_comment") and !$user->can("delete_comment")) return;
@@ -317,14 +347,17 @@
 					<li<?php selected("manage", "spam").selected("edit", "spam"); ?>><a href="<?php url("manage", "spam"); ?>"><?php echo __("Spam", "comments"); ?></a></li>
 <?php
 		}
+		
 		static function admin_manage_posts_column_header() {
 			echo '<th>'.__("Comments", "comments").'</th>';
 		}
+		
 		static function admin_manage_posts_column($id) {
 			global $comment;
 			$post = new Post($id);
 			echo '<td align="center"><a href="'.$post->url().'#comments">'.$comment->post_count($id).'</a></td>';
 		}
+		
 		static function javascript_domready() {
 			$config = Config::current();
 ?>
@@ -369,6 +402,7 @@
 //</script>
 <?php
 		}
+		
 		static function javascript() {
 			$config = Config::current();
 ?>
@@ -481,6 +515,7 @@ $(function(){
 })
 <?php
 		}
+		
 		static function ajax() {
 			global $theme, $user, $comment, $current_user;
 			header("Content-Type: application/x-javascript", true);
@@ -607,6 +642,7 @@ $(function(){
 					break;
 			}
 		}
+		
 		static function show_admin_manage_page($show_page, $sub) {
 			global $user;
 			if ($sub == "spam")
@@ -614,6 +650,7 @@ $(function(){
 			else
 				return $show_page;
 		}
+		
 		static function import_wordpress_post($data, $id) {
 			global $comment;
 			if (isset($data["WP:COMMENT"])) {
@@ -629,6 +666,7 @@ $(function(){
 				}
 			}
 		}
+		
 		static function import_movabletype_post($data, $id) {
 			global $comment;
 			preg_match_all("/COMMENT:\nAUTHOR: (.*?)\nEMAIL: (.*?)\nIP: (.*?)\nURL: (.*?)\nDATE: (.*?)\n(.*?)\n-----/", $data, $comments);
@@ -637,6 +675,7 @@ $(function(){
 				$comment->add($comments[5][$i], $comments[0][$i], $comments[3][$i], $comments[1][$i], $comments[2][$i], "", "approved", $comments[4][$i], $id, 0);
 			}
 		}
+		
 		static function import_textpattern_generate_array($array) {
 			global $link;
 			$get_comments = mysql_query("select * from `".$_POST['prefix']."discuss` where `parentid` = ".fix($array["ID"])." order by `discussid` asc", $link);
@@ -647,6 +686,7 @@ $(function(){
 			}
 			return $array;
 		}
+		
 		static function import_textpattern_post($array, $id) {
 			global $comment;
 			if (!isset($array["comments"])) return;
@@ -657,9 +697,11 @@ $(function(){
 				$comment->add($the_comment["message"], $the_comment["name"], $the_comment["web"], $the_comment["email"], $the_comment["ip"], "", $status, $the_comment["posted"], $id, 0);
 			}
 		}
+		
 		static function manage_permission($type) {
 			return ($type == "spam") ? "comment" : $type ;
 		}
+		
 		static function view_feed() {
 			global $post, $current_user, $action, $get_comments, $latest_timestamp, $title;
 			

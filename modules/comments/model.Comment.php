@@ -13,14 +13,15 @@
 			                     ))->fetch() as $key => $val)
 				$this->$key = $val;
 		}
-		function create($author, $email, $url, $body, $post_id) {
+		function create($author, $email, $url, $body, $post_id, $status = null) {
 			global $user, $current_user;
 			if (!$this->user_can($post_id)) return;
 			
 			$post = new Post($post_id);
 			$config = Config::current();
 			$route = Route::current();
-			$status = ($post->user_id == $current_user) ? "approved" : $config->default_comment_status ;
+			if (!$status)
+				$status = ($post->user_id == $current_user) ? "approved" : $config->default_comment_status ;
 			if (!empty($config->akismet_api_key)) {
 				require "lib/akismet.php";
 				$comment = array(
