@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v1.1.3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-03-12 17:09-0500\n"
+"PO-Revision-Date: 2008-03-12 17:18-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -57,6 +57,11 @@ msgstr ""
 msgid "Upgrade &rarr;"
 msgstr ""
 
+#: install.php:44
+#, php-format
+msgid "STOP! Before you go any further, you must complete the following steps:<ol><li>Create a .htaccess file in Chyrp's install directory and put this in it: <pre>%s</pre></li><li>Create /includes/database.yaml.php and CHMOD it to 777</li><li>Create /includes/config.yaml.php and CHMOD it to 777</li></ol>"
+msgstr ""
+
 #: install.php:48
 #, php-format
 msgid "Could not connect to the MySQL server: %s"
@@ -68,10 +73,6 @@ msgstr ""
 
 #: install.php:42
 msgid "Chyrp is already correctly installed and configured."
-msgstr ""
-
-#: install.php:44
-msgid "STOP! Before you go any further, you must complete the following steps:<ol><li>Create a .htaccess file in Chyrp's install directory and put this in it: <pre>".htmlspecialchars($htaccess)."</pre></li><li>Create /includes/database.yaml.php and CHMOD it to 777</li><li>Create /includes/config.yaml.php and CHMOD it to 777</li></ol>"
 msgstr ""
 
 #: install.php:51

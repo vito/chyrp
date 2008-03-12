@@ -41,7 +41,7 @@
 		if ($sql->connect(true) and !empty($config->url) and $sql->query("select count(`id`) from `".$sql->prefix."users`")->fetchColumn())
 			error(__("Already Installed"), __("Chyrp is already correctly installed and configured."));
 	} else if (!is_writable(INCLUDES_DIR) or !is_writable(BASE_DIR))
-		$errors[] = __("STOP! Before you go any further, you must complete the following steps:<ol><li>Create a .htaccess file in Chyrp's install directory and put this in it: <pre>".htmlspecialchars($htaccess)."</pre></li><li>Create /includes/database.yaml.php and CHMOD it to 777</li><li>Create /includes/config.yaml.php and CHMOD it to 777</li></ol>");
+		$errors[] = sprintf(__("STOP! Before you go any further, you must complete the following steps:<ol><li>Create a .htaccess file in Chyrp's install directory and put this in it: <pre>%s</pre></li><li>Create /includes/database.yaml.php and CHMOD it to 777</li><li>Create /includes/config.yaml.php and CHMOD it to 777</li></ol>"), htmlspecialchars($htaccess));
 	
 	if (!empty($_POST)) {
 		if (!@mysql_connect($_POST['host'], $_POST['username'], $_POST['password']))
