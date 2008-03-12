@@ -29,7 +29,7 @@
 
 	$url = "http://".$_SERVER['HTTP_HOST'].str_replace("/install.php", "", $_SERVER['REQUEST_URI']);
 	$index = (parse_url($url, PHP_URL_PATH)) ? "/".trim(parse_url($url, PHP_URL_PATH), "/")."/" : "/" ;
-	$htaccess = "<IfModule mod_rewrite.c>\nRewriteEngine On\nRewriteBase ".str_replace("install.php", "", $index)."\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule ^.+$ index.php [L]\n</IfModule>";	
+	$htaccess = "<IfModule mod_rewrite.c>\nRewriteEngine On\nRewriteBase ".str_replace("install.php", "", $index)."\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule ^.+$ index.php [L]\n</IfModule>";
 	
 	$errors = array();
 	$installed = false;
@@ -382,7 +382,6 @@
 			}
 			.error {
 				padding: 6px 8px 5px 30px;
-				cursor: pointer;
 				border-bottom: 1px solid #FBC2C4;
 				color: #D12F19;
 				background: #FBE3E4 url('./admin/icons/failure.png') no-repeat 7px center;

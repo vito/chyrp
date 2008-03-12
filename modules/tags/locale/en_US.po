@@ -9,41 +9,41 @@ msgstr ""
 "Project-Id-Version: Chyrp v1.1.3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-02-17 01:10-0500\n"
+"PO-Revision-Date: 2008-03-12 17:09-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: modules/tags/pages/tags.php:26
+#: modules/tags/pages/tags.php:32
 #, php-format
 msgid "%s post tagged with &quot;%s&quot;"
 msgid_plural "%s posts tagged with &quot;%s&quot;"
 msgstr[0] ""
 msgstr[1] "s"
 
-#: modules/tags/pages/tags.php:4
-#: modules/tags/module.php:25
-#: modules/tags/module.php:34
-#: modules/tags/module.php:81
+#: modules/tags/pages/tags.php:10
+#: modules/tags/module.php:27
+#: modules/tags/module.php:36
+#: modules/tags/module.php:100
 msgid "Tags"
 msgstr ""
 
-#: modules/tags/pages/tags.php:35
+#: modules/tags/pages/tags.php:45
 msgid "No Tags"
 msgstr ""
 
-#: modules/tags/pages/tags.php:36
+#: modules/tags/pages/tags.php:46
 msgid "There aren't any tags yet. Such a shame."
 msgstr ""
 
-#: modules/tags/pages/tag.php:14
+#: modules/tags/pages/tag.php:10
 #, php-format
 msgid "Posts tagged with \"%s\""
 msgstr ""
 
-#: modules/tags/module.php:25
+#: modules/tags/module.php:27
 msgid "(comma separated)"
 msgstr ""
 

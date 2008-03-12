@@ -9,29 +9,29 @@ msgstr ""
 "Project-Id-Version: Chyrp v1.1.3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-02-17 01:10-0500\n"
+"PO-Revision-Date: 2008-03-12 17:09-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: themes/default/snippets.php:67
+#: themes/default/snippets.php:69
 #, php-format
 msgid "Archive of %s"
 msgstr ""
 
-#: themes/default/snippets.php:71
+#: themes/default/snippets.php:73
 #, php-format
 msgid "Search results for &#8220;%s&#8221;"
 msgstr ""
 
-#: themes/default/snippets.php:75
+#: themes/default/snippets.php:77
 #, php-format
 msgid "Posts tagged with &#8220;%s&#8221;"
 msgstr ""
 
-#: themes/default/snippets.php:107
+#: themes/default/snippets.php:144
 #, php-format
 msgid "Comments on &#8220;%s&#8221;"
 msgstr ""
@@ -77,76 +77,88 @@ msgstr ""
 msgid "There aren't any drafts yet."
 msgstr ""
 
-#: themes/default/snippets.php:46
+#: themes/default/snippets.php:48
 msgid "Write"
 msgstr ""
 
-#: themes/default/snippets.php:47
+#: themes/default/snippets.php:49
 msgid "Add Page"
 msgstr ""
 
-#: themes/default/snippets.php:48
+#: themes/default/snippets.php:50
 msgid "Drafts"
 msgstr ""
 
-#: themes/default/snippets.php:49
+#: themes/default/snippets.php:51
 msgid "Admin"
 msgstr ""
 
-#: themes/default/snippets.php:50
+#: themes/default/snippets.php:52
 msgid "Close"
 msgstr ""
 
-#: themes/default/snippets.php:57
+#: themes/default/snippets.php:59
 msgid "Your Drafts"
 msgstr ""
 
-#: themes/default/snippets.php:64
-#: themes/default/layout/footer.php:15
+#: themes/default/snippets.php:66
+#: themes/default/layout/footer.php:34
 msgid "Tags"
 msgstr ""
 
-#: themes/default/snippets.php:78
+#: themes/default/snippets.php:80
 msgid "This post is a draft."
 msgstr ""
 
-#: themes/default/snippets.php:78
+#: themes/default/snippets.php:80
 msgid "(click to hide)"
 msgstr ""
 
-#: themes/default/snippets.php:81
+#: themes/default/snippets.php:83
 msgid "Post added."
 msgstr ""
 
-#: themes/default/snippets.php:84
+#: themes/default/snippets.php:86
 msgid "Post updated."
 msgstr ""
 
-#: themes/default/snippets.php:118
+#: themes/default/snippets.php:107
+msgid "pinned"
+msgstr ""
+
+#: themes/default/snippets.php:130
+msgid " <em>/</em> Tags: "
+msgstr ""
+
+#: themes/default/snippets.php:132
+msgid "Trackback"
+msgstr ""
+
+#: themes/default/snippets.php:155
 #: themes/default/layout/footer.php:2
 msgid "Next &rarr;"
 msgstr ""
 
-#: themes/default/snippets.php:119
+#: themes/default/snippets.php:156
 #: themes/default/layout/footer.php:3
 msgid "&larr; Previous"
 msgstr ""
 
-#: themes/default/snippets.php:133
+#: themes/default/snippets.php:170
 msgid "Search..."
 msgstr ""
 
-#: themes/default/layout/footer.php:29
+#: themes/default/layout/footer.php:17
 #, php-format
 msgid "Welcome, %s!"
 msgstr ""
 
-#: themes/default/layout/footer.php:46
+#: themes/default/layout/footer.php:50
 #, php-format
 msgid "Queries: %s"
 msgstr ""
 
-#: themes/default/layout/footer.php:47
+#: themes/default/layout/footer.php:51
 #, php-format
 msgid "Load Time: %s"
 msgstr ""
@@ -159,43 +171,43 @@ msgstr ""
 msgid "Powered by <a href=\"http://chyrp.net/\">Chyrp</a>"
 msgstr ""
 
-#: themes/default/layout/footer.php:11
+#: themes/default/layout/footer.php:15
 msgid "Pages"
 msgstr ""
 
 #: themes/default/layout/footer.php:20
-msgid "All &rarr;"
-msgstr ""
-
-#: themes/default/layout/footer.php:23
-msgid "Archives"
-msgstr ""
-
-#: themes/default/layout/footer.php:32
 #: themes/default/forms/user/login.php:1
 #: themes/default/forms/user/login.php:13
 msgid "Log In"
 msgstr ""
 
-#: themes/default/layout/footer.php:34
+#: themes/default/layout/footer.php:22
 #: themes/default/forms/user/register.php:1
 #: themes/default/forms/user/register.php:20
 msgid "Register"
 msgstr ""
 
-#: themes/default/layout/footer.php:37
+#: themes/default/layout/footer.php:25
 msgid "User Controls"
 msgstr ""
 
-#: themes/default/layout/footer.php:39
+#: themes/default/layout/footer.php:27
 msgid "Toggle Admin Bar"
 msgstr ""
 
-#: themes/default/layout/footer.php:41
+#: themes/default/layout/footer.php:29
 msgid "Log Out"
 msgstr ""
 
-#: themes/default/layout/footer.php:44
+#: themes/default/layout/footer.php:39
+msgid "All &rarr;"
+msgstr ""
+
+#: themes/default/layout/footer.php:42
+msgid "Archives"
+msgstr ""
+
+#: themes/default/layout/footer.php:48
 msgid "Stats"
 msgstr ""
 
@@ -253,63 +265,33 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
-#: themes/default/forms/comment/new.php:6
+#: themes/default/forms/comment/new.php:7
 #, php-format
 msgid "Logged in as %s."
 msgstr ""
 
-#: themes/default/forms/comment/new.php:6
+#: themes/default/forms/comment/new.php:7
 msgid "Log Out &rarr;"
 msgstr ""
 
-#: themes/default/forms/comment/new.php:11
+#: themes/default/forms/comment/new.php:12
 msgid "Your Name"
 msgstr ""
 
-#: themes/default/forms/comment/new.php:13
+#: themes/default/forms/comment/new.php:14
 msgid "Your E-Mail"
 msgstr ""
 
-#: themes/default/forms/comment/new.php:15
+#: themes/default/forms/comment/new.php:16
 msgid "Your Website"
 msgstr ""
 
-#: themes/default/forms/comment/new.php:21
+#: themes/default/forms/comment/new.php:22
 msgid "Speak"
 msgstr ""
 
-#: themes/default/content/posts/video.php:3
 #: themes/default/content/posts/text.php:3
-#: themes/default/content/posts/quote.php:3
-#: themes/default/content/posts/photo.php:3
-#: themes/default/content/posts/link.php:3
 #: themes/default/content/posts/chat.php:3
-#: themes/default/content/posts/audio.php:3
-msgid "pinned"
-msgstr ""
-
-#: themes/default/content/posts/video.php:14
-#: themes/default/content/posts/text.php:23
-#: themes/default/content/posts/quote.php:15
-#: themes/default/content/posts/photo.php:13
-#: themes/default/content/posts/link.php:13
-#: themes/default/content/posts/chat.php:17
-#: themes/default/content/posts/audio.php:14
-msgid " <em>/</em> Tags: "
-msgstr ""
-
-#: themes/default/content/posts/video.php:16
-#: themes/default/content/posts/text.php:25
-#: themes/default/content/posts/quote.php:17
-#: themes/default/content/posts/photo.php:15
-#: themes/default/content/posts/link.php:15
-#: themes/default/content/posts/chat.php:19
-#: themes/default/content/posts/audio.php:16
-msgid "Trackback"
-msgstr ""
-
-#: themes/default/content/posts/text.php:6
-#: themes/default/content/posts/chat.php:6
 #, php-format
 msgid "Permanent Link to %s"
 msgstr ""

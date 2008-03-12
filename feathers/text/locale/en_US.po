@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v1.1.3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-02-17 01:10-0500\n"
+"PO-Revision-Date: 2008-03-12 17:09-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -21,31 +21,31 @@ msgid "Text"
 msgstr ""
 
 #: feathers/text/info.yaml:4
-msgid "A basic text feather, featuring pagination and excerpts with &lt;!--page--&gt; and &lt;!--more--&gt;, respectively."
+msgid "A basic text feather."
 msgstr ""
 
 #: feathers/text/info.yaml:6
 msgid "text"
 msgstr ""
 
-#: feathers/text/fields.php:8
+#: feathers/text/fields.php:9
 msgid "Title"
 msgstr ""
 
-#: feathers/text/fields.php:8
+#: feathers/text/fields.php:9
 msgid "(optional)"
 msgstr ""
 
-#: feathers/text/fields.php:12
+#: feathers/text/fields.php:13
 msgid "Body"
 msgstr ""
 
-#: feathers/text/feather.php:11
-#: feathers/text/feather.php:34
+#: feathers/text/feather.php:8
+#: feathers/text/feather.php:31
 msgid "Error"
 msgstr ""
 
-#: feathers/text/feather.php:11
+#: feathers/text/feather.php:8
 msgid "Body can't be blank."
 msgstr ""
 

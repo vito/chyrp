@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v1.1.3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-02-17 01:10-0500\n"
+"PO-Revision-Date: 2008-03-12 17:09-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -24,28 +24,28 @@ msgstr ""
 msgid "Post logs of IRC or other chat formats."
 msgstr ""
 
-#: feathers/chat/fields.php:8
+#: feathers/chat/fields.php:9
 msgid "Title"
 msgstr ""
 
-#: feathers/chat/fields.php:8
+#: feathers/chat/fields.php:9
 msgid "(optional)"
 msgstr ""
 
-#: feathers/chat/fields.php:12
+#: feathers/chat/fields.php:13
 msgid "Dialogue"
 msgstr ""
 
-#: feathers/chat/fields.php:16
+#: feathers/chat/fields.php:17
 msgid "To give yourself a special CSS class, append \" (me)\" to your username, like so:"
 msgstr ""
 
-#: feathers/chat/fields.php:21
+#: feathers/chat/fields.php:22
 msgid "This only has to be done to the first occurrence of the username."
 msgstr ""
 
 #: feathers/chat/feather.php:12
-#: feathers/chat/feather.php:35
+#: feathers/chat/feather.php:34
 msgid "Error"
 msgstr ""
 

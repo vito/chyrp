@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v1.1.3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-02-17 01:10-0500\n"
+"PO-Revision-Date: 2008-03-12 17:09-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: feathers/photo/info.yaml:1
-#: feathers/photo/fields.php:7
+#: feathers/photo/fields.php:8
 msgid "Photo"
 msgstr ""
 
@@ -25,19 +25,19 @@ msgstr ""
 msgid "A photo feather, allowing you to upload any type of picture, with a caption."
 msgstr ""
 
-#: feathers/photo/fields.php:12
+#: feathers/photo/fields.php:13
 msgid "Caption"
 msgstr ""
 
-#: feathers/photo/fields.php:12
+#: feathers/photo/fields.php:13
 msgid "(optional)"
 msgstr ""
 
-#: feathers/photo/feather.php:13
+#: feathers/photo/feather.php:12
 msgid "Error"
 msgstr ""
 
-#: feathers/photo/feather.php:13
+#: feathers/photo/feather.php:12
 msgid "Couldn't upload photo."
 msgstr ""
 

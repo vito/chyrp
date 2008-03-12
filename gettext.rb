@@ -6,7 +6,7 @@ strings = []
 lines = []
 keys = ["name", "description", "plural", "notifications", "confirm"]
 output = ""
-msgstr = "XXX"
+msgstr = ""
 basedir = ARGV[0] || "."
 Find.find(basedir) do |path|
   if FileTest.directory?(path)

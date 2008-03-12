@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v1.1.3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-02-17 01:10-0500\n"
+"PO-Revision-Date: 2008-03-12 17:09-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: feathers/quote/info.yaml:1
-#: feathers/quote/fields.php:10
+#: feathers/quote/fields.php:11
 msgid "Quote"
 msgstr ""
 
@@ -25,20 +25,20 @@ msgstr ""
 msgid "Post quotes and cite sources."
 msgstr ""
 
-#: feathers/quote/fields.php:14
+#: feathers/quote/fields.php:15
 msgid "Source"
 msgstr ""
 
-#: feathers/quote/fields.php:14
+#: feathers/quote/fields.php:15
 msgid "(optional)"
 msgstr ""
 
-#: feathers/quote/feather.php:11
-#: feathers/quote/feather.php:36
+#: feathers/quote/feather.php:9
+#: feathers/quote/feather.php:34
 msgid "Error"
 msgstr ""
 
-#: feathers/quote/feather.php:11
+#: feathers/quote/feather.php:9
 msgid "Quote can't be empty."
 msgstr ""
 

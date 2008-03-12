@@ -1,32 +1,24 @@
 #!/bin/sh
-ruby gettext.rb > ~/Desktop/ruby/includes/locale/en_US.po
-ruby gettext.rb ./feathers/audio/ > ~/Desktop/ruby/feathers/audio/locale/en_US.po
-ruby gettext.rb ./feathers/chat/ > ~/Desktop/ruby/feathers/chat/locale/en_US.po
-ruby gettext.rb ./feathers/link/ > ~/Desktop/ruby/feathers/link/locale/en_US.po
-ruby gettext.rb ./feathers/photo/ > ~/Desktop/ruby/feathers/photo/locale/en_US.po
-ruby gettext.rb ./feathers/quote/ > ~/Desktop/ruby/feathers/quote/locale/en_US.po
-ruby gettext.rb ./feathers/text/ > ~/Desktop/ruby/feathers/text/locale/en_US.po
-ruby gettext.rb ./feathers/video/ > ~/Desktop/ruby/feathers/video/locale/en_US.po
-ruby gettext.rb ./modules/comments/ > ~/Desktop/ruby/modules/comments/locale/en_US.po
-ruby gettext.rb ./modules/markdown/ > ~/Desktop/ruby/modules/markdown/locale/en_US.po
-ruby gettext.rb ./modules/smartypants/ > ~/Desktop/ruby/modules/smartypants/locale/en_US.po
-ruby gettext.rb ./modules/tags/ > ~/Desktop/ruby/modules/tags/locale/en_US.po
-ruby gettext.rb ./modules/textile/ > ~/Desktop/ruby/modules/textile/locale/en_US.po
-ruby gettext.rb ./modules/wpformatting/ > ~/Desktop/ruby/modules/wpformatting/locale/en_US.po
-ruby gettext.rb ./themes/default/ > ~/Desktop/ruby/themes/default/locale/en_US.po
+ruby gettext.rb > ./includes/locale/en_US.po
+ruby gettext.rb ./feathers/audio/ > ./feathers/audio/locale/en_US.po
+ruby gettext.rb ./feathers/chat/ > ./feathers/chat/locale/en_US.po
+ruby gettext.rb ./feathers/link/ > ./feathers/link/locale/en_US.po
+ruby gettext.rb ./feathers/photo/ > ./feathers/photo/locale/en_US.po
+ruby gettext.rb ./feathers/quote/ > ./feathers/quote/locale/en_US.po
+ruby gettext.rb ./feathers/text/ > ./feathers/text/locale/en_US.po
+ruby gettext.rb ./feathers/video/ > ./feathers/video/locale/en_US.po
+ruby gettext.rb ./modules/comments/ > ./modules/comments/locale/en_US.po
+ruby gettext.rb ./modules/tags/ > ./modules/tags/locale/en_US.po
+ruby gettext.rb ./themes/default/ > ./themes/default/locale/en_US.po
 
-msgfmt -v ~/Desktop/ruby/includes/locale/en_US.po -o ~/Desktop/ruby/includes/locale/en_US.mo
-msgfmt -v ~/Desktop/ruby/feathers/audio/locale/en_US.po -o ~/Desktop/ruby/feathers/audio/locale/en_US.mo
-msgfmt -v ~/Desktop/ruby/feathers/chat/locale/en_US.po -o ~/Desktop/ruby/feathers/chat/locale/en_US.mo
-msgfmt -v ~/Desktop/ruby/feathers/link/locale/en_US.po -o ~/Desktop/ruby/feathers/link/locale/en_US.mo
-msgfmt -v ~/Desktop/ruby/feathers/photo/locale/en_US.po -o ~/Desktop/ruby/feathers/photo/locale/en_US.mo
-msgfmt -v ~/Desktop/ruby/feathers/quote/locale/en_US.po -o ~/Desktop/ruby/feathers/quote/locale/en_US.mo
-msgfmt -v ~/Desktop/ruby/feathers/text/locale/en_US.po -o ~/Desktop/ruby/feathers/text/locale/en_US.mo
-msgfmt -v ~/Desktop/ruby/feathers/video/locale/en_US.po -o ~/Desktop/ruby/feathers/video/locale/en_US.mo
-msgfmt -v ~/Desktop/ruby/modules/comments/locale/en_US.po -o ~/Desktop/ruby/modules/comments/locale/en_US.mo
-msgfmt -v ~/Desktop/ruby/modules/markdown/locale/en_US.po -o ~/Desktop/ruby/modules/markdown/locale/en_US.mo
-msgfmt -v ~/Desktop/ruby/modules/smartypants/locale/en_US.po -o ~/Desktop/ruby/modules/smartypants/locale/en_US.mo
-msgfmt -v ~/Desktop/ruby/modules/tags/locale/en_US.po -o ~/Desktop/ruby/modules/tags/locale/en_US.mo
-msgfmt -v ~/Desktop/ruby/modules/textile/locale/en_US.po -o ~/Desktop/ruby/modules/textile/locale/en_US.mo
-msgfmt -v ~/Desktop/ruby/modules/wpformatting/locale/en_US.po -o ~/Desktop/ruby/modules/wpformatting/locale/en_US.mo
-msgfmt -v ~/Desktop/ruby/themes/default/locale/en_US.po -o ~/Desktop/ruby/themes/default/locale/en_US.mo
+msgfmt -v ./includes/locale/en_US.po -o ./includes/locale/en_US.mo
+msgfmt -v ./feathers/audio/locale/en_US.po -o ./feathers/audio/locale/en_US.mo
+msgfmt -v ./feathers/chat/locale/en_US.po -o ./feathers/chat/locale/en_US.mo
+msgfmt -v ./feathers/link/locale/en_US.po -o ./feathers/link/locale/en_US.mo
+msgfmt -v ./feathers/photo/locale/en_US.po -o ./feathers/photo/locale/en_US.mo
+msgfmt -v ./feathers/quote/locale/en_US.po -o ./feathers/quote/locale/en_US.mo
+msgfmt -v ./feathers/text/locale/en_US.po -o ./feathers/text/locale/en_US.mo
+msgfmt -v ./feathers/video/locale/en_US.po -o ./feathers/video/locale/en_US.mo
+msgfmt -v ./modules/comments/locale/en_US.po -o ./modules/comments/locale/en_US.mo
+msgfmt -v ./modules/tags/locale/en_US.po -o ./modules/tags/locale/en_US.mo
+msgfmt -v ./themes/default/locale/en_US.po -o ./themes/default/locale/en_US.mo
