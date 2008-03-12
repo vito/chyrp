@@ -13,44 +13,39 @@
 			                     ))->fetch() as $key => $val)
 				$this->$key = $val;
 		}
-		function create($author, $email, $url, $body, $post_id) {
+		function create($author, $email, $url, $body, $post_id, $type = null) {
 			global $user, $current_user;
 			if (!$this->user_can($post_id)) return;
 			
 			$post = new Post($post_id);
 			$config = Config::current();
 			$route = Route::current();
-			$status = ($post->user_id == $current_user) ? "approved" : $config->default_comment_status ;
+			
+			if (!$type)
+				$status = ($post->user_id == $current_user) ? "approved" : $config->default_comment_status ;
+				$type = "comment";
+			else
+				$status = $type;
+			
 			if (!empty($config->akismet_api_key)) {
-				require "lib/akismet.php";
-				$comment = array(
-					'author'    => $author,
-					'email'     => $email,
-					'website'   => $url,
-					'body'      => $body,
-					'permalink' => $post->url()
-				);
-				$akismet = new Akismet($config->url, $config->akismet_api_key, $comment);
-				if ($akismet->isError(AKISMET_SERVER_NOT_FOUND) OR $akismet->isError(AKISMET_RESPONSE_FAILED)) {
-					$id = $this->add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, datetime(), $post_id, $current_user);
-					if (isset($_POST['ajax']))
-						exit("{ comment_id: ".$id." }");
-					$route->redirect($post->url()."#comment_".$id);
-				} elseif ($akismet->isError(AKISMET_INVALID_KEY)) {
-					$id = $this->add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, datetime(), $post_id, $current_user);
-					if (isset($_POST['ajax']))
-						exit("{ comment_id: ".$id." }");
-					$route->redirect($post->url()."#comment_".$id);
+				require_once "lib/Akismet.class.php";
+				
+				$akismet = new Akismet($config->url, $config->akismet_api_key);
+				$akismet->setCommentAuthor($author);
+				$akismet->setCommentAuthorEmail($email);
+				$akismet->setCommentAuthorURL($url);
+				$akismet->setCommentContent($body);
+				$akismet->setPermalink($post->url());
+				$akismet->setCommentType($type);
+				
+				if ($akismet->isKeyValid() && $akismet->isCommentSpam()) {
+					$this->add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], "spam", datetime(), $post_id, $current_user);
+					error(__("Spam Comment"), __("Your comment has been marked as spam. It will have to be approved before it will show up.", "comments"));
 				} else {
-					if ($akismet->isSpam()) {
-						$this->add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], "spam", datetime(), $post_id, $current_user);
-						error(__("Spam Comment"), __("Your comment has been marked as spam. It will have to be approved before it will show up.", "comments"));
-					} else {
-						$id = $this->add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, datetime(), $post_id, $current_user);
-						if (isset($_POST['ajax']))
-							exit("{ comment_id: ".$id." }");
-						$route->redirect($post->url()."#comment_".$id);
-					}
+					$id = $this->add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, datetime(), $post_id, $current_user);
+					if (isset($_POST['ajax']))
+						exit("{ comment_id: ".$id." }");
+					$route->redirect($post->url()."#comment_".$id);
 				}
 			} else {
 				$id = $this->add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, datetime(), $post_id, $current_user);
