@@ -21,10 +21,10 @@
 			$config = Config::current();
 			$route = Route::current();
 			
-			if (!$type)
+			if (!$type) {
 				$status = ($post->user_id == $current_user) ? "approved" : $config->default_comment_status ;
 				$type = "comment";
-			else
+			} else
 				$status = $type;
 			
 			if (!empty($config->akismet_api_key)) {
