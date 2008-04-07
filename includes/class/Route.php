@@ -33,7 +33,7 @@
 		/**
 		 * Function: url
 		 * Attempts to change the specified clean URL to a dirty URL if clean URLs is disabled.
-		 * Use this for linking to things. The applicable URL conversions are passed through the 
+		 * Use this for linking to things. The applicable URL conversions are passed through the
 		 * parse_urls trigger.
 		 * 
 		 * Parameters:
@@ -50,20 +50,20 @@
 					$clean_url = substr($clean_url, 5);
 				
 				return (substr($config->post_url, -1) == "/" or $clean_url == "search/") ?
-				       $config->url."/".$clean_url : 
+				       $config->url."/".$clean_url :
 				       $config->url."/".rtrim($clean_url, "/") ;
 			}
 			
 			$clean_url = "/".$clean_url;
 			
 			$urls = array(
-				"/\/id\/([0-9]+)\//" => "?action=view&id=$1", 
-				"/\/page\/([^\/]+)\//" => "?action=page&amp;url=$1", 
-				"/\/search\//" => "?action=search", 
-				"/\/search\/([^\/]+)\//" => "?action=search&amp;query=$1", 
-				"/\/archive\/([^\/]+)\/([^\/]+)\//" => "?action=archive&amp;year=$1&amp;month=$2", 
-				"/\/bookmarklet\/([^\/]+)\//" => "?action=bookmarklet&amp;status=$1", 
-				"/\/theme_preview\/([^\/]+)\//" => "?action=theme_preview&amp;theme=$1", 
+				"/\/id\/([0-9]+)\//" => "?action=view&id=$1",
+				"/\/page\/([^\/]+)\//" => "?action=page&amp;url=$1",
+				"/\/search\//" => "?action=search",
+				"/\/search\/([^\/]+)\//" => "?action=search&amp;query=$1",
+				"/\/archive\/([^\/]+)\/([^\/]+)\//" => "?action=archive&amp;year=$1&amp;month=$2",
+				"/\/bookmarklet\/([^\/]+)\//" => "?action=bookmarklet&amp;status=$1",
+				"/\/theme_preview\/([^\/]+)\//" => "?action=theme_preview&amp;theme=$1",
 				"/\/([^\/]+)\/feed\//" => "?action=$1&amp;feed"
 			);
 			

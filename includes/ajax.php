@@ -83,8 +83,8 @@
 			$trigger->call("below_post");
 			break;
 		case "preview":
-			$content = ($trigger->exists("preview_".$_POST['feather'])) ? 
-			            $trigger->filter("preview_".$_POST['feather'], urldecode(stripslashes($_POST['content']))) : 
+			$content = ($trigger->exists("preview_".$_POST['feather'])) ?
+			            $trigger->filter("preview_".$_POST['feather'], urldecode(stripslashes($_POST['content']))) :
 			            $trigger->filter("markup_post_text", urldecode(stripslashes($_POST['content']))) ;
 			echo "<h1 class=\"preview-header\">".__("Preview")."</h1>\n<div class=\"preview-content\">".$content."</div>";
 			break;

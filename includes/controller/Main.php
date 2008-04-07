@@ -304,8 +304,8 @@
 			if (!$user->logged_in())
 				error(__("Error"), __("You must be logged in to access this area."));
 
-			$password = (!empty($_POST['new_password1']) and $_POST['new_password1'] == $_POST['new_password2']) ? 
-									md5($_POST['new_password1']) : 
+			$password = (!empty($_POST['new_password1']) and $_POST['new_password1'] == $_POST['new_password2']) ?
+									md5($_POST['new_password1']) :
 									$user->info("password") ;
 
 			$user->update($user->info("id"), $user->info("login"), $password, $_POST['full_name'], $_POST['email'], $_POST['website'], $user->info("group_id"));

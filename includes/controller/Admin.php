@@ -3,7 +3,7 @@
 	 * Class: Admin Controller
 	 * The logic behind the Admin area.
 	 */
-	class AdminController {		
+	class AdminController {
 		/**
 		 * Function: add_post
 		 * Adds a post when the form is submitted. Shows an error if the user lacks permissions.
@@ -123,8 +123,8 @@
 			if (!$user->can("edit_user"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to edit users."));
 			
-			$password = (!empty($_POST['new_password1']) and $_POST['new_password1'] == $_POST['new_password2']) ? 
-									md5($_POST['new_password1']) : 
+			$password = (!empty($_POST['new_password1']) and $_POST['new_password1'] == $_POST['new_password2']) ?
+									md5($_POST['new_password1']) :
 									$user->info("password", $_POST['id']) ;
 
 			$user->update($_POST['id'], $_POST['login'], $password, $_POST['full_name'], $_POST['email'], $_POST['website'], $_POST['group']);
@@ -425,7 +425,7 @@
 					$config->set("send_pingbacks", $send_pingbacks);
 					break;
 				case "routes":
-					$clean_urls = !empty($_POST['clean_urls']);					
+					$clean_urls = !empty($_POST['clean_urls']);
 					$config->set("clean_urls", $clean_urls);
 					$config->set("post_url", $_POST['post_url']);
 					break;

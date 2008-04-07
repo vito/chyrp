@@ -87,8 +87,8 @@
 			
 			$pinned = (int) !empty($_POST['pinned']);
 			$status = (isset($_POST['draft'])) ? "draft" : ((!empty($_POST['status'])) ? $_POST['status'] : "public") ;
-			$timestamp = (!empty($_POST['created_at']) and (!isset($_POST['original_time']) or $_POST['created_at'] != $_POST['original_time'])) ? 
-			             when("Y-m-d H:i:s", $_POST['created_at']) : 
+			$timestamp = (!empty($_POST['created_at']) and (!isset($_POST['original_time']) or $_POST['created_at'] != $_POST['original_time'])) ?
+			             when("Y-m-d H:i:s", $_POST['created_at']) :
 			             datetime() ;
 			$trackbacks = (!empty($_POST['trackbacks'])) ? $_POST['trackbacks'] : "" ;
 			$options = (isset($_POST['option'])) ? $_POST['option'] : array() ;
@@ -187,10 +187,10 @@
 			             "`id` = :id",
 			             array(
 			             	"yaml" => ":yaml",
-			             	"pinned" => ":pinned", 
-			             	"status" => ":status", 
-			             	"url" => ":url", 
-			             	"created_at" => ":created_at", 
+			             	"pinned" => ":pinned",
+			             	"status" => ":status",
+			             	"url" => ":url",
+			             	"created_at" => ":created_at",
 			             	"updated_at" => ":updated_at"
 			             ),
 			             array(

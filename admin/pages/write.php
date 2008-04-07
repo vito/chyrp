@@ -1,8 +1,8 @@
 <?php
-	$sub = (isset($_GET['sub'])) ? 
-	       	$_GET['sub'] : 
-	       	((!empty($config->enabled_feathers) and $user->can("add_post")) ? 
-	       		$config->enabled_feathers[0] : 
+	$sub = (isset($_GET['sub'])) ?
+	       	$_GET['sub'] :
+	       	((!empty($config->enabled_feathers) and $user->can("add_post")) ?
+	       		$config->enabled_feathers[0] :
 	       		"page")
 	       ;
 	$show_page = (($sub != "page" and !$user->can("add_post")) or ($sub == "page" and !$user->can("add_page"))) ? false : true ;
@@ -29,7 +29,7 @@
 		</ul>
 		<br class="clear" />
 		<div class="content">
-<?php 
+<?php
 	if ($show_page) {
 		$action = ($sub == "page") ? "add_page" : "add_post" ; ?>
 			<form action="<?php echo $config->url."/admin/?action=".$action; ?>" id="write_form" method="post" accept-charset="utf-8" enctype="multipart/form-data">

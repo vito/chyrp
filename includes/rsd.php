@@ -14,4 +14,5 @@
 		</apis>
 	</service>
 </rsd>
+
 <?php exit; ?>

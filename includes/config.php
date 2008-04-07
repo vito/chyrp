@@ -46,7 +46,7 @@
 			if (isset($this->$setting) and $this->$setting == $value) return false; # No point in changing it
 			
 			# Add the PHP protection!
-			$contents = "<?php header(\"Status: 401\"); exit(\"Access denied.\"); ?>\n";
+			$contents = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
 			
 			# Add the setting
 			$this->yaml[$setting] = $value;
@@ -69,10 +69,7 @@
 		 */
 		public function remove($setting) {
 			# Add the PHP protection!
-			$contents = "<?php\n";
-			$contents.= "\tif (strpos(\$_SERVER['REQUEST_URI'], \"config.yaml.php\"))\n";
-			$contents.= "\t\texit(\"Gtfo.\");\n";
-			$contents.= "?>\n";
+			$contents = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
 			
 			# Add the setting
 			unset($this->yaml[$setting]);

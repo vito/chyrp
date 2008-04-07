@@ -1,4 +1,4 @@
-<?php	
+<?php
 	class Snippet {
 		function read_more() {
 			return __("Read More &raquo;", "theme");

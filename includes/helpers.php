@@ -332,7 +332,7 @@
 		} else {
 			echo '<?xml version="1.0" encoding="utf-8"?'.">\n";
 			echo "<response>\n";
-			echo "<error>0</error>\n"; 
+			echo "<error>0</error>\n";
 			echo "</response>";
 		}
 		exit;
@@ -622,7 +622,7 @@
 	 * 	$return - Whether to return it or set it
 	 */
 	function fallback(&$variable, $fallback = "", $return = false) {
-		return ($return) ? 
+		return ($return) ?
 		       	((!isset($variable) or (is_string($variable) and trim($variable) == "") or empty($variable)) ? $fallback : $variable) :
 		       	((!isset($variable) or (is_string($variable) and trim($variable) == "") or empty($variable)) ? $variable = $fallback : false) ;
 	}

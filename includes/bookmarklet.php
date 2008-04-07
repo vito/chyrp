@@ -205,10 +205,10 @@
 			    countdown--;
 			    el = document.getElementById('countdown');
 			    if (countdown == 1) {
-			        el.firstChild.nodeValue = 
+			        el.firstChild.nodeValue =
 			            '<?php echo __("or wait 1 second."); ?>';
 			    } else if (countdown > 0) {
-			        el.firstChild.nodeValue = 
+			        el.firstChild.nodeValue =
 			            '<?php echo __("or wait 2 seconds."); ?>';
 			    } else {
                     self.close();

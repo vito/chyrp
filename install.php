@@ -251,7 +251,7 @@
 		
 			if (!file_exists(BASE_DIR."/.htaccess") and !is_writable(BASE_DIR))
 				$errors[] = __("Could not generate .htaccess file. Clean URLs will not be available.");
-			else {	
+			else {
 				$open_htaccess = fopen(BASE_DIR."/.htaccess", "w");
 				fwrite($open_htaccess, $htaccess);
 				fclose($open_htaccess);
@@ -289,10 +289,10 @@
 								`group_id` = 1, 
 								`joined_at` = :datetime",
                             array(
-                            	":login" => $_POST['login'], 
-                            	":password" => md5($_POST['password_1']), 
-                            	":email" => $_POST['email'], 
-                            	":website" => $config->url, 
+                            	":login" => $_POST['login'],
+                            	":password" => md5($_POST['password_1']),
+                            	":email" => $_POST['email'],
+                            	":website" => $config->url,
                             	":datetime" => datetime()
                             ));
 		

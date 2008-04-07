@@ -199,7 +199,7 @@
 
 				$page->body = $trigger->filter("markup_page_text", $page->body);
 				
-				if (file_exists(THEME_DIR."/content/".$page->url.".php")) 
+				if (file_exists(THEME_DIR."/content/".$page->url.".php"))
 					$theme->load("content/".$page->url.".php", $GLOBALS);
 				else {
 					$theme->load("layout/header.php", $GLOBALS);

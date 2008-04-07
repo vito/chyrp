@@ -135,8 +135,8 @@
 		 */
 		public function stylesheets() {
 			$config = Config::current();
-			$theme = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $user->can("change_settings")) ? 
-			         $_GET['theme'] : 
+			$theme = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $user->can("change_settings")) ?
+			         $_GET['theme'] :
 			         $config->theme ;
 ?>
 <link rel="stylesheet" href="<?php echo $config->url."/themes/".$theme ?>/stylesheets/screen.css" type="text/css" media="screen" charset="utf-8" />
@@ -181,10 +181,10 @@
 			
 			$config = Config::current();
 			$request = ($config->clean_urls) ? rtrim($request, "/") : htmlspecialchars($_SERVER['REQUEST_URI']) ;
-			$append = ($config->clean_urls) ? 
-			          	"/feed" : 
-			          	((count($_GET) == 1 and $_GET['action'] == "index") ? 
-			            	"/?feed" : 
+			$append = ($config->clean_urls) ?
+			          	"/feed" :
+			          	((count($_GET) == 1 and $_GET['action'] == "index") ?
+			            	"/?feed" :
 			          		"&amp;feed") ;
 			
 			$route = Route::current();
@@ -202,7 +202,7 @@
 			extract($scope, EXTR_SKIP);
 		
 			fallback($_GET['action'], "index");
-			$abs_file = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $user->can("change_settings")) ? 
+			$abs_file = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $user->can("change_settings")) ?
 			            THEMES_DIR."/".$_GET['theme']."/".$file :
 			            THEME_DIR."/".$file ;
 		

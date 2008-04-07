@@ -267,7 +267,7 @@ class IXR_Message {
                 $this->params[] = $value;
             }
         }
-    }       
+    }
 }
 
 
@@ -388,7 +388,7 @@ EOD;
                 'specUrl' => 'http://www.xmlrpc.com/discuss/msgReader$1208',
                 'specVersion' => 1
             ),
-        );   
+        );
     }
     function getCapabilities($args) {
         return $this->capabilities;
@@ -587,7 +587,7 @@ class IXR_Error {
       </struct>
     </value>
   </fault>
-</methodResponse> 
+</methodResponse>
 
 EOD;
         return $xml;
@@ -620,7 +620,7 @@ class IXR_Date {
     }
     function parseIso($iso) {
         $this->year = substr($iso, 0, 4);
-        $this->month = substr($iso, 4, 2); 
+        $this->month = substr($iso, 4, 2);
         $this->day = substr($iso, 6, 2);
         $this->hour = substr($iso, 9, 2);
         $this->minute = substr($iso, 12, 2);
@@ -660,27 +660,27 @@ class IXR_IntrospectionServer extends IXR_Server {
             'specVersion' => 1
         );
         $this->addCallback(
-            'system.methodSignature', 
-            'this:methodSignature', 
-            array('array', 'string'), 
+            'system.methodSignature',
+            'this:methodSignature',
+            array('array', 'string'),
             'Returns an array describing the return type and required parameters of a method'
         );
         $this->addCallback(
-            'system.getCapabilities', 
-            'this:getCapabilities', 
-            array('struct'), 
+            'system.getCapabilities',
+            'this:getCapabilities',
+            array('struct'),
             'Returns a struct describing the XML-RPC specifications supported by this server'
         );
         $this->addCallback(
-            'system.listMethods', 
-            'this:listMethods', 
-            array('array'), 
+            'system.listMethods',
+            'this:listMethods',
+            array('array'),
             'Returns an array of available methods on this server'
         );
         $this->addCallback(
-            'system.methodHelp', 
-            'this:methodHelp', 
-            array('string', 'string'), 
+            'system.methodHelp',
+            'this:methodHelp',
+            array('string', 'string'),
             'Returns a documentation string for the specified method'
         );
     }

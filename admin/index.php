@@ -23,21 +23,21 @@
 	
 	# I know I could just do __(ucfirst($whatever)) with these, but
 	# doing it this way lets my gettext scanner live a little easier.
-	$actions = array("write" => __("Write"), 
-	                 "settings" => __("Settings"), 
-	                 "manage" => __("Manage"), 
-	                 "extend" => __("Extend"), 
-	                 "edit" => __("Edit"), 
+	$actions = array("write" => __("Write"),
+	                 "settings" => __("Settings"),
+	                 "manage" => __("Manage"),
+	                 "extend" => __("Extend"),
+	                 "edit" => __("Edit"),
 	                 "delete" => __("Delete"));
-	$subs = array("website" => __("Website"), 
-	              "syndication" => __("Syndication"), 
-	              "routes" => __("Routes"), 
-	              "post" => __("Posts"), 
-	              "page" => __("Pages"), 
-	              "user" => __("Users"), 
-	              "group" => __("Groups"), 
-	              "modules" => __("Modules"), 
-	              "feathers" => __("Feathers"), 
+	$subs = array("website" => __("Website"),
+	              "syndication" => __("Syndication"),
+	              "routes" => __("Routes"),
+	              "post" => __("Posts"),
+	              "page" => __("Pages"),
+	              "user" => __("Users"),
+	              "group" => __("Groups"),
+	              "modules" => __("Modules"),
+	              "feathers" => __("Feathers"),
 	              "themes" => __("Themes"));
 	$actions = $trigger->filter("admin_page_titles", $actions);
 	$subs = $trigger->filter("admin_sub_page_titles", $subs);

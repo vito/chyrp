@@ -22,7 +22,7 @@
 	if (!defined('AJAX')) define('AJAX', false);
 	if (extension_loaded('zlib')) ob_start("ob_gzhandler"); else ob_start();
 	if (!JAVASCRIPT) header("Content-type: text/html; charset=UTF-8");
-
+	
 	# Constant: MAIN_DIR
 	# Absolute path to the Chyrp root
 	define('MAIN_DIR', pathinfo(dirname(__FILE__), PATHINFO_DIRNAME)); # Path for /
@@ -79,7 +79,7 @@
 	
 	if (!count($config->enabled_feathers))
 		error(__("No Feathers"), __("There aren't any feathers enabled."));
-
+	
 	$sql->connect();
 	
 	# File: Helpers
@@ -191,7 +191,7 @@
 	
 	# Load the current user's group's information into Group
 	$group->load();
-		
+	
 	if (!$user->can("view_site") and $action != "process_login" and $action != "login" and $action != "logout")
 		error(__("Access Denied"), __("You are not allowed to view this site."));
 	
@@ -242,7 +242,7 @@
 		if ($action == "view")
 			$private.= ($user->can('view_draft')) ? " or `status` = 'draft'" : "" ;
 		$private.= ")";
-
+		
 		/**
 		 * String: $enabled_feathers
 		 * SQL "where" text for each of the feathers. Prevents posts of a disabled Feather from showing.
@@ -250,8 +250,8 @@
 		$sql = SQL::current();
 		$enabled_feathers = " and (";
 		foreach ($config->enabled_feathers as $key => $the_feather)
-			$enabled_feathers.= ($key == 0) ? 
-			                    "`feather` = ".$sql->quote($config->enabled_feathers[0]) : 
+			$enabled_feathers.= ($key == 0) ?
+			                    "`feather` = ".$sql->quote($config->enabled_feathers[0]) :
 			                    " or `feather` = ".$sql->quote($the_feather) ;
 		$enabled_feathers.= ")";
 		
@@ -264,7 +264,7 @@
 			
 			if (ADMIN and method_exists($admin, $action))
 				$admin->$action();
-				
+			
 			# Call any plugin route functions
 			$trigger->call("route_".$action);
 			

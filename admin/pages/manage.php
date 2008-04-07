@@ -3,9 +3,9 @@
 	
 	$permission = $trigger->filter("manage_permission", $sub);
 	
-	$show_page = ($user->can("edit_".$permission) or $user->can("delete_".$permission));	
+	$show_page = ($user->can("edit_".$permission) or $user->can("delete_".$permission));
 	$show_page = ($trigger->exists("show_admin_manage_page")) ?
-	             $trigger->filter("show_admin_manage_page", array($show_page, $sub), true) : 
+	             $trigger->filter("show_admin_manage_page", array($show_page, $sub), true) :
 	             $show_page ;
 ?>
 		<ul class="sub-nav">

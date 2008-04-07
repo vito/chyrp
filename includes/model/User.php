@@ -9,7 +9,7 @@
 		 * Loads a given user into the <User> class.
 		 * 
 		 * Parameters:
-		 * 	$user_id - The user ID to load. If no user is given, it defaults to the $current_user. 
+		 * 	$user_id - The user ID to load. If no user is given, it defaults to the $current_user.
 		 * 						 If they are not logged in and no user ID is given, nothing happens.
 		 */
 		function load($user_id = null) {
@@ -49,7 +49,7 @@
 			$check_user = $sql->query("select * from `".$sql->prefix."users`
 			                           where
 			                           	`login` = :login and
-			                           	`password` = :password", 
+			                           	`password` = :password",
 			                          array(
 			                          	":login" => $login,
 			                          	":password" => $password
@@ -72,7 +72,7 @@
 			$check_user = $sql->query("select count(`id`) from `".$sql->prefix."users`
 			                           where
 			                           	`id` = :id and
-			                           	`password` = :password", 
+			                           	`password` = :password",
 			                          array(
 			                          	":id" => $_COOKIE['chyrp_user_id'],
 			                          	":password" => $_COOKIE['chyrp_password']
@@ -134,7 +134,7 @@
 			                           	":id" => $group
 			                           ));
 			if (@$check_group->rowCount() == 1 and @$check_group->fetchColumn()) return true;
-			return false; 
+			return false;
 		}
 		
 		/**
@@ -196,7 +196,7 @@
 			$sql = SQL::current();
 			$sql->query("update `".$sql->prefix."users`
 			             set
-			             	`login` = :login, 
+			             	`login` = :login,
 			             	`password` = :password,
 			             	`full_name` = :full_name,
 			             	`email` = :email,

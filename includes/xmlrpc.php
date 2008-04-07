@@ -153,7 +153,7 @@
 					'mt_keywords'       => '',
 					'mt_allow_pings'    => 0,
 					'mt_allow_comments' => 0,
-					'mt_convert_breaks' => '0');				
+					'mt_convert_breaks' => '0');
 				
 				$struct = $trigger->filter('metaWeblog_getPost', array($struct, $post), true);
 				$result[] = $struct;
@@ -306,7 +306,7 @@
 			else
 				$timestamp = $post->created_at;
 			
-			$sql = SQL::current();		
+			$sql = SQL::current();
 			$sql->update("UPDATE `{$sql->prefix}posts`
 			              SET
 			              `yaml` = ?, `created_at` = ?, `updated_at` = ?
@@ -516,7 +516,7 @@
 			} catch (Exception $error) {
 				return new IXR_Error(500, $error->getMessage());
 			}
-		}		
+		}
 	}
 	$server = new XMLRPC();
 ?>

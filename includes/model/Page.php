@@ -93,13 +93,13 @@
 			             	"created_at" => ":created_at"
 			             ),
 			             array(
-			             	":title" => $title, 
+			             	":title" => $title,
 			             	":body" => $body,
-			             	":user_id" => $current_user, 
-			             	":parent_id" => $parent_id, 
-			             	":show_in_list" => $show_in_list, 
-			             	":clean" => $clean, 
-			             	":url" => $url, 
+			             	":user_id" => $current_user,
+			             	":parent_id" => $parent_id,
+			             	":show_in_list" => $show_in_list,
+			             	":clean" => $clean,
+			             	":url" => $url,
 			             	":created_at" => datetime()
 			             ));
 			$id = $sql->db->lastInsertId();
@@ -137,12 +137,12 @@
 			             	"url" => ":url"
 			             ),
 			             array(
-			             	":title" => $title, 
+			             	":title" => $title,
 			             	":body" => $body,
-			             	":parent_id" => $parent_id, 
-			             	":show_in_list" => $show_in_list, 
+			             	":parent_id" => $parent_id,
+			             	":show_in_list" => $show_in_list,
 			             	":updated_at" => datetime(),
-			             	":url" => $url, 
+			             	":url" => $url,
 			             	":id" => $this->id
 			             ));
 			

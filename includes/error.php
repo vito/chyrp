@@ -17,11 +17,11 @@
 				color: #777;
 			}
 			html, body, ul, ol, li,
-			h1, h2, h3, h4, h5, h6, 
-			form, fieldset, a, p { 
-				margin: 0; 
-				padding: 0; 
-				border: 0; 
+			h1, h2, h3, h4, h5, h6,
+			form, fieldset, a, p {
+				margin: 0;
+				padding: 0;
+				border: 0;
 			}
 			.window {
 				width: 300px;

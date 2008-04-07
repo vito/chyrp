@@ -49,8 +49,8 @@
 		                                25);
 	}
 	while ($the_group = $get_groups->fetch()) {
-		$members = ($the_group["id"] == $config->guest_group) ? 
-		           sprintf(__("&#8220;%s&#8221; is the default group for guests"), $the_group["name"]) : 
+		$members = ($the_group["id"] == $config->guest_group) ?
+		           sprintf(__("&#8220;%s&#8221; is the default group for guests"), $the_group["name"]) :
 		           sprintf(_p("&#8220;%s&#8221; has %s member", "&#8220;%s&#8221; has %s members", $group->user_count($the_group["id"])), $the_group["name"], $group->user_count($the_group["id"])) ;
 ?>
 					<div class="box">

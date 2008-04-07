@@ -229,8 +229,8 @@
 			if ($this->connected)
 				return true;
 			try {
-				$this->db = new PDO($this->adapter.":host=".$this->host.";".((isset($this->port)) ? "port=".$this->port.";" : "")."dbname=".$this->database, 
-				                    $this->username, 
+				$this->db = new PDO($this->adapter.":host=".$this->host.";".((isset($this->port)) ? "port=".$this->port.";" : "")."dbname=".$this->database,
+				                    $this->username,
 				                    $this->password, array(PDO::ATTR_PERSISTENT => true));
 				$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				if ($this->adapter == "mysql")
