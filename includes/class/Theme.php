@@ -20,24 +20,27 @@
 		 * 	$home_text - Text for the "Home" link
 		 */
 		public function list_pages($home_link = true, $home_text = null, $main_class = "page_list", $list_class = "page_list_item", $show_order_fields = false) {
+			global $action;
 			fallback($home_text, __("Home"));
 			$sql = SQL::current();
 			$query = $sql->query("select * from `".$sql->prefix."pages` where `show_in_list` = 1 order by `list_order` asc");
 			while ($row = $query->fetch()) {
 				$this->pages[$row["id"]] = array("id" => $row["id"], "title" => $row["title"], "parent" => $row["parent_id"], "url" => $row["url"], "order" => $row["list_order"]);
 			}
-	
-			echo '<ul class="'.$main_class.'">';
+			
+			echo '<ul class="'.$main_class.'">'."\n";
 			
 			$config = Config::current();
-			if ($home_link)
-				echo '<li class="'.$list_class.'"><a href="'.$config->url.'">'.$home_text.'</a></li>';
+			if ($home_link) {
+				$selected = ($action == 'index') ? ' selected' : '';
+				echo '<li class="'.$list_class.$selected.'"><a href="'.$config->url.'">'.$home_text.'</a></li>'."\n";
+			}
 			
 			foreach ($this->pages as $id => $values)
 				if ($values["parent"] == 0)
 					$this->recurse_pages($values["id"], $main_class, $list_class, $show_order_fields);
 			
-			echo "</ul>";
+			echo "</ul>\n";
 		}
 		
 		/**
@@ -51,9 +54,11 @@
 		 * 	<list_pages>
 		 */
 		public function recurse_pages($id, $main_class = "page_list", $list_class = "page_list_item", $show_order_fields = false) {
-			global $pages;
+			global $pages, $action;
 			$route = Route::current();
-			echo '<li class="'.$list_class.'" id="page_list_'.$id.'"><a href="'.$route->url("page/".$this->pages[$id]["url"]."/").'">'.$this->pages[$id]["title"].'</a>';
+			
+			$selected = ($action == 'page' and $_GET['url'] == $this->pages[$id]["url"]) ? ' selected' : '';
+			echo '<li class="'.$list_class.$selected.'" id="page_list_'.$id.'"><a href="'.$route->url("page/".$this->pages[$id]["url"]."/").'">'.$this->pages[$id]["title"].'</a>';
 			
 			if ($show_order_fields)
 				echo ' <input type="text" size="2" name="list_order['.$id.']" value="'.$this->pages[$id]["order"].'" />';
@@ -63,15 +68,15 @@
 			$count = 1;
 			while ($row = $get_children->fetch()) {
 				if ($count == 1)
-					echo '<ul class="'.$main_class.'">';
+					echo "\n".'<ul class="'.$main_class.'">'."\n";
 				
 				$this->recurse_pages($row["id"], $main_class, $list_class, $show_order_fields);
 				
 				if ($count == $get_children->rowCount())
-					echo "</ul>";
+					echo "</ul>\n";
 				$count++;
 			}
-			echo "</li>";
+			echo "</li>\n";
 		}
 		
 		/**
@@ -200,15 +205,15 @@
 		 */
 		public function load($file, $scope = array()) {
 			extract($scope, EXTR_SKIP);
-		
+			
 			fallback($_GET['action'], "index");
 			$abs_file = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $user->can("change_settings")) ?
 			            THEMES_DIR."/".$_GET['theme']."/".$file :
 			            THEME_DIR."/".$file ;
-		
+			
 			if (!file_exists($abs_file))
 				error(__("Theme File Nonexistant"), sprintf(__("Couldn't load file:<br /><br />%s"), $file));
-		
+			
 			$trigger = Trigger::current();
 			if ($trigger->exists("parse_theme_file"))
 				$trigger->call("parse_theme_file", array($abs_file, $scope));
