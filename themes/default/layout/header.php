@@ -5,6 +5,7 @@
 		<title><?php echo $theme->title(); ?></title>
 		<meta name="generator" content="Chyrp" />
 		<link rel="pingback" href="<?php echo $config->url."/includes/xmlrpc.php"; ?>" />
+		<link rel="EditURI" type="application/rsd+xml" href="<?php echo $config->url."/includes/rsd.php"; ?>" />
 		<?php $theme->feeds(); ?>
 		<?php $theme->stylesheets(); ?>
 		<?php $theme->javascripts(); ?>
