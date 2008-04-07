@@ -206,7 +206,7 @@
 			if (isset($this->$setting) and $this->$setting == $value) return false; # No point in changing it
 			
 			# Add the PHP protection!
-			$contents = "<?php header(\"Status: 401\"); exit(\"Access denied.\"); ?>\n";
+			$contents = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
 			
 			# Add the setting
 			$this->yaml[$setting] = $value;
@@ -217,9 +217,7 @@
 			# Generate the new YAML settings
 			$contents.= Spyc::YAMLDump($this->yaml, false, 0);
 			
-			$open = fopen(INCLUDES_DIR."/database.yaml.php", "w");
-			fwrite($open, $contents);
-			fclose($open);
+			file_put_contents(CONFIG_DIR."/database.yaml.php", $contents);
 		}
 		
 		/**
@@ -227,7 +225,7 @@
 		 * Connects to the SQL database.
 		 */
 		public function connect($checking = false) {
-			$this->load(INCLUDES_DIR."/database.yaml.php");
+			$this->load(CONFIG_DIR."/database.yaml.php");
 			if ($this->connected)
 				return true;
 			try {

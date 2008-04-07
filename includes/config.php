@@ -57,9 +57,7 @@
 			# Generate the new YAML settings
 			$contents.= Spyc::YAMLDump($this->yaml, 2, 60);
 			
-			$open = fopen(INCLUDES_DIR."/config.yaml.php", "w");
-			fwrite($open, $contents);
-			fclose($open);
+			file_put_contents(CONFIG_DIR."/config.yaml.php", $contents);
 		}
 		
 		/**
@@ -85,9 +83,7 @@
 			# Generate the new YAML settings
 			$contents.= Spyc::YAMLDump($this->yaml, 2, 60);
 			
-			$open = fopen(INCLUDES_DIR."/config.yaml.php", "w");
-			fwrite($open, $contents);
-			fclose($open);
+			file_put_contents(CONFIG_DIR."/config.yaml.php", $contents);
 		}
 		
 		public function get_feathers() {
