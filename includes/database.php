@@ -250,16 +250,20 @@
 		 * Executes a query and increases <SQL->$queries>.
 		 * If the query results in an error, it will die and show the error.
 		 */
-		public function query($query, $params = array()) {
+		public function query($query, $params = array(), $throw_exceptions = false) {
 			$this->queries++;
 			try {
 				$q = $this->db->prepare($query);
 				$result = $q->execute($params);
 				if (!$result) throw PDOException();
 			} catch (PDOException $error) {
+				$message = preg_replace("/[A-Z]+\[[0-9]+\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
+				
+				if ($throw_exception)
+					throw new Exception($message);
+				
 				print $query;
 				print_r(debug_backtrace());
-				$message = preg_replace("/[A-Z]+\[[0-9]+\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
 				error(__("Database Error"), $message);
 				//throw $error;
 			}
