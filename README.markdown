@@ -43,7 +43,7 @@ Installing Extensions
 =====================
 To install extensions, you have to determine what type of extension it is. It can be a *module*, a *feather*, a *theme*, or a *localization*. There's a different setup process for each type.
 
-**Feathers**
+## Feathers
 Feathers add new *post types* to Chyrp. Post types determine what kind of media you can display in your blog.
 
 1. Download and unzip the feather
@@ -54,7 +54,7 @@ Feathers add new *post types* to Chyrp. Post types determine what kind of media 
 
 You can now use the feather by navigating to the Write tab and choosing the feather you uploaded.
 
-**Modules**
+## Modules
 Installing modules is quick, easy, and painless with Chyrp. They add extra functionality to Chyrp.
 
 1. Download and unzip the module.
@@ -64,7 +64,7 @@ Installing modules is quick, easy, and painless with Chyrp. They add extra funct
 
 The module is now installed and is ready for action. Keep in mind that some modules may conflict with each other if they do similar tasks.
 
-**Themes**
+## Themes
 Chyrp makes applying themes to your blog easy. With a single click you can change the look of your blog.
 
 1. Download and unzip the theme.
@@ -75,7 +75,7 @@ Chyrp makes applying themes to your blog easy. With a single click you can chang
 
 Chyrp can even show you what the theme will look like before anyone else sees it. In the Themes sub tab, click on the Preview button below the theme screenshot to see the theme.
 
-**Localization**
+## Localization
 Chyrp is multilingual! If your first language isn't English, you can apply a new localization to Chyrp to make it speak your language.
 
 1. Download and unzip the localization.
