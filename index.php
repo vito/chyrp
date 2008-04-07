@@ -16,6 +16,7 @@
 			$shown_dates = array();
 			foreach ($get_posts->fetchAll() as $post) {
 				$post = new Post(null, array("read_from" => $post));
+				if (!$post->theme_exists()) continue;
 			
 				$last = ($count == $get_posts->rowCount());
 				$date_shown = in_array(when("m-d-Y", $post->created_at), $shown_dates);
@@ -37,7 +38,10 @@
 			
 			if ($action == "view")
 				fallback($post, new Post(null, array("where" => "`url` = :url", "params" => array(":url" => $_GET['url']))));
-		
+
+			if (!$post->theme_exists())
+				error(__("Error"), __("The feather theme file for this post does not exist. The post cannot be displayed."));
+
 			$theme->title = $post->title();
 			$theme->load("layout/header.php", $GLOBALS);
 
@@ -118,6 +122,7 @@
 				$shown_dates = array();
 				foreach ($get_posts->fetchAll() as $post) {
 					$post = new Post($post['id']);
+					if (!$post->theme_exists()) continue;
 			
 					$last = ($count == $get_posts->rowCount());
 					$date_shown = in_array(when("m-d-Y", $post->created_at), $shown_dates);

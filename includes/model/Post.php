@@ -495,6 +495,14 @@
 		}
 		
 		/**
+		 * Function: theme_exists
+		 * Checks if the current post's feather theme file exists.
+		 */
+		public function theme_exists() {
+			return file_exists(THEME_DIR."/content/posts/".$this->feather.".php");
+		}
+
+		/**
 		 * Function: parse
 		 * Parses the passed XML and loads the tags and values into <Post>.
 		 * 
