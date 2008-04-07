@@ -1,5 +1,3 @@
-Chyrp
-=====
 Chyrp is a blogging engine designed to be lightweight while retaining functionality. It is driven by PHP and MySQL, and has a great standard theme and robust module engine. You can personalize and modify it any way you want.
 
 All of your content is powered by a unique Feathers system that allows Chyrp to be whatever you want it to be. You can post anything and everything, or just stick to the default Text feather and run a regular blog. Chyrp destroys the fine line between a blog and a tumblelog.
