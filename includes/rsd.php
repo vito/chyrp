@@ -9,8 +9,8 @@
 		<engineLink>http://chyrp.net/</engineLink>
 		<homePageLink><?php echo $config->url; ?></homePageLink>
 		<apis>
-			<api name="Moveable Type" preferred="false" apiLink="<?php echo $config->url; ?>/includes/xmlrpc.php" blogID="1" />
-			<api name="MetaWeblog" preferred="true" apiLink="<?php echo $config->url; ?>/includes/xmlrpc.php" blogID="1" />
+			<api name="Moveable Type" preferred="true" apiLink="<?php echo $config->url; ?>/includes/xmlrpc.php" blogID="1" />
+			<api name="MetaWeblog" preferred="false" apiLink="<?php echo $config->url; ?>/includes/xmlrpc.php" blogID="1" />
 		</apis>
 	</service>
 </rsd>

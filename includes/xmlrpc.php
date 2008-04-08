@@ -1,5 +1,6 @@
 <?php
 	require_once "common.php";
+	error_reporting(E_ALL);
 	require_once INCLUDES_DIR."/lib/ixr.php";
 	
 	/**
@@ -148,14 +149,15 @@
 					'description'       => $post->body,
 					'link'              => $post->url(),
 					'permaLink'         => $post->url(),
+					'mt_basename'       => $post->url,
 					'mt_excerpt'        => '',
 					'mt_text_more'      => '',
 					'mt_keywords'       => '',
-					'mt_allow_pings'    => 0,
+					'mt_allow_pings'    => (int) $config->enable_trackbacking,
 					'mt_allow_comments' => 0,
 					'mt_convert_breaks' => '0');
 				
-				$struct = $trigger->filter('metaWeblog_getPost', array($struct, $post), true);
+				list($struct, $post) = $trigger->filter('metaWeblog_getPost', array($struct, $post), true);
 				$result[] = $struct;
 			}
 			
@@ -186,9 +188,7 @@
 			$file = unique_filename(trim($args[3]['name'], '/'));
 			$path = MAIN_DIR.'/upload/'.$file;
 			
-			$result = file_put_contents($path, $args[3]['bits']);
-			
-			if ($result === false)
+			if (file_put_contents($path, $args[3]['bits']) === false)
 				return new IXR_Error(500, __("Failed to write file."));
 			
 			$config = Config::current();
@@ -208,6 +208,7 @@
 			if (($auth = $this->auth($args[1], $args[2])) instanceof IXR_Error)
 				return $auth;
 			
+			$config = Config::current();
 			$trigger = Trigger::current();
 			$post = new Post($args[0], array("filter" => false));
 			
@@ -219,14 +220,15 @@
 				'description'       => $post->body,
 				'link'              => $post->url(),
 				'permaLink'         => $post->url(),
+				'mt_basename'       => $post->url,
 				'mt_excerpt'        => '',
 				'mt_text_more'      => '',
 				'mt_keywords'       => '',
-				'mt_allow_pings'    => 0,
+				'mt_allow_pings'    => (int) $config->enable_trackbacking,
 				'mt_allow_comments' => 0,
 				'mt_convert_breaks' => '0');
 			
-			$struct = $trigger->filter('metaWeblog_getPost', array($struct, $post), true);
+			list($struct, $post) = $trigger->filter('metaWeblog_getPost', array($struct, $post), true);
 			return array($struct);
 		}
 
@@ -239,18 +241,14 @@
 				return $auth;
 			else if (empty($args[3]['description']))
 				return new IXR_Error(400, __("Body can't be blank."));
-
+			
 			$yaml = Spyc::YAMLDump(array("title" => $args[3]['title'], "body" => $args[3]['description']));
-			$clean = sanitize($args[3]['title']);
+			
+			$clean = sanitize(fallback($args[3]['mt_basename'], $args[3]['title'], true));
 			$url = Post::check_url($clean);
 			
-			if (array_key_exists('dateCreated', $args[3])) {
-				$args[3]['dateCreated'] = date('Z') + $args[3]['dateCreated']->getTimestamp();
-				$timestamp = date('Y-m-d H:i:s', $args[3]['dateCreated']);
-			}
-			else
-				$timestamp = datetime();
-			
+			$timestamp = fallback($this->convertDateCreated($args[3]), datetime(), true);
+						
 			try {
 				$sql = SQL::current();
 				
@@ -298,24 +296,21 @@
 			
 			$post = new Post($args[0]);
 			$yaml = Spyc::YAMLDump(array("title" => $args[3]['title'], "body" => $args[3]['description']));
+
+			$clean = sanitize(fallback($args[3]['mt_basename'], $args[3]['title'], true));
 			
-			if (array_key_exists('dateCreated', $args[3])) {
-				$args[3]['dateCreated'] = date('Z') + $args[3]['dateCreated']->getTimestamp();
-				$timestamp = date('Y-m-d H:i:s', $args[3]['dateCreated']);
-			}
-			else
-				$timestamp = $post->created_at;
+			$timestamp = fallback($this->convertDateCreated($args[3]), $post->created_at, true);
 			
 			$sql = SQL::current();
-			$sql->update("UPDATE `{$sql->prefix}posts`
-			              SET
-			              `yaml` = ?, `created_at` = ?, `updated_at` = ?
-			              WHERE
-			              `id` = ?",
-			              array($yaml, $timestamp, datetime(), $args[0]), true);
+			$sql->query("UPDATE `{$sql->prefix}posts`
+			             SET
+			             `yaml` = ?, `clean` = ?, `url` = ?, `created_at` = ?, `updated_at` = ?
+			             WHERE
+			             `id` = ?",
+			             array($yaml, $clean, $clean, $timestamp, datetime(), $args[0]), true);
 			
 			$trigger = Trigger::current();
-			$trigger->call('metaWeblog_editPost', array($args[3], $args[0]), true);
+			$trigger->call('metaWeblog_editPost', array($args[0], $args[3]), true);
 			
 			return true;
 		}
@@ -325,7 +320,7 @@
 		 * Deletes a specified post.
 		 */
 		public function blogger_deletePost($args) {
-			if (($auth = $this->auth($args[1], $args[2], 'delete_post')) instanceof IXR_Error)
+			if (($auth = $this->auth($args[2], $args[3], 'delete_post')) instanceof IXR_Error)
 				return $auth;
 			else if (!Post::exists($args[1]))
 				return new IXR_Error(404, __("Fake post ID, or nonexistant post."));
@@ -433,7 +428,8 @@
 			
 			$trigger = Trigger::current();
 			$categories = array();
-			return $trigger->filter('mt_getPostCategories', array($args[0], $categories), true);
+			list($args[0], $categories) = $trigger->filter('mt_getPostCategories', array($args[0], $categories), true);
+			return $categories;
 		}
 
 		/**
@@ -487,6 +483,19 @@
 			}
 			
 			return $result->fetchAll(PDO::FETCH_ASSOC);
+		}
+		
+		/**
+		 * Function: convertDateCreated
+		 * Converts an IXR_Date (in $args['dateCreated']) to SQL date format.
+		 */
+		private function convertDateCreated($args) {
+			if (!array_key_exists('dateCreated', $args))
+				return null;
+			else {
+				$args['dateCreated'] = date('Z') + $args['dateCreated']->getTimestamp();
+				return date('Y-m-d H:i:s', $args['dateCreated']);
+			}
 		}
 		
 		/**
