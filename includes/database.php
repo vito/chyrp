@@ -217,7 +217,7 @@
 			# Generate the new YAML settings
 			$contents.= Spyc::YAMLDump($this->yaml, false, 0);
 			
-			file_put_contents(CONFIG_DIR."/database.yaml.php", $contents);
+			file_put_contents(INCLUDES_DIR."/database.yaml.php", $contents);
 		}
 		
 		/**
@@ -225,7 +225,7 @@
 		 * Connects to the SQL database.
 		 */
 		public function connect($checking = false) {
-			$this->load(CONFIG_DIR."/database.yaml.php");
+			$this->load(INCLUDES_DIR."/database.yaml.php");
 			if ($this->connected)
 				return true;
 			try {

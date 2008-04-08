@@ -26,15 +26,12 @@
 	# Constant: MAIN_DIR
 	# Absolute path to the Chyrp root
 	define('MAIN_DIR', pathinfo(dirname(__FILE__), PATHINFO_DIRNAME)); # Path for /
-	# Constant: CONFIG_DIR
-	# Absolute path to /config
-	define('CONFIG_DIR', MAIN_DIR."/config");
 	# Constant: INCLUDES_DIR
 	# Absolute path to /includes
-	define('INCLUDES_DIR', dirname(__FILE__)); # Path for /includes/
+	define('INCLUDES_DIR', MAIN_DIR."/includes"); # Path for /includes/
 	
 	# Not installed?
-	if (!file_exists(CONFIG_DIR."/config.yaml.php") or !file_exists(CONFIG_DIR."/database.yaml.php")) {
+	if (!file_exists(INCLUDES_DIR."/config.yaml.php") or !file_exists(INCLUDES_DIR."/database.yaml.php")) {
 		header("Location: install.php");
 		exit;
 	}
@@ -54,7 +51,7 @@
 	require_once INCLUDES_DIR."/lib/l10n.php";
 	
 	# Load the configuration settings
-	$config->load(CONFIG_DIR."/config.yaml.php");
+	$config->load(INCLUDES_DIR."/config.yaml.php");
 	
 	# Constant: MODULES_DIR
 	# Absolute path to /modules

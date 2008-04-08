@@ -1,6 +1,5 @@
 <?php
 	define('BASE_DIR', dirname(__FILE__));
-	define('CONFIG_DIR', BASE_DIR."/config");
 	define('INCLUDES_DIR', BASE_DIR."/includes");
 	define('JAVASCRIPT', false);
 	ini_set('error_reporting', E_ALL);
@@ -35,9 +34,9 @@
 	$errors = array();
 	$installed = false;
 	
-	if (file_exists(CONFIG_DIR."/config.yaml.php") and file_exists(CONFIG_DIR."/database.yaml.php") and file_exists(BASE_DIR."/.htaccess")) {
-		$sql->load(CONFIG_DIR."/database.yaml.php");
-		$config->load(CONFIG_DIR."/config.yaml.php");
+	if (file_exists(INCLUDES_DIR."/config.yaml.php") and file_exists(INCLUDES_DIR."/database.yaml.php") and file_exists(BASE_DIR."/.htaccess")) {
+		$sql->load(INCLUDES_DIR."/database.yaml.php");
+		$config->load(INCLUDES_DIR."/config.yaml.php");
 		
 		if ($sql->connect(true) and !empty($config->url) and $sql->query("select count(`id`) from `".$sql->prefix."users`")->fetchColumn())
 			error(__("Already Installed"), __("Chyrp is already correctly installed and configured."));
@@ -46,8 +45,8 @@
 		if (!is_writable(BASE_DIR))
 			$errors[] = sprintf(__("STOP! Before you go any further, you must create a .htaccess file in Chyrp's install directory and put this in it:\n<pre>%s</pre>."), htmlspecialchars($htaccess));
 		
-		if (!is_writable(CONFIG_DIR))
-			$errors[] = __("Chyrp's config directory is not writable by the server.");
+		if (!is_writable(INCLUDES_DIR))
+			$errors[] = __("Chyrp's includes directory is not writable by the server.");
 	}
 	
 	if (!empty($_POST)) {
@@ -278,7 +277,7 @@
 			$config->set("enabled_feathers", array("text"));
 			$config->set("routes", array());
 			
-			$config->load(CONFIG_DIR."/config.yaml.php");
+			$config->load(INCLUDES_DIR."/config.yaml.php");
 			
 			if (!$sql->query("select `id` from `".$sql->prefix."users` where `login` = :login", array(":login" => $_POST['login']))->rowCount())
 				$sql->query("insert into `".$sql->prefix."users` set 
