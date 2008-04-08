@@ -228,21 +228,21 @@
 				error(__("Error"), __("Please enter a username for your account."));
 			
 			$sql = SQL::current();
-			$check_user = $sql->query("select `id` from `".$sql->prefix."users`
+			$check_user = $sql->query("select count(`id`) from `".$sql->prefix."users`
 			                           where `login` = :login",
 			                          array(
 			                          	':login' => $_POST['login']
 			                          ));
-			if ($check_user->rowCount() == 1)
+			if ($check_user->fetchColumn())
 				error(__("Error"), __("That username is already in use."));
 			if (empty($_POST['password1']) or empty($_POST['password2']))
 				error(__("Error"), __("Password cannot be blank."));
 			if (empty($_POST['email']))
-				error(__("Error"), __("Password cannot be blank."));
+				error(__("Error"), __("E-mail address cannot be blank."));
 			if ($_POST['password1'] != $_POST['password2'])
 				error(__("Error"), __("Passwords do not match."));
 			if (!eregi("^[[:alnum:]][a-z0-9_.-\+]*@[a-z0-9.-]+\.[a-z]{2,6}$",$_POST['email']))
-				error(__("Error"), __("E-Mail address cannot be blank."));
+				error(__("Error"), __("Unsupported e-mail address."));
 	
 			$user->add($_POST['login'], $_POST['password1'], $_POST['email']);
 			

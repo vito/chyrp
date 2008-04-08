@@ -154,18 +154,20 @@
 		 * See Also:
 		 * 	<update>
 		 */
-		function add($login, $password, $email) {
+		function add($login, $password, $email, $full_name = '', $website = '', $group_id = null) {
 			$config = Config::current();
 			$sql = SQL::current();
 			$sql->query("insert into `".$sql->prefix."users`
-			             (`login`, `password`, `email`, `group_id`, `joined_at`)
+			             (`login`, `password`, `email`, `full_name`, `website`, `group_id`, `joined_at`)
 			             values
-			             (:login, :password, :email, :group_id, :joined_at)",
+			             (:login, :password, :email, :full_name, :website, :group_id, :joined_at)",
 			            array(
 			            	":login" => strip_tags($login),
 			            	":password" => md5($password),
 			            	":email" => strip_tags($email),
-			            	":group_id" => $config->default_group,
+			            	":full_name" => strip_tags($full_name),
+			            	":website" => strip_tags($website),
+			            	":group_id" => ($group_id) ? intval($group_id) : $config->default_group,
 			            	":joined_at" => datetime()
 			            ));
 			$id = $sql->db->lastInsertId();
@@ -268,6 +270,7 @@
 			$config = Config::current();
 			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=user&amp;id='.$user_id.'" title="Delete" class="user_delete_link" id="user_delete_'.$user_id.'">'.$text.'</a>'.$after;
 		}
+		
 		function get_viewable_statuses($draft = false) {
 			$statuses = array('public');
 			if ($this->logged_in()) $statuses[] = 'registered_only';

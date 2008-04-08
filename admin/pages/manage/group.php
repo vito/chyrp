@@ -23,7 +23,7 @@
 					</form>
 					<br class="clear" />
 					<br />
-					<h2>Groups</h2>
+					<h2><?php echo __("Groups"); ?></h2>
 <?php
 	if (!empty($_GET['query'])) {
 		$id = $sql->select("users",
@@ -85,7 +85,7 @@
 <?php if ($paginate->prev_page() or $paginate->next_page()): ?>
 					<br class="clear" />
 <?php endif; ?>
-<?php else: # (isset($_GET['add'])) ?>
+<?php else: # (isset($_GET['new'])) ?>
 				<h1><?php echo __("New Group"); ?></h1>
 				<form class="settings" id="new_group" action="<?php url("add_group"); ?>" method="post" accept-charset="utf-8">
 					<h4><?php echo __("Group Settings"); ?></h4>
@@ -116,4 +116,4 @@
 					</p>
 					<input type="hidden" name="hash" value="<?php echo $config->secure_hashkey; ?>" id="hash" />
 				</form>
-<?php endif; # (isset($_GET['add'])) ?>
+<?php endif; # (isset($_GET['new'])) ?>

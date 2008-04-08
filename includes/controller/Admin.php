@@ -44,6 +44,46 @@
 		}
 		
 		/**
+		 * Function: add_user
+		 * Add a user when the form is submitted. Shows an error if the user lacks permissions.
+		 */
+		public function add_user() {
+			global $user;
+			if (empty($_POST)) return;
+			$config = Config::current();
+			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
+			if (!$user->can("edit_user"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to edit users."));
+			
+			if (empty($_POST['login']))
+				error(__("Error"), __("Please enter a username for your account."));
+			
+			$sql = SQL::current();
+			$check_user = $sql->query("select count(`id`) from `".$sql->prefix."users`
+			                           where `login` = :login",
+			                          array(
+			                          	':login' => $_POST['login']
+			                          ));
+			if ($check_user->fetchColumn())
+				error(__("Error"), __("That username is already in use."));
+			
+			if (empty($_POST['password1']) or empty($_POST['password2']))
+				error(__("Error"), __("Password cannot be blank."));
+			if (empty($_POST['email']))
+				error(__("Error"), __("E-mail address cannot be blank."));
+			if ($_POST['password1'] != $_POST['password2'])
+				error(__("Error"), __("Passwords do not match."));
+			if (!eregi("^[[:alnum:]][a-z0-9_.-\+]*@[a-z0-9.-]+\.[a-z]{2,6}$",$_POST['email']))
+				error(__("Error"), __("Unsupported e-mail address."));
+			
+			$user->add($_POST['login'], $_POST['password1'], $_POST['email'], $_POST['full_name'], $_POST['website'], $_POST['group_id']);
+			
+			$route = Route::current();
+			$route->redirect("/admin/?action=manage&sub=user&added");
+		}
+		
+		/**
 		 * Function: add_group
 		 * Adds a group when the form is submitted. Shows an error if the user lacks permissions.
 		 */
@@ -167,18 +207,18 @@
 			if (empty($_GET['id']))
 				error(__("No ID Specified"), sprintf(__("An ID is required to edit a %s."), $type));
 			
-			$sql = SQL::current();
-			if ($type != "group" and $type != "post" and $type != "page") {
-				$get_it = $sql->query("select * from `".$sql->prefix.$type."s`
-				                       where `id` = :id",
-				                      array(
-				                      	":id" => $_GET['id']
-				                      ));
-				$temp_array = $get_it->fetch();
-				foreach ($temp_array as $key => $val)
-					if (!is_int($key))
-						$$type->$key = $val;
-			}
+			// $sql = SQL::current();
+			// if ($type != "group" and $type != "post" and $type != "page") {
+			// 	$get_it = $sql->query("select * from `".$sql->prefix.$type."s`
+			// 	                       where `id` = :id",
+			// 	                      array(
+			// 	                      	":id" => $_GET['id']
+			// 	                      ));
+			// 	$temp_array = $get_it->fetch();
+			// 	foreach ($temp_array as $key => $val)
+			// 		if (!is_int($key))
+			// 			$$type->$key = $val;
+			// }
 			
 			if ($type == "post")
 				$post = new Post($_GET['id']);
@@ -199,18 +239,18 @@
 			if (empty($_GET['id']))
 				error(__("No ID Specified"), sprintf(__("An ID is required to delete a %s."), $type));
 			
-			$sql = SQL::current();
-			if ($type != "post" and $type != "page") {
-				$get_it = $sql->query("select * from `".$sql->prefix.$type."s`
-				                       where `id` = :id",
-				                      array(
-				                      	":id" => $_GET['id']
-				                      ));
-				$temp_array = $get_it->fetch();
-				foreach ($temp_array as $key => $val)
-					if (!is_int($key))
-						$$type->$key = $val;
-			}
+			// $sql = SQL::current();
+			// if ($type != "post" and $type != "page") {
+			// 	$get_it = $sql->query("select * from `".$sql->prefix.$type."s`
+			// 	                       where `id` = :id",
+			// 	                      array(
+			// 	                      	":id" => $_GET['id']
+			// 	                      ));
+			// 	$temp_array = $get_it->fetch();
+			// 	foreach ($temp_array as $key => $val)
+			// 		if (!is_int($key))
+			// 			$$type->$key = $val;
+			// }
 			
 			if ($type == "post")
 				$post = new Post($_GET['id']);
