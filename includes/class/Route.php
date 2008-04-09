@@ -115,7 +115,7 @@
 		public function determine_action() {
 			global $plural_feathers, $request, $grab_page;
 			$config = Config::current();
-			if (ADMIN or JAVASCRIPT or AJAX or !$config->clean_urls) return;
+			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls) return;
 
 			# Parse the current URL and extract information.
 			$parse = parse_url($config->url);

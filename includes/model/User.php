@@ -133,8 +133,7 @@
 			                           array(
 			                           	":id" => $group
 			                           ));
-			if (@$check_group->rowCount() == 1 and @$check_group->fetchColumn()) return true;
-			return false;
+			return ($check_group->fetchAll()) ? true : false;
 		}
 		
 		/**

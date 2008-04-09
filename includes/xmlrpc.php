@@ -1,6 +1,7 @@
 <?php
+	define('XML_RPC', true);
+	error_reporting(E_ALL ^ E_NOTICE);
 	require_once "common.php";
-	error_reporting(E_ALL);
 	require_once INCLUDES_DIR."/lib/ixr.php";
 	
 	/**
@@ -29,7 +30,8 @@
 				//'mt.getTrackbackPings'      => 'this:mt_getTrackbackPings',
 				'mt.getPostCategories'      => 'this:mt_getPostCategories',
 				'mt.setPostCategories'      => 'this:mt_setPostCategories',
-				//'mt.supportedTextFilters'   => 'this:mt_supportedTextFilters',
+				'mt.supportedTextFilters'   => 'this:mt_supportedTextFilters',
+				// 'test' => 'this:test',
 				'mt.supportedMethods'       => 'this:listMethods');
 			
 			// $trigger = Trigger::current();
@@ -450,11 +452,11 @@
 
 		/**
 		 * Function: mt_supportedTextFilters
-		 * Retrieve information about supported text formatting modules.
+		 * Returns an empty array, as this is not applicable for Chyrp.
 		 */
-		// public function mt_supportedTextFilters() {
-		// 	return array();
-		// }
+		public function mt_supportedTextFilters() {
+			return array();
+		}
 
 		/**
 		 * Function: getRecentPosts
@@ -478,11 +480,10 @@
 				                       `created_at` DESC,
 				                       `id` DESC
 				                       LIMIT {$limit}", array(), true);
+				return $result->fetchAll(PDO::FETCH_ASSOC);
 			} catch (Exception $error) {
 				return new IXR_Error(500, $error->getMessage());
 			}
-			
-			return $result->fetchAll(PDO::FETCH_ASSOC);
 		}
 		
 		/**
@@ -506,26 +507,37 @@
 			$sql = SQL::current();
 			
 			try {
-				$result = $sql->query("SELECT `group_id`
-				                       FROM `{$sql->prefix}users`
-				                       WHERE `login` = ? and `password` = ?
-				                       LIMIT 1",
-				                       array($login, md5($password)), true);
-				
-				if (!($group_id = $result->fetchColumn()))
-					return new IXR_Error(401, __("Login incorrect."));
-
-				$result = $sql->query("SELECT ?
+				$result = $sql->query("SELECT `{$permission}`
 				                       FROM `{$sql->prefix}groups`
-				                       WHERE `id` = ?
+				                       WHERE `id` =
+				                       (
+				                         SELECT  `group_id`
+				                         FROM `{$sql->prefix}users`
+				                         WHERE `login` = ? AND `password` = ?
+				                         LIMIT 1
+				                       )
 				                       LIMIT 1",
-				                       array($permission, $group_id), true);
-
-				return ($result->fetchColumn()) ? true : new IXR_Error(403, __("You don't have permission."));
+				                       array($login, md5($password)), true); // $group[0]->id
+				
+				$result = $result->fetchAll(PDO::FETCH_OBJ);
+				
+				if (@$result[0]->add_post == 1)
+					return true;
+				else
+					return new IXR_Error(403, __("You don't have permission."));
 			} catch (Exception $error) {
 				return new IXR_Error(500, $error->getMessage());
 			}
 		}
+		
+		// function test ($args) {
+		// 	if (($auth = $this->auth($args[0], $args[1])) instanceof IXR_Error)
+		// 		return $auth;
+		// 	
+		// 	return $auth;
+		// 	// $sql = SQL::current();
+		// 	// return $sql->queries;
+		// }
 	}
 	$server = new XMLRPC();
 ?>

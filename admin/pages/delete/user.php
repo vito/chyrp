@@ -1,10 +1,16 @@
+<?php
+
+$delete_user = $sql->query("select * from `{$sql->prefix}users` where id = :id", array(":id" => $_GET['id']));
+$delete_user = $delete_user->fetchObject();
+
+?>
 						<form class="delete" action="<?php url("delete_user_real"); ?>" method="post" accept-charset="utf-8">
 							<blockquote class="noitalics">
-								<h4><?php echo $user->login; ?></h4>
+								<h4><?php echo $delete_user->login; ?></h4>
 								<ul>
-									<li><strong><?php echo __("Real Name:"); ?></strong> <?php echo $user->full_name; ?></li>
-									<li><strong><?php echo __("E-Mail:"); ?></strong> <a href="mailto:<?php echo $user->email; ?>"><?php echo $user->email; ?></a></li>
-									<li><strong><?php echo __("Website:"); ?></strong> <a href="<?php echo $user->website; ?>"><?php echo $user->website; ?></a></li>
+									<li><strong><?php echo __("Real Name:"); ?></strong> <?php echo $delete_user->full_name; ?></li>
+									<li><strong><?php echo __("E-Mail:"); ?></strong> <a href="mailto:<?php echo $delete_user->email; ?>"><?php echo $delete_user->email; ?></a></li>
+									<li><strong><?php echo __("Website:"); ?></strong> <a href="<?php echo $delete_user->website; ?>"><?php echo $delete_user->website; ?></a></li>
 									<?php $trigger->call("user_delete_list"); ?>
 								</ul>
 							</blockquote>

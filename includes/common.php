@@ -20,8 +20,9 @@
 	if (!defined('JAVASCRIPT')) define('JAVASCRIPT', false);
 	if (!defined('ADMIN')) define('ADMIN', false);
 	if (!defined('AJAX')) define('AJAX', false);
+	if (!defined('XML_RPC')) define('XML_RPC', false);
 	if (extension_loaded('zlib')) ob_start("ob_gzhandler"); else ob_start();
-	if (!JAVASCRIPT) header("Content-type: text/html; charset=UTF-8");
+	if (!JAVASCRIPT and !XML_RPC) header("Content-type: text/html; charset=UTF-8");
 	
 	# Constant: MAIN_DIR
 	# Absolute path to the Chyrp root
@@ -71,7 +72,7 @@
 	
 	header("X-Pingback: ".$config->url."/includes/xmlrpc.php");
 	
-	if (!ADMIN and !JAVASCRIPT and strpos($_SERVER['REQUEST_URI'], "?"))
+	if (!ADMIN and !JAVASCRIPT and !XML_RPC and strpos($_SERVER['REQUEST_URI'], "?"))
 		$config->clean_urls = false;
 	
 	if (!count($config->enabled_feathers))
@@ -176,21 +177,38 @@
 	$route->determine_action();
 	
 	$action = (isset($_GET['action'])) ? strip_tags($_GET['action']) : "index" ;
+
+	if (XML_RPC)
+		$action = "XML-RPC";	
+	else {
+		/**
+		 * Integer: $current_user
+		 * The current user's ID. If not logged in, defaults to 0.
+		 */
+		$current_user = (int) fallback($_COOKIE['chyrp_user_id'], 0, true);
+		
+		# Load the current user's information into User
+		$user->load();
+		
+		# Load the current user's group's information into Group
+		$group->load();
 	
-	/**
-	 * Integer: $current_user
-	 * The current user's ID. If not logged in, defaults to 0.
-	 */
-	$current_user = (int) fallback($_COOKIE['chyrp_user_id'], 0, true);
-	
-	# Load the current user's information into User
-	$user->load();
-	
-	# Load the current user's group's information into Group
-	$group->load();
-	
-	if (!$user->can("view_site") and $action != "process_login" and $action != "login" and $action != "logout")
-		error(__("Access Denied"), __("You are not allowed to view this site."));
+		/**
+		 * Function: error
+		 * Shows an error message.
+		 * 
+		 * Parameters:
+		 * 	$title - The title for the error dialog.
+		 * 	$body - The message for the error dialog.
+		 */
+		function error($title, $body) {
+			require (defined('THEME_DIR') and file_exists(THEME_DIR."/content/error.php")) ? THEME_DIR."/content/error.php" : INCLUDES_DIR."/error.php" ;
+			exit;
+		}
+		
+		if (!$user->can("view_site") and $action != "process_login" and $action != "login" and $action != "logout")
+			error(__("Access Denied"), __("You are not allowed to view this site."));
+	}
 	
 	# Load the translation engine
 	load_translator("chyrp", INCLUDES_DIR."/locale/".$config->locale.".mo");
@@ -204,22 +222,9 @@
 	if (file_exists(THEME_DIR."/locale/".$config->locale.".mo"))
 		load_translator("theme", THEME_DIR."/locale/".$config->locale.".mo");
 	
-	/**
-	 * Function: error
-	 * Shows an error message.
-	 * 
-	 * Parameters:
-	 * 	$title - The title for the error dialog.
-	 * 	$body - The message for the error dialog.
-	 */
-	function error($title, $body) {
-		require (defined('THEME_DIR') and file_exists(THEME_DIR."/content/error.php")) ? THEME_DIR."/content/error.php" : INCLUDES_DIR."/error.php" ;
-		exit;
-	}
-	
 	$trigger->call("runtime");
 	
-	if (!JAVASCRIPT) {
+	if (!JAVASCRIPT and !XML_RPC) {
 		/**
 		 * Boolean: $is_feed
 		 * Whether they're viewing the feed or not.
