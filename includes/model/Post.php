@@ -268,14 +268,17 @@
 		 */
 		static function exists($post_id) {
 			$sql = SQL::current();
-			$check = $sql->select("posts",
-			                     "id",
-			                     "`id` = :id",
-			                     "id",
-			                     array(
-			                     	':id' => $post_id
-			                     ));
-			return ($check->rowCount() == 1);
+			$result = $sql->query("select count(`id`)
+			                       from `{$sql->prefix}posts`
+			                       where `id` = :id limit 1",
+			                       array(
+			                          ':id' => $post_id
+			                       ));
+			
+			$count = $result->fetchColumn();
+			$result->closeCursor();
+			
+			return ($count == 1);
 		}
 		
 		/**

@@ -257,7 +257,7 @@
 			} catch (PDOException $error) {
 				$message = preg_replace("/[A-Z]+\[[0-9]+\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
 				
-				if ($throw_exceptions)
+				if (XML_RPC or $throw_exceptions)
 					throw new Exception($message);
 				
 				print $query;

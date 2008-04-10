@@ -13,7 +13,6 @@
 		 * Registers the various XMLRPC methods.
 		 */
 		public function XMLRPC() {
-			# http://www.sixapart.com/developers/xmlrpc/
 			$methods = array(
 				'pingback.ping' => 'this:pingback_ping',
 				'metaWeblog.getRecentPosts' => 'this:metaWeblog_getRecentPosts',
@@ -27,15 +26,13 @@
 				'blogger.getUserInfo'       => 'this:blogger_getUserInfo',
 				'mt.getRecentPostTitles'    => 'this:mt_getRecentPostTitles',
 				'mt.getCategoryList'        => 'this:mt_getCategoryList',
-				//'mt.getTrackbackPings'      => 'this:mt_getTrackbackPings',
 				'mt.getPostCategories'      => 'this:mt_getPostCategories',
 				'mt.setPostCategories'      => 'this:mt_setPostCategories',
 				'mt.supportedTextFilters'   => 'this:mt_supportedTextFilters',
-				// 'test' => 'this:test',
 				'mt.supportedMethods'       => 'this:listMethods');
 			
-			// $trigger = Trigger::current();
-			// $methods = $trigger->filter('xmlrpc_methods', $methods);
+			$trigger = Trigger::current();
+			$methods = $trigger->filter('xmlrpc_methods', $methods);
 			
 			$this->IXR_Server($methods);
 		}
@@ -124,7 +121,7 @@
 			
 			return sprintf(__("Pingback from %s to %s registered!"), $linked_from, $linked_to);
 		}
-
+		
 		/**
 		 * Function: metaWeblog_getRecentPosts
 		 * Returns a list of the most recent posts.
@@ -165,7 +162,7 @@
 			
 			return $result;
 		}
-
+		
 		/**
 		 * Function: metaWeblog_getCategories
 		 * Returns a list of all categories to which the post is assigned.
@@ -178,7 +175,7 @@
 			$categories = array();
 			return $trigger->filter('metaWeblog_getCategories', $categories);
 		}
-
+		
 		/**
 		 * Function: metaWeblog_newMediaObject
 		 * Uploads a file to the server.
@@ -201,7 +198,7 @@
 			
 			return array('url' => $url);
 		}
-
+		
 		/**
 		 * Function: metaWeblog_getPost
 		 * Retrieves a specified post.
@@ -233,7 +230,7 @@
 			list($struct, $post) = $trigger->filter('metaWeblog_getPost', array($struct, $post), true);
 			return array($struct);
 		}
-
+		
 		/**
 		 * Function: metaWeblog_newPost
 		 * Creates a new post.
@@ -261,6 +258,7 @@
 				                       array($args[1], md5($args[2])), true);
 				
 				$user_id = $result->fetchColumn();
+				$result->closeCursor();
 				
 				$sql->query("INSERT INTO `{$sql->prefix}posts`
 				             ( yaml, feather, clean, url, user_id, created_at )
@@ -308,15 +306,16 @@
 			             SET
 			             `yaml` = ?, `clean` = ?, `url` = ?, `created_at` = ?, `updated_at` = ?
 			             WHERE
-			             `id` = ?",
-			             array($yaml, $clean, $clean, $timestamp, datetime(), $args[0]), true);
+			             `id` = ?
+			             LIMIT 1",
+			             array($yaml, $clean, $clean, $timestamp, datetime(), $args[0]));
 			
 			$trigger = Trigger::current();
 			$trigger->call('metaWeblog_editPost', array($args[0], $args[3]), true);
 			
 			return true;
 		}
-
+		
 		/**
 		 * Function: blogger_deletePost
 		 * Deletes a specified post.
@@ -331,7 +330,7 @@
 			$post->delete();
 			return true;
 		}
-
+		
 		/**
 		 * Function: blogger_getUsersBlogs
 		 * Returns information about the Chyrp installation.
@@ -341,7 +340,6 @@
 				return $auth;
 			
 			$config = Config::current();
-			
 			return array(array(
 				'url'      => $config->url,
 				'blogName' => $config->name,
@@ -356,19 +354,19 @@
 			if (($auth = $this->auth($args[1], $args[2])) instanceof IXR_Error)
 				return $auth;
 			
-			$sql = SQL::current();
-			
 			try {
+				$sql = SQL::current();
 				$result = $sql->query("SELECT `id`, `full_name`, `email`, `website`
 				                       FROM `{$sql->prefix}users`
 				                       WHERE `login` = ? and `password` = ?
 				                       LIMIT 1",
-				                       array($args[1], md5($args[2])), true);
+				                       array($args[1], md5($args[2])));
 			} catch (Exception $error) {
 				return new IXR_Error(500, $error->getMessage());
 			}
 			
-			$user = $result->fetch();
+			$user = $result->fetchObject();
+			$result->closeCursor();
 			
 			return array(array(
 				'userid'    => $user->id,
@@ -378,7 +376,7 @@
 				'email'     => $user->email,
 				'url'       => $user->website));
 		}
-
+		
 		/**
 		 * Function: mt_getRecentPostTitles
 		 * Returns a bandwidth-friendly list of the most recent posts.
@@ -404,7 +402,7 @@
 			
 			return $result;
 		}
-
+		
 		/**
 		 * Function: mt_getCategoryList
 		 * Returns a list of categories.
@@ -417,7 +415,7 @@
 			$categories = array();
 			return $trigger->filter('mt_getCategoryList', $categories);
 		}
-
+		
 		/**
 		 * Function: mt_getPostCategories
 		 * Returns a list of all categories to which the post is assigned.
@@ -433,23 +431,22 @@
 			list($args[0], $categories) = $trigger->filter('mt_getPostCategories', array($args[0], $categories), true);
 			return $categories;
 		}
-
+		
 		/**
 		 * Function: mt_setPostCategories
 		 * Sets the categories for a post.
 		 */
 		public function mt_setPostCategories($args) {
-			if (($auth = $this->auth($args[1], $args[2])) instanceof IXR_Error)
+			if (($auth = $this->auth($args[1], $args[2], 'edit_post')) instanceof IXR_Error)
 				return $auth;
 			else if (!Post::exists($args[0]))
 				return new IXR_Error(404, __("Fake post ID, or nonexistant post."));
 			
 			$trigger = Trigger::current();
 			$trigger->call('mt_setPostCategories', array($args[0], $args[3]), true);
-			
 			return true;
 		}
-
+		
 		/**
 		 * Function: mt_supportedTextFilters
 		 * Returns an empty array, as this is not applicable for Chyrp.
@@ -457,19 +454,18 @@
 		public function mt_supportedTextFilters() {
 			return array();
 		}
-
+		
 		/**
 		 * Function: getRecentPosts
 		 * Returns an array of the most recent posts.
 		 */
 		private function getRecentPosts($limit) {
-			$sql = SQL::current();
 			$config = Config::current();
-			
 			if (!in_array("text", $config->enabled_feathers))
 				return new IXR_Error(500, __("Text feather is not enabled."));
 			
 			try {
+				$sql = SQL::current();
 				$result = $sql->query("SELECT *
 				                       FROM `{$sql->prefix}posts`
 				                       WHERE
@@ -479,8 +475,8 @@
 				                       `pinned` DESC,
 				                       `created_at` DESC,
 				                       `id` DESC
-				                       LIMIT {$limit}", array(), true);
-				return $result->fetchAll(PDO::FETCH_ASSOC);
+				                       LIMIT {$limit}");
+				return $result->fetchAll(PDO::FETCH_OBJ);
 			} catch (Exception $error) {
 				return new IXR_Error(500, $error->getMessage());
 			}
@@ -504,9 +500,8 @@
 		 * Authenticates a given login and password, and checks for appropriate permission
 		 */
 		private function auth($login, $password, $permission = 'add_post') {
-			$sql = SQL::current();
-			
 			try {
+				$sql = SQL::current();
 				$result = $sql->query("SELECT `{$permission}`
 				                       FROM `{$sql->prefix}groups`
 				                       WHERE `id` =
@@ -517,27 +512,16 @@
 				                         LIMIT 1
 				                       )
 				                       LIMIT 1",
-				                       array($login, md5($password)), true); // $group[0]->id
-				
-				$result = $result->fetchAll(PDO::FETCH_OBJ);
-				
-				if (@$result[0]->add_post == 1)
-					return true;
-				else
-					return new IXR_Error(403, __("You don't have permission."));
+				                       array($login, md5($password)));
 			} catch (Exception $error) {
 				return new IXR_Error(500, $error->getMessage());
 			}
+			
+			$permission = $result->fetchColumn();
+			$result->closeCursor();
+			
+			return ($permission) ? true : new IXR_Error(403, __("You don't have permission."));
 		}
-		
-		// function test ($args) {
-		// 	if (($auth = $this->auth($args[0], $args[1])) instanceof IXR_Error)
-		// 		return $auth;
-		// 	
-		// 	return $auth;
-		// 	// $sql = SQL::current();
-		// 	// return $sql->queries;
-		// }
 	}
 	$server = new XMLRPC();
 ?>
