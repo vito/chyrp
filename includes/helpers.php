@@ -13,15 +13,21 @@
 	 * 	$text - String to shorten.
 	 * 	$numb - Length of the shortened string.
 	 * 	$keep_words - Whether or not to keep words in-tact.
+	 * 	$minimum - If the truncated string is less than this and $keep_words is true, it will act as if $keep_words is false.
 	 */
-	function truncate($text, $numb, $keep_words = true) {
+	function truncate($text, $numb, $keep_words = true, $minimum = 10) {
 		$text = html_entity_decode($text, ENT_QUOTES);
+		$original = $text;
 		$numb -= 3;
 		if (strlen($text) > $numb) {
 			if (function_exists('mb_strcut')) {
 				if ($keep_words) {
 					$text = mb_strcut($text, 0, $numb, "utf-8");
 					$text = mb_strcut($text, 0 , strrpos($text, " "), "utf-8");
+
+					if (strlen($text) < $minimum)
+						$text = mb_strcut($original, 0, $numb, "utf-8");
+
 					$text.= "...";
 				} else {
 					$text = mb_strcut($text, 0, $numb, "utf-8")."...";
@@ -30,6 +36,10 @@
 				if ($keep_words) {
 					$text = substr($text, 0, $numb);
 					$text = substr($text, 0 , strrpos($text, " "));
+
+					if (strlen($text) < $minimum)
+						$text = substr($text, 0, $numb);
+
 					$text.= "...";
 				} else {
 					$text = substr($text, 0, $numb)."...";
