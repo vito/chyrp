@@ -148,6 +148,17 @@
 					$where.= " and ".$attr."(`created_at`) = :created".$attr;
 					$params[':created'.$attr] = $_GET[$attr];
 				}
+				elseif ($attr == "author")
+				{
+					$where.= "and `user_id` = :attrauthor";
+					$params[':attrauthor'] = $sql->select("users",
+					                                      "id",
+					                                      "`login` = :login",
+					                                      "id",
+					                                      array(
+					                                      	":login" => $_GET['author']
+					                                      ), 1)->fetchColumn();
+				}
 				else
 				{
 					$where.= " and `".$attr."` = :attr".$attr;
