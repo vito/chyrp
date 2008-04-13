@@ -156,7 +156,7 @@
 					'mt_allow_comments' => 0,
 					'mt_convert_breaks' => '0');
 				
-				list($struct, $post) = $trigger->filter('metaWeblog_getPost', array($struct, $post), true);
+				list($post, $struct) = $trigger->filter('metaWeblog_getPost', array($post, $struct), true);
 				$result[] = $struct;
 			}
 			
@@ -227,7 +227,7 @@
 				'mt_allow_comments' => 0,
 				'mt_convert_breaks' => '0');
 			
-			list($struct, $post) = $trigger->filter('metaWeblog_getPost', array($struct, $post), true);
+			list($post, $struct) = $trigger->filter('metaWeblog_getPost', array($post, $struct), true);
 			return array($struct);
 		}
 		
@@ -277,7 +277,7 @@
 				send_pingbacks($args[3]['description'], $post_id);
 			
 			$trigger = Trigger::current();
-			$trigger->call('metaWeblog_newPost', array($args[3], $post_id), true);
+			$trigger->call('metaWeblog_newPost', array($post_id, $args[3]), true);
 			
 			return $post_id;
 		}

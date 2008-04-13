@@ -139,6 +139,30 @@
 				}
 			}
 		}
+		static function metaWeblog_getPost($post, $struct) {
+			$struct['mt_tags'] = '';
+			
+			$sql = SQL::current();
+			$result = $sql->query("select `name`
+			                       from `{$sql->prefix}tags`
+			                       where `post_id` = :id",
+			                       array(":id" => $post->id));
+			
+			while ($tag = $result->fetchColumn())
+				$struct['mt_tags'] .= "$tag,";
+			
+			$struct['mt_tags'] = rtrim($struct['mt_tags'], ',');
+			
+			return array($post, $struct);
+		}
+		static function metaWeblog_newPost($post_id, $struct) {
+			if (array_key_exists('mt_tags', $struct))
+				self::add_post($post_id, array('tags' => $struct['mt_tags']));
+		}
+		static function metaWeblog_editPost($post_id, $struct) {
+			if (array_key_exists('mt_tags', $struct))
+				self::update_post($post_id, array('tags' => $struct['mt_tags']));
+		}
 	}
 	
 	$tags_limit_reached = false;
