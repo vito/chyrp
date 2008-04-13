@@ -361,7 +361,7 @@
 			
 			$config = Config::current();
 			if ($config->clean_urls) {
-				$login = (strpos($config->post_url, "(author)")) ? $user->info("login", $the_post->user_id) : null ;
+				$login = (preg_match("/\(author\)/", $config->post_url)) ? $user->info("login", $this->user_id) : null ;
 				$vals = array(when("Y", $this->created_at),
 				              when("m", $this->created_at),
 				              when("d", $this->created_at),
