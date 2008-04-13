@@ -8,11 +8,11 @@
 			if (empty($_POST['source']))
 				error(__("Error"), __("URL can't be empty."));
 			
-			$yaml = Spyc::YAMLDump(array("name" => $_POST['name'], "source" => $_POST['source'], "description" => $_POST['description']));
+			$values = array("name" => $_POST['name'], "source" => $_POST['source'], "description" => $_POST['description']);
 			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : "" ;
 			$url = Post::check_url($clean);
 			
-			$post = Post::add($yaml, $clean, $url);
+			$post = Post::add($values, $clean, $url);
 			
 			# Send any and all pingbacks to URLs in the description and source
 			$config = Config::current();
@@ -33,7 +33,7 @@
 			if (empty($_POST['source']))
 				error(__("Error"), __("URL can't be empty."));
 			
-			$yaml = Spyc::YAMLDump(array("name" => $_POST['name'], "source" => $_POST['source'], "description" => $_POST['description']));
+			$values = array("name" => $_POST['name'], "source" => $_POST['source'], "description" => $_POST['description']);
 			
 			$post->update($yaml);
 		}

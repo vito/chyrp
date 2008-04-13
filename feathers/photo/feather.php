@@ -12,11 +12,11 @@
 				error(__("Error"), __("Couldn't upload photo."));
 			}
 			
-			$yaml = Spyc::YAMLDump(array("filename" => $filename, "caption" => $_POST['caption']));
+			$values = array("filename" => $filename, "caption" => $_POST['caption']);
 			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : "" ;
 			$url = Post::check_url($clean);
 			
-			$post = Post::add($yaml, $clean, $url);
+			$post = Post::add($values, $clean, $url);
 			
 			# Send any and all pingbacks to URLs in the caption
 			$config = Config::current();
@@ -39,7 +39,7 @@
 				$filename = $post->filename;
 			}
 			
-			$yaml = Spyc::YAMLDump(array("filename" => $filename, "caption" => $_POST['caption']));
+			$values = array("filename" => $filename, "caption" => $_POST['caption']);
 			
 			$post->update($yaml);
 		}

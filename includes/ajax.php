@@ -62,7 +62,7 @@
 					$grab_post = $sql->query("select * from `".$sql->prefix."posts` where `created_at` like '".$sql->quote($_POST['year']."-".$_POST['month'])."%' and ".$private.$enabled_feathers.$id." order by `pinned` desc, `created_at` desc, `id` desc limit ".$_POST['offset'].", 1");
 					break;
 				case "search":
-					$grab_post = $sql->query("select * from `".$sql->prefix."posts` where `yaml` like '%".$sql->quote(urldecode($_POST['query']))."%' and ".$private.$enabled_feathers.$id." order by `pinned` desc, `created_at` desc, `id` desc limit ".$_POST['offset'].", 1");
+					$grab_post = $sql->query("select * from `".$sql->prefix."posts` where `xml` like '%".$sql->quote(urldecode($_POST['query']))."%' and ".$private.$enabled_feathers.$id." order by `pinned` desc, `created_at` desc, `id` desc limit ".$_POST['offset'].", 1");
 					break;
 			}
 			

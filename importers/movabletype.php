@@ -30,7 +30,7 @@
 					$title = (empty($title)) ? "" : $title[1] ;
 					$body = (!empty($extended[1])) ? $body[1]." <!--more-->\n".$extended[1] : $body[1] ;
 					
-					$yaml = Spyc::YAMLDump(array("title" => $title, "body" => $body));
+					$values = array("title" => $title, "body" => $body);
 					$status = (empty($status)) ? "public" : str_replace(array_keys($status_translate), array_values($status_translate), $status[1]) ;
 					$clean = (empty($basename)) ? sanitize($title) : str_replace("_", "-", $basename[1]) ;
 					$url = Post::check_url($clean);
@@ -40,7 +40,7 @@
 					$_POST['status'] = $status;
 					$_POST['pinned'] = false;
 					$_POST['created_at'] = $timestamp;
-					$id = Post::add($yaml, $clean, $url);
+					$id = Post::add($values, $clean, $url);
 					
 					$trigger->call("import_movabletype_post", array($the_post, $id));
 				}

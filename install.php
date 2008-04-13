@@ -89,7 +89,7 @@
 			# Posts table
 			$sql->query("create table if not exists `".$sql->prefix."posts` (
 			             	`id` int(11) not null auto_increment, 
-			             	`yaml` longtext not null, 
+			             	`xml` longtext not null,
 			             	`feather` varchar(32) not null default '', 
 			             	`clean` varchar(128) not null default '', 
 			             	`url` varchar(128) not null default '', 

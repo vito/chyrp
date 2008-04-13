@@ -8,11 +8,11 @@
 			if (empty($_POST['quote']))
 				error(__("Error"), __("Quote can't be empty."));
 			
-			$yaml = Spyc::YAMLDump(array("quote" => $_POST['quote'], "source" => $_POST['source']));
+			$values = array("quote" => $_POST['quote'], "source" => $_POST['source']);
 			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : "" ;
 			$url = Post::check_url($clean);
 			
-			$post = Post::add($yaml, $clean, $url);
+			$post = Post::add($values, $clean, $url);
 			
 			# Send any and all pingbacks to URLs in the quote and source
 			$config = Config::current();
@@ -33,7 +33,7 @@
 			if (empty($_POST['quote']))
 				error(__("Error"), __("Quote can't be empty."));
 			
-			$yaml = Spyc::YAMLDump(array("quote" => $_POST['quote'], "source" => $_POST['source']));
+			$values = array("quote" => $_POST['quote'], "source" => $_POST['source']);
 			
 			$post->update($yaml);
 		}

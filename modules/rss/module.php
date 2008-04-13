@@ -36,10 +36,8 @@
 								if (!empty($field))
 									$data[$field] = $item->$attr;
 							
-							$yaml = Spyc::YAMLDump($data);
-							
 							$_POST['feather'] = $feed["feather"];
-							Post::add($yaml);
+							Post::add($data);
 							
 							$rss_feeds[$name]["last_updated"] = @strtotime($date);
 						}

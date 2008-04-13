@@ -97,7 +97,7 @@
 						if ($the_post["WP:POST_TYPE"][0]["data"] == "post") {
 							$status_translate = array('publish' => "public", 'draft' => "draft", 'private' => "private", 'static' => "public", 'object' => "public", 'attachment' => "public", 'inherit' => "public", 'future' => "draft", 'pending' => "draft");
 							
-							$xml = Spyc::YAMLDump(array("title" => $the_post["TITLE"][0]["data"], "body" => $the_post["CONTENT:ENCODED"][0]["data"]));
+							$values = array("title" => $the_post["TITLE"][0]["data"], "body" => $the_post["CONTENT:ENCODED"][0]["data"]);
 							$status = str_replace(array_keys($status_translate), array_values($status_translate), $the_post["WP:STATUS"][0]["data"]);
 							$clean = (isset($the_post["WP:POST_NAME"][0]["data"])) ? $the_post["WP:POST_NAME"][0]["data"] : sanitize($the_post["TITLE"][0]["data"]) ;
 							$url = Post::check_url($clean);
@@ -107,7 +107,7 @@
 							$_POST['status'] = $status;
 							$_POST['pinned'] = false;
 							$_POST['created_at'] = $timestamp;
-							$id = Post::add($xml, $clean, $url);
+							$id = Post::add($values, $clean, $url);
 							
 							$trigger->call("import_wordpress_post", array($the_post, $id));
 						} elseif ($the_post["WP:POST_TYPE"][0]["data"] == "page") {

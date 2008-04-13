@@ -11,11 +11,11 @@
 			if (empty($_POST['dialogue']))
 				error(__("Error"), __("Dialogue can't be blank."));
 			
-			$yaml = Spyc::YAMLDump(array("title" => $_POST['title'], "dialogue" => $_POST['dialogue']));
+			$values = array("title" => $_POST['title'], "dialogue" => $_POST['dialogue']);
 			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : sanitize($_POST['title']) ;
 			$url = Post::check_url($clean);
 			
-			$post = Post::add($yaml, $clean, $url);
+			$post = Post::add($values, $clean, $url);
 			
 			# Send any and all pingbacks to URLs in the dialogue
 			if ($config->send_pingbacks)
@@ -33,7 +33,7 @@
 			if (empty($_POST['dialogue']))
 				error(__("Error"), __("Dialogue can't be blank."));
 			
-			$yaml = Spyc::YAMLDump(array("title" => $_POST['title'], "dialogue" => $_POST['dialogue']));
+			$values = array("title" => $_POST['title'], "dialogue" => $_POST['dialogue']);
 			
 			$post->update($yaml);
 		}

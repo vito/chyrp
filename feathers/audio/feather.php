@@ -14,11 +14,11 @@
 				error(__("Error"), __("Couldn't upload audio file."));
 			}
 			
-			$yaml = Spyc::YAMLDump(array("filename" => $filename, "description" => $_POST['description']));
+			$values = array("filename" => $filename, "description" => $_POST['description']);
 			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : "" ;
 			$url = Post::check_url($clean);
 			
-			$post = Post::add($yaml, $clean, $url);
+			$post = Post::add($values, $clean, $url);
 			
 			# Send any and all pingbacks to URLs in the description
 			$config = Config::current();
@@ -41,7 +41,7 @@
 				$filename = $post->filename;
 			}
 			
-			$yaml = Spyc::YAMLDump(array("filename" => $filename, "description" => $_POST['description']));
+			$values = array("filename" => $filename, "description" => $_POST['description']);
 			
 			$post->update($yaml);
 		}

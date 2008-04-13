@@ -43,7 +43,7 @@
 					$sql->connect();
 				
 					foreach ($posts as $the_post) {
-						$yaml = Spyc::YAMLDump(array("title" => $the_post["Title"], "body" => $the_post["Body"]));
+						$values = array("title" => $the_post["Title"], "body" => $the_post["Body"]);
 						$pinned = ($the_post["Status"] == "5");
 						$status = str_replace(array_keys($status_translate), array_values($status_translate), $the_post["Status"]);
 						$clean = (isset($the_post["url_title"])) ? $the_post["url_title"] : sanitize($the_post["Title"]) ;
@@ -53,7 +53,7 @@
 						$_POST['status'] = $status;
 						$_POST['pinned'] = $pinned;
 						$_POST['created_at'] = $the_post["Posted"];
-						$id = Post::add($yaml, $clean, $url);
+						$id = Post::add($values, $clean, $url);
 						
 						$trigger->call("import_textpattern_post", array($the_post, $id));
 				

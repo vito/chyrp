@@ -45,7 +45,7 @@
 		$month = $split[1]."-".$split[0];
 		$get_posts = $sql->select("posts",
 		                          "*",
-		                          "`yaml` like :query and
+		                          "`xml` like :query and
 		                           `created_at` like :month",
 		                          "`created_at` desc",
 		                          array(
@@ -55,7 +55,7 @@
 	} elseif (!empty($_GET['query'])) {
 		$get_posts = $sql->select("posts",
 		                          "*",
-		                          "`yaml` like :query",
+		                          "`xml` like :query",
 		                          "`created_at` desc",
 		                          array(
 		                          	":query" => "%".$_GET['query']."%"

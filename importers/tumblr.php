@@ -187,20 +187,20 @@
 							$title = (isset($the_post["REGULAR-TITLE"])) ? fix_html_tags($the_post["REGULAR-TITLE"][0]["data"]) : "" ;
 							$body = fix_html_tags($the_post["REGULAR-BODY"][0]["data"]);
 							
-							$xml = Spyc::YAMLDump(array("title" => $title, "body" => $body));
+							$values = array("title" => $title, "body" => $body);
 							$clean = sanitize($title);
 							break;
 						case "video":
 							$caption = (isset($the_post["VIDEO-CAPTION"])) ? fix_html_tags($the_post["VIDEO-CAPTION"][0]["data"]) : "" ;
 							
-							$xml = Spyc::YAMLDump(array("embed" => $the_post["VIDEO-PLAYER"][0]["data"], "caption" => $caption));
+							$values = array("embed" => $the_post["VIDEO-PLAYER"][0]["data"], "caption" => $caption);
 							$clean = "";
 							break;
 						case "conversation":
 							$title = (isset($the_post["CONVERSATION-TITLE"])) ? fix_html_tags($the_post["CONVERSATION-TITLE"][0]["data"]) : "" ;
 							$dialogue = trim(fix_html_tags($the_post["CONVERSATION-TEXT"][0]["data"]));
 							
-							$xml = Spyc::YAMLDump(array("title" => $title, "dialogue" => $dialogue));
+							$values = array("title" => $title, "dialogue" => $dialogue);
 							$clean = sanitize($title);
 							break;
 						case "photo":
@@ -214,21 +214,21 @@
 							
 							$caption = (isset($the_post["PHOTO-CAPTION"])) ? fix_html_tags($the_post["PHOTO-CAPTION"][0]["data"]) : "" ;
 							
-							$xml = Spyc::YAMLDump(array("filename" => $filename, "caption" => $caption));
+							$values = array("filename" => $filename, "caption" => $caption);
 							$clean = "";
 							break;
 						case "quote":
 							$quote = fix_html_tags($the_post["QUOTE-TEXT"][0]["data"]);
 							$source = (isset($the_post["QUOTE-SOURCE"])) ? fix_html_tags($the_post["QUOTE-SOURCE"][0]["data"]) : "" ;
 							
-							$xml = Spyc::YAMLDump(array("quote" => $quote, "source" => $source));
+							$values = array("quote" => $quote, "source" => $source);
 							$clean = "";
 							break;
 						case "link":
 							$name = (isset($the_post["LINK-TEXT"])) ? fix_html_tags($the_post["LINK-TEXT"][0]["data"]) : "" ;
 							$description = (isset($the_post["LINK-DESCRIPTION"])) ? fix_html_tags($the_post["LINK-DESCRIPTION"][0]["data"]) : "" ;
 							
-							$xml = Spyc::YAMLDump(array("name" => $name, "source" => $the_post["LINK-URL"][0]["data"], "description" => $description));
+							$values = array("name" => $name, "source" => $the_post["LINK-URL"][0]["data"], "description" => $description);
 							$clean = "";
 							break;
 					}
@@ -241,7 +241,7 @@
 					$_POST['created_at'] = $timestamp;
 					$_POST['feather'] = str_replace(array_keys($translate_types), array_values($translate_types), $the_post["attr"]["TYPE"]);
 					
-					$id = Post::add($xml, $clean, $url);
+					$id = Post::add($values, $clean, $url);
 					$trigger->call("import_tumble", array($the_post, $id));
 				}
 				

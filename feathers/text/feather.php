@@ -7,11 +7,11 @@
 			if (empty($_POST['body']))
 				error(__("Error"), __("Body can't be blank."));
 			
-			$yaml = Spyc::YAMLDump(array("title" => $_POST['title'], "body" => $_POST['body']));
+			$values = array("title" => $_POST['title'], "body" => $_POST['body']);
 			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : sanitize($_POST['title']) ;
 			$url = Post::check_url($clean);
 			
-			$post = Post::add($yaml, $clean, $url);
+			$post = Post::add($values, $clean, $url);
 			
 			# Send any and all pingbacks to URLs in the body
 			$config = Config::current();
@@ -30,7 +30,7 @@
 			if (empty($_POST['body']))
 				error(__("Error"), __("Body can't be blank."));
 			
-			$yaml = Spyc::YAMLDump(array("title" => $_POST['title'], "body" => $_POST['body']));
+			$values = array("title" => $_POST['title'], "body" => $_POST['body']);
 			
 			$post->update($yaml);
 		}

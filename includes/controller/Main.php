@@ -54,7 +54,7 @@
 			$sql = SQL::current();
 			$get_posts = $paginate->select("posts",
 			                               "*",
-			                               "`yaml` like :query and
+			                               "`xml` like :query and
 			                               ".$private.$enabled_feathers,
 			                               "`pinned` desc, `created_at` desc, `id` desc",
 			                               $config->posts_per_page, "page",
