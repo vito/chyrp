@@ -34,7 +34,7 @@
 			$embed = embed_tag($_POST['video']);
 			$values = array("embed" => $embed, "caption" => $_POST['caption']);
 			
-			$post->update($yaml);
+			$post->update($values);
 		}
 		static function title($id) {
 			global $post;

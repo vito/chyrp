@@ -32,7 +32,7 @@
 			
 			$values = array("title" => $_POST['title'], "body" => $_POST['body']);
 			
-			$post->update($yaml);
+			$post->update($values);
 		}
 		static function title($id) {
 			$post = new Post($id);

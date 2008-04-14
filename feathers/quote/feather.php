@@ -35,7 +35,7 @@
 			
 			$values = array("quote" => $_POST['quote'], "source" => $_POST['source']);
 			
-			$post->update($yaml);
+			$post->update($values);
 		}
 		static function title($id) {
 			$post = new Post($id);

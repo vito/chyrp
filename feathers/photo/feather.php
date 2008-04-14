@@ -41,7 +41,7 @@
 			
 			$values = array("filename" => $filename, "caption" => $_POST['caption']);
 			
-			$post->update($yaml);
+			$post->update($values);
 		}
 		static function title($id) {
 			$post = new Post($id);

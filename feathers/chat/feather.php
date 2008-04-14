@@ -35,7 +35,7 @@
 			
 			$values = array("title" => $_POST['title'], "dialogue" => $_POST['dialogue']);
 			
-			$post->update($yaml);
+			$post->update($values);
 		}
 		static function title($id) {
 			global $post;
