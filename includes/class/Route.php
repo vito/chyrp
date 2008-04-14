@@ -244,9 +244,9 @@
 		 * 	<remove_route>
 		 */
 		public function add($path) {
+			$config = Config::current();
 			$new_routes = $config->routes;
 			$new_routes[] = $path;
-			$config = Config::current();
 			$config->set("routes", $new_routes);
 		}
 		
