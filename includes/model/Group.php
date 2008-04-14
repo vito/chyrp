@@ -33,6 +33,25 @@
 		}
 		
 		/**
+		 * Function: can
+		 * Checks if the group can perform $function.
+		 * 
+		 * Parameters:
+		 * 	$function - The function to check.
+		 */
+		public function can($function, $group_id) {
+			$sql = SQL::current();
+			$permissions = $sql->query("select `permissions` from `".$sql->prefix."groups`
+			                            where `id` = :id",
+			                           array(
+			                           	":id" => $group_id
+			                           ))->fetchColumn();
+			$permissions = Spyc::YAMLLoad($permissions);
+			
+			return in_array($function, $permissions);
+		}
+		
+		/**
 		 * Function: add
 		 * Adds a group to the database with the passed Name and Permissions array.
 		 * 

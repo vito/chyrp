@@ -136,10 +136,10 @@
 			                            where `id` = :id",
 			                           array(
 			                           	":id" => $group_id
-			                           ));
-			$permissions = Spyc::YAMLParse($permissions);
+			                           ))->fetchColumn();
+			$permissions = Spyc::YAMLLoad($permissions);
 			
-			return isset($permissions[$function]);
+			return in_array($function, $permissions);
 		}
 		
 		/**

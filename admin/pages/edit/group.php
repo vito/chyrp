@@ -7,6 +7,7 @@
 	                          	":id" => $_GET['id']
 	                          ));
 	$the_group = $get_group->fetch();
+	$permissions = $sql->query("select * from `".$sql->prefix."permissions`");
 ?>
 <form class="settings" id="group_edit" action="<?php url("update_group"); ?>" method="post" accept-charset="utf-8">
 	<input type="hidden" name="id" value="<?php echo fix($_GET['id'], "html"); ?>" id="id" />
@@ -20,13 +21,12 @@
 		
 	</p>
 <?php
-	foreach ($the_group as $column => $permission):
-		if (is_int($column) or $column == "id" or $column == "name") continue;
-		$checked = ($permission == 1) ? ' checked="checked"' : '' ;
+	foreach ($permissions->fetchAll() as $permission):
+		$checked = ($group->can($permission["name"], $_GET['id'])) ? ' checked="checked"' : '' ;
 ?>
 	<p>
-		<label for="<?php echo $column; ?>"><?php echo camelize($column, true); ?></label>
-		<input type="checkbox" name="permissions[<?php echo $column; ?>]" id="<?php echo $column; ?>"<?php echo $checked; ?> />
+		<label for="<?php echo $permission["name"]; ?>"><?php echo camelize($permission["name"], true); ?></label>
+		<input type="checkbox" name="permissions[<?php echo $permission["name"]; ?>]" id="<?php echo $permission["name"]; ?>"<?php echo $checked; ?> />
 		&nbsp;
 	</p>
 <?php
