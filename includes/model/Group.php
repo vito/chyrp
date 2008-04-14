@@ -28,8 +28,8 @@
 					$this->$key = $val;
 			
 			$permissions = Spyc::YAMLLoad($this->permissions);
-			foreach ($permissions as $name, $bool)
-				$this->$name = $bool;
+			foreach ($permissions as $name)
+				$this->$name = true;
 		}
 		
 		/**

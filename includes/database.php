@@ -260,8 +260,8 @@
 				if (XML_RPC or $throw_exceptions)
 					throw new Exception($message);
 				
-				print $query;
-				print_r(debug_backtrace());
+				echo "<pre>".print_r($query, true)."</pre>";
+				echo "<pre>".print_r(debug_backtrace(), true)."</pre>";
 				error(__("Database Error"), $message);
 				//throw $error;
 			}

@@ -2,8 +2,12 @@
 	define('BASE_DIR', dirname(__FILE__));
 	define('INCLUDES_DIR', BASE_DIR."/includes");
 	define('JAVASCRIPT', false);
+	define('ADMIN', false);
+	define('AJAX', false);
+	define('XML_RPC', false);
 	ini_set('error_reporting', E_ALL);
 	ini_set('display_errors', true);
+	
 	# Input sanitizer
 	require INCLUDES_DIR."/input.php";
 	
@@ -127,8 +131,8 @@
 			             	`website` varchar(128) not null default '', 
 			             	`group_id` int(11) not null default '0', 
 			             	`joined_at` datetime not null default '0000-00-00 00:00:00', 
-			             	primary key (`id`)
-			             	unique key (`login`)
+			             	primary key (`id`), 
+			             	unique (`login`)
 			             ) default charset=utf8");
 		
 			# Groups table
@@ -136,25 +140,25 @@
 			             	`id` int(11) not null auto_increment, 
 			             	`name` varchar(100) not null default '', 
 		                 	`permissions` longtext not null, 
-			             	primary key (`id`)
-			             	unique key (`name`)
+			             	primary key (`id`), 
+			             	unique (`name`)
 			             ) default charset=utf8");
 			
 			# Permissions table
 			$sql->query("create table if not exists `".$sql->prefix."permissions` (
 			             	`id` int(11) not null auto_increment, 
-			             	`name` varchar(100) not null default ''
-			             	primary key (`id`)
-			             	unique key (`name`)
+			             	`name` varchar(100) not null default '', 
+			             	primary key (`id`), 
+			             	unique (`name`)
 			             ) default charset=utf8");
 			
 			$permissions = array("view_site", "change_settings", "add_post", "edit_post", "delete_post", "view_private", "view_draft", "add_page", "edit_page", "delete_page", "edit_user", "delete_user", "add_group", "edit_group", "delete_group");
 			
 			foreach ($permissions as $permission)
-				$sql->query("insert into `".$sql->prefix."permissions` set `name` = '".$permissions."'");
+				$sql->query("insert into `".$sql->prefix."permissions` set `name` = '".$permission."'");
 			
 			$groups = array(
-				"admin" => $permissions,
+				"admin" => Spyc::YAMLDump($permissions),
 				"member" => Spyc::YAMLDump(array("view_site")),
 				"friend" => Spyc::YAMLDump(array("view_site", "view_private")),
 				"banned" => Spyc::YAMLDump(array()),
@@ -162,10 +166,10 @@
 			);
 			
 			# Insert the default groups (see above)
-			foreach($groups as $name => $permissions)
+			foreach($groups as $name => $permission)
 				$sql->query("insert into `".$sql->prefix."groups` set 
-			                 `name` = '".ucfirst($name).", 
-			                 `permissions` = '".$permissions."'");
+			                 `name` = '".ucfirst($name)."', 
+			                 `permissions` = '".$permission."'");
 		
 			if (!file_exists(BASE_DIR."/.htaccess") and !is_writable(BASE_DIR))
 				$errors[] = __("Could not generate .htaccess file. Clean URLs will not be available.");
