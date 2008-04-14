@@ -1,7 +1,7 @@
 <?php
-	require "model.Comment.php";
+	require_once "model.Comment.php";
 	
-	class Comments {
+	class Comments extends Module {
 		static function __install() {
 			global $group;
 			$sql = SQL::current();
@@ -503,6 +503,7 @@ var Comment = {
 //</script>
 <?php
 		}
+		
 		static function admin_javascript() {
 ?>
 $(function(){
@@ -751,6 +752,11 @@ $(function(){
 			                                ))->fetchColumn();
 			
 			$action = "comments_feed";
+		}
+
+		static function metaWeblog_getPost($post, $struct) {
+			$struct['mt_allow_comments'] = 1 + intval($post->comment_status != 'open');
+			return array($post, $struct);
 		}
 	}
 	$comments = new Comments();

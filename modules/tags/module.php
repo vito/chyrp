@@ -12,6 +12,7 @@
 			$route = Route::current();
 			$route->add("tag/(name)/");
 		}
+		
 		static function __uninstall($confirm) {
 			if ($confirm == "true") {
 				$sql = SQL::current();
@@ -21,6 +22,7 @@
 			$route = Route::current();
 			$route->remove("tag/(name)/");
 		}
+		
 		static function add_post_options() {
 ?>
 					<p>
@@ -29,6 +31,7 @@
 					</p>
 <?php
 		}
+		
 		static function edit_post_options($id) {
 			$tags = list_post_tags($id, null, null, null, false, false);
 ?>
@@ -38,6 +41,7 @@
 					</p>
 <?php
 		}
+		
 		static function add_post($id, $options) {
 			if (!isset($options["tags"])) return;
 			
@@ -59,6 +63,7 @@
 				            ));
 			}
 		}
+		
 		static function update_post($id, $options) {
 			$sql = SQL::current();
 			$sql->query("delete from `".$sql->prefix."tags`
@@ -84,6 +89,7 @@
 				            ));
 			}
 		}
+		
 		static function delete_post($id) {
 			$sql = SQL::current();
 			$sql->query("delete from `".$sql->prefix."tags`
@@ -92,18 +98,22 @@
 			            	":id" => $id
 			            ));
 		}
+		
 		static function parse_urls($urls) {
 			$urls["/\/tag\/(.*?)\//"] = "?action=tag&amp;name=$1";
 			return $urls;
 		}
+		
 		static function admin_manage_posts_column_header() {
 			echo "<th>".__("Tags", "tags")."</th>";
 		}
+		
 		static function admin_manage_posts_column($id) {
 			echo "<td>";
 			list_post_tags($id, null);
 			echo "</td>";
 		}
+		
 		static function route_tag() {
 			global $paginate, $private, $enabled_feathers, $tag, $get_posts;
 			$tag = $_GET['name'];
@@ -121,6 +131,7 @@
 			                               	":clean" => $tag
 			                               ));
 		}
+		
 		static function import_wordpress_post($data, $id) {
 			if (isset($data["CATEGORY"])) {
 				$sql = SQL::current();
@@ -139,6 +150,7 @@
 				}
 			}
 		}
+		
 		static function metaWeblog_getPost($post, $struct) {
 			$struct['mt_tags'] = '';
 			
@@ -154,14 +166,6 @@
 			$struct['mt_tags'] = rtrim($struct['mt_tags'], ',');
 			
 			return array($post, $struct);
-		}
-		static function metaWeblog_newPost($post_id, $struct) {
-			if (array_key_exists('mt_tags', $struct))
-				self::add_post($post_id, array('tags' => $struct['mt_tags']));
-		}
-		static function metaWeblog_editPost($post_id, $struct) {
-			if (array_key_exists('mt_tags', $struct))
-				self::update_post($post_id, array('tags' => $struct['mt_tags']));
 		}
 	}
 	
@@ -202,10 +206,12 @@
 		
 		return $tags;
 	}
+	
 	function tags_limit_reached() {
 		global $tags_limit_reached;
 		return $tags_limit_reached;
 	}
+	
 	function list_post_tags($post_id, $prefix = "Tags: ", $suffix = null, $fallback = null, $link = true, $echo = true, $order_by = "id", $order = "asc"){
 		global $user;
 		$sql = SQL::current();

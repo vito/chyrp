@@ -12,11 +12,12 @@
 		 * 	$user_id - The user ID to load. If no user is given, it defaults to the $current_user.
 		 * 						 If they are not logged in and no user ID is given, nothing happens.
 		 */
-		function load($user_id = null) {
+		function load($user_id = null, $password = null) {
 			global $current_user;
-			if (empty($_COOKIE['chyrp_user_id']) or empty($_COOKIE['chyrp_password'])) return false;
+			if (!XML_RPC and (empty($_COOKIE['chyrp_user_id']) or empty($_COOKIE['chyrp_password']))) return false;
 			if (!isset($user_id) and !$current_user) return;
 			$user = (isset($user_id)) ? $user_id : $current_user ;
+			fallback($password, $_COOKIE['chyrp_password']);
 			
 			$sql = SQL::current();
 			foreach ($sql->query("select * from `".$sql->prefix."users`
@@ -25,7 +26,7 @@
 			                      	`password` = :password",
 			                     array(
 			                     	":id" => $user,
-			                     	":password" => $_COOKIE['chyrp_password']
+			                     	":password" => $password
 			                     ))->fetch() as $key => $val)
 				if (!is_int($key))
 					$this->$key = $val;
@@ -46,7 +47,7 @@
 			if (isset($this->id)) return true;
 			
 			$sql = SQL::current();
-			$check_user = $sql->query("select * from `".$sql->prefix."users`
+			$check_user = $sql->query("select `id` from `{$sql->prefix}users`
 			                           where
 			                           	`login` = :login and
 			                           	`password` = :password",
@@ -54,7 +55,7 @@
 			                          	":login" => $login,
 			                          	":password" => $password
 			                          ));
-			return ($check_user->rowCount() == 1);
+			return ($check_user->fetchColumn());
 		}
 		
 		/**
@@ -65,7 +66,7 @@
 		 * 	true - if they are logged in with a valid Username and Password.
 		 */
 		function logged_in() {
-			if (empty($_COOKIE['chyrp_user_id']) or empty($_COOKIE['chyrp_password'])) return false;
+			if (!XML_RPC and (empty($_COOKIE['chyrp_user_id']) or empty($_COOKIE['chyrp_password']))) return false;
 			if (isset($this->id)) return true;
 			
 			$sql = SQL::current();

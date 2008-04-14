@@ -1,6 +1,6 @@
 <?php
-	define('XML_RPC', true);
 	error_reporting(E_ALL ^ E_NOTICE);
+	define('XML_RPC', true);
 	require_once "common.php";
 	require_once INCLUDES_DIR."/lib/ixr.php";
 	
@@ -127,40 +127,43 @@
 		 * Returns a list of the most recent posts.
 		 */
 		public function metaWeblog_getRecentPosts($args) {
-			if (($auth = $this->auth($args[1], $args[2])) instanceof IXR_Error)
-				return $auth;
-			
-			if (($posts = $this->getRecentPosts($args[3])) instanceof IXR_Error)
-				return $posts;
-			
-			$config = Config::current();
-			$trigger = Trigger::current();
-			$result = array();
-			
-			foreach ($posts as $post) {
-				$post = new Post(null, array("read_from" => $post, "filter" => false));
+			try {
+				$this->auth($args[1], $args[2]);
 				
-				$struct = array(
-					'postid'            => $post->id,
-					'userid'            => $post->user_id,
-					'title'             => $post->title,
-					'dateCreated'       => new IXR_Date(@date('Ymd\TH:i:s', @strtotime($post->created_at))),
-					'description'       => $post->body,
-					'link'              => $post->url(),
-					'permaLink'         => $post->url(),
-					'mt_basename'       => $post->url,
-					'mt_excerpt'        => '',
-					'mt_text_more'      => '',
-					'mt_keywords'       => '',
-					'mt_allow_pings'    => (int) $config->enable_trackbacking,
-					'mt_allow_comments' => 0,
-					'mt_convert_breaks' => '0');
+				$config = Config::current();
+				$trigger = Trigger::current();
+				$result = array();
 				
-				list($post, $struct) = $trigger->filter('metaWeblog_getPost', array($post, $struct), true);
-				$result[] = $struct;
+				foreach ($this->getRecentPosts($args[3]) as $post) {
+					$post = new Post(null, array("read_from" => $post, "filter" => false));
+					
+					$struct = array(
+						'postid'            => $post->id,
+						'userid'            => $post->user_id,
+						'title'             => $post->title,
+						'dateCreated'       => new IXR_Date(when('Ymd\TH:i:s', $post->created_at)),
+						'description'       => $post->body,
+						'link'              => $post->url(),
+						'permaLink'         => $post->url(),
+						'mt_basename'       => $post->url,
+						'mt_allow_pings'    => (int) $config->enable_trackbacking);
+					
+					if (!empty($post->mt_more_text))
+					{
+						$more = explode('<!--more-->', $post->body);
+						$struct['description'] = array_shift($more);
+						$struct['mt_text_more'] = $more;
+					}
+					
+					list($post, $struct) = $trigger->filter('metaWeblog_getPost', array($post, $struct), true);
+					$result[] = $struct;
+				}
+				
+				return $result;
 			}
-			
-			return $result;
+			catch (Exception $error) {
+				return new IXR_Error(500, $error->getMessage());
+			}
 		}
 		
 		/**
@@ -168,12 +171,16 @@
 		 * Returns a list of all categories to which the post is assigned.
 		 */
 		public function metaWeblog_getCategories($args) {
-			if (($auth = $this->auth($args[1], $args[2])) instanceof IXR_Error)
-				return $auth;
-
-			$trigger = Trigger::current();
-			$categories = array();
-			return $trigger->filter('metaWeblog_getCategories', $categories);
+			try {
+				$this->auth($args[1], $args[2]);
+				
+				$trigger = Trigger::current();
+				$categories = array();
+				return $trigger->filter('metaWeblog_getCategories', $categories);
+			}
+			catch (Exception $error) {
+				return new IXR_Error(500, $error->getMessage());
+			}
 		}
 		
 		/**
@@ -181,22 +188,26 @@
 		 * Uploads a file to the server.
 		 */
 		public function metaWeblog_newMediaObject($args) {
-			if (($auth = $this->auth($args[1], $args[2])) instanceof IXR_Error)
-				return $auth;
-			
-			$file = unique_filename(trim($args[3]['name'], '/'));
-			$path = MAIN_DIR.'/upload/'.$file;
-			
-			if (file_put_contents($path, $args[3]['bits']) === false)
-				return new IXR_Error(500, __("Failed to write file."));
-			
-			$config = Config::current();
-			$url = $config->url.'/upload/'.urlencode($file);
-			
-			$trigger = Trigger::current();
-			list($url, $path) = $trigger->filter('metaWeblog_newMediaObject', array($url, $path), true);
-			
-			return array('url' => $url);
+			try {
+				$this->auth($args[1], $args[2]);
+				
+				$file = unique_filename(trim($args[3]['name'], '/'));
+				$path = MAIN_DIR.'/upload/'.$file;
+				
+				if (file_put_contents($path, $args[3]['bits']) === false)
+					return new IXR_Error(500, __("Failed to write file."));
+				
+				$config = Config::current();
+				$url = $config->url.'/upload/'.urlencode($file);
+				
+				$trigger = Trigger::current();
+				list($url, $path) = $trigger->filter('metaWeblog_newMediaObject', array($url, $path), true);
+				
+				return array('url' => $url);
+			}
+			catch (Exception $error) {
+				return new IXR_Error(500, $error->getMessage());
+			}
 		}
 		
 		/**
@@ -204,31 +215,37 @@
 		 * Retrieves a specified post.
 		 */
 		public function metaWeblog_getPost($args) {
-			if (($auth = $this->auth($args[1], $args[2])) instanceof IXR_Error)
-				return $auth;
-			
-			$config = Config::current();
-			$trigger = Trigger::current();
-			$post = new Post($args[0], array("filter" => false));
-			
-			$struct = array(
-				'postid'            => $post->id,
-				'userid'            => $post->user_id,
-				'title'             => $post->title,
-				'dateCreated'       => new IXR_Date(@date('Ymd\TH:i:s', @strtotime($post->created_at))),
-				'description'       => $post->body,
-				'link'              => $post->url(),
-				'permaLink'         => $post->url(),
-				'mt_basename'       => $post->url,
-				'mt_excerpt'        => '',
-				'mt_text_more'      => '',
-				'mt_keywords'       => '',
-				'mt_allow_pings'    => (int) $config->enable_trackbacking,
-				'mt_allow_comments' => 0,
-				'mt_convert_breaks' => '0');
-			
-			list($post, $struct) = $trigger->filter('metaWeblog_getPost', array($post, $struct), true);
-			return array($struct);
+			try {
+				$this->auth($args[1], $args[2]);
+				
+				$config = Config::current();
+				$trigger = Trigger::current();
+				
+				$post = new Post($args[0], array("filter" => false));
+				$struct = array(
+					'postid'            => $post->id,
+					'userid'            => $post->user_id,
+					'title'             => $post->title,
+					'dateCreated'       => new IXR_Date(when('Ymd\TH:i:s', $post->created_at)),
+					'description'       => $post->body,
+					'link'              => $post->url(),
+					'permaLink'         => $post->url(),
+					'mt_basename'       => $post->url,
+					'mt_allow_pings'    => (int) $config->enable_trackbacking);
+				
+				if (!empty($post->mt_more_text))
+				{
+					$more = explode('<!--more-->', $post->body);
+					$struct['description'] = array_shift($more);
+					$struct['mt_text_more'] = $more;
+				}
+				
+				list($post, $struct) = $trigger->filter('metaWeblog_getPost', array($post, $struct), true);
+				return array($struct);
+			}
+			catch (Exception $error) {
+				return new IXR_Error(500, $error->getMessage());
+			}
 		}
 		
 		/**
@@ -236,50 +253,52 @@
 		 * Creates a new post.
 		 */
 		public function metaWeblog_newPost($args) {
-			if (($auth = $this->auth($args[1], $args[2])) instanceof IXR_Error)
-				return $auth;
-			else if (empty($args[3]['description']))
-				return new IXR_Error(400, __("Body can't be blank."));
-			
-			$yaml = Spyc::YAMLDump(array("title" => $args[3]['title'], "body" => $args[3]['description']));
-			
-			$clean = sanitize(fallback($args[3]['mt_basename'], $args[3]['title'], true));
-			$url = Post::check_url($clean);
-			
-			$timestamp = fallback($this->convertDateCreated($args[3]), datetime(), true);
-						
 			try {
-				$sql = SQL::current();
+				$this->auth($args[1], $args[2], 'edit');
 				
-				$result = $sql->query("SELECT `id`
-				                       FROM `{$sql->prefix}users`
-				                       WHERE `login` = ? and `password` = ?
-				                       LIMIT 1",
-				                       array($args[1], md5($args[2])), true);
+				# Support for extended body
+				$body = $args[3]['description'];
 				
-				$user_id = $result->fetchColumn();
-				$result->closeCursor();
+				if (!empty($args[3]['mt_text_more']))
+				{
+					$body .= "<!--more-->".$args[3]['mt_text_more'];
+					$_POST['options']['mt_more_text'] = true;
+				}
 				
-				$sql->query("INSERT INTO `{$sql->prefix}posts`
-				             ( yaml, feather, clean, url, user_id, created_at )
-				             VALUES
-				             ( ?, 'text', ?, ?, ?, ? )",
-				             array($yaml, $clean, $url, $user_id, $timestamp), true);
-			} catch (Exception $error) {
+				if (trim($body) == '')
+					return new IXR_Error(500, __("Body can't be blank."));
+				
+				# Support for adding tags to post xml
+				if (isset($args[3]['mt_tags']))
+					$_POST['options']['tags'] = $args[3]['mt_tags'];
+				
+				# Support for adding comment_status to post xml
+				if (isset($args[3]['mt_allow_comments']))
+					$_POST['options']['comment_status'] = ($args[3]['mt_allow_comments'] == 1) ? 'open' : 'closed';
+				
+				$clean = sanitize(fallback($args[3]['mt_basename'], $args[3]['title'], true));
+				$url = Post::check_url($clean);
+				
+				$_POST['created_at'] = fallback($this->convertDateCreated($args[3]), datetime(), true);
+				
+				$post = Post::add(
+					array(
+						"title" => $args[3]['title'],
+						"body" => $body
+					),
+					$clean,
+					$url);
+				
+				# Send any and all pingbacks to URLs in the body
+				$config = Config::current();
+				if ($config->send_pingbacks)
+					send_pingbacks($args[3]['description'], $post->id);
+				
+				return $post->id;		
+			}
+			catch (Exception $error) {
 				return new IXR_Error(500, $error->getMessage());
 			}
-			
-			$post_id = $sql->db->lastInsertId();
-			
-			# Send any and all pingbacks to URLs in the body
-			$config = Config::current();
-			if ($config->send_pingbacks)
-				send_pingbacks($args[3]['description'], $post_id);
-			
-			$trigger = Trigger::current();
-			$trigger->call('metaWeblog_newPost', array($post_id, $args[3]), true);
-			
-			return $post_id;
 		}
 		
 		/**
@@ -287,33 +306,58 @@
 		 * Updates a specified post.
 		 */
 		public function metaWeblog_editPost($args) {
-			if (($auth = $this->auth($args[1], $args[2], 'edit_post')) instanceof IXR_Error)
-				return $auth;
-			else if (!Post::exists($args[0]))
-				return new IXR_Error(404, __("Fake post ID, or nonexistant post."));
-			else if (empty($args[3]['description']))
-				return new IXR_Error(400, __("Body can't be blank."));
-			
-			$post = new Post($args[0]);
-			$yaml = Spyc::YAMLDump(array("title" => $args[3]['title'], "body" => $args[3]['description']));
-
-			$clean = sanitize(fallback($args[3]['mt_basename'], $args[3]['title'], true));
-			
-			$timestamp = fallback($this->convertDateCreated($args[3]), $post->created_at, true);
-			
-			$sql = SQL::current();
-			$sql->query("UPDATE `{$sql->prefix}posts`
-			             SET
-			             `yaml` = ?, `clean` = ?, `url` = ?, `created_at` = ?, `updated_at` = ?
-			             WHERE
-			             `id` = ?
-			             LIMIT 1",
-			             array($yaml, $clean, $clean, $timestamp, datetime(), $args[0]));
-			
-			$trigger = Trigger::current();
-			$trigger->call('metaWeblog_editPost', array($args[0], $args[3]), true);
-			
-			return true;
+			try {
+				$this->auth($args[1], $args[2], 'edit');
+				
+				if (!Post::exists($args[0]))
+					throw new Exception (__("Fake post ID, or nonexistant post."));
+				
+				# Support for extended body
+				$body = $args[3]['description'];
+				
+				if (!empty($args[3]['mt_text_more']))
+				{
+					$body .= "<!--more-->".$args[3]['mt_text_more'];
+					$_POST['options']['mt_more_text'] = true;
+				}
+				
+				if (trim($body) == '')
+					return new IXR_Error(500, __("Body can't be blank."));
+				
+				# Support for adding tags to post xml
+				if (isset($args[3]['mt_tags']))
+					$_POST['options']['tags'] = $args[3]['mt_tags'];
+				
+				# Support for adding comment_status to post xml
+				if (isset($args[3]['mt_allow_comments']))
+					$_POST['options']['comment_status'] = ($args[3]['mt_allow_comments'] == 1) ? 'open' : 'closed';
+				
+				$post = new Post($args[0], array("filter" => false));
+				$post->update(
+					array(
+						'title' => $args[3]['title'],
+						'body'  => $body
+					),
+					null,
+					null, // ($args[4]) ? 'public' : 'draft'
+					sanitize(
+						fallback(
+							$args[3]['mt_basename'],
+							$args[3]['title'],
+							true
+						)
+					),
+					fallback(
+						$this->convertDateCreated($args[3]),
+						$post->created_at,
+						true
+					));
+				
+				return true;
+			}
+			catch (Exception $error) {
+				return new IXR_Error(500, $error->getMessage());
+			}
 		}
 		
 		/**
@@ -321,14 +365,19 @@
 		 * Deletes a specified post.
 		 */
 		public function blogger_deletePost($args) {
-			if (($auth = $this->auth($args[2], $args[3], 'delete_post')) instanceof IXR_Error)
-				return $auth;
-			else if (!Post::exists($args[1]))
-				return new IXR_Error(404, __("Fake post ID, or nonexistant post."));
-			
-			$post = new Post($args[1]);
-			$post->delete();
-			return true;
+			try {
+				$this->auth($args[1], $args[2], 'delete');
+				
+				if (!Post::exists($args[1]))
+					throw new Exception (__("Fake post ID, or nonexistant post."));
+				
+				$post = new Post($args[1]);
+				$post->delete();
+				return true;
+			}
+			catch (Exception $error) {
+				return new IXR_Error(500, $error->getMessage());
+			}
 		}
 		
 		/**
@@ -336,8 +385,12 @@
 		 * Returns information about the Chyrp installation.
 		 */
 		public function blogger_getUsersBlogs($args) {
-			if (($auth = $this->auth($args[1], $args[2])) instanceof IXR_Error)
-				return $auth;
+			try {
+				$this->auth($args[1], $args[2], 'delete');			
+			}
+			catch (Exception $error) {
+				return new IXR_Error(500, $error->getMessage());
+			}
 			
 			$config = Config::current();
 			return array(array(
@@ -351,30 +404,22 @@
 		 * Retrieves a specified user.
 		 */
 		public function blogger_getUserInfo($args) {
-			if (($auth = $this->auth($args[1], $args[2])) instanceof IXR_Error)
-				return $auth;
+			global $user;
 			
 			try {
-				$sql = SQL::current();
-				$result = $sql->query("SELECT `id`, `full_name`, `email`, `website`
-				                       FROM `{$sql->prefix}users`
-				                       WHERE `login` = ? and `password` = ?
-				                       LIMIT 1",
-				                       array($args[1], md5($args[2])));
-			} catch (Exception $error) {
+				$this->auth($args[1], $args[2]);
+				
+				return array(array(
+					'userid'    => $user->id,
+					'nickname'  => $user->fullname,
+					'firstname' => '',
+					'lastname'  => '',
+					'email'     => $user->email,
+					'url'       => $user->website));
+			}
+			catch (Exception $error) {
 				return new IXR_Error(500, $error->getMessage());
 			}
-			
-			$user = $result->fetchObject();
-			$result->closeCursor();
-			
-			return array(array(
-				'userid'    => $user->id,
-				'nickname'  => $user->fullname,
-				'firstname' => '',
-				'lastname'  => '',
-				'email'     => $user->email,
-				'url'       => $user->website));
 		}
 		
 		/**
@@ -382,25 +427,27 @@
 		 * Returns a bandwidth-friendly list of the most recent posts.
 		 */
 		public function mt_getRecentPostTitles($args) {
-			if (($auth = $this->auth($args[1], $args[2])) instanceof IXR_Error)
-				return $auth;
-			
-			if (($posts = $this->getRecentPosts($args[3])) instanceof IXR_Error)
-				return $posts;
-			
-			$result = array();
-			
-			foreach ($posts as $post) {
-				$post = new Post(null, array("read_from" => $post, "filter" => false));
+			try {
+				$this->auth($args[1], $args[2]);
+				$posts = $this->getRecentPosts($args[3]);
 				
-				$result[] = array(
-					'postid'      => $post->id,
-					'userid'      => $post->user_id,
-					'title'       => $post->title,
-					'dateCreated' => new IXR_Date(@date('Ymd\TH:i:s', @strtotime($post->created_at))));
+				$result = array();
+
+				foreach ($posts as $post) {
+					$post = new Post(null, array("read_from" => $post, "filter" => false));
+
+					$result[] = array(
+						'postid'      => $post->id,
+						'userid'      => $post->user_id,
+						'title'       => $post->title,
+						'dateCreated' => new IXR_Date(when('Ymd\TH:i:s', $post->created_at)));
+				}
+
+				return $result;
 			}
-			
-			return $result;
+			catch (Exception $error) {
+				return new IXR_Error(500, $error->getMessage());
+			}
 		}
 		
 		/**
@@ -408,12 +455,16 @@
 		 * Returns a list of categories.
 		 */
 		public function mt_getCategoryList($args) {
-			if (($auth = $this->auth($args[1], $args[2])) instanceof IXR_Error)
-				return $auth;
-			
-			$trigger = Trigger::current();
-			$categories = array();
-			return $trigger->filter('mt_getCategoryList', $categories);
+			try {
+				$this->auth($args[1], $args[2]);
+				
+				$trigger = Trigger::current();
+				$categories = array();
+				return $trigger->filter('mt_getCategoryList', $categories);
+			}
+			catch (Exception $error) {
+				return new IXR_Error(500, $error->getMessage());
+			}
 		}
 		
 		/**
@@ -421,15 +472,20 @@
 		 * Returns a list of all categories to which the post is assigned.
 		 */
 		public function mt_getPostCategories($args) {
-			if (($auth = $this->auth($args[1], $args[2])) instanceof IXR_Error)
-				return $auth;
-			else if (!Post::exists($args[0]))
-				return new IXR_Error(404, __("Fake post ID, or nonexistant post."));
-			
-			$trigger = Trigger::current();
-			$categories = array();
-			list($args[0], $categories) = $trigger->filter('mt_getPostCategories', array($args[0], $categories), true);
-			return $categories;
+			try{
+				$this->auth($args[1], $args[2]);
+				
+				if (!Post::exists($args[0]))
+					throw new Exception(__("Fake post ID, or nonexistant post."));
+				
+				$trigger = Trigger::current();
+				$categories = array();
+				list($args[0], $categories) = $trigger->filter('mt_getPostCategories', array($args[0], $categories), true);
+				return $categories;
+			}
+			catch (Exception $error) {
+				return new IXR_Error(500, $error->getMessage());
+			}
 		}
 		
 		/**
@@ -437,14 +493,20 @@
 		 * Sets the categories for a post.
 		 */
 		public function mt_setPostCategories($args) {
-			if (($auth = $this->auth($args[1], $args[2], 'edit_post')) instanceof IXR_Error)
-				return $auth;
-			else if (!Post::exists($args[0]))
-				return new IXR_Error(404, __("Fake post ID, or nonexistant post."));
-			
-			$trigger = Trigger::current();
-			$trigger->call('mt_setPostCategories', array($args[0], $args[3]), true);
-			return true;
+			try{
+				$this->auth($args[1], $args[2], 'edit');
+				
+				if (!Post::exists($args[0]))
+					throw new Exception(__("Fake post ID, or nonexistant post."));
+				
+				$trigger = Trigger::current();
+				$categories = array();
+				$trigger->call('mt_setPostCategories', array($args[0], $args[3]), true);
+				return true;
+			}
+			catch (Exception $error) {
+				return new IXR_Error(500, $error->getMessage());
+			}
 		}
 		
 		/**
@@ -462,7 +524,7 @@
 		private function getRecentPosts($limit) {
 			$config = Config::current();
 			if (!in_array("text", $config->enabled_feathers))
-				return new IXR_Error(500, __("Text feather is not enabled."));
+				throw new Exception(__("Text feather is not enabled."));
 			
 			try {
 				$sql = SQL::current();
@@ -477,8 +539,9 @@
 				                       `id` DESC
 				                       LIMIT {$limit}");
 				return $result->fetchAll(PDO::FETCH_OBJ);
-			} catch (Exception $error) {
-				return new IXR_Error(500, $error->getMessage());
+			}
+			catch (Exception $error) {
+				throw new Exception($error->getMessage());
 			}
 		}
 		
@@ -499,28 +562,21 @@
 		 * Function: auth
 		 * Authenticates a given login and password, and checks for appropriate permission
 		 */
-		private function auth($login, $password, $permission = 'add_post') {
+		private function auth($login, $password, $do = 'add') {
+			global $current_user, $user, $group;
+			
 			try {
-				$sql = SQL::current();
-				$result = $sql->query("SELECT `{$permission}`
-				                       FROM `{$sql->prefix}groups`
-				                       WHERE `id` =
-				                       (
-				                         SELECT  `group_id`
-				                         FROM `{$sql->prefix}users`
-				                         WHERE `login` = ? AND `password` = ?
-				                         LIMIT 1
-				                       )
-				                       LIMIT 1",
-				                       array($login, md5($password)));
-			} catch (Exception $error) {
-				return new IXR_Error(500, $error->getMessage());
+				$current_user = $user->authenticate($login, md5($password));
+				
+				$user->load($current_user, md5($password));
+				$group->load();
+				
+				if (!$user->can($do.'_post'))
+					throw new Exception(__(sprintf("You don't have permission to %s posts.", $do)));
 			}
-			
-			$permission = $result->fetchColumn();
-			$result->closeCursor();
-			
-			return ($permission) ? true : new IXR_Error(403, __("You don't have permission."));
+			catch (Exception $error) {
+				throw new Exception($error->getMessage());
+			}
 		}
 	}
 	$server = new XMLRPC();
