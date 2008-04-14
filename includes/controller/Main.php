@@ -150,7 +150,7 @@
 				}
 				elseif ($attr == "author")
 				{
-					$where.= "and `user_id` = :attrauthor";
+					$where.= " and `user_id` = :attrauthor";
 					$params[':attrauthor'] = $sql->select("users",
 					                                      "id",
 					                                      "`login` = :login",

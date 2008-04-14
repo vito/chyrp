@@ -10,7 +10,7 @@
 		 * 
 		 * Parameters:
 		 * 	$group_id - The group ID to load. If no group is given, it defaults to the $current_user's group ID. 
-		 * 						 	If they are not logged in and no group ID is given, it will load the Guest group.
+		 * 	            If they are not logged in and no group ID is given, it will load the Guest group.
 		 */
 		function load($group_id = null) {
 			global $user;
@@ -118,9 +118,9 @@
 		function add_permission($name) {
 			$sql = SQL::current();
 			
-			$permissions = $sql->query("select `name` `".$sql->prefix."permissions`")->fetch();
+			$check = $sql->query("select `name` from `".$sql->prefix."permissions` where `name` = '".$name."'")->fetchColumn();
 			
-			if (in_array($name, $permissions))
+			if ($check == $name)
 				return; # Permission already exists.
 			
 			$sql->insert("permissions", array("name" => ":name"), array(":name" => $name));

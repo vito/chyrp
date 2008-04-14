@@ -123,17 +123,22 @@
 		 */
 		function can($function, $user_id = null) {
 			global $group, $current_user;
-			$user = (is_null($user_id)) ? $current_user : $user_id ;
+			$user_id = (is_null($user_id)) ? $current_user : $user_id ;
 			$config = Config::current();
-			if (($this->logged_in() and $group->id == $this->group_id) or (!$this->logged_in() and $group->id == $config->guest_group)) return $group->$function;
-			$group = (!$this->logged_in()) ? $config->guest_group : $this->info("group_id", $user) ;
 			$sql = SQL::current();
-			$check_group = $sql->query("select `".$function."` from `".$sql->prefix."groups`
+			
+			if (($this->logged_in() and $group->id == $this->group_id) or (!$this->logged_in() and $group->id == $config->guest_group))
+				return isset($group->$function);
+			
+			$group_id = (!$this->logged_in()) ? $config->guest_group : $this->info("group_id", $user_id) ;
+			$permissions = $sql->query("select `permissions` from `".$sql->prefix."groups`
 			                            where `id` = :id",
 			                           array(
-			                           	":id" => $group
+			                           	":id" => $group_id
 			                           ));
-			return ($check_group->fetchAll()) ? true : false;
+			$permissions = Spyc::YAMLParse($permissions);
+			
+			return isset($permissions[$function]);
 		}
 		
 		/**
