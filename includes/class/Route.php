@@ -57,7 +57,7 @@
 			$clean_url = "/".$clean_url;
 			
 			$urls = array(
-				"/\/id\/([0-9]+)\//" => "?action=view&id=$1",
+				"/\/id\/([0-9]+)\//" => "?action=view&amp;id=$1",
 				"/\/page\/([^\/]+)\//" => "?action=page&amp;url=$1",
 				"/\/search\//" => "?action=search",
 				"/\/search\/([^\/]+)\//" => "?action=search&amp;query=$1",
@@ -85,7 +85,7 @@
 				$config = Config::current();
 				$url = $config->url.$url;
 			}
-			header("Location: ".$url);
+			header("Location: ".html_entity_decode($url));
 			exit;
 		}
 		

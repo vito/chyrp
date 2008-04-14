@@ -10,12 +10,12 @@
 		
 		/**
 		 * Function: __construct
-		 * Grabs the specified post and injects it into the <Post> class.
+		 * Grabs the specified page and injects it into the <Page> class.
 		 * 
 		 * Parameters:
-		 * 	$post_id - The post's unique ID.
-		 * 	$where - A SQL query to grab the post by.
-		 * 	$filter - Whether or not to run it through the _parse_post_ filter.
+		 * 	$page_id - The page's unique ID.
+		 * 	$where - A SQL query to grab the page by.
+		 * 	$filter - Whether or not to run it through the _parse_page_ filter.
 		 */
 		public function __construct($page_id, $options = array()) {
 			global $current_page;
@@ -28,8 +28,8 @@
 			$sql = SQL::current();
 			if ((!empty($read_from) && $read_from))
 				$read = $read_from;
-			elseif (isset($post_id) and $post_id == $current_post["id"])
-				$read = $current_post;
+			elseif (isset($page_id) and $page_id == $current_page["id"])
+				$read = $current_page;
 			elseif (!empty($where))
 				$read = $sql->select("pages",
 				                     "*",
@@ -43,7 +43,7 @@
 				                     "`id` = :pageid",
 				                     "id",
 				                     array(
-				                     	":pageid" => $post_id
+				                     	":pageid" => $page_id
 				                     ),
 				                     1)->fetch();
 			
@@ -193,7 +193,7 @@
 		 * 	$fallback - What to display if the result is empty.
 		 * 
 		 * Returns:
-		 * 	false - if $post_id isn't set.
+		 * 	false - if $page_id isn't set.
 		 * 	SQL result - if the SQL result isn't empty.
 		 * 	$fallback - if the SQL result is empty.
 		 */
@@ -224,7 +224,7 @@
 		 * Returns:
 		 * 	true - if a page with that ID is in the database.
 		 */
-		static function exists($post_id) {
+		static function exists($page_id) {
 			$sql = SQL::current();
 			$check = $sql->select("pages",
 			                      "id",
