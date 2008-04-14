@@ -26,6 +26,10 @@
 			                     ))->fetch() as $key => $val)
 				if (!is_int($key))
 					$this->$key = $val;
+			
+			$permissions = Spyc::YAMLLoad($this->permissions);
+			foreach ($permissions as $name, $bool)
+				$this->$name = $bool;
 		}
 		
 		/**
@@ -36,7 +40,7 @@
 		 * 
 		 * Parameters:
 		 * 	$name - The group's Name
-		 * 	$permissions - A key => val array of all of the permissions.
+		 * 	$permissions - An array of all of the permissions.
 		 * 
 		 * See Also:
 		 * 	<update>
@@ -45,15 +49,8 @@
 			$query = "";
 			
 			$sql = SQL::current();
-			$get_columns = $sql->query("show columns from `".$sql->prefix."groups`");
-			$fields = array("`name`" => ":name");
-			$params = array(":name" => $name);
-			while ($column = $get_columns->fetch()) {
-				if (is_int($column) or $column["Field"] == "id" or $column["Field"] == "name") continue;
-				$value = (isset($permissions[$column["Field"]])) ? 1 : 0 ;
-				$fields["`".$column["Field"]."`"] = ":".$column["Field"];
-				$params[":".$column["Field"]] = $value;
-			}
+			$fields = array("`name`" => ":name", "`permissions`" => ":permissions");
+			$params = array(":name" => $name, ":permissions" => Spyc::YAMLDump($permissions));
 			
 			$sql->query("insert into `".$sql->prefix."groups`
 			             (".implode(",", array_keys($fields)).")
@@ -74,23 +71,19 @@
 		 * Parameters:
 		 * 	$group_id - The group to update.
 		 * 	$name - The new Name to set.
-		 * 	$permissions - A key => val array of the new permissions to set.
+		 * 	$permissions - An array of the new permissions to set.
 		 */
 		function update($group_id, $name, $permissions) {
 			$sql = SQL::current();
-			$get_columns = $sql->query("show columns from `".$sql->prefix."groups`");
-			$fields = array("`name` = :name");
-			$params = array(":name" => $name, ":id" => $group_id);
-			while ($column = $get_columns->fetch()) {
-				if ($column["Field"] == "id" or $column["Field"] == "name") continue;
-				$value = (isset($permissions[$column["Field"]])) ? "1" : "0" ;
-				$fields[] = "`".$column["Field"]."` = :".$column["Field"];
-				$params[":".$column["Field"]] = $value;
-			}
+			
+			$fields = array("`name`" => ":name", "`permissions`" => ":permissions");
+			$params = array(":name" => $name, ":permissions" => Spyc::YAMLDump($permissions), ":id" => $group_id);
+			
 			$sql->query("update `".$sql->prefix."groups`
 			             set ".implode(",", $fields)."
 			             where `id` = :id",
 			            $params);
+			
 			$trigger = Trigger::current();
 			$trigger->call("update_group", array($group_id, $name, $permissions));
 		}
@@ -124,16 +117,13 @@
 		 */
 		function add_permission($name) {
 			$sql = SQL::current();
-			$get_columns = $sql->query("show columns from `".$sql->prefix."groups`");
-			$columns = array();
-			while ($result = $get_columns->fetch())
-				$columns[] = $result["Field"];
 			
-			if (in_array($name, $columns))
+			$permissions = $sql->query("select `name` `".$sql->prefix."permissions`")->fetch();
+			
+			if (in_array($name, $permissions))
 				return; # Permission already exists.
 			
-			$sql->query("alter table `".$sql->prefix."groups`
-			             add `".$name."` tinyint(1) not null default '0'");
+			$sql->insert("permissions", array("name" => ":name"), array(":name" => $name));
 		}
 		
 		/**
@@ -145,16 +135,7 @@
 		 */
 		function remove_permission($name) {
 			$sql = SQL::current();
-			$get_columns = $sql->query("show columns from `".$sql->prefix."groups`");
-			$columns = array();
-			while ($result = $get_columns->fetch())
-				$columns[] = $result["Field"];
-			
-			if (!in_array($name, $columns))
-				return; # Permission doesn't exist.
-				
-			$sql->query("alter table `".$sql->prefix."groups`
-			             drop `".$name."`");
+			$sql->query("delete from `".$sql->prefix."permissions` where `name` = '".$name."'");
 		}
 		
 		/**

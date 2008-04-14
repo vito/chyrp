@@ -128,125 +128,44 @@
 			             	`group_id` int(11) not null default '0', 
 			             	`joined_at` datetime not null default '0000-00-00 00:00:00', 
 			             	primary key (`id`)
+			             	unique key (`login`)
 			             ) default charset=utf8");
 		
 			# Groups table
 			$sql->query("create table if not exists `".$sql->prefix."groups` (
 			             	`id` int(11) not null auto_increment, 
 			             	`name` varchar(100) not null default '', 
-			             	`view_site` tinyint(1) not null default '1', 
-			             	`change_settings` tinyint(1) not null default '0', 
-			             	`add_post` tinyint(1) not null default '0', 
-			             	`edit_post` tinyint(1) not null default '0', 
-			             	`delete_post` tinyint(1) not null default '0', 
-			             	`view_private` tinyint(1) not null default '0', 
-			             	`view_draft` tinyint(1) not null default '0', 
-			             	`add_page` tinyint(1) not null default '0', 
-			             	`edit_page` tinyint(1) not null default '0', 
-			             	`delete_page` tinyint(1) not null default '0', 
-			             	`edit_user` tinyint(1) not null default '0', 
-			             	`delete_user` tinyint(1) not null default '0', 
-			             	`add_group` tinyint(1) not null default '0', 
-			             	`edit_group` tinyint(1) not null default '0', 
-			             	`delete_group` tinyint(1) not null default '0', 
+		                 	`permissions` longtext not null, 
 			             	primary key (`id`)
+			             	unique key (`name`)
 			             ) default charset=utf8");
-		
-			# Insert default groups
-			$sql->query("insert ignore into `".$sql->prefix."groups` set 
-			             `id` = 1, 
-			             `name` = 'Administrator', 
-			             `view_site` = 1, 
-			             `change_settings` = 1, 
-			             `add_post` = 1, 
-			             `edit_post` = 1, 
-			             `delete_post` = 1, 
-			             `view_private` = 1, 
-			             `view_draft` = 1, 
-			             `add_page` = 1, 
-			             `edit_page` = 1, 
-			             `delete_page` = 1, 
-			             `edit_user` = 1, 
-			             `delete_user` = 1, 
-			             `add_group` = 1, 
-			             `edit_group` = 1, 
-			             `delete_group` = 1");
-		
-			$sql->query("insert ignore into `".$sql->prefix."groups` set 
-			             `id` = 2, 
-			             `name` = 'Member', 
-			             `view_site` = 1, 
-			             `change_settings` = 0, 
-			             `add_post` = 0, 
-			             `edit_post` = 0, 
-			             `delete_post` = 0, 
-			             `view_private` = 0, 
-			             `view_draft` = 0, 
-			             `add_page` = 0, 
-			             `edit_page` = 0, 
-			             `delete_page` = 0, 
-			             `edit_user` = 0, 
-			             `delete_user` = 0, 
-			             `add_group` = 0, 
-			             `edit_group` = 0, 
-			             `delete_group` = 0");
-		
-			$sql->query("insert ignore into `".$sql->prefix."groups` set 
-			             `id` = 3, 
-			             `name` = 'Friend', 
-			             `view_site` = 1, 
-			             `change_settings` = 0, 
-			             `add_post` = 0, 
-			             `edit_post` = 0, 
-			             `delete_post` = 0, 
-			             `view_private` = 0, 
-			             `view_draft` = 1, 
-			             `add_page` = 0, 
-			             `edit_page` = 0, 
-			             `delete_page` = 0, 
-			             `edit_user` = 0, 
-			             `delete_user` = 0, 
-			             `add_group` = 0, 
-			             `edit_group` = 0, 
-			             `delete_group` = 0");
-		
-			$sql->query("insert ignore into `".$sql->prefix."groups` set 
-			             `id` = 4, 
-			             `name` = 'Banned', 
-			             `view_site` = 0, 
-			             `change_settings` = 0, 
-			             `add_post` = 0, 
-			             `edit_post` = 0, 
-			             `delete_post` = 0, 
-			             `view_private` = 0, 
-			             `view_draft` = 0, 
-			             `add_page` = 0, 
-			             `edit_page` = 0, 
-			             `delete_page` = 0, 
-			             `edit_user` = 0, 
-			             `delete_user` = 0, 
-			             `add_group` = 0, 
-			             `edit_group` = 0, 
-			             `delete_group` = 0");
-		
-			$sql->query("insert ignore into `".$sql->prefix."groups` set 
-			             `id` = 5, 
-			             `name` = 'Guest', 
-			             `view_site` = 1, 
-			             `change_settings` = 0, 
-			             `add_post` = 0, 
-			             `edit_post` = 0, 
-			             `delete_post` = 0, 
-			             `view_private` = 0, 
-			             `view_draft` = 0, 
-			             `add_page` = 0, 
-			             `edit_page` = 0, 
-			             `delete_page` = 0, 
-			             `edit_user` = 0, 
-			             `delete_user` = 0, 
-			             `add_group` = 0, 
-			             `edit_group` = 0, 
-			             `delete_group` = 0");
+			
+			# Permissions table
+			$sql->query("create table if not exists `".$sql->prefix."permissions` (
+			             	`id` int(11) not null auto_increment, 
+			             	`name` varchar(100) not null default ''
+			             	primary key (`id`)
+			             	unique key (`name`)
+			             ) default charset=utf8");
+			
+			$permissions = array("view_site", "change_settings", "add_post", "edit_post", "delete_post", "view_private", "view_draft", "add_page", "edit_page", "delete_page", "edit_user", "delete_user", "add_group", "edit_group", "delete_group");
+			
+			foreach ($permissions as $permission)
+				$sql->query("insert into `".$sql->prefix."permissions` set `name` = '".$permissions."'");
+			
+			$groups = array(
+				"admin" => $permissions,
+				"member" => Spyc::YAMLDump(array("view_site")),
+				"friend" => Spyc::YAMLDump(array("view_site", "view_private")),
+				"banned" => Spyc::YAMLDump(array()),
+				"guest" => Spyc::YAMLDump(array("view_site", "view_private"))
+			);
+			
+			# Insert the default groups (see above)
+			foreach($groups as $name => $permissions)
+				$sql->query("insert into `".$sql->prefix."groups` set 
+			                 `name` = '".ucfirst($name).", 
+			                 `permissions` = '".$permissions."'");
 		
 			if (!file_exists(BASE_DIR."/.htaccess") and !is_writable(BASE_DIR))
 				$errors[] = __("Could not generate .htaccess file. Clean URLs will not be available.");
@@ -283,18 +202,18 @@
 				$sql->query("insert into `".$sql->prefix."users` set 
 				             	`login` = :login, 
 				             	`password` = :password, 
-								`email` = :email, 
-								`website` = :website, 
-								`group_id` = 1, 
-								`joined_at` = :datetime",
-                            array(
-                            	":login" => $_POST['login'],
-                            	":password" => md5($_POST['password_1']),
-                            	":email" => $_POST['email'],
-                            	":website" => $config->url,
-                            	":datetime" => datetime()
-                            ));
-		
+				             	`email` = :email, 
+				             	`website` = :website, 
+				             	`group_id` = 1, 
+				             	`joined_at` = :datetime",
+				            array(
+				            	":login" => $_POST['login'],
+				            	":password" => md5($_POST['password_1']),
+				            	":email" => $_POST['email'],
+				            	":website" => $config->url,
+				            	":datetime" => datetime()
+				            ));
+
 			setcookie("chyrp_user_id", $sql->db->lastInsertId(), time() + 2592000, "/");
 			setcookie("chyrp_password", md5($_POST['password_1']), time() + 2592000, "/");
 			
