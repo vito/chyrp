@@ -188,8 +188,10 @@
 				error(__("Access Denied"), __("Invalid security key."));
 			if (!$user->can('edit_group'))
 				error(__("Access Denied"), __("You do not have sufficient privileges to edit groups."));
+			
+			$permissions = array_keys($_POST['permissions']);
 
-			$group->update($_POST['id'], $_POST['name'], $_POST['permissions']);
+			$group->update($_POST['id'], $_POST['name'], $permissions);
 			
 			$route = Route::current();
 			$route->redirect("/admin/?action=manage&sub=group&updated");

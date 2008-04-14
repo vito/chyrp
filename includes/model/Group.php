@@ -98,9 +98,7 @@
 			$fields = array("`name`" => ":name", "`permissions`" => ":permissions");
 			$params = array(":name" => $name, ":permissions" => Spyc::YAMLDump($permissions), ":id" => $group_id);
 			
-			$sql->query("update `".$sql->prefix."groups`
-			             set ".implode(",", $fields)."
-			             where `id` = :id",
+			$sql->query("update `".$sql->prefix."groups` set `name` = :name, `permissions` = :permissions where `id` = :id",
 			            $params);
 			
 			$trigger = Trigger::current();
