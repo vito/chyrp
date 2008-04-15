@@ -17,7 +17,7 @@
 							<select name="month">
 								<option value="">----------</option>
 <?php foreach ($theme->list_archives() as $archive): ?>
-								<option value="<?php echo $archive["url"]; ?>"<?php if (!empty($_GET['month']) and $_GET['month'] == $archive["url"]) echo ' selected="selected"'; ?>><?php echo $archive["month"]." ".$archive["year"]; ?></option>
+								<option value="<?php echo $archive["year"]."-".month_to_number($archive["month"]); ?>"<?php if (!empty($_GET['month']) and $_GET['month'] == $archive["url"]) echo ' selected="selected"'; ?>><?php echo $archive["month"]." ".$archive["year"]; ?></option>
 <?php endforeach; ?>
 							</select>
 							<button type="submit" class="inline"><?php echo __("Show &rarr;"); ?></button>
@@ -41,8 +41,6 @@
 						</tr>
 <?php
 	if (!empty($_GET['query']) and !empty($_GET['month'])) {
-		$split = explode("-", $_GET['month']);
-		$month = $split[1]."-".$split[0];
 		$get_posts = $sql->select("posts",
 		                          "*",
 		                          "`xml` like :query and
@@ -50,7 +48,7 @@
 		                          "`created_at` desc",
 		                          array(
 		                          	":query" => "%".$_GET['query']."%",
-		                          	":month" => $month."%"
+		                          	":month" => $_GET['month']."%"
 		                          ));
 	} elseif (!empty($_GET['query'])) {
 		$get_posts = $sql->select("posts",
@@ -61,15 +59,13 @@
 		                          	":query" => "%".$_GET['query']."%"
 		                          ));
 	} elseif (!empty($_GET['month'])) {
-		$split = explode("-", $_GET['month']);
-		$month = $split[1]."-".$split[0];
 		$get_posts = $paginate->select("posts",
 		                               "*",
 		                               "`created_at` like :month",
 		                               "`created_at` desc",
 		                               25, "page",
 		                               array(
-		                               	":month" => $month."%"
+		                               	":month" => $_GET['month']."%"
 		                               ));
 	} else {
 		$get_posts = $paginate->select("posts",

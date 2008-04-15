@@ -865,3 +865,15 @@
 		$trigger->call("not_found");
 		$theme->load("layout/footer.php", $scope);
 	}
+	
+	/**
+	 * Function: month_to_number
+	 * Converts a month name (e.g. June) to its number (e.g. 6)
+	 * 
+	 * Parameters:
+	 * 	$name - The month.
+	 */
+	function month_to_number($month) {
+		$int = array_search($month, array("January", "February", "March", "April", "May", "June", "July", "August", "September", "August", "November", "December")) + 1;
+		return ($int < 9) ? "0".$int : $int ;
+	}
