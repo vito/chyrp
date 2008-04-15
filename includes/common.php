@@ -75,9 +75,6 @@
 	if (!ADMIN and !JAVASCRIPT and !XML_RPC and strpos($_SERVER['REQUEST_URI'], "?"))
 		$config->clean_urls = false;
 	
-	if (!count($config->enabled_feathers))
-		error(__("No Feathers"), __("There aren't any feathers enabled."));
-	
 	$sql->connect();
 	
 	# File: Helpers
