@@ -238,24 +238,20 @@
 		 * String: $private
 		 * SQL "where" text for which posts the current user can view.
 		 */
-		$private = "(`status` = 'public'";
-		$private.= ($user->logged_in()) ? " or `status` = 'registered_only'" : "" ;
-		$private.= ($user->can('view_private')) ? " or `status` = 'private'" : "" ;
-		if ($action == "view")
-			$private.= ($user->can('view_draft')) ? " or `status` = 'draft'" : "" ;
-		$private.= ")";
+		$statuses = array("public");
+		if ($user->logged_in())
+			$statuses[] = "registered_only";
+		if ($user->can("view_private"))
+			$statuses[] = "private";
+		if ($action == "view" and $user->can("view_draft"))
+			$statuses[] = "draft";
+		$private = "`status` in ('".implode("', '", $statuses)."')";
 		
 		/**
 		 * String: $enabled_feathers
 		 * SQL "where" text for each of the feathers. Prevents posts of a disabled Feather from showing.
 		 */
-		$sql = SQL::current();
-		$enabled_feathers = " and (";
-		foreach ($config->enabled_feathers as $key => $the_feather)
-			$enabled_feathers.= ($key == 0) ?
-			                    "`feather` = ".$sql->quote($config->enabled_feathers[0]) :
-			                    " or `feather` = ".$sql->quote($the_feather) ;
-		$enabled_feathers.= ")";
+		$enabled_feathers = " and `feather` in ('".implode("', '", $config->enabled_feathers)."')";
 		
 		if (!empty($action) and (method_exists($main, $action) or (ADMIN and method_exists($admin, $action) or ADMIN and $trigger->exists("admin_".$action)) or $trigger->exists("route_".$action))) {
 			if ($is_feed)
