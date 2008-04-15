@@ -152,19 +152,7 @@
 		}
 		
 		static function metaWeblog_getPost($post, $struct) {
-			$struct['mt_tags'] = '';
-			
-			$sql = SQL::current();
-			$result = $sql->query("select `name`
-			                       from `{$sql->prefix}tags`
-			                       where `post_id` = :id",
-			                       array(":id" => $post->id));
-			
-			while ($tag = $result->fetchColumn())
-				$struct['mt_tags'] .= "$tag,";
-			
-			$struct['mt_tags'] = rtrim($struct['mt_tags'], ',');
-			
+			$struct['mt_tags'] = $post->tags;
 			return array($post, $struct);
 		}
 	}

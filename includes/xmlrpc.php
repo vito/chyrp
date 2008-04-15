@@ -150,7 +150,7 @@
 					
 					if (!empty($post->mt_more_text))
 					{
-						$more = explode('<!--more-->', $post->body);
+						$more = explode("\n\n<!--more-->\n\n", $post->body);
 						$struct['description'] = array_shift($more);
 						$struct['mt_text_more'] = $more;
 					}
@@ -235,7 +235,7 @@
 				
 				if (!empty($post->mt_more_text))
 				{
-					$more = explode('<!--more-->', $post->body);
+					$more = explode("\n\n<!--more-->\n\n", $post->body);
 					$struct['description'] = array_shift($more);
 					$struct['mt_text_more'] = $more;
 				}
@@ -257,29 +257,34 @@
 				$this->auth($args[1], $args[2], 'edit');
 				
 				# Support for extended body
-				$body = $args[3]['description'];
-				
-				if (!empty($args[3]['mt_text_more']))
-				{
-					$body .= "<!--more-->".$args[3]['mt_text_more'];
+				if (empty($args[3]['mt_text_more'])) {
+					$body = $args[3]['description'];
+					$_POST['options']['mt_more_text'] = false;
+				}
+				else {
+					$body = $args[3]['description'].'<!--more-->'.$args[3]['mt_text_more'];
 					$_POST['options']['mt_more_text'] = true;
 				}
+				
+				# Add excerpt to body so it isn't lost
+				if (!empty($args[3]['mt_excerpt']))
+					$body = $args[3]['mt_excerpt'].$body;
 				
 				if (trim($body) == '')
 					return new IXR_Error(500, __("Body can't be blank."));
 				
 				# Support for adding tags to post xml
 				if (isset($args[3]['mt_tags']))
-					$_POST['options']['tags'] = $args[3]['mt_tags'];
+					$_POST['option']['tags'] = $args[3]['mt_tags'];
 				
 				# Support for adding comment_status to post xml
 				if (isset($args[3]['mt_allow_comments']))
-					$_POST['options']['comment_status'] = ($args[3]['mt_allow_comments'] == 1) ? 'open' : 'closed';
+					$_POST['option']['comment_status'] = ($args[3]['mt_allow_comments'] == 1) ? 'open' : 'closed';
 				
 				$clean = sanitize(fallback($args[3]['mt_basename'], $args[3]['title'], true));
 				$url = Post::check_url($clean);
 				
-				$_POST['created_at'] = fallback($this->convertDateCreated($args[3]), datetime(), true);
+				$_POST['created_at'] = fallback($this->convertFromDateCreated($args[3]), datetime(), true);
 				
 				$post = Post::add(
 					array(
@@ -288,6 +293,9 @@
 					),
 					$clean,
 					$url);
+
+				$trigger = Trigger::current();
+				$trigger->call('metaWeblog_editPost', array($post, $args[3]), true);
 				
 				# Send any and all pingbacks to URLs in the body
 				$config = Config::current();
@@ -313,24 +321,29 @@
 					throw new Exception (__("Fake post ID, or nonexistant post."));
 				
 				# Support for extended body
-				$body = $args[3]['description'];
-				
-				if (!empty($args[3]['mt_text_more']))
-				{
-					$body .= "<!--more-->".$args[3]['mt_text_more'];
+				if (empty($args[3]['mt_text_more'])) {
+					$body = $args[3]['description'];
+					$_POST['options']['mt_more_text'] = false;
+				}
+				else {
+					$body = $args[3]['description'].'<!--more-->'.$args[3]['mt_text_more'];
 					$_POST['options']['mt_more_text'] = true;
 				}
+				
+				# Add excerpt to body so it isn't lost
+				if (!empty($args[3]['mt_excerpt']))
+					$body = $args[3]['mt_excerpt'].$body;
 				
 				if (trim($body) == '')
 					return new IXR_Error(500, __("Body can't be blank."));
 				
 				# Support for adding tags to post xml
 				if (isset($args[3]['mt_tags']))
-					$_POST['options']['tags'] = $args[3]['mt_tags'];
+					$_POST['option']['tags'] = $args[3]['mt_tags'];
 				
 				# Support for adding comment_status to post xml
 				if (isset($args[3]['mt_allow_comments']))
-					$_POST['options']['comment_status'] = ($args[3]['mt_allow_comments'] == 1) ? 'open' : 'closed';
+					$_POST['option']['comment_status'] = ($args[3]['mt_allow_comments'] == 1) ? 'open' : 'closed';
 				
 				$post = new Post($args[0], array("filter" => false));
 				$post->update(
@@ -348,10 +361,13 @@
 						)
 					),
 					fallback(
-						$this->convertDateCreated($args[3]),
+						$this->convertFromDateCreated($args[3]),
 						$post->created_at,
 						true
 					));
+				
+				$trigger = Trigger::current();
+				$trigger->call('metaWeblog_editPost', array($post, $args[3]), true);
 				
 				return true;
 			}
@@ -386,17 +402,17 @@
 		 */
 		public function blogger_getUsersBlogs($args) {
 			try {
-				$this->auth($args[1], $args[2], 'delete');			
+				$this->auth($args[1], $args[2]);
+				
+				$config = Config::current();
+				return array(array(
+					'url'      => $config->url,
+					'blogName' => $config->name,
+					'blogid'   => 1));
 			}
 			catch (Exception $error) {
 				return new IXR_Error(500, $error->getMessage());
 			}
-			
-			$config = Config::current();
-			return array(array(
-				'url'      => $config->url,
-				'blogName' => $config->name,
-				'blogid'   => 1));
 		}
 		
 		/**
@@ -429,11 +445,10 @@
 		public function mt_getRecentPostTitles($args) {
 			try {
 				$this->auth($args[1], $args[2]);
-				$posts = $this->getRecentPosts($args[3]);
 				
 				$result = array();
-
-				foreach ($posts as $post) {
+				
+				foreach ($this->getRecentPosts($args[3]) as $post) {
 					$post = new Post(null, array("read_from" => $post, "filter" => false));
 
 					$result[] = array(
@@ -476,11 +491,13 @@
 				$this->auth($args[1], $args[2]);
 				
 				if (!Post::exists($args[0]))
-					throw new Exception(__("Fake post ID, or nonexistant post."));
+					return new IXR_Error(500, __("Fake post ID, or nonexistant post."));
+				
+				$post = new Post($args[0]);
 				
 				$trigger = Trigger::current();
 				$categories = array();
-				list($args[0], $categories) = $trigger->filter('mt_getPostCategories', array($args[0], $categories), true);
+				list($post, $categories) = $trigger->filter('mt_getPostCategories', array($post, $categories), true);
 				return $categories;
 			}
 			catch (Exception $error) {
@@ -499,9 +516,10 @@
 				if (!Post::exists($args[0]))
 					throw new Exception(__("Fake post ID, or nonexistant post."));
 				
+				$post = new Post($args[0]);
+				
 				$trigger = Trigger::current();
-				$categories = array();
-				$trigger->call('mt_setPostCategories', array($args[0], $args[3]), true);
+				$trigger->call('mt_setPostCategories', array($post, $args[3]), true);
 				return true;
 			}
 			catch (Exception $error) {
@@ -522,6 +540,11 @@
 		 * Returns an array of the most recent posts.
 		 */
 		private function getRecentPosts($limit) {
+			global $user;
+			
+			$statuses = "'public'";
+			$statuses.= ($user->can('view_drafts')) ? ", 'draft'" : '';
+			
 			$config = Config::current();
 			if (!in_array("text", $config->enabled_feathers))
 				throw new Exception(__("Text feather is not enabled."));
@@ -532,7 +555,7 @@
 				                       FROM `{$sql->prefix}posts`
 				                       WHERE
 				                       `feather` = 'text' AND
-				                       `status` = 'public'
+				                       `status` IN ( {$statuses} )
 				                       ORDER BY
 				                       `pinned` DESC,
 				                       `created_at` DESC,
@@ -546,10 +569,10 @@
 		}
 		
 		/**
-		 * Function: convertDateCreated
+		 * Function: convertFromDateCreated
 		 * Converts an IXR_Date (in $args['dateCreated']) to SQL date format.
 		 */
-		private function convertDateCreated($args) {
+		private function convertFromDateCreated($args) {
 			if (!array_key_exists('dateCreated', $args))
 				return null;
 			else {

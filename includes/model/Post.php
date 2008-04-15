@@ -514,7 +514,7 @@
 			$parse = simplexml_load_string($this->xml);
 			foreach ($parse as $key => $val)
 				if (!is_int($key))
-					$this->$key = $val;
+					$this->$key = (string) $val;
 			
 			if ($filter) {
 				$class = camelize($this->feather);
