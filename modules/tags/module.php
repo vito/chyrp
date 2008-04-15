@@ -213,7 +213,7 @@
 		$tag_links = array();
 		$route = Route::current();
 		while ($tag = $get_tags->fetchObject()) {
-			$link_before = ($link) ? '<a href="'.$route->url("tag/".$tag->clean."/").'">' : '' ;
+			$link_before = ($link) ? '<a href="'.$route->url("tag/".$tag->clean."/").'" rel="tag">' : '' ;
 			$link_after = ($link) ? '</a>' : '' ;
 			$tag_links[] = $link_before.$tag->name.$link_after;
 		}
