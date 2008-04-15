@@ -2,7 +2,6 @@
 	require_once "includes/common.php";
 	
 	$trigger->call("top");
-	echo "<pre>".print_r($get_posts->queryString, true)."</pre>";
 	
 	switch($action) {
 		case "index": case "search": case "drafts": case "feather":
