@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v1.1.3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-03-12 17:18-0500\n"
+"PO-Revision-Date: 2008-04-15 19:22-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -47,14 +47,14 @@ msgstr ""
 #: modules/comments/pages/admin/settings/comments.php:16
 #: modules/comments/pages/admin/manage/comment.php:27
 #: modules/comments/pages/admin/edit/comment.php:29
-#: modules/comments/module.php:622
+#: modules/comments/module.php:623
 msgid "Approved"
 msgstr ""
 
 #: modules/comments/pages/admin/settings/comments.php:17
 #: modules/comments/pages/admin/manage/comment.php:28
 #: modules/comments/pages/admin/edit/comment.php:30
-#: modules/comments/module.php:623
+#: modules/comments/module.php:624
 msgid "Denied"
 msgstr ""
 
@@ -111,7 +111,7 @@ msgstr ""
 
 #: modules/comments/pages/admin/manage/spam.php:31
 #: modules/comments/pages/admin/edit/comment.php:15
-#: modules/comments/module.php:608
+#: modules/comments/module.php:609
 msgid "Author"
 msgstr ""
 
@@ -215,7 +215,7 @@ msgid "spam"
 msgstr ""
 
 #: modules/comments/pages/admin/edit/comment.php:4
-#: modules/comments/module.php:602
+#: modules/comments/module.php:603
 msgid "Body"
 msgstr ""
 
@@ -224,28 +224,28 @@ msgid "Save"
 msgstr ""
 
 #: modules/comments/pages/admin/edit/comment.php:19
-#: modules/comments/module.php:612
+#: modules/comments/module.php:613
 msgid "Author URL"
 msgstr ""
 
 #: modules/comments/pages/admin/edit/comment.php:23
-#: modules/comments/module.php:616
+#: modules/comments/module.php:617
 msgid "Author E-Mail"
 msgstr ""
 
 #: modules/comments/pages/admin/edit/comment.php:27
-#: modules/comments/module.php:620
+#: modules/comments/module.php:621
 msgid "Status"
 msgstr ""
 
 #: modules/comments/pages/admin/edit/comment.php:31
 #: modules/comments/module.php:347
-#: modules/comments/module.php:624
+#: modules/comments/module.php:625
 msgid "Spam"
 msgstr ""
 
 #: modules/comments/pages/admin/edit/comment.php:35
-#: modules/comments/module.php:628
+#: modules/comments/module.php:629
 msgid "Timestamp"
 msgstr ""
 
@@ -321,23 +321,23 @@ msgid "&laquo; Less Options"
 msgstr ""
 
 #: modules/comments/module.php:438
-#: modules/comments/module.php:605
+#: modules/comments/module.php:606
 msgid "More Options &raquo;"
 msgstr ""
 
-#: modules/comments/module.php:637
+#: modules/comments/module.php:638
 msgid "Update"
 msgstr ""
 
-#: modules/comments/module.php:637
+#: modules/comments/module.php:638
 msgid "or"
 msgstr ""
 
-#: modules/comments/module.php:638
+#: modules/comments/module.php:639
 msgid "Cancel"
 msgstr ""
 
-#: modules/comments/module.php:763
+#: modules/comments/module.php:769
 msgid "% Comment[s]"
 msgstr ""
 
