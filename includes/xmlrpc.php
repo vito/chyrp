@@ -555,12 +555,10 @@
 		 * Converts an IXR_Date (in $args['dateCreated']) to SQL date format.
 		 */
 		private function convertFromDateCreated($args) {
-			if (!array_key_exists('dateCreated', $args))
+			if (array_key_exists('dateCreated', $args))
+				return when('Y-m-d H:i:s', $args['dateCreated']->getIso());
+			else
 				return null;
-			else {
-				$args['dateCreated'] = date('Z') + $args['dateCreated']->getTimestamp();
-				return date('Y-m-d H:i:s', $args['dateCreated']);
-			}
 		}
 		
 		/**
