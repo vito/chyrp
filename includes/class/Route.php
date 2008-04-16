@@ -9,17 +9,18 @@
 		 * The translation array of the post URL setting to regular expressions.
 		 * Passed through the route_code filter.
 		 */
-		public $code = array('(year)'    => '([0-9]{4})',
-		                     '(month)'   => '([0-9]{1,2})',
-		                     '(day)'     => '([0-9]{1,2})',
-		                     '(hour)'    => '([0-9]{1,2})',
-		                     '(minute)'  => '([0-9]{1,2})',
-		                     '(second)'  => '([0-9]{1,2})',
-		                     '(id)'      => '([0-9]+)',
-		                     '(author)'  => '([^\/]+)',
-		                     '(clean)'   => '([^\/]+)',
-		                     '(url)'     => '([^\/]+)',
-		                     '(feather)' => '([^\/]+)');
+		public $code = array('(year)'     => '([0-9]{4})',
+		                     '(month)'    => '([0-9]{1,2})',
+		                     '(day)'      => '([0-9]{1,2})',
+		                     '(hour)'     => '([0-9]{1,2})',
+		                     '(minute)'   => '([0-9]{1,2})',
+		                     '(second)'   => '([0-9]{1,2})',
+		                     '(id)'       => '([0-9]+)',
+		                     '(author)'   => '([^\/]+)',
+		                     '(clean)'    => '([^\/]+)',
+		                     '(url)'      => '([^\/]+)',
+		                     '(feather)'  => '([^\/]+)',
+		                     '(feathers)' => '([^\/]+)');
 		
 		/**
 		 * Function: __construct
