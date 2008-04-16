@@ -269,6 +269,7 @@
 				
 				$_POST['created_at'] = fallback($this->convertFromDateCreated($args[3]), datetime(), true);
 				$_POST['feather'] = XML_RPC_FEATHER;
+				if ($args[4] == 0) $_POST['draft'] = true;
 				
 				$post = Post::add(
 					array(
@@ -332,7 +333,7 @@
 						'body'  => $body
 					),
 					null,
-					null, // ($args[4]) ? 'public' : 'draft'
+					($args[4]) ? 'public' : 'draft',
 					sanitize(
 						fallback(
 							$args[3]['mt_basename'],
