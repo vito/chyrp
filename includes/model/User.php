@@ -15,19 +15,24 @@
 		function load($user_id = null, $password = null) {
 			global $current_user;
 			if (!XML_RPC and (empty($_COOKIE['chyrp_user_id']) or empty($_COOKIE['chyrp_password']))) return false;
-			if (!isset($user_id) and !$current_user) return;
-			$user = (isset($user_id)) ? $user_id : $current_user ;
+			fallback($user_id, $current_user);
+			if (empty($user_id)) return;
 			fallback($password, $_COOKIE['chyrp_password']);
 			
 			$sql = SQL::current();
-			foreach ($sql->query("select * from `".$sql->prefix."users`
-			                      where
-			                      	`id` = :id and
-			                      	`password` = :password",
-			                     array(
-			                     	":id" => $user,
-			                     	":password" => $password
-			                     ))->fetch() as $key => $val)
+			$result = $sql->query("select * from `".$sql->prefix."users`
+			                        where
+			                        	`id` = :id and
+			                        	`password` = :password",
+			                        array(
+			                       		":id" => $user_id,
+			                       		":password" => $password
+			                        ))->fetch();
+			
+			if (!$result)
+				return;
+			
+			foreach ($result as $key => $val)
 				if (!is_int($key))
 					$this->$key = $val;
 		}
@@ -124,7 +129,7 @@
 		 */
 		function can($function, $user_id = null) {
 			global $group, $current_user;
-			$user_id = (is_null($user_id)) ? $current_user : $user_id ;
+			fallback($user_id, $current_user);
 			$config = Config::current();
 			$sql = SQL::current();
 			

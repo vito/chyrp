@@ -1,8 +1,9 @@
 <?php
 	error_reporting(E_ALL ^ E_NOTICE);
 	define('XML_RPC', true);
-	require_once "common.php";
-	require_once INCLUDES_DIR."/lib/ixr.php";
+	require_once 'common.php';
+	require_once INCLUDES_DIR.'/lib/ixr.php';
+	if (!defined('XML_RPC_FEATHER')) define('XML_RPC_FEATHER', 'text');
 	
 	/**
 	 * Class: XMLRPC
@@ -135,7 +136,7 @@
 				$result = array();
 				
 				foreach ($this->getRecentPosts($args[3]) as $post) {
-					$post = new Post(null, array("read_from" => $post, "filter" => false));
+					$post = new Post(null, array('read_from' => $post, 'filter' => false));
 					
 					$struct = array(
 						'postid'            => $post->id,
@@ -147,13 +148,6 @@
 						'permaLink'         => $post->url(),
 						'mt_basename'       => $post->url,
 						'mt_allow_pings'    => (int) $config->enable_trackbacking);
-					
-					if (!empty($post->mt_more_text))
-					{
-						$more = explode("\n\n<!--more-->\n\n", $post->body);
-						$struct['description'] = array_shift($more);
-						$struct['mt_text_more'] = $more;
-					}
 					
 					list($post, $struct) = $trigger->filter('metaWeblog_getPost', array($post, $struct), true);
 					$result[] = $struct;
@@ -195,7 +189,7 @@
 				$path = MAIN_DIR.'/upload/'.$file;
 				
 				if (file_put_contents($path, $args[3]['bits']) === false)
-					return new IXR_Error(500, __("Failed to write file."));
+					return new IXR_Error(500, __('Failed to write file.'));
 				
 				$config = Config::current();
 				$url = $config->url.'/upload/'.urlencode($file);
@@ -221,7 +215,7 @@
 				$config = Config::current();
 				$trigger = Trigger::current();
 				
-				$post = new Post($args[0], array("filter" => false));
+				$post = new Post($args[0], array('filter' => false));
 				$struct = array(
 					'postid'            => $post->id,
 					'userid'            => $post->user_id,
@@ -232,13 +226,6 @@
 					'permaLink'         => $post->url(),
 					'mt_basename'       => $post->url,
 					'mt_allow_pings'    => (int) $config->enable_trackbacking);
-				
-				if (!empty($post->mt_more_text))
-				{
-					$more = explode("\n\n<!--more-->\n\n", $post->body);
-					$struct['description'] = array_shift($more);
-					$struct['mt_text_more'] = $more;
-				}
 				
 				list($post, $struct) = $trigger->filter('metaWeblog_getPost', array($post, $struct), true);
 				return array($struct);
@@ -257,14 +244,10 @@
 				$this->auth($args[1], $args[2], 'edit');
 				
 				# Support for extended body
-				if (empty($args[3]['mt_text_more'])) {
+				if (empty($args[3]['mt_text_more']))
 					$body = $args[3]['description'];
-					$_POST['options']['mt_more_text'] = false;
-				}
-				else {
+				else
 					$body = $args[3]['description'].'<!--more-->'.$args[3]['mt_text_more'];
-					$_POST['options']['mt_more_text'] = true;
-				}
 				
 				# Add excerpt to body so it isn't lost
 				if (!empty($args[3]['mt_excerpt']))
@@ -285,11 +268,12 @@
 				$url = Post::check_url($clean);
 				
 				$_POST['created_at'] = fallback($this->convertFromDateCreated($args[3]), datetime(), true);
+				$_POST['feather'] = XML_RPC_FEATHER;
 				
 				$post = Post::add(
 					array(
-						"title" => $args[3]['title'],
-						"body" => $body
+						'title' => $args[3]['title'],
+						'body' => $body
 					),
 					$clean,
 					$url);
@@ -318,17 +302,13 @@
 				$this->auth($args[1], $args[2], 'edit');
 				
 				if (!Post::exists($args[0]))
-					throw new Exception (__("Fake post ID, or nonexistant post."));
+					throw new Exception (__('Fake post ID, or nonexistant post.'));
 				
 				# Support for extended body
-				if (empty($args[3]['mt_text_more'])) {
+				if (empty($args[3]['mt_text_more']))
 					$body = $args[3]['description'];
-					$_POST['options']['mt_more_text'] = false;
-				}
-				else {
+				else
 					$body = $args[3]['description'].'<!--more-->'.$args[3]['mt_text_more'];
-					$_POST['options']['mt_more_text'] = true;
-				}
 				
 				# Add excerpt to body so it isn't lost
 				if (!empty($args[3]['mt_excerpt']))
@@ -338,14 +318,14 @@
 					return new IXR_Error(500, __("Body can't be blank."));
 				
 				# Support for adding tags to post xml
-				if (isset($args[3]['mt_tags']))
+				if (isset($args[3]['mt_tags']) and module_enabled('tags'))
 					$_POST['option']['tags'] = $args[3]['mt_tags'];
 				
 				# Support for adding comment_status to post xml
-				if (isset($args[3]['mt_allow_comments']))
+				if (isset($args[3]['mt_allow_comments']) and module_enabled('comments'))
 					$_POST['option']['comment_status'] = ($args[3]['mt_allow_comments'] == 1) ? 'open' : 'closed';
 				
-				$post = new Post($args[0], array("filter" => false));
+				$post = new Post($args[0], array('filter' => false));
 				$post->update(
 					array(
 						'title' => $args[3]['title'],
@@ -382,10 +362,10 @@
 		 */
 		public function blogger_deletePost($args) {
 			try {
-				$this->auth($args[1], $args[2], 'delete');
+				$this->auth($args[2], $args[3], 'delete');
 				
 				if (!Post::exists($args[1]))
-					throw new Exception (__("Fake post ID, or nonexistant post."));
+					throw new Exception (__('Fake post ID, or nonexistant post.'));
 				
 				$post = new Post($args[1]);
 				$post->delete();
@@ -449,7 +429,7 @@
 				$result = array();
 				
 				foreach ($this->getRecentPosts($args[3]) as $post) {
-					$post = new Post(null, array("read_from" => $post, "filter" => false));
+					$post = new Post(null, array('read_from' => $post, 'filter' => false));
 
 					$result[] = array(
 						'postid'      => $post->id,
@@ -491,7 +471,7 @@
 				$this->auth($args[1], $args[2]);
 				
 				if (!Post::exists($args[0]))
-					return new IXR_Error(500, __("Fake post ID, or nonexistant post."));
+					return new IXR_Error(500, __('Fake post ID, or nonexistant post.'));
 				
 				$post = new Post($args[0]);
 				
@@ -514,7 +494,7 @@
 				$this->auth($args[1], $args[2], 'edit');
 				
 				if (!Post::exists($args[0]))
-					throw new Exception(__("Fake post ID, or nonexistant post."));
+					throw new Exception(__('Fake post ID, or nonexistant post.'));
 				
 				$post = new Post($args[0]);
 				
@@ -542,25 +522,26 @@
 		private function getRecentPosts($limit) {
 			global $user;
 			
-			$statuses = "'public'";
-			$statuses.= ($user->can('view_drafts')) ? ", 'draft'" : '';
-			
-			$config = Config::current();
-			if (!in_array("text", $config->enabled_feathers))
-				throw new Exception(__("Text feather is not enabled."));
-			
 			try {
+				$statuses = "'public'";
+				$statuses.= ($user->can('view_drafts')) ? ", 'draft'" : '';
+				
+				$config = Config::current();
+				if (!in_array(XML_RPC_FEATHER, $config->enabled_feathers))
+					throw new Exception(__(XML_RPC_FEATHER.' feather is not enabled.'));
+				
 				$sql = SQL::current();
 				$result = $sql->query("SELECT *
 				                       FROM `{$sql->prefix}posts`
 				                       WHERE
-				                       `feather` = 'text' AND
+				                       `feather` = ? AND
 				                       `status` IN ( {$statuses} )
 				                       ORDER BY
 				                       `pinned` DESC,
 				                       `created_at` DESC,
 				                       `id` DESC
-				                       LIMIT {$limit}");
+				                       LIMIT {$limit}",
+				                        array(XML_RPC_FEATHER));
 				return $result->fetchAll(PDO::FETCH_OBJ);
 			}
 			catch (Exception $error) {
