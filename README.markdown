@@ -6,9 +6,10 @@ Requirements
 ============
 Chyrp will thrive on virtually any server setup, but we guarantee Chyrp to run on no less than:
 
-* Apache 1.3.3
-* PHP 4.4.7
+* PHP 5
+* [PDO and PDO_MYSQL](http://www.php.net/pdo)
 * MySQL 4.1
+* Apache 1.3.3
 
 These requirements are more of guidelines, as these are the earliest versions of the services that we have tested Chyrp on. If you are successfully running Chyrp on an earlier version of these services, let us know.
 
