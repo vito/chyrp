@@ -221,7 +221,7 @@
 			            THEME_DIR."/".$file.".twig" ;
 			
 			if (!file_exists($abs_file))
-				error(__("Theme Template Missing"), sprintf(__("Couldn't load theme template:<br /><br />%s"), $file));
+				error(__("Theme Template Missing"), sprintf(__("Couldn't load theme template:<br /><br />%s"), $file.".twig"));
 			
 			$template = $this->twig->getTemplate($abs_file);
 			$template->display($context);
