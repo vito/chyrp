@@ -9,7 +9,18 @@
 		 * The title for the current page.
 		 */
 		public $title = "";
+		
+		private $twig;
+		
 		private $pages = array();
+		
+		/**
+		 * Function: __construct
+		 * Loads the Twig parser into <Theme>.
+		 */
+		public function __construct() {
+			$this->twig = new Twig_Loader(THEME_DIR, (is_writable(MAIN_DIR."/includes/twig_cache") ? MAIN_DIR."/includes/twig_cache" : null));
+		}
 		
 		/**
 		 * Function: list_pages
@@ -203,22 +214,17 @@
 		 * Function: load
 		 * Loads a theme's file and extracts the passed array into the scope.
 		 */
-		public function load($file, $scope = array()) {
-			extract($scope, EXTR_SKIP);
-			
+		public function load($file, $context = array()) {
 			fallback($_GET['action'], "index");
 			$abs_file = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $user->can("change_settings")) ?
-			            THEMES_DIR."/".$_GET['theme']."/".$file :
-			            THEME_DIR."/".$file ;
+			            THEMES_DIR."/".$_GET['theme']."/".$file.".twig" :
+			            THEME_DIR."/".$file.".twig" ;
 			
 			if (!file_exists($abs_file))
-				error(__("Theme File Nonexistant"), sprintf(__("Couldn't load file:<br /><br />%s"), $file));
+				error(__("Theme Template Missing"), sprintf(__("Couldn't load theme template:<br /><br />%s"), $file));
 			
-			$trigger = Trigger::current();
-			if ($trigger->exists("parse_theme_file"))
-				$trigger->call("parse_theme_file", array($abs_file, $scope));
-			else
-				require $abs_file;
+			$template = $this->twig->getTemplate($abs_file);
+			$template->display($context);
 		}
 	}
 	$theme = new Theme();

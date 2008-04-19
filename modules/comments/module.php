@@ -97,7 +97,7 @@
 				$comment->body = $trigger->filter("markup_comment_text", $comment->body);
 				$comment->is_author = (Post::info("user_id", $comment->post_id) == $comment->user_id);
 				
-				$theme->load("content/comment.php", $GLOBALS);
+				$theme->load("content/comment");
 				
 				$count++;
 			}
@@ -584,7 +584,7 @@ $(function(){
 						$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
 			
 					$comment->body = $trigger->filter("markup_comment_text", $comment->body);
-					$theme->load("content/comment.php", $GLOBALS);
+					$theme->load("content/comment");
 					break;
 				case "delete_comment":
 					if (!$user->can("delete_comment") or !isset($_POST['id']))

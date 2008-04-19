@@ -8,7 +8,7 @@
 	                         order by rand() asc");
 	
 	$theme->title = __("Tags", "tags");
-	$theme->load("layout/header.php", $GLOBALS);
+	$theme->load("layout/header");
 	
 	$trigger->call("tags_top");
 	
@@ -46,5 +46,5 @@
 <?php echo __("There aren't any tags yet. Such a shame.", "tags"); ?>
 <?php
 	}
-	$theme->load("layout/footer.php", $GLOBALS);
+	$theme->load("layout/footer");
 ?>

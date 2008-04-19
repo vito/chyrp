@@ -499,7 +499,7 @@
 		 * Checks if the current post's feather theme file exists.
 		 */
 		public function theme_exists() {
-			return file_exists(THEME_DIR."/content/posts/".$this->feather.".php");
+			return file_exists(THEME_DIR."/content/posts/".$this->feather.".twig");
 		}
 
 		/**

@@ -8,7 +8,7 @@
 	
 	if ($get_posts->rowCount()) {
 		$theme->title = sprintf(__("Posts tagged with \"%s\"", "tags"), $tag_name);
-		$theme->load("layout/header.php", $GLOBALS);
+		$theme->load("layout/header");
 		
 		$trigger->call("tag_view_top");
 		
@@ -24,11 +24,11 @@
 				$shown_dates[] = when("m-d-Y", $post->created_at);
 		
 			$trigger->call("above_post");
-			$theme->load("content/posts/".$post->feather.".php", $GLOBALS);
+			$theme->load("content/posts/".$post->feather);
 			$trigger->call("below_post");
 			$count++;
 		}
-		$theme->load("layout/footer.php", $GLOBALS);
+		$theme->load("layout/footer");
 	} else
 		show_404($GLOBALS);
 ?>
