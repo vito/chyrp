@@ -231,6 +231,8 @@
 			                          "stylesheets" => $this->stylesheets(),
 			                          "javascripts" => $this->javascripts());
 			$context["user"] = array("logged_in" => $user->logged_in());
+			$context["archives"] = $this->list_archives();
+			$context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);
 			
 			foreach ($user as $key => $val)
 				$context["user"][$key] = $val;

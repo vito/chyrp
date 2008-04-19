@@ -14,7 +14,7 @@
 			if (!isset($post->id) or !strpos($text, "(((page)))")) return $text;
 			
 			$text = preg_replace("/(<p>)?(\(\(\(page\)\)\))(<\/p>|<br \/>)?/", "\\2", $text);
-			$split_pages = explode("\n\n(((page)))\n\n", $text);
+			$split_pages = explode("(((page)))", $text);
 		
 			if ($viewing)
 				$post->page = (isset($_GET['page'])) ? $_GET['page'] : 1 ;

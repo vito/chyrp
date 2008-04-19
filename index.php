@@ -24,7 +24,7 @@
 					$shown_dates[] = when("m-d-Y", $post->created_at);
 			
 				$trigger->call("above_post");
-				$theme->load("content/posts/".$post->feather);
+				$theme->load("content/posts/".$post->feather, array("post" => $post));
 				$trigger->call("below_post");
 				$count++;
 			}
@@ -52,7 +52,7 @@
 				$trigger->call("draft_view_top");
 		
 			$trigger->call("above_post");
-			$theme->load("content/posts/".$post->feather);
+			$theme->load("content/posts/".$post->feather, array("post" => $post));
 			$trigger->call("below_post");
 		
 			$theme->load("layout/footer");
