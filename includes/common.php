@@ -105,10 +105,6 @@
 	# 	<Theme>
 	require_once INCLUDES_DIR."/class/Theme.php";
 	
-	# File: Twig
-	# Chyrp's templating engine.
-	require_once INCLUDES_DIR."/class/Twig.php";
-
 	# File: Route
 	# See Also:
 	# 	<Route>
