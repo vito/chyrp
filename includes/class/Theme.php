@@ -12,6 +12,8 @@
 		
 		private $twig;
 		
+		private $directory;
+		
 		private $pages = array();
 		
 		/**
@@ -19,7 +21,11 @@
 		 * Loads the Twig parser into <Theme>.
 		 */
 		public function __construct() {
-			$this->twig = new Twig_Loader(THEME_DIR, (is_writable(MAIN_DIR."/includes/twig_cache") ? MAIN_DIR."/includes/twig_cache" : null));
+			global $user;
+			$this->directory = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $user->can("change_settings")) ?
+			                   THEMES_DIR."/".$_GET['theme']."/" :
+			                   THEME_DIR."/" ;
+			$this->twig = new Twig_Loader($this->directory, (is_writable(MAIN_DIR."/includes/twig_cache") ? MAIN_DIR."/includes/twig_cache" : null));
 		}
 		
 		/**
@@ -138,10 +144,10 @@
 		 * 	$separator - The separator for the title, e.g. " &raquo; "
 		 * 	$title - The title to show. If null, it'll fall back on to <Theme->$title> (which is the more standard procedure for this function).
 		 */
-		public function title($seperator = "&nbsp;&raquo;&nbsp;", $title = null) {
+		public function title($seperator = "&nbsp;&raquo;&nbsp;", $title = null, $reversed = false) {
 			$config = Config::current();
 			$this->title = (!isset($title)) ? $this->title : $title ;
-			$this->title = (empty($this->title)) ? $config->name : $config->name.$seperator.$this->title ;
+			$this->title = (empty($this->title)) ? $config->name : ($reversed ? $this->title.$seperator.$config->name : $config->name.$seperator.$this->title) ;
 			return $this->title;
 		}
 		
@@ -151,15 +157,14 @@
 		 */
 		public function stylesheets() {
 			$config = Config::current();
+			$trigger = Trigger::current();
 			$theme = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $user->can("change_settings")) ?
 			         $_GET['theme'] :
 			         $config->theme ;
-?>
-<link rel="stylesheet" href="<?php echo $config->url."/themes/".$theme ?>/stylesheets/screen.css" type="text/css" media="screen" charset="utf-8" />
-		<link rel="stylesheet" href="<?php echo $config->url."/themes/".$theme ?>/stylesheets/print.css" type="text/css" media="print" charset="utf-8" />
-<?php
-			$trigger = Trigger::current();
-			$trigger->call("stylesheets");
+			
+			$stylesheets = $trigger->filter("stylesheets", '<link rel="stylesheet" href="'.$config->url.'/themes/'.$theme.'/stylesheets/screen.css" type="text/css" media="screen" charset="utf-8" />'."\n\t\t".'<link rel="stylesheet" href="'.$config->url.'/themes/'.$theme.'/stylesheets/print.css" type="text/css" media="print" charset="utf-8" />');
+			
+			return $stylesheets;
 		}
 		
 		/**
@@ -178,14 +183,13 @@
 			}
 			if (isset($paginate->page))
 				$args.= "&amp;page=".$paginate->page;
+				
 			$config = Config::current();
-?>
-<script src="<?php echo $config->url; ?>/includes/lib/gz.php?file=jquery.js" type="text/javascript" charset="utf-8"></script>
-		<script src="<?php echo $config->url; ?>/includes/lib/gz.php?file=forms.js" type="text/javascript" charset="utf-8"></script>
-		<script src="<?php echo $config->url; ?>/includes/javascript.php?action=<?php echo $action.$args; ?>" type="text/javascript" charset="utf-8"></script>
-<?php
 			$trigger = Trigger::current();
-			$trigger->call("scripts");
+			
+			$javascripts = $trigger->filter("scripts", '<script src="'.$config->url.'/includes/lib/gz.php?file=jquery.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".'<script src="'.$config->url.'/includes/lib/gz.php?file=forms.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".'<script src="'.$config->url.'/includes/javascript.php?action='.$action.$args.'" type="text/javascript" charset="utf-8"></script>');
+			
+			return $javascripts;
 		}
 		
 		/**
@@ -204,10 +208,11 @@
 			          		"&amp;feed") ;
 			
 			$route = Route::current();
-			echo '<link rel="alternate" type="application/atom+xml" title="'.$config->name.' Feed" href="'.$route->url("feed/").'" />';
+			$feeds = '<link rel="alternate" type="application/atom+xml" title="'.$config->name.' Feed" href="'.$route->url("feed/").'" />'."\n";
 			foreach ($plural_feathers as $plural => $normal)
-				echo "\t\t".'<link rel="alternate" type="application/atom+xml" title="'.ucfirst($plural).' Feed" href="'.$route->url($plural."/feed/").'" />'."\n";
-			echo "\t\t".'<link rel="alternate" type="application/atom+xml" title="Current Page (if applicable)" href="'.$config->url.$request.$append.'" />'."\n";
+				$feeds.= "\t\t".'<link rel="alternate" type="application/atom+xml" title="'.ucfirst($plural).' Feed" href="'.$route->url($plural."/feed/").'" />'."\n";
+			$feeds.= "\t\t".'<link rel="alternate" type="application/atom+xml" title="Current Page (if applicable)" href="'.$config->url.$request.$append.'" />';
+			return $feeds;
 		}
 		
 		/**
@@ -215,15 +220,22 @@
 		 * Loads a theme's file and extracts the passed array into the scope.
 		 */
 		public function load($file, $context = array()) {
-			fallback($_GET['action'], "index");
-			$abs_file = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $user->can("change_settings")) ?
-			            THEMES_DIR."/".$_GET['theme']."/".$file.".twig" :
-			            THEME_DIR."/".$file.".twig" ;
+			global $user;
 			
-			if (!file_exists($abs_file))
+			fallback($_GET['action'], "index");
+			if (!file_exists($this->directory.$file.".twig"))
 				error(__("Theme Template Missing"), sprintf(__("Couldn't load theme template:<br /><br />%s"), $file.".twig"));
 			
-			$template = $this->twig->getTemplate($abs_file);
+			$context["site"] = Config::current();
+			$context["theme"] = array("feeds" => $this->feeds(),
+			                          "stylesheets" => $this->stylesheets(),
+			                          "javascripts" => $this->javascripts());
+			$context["user"] = array("logged_in" => $user->logged_in());
+			
+			foreach ($user as $key => $val)
+				$context["user"][$key] = $val;
+			
+			$template = $this->twig->getTemplate($file.".twig");
 			$template->display($context);
 		}
 	}

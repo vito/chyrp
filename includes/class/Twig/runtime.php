@@ -35,6 +35,7 @@ $twig_filters = array(
 	'strip' =>		'trim',
 	'rstrip' =>		'rtrim',
 	'lstrip' =>		'ltrim',
+	'translate' =>	'twig_translate_string_filter',
 
 	// array helpers
 	'join' =>		'twig_join_filter',
@@ -279,4 +280,8 @@ else {
 	{
 		return ucfirst(strtolower($string));
 	}
+}
+
+function twig_translate_string_filter($string) {
+	return __($string, "theme");
 }

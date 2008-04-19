@@ -50,7 +50,7 @@ class Twig_Compiler
 		else if (is_null($value))
 			$this->raw('NULL');
 		else if (is_bool($value))
-			$this->raw(value ? 'true' : 'false');
+			$this->raw($value ? 'true' : 'false');
 		else if (is_array($value)) {
 			$this->raw('array(');
 			$i = 0;
