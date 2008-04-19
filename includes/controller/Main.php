@@ -124,6 +124,7 @@
 		public function view() {
 			global $action, $private, $enabled_feathers, $post, $plural_feathers;
 			
+			$trigger = Trigger::current();
 			$config = Config::current();
 			$sql = SQL::current();
 			if (!$config->clean_urls)
@@ -166,10 +167,15 @@
 				}
 				else
 				{
-					$where.= " and `".$attr."` = :attr".$attr;
-					$params[':attr'.$attr] = $_GET[$attr];
+					list($where, $params, $attr) = $trigger->filter('main_controller_view', array($where, $params, $attr), true);
+					
+					if ($attr !== null)
+					{
+						$where.= " and `".$attr."` = :attr".$attr;
+						$params[':attr'.$attr] = $_GET[$attr];
+					}
 				}
-		
+			
 			$post = new Post(null, array("where" => $private.$enabled_feathers.$where, "params" => $params));
 			
 			if ($post->no_results) {

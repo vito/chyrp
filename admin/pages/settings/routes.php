@@ -27,6 +27,7 @@
 						<li><code>(url)</code>: <?php echo __("The unique form of (clean)"); ?><span class="sub"> <?php echo __("(ex. this_one_is_taken_2)"); ?></span></li>
 						<li><code>(feather)</code>: <?php echo __("The post's feather"); ?><span class="sub"> <?php echo __("(ex. text)"); ?></span></li>
 						<li><code>(feathers)</code>: <?php echo __("The plural form of the post's feather"); ?><span class="sub"> <?php echo __("(ex. links)"); ?></span></li>
+<?php $trigger->call('admin_settings_post_view_url'); ?>
 					</ul>
 				</div>
 				<br />
