@@ -122,7 +122,7 @@
 		 * Views a post.
 		 */
 		public function view() {
-			global $action, $private, $enabled_feathers, $post;
+			global $action, $private, $enabled_feathers, $post, $plural_feathers;
 			
 			$config = Config::current();
 			$sql = SQL::current();
@@ -158,6 +158,11 @@
 					                                      array(
 					                                      	":login" => $_GET['author']
 					                                      ), 1)->fetchColumn();
+				}
+				elseif ($attr == "feathers")
+				{
+					$where.= " and `feather` = :feather";
+					$params[':feather'] = $plural_feathers[$_GET['feathers']];
 				}
 				else
 				{

@@ -353,7 +353,7 @@
 		 * Returns a post's URL.
 		 */
 		public function url() {
-			global $user;
+			global $user, $plural_feathers;
 			
 			$config = Config::current();
 			if ($config->clean_urls) {
@@ -368,7 +368,8 @@
 				              urlencode($login),
 				              urlencode($this->clean),
 				              urlencode($this->url),
-				              urlencode($this->feather));
+				              urlencode($this->feather),
+				              urlencode(array_search($this->feather, $plural_feathers)));
 				$trigger = Trigger::current();
 				$vals = $trigger->filter("url_vals", $vals);
 				$route = Route::current();
