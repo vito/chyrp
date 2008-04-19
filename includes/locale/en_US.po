@@ -429,7 +429,7 @@ msgstr ""
 
 #: includes/javascript.php:57
 #: admin/js/javascript.php:18
-msgid "&laquo; Less Options"
+msgid "&laquo; Fewer Options"
 msgstr ""
 
 #: includes/javascript.php:60

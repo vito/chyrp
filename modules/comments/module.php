@@ -432,7 +432,7 @@ var Comment = {
 			$("#comment_"+id).loader(true).fadeOut("fast", function(){ $(this).html(data).fadeIn("fast", function(){
 				$("#more_options_link_"+id).click(function(){
 					if ($("#more_options_"+id).css("display") == "none") {
-						$(this).html("<?php echo __("&laquo; Less Options"); ?>")
+						$(this).html("<?php echo __("&laquo; Fewer Options"); ?>")
 						$("#more_options_"+id).slideDown("slow");
 					} else {
 						$(this).html("<?php echo __("More Options &raquo;"); ?>")
