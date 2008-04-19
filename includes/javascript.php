@@ -54,7 +54,7 @@ var Post = {
 <?php $trigger->call("ajax_post_edit_form_javascript"); ?>
 				$("#more_options_link_"+id).click(function(){
 					if ($("#more_options_"+id).css("display") == "none") {
-						$(this).html("<?php echo __("&laquo; Less Options"); ?>")
+						$(this).html("<?php echo __("&laquo; Fewer Options"); ?>")
 						$("#more_options_"+id).slideDown("slow")
 					} else {
 						$(this).html("<?php echo __("More Options &raquo;"); ?>")

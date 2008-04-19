@@ -6,7 +6,7 @@
 	header("Cache-Control: no-cache, must-revalidate");
 	header("Expires: Mon, 03 Jun 1991 05:30:00 GMT");
 	
-	$more_options_string = (empty($_COOKIE['show_more_options'])) ? __("More Options &raquo;") : __("&laquo; Less Options") ;
+	$more_options_string = (empty($_COOKIE['show_more_options'])) ? __("More Options &raquo;") : __("&laquo; Fewer Options") ;
 ?>
 //<script>
 $(function(){
@@ -15,7 +15,7 @@ $(function(){
 	
 	$("#more_options_link").click(function(){
 		if ($("#more_options").css("display") == "none") {
-			$(this).html("<?php echo __("&laquo; Less Options"); ?>")
+			$(this).html("<?php echo __("&laquo; Fewer Options"); ?>")
 			Cookie.set("show_more_options", "true", 30)			
 		} else {
 			$(this).html("<?php echo __("More Options &raquo;"); ?>")
