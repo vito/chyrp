@@ -5,6 +5,7 @@
 			$this->respondTo("delete_post", "delete_file");
 			$this->respondTo("javascript", "player_js");
 			$this->respondTo("feed_item", "enclose_mp3");
+			$this->respondTo("filter_post", "filter_post");
 		}
 		static function submit() {
 			$filename = "";
@@ -62,6 +63,12 @@
 			if ($post->feather != "audio") return;
 		
 			unlink(MAIN_DIR."/upload/".$post->filename);
+		}
+		static function filter_post() {
+			global $post;
+			if ($post->feather != "audio") return;
+			
+			$post->audio_player = flash_player_for($post->filename);
 		}
 		static function player_js() {
 ?>

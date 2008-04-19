@@ -133,7 +133,7 @@
 			$config = Config::current();
 			$sql = SQL::current();
 			
-			if (($this->logged_in() and $group->id == $this->group_id) or (!$this->logged_in() and $group->id == $config->guest_group))
+			if (is_null($user_id) and ($this->logged_in() and $group->id == $this->group_id) or (!$this->logged_in() and $group->id == $config->guest_group))
 				return isset($group->$function);
 			
 			$group_id = (!$this->logged_in()) ? $config->guest_group : $this->info("group_id", $user_id) ;
