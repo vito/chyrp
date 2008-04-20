@@ -68,7 +68,7 @@
 		 * Parameters:
 		 *     $name - The name of the trigger.
 		 *     $arg - Arguments to pass to the actions.
-		 *     $array - If $arg is an array, should it be passed as multiple values or a single array?
+		 *     $array - If $arg is an array, should it be passed as multiple arguments?
 		 *
 		 * Returns:
 		 *     $arg, filtered through any/all actions for the trigger $name.

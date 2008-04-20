@@ -95,6 +95,13 @@ class Twig_LoopContextIterator implements Iterator
  */
 function twig_missing_filter($name)
 {
+	$args = func_get_args();
+	array_shift($args);
+
+	$trigger = Trigger::current();
+	if ($trigger->exists($name))
+		return $trigger->filter($name, $args, true);
+
 	throw new Twig_RuntimeError("filter '$name' does not exist.");
 }
 
