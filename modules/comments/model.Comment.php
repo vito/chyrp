@@ -159,7 +159,7 @@
 			global $user;
 			if (!$user->can("add_comment")) return false;
 			
-			$post = new Post($post_id);
+			$post = new Post($post_id, array("filter" => false));
 			// assume allowed comments by default
 			return empty($post->comment_status) or
 			       !($post->comment_status == "closed" or 

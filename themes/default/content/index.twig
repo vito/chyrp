@@ -1,0 +1,34 @@
+{% extends "layouts/default.twig" %}
+{% block content %}
+	{% for post in posts %}
+				<div class="post{% if post.pinned %} pinned{% endif %}" id="post_$post.id">
+					<div class="$post.feather target">
+		{% if post.pinned %}
+						<span class="pinned_text">${ "pinned" | translate }</span>
+		{% endif %}
+		{% include "content/feathers/" ~ post.feather ~ ".twig" %}
+						<div class="clear"></div>
+						<span class="info">
+							<strong><a href="$post.url">${ post.created_at | date }</a></strong>
+		{% if site.enabled_modules.comments %}
+							<em>|</em> <a href="$post.url#comments">$post.comment_count ${ "Comments" }</a>
+		{% endif %}
+		{% if site.enabled_modules.tags %}
+							<em>|</em> Tags: ${ post.tags.linked | join }
+		{% endif %}
+							<em>|</em> <a href="$post.trackback_url">${ "Trackback" | translate }</a>
+{% if user.can.edit_post %}
+							<em>|</em> <a href="$post.edit_url" class="post_edit_link" id="post_edit_$post.id">Edit</a>
+{% endif %}
+{% if user.can.delete_post %}
+							<em>|</em> <a href="$post.delete_url" class="post_delete_link" id="post_delete_$post.id">Delete</a>
+{% endif %}
+						</span>
+						<br class="clear" />
+					</div>
+		{% if not loop.last %}
+					<br />
+		{% endif %}
+				</div>
+	{% endfor %}
+{% endblock %}

@@ -9,7 +9,24 @@
 		 * The title for the current page.
 		 */
 		public $title = "";
+		
+		private $twig;
+		
+		private $directory;
+		
 		private $pages = array();
+		
+		/**
+		 * Function: __construct
+		 * Loads the Twig parser into <Theme>.
+		 */
+		public function __construct() {
+			global $user;
+			$this->directory = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $user->can("change_settings")) ?
+			                   THEMES_DIR."/".$_GET['theme']."/" :
+			                   THEME_DIR."/" ;
+			$this->twig = new Twig_Loader($this->directory, (is_writable(MAIN_DIR."/includes/twig_cache") ? MAIN_DIR."/includes/twig_cache" : null));
+		}
 		
 		/**
 		 * Function: list_pages
@@ -120,35 +137,19 @@
 		}
 		
 		/**
-		 * Function: title
-		 * Returns a title for the current page.
-		 * 
-		 * Parameters:
-		 * 	$separator - The separator for the title, e.g. " &raquo; "
-		 * 	$title - The title to show. If null, it'll fall back on to <Theme->$title> (which is the more standard procedure for this function).
-		 */
-		public function title($seperator = "&nbsp;&raquo;&nbsp;", $title = null) {
-			$config = Config::current();
-			$this->title = (!isset($title)) ? $this->title : $title ;
-			$this->title = (empty($this->title)) ? $config->name : $config->name.$seperator.$this->title ;
-			return $this->title;
-		}
-		
-		/**
 		 * Function: stylesheets
 		 * Outputs the default stylesheet links.
 		 */
 		public function stylesheets() {
 			$config = Config::current();
+			$trigger = Trigger::current();
 			$theme = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $user->can("change_settings")) ?
 			         $_GET['theme'] :
 			         $config->theme ;
-?>
-<link rel="stylesheet" href="<?php echo $config->url."/themes/".$theme ?>/stylesheets/screen.css" type="text/css" media="screen" charset="utf-8" />
-		<link rel="stylesheet" href="<?php echo $config->url."/themes/".$theme ?>/stylesheets/print.css" type="text/css" media="print" charset="utf-8" />
-<?php
-			$trigger = Trigger::current();
-			$trigger->call("stylesheets");
+			
+			$stylesheets = $trigger->filter("stylesheets", '<link rel="stylesheet" href="'.$config->url.'/themes/'.$theme.'/stylesheets/screen.css" type="text/css" media="screen" charset="utf-8" />'."\n\t\t".'<link rel="stylesheet" href="'.$config->url.'/themes/'.$theme.'/stylesheets/print.css" type="text/css" media="print" charset="utf-8" />');
+			
+			return $stylesheets;
 		}
 		
 		/**
@@ -167,14 +168,13 @@
 			}
 			if (isset($paginate->page))
 				$args.= "&amp;page=".$paginate->page;
+				
 			$config = Config::current();
-?>
-<script src="<?php echo $config->url; ?>/includes/lib/gz.php?file=jquery.js" type="text/javascript" charset="utf-8"></script>
-		<script src="<?php echo $config->url; ?>/includes/lib/gz.php?file=forms.js" type="text/javascript" charset="utf-8"></script>
-		<script src="<?php echo $config->url; ?>/includes/javascript.php?action=<?php echo $action.$args; ?>" type="text/javascript" charset="utf-8"></script>
-<?php
 			$trigger = Trigger::current();
-			$trigger->call("scripts");
+			
+			$javascripts = $trigger->filter("scripts", '<script src="'.$config->url.'/includes/lib/gz.php?file=jquery.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".'<script src="'.$config->url.'/includes/lib/gz.php?file=forms.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".'<script src="'.$config->url.'/includes/javascript.php?action='.$action.$args.'" type="text/javascript" charset="utf-8"></script>');
+			
+			return $javascripts;
 		}
 		
 		/**
@@ -193,32 +193,47 @@
 			          		"&amp;feed") ;
 			
 			$route = Route::current();
-			echo '<link rel="alternate" type="application/atom+xml" title="'.$config->name.' Feed" href="'.$route->url("feed/").'" />';
+			$feeds = '<link rel="alternate" type="application/atom+xml" title="'.$config->name.' Feed" href="'.$route->url("feed/").'" />'."\n";
 			foreach ($plural_feathers as $plural => $normal)
-				echo "\t\t".'<link rel="alternate" type="application/atom+xml" title="'.ucfirst($plural).' Feed" href="'.$route->url($plural."/feed/").'" />'."\n";
-			echo "\t\t".'<link rel="alternate" type="application/atom+xml" title="Current Page (if applicable)" href="'.$config->url.$request.$append.'" />'."\n";
+				$feeds.= "\t\t".'<link rel="alternate" type="application/atom+xml" title="'.ucfirst($plural).' Feed" href="'.$route->url($plural."/feed/").'" />'."\n";
+			$feeds.= "\t\t".'<link rel="alternate" type="application/atom+xml" title="Current Page (if applicable)" href="'.$config->url.$request.$append.'" />';
+			return $feeds;
 		}
 		
 		/**
 		 * Function: load
 		 * Loads a theme's file and extracts the passed array into the scope.
 		 */
-		public function load($file, $scope = array()) {
-			extract($scope, EXTR_SKIP);
+		public function load($file, $context = array()) {
+			global $user, $group, $action;
 			
 			fallback($_GET['action'], "index");
-			$abs_file = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $user->can("change_settings")) ?
-			            THEMES_DIR."/".$_GET['theme']."/".$file :
-			            THEME_DIR."/".$file ;
+			if (!file_exists($this->directory.$file.".twig"))
+				error(__("Theme Template Missing"), sprintf(__("Couldn't load theme template:<br /><br />%s"), $file.".twig"));
 			
-			if (!file_exists($abs_file))
-				error(__("Theme File Nonexistant"), sprintf(__("Couldn't load file:<br /><br />%s"), $file));
+			$can = array();
+			foreach ($group->permissions as $permission)
+				$can[$permission] = true;
+			
+			$context["title"] = $this->title;
+			$context["site"] = Config::current();
+			$context["theme"] = array("feeds" => $this->feeds(),
+			                          "stylesheets" => $this->stylesheets(),
+			                          "javascripts" => $this->javascripts());
+			$context["user"] = array("logged_in" => $user->logged_in(), "can" => $can);
+			$context["archives"] = $this->list_archives();
+			$context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);
+			$context["route"] = array("action" => $action);
+			
+			foreach ($user as $key => $val)
+				$context["user"][$key] = $val;
 			
 			$trigger = Trigger::current();
-			if ($trigger->exists("parse_theme_file"))
-				$trigger->call("parse_theme_file", array($abs_file, $scope));
-			else
-				require $abs_file;
+			$context = $trigger->filter("twig_global_context", $context);
+			$context = $trigger->filter(str_replace("/", "_", $file), $context);
+			
+			$template = $this->twig->getTemplate($file.".twig");
+			$template->display($context);
 		}
 	}
 	$theme = new Theme();

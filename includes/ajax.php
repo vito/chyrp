@@ -79,7 +79,7 @@
 			$last = false;
 			
 			$trigger->call("above_post".$reason);
-			$theme->load("content/posts/".$post->feather.".php", $GLOBALS);
+			$theme->load("content/feathers/".$post->feather);
 			$trigger->call("below_post");
 			break;
 		case "preview":

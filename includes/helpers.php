@@ -854,16 +854,16 @@
 	 * Parameters:
 	 * 	$scope - An array of values to extract into the scope.
 	 */
-	 function show_404($scope = array()) {
+	 function show_404() {
 		global $theme;
 		header("HTTP/1.1 404 Not Found");
 		$theme->title = "404";
 		$route = Route::current();
 		$route->is_404 = true; # Can be used by the theme for a specialized header/footer.
-		$theme->load("layout/header.php", $scope);
+		$theme->load("layout/header");
 		$trigger = Trigger::current();
 		$trigger->call("not_found");
-		$theme->load("layout/footer.php", $scope);
+		$theme->load("layout/footer");
 	}
 	
 	/**

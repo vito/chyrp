@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head profile="http://gmpg.org/xfn/11">
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+		<title>$site.name{% if title %} &raquo; $title{% endif %}</title>
+		<meta name="generator" content="Chyrp" />
+		<link rel="pingback" href="$site.url/includes/xmlrpc.php" />
+		<link rel="EditURI" type="application/rsd+xml" href="$site.url/includes/rsd.php" />
+		$theme.feeds
+		$theme.stylesheets
+		$theme.javascripts
+{% trigger "head" %}
+	</head>
+	<body>
+{% trigger "controls" %}
+		<div class="wrapper">
+			<div class="container">
+				<div class="header">
+					<h1><a href="$site.url">$site.name</a> <span>$site.description</span></h1>
+				</div>
+				<div id="posts">
+{% block content %}{% endblock %}
+				</div>
+{#
+				<?php $paginate->next_link(__("Next &rarr;", "theme"), "right"); ?>
+				<?php $paginate->prev_link(__("&larr; Previous", "theme")); ?>
+#}
+				<br />
+				<div class="footer">
+					<p><a href="{% url "feed/" %}">Feed</a> / theme &copy; <a href="http://lofisoami.com/">Aaron MacDonald</a> 2007</p>
+					<span>${ "Powered by <a href=\"http://chyrp.net/\">Chyrp</a>" | translate }</span>
+				</div>
+		    </div>
+		    <div class="sidebar">
+				<form action="{% url "search/" %}" method="get" accept-charset="utf-8">
+					<input type="hidden" name="action" value="search" id="action" />
+					<input type="text" id="search" name="query" />
+				</form>
+				<h1>${ "Pages" | translate }</h1>
+{#
+<?php $theme->list_pages(); ?>
+#}
+				<h1>${ "Welcome, " | translate } $user.login!</h1>
+				<ul>
+{% if user.logged_in %}
+					<li><a href="{% url "controls/" %}">${ "User Controls" | translate }</a></li>
+{% if user.can.add_post or user.can.add_page or user.can.view_draft or user.can.change_settings %}
+					<li><a class="toggle_admin" href="{% url "toggle_admin/" %}">${ "Toggle Admin Bar" | translate }</a></li>
+{% endif %}
+					<li><a href="{% url "logout/" %}">${ "Log Out" | translate }</a></li>
+{% endif %}
+{% if not user.logged_in %} {# TODO: Change these back to "else" when it's fixed. #}
+					<li><a href="{% url "login/" %}">${ "Log In" | translate }</a></li>
+{% if site.can_register %}
+					<li><a href="{% url "register/" %}">${ "Register" | translate }</a></li>
+{% endif %}
+{% endif %}
+				</ul>
+{% trigger "sidebar" %}
+{% if tags %}
+				<h1>${ "Tags" | translate }</h1>
+				<ul id="tags_list">
+{% for tag in tags %}
+					<li><a href="{% url "tag/" ~ tag.url ~ "/" %}">$tag.name</a></li>
+{% endfor %}
+					<li><a href="{% url "tags/" %}">${ "All &rarr;" | translate }</a></li>
+				</ul>
+{% endif %}
+				<h1>${ "Archives" | translate }</h1>
+				<ul>
+{% for archive in archives %}
+					<li><a href="$archive.url">$archive.month $archive.year</a></li>
+{% endfor %}
+				</ul>
+				<h1>${ "Stats" | translate }</h1>
+				<ul>
+					<li>${ "Queries:" | translate } $stats.queries</li>
+					<li>${ "Load time:" | translate } $stats.load</li>
+				</ul>
+			</div>
+		</div>
+{% trigger "end_content" %}
+	</body>
+</html>

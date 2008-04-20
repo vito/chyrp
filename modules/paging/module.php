@@ -14,7 +14,7 @@
 			if (!isset($post->id) or !strpos($text, "(((page)))")) return $text;
 			
 			$text = preg_replace("/(<p>)?(\(\(\(page\)\)\))(<\/p>|<br \/>)?/", "\\2", $text);
-			$split_pages = explode("\n\n(((page)))\n\n", $text);
+			$split_pages = explode("(((page)))", $text);
 		
 			if ($viewing)
 				$post->page = (isset($_GET['page'])) ? $_GET['page'] : 1 ;
@@ -27,12 +27,19 @@
 			if (!isset($split_pages[$offset]))
 				return $split_pages[count($split_pages) - 1];
 		
+			if ($viewing) {
+				$post->next_page_url = next_page_url();
+				$post->prev_page_url = prev_page_url();
+			}
+			
 			return $split_pages[$offset];
 		}
 		static function filter_post() {
-			global $post;
+			global $post, $viewing;
+			
 			$post->next_page = false;
 			$post->prev_page = false;
+			
 		}
 	}
 	new Paging();

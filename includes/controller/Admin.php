@@ -369,8 +369,7 @@
 			$enabled_check = $type."_enabled";
 			$enabled_array = "enabled_".$type."s";
 			$folder = ($type == "module") ? MODULES_DIR : FEATHERS_DIR ;
-		
-			fallback($_POST['confirm'], "true");
+			
 			$config = Config::current();
 			if (!$enabled_check($_GET[$type])) {
 				$new = $config->$enabled_array;
@@ -415,10 +414,10 @@
 			
 				foreach ($config->$enabled_array as $ext)
 					if ($ext != $_GET[$type]) $new[] = $ext;
-			
+				
 				$class_name = camelize($_GET[$type]);
 				if (method_exists($class_name, "__uninstall"))
-					call_user_func(array($class_name, "__uninstall"), $_POST['confirm']);
+					call_user_func(array($class_name, "__uninstall"), ($_POST['confirm'] == "1"));
 			
 				$config->set($enabled_array, $new);
 			

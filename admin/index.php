@@ -81,7 +81,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-		<title><?php echo $theme->title(": ", $action_up.$sub_title); ?></title>
+		<title><?php echo $config->name.": ".$action_up.$sub_title; ?></title>
 		<link rel="stylesheet" href="<?php echo (file_exists(THEME_DIR.'/stylesheets/admin.css')) ? $config->url.'/themes/'.$config->theme.'/stylesheets/admin.css' : 'style.css'; ?>" type="text/css" media="screen" charset="utf-8" />
 		<script src="<?php echo $config->url; ?>/includes/lib/jquery.js" type="text/javascript" charset="utf-8"></script>
 		<script src="<?php echo $config->url; ?>/admin/js/ifixpng.js" type="text/javascript" charset="utf-8"></script>

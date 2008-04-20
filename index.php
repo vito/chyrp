@@ -8,30 +8,24 @@
 			$theme->title = ($action == "feather") ? ucfirst($_GET['action']) : "" ;
 			$theme->title = ($action == "search") ? fix(sprintf(__("Search results for \"%s\""), urldecode($query)), "html") : $theme->title ;
 			$theme->title = ($action == "drafts") ? __("Drafts") : $theme->title ;
-			$theme->load("layout/header.php", $GLOBALS);
 			
 			$trigger->call($action."_top");
 			
-			$count = 1;
 			$shown_dates = array();
+			$posts = array();
 			foreach ($get_posts->fetchAll() as $post) {
 				$post = new Post(null, array("read_from" => $post));
 				if (!$post->theme_exists()) continue;
-			
-				$last = ($count == $get_posts->rowCount());
-				$date_shown = in_array(when("m-d-Y", $post->created_at), $shown_dates);
+				
+				$post->date_shown = in_array(when("m-d-Y", $post->created_at), $shown_dates);
 				if (!in_array(when("m-d-Y", $post->created_at), $shown_dates))
 					$shown_dates[] = when("m-d-Y", $post->created_at);
 			
-				$trigger->call("above_post");
-				$theme->load("content/posts/".$post->feather.".php", $GLOBALS);
-				$trigger->call("below_post");
-				$count++;
+				$posts[] = $post;
 			}
-			if ($count == 1)
-				$trigger->call("no_posts", $action);
 			
-			$theme->load("layout/footer.php", $GLOBALS);
+			$theme->load("content/".$action, array("posts" => $posts));
+			
 			break;
 		case "view": case "id":
 			$count = 0;
@@ -43,24 +37,15 @@
 				error(__("Error"), __("The feather theme file for this post does not exist. The post cannot be displayed."));
 
 			$theme->title = $post->title();
-			$theme->load("layout/header.php", $GLOBALS);
 
-			$date_shown = true;
-			$last = true;
-		
-			if ($post->status == "draft")
-				$trigger->call("draft_view_top");
-		
-			$trigger->call("above_post");
-			$theme->load("content/posts/".$post->feather.".php", $GLOBALS);
-			$trigger->call("below_post");
-		
-			$theme->load("layout/footer.php", $GLOBALS);
+			$post->date_shown = true;
+			
+			$theme->load("content/view", array("post" => $post));
 			break;
 		case "archive":
 			if (empty($year) or empty($month)) {
 				$theme->title = __("Archive");
-				$theme->load("layout/header.php", $GLOBALS);
+				$theme->load("layout/header");
 
 				$trigger->call("archive_list_top");
 				
@@ -114,7 +99,7 @@
 					error(__("Error"), __("Please enter a valid year and month."));
 				
 				$theme->title = sprintf(__("Archive of %s"), @date("F Y", mktime(0, 0, 0, $month + 1, 0, $year)));
-				$theme->load("layout/header.php", $GLOBALS);
+				$theme->load("layout/header");
 				
 				$trigger->call("archive_top", array($year, $month));
 				
@@ -130,7 +115,7 @@
 						$shown_dates[] = when("m-d-Y", $post->created_at);
 			
 					$trigger->call("above_post");
-					$theme->load("content/posts/".$post->feather.".php", $GLOBALS);
+					$theme->load("content/feathers/".$post->feather);
 					$trigger->call("below_post");
 					$count++;
 				}
@@ -138,20 +123,20 @@
 			if ($count == 1)
 				$trigger->call("no_posts", "archive");
 							
-			$theme->load("layout/footer.php", $GLOBALS);
+			$theme->load("layout/footer");
 			break;
 		case "login":
 			if ($user->logged_in())
 				error(__("Error"), __("You're already logged in."));
 			
 			$theme->title = __("Log In");
-			$theme->load("layout/header.php", $GLOBALS);
+			$theme->load("layout/header");
 			
 			$incorrect = isset($_GET['incorrect']);
 			
-			$theme->load("forms/user/login.php", $GLOBALS);
+			$theme->load("forms/user/login");
 			
-			$theme->load("layout/footer.php", $GLOBALS);
+			$theme->load("layout/footer");
 			break;
 		case "register":
 			if (!$config->can_register)
@@ -160,18 +145,18 @@
 				error(__("Error"), __("You're already logged in."));
 			
 			$theme->title = __("Register");
-			$theme->load("layout/header.php", $GLOBALS);
-			$theme->load("forms/user/register.php", $GLOBALS);
-			$theme->load("layout/footer.php", $GLOBALS);
+			$theme->load("layout/header");
+			$theme->load("forms/user/register");
+			$theme->load("layout/footer");
 			break;
 		case "controls":
 			if (!$user->logged_in())
 				error(__("Error"), __("You must be logged in to access this area."));
 			
 			$theme->title = __("Controls");
-			$theme->load("layout/header.php", $GLOBALS);
-			$theme->load("forms/user/controls.php", $GLOBALS);
-			$theme->load("layout/footer.php", $GLOBALS);
+			$theme->load("layout/header");
+			$theme->load("forms/user/controls");
+			$theme->load("layout/footer");
 			break;
 		case "feed":
 			if (!isset($get_posts)) exit;
@@ -200,14 +185,14 @@
 				$page->body = $trigger->filter("markup_page_text", $page->body);
 				
 				if (file_exists(THEME_DIR."/content/".$page->url.".php"))
-					$theme->load("content/".$page->url.".php", $GLOBALS);
+					$theme->load("content/".$page->url, array("page" => $page));
 				else {
-					$theme->load("layout/header.php", $GLOBALS);
-					$theme->load("content/page.php", $GLOBALS);
-					$theme->load("layout/footer.php", $GLOBALS);
+					$theme->load("layout/header");
+					$theme->load("content/page", array("page" => $page));
+					$theme->load("layout/footer");
 				}
 			} else
-				show_404($GLOBALS);
+				show_404();
 			
 			break;
 		default:
@@ -227,12 +212,12 @@
 			}
 		
 			if (file_exists(THEME_DIR."/pages/".$action.".php")) {
-				$theme->load("pages/".$action.".php", $GLOBALS);
+				$theme->load("pages/".$action);
 				$page_exists = true;
 			}
 			
 			if (!$page_exists)
-				show_404($GLOBALS);
+				show_404();
 			
 			break;
 	}

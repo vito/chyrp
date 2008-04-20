@@ -100,11 +100,15 @@
 	# 	<Pagination>
 	require_once INCLUDES_DIR."/class/Pagination.php";
 	
+	# File: Twig
+	# Chyrp's templating engine.
+	require_once INCLUDES_DIR."/class/Twig.php";
+	
 	# File: Theme
 	# See Also:
 	# 	<Theme>
 	require_once INCLUDES_DIR."/class/Theme.php";
-	
+
 	# File: Route
 	# See Also:
 	# 	<Route>

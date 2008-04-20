@@ -34,7 +34,7 @@
 		static function __uninstall($confirm) {
 			global $group;
 		
-			if ($confirm == "true") {
+			if ($confirm) {
 				$sql = SQL::current();
 				$sql->query("drop table `".$sql->prefix."comments`");
 			}
@@ -97,7 +97,7 @@
 				$comment->body = $trigger->filter("markup_comment_text", $comment->body);
 				$comment->is_author = (Post::info("user_id", $comment->post_id) == $comment->user_id);
 				
-				$theme->load("content/comment.php", $GLOBALS);
+				$theme->load("content/comment", array("comment" => $comment));
 				
 				$count++;
 			}
@@ -584,7 +584,7 @@ $(function(){
 						$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
 			
 					$comment->body = $trigger->filter("markup_comment_text", $comment->body);
-					$theme->load("content/comment.php", $GLOBALS);
+					$theme->load("content/comment", array("comment" => $comment));
 					break;
 				case "delete_comment":
 					if (!$user->can("delete_comment") or !isset($_POST['id']))
@@ -757,6 +757,72 @@ $(function(){
 		static function metaWeblog_getPost($post, $struct) {
 			$struct['mt_allow_comments'] = intval($post->comment_status == 'open');
 			return array($post, $struct);
+		}
+		
+		static function filter_post() {
+			global $post, $user, $paginate, $comment, $current_user, $viewing;
+			$sql = SQL::current();
+			$config = Config::current();
+			$trigger = Trigger::current();
+			$post->comment_count = $sql->count("comments",
+		                                       "`post_id` = :post_id and (
+		                                        	`status` != 'denied' or (
+		                                        		`status` = 'denied' and (
+		                                        			`author_ip` = :current_ip or
+		                                        			`user_id` = :user_id
+		                                        		)
+		                                        	)
+		                                        ) and
+		                                        `status` != 'spam'",
+		                                       array(
+		                                       	":post_id" => $post->id,
+		                                       	":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
+		                                       	":user_id" => $current_user
+		                                       ));
+			$get_last_comment = $sql->query("select `id` from `".$sql->prefix."comments` where `post_id` = ".$sql->quote($post->id)." and (`status` != 'denied' or (`status` = 'denied' and (`author_ip` = '".ip2long($_SERVER['REMOTE_ADDR'])."' or `user_id` = ".$sql->quote($current_user)."))) and `status` != 'spam' order by `created_at` desc limit 1");
+			$post->last_comment = ($get_last_comment->rowCount() > 0) ? $get_last_comment->fetchColumn() : 0 ;
+			$post->commentable = $comment->user_can($post->id);
+			
+			if ($viewing) {
+				$get_comments = $paginate->select("comments", # table
+				                                  "*", # fields
+				                                  "`post_id` = :post_id and (
+				                                   	`status` != 'denied' or (
+				                                   		`status` = 'denied' and (
+				                                   			`author_ip` = :current_ip or (
+				                                   				`user_id` != '' and
+				                                   				`user_id` = :current_user
+				                                   			)
+				                                   		)
+				                                   	)
+				                                   ) and
+				                                   `status` != 'spam'", #where
+				                                  "`created_at` asc", # order
+				                                  $config->comments_per_page, "comments_page",
+				                                  array(
+				                                  	":post_id" => $post->id,
+				                                  	":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
+				                                  	":current_user" => $current_user
+				                                  ));
+		
+				$shown_dates = array();
+				$comments = array();
+				foreach ($get_comments->fetchAll() as $temp_comment) {
+					$temp_comment["date_shown"] = in_array(when("m-d-Y", $temp_comment["created_at"]), $shown_dates);
+					if (!in_array(when("m-d-Y", $temp_comment["created_at"]), $shown_dates))
+						$shown_dates[] = when("m-d-Y", $temp_comment["created_at"]);
+			
+					if (($temp_comment["status"] != "pingback" and $temp_comment["status"] != "trackback") and !$user->can("code_in_comments", $temp_comment["user_id"]))
+						$temp_comment["body"] = strip_tags($temp_comment["body"], "<".join("><", $config->allowed_comment_html).">");
+			
+					$temp_comment["body"] = $trigger->filter("markup_comment_text", $temp_comment["body"]);
+					$temp_comment["is_author"] = (Post::info("user_id", $temp_comment["post_id"]) == $temp_comment["user_id"]);
+					
+					$comments[] = $temp_comment;
+				}
+			
+				$post->comments = $comments;
+			}
 		}
 	}
 	$comments = new Comments();

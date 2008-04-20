@@ -3,6 +3,7 @@
 		public function __construct() {
 			$this->setFilter("caption", "markup_post_text");
 			$this->respondTo("delete_post", "delete_file");
+			$this->respondTo("filter_post", "filter_post");
 		}
 		static function submit() {
 			$filename = "";
@@ -61,10 +62,15 @@
 			if ($post->feather != "photo") return;
 			unlink(MAIN_DIR."/upload/".$post->filename);
 		}
+		static function filter_post() {
+			global $post;
+			if ($post->feather != "photo") return;
+			$post->image = image_tag_for($post->filename);
+		}
 	}
 	
 	function image_tag_for($filename, $max_width = null, $max_height = null, $more_args = "q=100") {
 		$ext = pathinfo($filename, PATHINFO_EXTENSION);
 		$config = Config::current();
-		return '<a href="'.$config->url.'/upload/'.$filename.'"><img src="'.$config->url.'/feathers/photo/lib/phpThumb.php?src='.$config->url.'/upload/'.urlencode($filename).'&amp;w='.$max_width.'&amp;h='.$max_height.'&amp;f='.$ext.'&amp;'.$more_args.'" alt="'.$filename.'" /></a>';
+		return '<a href="'.$config->url.'/upload/'.$filename.'"><img src="'.$config->url.'/feathers/photo/lib/phpThumb.php?src='.$config->url.'/upload/'.strtolower(urlencode($filename)).'&amp;w='.$max_width.'&amp;h='.$max_height.'&amp;f='.$ext.'&amp;'.$more_args.'" alt="'.$filename.'" /></a>';
 	}

@@ -14,16 +14,16 @@
 		}
 		
 		static function __uninstall($confirm) {
-			if ($confirm == "true") {
+			if ($confirm) {
 				$sql = SQL::current();
-				$sql->query("drop table `".$sql->prefix."tags`");
+				error_log("$confirm is true");
+				#$sql->query("drop table `".$sql->prefix."tags`");
 			}
-			
 			$route = Route::current();
 			$route->remove("tag/(name)/");
 		}
 		
-		static function add_post_options() {
+		static function new_post_options() {
 ?>
 					<p>
 						<label for="tags"><?php echo __("Tags", "tags"); ?><span class="sub"> <?php echo __("(comma separated)", "tags"); ?></span></label>
@@ -155,6 +155,16 @@
 			$struct['mt_tags'] = $post->tags;
 			return array($post, $struct);
 		}
+		
+		static function twig_global_context($context) {
+			$context["tags"] = list_tags();
+			return $context;
+		}
+		
+		static function filter_post() {
+			global $post;
+			$post->tags = array("linked" => get_post_tags($post->id), "unlinked" => get_post_tags($post->id, false));
+		}
 	}
 	
 	$tags_limit_reached = false;
@@ -200,7 +210,7 @@
 		return $tags_limit_reached;
 	}
 	
-	function list_post_tags($post_id, $prefix = "Tags: ", $suffix = null, $fallback = null, $link = true, $echo = true, $order_by = "id", $order = "asc"){
+	function get_post_tags($post_id, $links = true, $order_by = "id", $order = "asc"){
 		global $user;
 		$sql = SQL::current();
 		$get_tags = $sql->query("select * from `".$sql->prefix."tags`
@@ -210,17 +220,11 @@
 		                        	":id" => $post_id
 		                        ));
 		
-		$tag_links = array();
+		$tags = array();
 		$route = Route::current();
-		while ($tag = $get_tags->fetchObject()) {
-			$link_before = ($link) ? '<a href="'.$route->url("tag/".$tag->clean."/").'" rel="tag">' : '' ;
-			$link_after = ($link) ? '</a>' : '' ;
-			$tag_links[] = $link_before.$tag->name.$link_after;
-		}
-		$tags = join(", ", $tag_links);
 		
-		if (!empty($tags) and !$echo) return $prefix.$tags.$suffix;
-		if (empty($tags) and !is_null($fallback) and !$echo) return $prefix.$fallback.$suffix;
-		if (!empty($tags) and $echo) echo $prefix.$tags.$suffix;
-		if (empty($tags) and !is_null($fallback) and $echo) echo $prefix.$fallback.$suffix;
+		while ($tag = $get_tags->fetchObject())
+			$tags[] = ($links ? '<a href="'.$route->url("tag/".$tag->clean."/").'" rel="tag">' : '').$tag->name.($links ? '</a>' : '');
+		
+		return $tags;
 	}

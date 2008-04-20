@@ -1,0 +1,15 @@
+				<div class="page" id="page_$page.if">
+					<div id="page_inner_$page.id">
+						<h2>
+{# <?php if ($user->can("edit_page") or $user->can("delete_page")): ?>
+							<span class="info right">
+								<?php $page->edit_link(); ?>
+								<?php $page->delete_link(null, ' <em>/</em> '); ?>
+							</span>
+<?php endif; ?> #}
+							$page.title
+						</h2>
+						<br />
+						$page.body
+					</div>
+				</div>
