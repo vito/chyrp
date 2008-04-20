@@ -1,15 +1,15 @@
 <?php
 	$config = Config::current();
 	$split_locale = explode("_", $config->locale);
-	
+
 	fallback($get_comments, $sql->query("select * from `".$sql->prefix."comments` where (`status` != 'denied' or (`status` = 'denied' and (`author_ip` = '".ip2long($_SERVER['REMOTE_ADDR'])."' or (`user_id` != '' and `user_id` = ".fix($current_user).")))) and `status` != 'spam' order by `created_at` desc"));
-	
+
 	fallback($latest_timestamp, $sql->query("select `created_at` from `".$sql->prefix."comments` where (`status` != 'denied' or (`status` = 'denied' and (`author_ip` = '".ip2long($_SERVER['REMOTE_ADDR'])."' or (`user_id` != '' and `user_id` = ".fix($current_user).")))) and `status` != 'spam' order by `created_at` desc limit 1")->fetchColumn());
-	
+
 	fallback($title, $config->name);
-	
+
 	fallback($url, $route->url("comments_rss/"));
-	
+
 	echo "<".'?xml version="1.0" encoding="utf-8"?'.">\r";
 ?>
 <rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">
@@ -27,14 +27,14 @@
 				foreach ($temp_comment as $key => $val)
 					if (!is_int($key))
 						$comment->$key = $val;
-				
+
 				$trigger->call("rss_comment", $comment->id);
-				
+
 				if (($comment->status != "pingback" and !$comment->status != "trackback") and !$user->can("code_in_comments", $comment->user_id))
 					$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
-				
+
 				$comment->body = $trigger->filter("markup_comment_text", $comment->body);
-				
+
 				$title = htmlspecialchars($post->title($comment->post_id));
 ?>
 		<item>

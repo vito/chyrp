@@ -1,7 +1,7 @@
 <?php
 	if (isset($args['selection']))
 		$post->dialogue = $args['selection'];
-	
+
 	fallback($post->title);
 	fallback($post->dialogue);
 ?>

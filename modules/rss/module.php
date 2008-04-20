@@ -9,7 +9,7 @@
 		static function runtime() {
 			global $action;
 			if ($action != "index" or JAVASCRIPT or ADMIN) return;
-			
+
 			$config = Config::current();
 			if (@time() - $config->rss_last_update >= 5) {
 				$rss_feeds = $config->rss_feeds;
@@ -17,28 +17,28 @@
 					$get_xml_contents = get_remote($feed["url"]);
 					$xml_contents = preg_replace("/<(\/?)dc:date>/", "<\\1date>", $get_xml_contents);
 					$xml = simplexml_load_string($xml_contents);
-					
+
 					$to_array = (array) $xml;
-					
+
 					if (isset($to_array["item"]))
 						$target = (array) $to_array["item"];
 					else {
 						$channel_array = (array) $to_array["channel"];
 						$target = (array) $channel_array["item"];
 					}
-					
+
 					foreach (array_reverse($target) as $item) {
 						$date = (isset($item->pubDate)) ? $item->pubDate : ((isset($item->date)) ? $item->date : 0) ;
-						
+
 						if (@strtotime($date) > $feed["last_updated"]) {
 							$data = array();
 							foreach ($feed["data"] as $attr => $field)
 								if (!empty($field))
 									$data[$field] = $item->$attr;
-							
+
 							$_POST['feather'] = $feed["feather"];
 							Post::add($data);
-							
+
 							$rss_feeds[$name]["last_updated"] = @strtotime($date);
 						}
 					}

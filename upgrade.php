@@ -52,7 +52,7 @@
 		<div class="window">
 <?php
 	$current_version = 113;
-	
+
 	function to_103() {
 		$sql = SQL::current();
 		$sql->query("rename table `".$sql->prefix."tweets` to `".$sql->prefix."posts`");
@@ -74,7 +74,7 @@
 		$sql = SQL::current();
 		$sql->query("alter table `".$sql->prefix."pages`
 		             add `list_order` int(11) not null default '0' after `show_in_list`");
-		
+
 		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v1.1")."</p>\n";
 	}
 	function to_113() {
@@ -82,7 +82,7 @@
 		$config->set("secure_hashkey", md5(random(32, true)));
 		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v1.1.3")."</p>\n";
 	}
-	
+
 	if (!empty($_POST)) {
 ?>
 			<h1><?php echo __("Upgrading&hellip;"); ?></h1>

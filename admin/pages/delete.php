@@ -23,14 +23,14 @@
 				$page_exists = true;
 			}
 		}
-		
+
 		foreach ($config->enabled_feathers as $feather) {
 			if (file_exists(FEATHERS_DIR."/".$feather."/pages/admin/delete/".$sub.".php")) {
 				require FEATHERS_DIR."/".$feather."/pages/admin/delete/".$sub.".php";
 				$page_exists = true;
 			}
 		}
-		
+
 		if (file_exists(THEME_DIR."/pages/admin/delete/".$sub.".php")) {
 			require THEME_DIR."/pages/admin/delete/".$sub.".php";
 			$page_exists = true;

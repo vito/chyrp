@@ -1,7 +1,7 @@
 <?php
 	if (isset($args['selection']))
 		$post->caption = $args['selection'];
-	
+
 	fallback($post->embed);
 	fallback($post->caption);
 ?>

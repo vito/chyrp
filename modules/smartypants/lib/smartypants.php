@@ -313,7 +313,7 @@ class SmartyPants_Parser {
 		}
 
 		if ($this->do_stupefy) $t = $this->stupefyEntities($t);
-		
+
 		return $t;
 	}
 
@@ -610,7 +610,7 @@ class SmartyPantsTypographer_Parser extends SmartyPants_Parser {
 	var $do_space_frenchquote = 0;
 	var $do_space_thousand    = 0;
 	var $do_space_unit        = 0;
-	
+
 	# Smart quote characters:
 	var $smart_doublequote_open  = SMARTYPANTS_SMART_DOUBLEQUOTE_OPEN;
 	var $smart_doublequote_close = SMARTYPANTS_SMART_DOUBLEQUOTE_CLOSE;
@@ -626,11 +626,11 @@ class SmartyPantsTypographer_Parser extends SmartyPants_Parser {
 	var $space_frenchquote = SMARTYPANTS_SPACE_FRENCHQUOTE;
 	var $space_thousand    = SMARTYPANTS_SPACE_THOUSAND;
 	var $space_unit        = SMARTYPANTS_SPACE_UNIT;
-	
+
 	# Expression of a space (breakable or not):
 	var $space = '(?: | |&nbsp;|&#0*160;|&#x0*[aA]0;)';
 
-	
+
 
 	function SmartyPantsTypographer_Parser($attr = SMARTYPANTS_ATTR) {
 	#
@@ -669,7 +669,7 @@ class SmartyPantsTypographer_Parser extends SmartyPants_Parser {
 	#
 		# Initialize inherited SmartyPants parser.
 		parent::SmartyPants_Parser($attr);
-				
+
 		if ($attr == "1" || $attr == "2" || $attr == "3") {
 			# Do everything, turn all options on.
 			$this->do_comma_quotes      = 1;
@@ -719,10 +719,10 @@ class SmartyPantsTypographer_Parser extends SmartyPants_Parser {
 
 	function educate($t, $prev_token_last_char) {
 		$t = parent::educate($t, $prev_token_last_char);
-		
+
 		if ($this->do_comma_quotes)      $t = $this->educateCommaQuotes($t);
 		if ($this->do_guillemets)        $t = $this->educateGuillemets($t);
-		
+
 		if ($this->do_space_emdash)      $t = $this->spaceEmDash($t);
 		if ($this->do_space_endash)      $t = $this->spaceEnDash($t);
 		if ($this->do_space_colon)       $t = $this->spaceColon($t);
@@ -731,7 +731,7 @@ class SmartyPantsTypographer_Parser extends SmartyPants_Parser {
 		if ($this->do_space_frenchquote) $t = $this->spaceFrenchQuotes($t);
 		if ($this->do_space_thousand)    $t = $this->spaceThousandSeparator($t);
 		if ($this->do_space_unit)        $t = $this->spaceUnit($t);
-		
+
 		return $t;
 	}
 
@@ -749,7 +749,7 @@ class SmartyPantsTypographer_Parser extends SmartyPants_Parser {
 		$dq_close = $this->smart_doublequote_close;
 		$sq_open  = $this->smart_singlequote_open;
 		$sq_close = $this->smart_singlequote_close;
-	
+
 		# Make our own "punctuation" character class, because the POSIX-style
 		# [:PUNCT:] is only available in Perl 5.6 or later:
 		$punct_class = "[!\"#\\$\\%'()*+,-.\\/:;<=>?\\@\\[\\\\\]\\^_`{|}~]";
@@ -872,10 +872,10 @@ class SmartyPantsTypographer_Parser extends SmartyPants_Parser {
 	#
 		$opt = ( $this->do_space_frenchquote ==  2 ? '?' : '' );
 		$chr = ( $this->do_space_frenchquote != -1 ? $this->space_frenchquote : '' );
-		
+
 		# Characters allowed immediatly outside quotes.
 		$outside_char = $this->space . '|\s|[.,:;!?\[\](){}|@*~=+-]|¡|¿';
-		
+
 		$_ = preg_replace(
 			"/(^|$outside_char)(&#171;|«|&#8250;|‹)$this->space$opt/",
 			"\\1\\2$chr", $_);
@@ -897,7 +897,7 @@ class SmartyPantsTypographer_Parser extends SmartyPants_Parser {
 	#
 		$opt = ( $this->do_space_colon ==  2 ? '?' : '' );
 		$chr = ( $this->do_space_colon != -1 ? $this->space_colon : '' );
-		
+
 		$_ = preg_replace("/$this->space$opt(:)(\\s|$)/m",
 						  "$chr\\1\\2", $_);
 		return $_;
@@ -915,7 +915,7 @@ class SmartyPantsTypographer_Parser extends SmartyPants_Parser {
 	#
 		$opt = ( $this->do_space_semicolon ==  2 ? '?' : '' );
 		$chr = ( $this->do_space_semicolon != -1 ? $this->space_semicolon : '' );
-		
+
 		$_ = preg_replace("/$this->space(;)(?=\\s|$)/m", 
 						  " \\1", $_);
 		$_ = preg_replace("/((?:^|\\s)(?>[^&;\\s]+|&#?[a-zA-Z0-9]+;)*)".
@@ -943,7 +943,7 @@ class SmartyPantsTypographer_Parser extends SmartyPants_Parser {
 		// Inverted marks.
 		$imarks = "(?:¡|&iexcl;|&#161;|&#x[Aa]1;|¿|&iquest;|&#191;|&#x[Bb][Ff];)";
 		$_ = preg_replace("/($imarks+)$this->space$opt/", "\\1$chr", $_);
-	
+
 		return $_;
 	}
 
@@ -965,8 +965,8 @@ class SmartyPantsTypographer_Parser extends SmartyPants_Parser {
 			"$chr\\1$chr", $_);
 		return $_;
 	}
-	
-	
+
+
 	function spaceEnDash($_) {
 	#
 	#	Parameters: String, two replacement characters separated by a hyphen (`-`),
@@ -1060,7 +1060,7 @@ class SmartyPantsTypographer_Parser extends SmartyPants_Parser {
 	#	Example output: Fun i.e._something pleasant.
 	#
 		$opt = ( $this->do_space_abbr ==  2 ? '?' : '' );
-		
+
 		$_ = preg_replace("/(^|\s)($this->abbr_after) $opt/m",
 			"\\1\\2$this->space_abbr", $_);
 		$_ = preg_replace("/( )$opt($this->abbr_sp_before)(?![a-zA-Z'])/m", 

@@ -1,19 +1,19 @@
 <?php
 	require_once "../includes/common.php";
-	
+
 	if (!in_array("text", $config->enabled_feathers))
 		error(__("Missing Feather"), __("Importing from MovableType requires the Text feather to be installed and enabled."));
-	
+
 	if (!$user->can("add_post"))
 		error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
-	
+
 	$errors = array();
 	if (!empty($_POST)) {
 		switch($_POST['step']) {
 			case "1":
 				$txt = file_get_contents($_FILES['txt_file']['tmp_name']);
 				$split = explode("--------", $txt);
-				
+
 				foreach ($split as $the_post) {
 					preg_match("/TITLE: ([^\n]+)\n/s", $the_post, $title);
 					preg_match("/BASENAME: ([^\n]+)\n/s", $the_post, $basename);
@@ -22,34 +22,34 @@
 					preg_match("/BODY:\n(.*?)\n-----/s", $the_post, $body);
 					preg_match("/EXTENDED BODY:\n(.*?)\n-----/s", $the_post, $extended);
 					preg_match("/EXCERPT:\n(.*?)\n-----/s", $the_post, $excerpt);
-					
+
 					if (empty($body)) continue;
-					
+
 					$status_translate = array("Publish" => "public", "Draft" => "draft", "Future" => "draft");
-					
+
 					$title = (empty($title)) ? "" : $title[1] ;
 					$body = (!empty($extended[1])) ? $body[1]." <!--more-->\n".$extended[1] : $body[1] ;
-					
+
 					$values = array("title" => $title, "body" => $body);
 					$status = (empty($status)) ? "public" : str_replace(array_keys($status_translate), array_values($status_translate), $status[1]) ;
 					$clean = (empty($basename)) ? sanitize($title) : str_replace("_", "-", $basename[1]) ;
 					$url = Post::check_url($clean);
 					$timestamp = (empty($date)) ? datetime() : @date("Y-m-d H:i:s", strtotime($date[1])) ;
-					
+
 					# Damn it feels good to be a gangsta...
 					$_POST['status'] = $status;
 					$_POST['pinned'] = false;
 					$_POST['created_at'] = $timestamp;
 					$id = Post::add($values, $clean, $url);
-					
+
 					$trigger->call("import_movabletype_post", array($the_post, $id));
 				}
-			
+
 				$step = "2";
 				break;
 		}
 	}
-	
+
 	$step = (isset($step)) ? $step : "1" ;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"

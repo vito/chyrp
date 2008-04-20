@@ -95,7 +95,7 @@
 					</p>
 					<h4><?php echo __("Permissions"); ?></h4>
 					<p id="toggler">
-		
+
 					</p>
 <?php
 	$get_columns = $sql->query("show columns from `".$sql->prefix."groups`");

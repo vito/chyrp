@@ -7,25 +7,25 @@
 	define('XML_RPC', false);
 	ini_set('error_reporting', E_ALL);
 	ini_set('display_errors', true);
-	
+
 	# Input sanitizer
 	require INCLUDES_DIR."/input.php";
-	
+
 	# YAML parser
 	require INCLUDES_DIR."/lib/spyc.php";
-	
+
 	# Configuration files
 	require INCLUDES_DIR."/config.php";
 	require INCLUDES_DIR."/database.php";
-	
+
 	# Translation stuff
 	require INCLUDES_DIR."/lib/gettext/gettext.php";
 	require INCLUDES_DIR."/lib/gettext/streams.php";
 	require INCLUDES_DIR."/lib/l10n.php";
-	
+
 	# Helpers
 	require INCLUDES_DIR."/helpers.php";
-	
+
 	function error($title, $body) {
 		require INCLUDES_DIR."/error.php";
 		exit;
@@ -34,25 +34,25 @@
 	$url = "http://".$_SERVER['HTTP_HOST'].str_replace("/install.php", "", $_SERVER['REQUEST_URI']);
 	$index = (parse_url($url, PHP_URL_PATH)) ? "/".trim(parse_url($url, PHP_URL_PATH), "/")."/" : "/" ;
 	$htaccess = "<IfModule mod_rewrite.c>\nRewriteEngine On\nRewriteBase ".str_replace("install.php", "", $index)."\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule ^.+$ index.php [L]\n</IfModule>";
-	
+
 	$errors = array();
 	$installed = false;
-	
+
 	if (file_exists(INCLUDES_DIR."/config.yaml.php") and file_exists(INCLUDES_DIR."/database.yaml.php") and file_exists(BASE_DIR."/.htaccess")) {
 		$sql->load(INCLUDES_DIR."/database.yaml.php");
 		$config->load(INCLUDES_DIR."/config.yaml.php");
-		
+
 		if ($sql->connect(true) and !empty($config->url) and $sql->query("select count(`id`) from `".$sql->prefix."users`")->fetchColumn())
 			error(__("Already Installed"), __("Chyrp is already correctly installed and configured."));
 	}
 	else {
 		if (!is_writable(BASE_DIR))
 			$errors[] = sprintf(__("STOP! Before you go any further, you must create a .htaccess file in Chyrp's install directory and put this in it:\n<pre>%s</pre>."), htmlspecialchars($htaccess));
-		
+
 		if (!is_writable(INCLUDES_DIR))
 			$errors[] = __("Chyrp's includes directory is not writable by the server.");
 	}
-	
+
 	if (!empty($_POST)) {
 		if (!@mysql_connect($_POST['host'], $_POST['username'], $_POST['password']))
 			$errors[] = sprintf(__("Could not connect to the MySQL server: %s"), mysql_error());
@@ -77,7 +77,7 @@
 
 		if (empty($_POST['email']))
 			$errors[] = __("E-Mail address cannot be blank.");
-		
+
 		if (empty($errors)) {
 			$sql->set("host", $_POST['host']);
 			$sql->set("username", $_POST['username']);
@@ -85,11 +85,11 @@
 			$sql->set("database", $_POST['database']);
 			$sql->set("prefix", $_POST['prefix']);
 			$sql->set("adapter", "mysql");
-		
+
 			$sql->prefix = $_POST['prefix'];
-		
+
 			$sql->connect();
-		
+
 			# Posts table
 			$sql->query("create table if not exists `".$sql->prefix."posts` (
 			             	`id` int(11) not null auto_increment, 
@@ -104,7 +104,7 @@
 			             	`updated_at` datetime not null default '0000-00-00 00:00:00', 
 			             	primary key (`id`)
 			             ) default charset=utf8");
-		
+
 			# Pages table
 			$sql->query("create table if not exists `".$sql->prefix."pages` (
 			             	`id` int(11) not null auto_increment, 
@@ -120,7 +120,7 @@
 			             	`updated_at` datetime not null default '0000-00-00 00:00:00', 
 			             	primary key (`id`)
 			             ) default charset=utf8");
-		
+
 			# Users table
 			$sql->query("create table if not exists `".$sql->prefix."users` (
 			             	`id` int(11) not null auto_increment, 
@@ -134,7 +134,7 @@
 			             	primary key (`id`), 
 			             	unique (`login`)
 			             ) default charset=utf8");
-		
+
 			# Groups table
 			$sql->query("create table if not exists `".$sql->prefix."groups` (
 			             	`id` int(11) not null auto_increment, 
@@ -143,7 +143,7 @@
 			             	primary key (`id`), 
 			             	unique (`name`)
 			             ) default charset=utf8");
-			
+
 			# Permissions table
 			$sql->query("create table if not exists `".$sql->prefix."permissions` (
 			             	`id` int(11) not null auto_increment, 
@@ -151,12 +151,12 @@
 			             	primary key (`id`), 
 			             	unique (`name`)
 			             ) default charset=utf8");
-			
+
 			$permissions = array("view_site", "change_settings", "add_post", "edit_post", "delete_post", "view_private", "view_draft", "add_page", "edit_page", "delete_page", "edit_user", "delete_user", "add_group", "edit_group", "delete_group");
-			
+
 			foreach ($permissions as $permission)
 				$sql->query("insert into `".$sql->prefix."permissions` set `name` = '".$permission."'");
-			
+
 			$groups = array(
 				"admin" => Spyc::YAMLDump($permissions),
 				"member" => Spyc::YAMLDump(array("view_site")),
@@ -164,13 +164,13 @@
 				"banned" => Spyc::YAMLDump(array()),
 				"guest" => Spyc::YAMLDump(array("view_site", "view_private"))
 			);
-			
+
 			# Insert the default groups (see above)
 			foreach($groups as $name => $permission)
 				$sql->query("insert into `".$sql->prefix."groups` set 
 			                 `name` = '".ucfirst($name)."', 
 			                 `permissions` = '".$permission."'");
-		
+
 			if (!file_exists(BASE_DIR."/.htaccess") and !is_writable(BASE_DIR))
 				$errors[] = __("Could not generate .htaccess file. Clean URLs will not be available.");
 			else {
@@ -178,7 +178,7 @@
 				fwrite($open_htaccess, $htaccess);
 				fclose($open_htaccess);
 			}
-		
+
 			$config->set("name", $_POST['name']);
 			$config->set("description", $_POST['description']);
 			$config->set("url", $url);
@@ -199,9 +199,9 @@
 			$config->set("enabled_modules", array());
 			$config->set("enabled_feathers", array("text"));
 			$config->set("routes", array());
-			
+
 			$config->load(INCLUDES_DIR."/config.yaml.php");
-			
+
 			if (!$sql->query("select `id` from `".$sql->prefix."users` where `login` = :login", array(":login" => $_POST['login']))->rowCount())
 				$sql->query("insert into `".$sql->prefix."users` set 
 				             	`login` = :login, 
@@ -220,11 +220,11 @@
 
 			setcookie("chyrp_user_id", $sql->db->lastInsertId(), time() + 2592000, "/");
 			setcookie("chyrp_password", md5($_POST['password_1']), time() + 2592000, "/");
-			
+
 			$installed = true;
 		}
 	}
-	
+
 	function value_fallback($index, $fallback = "") {
 		echo (isset($_POST[$index])) ? $_POST[$index] : $fallback ;
 	}
@@ -346,7 +346,7 @@
 					<label for="prefix"><?php echo __("Table Prefix"); ?> <span class="sub"><?php echo __("(optional)"); ?></span></label>
 					<input type="text" name="prefix" value="<?php value_fallback("prefix"); ?>" id="prefix" />
 				</p>
-				
+
 				<h1><?php echo __("Website Setup"); ?></h1>
 				<p class="extra">
 					<label for="name"><?php echo __("Site Name"); ?></label>
@@ -357,7 +357,7 @@
 					<input type="text" name="time_offset" value="0" id="time_offset" />
 					<span class="sub inline">(server time: <?php echo @date("F jS, Y g:i A"); ?>)</span>
 				</p>
-				
+
 				<h1><?php echo __("Admin Account"); ?></h1>
 				<p>
 					<label for="login"><?php echo __("Username"); ?></label>
@@ -369,7 +369,7 @@
 					<label for="email"><?php echo __("E-Mail Address"); ?></label>
 					<input type="text" name="email" value="<?php value_fallback("email"); ?>" id="email" />
 				</p>
-				
+
 				<p class="center"><input type="submit" value="<?php echo __("Install!"); ?>"></p>
 			</form>
 <?php else: ?>

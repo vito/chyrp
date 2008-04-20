@@ -1,18 +1,18 @@
 <?php
 	define('AJAX', true);
 	require_once "common.php";
-	
+
 	switch($_POST['action']) {
 		case "edit_post":
 			if (!$user->can("edit_post"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to edit posts."));
 			if (!isset($_POST['id']))
 				error(__("Unspecified ID"), __("Please specify an ID of the post you would like to edit."));
-			
+
 			$title = call_user_func(array(Post::feather_class($_POST['id']), "title"), $_POST['id']);
-			
+
 			$post = new Post($_POST['id'], array("filter" => false));
-					
+
 			$theme_file = THEME_DIR."/forms/feathers/".$post->feather.".php";
 			$default_file = FEATHERS_DIR."/".$post->feather."/fields.php";
 			$fields_file = (file_exists($theme_file)) ? $theme_file : $default_file ;
@@ -40,17 +40,17 @@
 		case "delete_post":
 			if (!$user->can('delete_post'))
 				error(__("Access Denied"), __("You do not have sufficient privileges to delete posts."));
-			
+
 			$post = new Post($_POST['id']);
 			$post->delete();
 			break;
 		case "view_post":
 			fallback($_POST['offset'], 0);
 			fallback($_POST['context']);
-			
+
 			$id = (isset($_POST['id'])) ? " and `id` = ".$sql->quote($_POST['id']) : "" ;
 			$reason = (isset($_POST['reason'])) ? "_".$_POST['reason'] : "" ;
-			
+
 			switch($_POST['context']) {
 				default:
 					$grab_post = $sql->query("select * from `".$sql->prefix."posts` where ".$private.$enabled_feathers.$id." order by `pinned` desc, `created_at` desc, `id` desc limit ".$_POST['offset'].", 1");
@@ -65,19 +65,19 @@
 					$grab_post = $sql->query("select * from `".$sql->prefix."posts` where `xml` like '%".$sql->quote(urldecode($_POST['query']))."%' and ".$private.$enabled_feathers.$id." order by `pinned` desc, `created_at` desc, `id` desc limit ".$_POST['offset'].", 1");
 					break;
 			}
-			
+
 			if (!$grab_post->rowCount()) {
 				header("HTTP/1.1 404 Not Found");
 				$trigger->call("not_found");
 				exit;
 			}
-			
+
 			$post = new Post($grab_post->fetchColumn());
-			
+
 			$viewing = false;
 			$date_shown = true;
 			$last = false;
-			
+
 			$trigger->call("above_post".$reason);
 			$theme->load("content/feathers/".$post->feather);
 			$trigger->call("below_post");
@@ -95,25 +95,25 @@
 		case "check_confirm":
 			if (!$user->can("change_settings"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable extensions."));
-			
+
 			$dir = ($_POST['type'] == "module") ? MODULES_DIR : FEATHERS_DIR ;
 			$info = Spyc::YAMLLoad($dir."/".$_POST['check']."/info.yaml");
 			fallback($info["confirm"], "");
-			
+
 			if (!empty($info["confirm"]))
 				echo __($info["confirm"], $_POST['check']);
-			
+
 			break;
 		case "organize_pages":
 			foreach ($_POST['parent'] as $id => $parent)
 				$sql->query("update `".$sql->prefix."pages` set `parent_id` = ".$sql->quote($parent)." where `id` = ".$sql->quote($id));
-			
+
 			foreach ($_POST['sort_pages'] as $index => $page) {
 				$id = str_replace("page_list_", "", $page);
 				$sql->query("update `".$sql->prefix."pages` set `list_order` = ".$sql->quote($index)." where `id` = ".$sql->quote($id));
 			}
-			
+
 			break;
 	}
-	
+
 	$trigger->call("ajax");

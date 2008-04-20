@@ -12,7 +12,7 @@
 			$route = Route::current();
 			$route->add("tag/(name)/");
 		}
-		
+
 		static function __uninstall($confirm) {
 			if ($confirm) {
 				$sql = SQL::current();
@@ -22,7 +22,7 @@
 			$route = Route::current();
 			$route->remove("tag/(name)/");
 		}
-		
+
 		static function new_post_options() {
 ?>
 					<p>
@@ -31,7 +31,7 @@
 					</p>
 <?php
 		}
-		
+
 		static function edit_post_options($id) {
 			$tags = list_post_tags($id, null, null, null, false, false);
 ?>
@@ -41,10 +41,10 @@
 					</p>
 <?php
 		}
-		
+
 		static function add_post($id, $options) {
 			if (!isset($options["tags"])) return;
-			
+
 			$tags = explode(",", $options["tags"]); // Split at the comma
 			$tags = array_map('trim', $tags); // Remove whitespace
 			$tags = array_map('strip_tags', $tags); // Remove HTML
@@ -63,7 +63,7 @@
 				            ));
 			}
 		}
-		
+
 		static function update_post($id, $options) {
 			$sql = SQL::current();
 			$sql->query("delete from `".$sql->prefix."tags`
@@ -71,7 +71,7 @@
 			            array(
 			            	":id" => $id
 			            ));
-			
+
 			$tags = explode(",", $options["tags"]); // Split at the comma
 			$tags = array_map('trim', $tags); // Remove whitespace
 			$tags = array_map('strip_tags', $tags); // Remove HTML
@@ -89,7 +89,7 @@
 				            ));
 			}
 		}
-		
+
 		static function delete_post($id) {
 			$sql = SQL::current();
 			$sql->query("delete from `".$sql->prefix."tags`
@@ -98,26 +98,26 @@
 			            	":id" => $id
 			            ));
 		}
-		
+
 		static function parse_urls($urls) {
 			$urls["/\/tag\/(.*?)\//"] = "?action=tag&amp;name=$1";
 			return $urls;
 		}
-		
+
 		static function admin_manage_posts_column_header() {
 			echo "<th>".__("Tags", "tags")."</th>";
 		}
-		
+
 		static function admin_manage_posts_column($id) {
 			echo "<td>";
 			list_post_tags($id, null);
 			echo "</td>";
 		}
-		
+
 		static function route_tag() {
 			global $paginate, $private, $enabled_feathers, $tag, $get_posts;
 			$tag = $_GET['name'];
-			
+
 			$config = Config::current();
 			$sql = SQL::current();
 			$get_posts = $paginate->select(array("posts AS p", "tags AS t"), # from
@@ -131,13 +131,13 @@
 			                               	":clean" => $tag
 			                               ));
 		}
-		
+
 		static function import_wordpress_post($data, $id) {
 			if (isset($data["CATEGORY"])) {
 				$sql = SQL::current();
 				foreach ($data["CATEGORY"] as $tag) {
 					if (!isset($tag["attr"]["DOMAIN"]) or $tag["attr"]["DOMAIN"] != "tag") continue;
-					
+
 					$sql->query("insert into `".$sql->prefix."tags`
 					             (`name`, `post_id`, `clean`)
 					             values
@@ -150,30 +150,30 @@
 				}
 			}
 		}
-		
+
 		static function metaWeblog_getPost($post, $struct) {
 			$struct['mt_tags'] = $post->tags;
 			return array($post, $struct);
 		}
-		
+
 		static function twig_global_context($context) {
 			$context["tags"] = list_tags();
 			return $context;
 		}
-		
+
 		static function filter_post() {
 			global $post;
 			$post->tags = array("linked" => get_post_tags($post->id), "unlinked" => get_post_tags($post->id, false));
 		}
 	}
-	
+
 	$tags_limit_reached = false;
 	function list_tags($limit = 10, $order_by = "id", $order = "asc") {
 		global $tags_limit_reached;
-		
+
 		$sql = SQL::current();
 		$order_by = (("count" != $order_by) ? $sql->prefix."tags`.`" : "").$order_by;
-		
+
 		$get_tags = $sql->query("select
 		                         	`name`, `".$sql->prefix."tags`.`clean` as `clean`,
 		                         	`".$sql->prefix."tags`.`post_id` as `target_id`,
@@ -186,7 +186,7 @@
 		                         	`status` = 'public'
 		                         group by `name`
 		                         order by `".$order_by."` ".$order);
-		
+
 		$tags = array();
 		$count = 0;
 		while ($tag = $get_tags->fetchObject()) {
@@ -201,15 +201,15 @@
 		}
 		if ($count > $limit)
 			$tags_limit_reached = true;
-		
+
 		return $tags;
 	}
-	
+
 	function tags_limit_reached() {
 		global $tags_limit_reached;
 		return $tags_limit_reached;
 	}
-	
+
 	function get_post_tags($post_id, $links = true, $order_by = "id", $order = "asc"){
 		global $user;
 		$sql = SQL::current();
@@ -219,12 +219,12 @@
 		                        array(
 		                        	":id" => $post_id
 		                        ));
-		
+
 		$tags = array();
 		$route = Route::current();
-		
+
 		while ($tag = $get_tags->fetchObject())
 			$tags[] = ($links ? '<a href="'.$route->url("tag/".$tag->clean."/").'" rel="tag">' : '').$tag->name.($links ? '</a>' : '');
-		
+
 		return $tags;
 	}
