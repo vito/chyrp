@@ -96,27 +96,27 @@
 				if (!is_numeric($year) or !is_numeric($month))
 					error(__("Error"), __("Please enter a valid year and month."));
 
-				$theme->title = sprintf(__("Archive of %s"), @date("F Y", mktime(0, 0, 0, $month + 1, 0, $year)));
-				$theme->load("layout/header");
+				$timestamp = mktime(0, 0, 0, $month + 1, 0, $year);
+				$theme->title = sprintf(__("Archive of %s"), @date("F Y", $timestamp));
 
-				$trigger->call("archive_top", array($year, $month));
-
-				$count = 1;
 				$shown_dates = array();
+				$posts = array();
 				foreach ($get_posts->fetchAll() as $post) {
-					$post = new Post($post['id']);
+					$post = new Post(null, array("read_from" => $post));
 					if (!$post->theme_exists()) continue;
 
-					$last = ($count == $get_posts->rowCount());
-					$date_shown = in_array(when("m-d-Y", $post->created_at), $shown_dates);
+					$post->date_shown = in_array(when("m-d-Y", $post->created_at), $shown_dates);
 					if (!in_array(when("m-d-Y", $post->created_at), $shown_dates))
 						$shown_dates[] = when("m-d-Y", $post->created_at);
 
-					$trigger->call("above_post");
-					$theme->load("content/feathers/".$post->feather);
-					$trigger->call("below_post");
-					$count++;
+					$posts[] = $post;
 				}
+
+				$theme->load("content/archive", array("posts" => $posts,
+				                                      "archive" => array("year" => $year,
+				                                                         "month" => @date("F", $timestamp)
+				                                                   )
+				                                ));
 			}
 			break;
 		case "login":

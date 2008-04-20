@@ -3,12 +3,6 @@
 		function read_more() {
 			return __("Read More &raquo;", "theme");
 		}
-		function not_found() {
-?>
-		<h1><?php echo __("Not Found", "theme"); ?></h1>
-		<div class="post body"><?php echo __("Sorry, but you are looking for something that isn't here.", "theme"); ?></div>
-<?php
-		}
 		function no_posts($action) {
 			switch($action) {
 				default:
@@ -81,16 +75,6 @@
 		}
 		function above_post_edited() {
 			echo "<div class=\"success\" onClick=\"$(this).fadeOut('fast')\">".__("Post updated.", "theme")."<span class=\"sub\">".__("(click to hide)", "theme")."</span></div>";
-		}
-		function archive_month($month, $url) {
-			echo '<h2><a href="'.$url.'">'.$month.'</a></h2>';
-		}
-		function archive_list_wrapper() {
-			return "<ul>{LIST}</ul><br />";
-		}
-		function archive_list_item() {
-			global $post;
-			echo "\t<li>".when("d", $post->created_at).": <a href=\"".$post->url($post->id)."\">".normalize($post->title($post->id))."</a></li>\n";
 		}
 	}
 

@@ -1,11 +1,19 @@
 {% extends "layouts/default.twig" %}
 {% block content %}
-{% for archive in archives %}
-	<h2>${ "Archive of" | translate } $archive.month $archive.year</h2><br />
+{% if archives %}
+	{% for archive in archives %}
+	<h2><a href="$archive.url">$archive.month $archive.year</a></h2>
 	<ul>
 		{% for post in archive.posts %}
 		<li>${ post.created_at | date }: <a href="$post.url">${ post.title | normalize }</a></li>
 		{% endfor %}
 	</ul>
-{% endfor %}
+	{% endfor %}
+{% endif %}
+{% if posts %}
+	<h2>${ "Archive of" | translate } $archive.month $archive.year</h2><br />
+	{% for post in posts %}
+	{% include "content/post.twig" %}
+	{% endfor %}
+{% endif %}
 {% endblock %}
