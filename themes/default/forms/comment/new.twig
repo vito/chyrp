@@ -1,0 +1,22 @@
+<form id="add_comment" action="{# TODO: route url #}http://localhost/chyrp/add_comment/" method="post" accept-charset="utf-8">
+{% if user.logged_in %}
+	${ "Logged in as" | translate } ${ user.login }{# TODO: Fallback #}
+	<a href="{# TODO: route url #}http://localhost/chyrp/logout/">${ "Log Out &rarr;" | translate }</a>
+	<input type="hidden" name="author" value="${ user.login }{# TODO: Fallback #}" id="author" />
+	<input type="hidden" name="email" value="$user.email" id="email" />
+	<input type="hidden" name="url" value="$user.website" id="url" />
+{#
+{% else %}
+	<label for="author">${ "Your Name" | translate }</label>
+	<input type="text" name="author" value="" id="author" /><br />
+	<label for="email">${ "Your E-Mail" | translate }</label>
+	<input type="text" name="email" value="" id="email" /><br />
+	<label for="url">${ "Your Website" | translate }</label>
+	<input type="text" name="url" value="" id="url" /><br />
+#}
+{% endif %}
+	<textarea name="body" rows="8" cols="40" class="wide"></textarea>
+
+	<input type="hidden" name="post_id" value="$post.id" id="post_id" />
+	<p><input type="submit" value="${ "Speak" | translate }" /></p>
+</form>

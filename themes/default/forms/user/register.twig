@@ -1,0 +1,21 @@
+	<h2>${ "Register" | translate }</h2>
+	<form action="{# TODO: route url #}http://localhost/chyrp/process_registration/" method="post">
+		<p>
+			<label for="login">${ "Username" | translate }</label>
+			<input type="text" name="login" value="" id="login" />
+		</p>
+		<p>
+			<label for="password1">${ "Password" | translate }</label>
+			<input type="password" name="password1" value="" id="password1" />
+		</p>
+		<p>
+			<label for="password2">${ "Password (again)" | translate }</label>
+			<input type="password" name="password2" value="" id="password2" />
+		</p>
+		<p>
+			<label for="email">${ "E-Mail" | translate }</label>
+			<input type="text" name="email" value="" id="email" />
+		</p>
+
+		<p><input type="submit" value="${ "Register" | translate }"></p>
+	</form>
