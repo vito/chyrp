@@ -22,10 +22,10 @@
 		<div class="content">
 <?php
 	$action = ($sub == "page") ? "update_page" : "update_post" ;
-	
+
 	if ($sub == "post")
 		$post = new Post($_GET['id'], array("filter" => false));
-	
+
 	if ($sub == "post" or $sub == "page"):
 ?>
 			<form action="<?php url($action, $sub); ?>" id="edit_form" method="post" accept-charset="utf-8" enctype="multipart/form-data">
@@ -45,14 +45,14 @@
 				$page_exists = true;
 			}
 		}
-		
+
 		foreach ($config->enabled_feathers as $feather) {
 			if (file_exists(FEATHERS_DIR."/".$feather."/pages/admin/edit/".$sub.".php")) {
 				require FEATHERS_DIR."/".$feather."/pages/admin/edit/".$sub.".php";
 				$page_exists = true;
 			}
 		}
-		
+
 		if (file_exists(THEME_DIR."/pages/admin/edit/".$sub.".php")) {
 			require THEME_DIR."/pages/admin/edit/".$sub.".php";
 			$page_exists = true;

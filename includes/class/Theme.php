@@ -9,13 +9,13 @@
 		 * The title for the current page.
 		 */
 		public $title = "";
-		
+
 		private $twig;
-		
+
 		private $directory;
-		
+
 		private $pages = array();
-		
+
 		/**
 		 * Function: __construct
 		 * Loads the Twig parser into <Theme>.
@@ -27,7 +27,7 @@
 			                   THEME_DIR."/" ;
 			$this->twig = new Twig_Loader($this->directory, (is_writable(MAIN_DIR."/includes/twig_cache") ? MAIN_DIR."/includes/twig_cache" : null));
 		}
-		
+
 		/**
 		 * Function: list_pages
 		 * Generates a recursive list of pages and their children. Outputs it as a <ul> list.
@@ -44,22 +44,22 @@
 			while ($row = $query->fetch()) {
 				$this->pages[$row["id"]] = array("id" => $row["id"], "title" => $row["title"], "parent" => $row["parent_id"], "url" => $row["url"], "order" => $row["list_order"]);
 			}
-			
+
 			echo '<ul class="'.$main_class.'">'."\n";
-			
+
 			$config = Config::current();
 			if ($home_link) {
 				$selected = ($action == 'index') ? ' selected' : '';
 				echo '<li class="'.$list_class.$selected.'"><a href="'.$config->url.'">'.$home_text.'</a></li>'."\n";
 			}
-			
+
 			foreach ($this->pages as $id => $values)
 				if ($values["parent"] == 0)
 					$this->recurse_pages($values["id"], $main_class, $list_class, $show_order_fields);
-			
+
 			echo "</ul>\n";
 		}
-		
+
 		/**
 		 * Function: recurse_pages
 		 * Performs all of the recursion for generating the page lists. Used by <list_pages>.
@@ -73,29 +73,29 @@
 		public function recurse_pages($id, $main_class = "page_list", $list_class = "page_list_item", $show_order_fields = false) {
 			global $pages, $action;
 			$route = Route::current();
-			
+
 			$selected = ($action == 'page' and $_GET['url'] == $this->pages[$id]["url"]) ? ' selected' : '';
 			echo '<li class="'.$list_class.$selected.'" id="page_list_'.$id.'"><a href="'.$route->url("page/".$this->pages[$id]["url"]."/").'">'.$this->pages[$id]["title"].'</a>';
-			
+
 			if ($show_order_fields)
 				echo ' <input type="text" size="2" name="list_order['.$id.']" value="'.$this->pages[$id]["order"].'" />';
-			
+
 			$sql = SQL::current();
 			$get_children = $sql->query("select * from `".$sql->prefix."pages` where `parent_id` = :parent and `show_in_list` = 1 order by `list_order` asc", array(':parent' => $id));
 			$count = 1;
 			while ($row = $get_children->fetch()) {
 				if ($count == 1)
 					echo "\n".'<ul class="'.$main_class.'">'."\n";
-				
+
 				$this->recurse_pages($row["id"], $main_class, $list_class, $show_order_fields);
-				
+
 				if ($count == $get_children->rowCount())
 					echo "</ul>\n";
 				$count++;
 			}
 			echo "</li>\n";
 		}
-		
+
 		/**
 		 * Function: list_archives
 		 * Generates an array of all of the archives, by month.
@@ -123,7 +123,7 @@
 			}
 			return $archives;
 		}
-		
+
 		/**
 		 * Function: snippet_exists
 		 * Returns whether a snippet exists with the specified $name.
@@ -135,7 +135,7 @@
 			global $snippet;
 			return method_exists($snippet, $name);
 		}
-		
+
 		/**
 		 * Function: stylesheets
 		 * Outputs the default stylesheet links.
@@ -146,12 +146,12 @@
 			$theme = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $user->can("change_settings")) ?
 			         $_GET['theme'] :
 			         $config->theme ;
-			
+
 			$stylesheets = $trigger->filter("stylesheets", '<link rel="stylesheet" href="'.$config->url.'/themes/'.$theme.'/stylesheets/screen.css" type="text/css" media="screen" charset="utf-8" />'."\n\t\t".'<link rel="stylesheet" href="'.$config->url.'/themes/'.$theme.'/stylesheets/print.css" type="text/css" media="print" charset="utf-8" />');
-			
+
 			return $stylesheets;
 		}
-		
+
 		/**
 		 * Function: javascripts
 		 * Outputs the default JavaScript script references.
@@ -168,22 +168,22 @@
 			}
 			if (isset($paginate->page))
 				$args.= "&amp;page=".$paginate->page;
-				
+
 			$config = Config::current();
 			$trigger = Trigger::current();
-			
+
 			$javascripts = $trigger->filter("scripts", '<script src="'.$config->url.'/includes/lib/gz.php?file=jquery.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".'<script src="'.$config->url.'/includes/lib/gz.php?file=forms.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".'<script src="'.$config->url.'/includes/javascript.php?action='.$action.$args.'" type="text/javascript" charset="utf-8"></script>');
-			
+
 			return $javascripts;
 		}
-		
+
 		/**
 		 * Function: feeds
 		 * Outputs the Feed references.
 		 */
 		public function feeds() {
 			global $request, $plural_feathers;
-			
+
 			$config = Config::current();
 			$request = ($config->clean_urls) ? rtrim($request, "/") : htmlspecialchars($_SERVER['REQUEST_URI']) ;
 			$append = ($config->clean_urls) ?
@@ -191,7 +191,7 @@
 			          	((count($_GET) == 1 and $_GET['action'] == "index") ?
 			            	"/?feed" :
 			          		"&amp;feed") ;
-			
+
 			$route = Route::current();
 			$feeds = '<link rel="alternate" type="application/atom+xml" title="'.$config->name.' Feed" href="'.$route->url("feed/").'" />'."\n";
 			foreach ($plural_feathers as $plural => $normal)
@@ -199,22 +199,22 @@
 			$feeds.= "\t\t".'<link rel="alternate" type="application/atom+xml" title="Current Page (if applicable)" href="'.$config->url.$request.$append.'" />';
 			return $feeds;
 		}
-		
+
 		/**
 		 * Function: load
 		 * Loads a theme's file and extracts the passed array into the scope.
 		 */
 		public function load($file, $context = array()) {
 			global $user, $group, $action;
-			
+
 			fallback($_GET['action'], "index");
 			if (!file_exists($this->directory.$file.".twig"))
 				error(__("Theme Template Missing"), sprintf(__("Couldn't load theme template:<br /><br />%s"), $file.".twig"));
-			
+
 			$can = array();
 			foreach ($group->permissions as $permission)
 				$can[$permission] = true;
-			
+
 			$context["title"] = $this->title;
 			$context["site"] = Config::current();
 			$context["theme"] = array("feeds" => $this->feeds(),
@@ -224,14 +224,14 @@
 			$context["archives"] = $this->list_archives();
 			$context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);
 			$context["route"] = array("action" => $action);
-			
+
 			foreach ($user as $key => $val)
 				$context["user"][$key] = $val;
-			
+
 			$trigger = Trigger::current();
 			$context = $trigger->filter("twig_global_context", $context);
 			$context = $trigger->filter(str_replace("/", "_", $file), $context);
-			
+
 			$template = $this->twig->getTemplate($file.".twig");
 			$template->display($context);
 		}

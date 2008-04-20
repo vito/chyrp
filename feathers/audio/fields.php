@@ -1,7 +1,7 @@
 <?php
 	if (isset($args['selection']))
 		$post->description = $args['selection'];
-	
+
 	fallback($post->description);
 ?>
 <p style="margin-bottom: 1em">

@@ -19,7 +19,7 @@
 			                               $config->posts_per_page, "page",
 			                               array());
 		}
-		
+
 		/**
 		 * Function: archive
 		 * Grabs the posts for the Archive page when viewing a year or a month.
@@ -29,7 +29,7 @@
 			$year = fallback($_GET['year'], "", true);
 			$month = fallback($_GET['month'], "", true);
 			if (empty($year) or empty($month)) return;
-			
+
 			$config = Config::current();
 			$sql = SQL::current();
 			$get_posts = $paginate->select("posts",
@@ -42,7 +42,7 @@
 			                               	':date' => $year.'-'.$month.'%'
 			                               ));
 		}
-		
+
 		/**
 		 * Function: search
 		 * Grabs the posts for a search query.
@@ -62,7 +62,7 @@
 			                               	':query' => '%'.urldecode($query).'%'
 			                               ));
 		}
-		
+
 		/**
 		 * Function: drafts
 		 * Grabs the posts for viewing the Drafts lists. Shows an error if the user lacks permissions.
@@ -71,7 +71,7 @@
 			global $user, $paginate, $private, $enabled_feathers, $get_posts;
 			if (!$user->can("view_draft"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to view drafts."));
-			
+
 			$config = Config::current();
 			$sql = SQL::current();
 			$get_posts = $paginate->select("posts",
@@ -80,14 +80,14 @@
 			                               "`pinned` desc, `created_at` desc, `id` desc",
 			                               $config->posts_per_page);
 		}
-		
+
 		/**
 		 * Function: feather
 		 * Views posts of a specific feather.
 		 */
 		public function feather() {
 			global $paginate, $private, $enabled_feathers, $plural_feathers, $get_posts;
-			
+
 			$config = Config::current();
 			$sql = SQL::current();
 			$get_posts = $paginate->select("posts",
@@ -100,14 +100,14 @@
 			                               	':feather' => $plural_feathers[$_GET['action']]
 			                               ));
 		}
-		
+
 		/**
 		 * Function: feed
 		 * Grabs posts for the feed.
 		 */
 		public function feed() {
 			global $paginate, $private, $enabled_feathers, $get_posts;
-			
+
 			$config = Config::current();
 			$sql = SQL::current();
 			$get_posts = $paginate->select("posts",
@@ -116,14 +116,14 @@
 			                               "`pinned` desc, `created_at` desc, `id` desc",
 			                               $config->posts_per_page);
 		}
-		
+
 		/**
 		 * Function: view
 		 * Views a post.
 		 */
 		public function view() {
 			global $action, $private, $enabled_feathers, $post, $plural_feathers;
-			
+
 			$trigger = Trigger::current();
 			$config = Config::current();
 			$sql = SQL::current();
@@ -136,11 +136,11 @@
 				                                 array(
 				                                 	':url' => $_GET['url']
 				                                 ), 1);
-			
+
 			# Check for a post...
 			$where = "";
 			$times = array("year", "month", "day", "hour", "minute", "second");
-			
+
 			preg_match_all("/\(([^\)]+)\)/", $config->post_url, $matches);
 			$params = array();
 			foreach ($matches[1] as $attr)
@@ -168,16 +168,16 @@
 				else
 				{
 					list($where, $params, $attr) = $trigger->filter('main_controller_view', array($where, $params, $attr), true);
-					
+
 					if ($attr !== null)
 					{
 						$where.= " and `".$attr."` = :attr".$attr;
 						$params[':attr'.$attr] = $_GET[$attr];
 					}
 				}
-			
+
 			$post = new Post(null, array("where" => $private.$enabled_feathers.$where, "params" => $params));
-			
+
 			if ($post->no_results) {
 				# Check for a page...
 				$url = fallback($_GET['url'], "", true);
@@ -189,10 +189,10 @@
 				if ($check_page == 1)
 					return $action = $url;
 			}
-			
+
 			return (!$post->no_results) ? $action = "view" : $action = $_GET['url'] ;
 		}
-		
+
 		/**
 		 * Function: id
 		 * Views a post by its static ID.
@@ -201,7 +201,7 @@
 			global $post;
 			$post = new Post($_GET['id']);
 		}
-		
+
 		/**
 		 * Function: theme_preview
 		 * Handles theme previewing.
@@ -214,11 +214,11 @@
 			}
 			if (empty($_GET['theme']))
 				error(__("Error"), __("Please specify a theme to preview."));
-			
+
 			$this->index();
 			return $action = "index";
 		}
-		
+
 		/**
 		 * Function: toggle_admin
 		 * Toggles the Admin control panel (if available).
@@ -228,27 +228,27 @@
 				setcookie("chyrp_hide_admin", "true", time() + 2592000, "/"); # 30 days
 			else
 				setcookie("chyrp_hide_admin", "", time() - 2592000, "/");
-			
+
 			$route = Route::current();
 			$route->redirect('/');
 		}
-		
+
 		/**
 		 * Function: process_registration
 		 * Process registration. If registration is disabled or if the user is already logged in, it will error.
 		 */
 		public function process_registration() {
 			global $user;
-			
+
 			$config = Config::current();
 			if (!$config->can_register)
 				error(__("Registration Disabled"), __("I'm sorry, but this site is not allowing registration."));
 			if ($user->logged_in())
 				error(__("Error"), __("You're already logged in."));
-			
+
 			if (empty($_POST['login']))
 				error(__("Error"), __("Please enter a username for your account."));
-			
+
 			$sql = SQL::current();
 			$check_user = $sql->query("select count(`id`) from `".$sql->prefix."users`
 			                           where `login` = :login",
@@ -265,16 +265,16 @@
 				error(__("Error"), __("Passwords do not match."));
 			if (!eregi("^[[:alnum:]][a-z0-9_.-\+]*@[a-z0-9.-]+\.[a-z]{2,6}$",$_POST['email']))
 				error(__("Error"), __("Unsupported e-mail address."));
-	
+
 			$user->add($_POST['login'], $_POST['password1'], $_POST['email']);
-			
+
 			setcookie("chyrp_user_id", $sql->db->lastInsertId(), time() + 2592000, "/"); # 30 days
 			setcookie("chyrp_password", md5($_POST['password1']), time() + 2592000, "/"); # 30 days
-			
+
 			$route = Route::current();
 			$route->redirect('/');
 		}
-		
+
 		/**
 		 * Function: process_login
 		 * Process logging in. If the username and password are incorrect or if the user is already logged in, it will error.
@@ -285,21 +285,21 @@
 				error(__("Error"), __("Login incorrect."));
 			if ($user->logged_in())
 				error(__("Error"), __("You're already logged in."));
-			
+
 			$sql = SQL::current();
 			$get_id = $sql->query("select `id` from `".$sql->prefix."users`
 			                       where `login` = :login",
 			                      array(
 			                      	':login' => $_POST['login']
 			                      ));
-			
+
 			setcookie("chyrp_user_id", $get_id->fetchColumn(), time() + 2592000, "/"); # 30 days
 			setcookie("chyrp_password", md5($_POST['password']), time() + 2592000, "/"); # 30 days
-			
+
 			$route = Route::current();
 			$route->redirect('/');
 		}
-		
+
 		/**
 		 * Function: logout
 		 * Logs the current user out. If they are not logged in, it will error.
@@ -308,14 +308,14 @@
 			global $user;
 			if (!$user->logged_in())
 				error(__("Error"), __("You aren't logged in."));
-			
+
 			setcookie("chyrp_user_id", "", time() - 2592000, "/");
 			setcookie("chyrp_password", "", time() - 2592000, "/");
-			
+
 			$route = Route::current();
 			$route->redirect('/');
 		}
-		
+
 		/**
 		 * Function: update_self
 		 * Updates the current user when the form is submitted. Shows an error if they aren't logged in.
@@ -331,9 +331,9 @@
 									$user->info("password") ;
 
 			$user->update($user->info("id"), $user->info("login"), $password, $_POST['full_name'], $_POST['email'], $_POST['website'], $user->info("group_id"));
-			
+
 			setcookie("chyrp_password", $password, time() + 2592000, "/"); # 30 days
-			
+
 			$route = Route::current();
 			$route->redirect('/');
 		}

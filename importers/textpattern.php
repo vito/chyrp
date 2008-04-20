@@ -1,22 +1,22 @@
 <?php
 	require_once "../includes/common.php";
-	
+
 	if (!in_array("text", $config->enabled_feathers))
 		error(__("Missing Feather"), __("Importing from TextPattern requires the Text feather to be installed and enabled."));
 	if (!$user->can("add_post"))
 		error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
-	
+
 	function fallback($index, $fallback = "") {
 		echo (isset($_POST[$index])) ? $_POST[$index] : $fallback ;
 	}
-	
+
 	$errors = array();
 	if (!empty($_POST)) {
 		switch($_POST['step']) {
 			case "1":
 				$dbcon = $dbsel = false;
 				$step = "1";
-				
+
 				if (!$link = @mysql_connect($_POST['host'], $_POST['username'], $_POST['password'])) {
 					$errors[] = "Could not connect to the MySQL server: ".mysql_error();
 				} else {
@@ -25,45 +25,45 @@
 						$errors[] = "Could not switch to the MySQL database.";
 					else $dbsel = true;
 				}
-				
+
 				if ($dbcon and $dbsel) {
 					$get_posts = mysql_query("select * from `".$_POST['prefix']."textpattern` order by `ID` asc", $link);
 					$posts = array();
 					while ($the_post = mysql_fetch_array($get_posts)) {
 						$status_translate = array(1 => "draft", 2 => "private", 3 => "draft", 4 => "public", 5 => "public");
-						
+
 						foreach ($the_post as $key => $val)
 							$posts[$the_post["ID"]][$key] = $val;
-						
+
 						$posts[$the_post["ID"]] = $trigger->filter("import_textpattern_generate_array", $posts[$the_post["ID"]]);
 					}
-					
+
 					mysql_close($link);
-					
+
 					$sql->connect();
-				
+
 					foreach ($posts as $the_post) {
 						$values = array("title" => $the_post["Title"], "body" => $the_post["Body"]);
 						$pinned = ($the_post["Status"] == "5");
 						$status = str_replace(array_keys($status_translate), array_values($status_translate), $the_post["Status"]);
 						$clean = (isset($the_post["url_title"])) ? $the_post["url_title"] : sanitize($the_post["Title"]) ;
 						$url = Post::check_url($clean);
-						
+
 						# Damn it feels good to be a gangsta...
 						$_POST['status'] = $status;
 						$_POST['pinned'] = $pinned;
 						$_POST['created_at'] = $the_post["Posted"];
 						$id = Post::add($values, $clean, $url);
-						
+
 						$trigger->call("import_textpattern_post", array($the_post, $id));
-				
+
 						$step = "2";
 					}
 				}
 				break;
 		}
 	}
-	
+
 	$step = (isset($step)) ? $step : "1" ;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -155,7 +155,7 @@
 				<input type="text" name="database" value="<?php fallback("database"); ?>" id="database" />
 				<label for="prefix"><?php echo __("Table Prefix"); ?> <span class="sub"><?php echo __("(if any)"); ?></span></label>
 				<input type="text" name="prefix" value="<?php fallback("prefix"); ?>" id="prefix" />
-			
+
 				<input type="hidden" name="step" value="1" id="step" />
 				<input type="hidden" name="feather" value="text" id="feather" />
 				<p class="center"><input type="submit" value="<?php echo __("Import &rarr;"); ?>" /></p>

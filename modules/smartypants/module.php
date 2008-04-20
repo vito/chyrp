@@ -1,6 +1,6 @@
 <?php
 	require "lib/smartypants.php";
-	
+
 	class Smartypants extends Module {
 		public function __construct() {
 			$this->setPriority("markup_post_text", 9);

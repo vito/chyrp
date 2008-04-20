@@ -5,7 +5,7 @@
 					<h2><?php echo __("Current Theme"); ?></h2>
 <?php
 	$info = Spyc::YAMLLoad(THEME_DIR."/info.yaml");
-	
+
 	$image = (file_exists(THEMES_DIR."/".$config->theme."/screenshot.png")) ? $config->url."/themes/".$config->theme."/screenshot.png" : $config->url."/admin/images/noscreenshot.png" ;
 ?>
 					<div class="theme-enabled">
@@ -36,9 +36,9 @@
       if ($folder != $config->theme and file_exists(THEMES_DIR."/".$folder."/info.yaml")) {
 				if (file_exists(THEMES_DIR."/".$folder."/locale/".$config->locale.".mo"))
 					load_translator($folder, THEMES_DIR."/".$folder."/locale/".$config->locale.".mo");
-		
+
 				$info = Spyc::YAMLLoad(THEMES_DIR."/".$folder."/info.yaml");
-				
+
 				$image = (file_exists(THEMES_DIR."/".$folder."/screenshot.png")) ? $config->url."/themes/".$folder."/screenshot.png" : $config->url."/admin/images/noscreenshot.png" ;
 ?>
 					<div class="theme">

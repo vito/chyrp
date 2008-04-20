@@ -1,13 +1,13 @@
 <?php
 	$current_page = array("id" => 0);
-	
+
 	/**
 	 * Class: Page
 	 * The model for the Pages SQL table.
 	 */
 	class Page {
 		public $no_results = false;
-		
+
 		/**
 		 * Function: __construct
 		 * Grabs the specified page and injects it into the <Page> class.
@@ -19,12 +19,12 @@
 		 */
 		public function __construct($page_id, $options = array()) {
 			global $current_page;
-			
+
 			$where = fallback($options["where"], "", true);
 			$filter = (!isset($options["filter"]) or $options["filter"]);
 			$read_from = (isset($options["read_from"])) ? $options["read_from"] : array() ;
 			$params = isset($options["params"]) ? $options["params"] : array();
-			
+
 			$sql = SQL::current();
 			if ((!empty($read_from) && $read_from))
 				$read = $read_from;
@@ -46,18 +46,18 @@
 				                     	":pageid" => $page_id
 				                     ),
 				                     1)->fetch();
-			
+
 			if (!count($read) or !$read)
 				return $this->no_results = true;
-						
+
 			foreach ($read as $key => $val) {
 				if (!is_int($key))
 					$this->$key = $val;
-				
+
 				$current_page[$key] = $val;
 			}
 		}
-		
+
 		/**
 		 * Function: add
 		 * Adds a page to the database.
@@ -103,13 +103,13 @@
 			             	":created_at" => datetime()
 			             ));
 			$id = $sql->db->lastInsertId();
-			
+
 			$trigger = Trigger::current();
 			$trigger->call("add_page", $id);
-			
+
 			return new self($id);
 		}
-		
+
 		/**
 		 * Function: update
 		 * Updates the given page.
@@ -124,7 +124,7 @@
 		 */
 		public function update($title, $body, $parent_id, $show_in_list, $url) {
 			if (!isset($this->id)) return;
-			
+
 			$sql = SQL::current();
 			$sql->update("pages",
 			             "`id` = :id",
@@ -145,11 +145,11 @@
 			             	":url" => $url,
 			             	":id" => $this->id
 			             ));
-			
+
 			$trigger = Trigger::current();
 			$trigger->call("update_page", $this->id);
 		}
-		
+
 		/**
 		 * Function: delete
 		 * Deletes the given page.
@@ -159,17 +159,17 @@
 		 */
 		public function delete() {
 			if (!isset($this->id)) return;
-			
+
 			$trigger = Trigger::current();
 			$trigger->call("delete_page", $id);
-			
+
 			$sql = SQL::current();
 			$sql->delete("pages",
 			             "`id` = :id",
 			             array(
 			             	":id" => $this->id
 			             ));
-			
+
 			$get_sub_pages = $sql->select("pages",
 			                              "id",
 			                              "`parent_id` = :id",
@@ -182,7 +182,7 @@
 				$sub->delete();
 			}
 		}
-		
+
 		/**
 		 * Function: info
 		 * Grabs a specified column from a page's SQL row.
@@ -199,10 +199,10 @@
 		 */
 		static function info($column, $page_id, $fallback = false) {
 			global $current_page;
-			
+
 			if ($current_page["id"] == $page_id)
 				return $current_page[$column];
-			
+
 			$sql = SQL::current();
 			$grab_column = $sql->select("pages",
 			                            $column,
@@ -213,7 +213,7 @@
 			                            ));
 			return ($grab_column->rowCount() == 1) ? $grab_column->fetchColumn() : $fallback ;
 		}
-		
+
 		/**
 		 * Function: exists
 		 * Checks if a page exists.
@@ -235,7 +235,7 @@
 			                      ));
 			return $check->rowCount();
 		}
-		
+
 		/**
 		 * Function: check_url
 		 * Checks if a given clean URL is already being used as another page's URL.
@@ -258,7 +258,7 @@
 			$count = $check_url->rowCount() + 1;
 			return ($count == 1 or empty($clean)) ? $clean : $clean."_".$count ;
 		}
-		
+
 		/**
 		 * Function: edit_link
 		 * Outputs an edit link for the given page ID, if the <User.can> edit_page.
@@ -272,12 +272,12 @@
 		public function edit_link($text = null, $before = null, $after = null){
 			global $user;
 			if (!isset($this->id) or !$user->can("edit_page")) return false;
-			
+
 			fallback($text, __("Edit"));
 			$config = Config::current();
 			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=page&amp;id='.$this->id.'" title="Edit" class="page_edit_link" id="page_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
-		
+
 		/**
 		 * Function: delete_link
 		 * Outputs a delete link for the given page ID, if the <User.can> delete_page.
@@ -291,7 +291,7 @@
 		public function delete_link($text = null, $before = null, $after = null){
 			global $user;
 			if (!isset($this->id) or !$user->can("delete_page")) return false;
-			
+
 			fallback($text, __("Delete"));
 			$config = Config::current();
 			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=page&amp;id='.$this->id.'" title="Delete" class="page_delete_link" id="page_delete_'.$this->id.'">'.$text.'</a>'.$after;

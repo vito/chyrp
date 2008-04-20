@@ -96,7 +96,7 @@
 			echo "\t<li>".when("d", $post->created_at).": <a href=\"".$post->url($post->id)."\">".normalize($post->title($post->id))."</a></li>\n";
 		}
 	}
-	
+
 	function change_field_to_search() {
 		$config = Config::current();
 ?>
@@ -106,6 +106,6 @@
 	}
 <?php
 	}
-	
+
 	# New module system does not yet have a way for themes to plug in to it.
 	#$trigger->add("javascript_domready", "change_field_to_search");

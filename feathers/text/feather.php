@@ -6,18 +6,18 @@
 		static function submit() {
 			if (empty($_POST['body']))
 				error(__("Error"), __("Body can't be blank."));
-			
+
 			$values = array("title" => $_POST['title'], "body" => $_POST['body']);
 			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : sanitize($_POST['title']) ;
 			$url = Post::check_url($clean);
-			
+
 			$post = Post::add($values, $clean, $url);
-			
+
 			# Send any and all pingbacks to URLs in the body
 			$config = Config::current();
 			if ($config->send_pingbacks)
 				send_pingbacks($_POST['body'], $post->id);
-			
+
 			$route = Route::current();
 			if (isset($_POST['bookmarklet']))
 				$route->redirect($route->url("bookmarklet/done/"));
@@ -26,12 +26,12 @@
 		}
 		static function update() {
 			$post = new Post($_POST['id']);
-			
+
 			if (empty($_POST['body']))
 				error(__("Error"), __("Body can't be blank."));
-			
+
 			$values = array("title" => $_POST['title'], "body" => $_POST['body']);
-			
+
 			$post->update($values);
 		}
 		static function title($id) {

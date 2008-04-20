@@ -26,14 +26,14 @@
 				$page_exists = true;
 			}
 		}
-		
+
 		foreach ($config->enabled_feathers as $feather) {
 			if (file_exists(FEATHERS_DIR."/".$feather."/pages/admin/settings/".$sub.".php")) {
 				require FEATHERS_DIR."/".$feather."/pages/admin/settings/".$sub.".php";
 				$page_exists = true;
 			}
 		}
-		
+
 		if (file_exists(THEME_DIR."/pages/admin/settings/".$sub.".php")) {
 			require THEME_DIR."/pages/admin/settings/".$sub.".php";
 			$page_exists = true;

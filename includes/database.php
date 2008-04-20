@@ -10,26 +10,26 @@
 		 */
 		public static function build_update_values($data) {
 			$set = array();
-			
+
 			foreach ($data as $field => $val)
 				array_push($set, "`$field` = $val");
-			
+
 			return implode(", ", $set);
 		}
-		
+
 		/**
 		 * Function: build_insert_header
 		 * Creates an insert header part.
 		 */
 		public static function build_insert_header($data) {
 			$set = array();
-			
+
 			foreach (array_keys($data) as $field)
 				array_push($set, "`$field`");
-			
+
 			return "(".implode(", ", $set).")";
 		}
-		
+
 		/**
 		 * Function: build_insert_values
 		 * Creates an insert data part.
@@ -37,7 +37,7 @@
 		public static function build_insert_values($data) {
 			return "(".implode(', ', array_values($data)).")";
 		}
-		
+
 		/**
 		 * Function: build_insert
 		 * Creates a full insert query.
@@ -51,7 +51,7 @@
 				".self::build_insert_values($data)."
 			";
 		}
-		
+
 		/**
 		 * Function: build_update
 		 * Creates a full update query.
@@ -64,7 +64,7 @@
 				".($conds ? "WHERE $conds" : "")."
 			";
 		}
-		
+
 		/**
 		 * Function: build_delete
 		 * Creates a full delete query.
@@ -76,7 +76,7 @@
 				".($conds ? "WHERE $conds" : "")."
 			";
 		}
-		
+
 		/**
 		 * Function: build_limits
 		 * Creates a LIMIT part for a query.
@@ -88,7 +88,7 @@
 				return "LIMIT $offset, $limit";
 			return "LIMIT $limit";
 		}
-		
+
 		/**
 		 * Function: build_from
 		 * Creates a FROM header for select queries.
@@ -110,7 +110,7 @@
 			}
 			return implode(", ", $set);
 		}
-		
+
 		/**
 		 * Function: build_count
 		 * Creates a SELECT COUNT(1) query.
@@ -122,7 +122,7 @@
 				".($conds ? "WHERE $conds" : "")."
 			";
 		}
-		
+
 		/**
 		 * Function: build_select_header
 		 * Creates a SELECT fields header.
@@ -131,7 +131,7 @@
 			if (!is_array($fields))
 				$fields = array($fields);
 			$set = array();
-			
+
 			foreach ($fields as $field) {
 				$field = explode(" ", $field);
 				$parts = explode(".", $field[0]);
@@ -141,10 +141,10 @@
 				$field[0] = implode(".", $parts);
 				array_push($set, implode(" ", $field));
 			}
-			
+
 			return implode(', ', $set);
 		}
-		
+
 		/**
 		 * Function: build_select
 		 * Creates a full SELECT query.
@@ -172,14 +172,14 @@
 		private function __construct() {
 			$this->connected = false;
 		}
-		
+
 		/**
 		 * Integer: $queries
 		 * Number of queries it takes to load the page.
 		 */
 		public $queries = 0;
 		public $db;
-		
+
 		/**
 		 * Function: load
 		 * Loads a given database YAML file.
@@ -193,7 +193,7 @@
 				if (!is_int($setting)) # Don't load the "---"
 					$this->$setting = $value;
 		}
-		
+
 		/**
 		 * Function: set
 		 * Sets a variable's value.
@@ -204,22 +204,22 @@
 		 */
 		public function set($setting, $value) {
 			if (isset($this->$setting) and $this->$setting == $value) return false; # No point in changing it
-			
+
 			# Add the PHP protection!
 			$contents = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
-			
+
 			# Add the setting
 			$this->yaml[$setting] = $value;
-			
+
 			if (isset($this->yaml[0]) and $this->yaml[0] == "--")
 				unset($this->yaml[0]);
-			
+
 			# Generate the new YAML settings
 			$contents.= Spyc::YAMLDump($this->yaml, false, 0);
-			
+
 			file_put_contents(INCLUDES_DIR."/database.yaml.php", $contents);
 		}
-		
+
 		/**
 		 * Function: connect
 		 * Connects to the SQL database.
@@ -242,7 +242,7 @@
 				return ($checking) ? false : error(__("Database Error"), $message) ;
 			}
 		}
-		
+
 		/**
 		 * Function: query
 		 * Executes a query and increases <SQL->$queries>.
@@ -256,19 +256,19 @@
 				if (!$result) throw PDOException();
 			} catch (PDOException $error) {
 				$message = preg_replace("/[A-Z]+\[[0-9]+\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
-				
+
 				if (XML_RPC or $throw_exceptions)
 					throw new Exception($message);
-				
+
 				echo "<pre>".print_r($query, true)."</pre>";
 				echo "<pre>".print_r(debug_backtrace(), true)."</pre>";
 				error(__("Database Error"), $message);
 				//throw $error;
 			}
-			
+
 			return $q;
 		}
-		
+
 		/**
 		 * Function: count
 		 * Performs a counting query and returns the number of matching rows.
@@ -277,7 +277,7 @@
 		{
 			return $this->query(QueryBuilder::build_count($tables, $conds), $params)->fetchColumn();
 		}
-		
+
 		/**
 		 * Function: select
 		 * Performs a SELECT with given criteria and returns the query result object.
@@ -286,7 +286,7 @@
 		{
 			return $this->query(QueryBuilder::build_select($tables, $fields, $conds, $order, $limit, $offset), $params);
 		}
-		
+
 		/**
 		 * Function: insert
 		 * Performs an INSERT with given data.
@@ -295,7 +295,7 @@
 		{
 			return $this->query(QueryBuilder::build_insert($table, $data), $params);
 		}
-		
+
 		/**
 		 * Function: update
 		 * Performs an UDATE with given criteria and data.
@@ -304,7 +304,7 @@
 		{
 			return $this->query(QueryBuilder::build_update($table, $conds, $data), $params);
 		}
-		
+
 		/**
 		 * Function: delete
 		 * Performs a DELETE with given criteria.
@@ -313,7 +313,7 @@
 		{
 			return $this->query(QueryBuilder::build_delete($table, $conds), $params);
 		}
-		
+
 		/**
 		 * Function: quote
 		 * Quotes the passed variable as needed for use in a query.
@@ -321,7 +321,7 @@
 		public function quote($var) {
 			return $this->db->quote($var);
 		}
-		
+
 		/**
 		 * Function: current
 		 * Returns a singleton reference to the current connection.
@@ -333,5 +333,5 @@
 			return $instance;
 		}
 	}
-	
+
 	$sql = SQL::current();

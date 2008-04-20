@@ -3,7 +3,7 @@
 		$post->quote = $args['selection'];
 	if (isset($args['url']) and isset($args['title']))
 		$post->source = '<a href="'.$args['url'].'">'.$args['title'].'</a>';
-	
+
 	fallback($post->quote);
 	fallback($post->source);
 ?>

@@ -17,7 +17,7 @@
 			$config = Config::current();
 			$group = (isset($group_id)) ? $group_id : (($user->logged_in()) ? $user->group_id : $config->guest_group) ;
 			if (!isset($group)) return;
-			
+
 			$sql = SQL::current();
 			foreach ($sql->query("select * from `".$sql->prefix."groups`
 			                      where `id` = :id",
@@ -26,12 +26,12 @@
 			                     ))->fetch() as $key => $val)
 				if (!is_int($key))
 					$this->$key = $val;
-			
+
 			$this->permissions = Spyc::YAMLLoad($this->permissions);
 			foreach ($this->permissions as $name)
 				$this->$name = true;
 		}
-		
+
 		/**
 		 * Function: can
 		 * Checks if the group can perform $function.
@@ -47,10 +47,10 @@
 			                           	":id" => $group_id
 			                           ))->fetchColumn();
 			$permissions = Spyc::YAMLLoad($permissions);
-			
+
 			return in_array($function, $permissions);
 		}
-		
+
 		/**
 		 * Function: add
 		 * Adds a group to the database with the passed Name and Permissions array.
@@ -66,23 +66,23 @@
 		 */
 		function add($name, $permissions) {
 			$query = "";
-			
+
 			$sql = SQL::current();
 			$fields = array("`name`" => ":name", "`permissions`" => ":permissions");
 			$params = array(":name" => $name, ":permissions" => Spyc::YAMLDump($permissions));
-			
+
 			$sql->query("insert into `".$sql->prefix."groups`
 			             (".implode(",", array_keys($fields)).")
 			             values
 			             (".implode(",", array_values($fields)).")",
 			            $params);
-			
+
 			$id = $sql->db->lastInsertId();
 			$trigger = Trigger::current();
 			$trigger->call("add_group", array($id, $name, $permissions));
 			return $id;
 		}
-		
+
 		/**
 		 * Function: update
 		 * Updates a group with the given name and permissions, and passes arguments to the update_group trigger..
@@ -94,17 +94,17 @@
 		 */
 		function update($group_id, $name, $permissions) {
 			$sql = SQL::current();
-			
+
 			$fields = array("`name`" => ":name", "`permissions`" => ":permissions");
 			$params = array(":name" => $name, ":permissions" => Spyc::YAMLDump($permissions), ":id" => $group_id);
-			
+
 			$sql->query("update `".$sql->prefix."groups` set `name` = :name, `permissions` = :permissions where `id` = :id",
 			            $params);
-			
+
 			$trigger = Trigger::current();
 			$trigger->call("update_group", array($group_id, $name, $permissions));
 		}
-		
+
 		/**
 		 * Function: delete
 		 * Deletes a given group. Calls the "delete_group" trigger with the groups ID.
@@ -115,7 +115,7 @@
 		function delete($group_id) {
 			$trigger = Trigger::current();
 			$trigger->call("delete_group", $group_id);
-			
+
 			$sql = SQL::current();
 			$sql->query("delete from `".$sql->prefix."groups`
 			             where `id` = :id",
@@ -123,7 +123,7 @@
 			            	":id" => $group_id
 			            ));
 		}
-		
+
 		/**
 		 * Function: add_permission
 		 * Adds a permission to the Groups table.
@@ -134,15 +134,15 @@
 		 */
 		function add_permission($name) {
 			$sql = SQL::current();
-			
+
 			$check = $sql->query("select `name` from `".$sql->prefix."permissions` where `name` = '".$name."'")->fetchColumn();
-			
+
 			if ($check == $name)
 				return; # Permission already exists.
-			
+
 			$sql->insert("permissions", array("name" => ":name"), array(":name" => $name));
 		}
-		
+
 		/**
 		 * Function: remove_permission
 		 * Removes a permission from the Groups table.
@@ -154,7 +154,7 @@
 			$sql = SQL::current();
 			$sql->query("delete from `".$sql->prefix."permissions` where `name` = '".$name."'");
 		}
-		
+
 		/**
 		 * Function: user_count
 		 * Returns the amount of users in a given group.
@@ -172,7 +172,7 @@
 			$count = $get_count->fetchColumn();
 			return $count;
 		}
-		
+
 		/**
 		 * Function: edit_link
 		 * Outputs an edit link for the given group ID, if the <User.can> edit_group.
@@ -190,7 +190,7 @@
 			$config = Config::current();
 			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=group&amp;id='.$group_id.'" title="Edit" class="group_edit_link" id="group_edit_'.$group_id.'">'.$text.'</a>'.$after;
 		}
-		
+
 		/**
 		 * Function: delete_link
 		 * Outputs an delete link for the given group ID, if the <User.can> delete_group.

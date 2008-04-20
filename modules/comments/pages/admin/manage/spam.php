@@ -58,7 +58,7 @@
 		$trigger->call("manage_comments");
 		$class = ($count == $get_comments->rowCount()) ? ' class="last"' : "" ;
 		$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
-		
+
 		$post = new Post($comment->post_id);
 ?>
 							<tr<?php echo $class; ?>>

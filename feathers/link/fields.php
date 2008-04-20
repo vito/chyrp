@@ -5,7 +5,7 @@
 		$post->name = $args['title'];
 	if (isset($args['selection']))
 		$post->description = $args['selection'];
-	
+
 	fallback($post->source);
 	fallback($post->name);
 	fallback($post->description);

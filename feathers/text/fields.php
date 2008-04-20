@@ -1,7 +1,7 @@
 <?php
 	if (isset($args['selection']))
 		$post->body = $args['selection'];
-	
+
 	fallback($post->title);
 	fallback($post->body);
 ?>
