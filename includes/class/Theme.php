@@ -137,21 +137,6 @@
 		}
 		
 		/**
-		 * Function: title
-		 * Returns a title for the current page.
-		 * 
-		 * Parameters:
-		 * 	$separator - The separator for the title, e.g. " &raquo; "
-		 * 	$title - The title to show. If null, it'll fall back on to <Theme->$title> (which is the more standard procedure for this function).
-		 */
-		public function title($seperator = "&nbsp;&raquo;&nbsp;", $title = null, $reversed = false) {
-			$config = Config::current();
-			$this->title = (!isset($title)) ? $this->title : $title ;
-			$this->title = (empty($this->title)) ? $config->name : ($reversed ? $this->title.$seperator.$config->name : $config->name.$seperator.$this->title) ;
-			return $this->title;
-		}
-		
-		/**
 		 * Function: stylesheets
 		 * Outputs the default stylesheet links.
 		 */
@@ -226,6 +211,7 @@
 			if (!file_exists($this->directory.$file.".twig"))
 				error(__("Theme Template Missing"), sprintf(__("Couldn't load theme template:<br /><br />%s"), $file.".twig"));
 			
+			$context["title"] = $this->title;
 			$context["site"] = Config::current();
 			$context["theme"] = array("feeds" => $this->feeds(),
 			                          "stylesheets" => $this->stylesheets(),
