@@ -17,6 +17,7 @@
 	# Constant: CHYRP_VERSION
 	# Chyrp's version number.
 	define('CHYRP_VERSION', "1.1.3");
+	error_reporting(E_ALL ^ E_NOTICE);
 	if (!defined('JAVASCRIPT')) define('JAVASCRIPT', false);
 	if (!defined('ADMIN')) define('ADMIN', false);
 	if (!defined('AJAX')) define('AJAX', false);

@@ -1,5 +1,4 @@
 <?php
-	error_reporting(E_ALL ^ E_NOTICE);
 	define('XML_RPC', true);
 	require_once 'common.php';
 	require_once INCLUDES_DIR.'/lib/ixr.php';
