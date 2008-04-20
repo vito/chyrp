@@ -61,7 +61,7 @@
 				<h1>${ "Tags" | translate }</h1>
 				<ul id="tags_list">
 {% for tag in tags %}
-					<li><a href="{# TODO: route url #}$site.url/tag/$tag.url/">$tag.name</a></li>
+					<li><a href="{% url "tag/" ~ tag.url ~ "/" %}">$tag.name</a></li>
 {% endfor %}
 					<li><a href="{% url "tags/" %}">${ "All &rarr;" | translate }</a></li>
 				</ul>
