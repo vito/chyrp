@@ -19,6 +19,7 @@
 					<h1><a href="$site.url">$site.name</a> <span>$site.description</span></h1>
 				</div>
 				<div id="posts">
+					{% trigger route.action ~ "_top" %}
 {% block content %}{% endblock %}
 				</div>
 {#

@@ -322,7 +322,9 @@ class Twig_Trigger extends Twig_Node
 	public function compile($compiler)
 	{
 		$compiler->addDebugInfo($this);
-		$compiler->raw('Trigger::current()->call("'.$this->expr->value.'");'."\n");
+		$compiler->raw('Trigger::current()->call(');
+		$this->expr->compile($compiler);
+		$compiler->raw(');'."\n");
 	}
 }
 

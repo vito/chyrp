@@ -137,6 +137,17 @@
 		}
 
 		/**
+		 * Function: file_exists
+		 * Returns whether the specified Twig file exists or not.
+		 *
+		 * Parameters:
+		 * 	$file - The file's name
+		 */
+		public function file_exists($file) {
+			return file_exists($this->directory.$file.".twig");
+		}
+
+		/**
 		 * Function: stylesheets
 		 * Outputs the default stylesheet links.
 		 */

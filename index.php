@@ -9,8 +9,6 @@
 			$theme->title = ($action == "search") ? fix(sprintf(__("Search results for \"%s\""), urldecode($query)), "html") : $theme->title ;
 			$theme->title = ($action == "drafts") ? __("Drafts") : $theme->title ;
 
-			$trigger->call($action."_top");
-
 			$shown_dates = array();
 			$posts = array();
 			foreach ($get_posts->fetchAll() as $post) {
@@ -24,7 +22,10 @@
 				$posts[] = $post;
 			}
 
-			$theme->load("content/".$action, array("posts" => $posts));
+			$file = ($theme->file_exists("content/".$action)) ?
+			        "content/".$action :
+			        "content/index" ;
+			$theme->load($file, array("posts" => $posts));
 
 			break;
 		case "view": case "id":
