@@ -37,19 +37,10 @@
 				error(__("Error"), __("The feather theme file for this post does not exist. The post cannot be displayed."));
 
 			$theme->title = $post->title();
-			$theme->load("layout/header");
 
-			$date_shown = true;
-			$last = true;
-		
-			if ($post->status == "draft")
-				$trigger->call("draft_view_top");
-		
-			$trigger->call("above_post");
-			$theme->load("content/posts/".$post->feather, array("post" => $post));
-			$trigger->call("below_post");
-		
-			$theme->load("layout/footer");
+			$post->date_shown = true;
+			
+			$theme->load("posts/view", array("post" => $post));
 			break;
 		case "archive":
 			if (empty($year) or empty($month)) {
