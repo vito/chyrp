@@ -23,7 +23,7 @@
 			$route->remove("tag/(name)/");
 		}
 		
-		static function add_post_options() {
+		static function new_post_options() {
 ?>
 					<p>
 						<label for="tags"><?php echo __("Tags", "tags"); ?><span class="sub"> <?php echo __("(comma separated)", "tags"); ?></span></label>
@@ -154,6 +154,11 @@
 		static function metaWeblog_getPost($post, $struct) {
 			$struct['mt_tags'] = $post->tags;
 			return array($post, $struct);
+		}
+		
+		static function twig_global_context($context) {
+			$context["tags"] = list_tags();
+			return $context;
 		}
 	}
 	

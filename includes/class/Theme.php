@@ -237,6 +237,10 @@
 			foreach ($user as $key => $val)
 				$context["user"][$key] = $val;
 			
+			$trigger = Trigger::current();
+			$context = $trigger->filter("twig_global_context", $context);
+			$context = $trigger->filter(str_replace("/", "_", $file), $context);
+			
 			$template = $this->twig->getTemplate($file.".twig");
 			$template->display($context);
 		}
