@@ -14,11 +14,11 @@
 		}
 		
 		static function __uninstall($confirm) {
-			if ($confirm == "true") {
+			if ($confirm) {
 				$sql = SQL::current();
-				$sql->query("drop table `".$sql->prefix."tags`");
+				error_log("$confirm is true");
+				#$sql->query("drop table `".$sql->prefix."tags`");
 			}
-			
 			$route = Route::current();
 			$route->remove("tag/(name)/");
 		}

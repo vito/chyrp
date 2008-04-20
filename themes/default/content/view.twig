@@ -5,7 +5,7 @@
 	{% if post.pinned %}
 						<span class="pinned_text">${ "pinned" | translate }</span>
 	{% endif %}
-		{% include "posts/feathers/" ~ post.feather ~ ".twig" %}
+		{% include "content/feathers/" ~ post.feather ~ ".twig" %}
 	{% if post.next_page %}
 						    <a class="right" href="$post.next_page_url">Next &rarr;</a>
 	{% endif %}
@@ -16,7 +16,7 @@
 						<span class="info">
 							<strong><a href="$post.url">${ post.created_at | date }</a></strong>
 	{% if site.enabled_modules.comments %}
-							<em>|</em> <a href="$post.url#comments">$post.comments ${ "Comments" }</a>
+							<em>|</em> <a href="$post.url#comments">$post.comment_count ${ "Comments" }</a>
 	{% endif %}
 	{% if site.enabled_modules.tags %}
 							<em>|</em> Tags: ${ post.tags.linked | join }

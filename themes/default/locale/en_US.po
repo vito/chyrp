@@ -290,8 +290,8 @@ msgstr ""
 msgid "Speak"
 msgstr ""
 
-#: themes/default/content/posts/text.php:3
-#: themes/default/content/posts/chat.php:3
+#: themes/default/content/feathers/text.php:3
+#: themes/default/content/feathers/chat.php:3
 #, php-format
 msgid "Permanent Link to %s"
 msgstr ""

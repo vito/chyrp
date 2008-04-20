@@ -24,7 +24,7 @@
 				$posts[] = $post;
 			}
 			
-			$theme->load("posts/".$action, array("posts" => $posts));
+			$theme->load("content/".$action, array("posts" => $posts));
 			
 			break;
 		case "view": case "id":
@@ -40,7 +40,7 @@
 
 			$post->date_shown = true;
 			
-			$theme->load("posts/view", array("post" => $post));
+			$theme->load("content/view", array("post" => $post));
 			break;
 		case "archive":
 			if (empty($year) or empty($month)) {
@@ -115,7 +115,7 @@
 						$shown_dates[] = when("m-d-Y", $post->created_at);
 			
 					$trigger->call("above_post");
-					$theme->load("content/posts/".$post->feather);
+					$theme->load("content/feathers/".$post->feather);
 					$trigger->call("below_post");
 					$count++;
 				}

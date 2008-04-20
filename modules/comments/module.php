@@ -34,7 +34,7 @@
 		static function __uninstall($confirm) {
 			global $group;
 		
-			if ($confirm == "true") {
+			if ($confirm) {
 				$sql = SQL::current();
 				$sql->query("drop table `".$sql->prefix."comments`");
 			}
