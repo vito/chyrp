@@ -7,7 +7,7 @@
  *
  * This service performs a number of checks on submitted data and returns whether or not the data is likely to be spam.
  *
- * Please note that in order to use this class, you must have a vaild {@link http://wordpress.com/api-keys/ WordPress API key}.  They are free for non/small-profit types and getting one will only take a couple of minutes.  
+ * Please note that in order to use this class, you must have a vaild {@link http://wordpress.com/api-keys/ WordPress API key}.  They are free for non/small-profit types and getting one will only take a couple of minutes.
  *
  * For commercial use, please {@link http://akismet.com/commercial/ visit the Akismet commercial licensing page}.
  *
@@ -44,10 +44,10 @@
  *  </code>
  *
  *  Optionally you may wish to check if your WordPress API key is valid as in the example below.
- * 
+ *
  * <code>
  *   $akismet = new Akismet('http://www.example.com/blog/', 'aoeu1aoue');
- *   
+ *
  *   if($akismet->isKeyValid()) {
  *     // api key is okay
  *   } else {
@@ -72,13 +72,13 @@ class Akismet
 	private $akismetVersion;
 
 	// This prevents some potentially sensitive information from being sent accross the wire.
-	private $ignore = array('HTTP_COOKIE', 
-							'HTTP_X_FORWARDED_FOR', 
-							'HTTP_X_FORWARDED_HOST', 
-							'HTTP_MAX_FORWARDS', 
-							'HTTP_X_FORWARDED_SERVER', 
-							'REDIRECT_STATUS', 
-							'SERVER_PORT', 
+	private $ignore = array('HTTP_COOKIE',
+							'HTTP_X_FORWARDED_FOR',
+							'HTTP_X_FORWARDED_HOST',
+							'HTTP_MAX_FORWARDS',
+							'HTTP_X_FORWARDED_SERVER',
+							'REDIRECT_STATUS',
+							'SERVER_PORT',
 							'PATH',
 							'DOCUMENT_ROOT',
 							'SERVER_ADMIN',
@@ -106,12 +106,12 @@ class Akismet
 			$this->comment['referrer'] = $_SERVER['HTTP_REFERER'];
 		}
 
-		/* 
+		/*
 		 * This is necessary if the server PHP5 is running on has been set up to run PHP4 and
 		 * PHP5 concurently and is actually running through a separate proxy al a these instructions:
 		 * http://www.schlitt.info/applications/blog/archives/83_How_to_run_PHP4_and_PHP_5_parallel.html
 		 * and http://wiki.coggeshall.org/37.html
-		 * Otherwise the user_ip appears as the IP address of the PHP4 server passing the requests to the 
+		 * Otherwise the user_ip appears as the IP address of the PHP4 server passing the requests to the
 		 * PHP5 one...
 		 */
 		$this->comment['user_ip'] = $_SERVER['REMOTE_ADDR'] != getenv('SERVER_ADDR') ? $_SERVER['REMOTE_ADDR'] : getenv('HTTP_X_FORWARDED_FOR');
@@ -119,9 +119,9 @@ class Akismet
 
 	/**
 	 * Makes a request to the Akismet service to see if the API key passed to the constructor is valid.
-	 * 
+	 *
 	 * Use this method if you suspect your API key is invalid.
-	 * 
+	 *
 	 * @return bool	True is if the key is valid, false if not.
 	 */
 	public function isKeyValid() {
@@ -233,7 +233,7 @@ class Akismet
 	}
 
 	/**
-	 *	The type of comment being submitted.  
+	 *	The type of comment being submitted.
 	 *
 	 *	May be blank, comment, trackback, pingback, or a made up value like "registration" or "wiki".
 	 */

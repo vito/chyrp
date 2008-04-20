@@ -7,9 +7,9 @@
 		/**
 		 * Function: load
 		 * Loads a given user into the <Group> class.
-		 * 
+		 *
 		 * Parameters:
-		 * 	$group_id - The group ID to load. If no group is given, it defaults to the $current_user's group ID. 
+		 * 	$group_id - The group ID to load. If no group is given, it defaults to the $current_user's group ID.
 		 * 	            If they are not logged in and no group ID is given, it will load the Guest group.
 		 */
 		function load($group_id = null) {
@@ -35,7 +35,7 @@
 		/**
 		 * Function: can
 		 * Checks if the group can perform $function.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$function - The function to check.
 		 */
@@ -54,13 +54,13 @@
 		/**
 		 * Function: add
 		 * Adds a group to the database with the passed Name and Permissions array.
-		 * 
+		 *
 		 * Calls the add_group trigger with the inserted ID, name, and permissions.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$name - The group's Name
 		 * 	$permissions - An array of all of the permissions.
-		 * 
+		 *
 		 * See Also:
 		 * 	<update>
 		 */
@@ -86,7 +86,7 @@
 		/**
 		 * Function: update
 		 * Updates a group with the given name and permissions, and passes arguments to the update_group trigger..
-		 * 
+		 *
 		 * Parameters:
 		 * 	$group_id - The group to update.
 		 * 	$name - The new Name to set.
@@ -108,7 +108,7 @@
 		/**
 		 * Function: delete
 		 * Deletes a given group. Calls the "delete_group" trigger with the groups ID.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$group_id - The group to delete.
 		 */
@@ -127,9 +127,9 @@
 		/**
 		 * Function: add_permission
 		 * Adds a permission to the Groups table.
-		 * 
+		 *
 		 * Parameters:
-		 * 	$name - The name of the permission to add. The naming scheme is simple; for example, 
+		 * 	$name - The name of the permission to add. The naming scheme is simple; for example,
 		 * 					"code_in_comments" gets converted to "Code In Comments" at the group editing page.
 		 */
 		function add_permission($name) {
@@ -146,7 +146,7 @@
 		/**
 		 * Function: remove_permission
 		 * Removes a permission from the Groups table.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$name - The permission name to remove.
 		 */
@@ -158,7 +158,7 @@
 		/**
 		 * Function: user_count
 		 * Returns the amount of users in a given group.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$group_id - The group ID.
 		 */
@@ -176,7 +176,7 @@
 		/**
 		 * Function: edit_link
 		 * Outputs an edit link for the given group ID, if the <User.can> edit_group.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$group_id - The group ID for the link.
 		 * 	$text - The text to show for the link.
@@ -194,7 +194,7 @@
 		/**
 		 * Function: delete_link
 		 * Outputs an delete link for the given group ID, if the <User.can> delete_group.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$group_id - The group ID for the link.
 		 * 	$text - The text to show for the link.

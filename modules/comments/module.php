@@ -113,10 +113,10 @@
 			if ($_POST['author'] == "") error(__("Error"), __("Author can't be blank.", "comments"));
 			if ($_POST['email'] == "") error(__("Error"), __("E-Mail address can't be blank.", "comments"));
 			if ($_POST['body'] == "") error(__("Error"), __("Message can't be blank.", "comments"));
-			$comment->create($_POST['author'], 
-			                 $_POST['email'], 
-			                 $_POST['url'], 
-			                 $_POST['body'], 
+			$comment->create($_POST['author'],
+			                 $_POST['email'],
+			                 $_POST['url'],
+			                 $_POST['body'],
 			                 $_POST['post_id']);
 		}
 
@@ -124,12 +124,12 @@
 			global $user, $comment;
 			if (!$user->can("edit_comment") or empty($_POST)) return;
 			$timestamp = when("Y-m-d H:i:s", $_POST['created_at']);
-			$comment->update($_POST['id'], 
-			                 $_POST['author'], 
-			                 $_POST['author_email'], 
-			                 $_POST['author_url'], 
-			                 $_POST['body'], 
-			                 $_POST['status'], 
+			$comment->update($_POST['id'],
+			                 $_POST['author'],
+			                 $_POST['author_email'],
+			                 $_POST['author_url'],
+			                 $_POST['body'],
+			                 $_POST['status'],
 			                 $timestamp);
 			if (isset($_POST['ajax']))
 				exit("{ comment_id: ".$_POST['id']." }");
@@ -423,7 +423,7 @@ var Comment = {
 				})
 			} })
 		}
-	}, 
+	},
 	edit: function(id) {
 		editing++
 		$("#comment_"+id).loader()
@@ -481,7 +481,7 @@ var Comment = {
 				} })
 			}) })
 		})
-	}, 
+	},
 	destroy: function(id) {
 		notice--
 		$("#comment_"+id).loader()
@@ -546,12 +546,12 @@ $(function(){
 					                            ))->fetchColumn();
 					if ($last_comment > $_POST['last_comment']) {
 						$new_comments = $sql->query("select `id` from `".$sql->prefix."comments`
-						                             where 
-						                             	`post_id` = :post_id and 
+						                             where
+						                             	`post_id` = :post_id and
 						                             	`id` > :last_comment and (
 						                             		`status` != 'denied' or (
 						                             			`status` = 'denied' and (
-						                             				`author_ip` = :current_ip or 
+						                             				`author_ip` = :current_ip or
 						                             				`user_id` = :user_id
 						                             			)
 						                             		)
@@ -635,7 +635,7 @@ $(function(){
 	<input type="hidden" name="id" value="<?php echo fix($comment->id, "html"); ?>" id="id" />
 	<input type="hidden" name="ajax" value="true" id="ajax" />
 	<div class="buttons">
-		<input type="submit" value="<?php echo __("Update"); ?>" accesskey="s" /> <?php echo __("or"); ?> 
+		<input type="submit" value="<?php echo __("Update"); ?>" accesskey="s" /> <?php echo __("or"); ?>
 		<a href="javascript:void(0)" id="comment_cancel_edit_<?php echo $comment->id; ?>" class="cancel"><?php echo __("Cancel"); ?></a>
 	</div>
 </form>

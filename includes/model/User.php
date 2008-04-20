@@ -7,7 +7,7 @@
 		/**
 		 * Function: load
 		 * Loads a given user into the <User> class.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$user_id - The user ID to load. If no user is given, it defaults to the $current_user.
 		 * 						 If they are not logged in and no user ID is given, nothing happens.
@@ -40,11 +40,11 @@
 		/**
 		 * Function: authenticate
 		 * Checks to see if a given Login and Password match a user in the database.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$login - The Login to check.
 		 * 	$password - The matching Password to check.
-		 * 
+		 *
 		 * Returns:
 		 * 	true - if a match is found.
 		 */
@@ -66,7 +66,7 @@
 		/**
 		 * Function: logged_in
 		 * Checks to see if the current visitor is logged in. If Cookies are set, it validates them to make sure.
-		 * 
+		 *
 		 * Returns:
 		 * 	true - if they are logged in with a valid Username and Password.
 		 */
@@ -89,12 +89,12 @@
 		/**
 		 * Function: info
 		 * Grabs a specified column from a users SQL row.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$column - The name of the SQL column.
 		 * 	$user_id - The user ID to grab from. If not given, defaults to $current_user.
 		 * 	$fallback - What to display if the result is empty.
-		 * 
+		 *
 		 * Returns:
 		 * 	false - if $user_id isn't set and they aren't logged in.
 		 * 	SQL result - if the SQL result isn't empty.
@@ -119,11 +119,11 @@
 		/**
 		 * Function: can
 		 * Checks to see if a user can perform a specified function.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$function - The permission name from their <Group>.
 		 * 	$user_id - The user ID to check. If not given, defaults to $current_user or the Guest group.
-		 * 
+		 *
 		 * Returns:
 		 * 	true - if their group can perform the specified function.
 		 */
@@ -150,17 +150,17 @@
 		/**
 		 * Function: add
 		 * Adds a user to the database with the passed username, password, and e-mail.
-		 * 
+		 *
 		 * Calls the add_user trigger with the inserted ID.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$login - The Login for the new user.
 		 * 	$password - The Password for the new user. Don't MD5 this, it's done in the function.
 		 * 	$email - The E-Mail for the new user.
-		 * 
+		 *
 		 * Returns:
 		 * 	$id - The newly created users ID.
-		 * 
+		 *
 		 * See Also:
 		 * 	<update>
 		 */
@@ -189,9 +189,9 @@
 		/**
 		 * Function: update
 		 * Updates a user with the given login, password, full name, e-mail, website, and <Group> ID.
-		 * 
+		 *
 		 * Passes all of the arguments to the update_user trigger.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$user_id - The user to update.
 		 * 	$login - The new Login to set.
@@ -200,7 +200,7 @@
 		 * 	$email - The new E-Mail to set.
 		 * 	$website - The new Website to set.
 		 * 	$group_id - The new <Group> to set.
-		 * 
+		 *
 		 * See Also:
 		 * 	<add>
 		 */
@@ -231,7 +231,7 @@
 		/**
 		 * Function: delete
 		 * Deletes a given user. Calls the "delete_user" trigger with the users ID.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$user_id - The user to delete.
 		 */
@@ -250,7 +250,7 @@
 		/**
 		 * Function: edit_link
 		 * Outputs an edit link for the given user ID, if they <can> edit_user.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$user_id - The user ID for the link.
 		 * 	$text - The text to show for the link.
@@ -267,7 +267,7 @@
 		/**
 		 * Function: delete_link
 		 * Outputs a delete link for the given user ID, if they <can> delete_user.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$user_id - The user ID for the link.
 		 * 	$text - The text to show for the link.

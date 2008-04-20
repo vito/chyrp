@@ -2,7 +2,7 @@
 /*
    Copyright (c) 2003 Danilo Segan <danilo@kvota.net>.
    Copyright (c) 2005 Nico Kaiser <nico@siriux.net>
-   
+
    This file is part of PHP-gettext.
 
    PHP-gettext is free software; you can redistribute it and/or modify
@@ -20,13 +20,13 @@
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
- 
+
 /**
  * Provides a simple gettext replacement that works independently from
  * the system's gettext abilities.
  * It can read MO files and use them for translating strings.
  * The files are passed to gettext_reader as a Stream (see streams.php)
- * 
+ *
  * This version has the ability to cache all strings and translations to
  * speed up the string lookup.
  * While the cache is enabled by default, it can be switched off with the
@@ -36,7 +36,7 @@
 class gettext_reader {
   //public:
    var $error = 0; // public variable that holds error code (0 if no error)
-   
+
    //private:
   var $BYTEORDER = 0;        // 0: low endian, 1: big endian
   var $STREAM = NULL;
@@ -52,18 +52,18 @@ class gettext_reader {
 
 
   /* Methods */
-  
-    
+
+
   /**
    * Reads a 32bit Integer from the Stream
-   * 
+   *
    * @access private
    * @return Integer from the Stream
    */
   function readint() {
       if ($this->BYTEORDER == 0) {
         // low endian
-				$fix = unpack('V', $this->STREAM->read(4)); 
+				$fix = unpack('V', $this->STREAM->read(4));
 				return array_shift($fix);
       } else {
         // big endian
@@ -73,7 +73,7 @@ class gettext_reader {
 
   /**
    * Reads an array of Integers from the Stream
-   * 
+   *
    * @param int count How many elements should be read
    * @return Array of Integers
    */
@@ -86,10 +86,10 @@ class gettext_reader {
         return unpack('N'.$count, $this->STREAM->read(4 * $count));
       }
   }
-  
+
   /**
    * Constructor
-   * 
+   *
    * @param object Reader the StreamReader object
    * @param boolean enable_cache Enable or disable caching of strings (default on)
    */
@@ -99,7 +99,7 @@ class gettext_reader {
       $this->short_circuit = true;
       return;
     }
-    
+
     // Caching can be turned off
     $this->enable_cache = $enable_cache;
 
@@ -120,19 +120,19 @@ class gettext_reader {
       $this->error = 1; // not MO file
       return false;
     }
-    
+
     $revision = $this->readint();
-    
+
     $this->total = $this->readint();
     $this->originals = $this->readint();
     $this->translations = $this->readint();
   }
-  
+
   /**
    * Loads the translation tables from the MO file into the cache
    * If caching is enabled, also loads all strings into a cache
    * to speed up translation lookups
-   * 
+   *
    * @access private
    */
   function load_tables() {
@@ -140,13 +140,13 @@ class gettext_reader {
       is_array($this->table_originals) &&
       is_array($this->table_translations))
       return;
-    
+
     /* get original and translations tables */
     $this->STREAM->seekto($this->originals);
     $this->table_originals = $this->readintarray($this->total * 2);
     $this->STREAM->seekto($this->translations);
     $this->table_translations = $this->readintarray($this->total * 2);
-    
+
     if ($this->enable_cache) {
       $this->cache_translations = array ();
       /* read all strings in the cache */
@@ -159,10 +159,10 @@ class gettext_reader {
       }
     }
   }
-  
+
   /**
    * Returns a string from the "originals" table
-   * 
+   *
    * @access private
    * @param int num Offset number of original string
    * @return string Requested string if found, otherwise ''
@@ -176,10 +176,10 @@ class gettext_reader {
     $data = $this->STREAM->read($length);
     return (string)$data;
   }
-  
+
   /**
    * Returns a string from the "translations" table
-   * 
+   *
    * @access private
    * @param int num Offset number of original string
    * @return string Requested string if found, otherwise ''
@@ -193,10 +193,10 @@ class gettext_reader {
     $data = $this->STREAM->read($length);
     return (string)$data;
   }
-  
+
   /**
    * Binary search for string
-   * 
+   *
    * @access private
    * @param string string
    * @param int start (internally used in recursive function)
@@ -234,10 +234,10 @@ class gettext_reader {
         return $this->find_string($string, $half, $end);
     }
   }
-  
+
   /**
    * Translates a string
-   * 
+   *
    * @access public
    * @param string string to be translated
    * @return string translated string (or original, if not found)
@@ -245,8 +245,8 @@ class gettext_reader {
   function translate($string) {
     if ($this->short_circuit)
       return $string;
-    $this->load_tables();     
-    
+    $this->load_tables();
+
     if ($this->enable_cache) {
       // Caching enabled, get translated string from cache
       if (array_key_exists($string, $this->cache_translations))
@@ -265,15 +265,15 @@ class gettext_reader {
 
   /**
    * Get possible plural forms from MO header
-   * 
+   *
    * @access private
    * @return string plural form header
    */
   function get_plural_forms() {
-    // lets assume message number 0 is header  
+    // lets assume message number 0 is header
     // this is true, right?
     $this->load_tables();
-    
+
     // cache header field for plural forms
     if (! is_string($this->pluralheader)) {
       if ($this->enable_cache) {
@@ -292,7 +292,7 @@ class gettext_reader {
 
   /**
    * Detects which plural form to take
-   * 
+   *
    * @access private
    * @param n count
    * @return int array index of the right plural form
@@ -302,7 +302,7 @@ class gettext_reader {
     $string = str_replace('nplurals',"\$total",$string);
     $string = str_replace("n",$n,$string);
     $string = str_replace('plural',"\$plural",$string);
-    
+
     $total = 0;
     $plural = 0;
 
@@ -313,7 +313,7 @@ class gettext_reader {
 
   /**
    * Plural version of gettext
-   * 
+   *
    * @access public
    * @param string single
    * @param string plural
@@ -329,12 +329,12 @@ class gettext_reader {
     }
 
     // find out the appropriate form
-    $select = $this->select_string($number); 
-    
+    $select = $this->select_string($number);
+
     // this should contains all strings separated by NULLs
     $key = $single.chr(0).$plural;
-    
-    
+
+
     if ($this->enable_cache) {
       if (! array_key_exists($key, $this->cache_translations)) {
         return ($number != 1) ? $plural : $single;

@@ -3,10 +3,10 @@
 		static function __install() {
 			$sql = SQL::current();
 			$sql->query("create table if not exists `".$sql->prefix."tags` (
-			              `id` int(11) not null auto_increment, 
-			              `name` varchar(250) not null, 
-			              `post_id` int(11) not null, 
-			              `clean` varchar(250) not null, 
+			              `id` int(11) not null auto_increment,
+			              `name` varchar(250) not null,
+			              `post_id` int(11) not null,
+			              `clean` varchar(250) not null,
 			              primary key (`id`)
 			             ) default charset=utf8");
 			$route = Route::current();

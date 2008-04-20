@@ -183,7 +183,7 @@
 		/**
 		 * Function: load
 		 * Loads a given database YAML file.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$file - The YAML file to load into <SQL>.
 		 */
@@ -197,7 +197,7 @@
 		/**
 		 * Function: set
 		 * Sets a variable's value.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$setting - The setting name.
 		 * 	$value - The new value. Can be boolean, numeric, an array, a string, etc.

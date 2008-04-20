@@ -92,63 +92,63 @@
 
 			# Posts table
 			$sql->query("create table if not exists `".$sql->prefix."posts` (
-			             	`id` int(11) not null auto_increment, 
+			             	`id` int(11) not null auto_increment,
 			             	`xml` longtext not null,
-			             	`feather` varchar(32) not null default '', 
-			             	`clean` varchar(128) not null default '', 
-			             	`url` varchar(128) not null default '', 
-			             	`pinned` tinyint(1) not null default '0', 
-			             	`status` enum('public','draft','private','registered_only') not null default 'public', 
-			             	`user_id` int(11) not null default '0', 
-			             	`created_at` datetime not null default '0000-00-00 00:00:00', 
-			             	`updated_at` datetime not null default '0000-00-00 00:00:00', 
+			             	`feather` varchar(32) not null default '',
+			             	`clean` varchar(128) not null default '',
+			             	`url` varchar(128) not null default '',
+			             	`pinned` tinyint(1) not null default '0',
+			             	`status` enum('public','draft','private','registered_only') not null default 'public',
+			             	`user_id` int(11) not null default '0',
+			             	`created_at` datetime not null default '0000-00-00 00:00:00',
+			             	`updated_at` datetime not null default '0000-00-00 00:00:00',
 			             	primary key (`id`)
 			             ) default charset=utf8");
 
 			# Pages table
 			$sql->query("create table if not exists `".$sql->prefix."pages` (
-			             	`id` int(11) not null auto_increment, 
-			             	`title` varchar(250) not null default '', 
-			             	`body` longtext not null, 
-			             	`user_id` int(11) not null default '0', 
-			             	`parent_id` int(11) not null default '0', 
-			             	`show_in_list` tinyint(1) not null default '1', 
-			             	`list_order` int(11) not null default '0', 
-			             	`clean` varchar(128) not null default '', 
-			             	`url` varchar(128) not null default '', 
-			             	`created_at` datetime not null default '0000-00-00 00:00:00', 
-			             	`updated_at` datetime not null default '0000-00-00 00:00:00', 
+			             	`id` int(11) not null auto_increment,
+			             	`title` varchar(250) not null default '',
+			             	`body` longtext not null,
+			             	`user_id` int(11) not null default '0',
+			             	`parent_id` int(11) not null default '0',
+			             	`show_in_list` tinyint(1) not null default '1',
+			             	`list_order` int(11) not null default '0',
+			             	`clean` varchar(128) not null default '',
+			             	`url` varchar(128) not null default '',
+			             	`created_at` datetime not null default '0000-00-00 00:00:00',
+			             	`updated_at` datetime not null default '0000-00-00 00:00:00',
 			             	primary key (`id`)
 			             ) default charset=utf8");
 
 			# Users table
 			$sql->query("create table if not exists `".$sql->prefix."users` (
-			             	`id` int(11) not null auto_increment, 
-			             	`login` varchar(64) not null default '', 
-			             	`password` varchar(32) not null default '', 
-			             	`full_name` varchar(250) not null default '', 
-			             	`email` varchar(128) not null default '', 
-			             	`website` varchar(128) not null default '', 
-			             	`group_id` int(11) not null default '0', 
-			             	`joined_at` datetime not null default '0000-00-00 00:00:00', 
-			             	primary key (`id`), 
+			             	`id` int(11) not null auto_increment,
+			             	`login` varchar(64) not null default '',
+			             	`password` varchar(32) not null default '',
+			             	`full_name` varchar(250) not null default '',
+			             	`email` varchar(128) not null default '',
+			             	`website` varchar(128) not null default '',
+			             	`group_id` int(11) not null default '0',
+			             	`joined_at` datetime not null default '0000-00-00 00:00:00',
+			             	primary key (`id`),
 			             	unique (`login`)
 			             ) default charset=utf8");
 
 			# Groups table
 			$sql->query("create table if not exists `".$sql->prefix."groups` (
-			             	`id` int(11) not null auto_increment, 
-			             	`name` varchar(100) not null default '', 
-		                 	`permissions` longtext not null, 
-			             	primary key (`id`), 
+			             	`id` int(11) not null auto_increment,
+			             	`name` varchar(100) not null default '',
+		                 	`permissions` longtext not null,
+			             	primary key (`id`),
 			             	unique (`name`)
 			             ) default charset=utf8");
 
 			# Permissions table
 			$sql->query("create table if not exists `".$sql->prefix."permissions` (
-			             	`id` int(11) not null auto_increment, 
-			             	`name` varchar(100) not null default '', 
-			             	primary key (`id`), 
+			             	`id` int(11) not null auto_increment,
+			             	`name` varchar(100) not null default '',
+			             	primary key (`id`),
 			             	unique (`name`)
 			             ) default charset=utf8");
 
@@ -167,8 +167,8 @@
 
 			# Insert the default groups (see above)
 			foreach($groups as $name => $permission)
-				$sql->query("insert into `".$sql->prefix."groups` set 
-			                 `name` = '".ucfirst($name)."', 
+				$sql->query("insert into `".$sql->prefix."groups` set
+			                 `name` = '".ucfirst($name)."',
 			                 `permissions` = '".$permission."'");
 
 			if (!file_exists(BASE_DIR."/.htaccess") and !is_writable(BASE_DIR))
@@ -203,12 +203,12 @@
 			$config->load(INCLUDES_DIR."/config.yaml.php");
 
 			if (!$sql->query("select `id` from `".$sql->prefix."users` where `login` = :login", array(":login" => $_POST['login']))->rowCount())
-				$sql->query("insert into `".$sql->prefix."users` set 
-				             	`login` = :login, 
-				             	`password` = :password, 
-				             	`email` = :email, 
-				             	`website` = :website, 
-				             	`group_id` = 1, 
+				$sql->query("insert into `".$sql->prefix."users` set
+				             	`login` = :login,
+				             	`password` = :password,
+				             	`email` = :email,
+				             	`website` = :website,
+				             	`group_id` = 1,
 				             	`joined_at` = :datetime",
 				            array(
 				            	":login" => $_POST['login'],

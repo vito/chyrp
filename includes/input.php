@@ -2,15 +2,15 @@
 
 	/**
 	 * File: Input
-	 * 
+	 *
 	 * Chyrp - A Lightweight Blogging Engine
-	 * 
+	 *
 	 * Version:
 	 * 	v1.1.3
-	 * 
+	 *
 	 * License:
 	 * 	GPL-3
-	 * 
+	 *
 	 * Chyrp Copyright:
 	 * 	Copyright (c) 2008 Alex Suraci, <http://i.am.toogeneric.com/>
 	 */

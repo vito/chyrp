@@ -20,7 +20,7 @@
 		/**
 		 * Function: load
 		 * Loads a given configuation YAML file.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$file - The YAML file to load into <Config>.
 		 */
@@ -42,7 +42,7 @@
 		/**
 		 * Function: set
 		 * Sets a variable's value.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$setting - The setting name.
 		 * 	$value - The new value. Can be boolean, numeric, an array, a string, etc.
@@ -68,7 +68,7 @@
 		/**
 		 * Function: remove
 		 * Removes a configuration setting.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$setting - The name of the variable to remove.
 		 */

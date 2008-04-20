@@ -8,7 +8,7 @@
 	/**
 	 * Function: truncate
 	 * Truncates a string to the passed length, appending an ellipsis to the end.
-	 * 
+	 *
 	 * Parameters:
 	 * 	$text - String to shorten.
 	 * 	$numb - Length of the shortened string.
@@ -60,7 +60,7 @@
 	/**
 	 * Function: when
 	 * Returns date formatting for a string that isn't a regular time() value
-	 * 
+	 *
 	 * Parameters:
 	 * 	$formatting - The formatting for date().
 	 * 	$time - The string to convert to time (typically a datetime).
@@ -82,7 +82,7 @@
 	/**
 	 * Function: fix
 	 * Returns a sanitized version of a string, for various purposes.
-	 * 
+	 *
 	 * Parameters:
 	 * 	$string - String to sanitize.
 	 * 	$mode - One of "mysql", "form", or "setting"; the mode to clean the string with.
@@ -99,10 +99,10 @@
 	/**
 	 * Function: lang_code
 	 * Returns the passed language code (e.g. en_US) to the human-readable text (e.g. English (US))
-	 * 
+	 *
 	 * Parameters:
 	 * 	$code - The language code to convert
-	 * 
+	 *
 	 * Credits:
 	 * 	This is from TextPattern, modified to match Chyrp's language code formatting.
 	 */
@@ -147,7 +147,7 @@
 	/**
 	 * Function: sanitize
 	 * Returns a sanitized string, typically for URLs.
-	 * 
+	 *
 	 * Parameters:
 	 * 	$string - The string to sanitize.
 	 * 	$anal - If set to *true*, will remove all non-alphanumeric characters.
@@ -164,7 +164,7 @@
 	/**
 	 * Function: seems_utf8
 	 * Determines whether a string seems to use UTF-8 characters.
-	 * 
+	 *
 	 * Credits:
 	 * 	This is from WordPress.
 	 */
@@ -188,7 +188,7 @@
 	/**
 	 * Function: remove_accents
 	 * Removes accents from letters in a string.
-	 * 
+	 *
 	 * Credits:
 	 * 	This is from WordPress.
 	 */
@@ -325,7 +325,7 @@
 	/**
 	 * Function: trackback_respond
 	 * Responds to a trackback request.
-	 * 
+	 *
 	 * Parameters:
 	 * 	$error - Is this an error?
 	 * 	$message - Message to return.
@@ -351,7 +351,7 @@
 	/**
 	 * Function: trackback_send
 	 * Sends a trackback request.
-	 * 
+	 *
 	 * Parameters:
 	 * 	$post_id - The post we're sending from.
 	 * 	$target - The URL we're sending to.
@@ -390,7 +390,7 @@
 	/**
 	 * Function: send_pingbacks
 	 * Sends pingback requests to the URLs in a string.
-	 * 
+	 *
 	 * Parameters:
 	 * 	$string - The string to crawl for pingback URLs.
 	 * 	$post_id - The post ID we're sending from.
@@ -414,10 +414,10 @@
 	/**
 	 * Function: grab_urls
 	 * Crawls a string for links.
-	 * 
+	 *
 	 * Parameters:
 	 * 	$string - The string to crawl.
-	 * 
+	 *
 	 * Returns:
 	 * 	$matches[] - An array of all URLs found in the string.
 	 */
@@ -431,10 +431,10 @@
 	/**
 	 * Function: pingback_url
 	 * Checks if a URL is pingback-capable.
-	 * 
+	 *
 	 * Parameters:
 	 * 	$url - The URL to check.
-	 * 
+	 *
 	 * Returns:
 	 * 	$url - The pingback target, if the URL is pingback-capable.
 	 */
@@ -490,7 +490,7 @@
 	/**
 	 * Function: camelize
 	 * Converts a given string to camel-case.
-	 * 
+	 *
 	 * Parameters:
 	 * 	$string - The string to camelize.
 	 * 	$keep_spaces - Whether or not to convert underscores to spaces or remove them.
@@ -522,7 +522,7 @@
 	/**
 	 * Function: module_enabled
 	 * Returns whether the given module is enabled or not.
-	 * 
+	 *
 	 * Parameters:
 	 * 	$name - The folder name of the module.
 	 */
@@ -534,7 +534,7 @@
 	/**
 	 * Function: feather_enabled
 	 * Returns whether the given feather is enabled or not.
-	 * 
+	 *
 	 * Parameters:
 	 * 	$name - The folder name of the feather.
 	 */
@@ -584,7 +584,7 @@
 	/**
 	 * Function: edit_post_options
 	 * Outputs the optional fields for editing the given post.
-	 * 
+	 *
 	 * Parameters:
 	 * 	$post_id - The post ID to output the fields for.
 	 */
@@ -620,12 +620,12 @@
 	/**
 	 * Function: fallback
 	 * Gracefully falls back a given variable if it's empty or not set.
-	 * 
+	 *
 	 * Parameters:
 	 * 	&$variable - The variable to check for.
 	 * 	$fallback - What to set if the variable is empty or not set.
 	 * 	$mode - Whether to set it or to return.
-	 * 
+	 *
 	 * Returns:
 	 * 	$variable = $fallback - If $mode is set to "set" and $variable is empty or not set.
 	 * 	$fallback - If $mode is set to "return" and $variable is empty or not set.
@@ -640,7 +640,7 @@
 	/**
 	 * Function: random
 	 * Returns a random string.
-	 * 
+	 *
 	 * Parameters:
 	 * 	$length - How long the string should be.
 	 */
@@ -662,10 +662,10 @@
 	/**
 	 * Function: unique_filename
 	 * Makes a given filename unique for the /upload/ directory.
-	 * 
+	 *
 	 * Parameters:
 	 * 	$name - The name to check.
-	 * 
+	 *
 	 * Returns:
 	 * 	$name - A unique version of the given $name.
 	 */
@@ -687,12 +687,12 @@
 	/**
 	 * Function: upload
 	 * Moves an uploaded file to the /upload/ directory.
-	 * 
+	 *
 	 * Parameters:
 	 * 	$file - The $_FILES value.
 	 * 	$extension - An array of valid extensions (case-insensitive).
 	 * 	$path - A sub-folder in /upload/ (optional).
-	 * 
+	 *
 	 * Returns:
 	 * 	$filename - The resulting filename from the upload.
 	 */
@@ -740,10 +740,10 @@
 	/**
 	 * Function: timer_stop
 	 * Stops the timer and returns the total time.
-	 * 
+	 *
 	 * Parameters:
 	 * 	$precision - Number of decimals places to round to.
-	 * 
+	 *
 	 * Returns:
 	 * 	$formatted - A formatted number with the given $precision.
 	 */
@@ -850,7 +850,7 @@
 	/**
 	 * Function: show_404
 	 * Shows a 404 error message, extracting the passed array into the scope.
-	 * 
+	 *
 	 * Parameters:
 	 * 	$scope - An array of values to extract into the scope.
 	 */
@@ -869,7 +869,7 @@
 	/**
 	 * Function: month_to_number
 	 * Converts a month name (e.g. June) to its number (e.g. 6)
-	 * 
+	 *
 	 * Parameters:
 	 * 	$name - The month.
 	 */

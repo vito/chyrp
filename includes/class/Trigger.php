@@ -25,7 +25,7 @@
 		 * Calls a trigger, passing the $arg to any actions for it.
 		 * If $arg is an array, the actions are called with call_user_func_array.
 		 * This function also calls any theme Snippets that have $name as their function name.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$name - The name of the trigger.
 		 * 	$arg - Arguments to pass to the actions.
@@ -64,12 +64,12 @@
 		 * Filters a string or array through a trigger's actions.
 		 * Similar to <call>, except this is stackable and is intended to
 		 * modify something instead of inject code.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$name - The name of the trigger.
 		 * 	$arg - Arguments to pass to the actions.
 		 * 	$array - If $arg is an array, should it be passed as multiple values or a single array?
-		 * 
+		 *
 		 * Returns:
 		 * 	$arg, filtered through any/all actions for the trigger $name.
 		 */
@@ -118,7 +118,7 @@
 		/**
 		 * Function: remove
 		 * Unregisters a given $action from a $trigger.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$trigger - The trigger to unregister from.
 		 * 	$action - The action name.
@@ -136,10 +136,10 @@
 		/**
 		 * Function: exists
 		 * Checks if there are any actions for a given $trigger.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$trigger - The trigger name.
-		 * 
+		 *
 		 * Returns:
 		 * 	true - if there are actions for the trigger.
 		 */

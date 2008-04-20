@@ -31,7 +31,7 @@
 		/**
 		 * Function: list_pages
 		 * Generates a recursive list of pages and their children. Outputs it as a <ul> list.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$home_link - Whether or not to show the "Home" link
 		 * 	$home_text - Text for the "Home" link
@@ -63,10 +63,10 @@
 		/**
 		 * Function: recurse_pages
 		 * Performs all of the recursion for generating the page lists. Used by <list_pages>.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$id - The page ID to start at.
-		 * 
+		 *
 		 * See Also:
 		 * 	<list_pages>
 		 */
@@ -99,12 +99,12 @@
 		/**
 		 * Function: list_archives
 		 * Generates an array of all of the archives, by month.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$limit - Amount of months to list
 		 * 	$order_by - What to sort it by
 		 * 	$order - "asc" or "desc"
-		 * 
+		 *
 		 * Returns:
 		 * 	$archives - The array. Each entry as "month", "year", and "url" values, stored as an array.
 		 */
@@ -127,7 +127,7 @@
 		/**
 		 * Function: snippet_exists
 		 * Returns whether a snippet exists with the specified $name.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$name - The name of the snippet.
 		 */

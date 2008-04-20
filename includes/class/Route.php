@@ -36,10 +36,10 @@
 		 * Attempts to change the specified clean URL to a dirty URL if clean URLs is disabled.
 		 * Use this for linking to things. The applicable URL conversions are passed through the
 		 * parse_urls trigger.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$clean_url - The clean URL.
-		 * 
+		 *
 		 * Returns:
 		 * 	Clean URL - if $config->clean_urls is set to *true*.
 		 * 	Dirty URL - if $config->clean_urls is set to *false*.
@@ -93,10 +93,10 @@
 		/**
 		 * Function: key_regexp
 		 * Converts the values in $config->post_url to regular expressions.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$key - Input URL with the keys from <Routes->$code>.
-		 * 
+		 *
 		 * Returns:
 		 * 	$regexp - $key values replaced with their regular expressions from <Routes->$code>.
 		 */
@@ -237,10 +237,10 @@
 		 * Function: add
 		 * Adds a route to Chyrp. Only needed for actions that have more than one parameter.
 		 * For example, for /tags/ you won't need to do this, but you will for /tag/tag-name/.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$path - The path to add. Wrap variables with parentheses, e.g. "/tag/(name)/".
-		 * 
+		 *
 		 * See Also:
 		 * 	<remove_route>
 		 */
@@ -254,10 +254,10 @@
 		/**
 		 * Function: remove_route
 		 * Removes a route from the install's .htaccess file.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$path - The path to remove. Same as <add>.
-		 * 
+		 *
 		 * See Also:
 		 * 	<add_route>
 		 */

@@ -100,10 +100,10 @@ $(function(){
 <?php if ($_GET['action'] == "manage" and $_GET['sub'] == "page"): ?>
 	var parent_hash = ""
 	$(".sort_pages li").css({
-		cursor: "move", 
-		background: "#f9f9f9", 
-		padding: ".15em .5em", 
-		marginBottom: ".5em", 
+		cursor: "move",
+		background: "#f9f9f9",
+		padding: ".15em .5em",
+		marginBottom: ".5em",
 		border: "1px solid #ddd"
 	})
 
@@ -120,10 +120,10 @@ $(function(){
 	}
 
 	$(".sort_pages:first").attr("id", "sort_pages").NestedSortable({
-		accept: "page-item", 
-		opacity: 0.8, 
-		fit: true, 
-		nestingPxSpace: 1, 
+		accept: "page-item",
+		opacity: 0.8,
+		fit: true,
+		nestingPxSpace: 1,
 		onStop: function(){
 			var serialize = $.SortSerialize("sort_pages")
 			var parent_hash = get_parent_hash()
@@ -146,7 +146,7 @@ $(function(){
 	}
 	function draw() {
 		$(".box, .header, .header .view, .main-nav, .sub-nav, .footer, h1, h3, .legend").css({
-			position: "relative", 
+			position: "relative",
 			zIndex: 2
 		})
 		$(".header .view").css({
@@ -155,10 +155,10 @@ $(function(){
 
 		$(document.createElement("canvas")).attr("id", "canvas").prependTo("body")
 		$("#canvas").css({
-			position: "absolute", 
-			top: 0, 
-			bottom: 0, 
-			zIndex: 1, 
+			position: "absolute",
+			top: 0,
+			bottom: 0,
+			zIndex: 1,
 			margin: "0 auto 0 -75px"
 		}).attr({ width: ($(".content").width() + 150), height: $(document).height() })
 
@@ -243,28 +243,28 @@ $.fn.loader = function(remove) {
 		var loading_left = ($(this).width() / 2) - 63
 		$("body").append("<div id=\"load_overlay_"+new_id+"\"><img src=\"<?php echo $config->url; ?>/includes/close.png\" style=\"display: none\" class=\"close\" /><img src=\"<?php echo $config->url; ?>/includes/loading.gif\" style=\"display: none\" class=\"loading\" /></div>")
 		$("#load_overlay_"+new_id+" .loading").css({
-			position: "absolute", 
-			top: loading_top+"px", 
-			left: loading_left+"px", 
+			position: "absolute",
+			top: loading_top+"px",
+			left: loading_left+"px",
 			display: "inline"
 		})
 		$("#load_overlay_"+new_id+" .close").css({
-			position: "absolute", 
-			top: "3px", 
-			right: "3px", 
-			color: "#fff", 
-			cursor: "pointer", 
+			position: "absolute",
+			top: "3px",
+			right: "3px",
+			color: "#fff",
+			cursor: "pointer",
 			display: "inline"
 		}).click(function(){ $(this).parent().remove() })
 		$("#load_overlay_"+new_id).css({
-			position: "absolute", 
-			top: offset.top, 
-			left: offset.left, 
-			zIndex: 100, 
-			width: $(this).width(), 
-			height: $(this).height(), 
-			background: ($.browser.msie) ? "transparent" : "transparent url('<?php echo $config->url; ?>/includes/trans.png')", 
-			textAlign: "center", 
+			position: "absolute",
+			top: offset.top,
+			left: offset.left,
+			zIndex: 100,
+			width: $(this).width(),
+			height: $(this).height(),
+			background: ($.browser.msie) ? "transparent" : "transparent url('<?php echo $config->url; ?>/includes/trans.png')",
+			textAlign: "center",
 			filter: ($.browser.msie) ? "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src='<?php echo $config->url; ?>/includes/trans.png');" : ""
 		})
 	}

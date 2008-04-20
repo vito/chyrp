@@ -7,12 +7,12 @@
 		/**
 		 * Function: query
 		 * Alters a query to take account for the current page.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$query - The normal SQL query.
 		 * 	$limit - Amount of SQL results per page.
 		 * 	$var - The variable that holds the current page number in $_GET.
-		 * 
+		 *
 		 * Returns:
 		 * 	A paginated SQL query.
 		 */
@@ -46,7 +46,7 @@
 		/**
 		 * Function: next_page
 		 * Checks whether or not it makes sense to show the Next Page link.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$var - The variable to check for.
 		 */
@@ -58,7 +58,7 @@
 		/**
 		 * Function: prev_page
 		 * Checks whether or not it makes sense to show the Previous Page link.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$var - The variable to check for.
 		 */
@@ -70,7 +70,7 @@
 		/**
 		 * Function: next_link
 		 * Outputs a link to the next page.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$text - The text for the link.
 		 * 	$class - The CSS class for the link.
@@ -85,7 +85,7 @@
 		/**
 		 * Function: prev_link
 		 * Outputs a link to the previous page.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$text - The text for the link.
 		 * 	$class - The CSS class for the link.
@@ -100,7 +100,7 @@
 		/**
 		 * Function: next_page_url
 		 * Returns the URL to the next page.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$var - The variable to link to.
 		 * 	$clean_urls - Whether to link with dirty or clean URLs.
@@ -122,7 +122,7 @@
 		/**
 		 * Function: prev_page_url
 		 * Returns the URL to the previous page.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$var - The variable to link to.
 		 * 	$clean_urls - Whether to link with dirty or clean URLs.

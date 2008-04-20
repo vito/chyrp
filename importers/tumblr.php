@@ -26,11 +26,11 @@
 			xml_set_object($this->parser, $this);
 			xml_set_character_data_handler($this->parser, 'dataHandler');
 			xml_set_element_handler($this->parser, 'startHandler', 'endHandler');
-	  
+
 			xml_parse($this->parser, $this->xml);
-    
+
 			xml_parser_free($this->parser);
-	  
+
 			return true;
 		}
 

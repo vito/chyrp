@@ -52,8 +52,8 @@
 		if (!$config->clean_urls)
 			$mark = (strpos($request, "?")) ? "&" : "?" ;
 
-		return ($config->clean_urls) ? 
-		       preg_replace("/(\/page\/([0-9]+)|$)/", "/page/".($post->page - 1), "http://".$_SERVER['HTTP_HOST'].$request, 1) : 
+		return ($config->clean_urls) ?
+		       preg_replace("/(\/page\/([0-9]+)|$)/", "/page/".($post->page - 1), "http://".$_SERVER['HTTP_HOST'].$request, 1) :
 		       preg_replace("/([\?&]page=([0-9]+)|$)/", $mark."page=".($post->page - 1), "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 1) ;
 	}
 	function next_page_url() {
@@ -65,7 +65,7 @@
 		if (!$config->clean_urls)
 			$mark = (strpos($request, "?")) ? "&" : "?" ;
 
-		return ($config->clean_urls) ? 
-		       preg_replace("/(\/page\/([0-9]+)|$)/", "/page/".($post->page + 1), "http://".$_SERVER['HTTP_HOST'].$request, 1) : 
+		return ($config->clean_urls) ?
+		       preg_replace("/(\/page\/([0-9]+)|$)/", "/page/".($post->page + 1), "http://".$_SERVER['HTTP_HOST'].$request, 1) :
 		       preg_replace("/([\?&]page=([0-9]+)|$)/", $mark."page=".($post->page + 1), "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 1) ;
 	}

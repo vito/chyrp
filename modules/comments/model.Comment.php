@@ -126,7 +126,7 @@
 			$sql = SQL::current();
 			$sql->query("update `".$sql->prefix."comments`
 			             set
-			             	`author` = :author, 
+			             	`author` = :author,
 			             	`author_email` = :author_email,
 			             	`author_url` = :author_url,
 			             	`body` = :body,
@@ -162,8 +162,8 @@
 			$post = new Post($post_id, array("filter" => false));
 			// assume allowed comments by default
 			return empty($post->comment_status) or
-			       !($post->comment_status == "closed" or 
-			        ($post->comment_status == "registered_only" and !$user->logged_in()) or 
+			       !($post->comment_status == "closed" or
+			        ($post->comment_status == "registered_only" and !$user->logged_in()) or
 			        ($post->comment_status == "private" and !$user->can("add_comment_private")));
 		}
 		function user_count($user_id) {

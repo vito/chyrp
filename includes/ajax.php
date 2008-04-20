@@ -30,7 +30,7 @@
 	<input type="hidden" name="id" value="<?php echo fix($post->id, "html"); ?>" id="id" />
 	<input type="hidden" name="ajax" value="true" id="ajax" />
 	<div class="buttons">
-		<input type="submit" value="<?php echo __("Update"); ?>" accesskey="s" /> <?php echo __("or"); ?> 
+		<input type="submit" value="<?php echo __("Update"); ?>" accesskey="s" /> <?php echo __("or"); ?>
 		<a href="javascript:void(0)" id="post_cancel_edit_<?php echo $post->id; ?>" class="cancel"><?php echo __("Cancel"); ?></a>
 	</div>
 	<input type="hidden" name="hash" value="<?php echo $config->secure_hashkey; ?>" id="hash" />

@@ -11,7 +11,7 @@
 		/**
 		 * Function: __construct
 		 * Grabs the specified page and injects it into the <Page> class.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$page_id - The page's unique ID.
 		 * 	$where - A SQL query to grab the page by.
@@ -61,9 +61,9 @@
 		/**
 		 * Function: add
 		 * Adds a page to the database.
-		 * 
+		 *
 		 * Calls the add_page trigger with the inserted ID.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$title - The Title for the new page.
 		 * 	$body - The Body for the new page.
@@ -71,10 +71,10 @@
 		 * 	$show_in_list - Whether or not to show it in the pages list.
 		 * 	$clean - The sanitized URL (or empty to default to "(feather).(new page's id)").
 		 * 	$url - The unique URL (or empty to default to "(feather).(new page's id)").
-		 * 
+		 *
 		 * Returns:
 		 * 	$id - The newly created page's ID.
-		 * 
+		 *
 		 * See Also:
 		 * 	<update>
 		 */
@@ -113,7 +113,7 @@
 		/**
 		 * Function: update
 		 * Updates the given page.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$page_id - The page to update.
 		 * 	$title - The new Title.
@@ -153,7 +153,7 @@
 		/**
 		 * Function: delete
 		 * Deletes the given page.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$page_id - The page to delete. Sub-pages if this page will be removed as well.
 		 */
@@ -186,12 +186,12 @@
 		/**
 		 * Function: info
 		 * Grabs a specified column from a page's SQL row.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$column - The name of the SQL column.
 		 * 	$page_id - The page ID to grab from.
 		 * 	$fallback - What to display if the result is empty.
-		 * 
+		 *
 		 * Returns:
 		 * 	false - if $page_id isn't set.
 		 * 	SQL result - if the SQL result isn't empty.
@@ -217,10 +217,10 @@
 		/**
 		 * Function: exists
 		 * Checks if a page exists.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$page_id - The page ID to check
-		 * 
+		 *
 		 * Returns:
 		 * 	true - if a page with that ID is in the database.
 		 */
@@ -239,10 +239,10 @@
 		/**
 		 * Function: check_url
 		 * Checks if a given clean URL is already being used as another page's URL.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$clean - The clean URL to check.
-		 * 
+		 *
 		 * Returns:
 		 * 	$url - The unique version of the passed clean URL. If it's not used, it's the same as $clean. If it is, a number is appended.
 		 */
@@ -262,7 +262,7 @@
 		/**
 		 * Function: edit_link
 		 * Outputs an edit link for the given page ID, if the <User.can> edit_page.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$page_id - The page ID for the link.
 		 * 	$text - The text to show for the link.
@@ -281,7 +281,7 @@
 		/**
 		 * Function: delete_link
 		 * Outputs a delete link for the given page ID, if the <User.can> delete_page.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$page_id - The page ID for the link.
 		 * 	$text - The text to show for the link.

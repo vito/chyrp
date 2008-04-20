@@ -12,7 +12,7 @@
 		/**
 		 * Function: __construct
 		 * Grabs the specified post and injects it into the <Post> class.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$post_id - The post's unique ID.
 		 * 	$where - A SQL query to grab the post by.
@@ -70,20 +70,20 @@
 		/**
 		 * Function: add
 		 * Adds a post to the database with the passed XML, sanitized URL, and unique URL. The rest is read from $_POST.
-		 * 
+		 *
 		 * Trackbacks are automatically sent based on the contents of $_POST['trackbacks'].
 		 * Most of the $_POST variables will fall back gracefully if they don't exist, e.g. if they're posting from the Bookmarklet.
-		 * 
+		 *
 		 * Calls the add_post trigger with the inserted ID and extra options.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$values - The data to insert.
 		 * 	$clean - The sanitized URL (or empty to default to "(feather).(new post's id)").
 		 * 	$url - The unique URL (or empty to default to "(feather).(new post's id)").
-		 * 
+		 *
 		 * Returns:
 		 * 	self - An object containing the new post.
-		 * 
+		 *
 		 * See Also:
 		 * 	<update>
 		 */
@@ -158,12 +158,12 @@
 		/**
 		 * Function: update
 		 * Updates a post with the given XML. The rest is read from $_POST.
-		 * 
+		 *
 		 * Most of the $_POST variables will fall back gracefully if they don't exist, e.g. if they're posting from the Bookmarklet.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$values - An array of data to set for the post.
-		 * 
+		 *
 		 * See Also:
 		 * 	<add>
 		 */
@@ -229,12 +229,12 @@
 		/**
 		 * Function: info
 		 * Grabs a specified column from a post's SQL row.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$column - The name of the SQL column.
 		 * 	$post_id - The post ID to grab from.
 		 * 	$fallback - What to display if the result is empty.
-		 * 
+		 *
 		 * Returns:
 		 * 	false - if $post_id isn't set.
 		 * 	SQL result - if the SQL result isn't empty.
@@ -260,10 +260,10 @@
 		/**
 		 * Function: exists
 		 * Checks if a post exists.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$post_id - The post ID to check
-		 * 
+		 *
 		 * Returns:
 		 * 	true - if a post with that ID is in the database.
 		 */
@@ -285,10 +285,10 @@
 		/**
 		 * Function: check_url
 		 * Checks if a given clean URL is already being used as another post's URL.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$clean - The clean URL to check.
-		 * 
+		 *
 		 * Returns:
 		 * 	$url - The unique version of the passed clean URL. If it's not used, it's the same as $clean. If it is, a number is appended.
 		 */
@@ -308,7 +308,7 @@
 		/**
 		 * Function: feather_class
 		 * Returns the class name for the given posts's Feather.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$post_id - The post ID to grab from.
 		 */
@@ -351,7 +351,7 @@
 		/**
 		 * Function: title_from_excerpt
 		 * Generates an acceptable Title from the post's excerpt.
-		 * 
+		 *
 		 * Returns:
 		 * 	$normalized - The post's excerpt. filtered -> tags stripped -> truncated to 75 characters -> normalized.
 		 */
@@ -474,7 +474,7 @@
 		/**
 		 * Function: parse
 		 * Parses the passed XML and loads the tags and values into <Post>.
-		 * 
+		 *
 		 * Parameters:
 		 * 	$filter - Should the data be run through any triggers?
 		 */
