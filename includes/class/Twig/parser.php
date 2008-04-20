@@ -40,7 +40,7 @@ class Twig_Parser
 			'block' =>	array($this, 'parseBlock'),
 			'super' =>	array($this, 'parseSuper'),
 
-			# Added by Alex
+			# Twig specific extensions
 			'trigger' =>	array($this, 'parseTrigger'),
 			'url' =>	array($this, 'parseURL')
 		);
@@ -115,7 +115,7 @@ class Twig_Parser
 
 	public function decideIfEnd($token)
 	{
-		return $token->test('endif');
+		return $token->test(array('endif'));
 	}
 
 	public function parseBlock($token)
