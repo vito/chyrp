@@ -47,8 +47,8 @@
 		                           `created_at` like :month",
 		                          "`created_at` desc",
 		                          array(
-		                          	":query" => "%".$_GET['query']."%",
-		                          	":month" => $_GET['month']."%"
+		                              ":query" => "%".$_GET['query']."%",
+		                              ":month" => $_GET['month']."%"
 		                          ));
 	} elseif (!empty($_GET['query'])) {
 		$get_posts = $sql->select("posts",
@@ -56,7 +56,7 @@
 		                          "`xml` like :query",
 		                          "`created_at` desc",
 		                          array(
-		                          	":query" => "%".$_GET['query']."%"
+		                              ":query" => "%".$_GET['query']."%"
 		                          ));
 	} elseif (!empty($_GET['month'])) {
 		$get_posts = $paginate->select("posts",
@@ -65,7 +65,7 @@
 		                               "`created_at` desc",
 		                               25, "page",
 		                               array(
-		                               	":month" => $_GET['month']."%"
+		                                   ":month" => $_GET['month']."%"
 		                               ));
 	} else {
 		$get_posts = $paginate->select("posts",

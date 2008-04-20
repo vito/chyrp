@@ -9,8 +9,8 @@
 		 * Loads a given user into the <Group> class.
 		 *
 		 * Parameters:
-		 * 	$group_id - The group ID to load. If no group is given, it defaults to the $current_user's group ID.
-		 * 	            If they are not logged in and no group ID is given, it will load the Guest group.
+		 *     $group_id - The group ID to load. If no group is given, it defaults to the $current_user's group ID.
+		 *                 If they are not logged in and no group ID is given, it will load the Guest group.
 		 */
 		function load($group_id = null) {
 			global $user;
@@ -22,7 +22,7 @@
 			foreach ($sql->query("select * from `".$sql->prefix."groups`
 			                      where `id` = :id",
 			                     array(
-			                     	":id" => $group
+			                         ":id" => $group
 			                     ))->fetch() as $key => $val)
 				if (!is_int($key))
 					$this->$key = $val;
@@ -37,14 +37,14 @@
 		 * Checks if the group can perform $function.
 		 *
 		 * Parameters:
-		 * 	$function - The function to check.
+		 *     $function - The function to check.
 		 */
 		public function can($function, $group_id) {
 			$sql = SQL::current();
 			$permissions = $sql->query("select `permissions` from `".$sql->prefix."groups`
 			                            where `id` = :id",
 			                           array(
-			                           	":id" => $group_id
+			                               ":id" => $group_id
 			                           ))->fetchColumn();
 			$permissions = Spyc::YAMLLoad($permissions);
 
@@ -58,11 +58,11 @@
 		 * Calls the add_group trigger with the inserted ID, name, and permissions.
 		 *
 		 * Parameters:
-		 * 	$name - The group's Name
-		 * 	$permissions - An array of all of the permissions.
+		 *     $name - The group's Name
+		 *     $permissions - An array of all of the permissions.
 		 *
 		 * See Also:
-		 * 	<update>
+		 *     <update>
 		 */
 		function add($name, $permissions) {
 			$query = "";
@@ -88,9 +88,9 @@
 		 * Updates a group with the given name and permissions, and passes arguments to the update_group trigger..
 		 *
 		 * Parameters:
-		 * 	$group_id - The group to update.
-		 * 	$name - The new Name to set.
-		 * 	$permissions - An array of the new permissions to set.
+		 *     $group_id - The group to update.
+		 *     $name - The new Name to set.
+		 *     $permissions - An array of the new permissions to set.
 		 */
 		function update($group_id, $name, $permissions) {
 			$sql = SQL::current();
@@ -110,7 +110,7 @@
 		 * Deletes a given group. Calls the "delete_group" trigger with the groups ID.
 		 *
 		 * Parameters:
-		 * 	$group_id - The group to delete.
+		 *     $group_id - The group to delete.
 		 */
 		function delete($group_id) {
 			$trigger = Trigger::current();
@@ -120,7 +120,7 @@
 			$sql->query("delete from `".$sql->prefix."groups`
 			             where `id` = :id",
 			            array(
-			            	":id" => $group_id
+			                ":id" => $group_id
 			            ));
 		}
 
@@ -129,8 +129,8 @@
 		 * Adds a permission to the Groups table.
 		 *
 		 * Parameters:
-		 * 	$name - The name of the permission to add. The naming scheme is simple; for example,
-		 * 					"code_in_comments" gets converted to "Code In Comments" at the group editing page.
+		 *     $name - The name of the permission to add. The naming scheme is simple; for example,
+		 *                     "code_in_comments" gets converted to "Code In Comments" at the group editing page.
 		 */
 		function add_permission($name) {
 			$sql = SQL::current();
@@ -148,7 +148,7 @@
 		 * Removes a permission from the Groups table.
 		 *
 		 * Parameters:
-		 * 	$name - The permission name to remove.
+		 *     $name - The permission name to remove.
 		 */
 		function remove_permission($name) {
 			$sql = SQL::current();
@@ -160,14 +160,14 @@
 		 * Returns the amount of users in a given group.
 		 *
 		 * Parameters:
-		 * 	$group_id - The group ID.
+		 *     $group_id - The group ID.
 		 */
 		function user_count($group_id) {
 			$sql = SQL::current();
 			$get_count = $sql->query("select count(`id`) from `".$sql->prefix."users`
 			                          where `group_id` = :id",
 			                         array(
-			                         	":id" => $group_id
+			                             ":id" => $group_id
 			                         ));
 			$count = $get_count->fetchColumn();
 			return $count;
@@ -178,10 +178,10 @@
 		 * Outputs an edit link for the given group ID, if the <User.can> edit_group.
 		 *
 		 * Parameters:
-		 * 	$group_id - The group ID for the link.
-		 * 	$text - The text to show for the link.
-		 * 	$before - If the link can be shown, show this before it.
-		 * 	$after - If the link can be shown, show this after it.
+		 *     $group_id - The group ID for the link.
+		 *     $text - The text to show for the link.
+		 *     $before - If the link can be shown, show this before it.
+		 *     $after - If the link can be shown, show this after it.
 		 */
 		function edit_link($group_id, $text = null, $before = null, $after = null){
 			global $user;
@@ -196,10 +196,10 @@
 		 * Outputs an delete link for the given group ID, if the <User.can> delete_group.
 		 *
 		 * Parameters:
-		 * 	$group_id - The group ID for the link.
-		 * 	$text - The text to show for the link.
-		 * 	$before - If the link can be shown, show this before it.
-		 * 	$after - If the link can be shown, show this after it.
+		 *     $group_id - The group ID for the link.
+		 *     $text - The text to show for the link.
+		 *     $before - If the link can be shown, show this before it.
+		 *     $after - If the link can be shown, show this after it.
 		 */
 		function delete_link($group_id, $text = null, $before = null, $after = null){
 			global $user;

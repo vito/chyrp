@@ -47,7 +47,7 @@
 		                               "`id` desc",
 		                               25, "page",
 		                               array(
-		                               	":query" => "%".$_GET['query']."%"
+		                                   ":query" => "%".$_GET['query']."%"
 		                               ));
 	} else {
 		$get_users = $paginate->select("users",

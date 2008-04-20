@@ -56,7 +56,7 @@ class phpUnsharpMask {
 
 		$threshold = min($threshold, 255);
 
-		$radius = abs(round($radius)); 	// Only integers make sense.
+		$radius = abs(round($radius));     // Only integers make sense.
 		if ($radius == 0) {
 			return true;
 		}

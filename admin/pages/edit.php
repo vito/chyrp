@@ -76,7 +76,7 @@
 				<div id="more_options" class="more_options js_disabled">
 <?php
 		if ($sub != "page"):
-		 	edit_post_options($_GET['id']);
+		     edit_post_options($_GET['id']);
 		else:
 ?>
 					<p>
@@ -96,7 +96,7 @@
 	                          where `id` != :id
 	                          order by `id` asc",
 	                         array(
-	                         	":id" => $page->id
+	                             ":id" => $page->id
 	                         ));
 	while ($the_page = $get_pages->fetchObject()):
 ?>

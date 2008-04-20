@@ -52,23 +52,23 @@
 
 				if (!empty($year))
 					$get_timestamps = $sql->query("select
-					                               	distinct year(`created_at`) as `year`,
-					                               	month(`created_at`) as `month`,
-					                               	`created_at`, count(`id`) as `posts`
+					                                   distinct year(`created_at`) as `year`,
+					                                   month(`created_at`) as `month`,
+					                                   `created_at`, count(`id`) as `posts`
 					                               from `".$sql->prefix."posts`
 					                               where
-					                               	year(`created_at`) = :year and
-					                               	".$private.$enabled_feathers."
+					                                   year(`created_at`) = :year and
+					                                   ".$private.$enabled_feathers."
 					                               group by year(`created_at`), month(`created_at`)
 					                               order by `created_at` desc, `id` desc",
 					                              array(
-					                              	":year" => $year
+					                                  ":year" => $year
 					                              ));
 				else
 					$get_timestamps = $sql->query("select
-					                               	distinct year(`created_at`) as `year`,
-					                               	month(`created_at`) as `month`,
-					                               	`created_at`, count(`id`) as `posts`
+					                                   distinct year(`created_at`) as `year`,
+					                                   month(`created_at`) as `month`,
+					                                   `created_at`, count(`id`) as `posts`
 					                               from `".$sql->prefix."posts`
 					                               where ".$private.$enabled_feathers."
 					                               group by year(`created_at`), month(`created_at`)
@@ -80,11 +80,11 @@
 					$trigger->call("archive_month", array(@date("F Y", mktime(0, 0, 0, $time->month + 1, 0, $time->year)), $route->url("archive/".when("Y/m/", $time->created_at))));
 					$get_posts = $sql->query("select * from `".$sql->prefix."posts`
 					                          where
-					                          	`created_at` like :created_at and
-					                          	".$private.$enabled_feathers."
+					                              `created_at` like :created_at and
+					                              ".$private.$enabled_feathers."
 					                          order by `created_at` desc, `id` desc",
 					                         array(
-					                         	":created_at" => when("Y-m", $time->created_at)."%"
+					                             ":created_at" => when("Y-m", $time->created_at)."%"
 					                         ));
 
 					$split_wrapper = explode("{LIST}", $trigger->call("archive_list_wrapper", $time, true));

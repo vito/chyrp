@@ -3,7 +3,7 @@
 	$tag_name = $sql->query("select `name` from `".$sql->prefix."tags`
 	                         where `clean` = :clean",
 	                        array(
-	                        	":clean" => $tag
+	                            ":clean" => $tag
 	                        ))->fetchColumn();
 
 	if ($get_posts->rowCount()) {

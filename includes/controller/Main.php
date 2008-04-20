@@ -39,7 +39,7 @@
 			                               "`pinned` desc, `created_at` desc, `id` desc",
 			                               $config->posts_per_page, "page",
 			                               array(
-			                               	':date' => $year.'-'.$month.'%'
+			                                   ':date' => $year.'-'.$month.'%'
 			                               ));
 		}
 
@@ -59,7 +59,7 @@
 			                               "`pinned` desc, `created_at` desc, `id` desc",
 			                               $config->posts_per_page, "page",
 			                               array(
-			                               	':query' => '%'.urldecode($query).'%'
+			                                   ':query' => '%'.urldecode($query).'%'
 			                               ));
 		}
 
@@ -97,7 +97,7 @@
 			                               "`pinned` desc, `created_at` desc, `id` desc",
 			                               $config->posts_per_page, "page",
 			                               array(
-			                               	':feather' => $plural_feathers[$_GET['action']]
+			                                   ':feather' => $plural_feathers[$_GET['action']]
 			                               ));
 		}
 
@@ -134,7 +134,7 @@
 				                                 `url` = :url",
 				                                 "id",
 				                                 array(
-				                                 	':url' => $_GET['url']
+				                                     ':url' => $_GET['url']
 				                                 ), 1);
 
 			# Check for a post...
@@ -157,7 +157,7 @@
 					                                      "`login` = :login",
 					                                      "id",
 					                                      array(
-					                                      	":login" => $_GET['author']
+					                                          ":login" => $_GET['author']
 					                                      ), 1)->fetchColumn();
 				}
 				elseif ($attr == "feathers")
@@ -184,7 +184,7 @@
 				$check_page = $sql->count("pages",
 				                          "`url` = :url",
 				                          array(
-				                          	':url' => $url
+				                              ':url' => $url
 				                          ));
 				if ($check_page == 1)
 					return $action = $url;
@@ -253,7 +253,7 @@
 			$check_user = $sql->query("select count(`id`) from `".$sql->prefix."users`
 			                           where `login` = :login",
 			                          array(
-			                          	':login' => $_POST['login']
+			                              ':login' => $_POST['login']
 			                          ));
 			if ($check_user->fetchColumn())
 				error(__("Error"), __("That username is already in use."));
@@ -290,7 +290,7 @@
 			$get_id = $sql->query("select `id` from `".$sql->prefix."users`
 			                       where `login` = :login",
 			                      array(
-			                      	':login' => $_POST['login']
+			                          ':login' => $_POST['login']
 			                      ));
 
 			setcookie("chyrp_user_id", $get_id->fetchColumn(), time() + 2592000, "/"); # 30 days

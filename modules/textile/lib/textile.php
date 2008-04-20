@@ -194,8 +194,8 @@ Applying Attributes:
 @define('txt_quote_double_close', '&#8221;');
 @define('txt_apostrophe',		  '&#8217;');
 @define('txt_prime',			  '&#8242;');
-@define('txt_prime_double', 	  '&#8243;');
-@define('txt_ellipsis', 		  '&#8230;');
+@define('txt_prime_double',       '&#8243;');
+@define('txt_ellipsis',           '&#8230;');
 @define('txt_emdash',			  '&#8212;');
 @define('txt_endash',			  '&#8211;');
 @define('txt_dimension',		  '&#215;');
@@ -258,15 +258,15 @@ class Textile2
 		   'quote_single_close' => txt_quote_single_close,
 		   'quote_double_open'	=> txt_quote_double_open,
 		   'quote_double_close' => txt_quote_double_close,
-		   'apostrophe' 		=> txt_apostrophe,
+		   'apostrophe'         => txt_apostrophe,
 		   'prime'				=> txt_prime,
 		   'prime_double'		=> txt_prime_double,
 		   'ellipsis'			=> txt_ellipsis,
-		   'emdash' 			=> txt_emdash,
-		   'endash' 			=> txt_endash,
+		   'emdash'             => txt_emdash,
+		   'endash'             => txt_endash,
 		   'dimension'			=> txt_dimension,
 		   'trademark'			=> txt_trademark,
-		   'registered' 		=> txt_registered,
+		   'registered'         => txt_registered,
 		   'copyright'			=> txt_copyright,
 		);
 
@@ -414,7 +414,7 @@ class Textile2
 				($style)   ? ' style="'   . join("", $style) .'"':'',
 				($class)   ? ' class="'   . $class			 .'"':'',
 				($lang)    ? ' lang="'	  . $lang			 .'"':'',
-				($id and $include_id) ? ' id="' 	 . $id				.'"':'',
+				($id and $include_id) ? ' id="'      . $id				.'"':'',
 				($colspan) ? ' colspan="' . $colspan		 .'"':'',
 				($rowspan) ? ' rowspan="' . $rowspan		 .'"':''
 			));
@@ -850,14 +850,14 @@ class Textile2
 		return preg_replace_callback("/
 			(?:[[{])?		   # pre
 			\!				   # opening !
-			(\<|\=|\>)? 	   # optional alignment atts
+			(\<|\=|\>)?        # optional alignment atts
 			($this->c)		   # optional style,class atts
 			(?:\. )?		   # optional dot-space
 			([^\s(!]+)		   # presume this is the src
-			\s? 			   # optional space
+			\s?                # optional space
 			(?:\(([^\)]+)\))?  # optional title
 			\!				   # closing
-			(?::(\S+))? 	   # optional href
+			(?::(\S+))?        # optional href
 			(?:[\]}]|(?=\s|$|\))) # lookahead: space or end of string
 		/x", array(&$this, "fImage"), $text);
 	}
@@ -1020,10 +1020,10 @@ class Textile2
 		$pnc = '[[:punct:]]';
 
 		$glyph_search = array(
-			'/(\w)\'(\w)/', 									 // apostrophe's
-			'/(\s)\'(\d+\w?)\b(?!\')/', 						 // back in '88
+			'/(\w)\'(\w)/',                                      // apostrophe's
+			'/(\s)\'(\d+\w?)\b(?!\')/',                          // back in '88
 			'/(\S)\'(?=\s|'.$pnc.'|<|$)/',						 //  single closing
-			'/\'/', 											 //  single opening
+			'/\'/',                                              //  single opening
 			'/(\S)\"(?=\s|'.$pnc.'|<|$)/',						 //  double closing
 			'/"/',												 //  double opening
 			'/\b([A-Z][A-Z0-9]{2,})\b(?:[(]([^)]*)[)])/',		 //  3+ uppercase acronym
@@ -1032,7 +1032,7 @@ class Textile2
 			'/(\s?)--(\s?)/',									 //  em dash
 			'/\s-(?:\s|$)/',									 //  en dash
 			'/(\d+)( ?)x( ?)(?=\d+)/',							 //  dimension sign
-			'/(\b ?|\s|^)[([]TM[])]/i', 						 //  trademark
+			'/(\b ?|\s|^)[([]TM[])]/i',                          //  trademark
 			'/(\b ?|\s|^)[([]R[])]/i',							 //  registered
 			'/(\b ?|\s|^)[([]C[])]/i',							 //  copyright
 		 );
@@ -1043,15 +1043,15 @@ class Textile2
 			'$1'.$txt_apostrophe.'$2',			 // apostrophe's
 			'$1'.$txt_apostrophe.'$2',			 // back in '88
 			'$1'.$txt_quote_single_close,		 //  single closing
-			$txt_quote_single_open, 			 //  single opening
+			$txt_quote_single_open,              //  single opening
 			'$1'.$txt_quote_double_close,		 //  double closing
-			$txt_quote_double_open, 			 //  double opening
+			$txt_quote_double_open,              //  double opening
 			'<acronym title="$2">$1</acronym>',  //  3+ uppercase acronym
 			'<span class="caps">$1</span>$2',	 //  3+ uppercase
-			'$1'.$txt_ellipsis, 				 //  ellipsis
+			'$1'.$txt_ellipsis,                  //  ellipsis
 			'$1'.$txt_emdash.'$2',				 //  em dash
 			' '.$txt_endash.' ',				 //  en dash
-			'$1$2'.$txt_dimension.'$3', 		 //  dimension sign
+			'$1$2'.$txt_dimension.'$3',          //  dimension sign
 			'$1'.$txt_trademark,				 //  trademark
 			'$1'.$txt_registered,				 //  registered
 			'$1'.$txt_copyright,				 //  copyright

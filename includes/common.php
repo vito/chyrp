@@ -5,13 +5,13 @@
 	 * Chyrp - A Lightweight Blogging Engine
 	 *
 	 * Version:
-	 * 	v1.1.3
+	 *     v1.1.3
 	 *
 	 * License:
-	 * 	GPL-3
+	 *     GPL-3
 	 *
 	 * Chyrp Copyright:
-	 * 	Copyright (c) 2008 Alex Suraci, <http://i.am.toogeneric.com/>
+	 *     Copyright (c) 2008 Alex Suraci, <http://i.am.toogeneric.com/>
 	 */
 
 	# Constant: CHYRP_VERSION
@@ -82,22 +82,22 @@
 
 	# File: Trigger
 	# See Also:
-	# 	<Trigger>
+	#     <Trigger>
 	require_once INCLUDES_DIR."/class/Trigger.php";
 
 	# File: Module
 	# See Also:
-	# 	<Module>
+	#     <Module>
 	require_once INCLUDES_DIR."/class/Module.php";
 
 	# File: Feather
 	# See Also:
-	# 	<Feather>
+	#     <Feather>
 	require_once INCLUDES_DIR."/class/Feather.php";
 
 	# File: Pagination
 	# See Also:
-	# 	<Pagination>
+	#     <Pagination>
 	require_once INCLUDES_DIR."/class/Pagination.php";
 
 	# File: Twig
@@ -106,42 +106,42 @@
 
 	# File: Theme
 	# See Also:
-	# 	<Theme>
+	#     <Theme>
 	require_once INCLUDES_DIR."/class/Theme.php";
 
 	# File: Route
 	# See Also:
-	# 	<Route>
+	#     <Route>
 	require_once INCLUDES_DIR."/class/Route.php";
 
 	# File: User
 	# See Also:
-	# 	<User>
+	#     <User>
 	require_once INCLUDES_DIR."/model/User.php";
 
 	# File: Post
 	# See Also:
-	# 	<Post>
+	#     <Post>
 	require_once INCLUDES_DIR."/model/Post.php";
 
 	# File: Page
 	# See Also:
-	# 	<Page>
+	#     <Page>
 	require_once INCLUDES_DIR."/model/Page.php";
 
 	# File: Group
 	# See Also:
-	# 	<Group>
+	#     <Group>
 	require_once INCLUDES_DIR."/model/Group.php";
 
 	# File: Main
 	# See Also:
-	# 	<Main Controller>
+	#     <Main Controller>
 	require_once INCLUDES_DIR."/controller/Main.php";
 
 	# File: Admin
 	# See Also:
-	# 	<Admin Controller>
+	#     <Admin Controller>
 	if (ADMIN)
 		require_once INCLUDES_DIR."/controller/Admin.php";
 
@@ -199,8 +199,8 @@
 		 * Shows an error message.
 		 *
 		 * Parameters:
-		 * 	$title - The title for the error dialog.
-		 * 	$body - The message for the error dialog.
+		 *     $title - The title for the error dialog.
+		 *     $body - The message for the error dialog.
 		 */
 		function error($title, $body) {
 			require (defined('THEME_DIR') and file_exists(THEME_DIR."/content/error.php")) ? THEME_DIR."/content/error.php" : INCLUDES_DIR."/error.php" ;

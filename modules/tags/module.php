@@ -57,9 +57,9 @@
 				             values
 				             (:name, :post_id, :clean)",
 				            array(
-				            	":name" => $tag,
-				            	":post_id" => $id,
-				            	":clean" => sanitize($tag)
+				                ":name" => $tag,
+				                ":post_id" => $id,
+				                ":clean" => sanitize($tag)
 				            ));
 			}
 		}
@@ -69,7 +69,7 @@
 			$sql->query("delete from `".$sql->prefix."tags`
 			             where `post_id` = :id",
 			            array(
-			            	":id" => $id
+			                ":id" => $id
 			            ));
 
 			$tags = explode(",", $options["tags"]); // Split at the comma
@@ -83,9 +83,9 @@
 				             values
 				             (:name, :post_id, :clean)",
 				            array(
-				            	":name" => $tag,
-				            	":post_id" => $id,
-				            	":clean" => sanitize($tag)
+				                ":name" => $tag,
+				                ":post_id" => $id,
+				                ":clean" => sanitize($tag)
 				            ));
 			}
 		}
@@ -95,7 +95,7 @@
 			$sql->query("delete from `".$sql->prefix."tags`
 			             where `post_id` = :id",
 			            array(
-			            	":id" => $id
+			                ":id" => $id
 			            ));
 		}
 
@@ -128,7 +128,7 @@
 			                               "`pinned` desc, `created_at` desc, `p`.`id` desc",
 			                               $config->posts_per_page, "page",
 			                               array(
-			                               	":clean" => $tag
+			                                   ":clean" => $tag
 			                               ));
 		}
 
@@ -143,9 +143,9 @@
 					             values
 					             (:name, :post_id, :clean)",
 					            array(
-					            	":name" => $tag["data"],
-					            	":post_id" => $id,
-					            	":clean" => sanitize($tag["data"])
+					                ":name" => $tag["data"],
+					                ":post_id" => $id,
+					                ":clean" => sanitize($tag["data"])
 					            ));
 				}
 			}
@@ -175,15 +175,15 @@
 		$order_by = (("count" != $order_by) ? $sql->prefix."tags`.`" : "").$order_by;
 
 		$get_tags = $sql->query("select
-		                         	`name`, `".$sql->prefix."tags`.`clean` as `clean`,
-		                         	`".$sql->prefix."tags`.`post_id` as `target_id`,
-		                         	`".$sql->prefix."posts`.`id` as `post_id`,
-		                         	`".$sql->prefix."tags`.`id` as `tag_id`,
-		                         	count(`".$sql->prefix."tags`.`id`) as `count`
+		                             `name`, `".$sql->prefix."tags`.`clean` as `clean`,
+		                             `".$sql->prefix."tags`.`post_id` as `target_id`,
+		                             `".$sql->prefix."posts`.`id` as `post_id`,
+		                             `".$sql->prefix."tags`.`id` as `tag_id`,
+		                             count(`".$sql->prefix."tags`.`id`) as `count`
 		                         from `".$sql->prefix."tags`, `".$sql->prefix."posts`
 		                         where
-		                         	`".$sql->prefix."tags`.`post_id` = `".$sql->prefix."posts`.`id` and
-		                         	`status` = 'public'
+		                             `".$sql->prefix."tags`.`post_id` = `".$sql->prefix."posts`.`id` and
+		                             `status` = 'public'
 		                         group by `name`
 		                         order by `".$order_by."` ".$order);
 
@@ -217,7 +217,7 @@
 		                         where `post_id` = :id
 		                         order by `".$order_by."` ".$order,
 		                        array(
-		                        	":id" => $post_id
+		                            ":id" => $post_id
 		                        ));
 
 		$tags = array();

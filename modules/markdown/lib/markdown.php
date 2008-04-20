@@ -287,11 +287,11 @@ class Markdown_Parser {
 		$content2 = str_replace('\2', '\3', $content);
 
 		# First, look for nested blocks, e.g.:
-		# 	<div>
-		# 		<div>
-		# 		tags for inner block must be indented.
-		# 		</div>
-		# 	</div>
+		#     <div>
+		#         <div>
+		#         tags for inner block must be indented.
+		#         </div>
+		#     </div>
 		#
 		# The outermost tags must start at the left margin for this to match, and
 		# the inner nested divs must be indented.
@@ -970,7 +970,7 @@ class Markdown_Parser {
 					(?<!__)   _			#      the same marker)
 				)
 				\1
-				(?=\S) 					# Not followed by whitespace
+				(?=\S)                     # Not followed by whitespace
 				(?!\1\1)				#   or two others marker chars.
 				(						# $2: Content
 					(?>
@@ -1515,13 +1515,13 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 						(?:				# Tag name.
 							'.$this->block_tags.'			|
 							'.$this->context_block_tags.'	|
-							'.$this->clean_tags.'        	|
+							'.$this->clean_tags.'            |
 							(?!\s)'.$enclosing_tag.'
 						)
 						\s*				# Whitespace.
 						(?>
 							".*?"		|	# Double quotes (can contain `>`)
-							\'.*?\'   	|	# Single quotes (can contain `>`)
+							\'.*?\'       |	# Single quotes (can contain `>`)
 							.+?				# Anything but quotes and `>`.
 						)*?
 					>					# End of tag.
@@ -1690,7 +1690,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 						\s*				# Whitespace.
 						(?>
 							".*?"		|	# Double quotes (can contain `>`)
-							\'.*?\'   	|	# Single quotes (can contain `>`)
+							\'.*?\'       |	# Single quotes (can contain `>`)
 							.+?				# Anything but quotes and `>`.
 						)*?
 					>					# End of tag.
@@ -2102,7 +2102,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			[ ]{0,'.$less_than_tab.'}		# whitespace before colon
 			[:][ ]+							# definition mark (colon)
 			((?s:.+?))						# definition text = $2
-			(?= \n+ 						# stop at next definition mark,
+			(?= \n+                         # stop at next definition mark,
 				(?:							# next term or end of text
 					[ ]{0,'.$less_than_tab.'} [:][ ]	|
 					<dt> | \z
@@ -2152,7 +2152,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 					(?<!__)				#	or by two marker chars.
 					__
 				)
-				(?=\S) 					# Not followed by whitespace
+				(?=\S)                     # Not followed by whitespace
 				(?!__)					#   or two others marker chars.
 				(						# $2: Content
 					(?>
@@ -2171,7 +2171,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			}sx',
 			'{
 				( (?<!\*\*) \*\* )		# $1: Marker (not preceded by two *)
-				(?=\S) 					# Not followed by whitespace
+				(?=\S)                     # Not followed by whitespace
 				(?!\1)					#   or two others marker chars.
 				(						# $2: Content
 					(?>

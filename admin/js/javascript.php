@@ -85,7 +85,7 @@ $(function(){
 	$("#toggler").html('<label for="toggle">Toggle All</label><input type="checkbox" name="toggle" value="" id="toggle" />')
 	$("#toggle").click(function(){
 		$("form#new_group, form#group_edit").find(":checkbox").not("#toggle").each(function(){
-	  	this.checked = document.getElementById("toggle").checked
+	      this.checked = document.getElementById("toggle").checked
 		})
 	})
 	$("form#new_group, form#group_edit").find(":checkbox").not("#toggle").each(function(){

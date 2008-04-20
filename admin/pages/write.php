@@ -1,9 +1,9 @@
 <?php
 	$sub = (isset($_GET['sub'])) ?
-	       	$_GET['sub'] :
-	       	((!empty($config->enabled_feathers) and $user->can("add_post")) ?
-	       		$config->enabled_feathers[0] :
-	       		"page")
+	           $_GET['sub'] :
+	           ((!empty($config->enabled_feathers) and $user->can("add_post")) ?
+	               $config->enabled_feathers[0] :
+	               "page")
 	       ;
 	$show_page = (($sub != "page" and !$user->can("add_post")) or ($sub == "page" and !$user->can("add_page"))) ? false : true ;
 ?>
@@ -69,8 +69,8 @@
 				<div id="more_options" class="more_options js_disabled">
 <?php
 		if ($sub != "page"):
-		 	new_post_options();
-		 	$trigger->call("new_post_options", $sub);
+		     new_post_options();
+		     $trigger->call("new_post_options", $sub);
 		else:
 ?>
 					<p>

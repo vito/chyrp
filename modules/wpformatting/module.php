@@ -24,7 +24,7 @@
 		$dynamic_replacements = array('&#8217;$1','$1&#8216;', '$1&#8243;', '$1&#8242;', '$1&#8217;$2', '$1&#8220;$2', '&#8221;$1', '&#8217;$1', '$1&#215;$2');
 
 		for ( $i = 0; $i < $stop; $i++ ) {
-	 		$curl = $textarr[$i];
+	         $curl = $textarr[$i];
 
 			if (isset($curl{0}) && '<' != $curl{0} && $next) { // If it's not a tag
 				// static strings
@@ -41,7 +41,7 @@
 			$output .= $curl;
 		}
 
-	  	return $output;
+	      return $output;
 	}
 
 	// Accepts matches array from preg_replace_callback in wpautop()

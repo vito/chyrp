@@ -10,10 +10,10 @@
 	 * Truncates a string to the passed length, appending an ellipsis to the end.
 	 *
 	 * Parameters:
-	 * 	$text - String to shorten.
-	 * 	$numb - Length of the shortened string.
-	 * 	$keep_words - Whether or not to keep words in-tact.
-	 * 	$minimum - If the truncated string is less than this and $keep_words is true, it will act as if $keep_words is false.
+	 *     $text - String to shorten.
+	 *     $numb - Length of the shortened string.
+	 *     $keep_words - Whether or not to keep words in-tact.
+	 *     $minimum - If the truncated string is less than this and $keep_words is true, it will act as if $keep_words is false.
 	 */
 	function truncate($text, $numb, $keep_words = true, $minimum = 10) {
 		$text = html_entity_decode($text, ENT_QUOTES);
@@ -62,8 +62,8 @@
 	 * Returns date formatting for a string that isn't a regular time() value
 	 *
 	 * Parameters:
-	 * 	$formatting - The formatting for date().
-	 * 	$time - The string to convert to time (typically a datetime).
+	 *     $formatting - The formatting for date().
+	 *     $time - The string to convert to time (typically a datetime).
 	 */
 	function when($formatting, $time) {
 		# STFU, php5.
@@ -84,8 +84,8 @@
 	 * Returns a sanitized version of a string, for various purposes.
 	 *
 	 * Parameters:
-	 * 	$string - String to sanitize.
-	 * 	$mode - One of "mysql", "form", or "setting"; the mode to clean the string with.
+	 *     $string - String to sanitize.
+	 *     $mode - One of "mysql", "form", or "setting"; the mode to clean the string with.
 	 */
 	function fix($string, $mode = 'mysql') {
 		switch($mode) {
@@ -101,10 +101,10 @@
 	 * Returns the passed language code (e.g. en_US) to the human-readable text (e.g. English (US))
 	 *
 	 * Parameters:
-	 * 	$code - The language code to convert
+	 *     $code - The language code to convert
 	 *
 	 * Credits:
-	 * 	This is from TextPattern, modified to match Chyrp's language code formatting.
+	 *     This is from TextPattern, modified to match Chyrp's language code formatting.
 	 */
 	function lang_code($code) {
 		$langs = array("ar_DZ" => "جزائري عربي",
@@ -149,8 +149,8 @@
 	 * Returns a sanitized string, typically for URLs.
 	 *
 	 * Parameters:
-	 * 	$string - The string to sanitize.
-	 * 	$anal - If set to *true*, will remove all non-alphanumeric characters.
+	 *     $string - The string to sanitize.
+	 *     $anal - If set to *true*, will remove all non-alphanumeric characters.
 	 */
 	function sanitize($string, $anal = false) {
 		$strip = array("~", "`", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "=", "+", "[", "{", "]", "}", "\\", "|", ";", ":", "\"", "'", "&#8216;", "&#8217;", "&#8220;", "&#8221;", "&#8211;", "&#8212;", "—", "–", ",", "<", ".", ">", "/", "?");
@@ -166,7 +166,7 @@
 	 * Determines whether a string seems to use UTF-8 characters.
 	 *
 	 * Credits:
-	 * 	This is from WordPress.
+	 *     This is from WordPress.
 	 */
 	function seems_utf8($Str) {
 		for ($i=0; $i<strlen($Str); $i++) {
@@ -190,7 +190,7 @@
 	 * Removes accents from letters in a string.
 	 *
 	 * Credits:
-	 * 	This is from WordPress.
+	 *     This is from WordPress.
 	 */
 	function remove_accents($string) {
 		if (!preg_match('/[\x80-\xff]/', $string))
@@ -327,8 +327,8 @@
 	 * Responds to a trackback request.
 	 *
 	 * Parameters:
-	 * 	$error - Is this an error?
-	 * 	$message - Message to return.
+	 *     $error - Is this an error?
+	 *     $message - Message to return.
 	 */
 	function trackback_respond($error = false, $message = "") {
 		header("Content-Type: text/xml; charset=utf-8");
@@ -353,8 +353,8 @@
 	 * Sends a trackback request.
 	 *
 	 * Parameters:
-	 * 	$post_id - The post we're sending from.
-	 * 	$target - The URL we're sending to.
+	 *     $post_id - The post we're sending from.
+	 *     $target - The URL we're sending to.
 	 */
 	function trackback_send($post_id, $target) {
 		if (empty($post_id) or empty($target)) return false;
@@ -392,8 +392,8 @@
 	 * Sends pingback requests to the URLs in a string.
 	 *
 	 * Parameters:
-	 * 	$string - The string to crawl for pingback URLs.
-	 * 	$post_id - The post ID we're sending from.
+	 *     $string - The string to crawl for pingback URLs.
+	 *     $post_id - The post ID we're sending from.
 	 */
 	function send_pingbacks($string, $post_id) {
 		$post = new Post($post_id);
@@ -416,10 +416,10 @@
 	 * Crawls a string for links.
 	 *
 	 * Parameters:
-	 * 	$string - The string to crawl.
+	 *     $string - The string to crawl.
 	 *
 	 * Returns:
-	 * 	$matches[] - An array of all URLs found in the string.
+	 *     $matches[] - An array of all URLs found in the string.
 	 */
 	function grab_urls($string) {
 		$trigger = Trigger::current();
@@ -433,10 +433,10 @@
 	 * Checks if a URL is pingback-capable.
 	 *
 	 * Parameters:
-	 * 	$url - The URL to check.
+	 *     $url - The URL to check.
 	 *
 	 * Returns:
-	 * 	$url - The pingback target, if the URL is pingback-capable.
+	 *     $url - The pingback target, if the URL is pingback-capable.
 	 */
 	function pingback_url($url) {
 		extract(parse_url($url), EXTR_SKIP);
@@ -492,8 +492,8 @@
 	 * Converts a given string to camel-case.
 	 *
 	 * Parameters:
-	 * 	$string - The string to camelize.
-	 * 	$keep_spaces - Whether or not to convert underscores to spaces or remove them.
+	 *     $string - The string to camelize.
+	 *     $keep_spaces - Whether or not to convert underscores to spaces or remove them.
 	 */
 	function camelize($string, $keep_spaces = false) {
 		$rep1 = str_replace("_", " ", $string);
@@ -524,7 +524,7 @@
 	 * Returns whether the given module is enabled or not.
 	 *
 	 * Parameters:
-	 * 	$name - The folder name of the module.
+	 *     $name - The folder name of the module.
 	 */
 	function module_enabled($name) {
 		$config = Config::current();
@@ -536,7 +536,7 @@
 	 * Returns whether the given feather is enabled or not.
 	 *
 	 * Parameters:
-	 * 	$name - The folder name of the feather.
+	 *     $name - The folder name of the feather.
 	 */
 	function feather_enabled($name) {
 		$config = Config::current();
@@ -586,7 +586,7 @@
 	 * Outputs the optional fields for editing the given post.
 	 *
 	 * Parameters:
-	 * 	$post_id - The post ID to output the fields for.
+	 *     $post_id - The post ID to output the fields for.
 	 */
 	function edit_post_options($post_id) {
 		global $post;
@@ -622,19 +622,19 @@
 	 * Gracefully falls back a given variable if it's empty or not set.
 	 *
 	 * Parameters:
-	 * 	&$variable - The variable to check for.
-	 * 	$fallback - What to set if the variable is empty or not set.
-	 * 	$mode - Whether to set it or to return.
+	 *     &$variable - The variable to check for.
+	 *     $fallback - What to set if the variable is empty or not set.
+	 *     $mode - Whether to set it or to return.
 	 *
 	 * Returns:
-	 * 	$variable = $fallback - If $mode is set to "set" and $variable is empty or not set.
-	 * 	$fallback - If $mode is set to "return" and $variable is empty or not set.
-	 * 	$return - Whether to return it or set it
+	 *     $variable = $fallback - If $mode is set to "set" and $variable is empty or not set.
+	 *     $fallback - If $mode is set to "return" and $variable is empty or not set.
+	 *     $return - Whether to return it or set it
 	 */
 	function fallback(&$variable, $fallback = "", $return = false) {
 		return ($return) ?
-		       	((!isset($variable) or (is_string($variable) and trim($variable) == "") or empty($variable)) ? $fallback : $variable) :
-		       	((!isset($variable) or (is_string($variable) and trim($variable) == "") or empty($variable)) ? $variable = $fallback : false) ;
+		           ((!isset($variable) or (is_string($variable) and trim($variable) == "") or empty($variable)) ? $fallback : $variable) :
+		           ((!isset($variable) or (is_string($variable) and trim($variable) == "") or empty($variable)) ? $variable = $fallback : false) ;
 	}
 
 	/**
@@ -642,7 +642,7 @@
 	 * Returns a random string.
 	 *
 	 * Parameters:
-	 * 	$length - How long the string should be.
+	 *     $length - How long the string should be.
 	 */
 	function random($length, $specialchars = false) {
 		$pattern = "1234567890abcdefghijklmnopqrstuvwxyz";
@@ -664,10 +664,10 @@
 	 * Makes a given filename unique for the /upload/ directory.
 	 *
 	 * Parameters:
-	 * 	$name - The name to check.
+	 *     $name - The name to check.
 	 *
 	 * Returns:
-	 * 	$name - A unique version of the given $name.
+	 *     $name - A unique version of the given $name.
 	 */
 	function unique_filename($name) {
 		if (file_exists(MAIN_DIR."/upload/".$name)) {
@@ -689,12 +689,12 @@
 	 * Moves an uploaded file to the /upload/ directory.
 	 *
 	 * Parameters:
-	 * 	$file - The $_FILES value.
-	 * 	$extension - An array of valid extensions (case-insensitive).
-	 * 	$path - A sub-folder in /upload/ (optional).
+	 *     $file - The $_FILES value.
+	 *     $extension - An array of valid extensions (case-insensitive).
+	 *     $path - A sub-folder in /upload/ (optional).
 	 *
 	 * Returns:
-	 * 	$filename - The resulting filename from the upload.
+	 *     $filename - The resulting filename from the upload.
 	 */
 	function upload($file, $extension = null, $path = "") {
 		$file_split = explode(".", $file['name']);
@@ -742,10 +742,10 @@
 	 * Stops the timer and returns the total time.
 	 *
 	 * Parameters:
-	 * 	$precision - Number of decimals places to round to.
+	 *     $precision - Number of decimals places to round to.
 	 *
 	 * Returns:
-	 * 	$formatted - A formatted number with the given $precision.
+	 *     $formatted - A formatted number with the given $precision.
 	 */
 	function timer_stop($precision = 3) {
 		global $time_start;
@@ -852,7 +852,7 @@
 	 * Shows a 404 error message, extracting the passed array into the scope.
 	 *
 	 * Parameters:
-	 * 	$scope - An array of values to extract into the scope.
+	 *     $scope - An array of values to extract into the scope.
 	 */
 	 function show_404() {
 		global $theme;
@@ -871,7 +871,7 @@
 	 * Converts a month name (e.g. June) to its number (e.g. 6)
 	 *
 	 * Parameters:
-	 * 	$name - The month.
+	 *     $name - The month.
 	 */
 	function month_to_number($month) {
 		$int = array_search($month, array("January", "February", "March", "April", "May", "June", "July", "August", "September", "August", "November", "December")) + 1;

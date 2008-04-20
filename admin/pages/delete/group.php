@@ -4,13 +4,13 @@
 								<h4><?php echo __("Move members to:"); ?></h4>
 								<div class="center">
 									<select name="move_group" id="move_group" class="big2">
-<?php 	$get_groups = $sql->query("select * from `".$sql->prefix."groups`
+<?php     $get_groups = $sql->query("select * from `".$sql->prefix."groups`
                                    order by `id` asc"); ?>
-<?php 	while ($group = $get_groups->fetchObject()): ?>
-<?php 		if ($group->id != $_GET['id']): ?>
+<?php     while ($group = $get_groups->fetchObject()): ?>
+<?php         if ($group->id != $_GET['id']): ?>
 										<option value="<?php echo $group->id; ?>"<?php selected($group->id, $config->default_group); ?>><?php echo $group->name; ?></option>
-<?php 		endif; ?>
-<?php 	endwhile; ?>
+<?php         endif; ?>
+<?php     endwhile; ?>
 									</select>
 								</div>
 								<br />
@@ -19,13 +19,13 @@
 								<h4><?php echo __("New default group:"); ?></h4>
 								<div class="center">
 									<select name="default_group" id="default_group" class="big2">
-<?php 	$get_groups = $sql->query("select * from `".$sql->prefix."groups`
+<?php     $get_groups = $sql->query("select * from `".$sql->prefix."groups`
                                    order by `id` asc"); ?>
-<?php 	while ($group = $get_groups->fetchObject()): ?>
-<?php 		if ($group->id != $_GET['id']): ?>
+<?php     while ($group = $get_groups->fetchObject()): ?>
+<?php         if ($group->id != $_GET['id']): ?>
 										<option value="<?php echo $group->id; ?>"<?php selected($group->id, $config->default_group); ?>><?php echo $group->name; ?></option>
-<?php 		endif; ?>
-<?php 	endwhile; ?>
+<?php         endif; ?>
+<?php     endwhile; ?>
 									</select>
 								</div>
 								<br />
@@ -34,13 +34,13 @@
 								<h4><?php echo __("New &#8220;guest&#8221; group:"); ?></h4>
 								<div class="center">
 									<select name="guest_group" id="guest_group" class="big2">
-<?php 	$get_groups = $sql->query("select * from `".$sql->prefix."groups`
+<?php     $get_groups = $sql->query("select * from `".$sql->prefix."groups`
                                    order by `id` asc"); ?>
-<?php 	while ($group = $get_groups->fetchObject()): ?>
-<?php 		if ($group->id != $_GET['id']): ?>
+<?php     while ($group = $get_groups->fetchObject()): ?>
+<?php         if ($group->id != $_GET['id']): ?>
 										<option value="<?php echo $group->id; ?>"<?php selected($group->id, $config->default_group); ?>><?php echo $group->name; ?></option>
-<?php 		endif; ?>
-<?php 	endwhile; ?>
+<?php         endif; ?>
+<?php     endwhile; ?>
 									</select>
 								</div>
 								<br />

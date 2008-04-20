@@ -2,8 +2,8 @@
 	$get_tags = $sql->query("select `name`, `post_id`, count(`".$sql->prefix."posts`.`id`) as `count`
 	                         from `".$sql->prefix."tags`, `".$sql->prefix."posts`
 	                         where
-	                         	`post_id` = `".$sql->prefix."posts`.`id` and
-	                         	".$private.$enabled_feathers."
+	                             `post_id` = `".$sql->prefix."posts`.`id` and
+	                             ".$private.$enabled_feathers."
 	                         group by `name`
 	                         order by rand() asc");
 
@@ -33,7 +33,7 @@
 			$url = $sql->query("select `clean` from `".$sql->prefix."tags`
 			                    where `name` = :name",
 			                   array(
-			                   	":name" => $key
+			                       ":name" => $key
 			                   ))->fetchColumn();
 			echo '<a class="tag" href="'.$route->url("tag/".$url."/").'" style="font-size: '.$size.'%" title="'.$title.'">'.$key.'</a> ';
 		}

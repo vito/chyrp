@@ -6,18 +6,18 @@
 			global $group;
 			$sql = SQL::current();
 			$sql->query("create table if not exists `".$sql->prefix."comments` (
-			             	`id` int(11) not null auto_increment,
-			             	`body` longtext not null,
-			             	`author` varchar(250) not null default '',
-			             	`author_url` varchar(128) not null default '',
-			             	`author_email` varchar(128) not null default '',
-			             	`author_ip` int(10) not null,
-			             	`author_agent` varchar(255) not null default '',
-			             	`status` enum('denied','approved','spam','trackback','pingback') not null default 'denied',
-			             	`created_at` datetime not null,
-			             	`post_id` int(11) not null,
-			             	`user_id` int(11) not null,
-			             	primary key	 (`id`)
+			                 `id` int(11) not null auto_increment,
+			                 `body` longtext not null,
+			                 `author` varchar(250) not null default '',
+			                 `author_url` varchar(128) not null default '',
+			                 `author_email` varchar(128) not null default '',
+			                 `author_ip` int(10) not null,
+			                 `author_agent` varchar(255) not null default '',
+			                 `status` enum('denied','approved','spam','trackback','pingback') not null default 'denied',
+			                 `created_at` datetime not null,
+			                 `post_id` int(11) not null,
+			                 `user_id` int(11) not null,
+			                 primary key	 (`id`)
 			             ) default charset=utf8");
 			$config = Config::current();
 			$config->set("default_comment_status", "denied");
@@ -59,22 +59,22 @@
 			$get_comments = $paginate->select("comments", # table
 			                                  "*", # fields
 			                                  "`post_id` = :post_id and (
-			                                   	`status` != 'denied' or (
-			                                   		`status` = 'denied' and (
-			                                   			`author_ip` = :current_ip or (
-			                                   				`user_id` != '' and
-			                                   				`user_id` = :current_user
-			                                   			)
-			                                   		)
-			                                   	)
+			                                       `status` != 'denied' or (
+			                                           `status` = 'denied' and (
+			                                               `author_ip` = :current_ip or (
+			                                                   `user_id` != '' and
+			                                                   `user_id` = :current_user
+			                                               )
+			                                           )
+			                                       )
 			                                   ) and
 			                                   `status` != 'spam'", #where
 			                                  "`created_at` asc", # order
 			                                  $config->comments_per_page, "comments_page",
 			                                  array(
-			                                  	":post_id" => $id,
-			                                  	":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-			                                  	":current_user" => $current_user
+			                                      ":post_id" => $id,
+			                                      ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
+			                                      ":current_user" => $current_user
 			                                  ));
 
 			$count = 1;
@@ -156,7 +156,7 @@
 			             set `status` = 'spam'
 			             where `id` = :id",
 			            array(
-			            	":id" => $_GET['id']
+			                ":id" => $_GET['id']
 			            ));
 			$config = Config::current();
 			$route = Route::current();
@@ -172,7 +172,7 @@
 			             set `status` = 'approved'
 			             where `id` = :id",
 			            array(
-			            	":id" => $_GET['id']
+			                ":id" => $_GET['id']
 			            ));
 			$config = Config::current();
 			$route = Route::current();
@@ -188,7 +188,7 @@
 			             set `status` = 'denied'
 			             where `id` = :id",
 			            array(
-			            	":id" => $_GET['id']
+			                ":id" => $_GET['id']
 			            ));
 
 			$config = Config::current();
@@ -216,7 +216,7 @@
 					             set `status` = 'approved'
 					             where `id` = :id",
 					            array(
-					            	":id" => $id
+					                ":id" => $id
 					            ));
 				$route->redirect("/admin/?action=manage&sub=spam&despammed");
 			}
@@ -271,11 +271,11 @@
 			$sql = SQL::current();
 			$dupe = $sql->query("select `id` from `".$sql->prefix."comments`
 			                     where
-			                     	`post_id` = :post_id and
-			                     	`author_url` = :url",
+			                         `post_id` = :post_id and
+			                         `author_url` = :url",
 			                    array(
-			                    	":post_id" => $_GET['id'],
-			                    	":url" => $_POST['url']
+			                        ":post_id" => $_GET['id'],
+			                        ":url" => $_POST['url']
 			                    ));
 			if ($dupe->rowCount() == 1)
 				trackback_respond(true, __("A ping from that URL is already registered.", "comments"));
@@ -296,11 +296,11 @@
 			$sql = SQL::current();
 			$dupe = $sql->query("select `id` from `".$sql->prefix."comments`
 			                     where
-			                     	`post_id` = :id and
-			                     	`author_url` = :url",
+			                         `post_id` = :id and
+			                         `author_url` = :url",
 			                    array(
-			                    	":id" => $id,
-			                    	":url" => $from
+			                        ":id" => $id,
+			                        ":url" => $from
 			                    ));
 			if ($dupe->rowCount() == 1)
 				return new IXR_Error(48, __("A ping from that URL is already registered.", "comments"));
@@ -318,7 +318,7 @@
 			$sql->query("delete from `".$sql->prefix."comments`
 			             where `post_id` = :id",
 			            array(
-			            	":id" => $id
+			                ":id" => $id
 			            ));
 		}
 
@@ -510,7 +510,7 @@ $(function(){
 	$("#checkbox_header").html('<input type="checkbox" name="comments_all" id="comments_all" />')
 	$("#comments_all").click(function(){
 		$("#spam_form").find(":checkbox").not("#comments_all").each(function(){
-	  	this.checked = document.getElementById("comments_all").checked
+	      this.checked = document.getElementById("comments_all").checked
 		})
 	})
 })
@@ -528,41 +528,41 @@ $(function(){
 				case "reload_comments":
 					$last_comment = $sql->query("select `id` from `".$sql->prefix."comments`
 					                             where
-					                             	`post_id` = :post_id and (
-					                             		`status` != 'denied' or (
-					                             			`status` = 'denied' and (
-					                             				`author_ip` = :current_ip or
-					                             				`user_id` = :user_id
-					                             			)
-					                             		)
-					                             	) and
-					                             	`status` != 'spam'
+					                                 `post_id` = :post_id and (
+					                                     `status` != 'denied' or (
+					                                         `status` = 'denied' and (
+					                                             `author_ip` = :current_ip or
+					                                             `user_id` = :user_id
+					                                         )
+					                                     )
+					                                 ) and
+					                                 `status` != 'spam'
 					                             order by `created_at` desc
 					                             limit 1",
 					                            array(
-					                            	":post_id" => $_POST['post_id'],
-					                            	":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-					                            	":user_id" => $current_user
+					                                ":post_id" => $_POST['post_id'],
+					                                ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
+					                                ":user_id" => $current_user
 					                            ))->fetchColumn();
 					if ($last_comment > $_POST['last_comment']) {
 						$new_comments = $sql->query("select `id` from `".$sql->prefix."comments`
 						                             where
-						                             	`post_id` = :post_id and
-						                             	`id` > :last_comment and (
-						                             		`status` != 'denied' or (
-						                             			`status` = 'denied' and (
-						                             				`author_ip` = :current_ip or
-						                             				`user_id` = :user_id
-						                             			)
-						                             		)
-						                             	) and
-						                             	`status` != 'spam'
+						                                 `post_id` = :post_id and
+						                                 `id` > :last_comment and (
+						                                     `status` != 'denied' or (
+						                                         `status` = 'denied' and (
+						                                             `author_ip` = :current_ip or
+						                                             `user_id` = :user_id
+						                                         )
+						                                     )
+						                                 ) and
+						                                 `status` != 'spam'
 						                             order by `created_at` asc",
 						                            array(
-						                            	":post_id" => $_POST['post_id'],
-						                            	":last_comment" => $_POST['last_comment'],
-						                            	":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-						                            	":user_id" => $current_user
+						                                ":post_id" => $_POST['post_id'],
+						                                ":last_comment" => $_POST['last_comment'],
+						                                ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
+						                                ":user_id" => $current_user
 						                            ));
 						$count = 1;
 						$ids = "";
@@ -712,43 +712,43 @@ $(function(){
 			$sql = SQL::current();
 			$get_comments = $sql->query("select * from `".$sql->prefix."comments`
 			                             where
-			                             	`post_id` = :post_id and (
-			                             		`status` != 'denied' or (
-			                             			`status` = 'denied' and (
-			                             				`author_ip` = :current_ip or (
-			                             					`user_id` != '' and
-			                             					`user_id` = :user_id
-			                             				)
-			                             			)
-			                             		)
-			                             	) and
-			                             	`status` != 'spam'
+			                                 `post_id` = :post_id and (
+			                                     `status` != 'denied' or (
+			                                         `status` = 'denied' and (
+			                                             `author_ip` = :current_ip or (
+			                                                 `user_id` != '' and
+			                                                 `user_id` = :user_id
+			                                             )
+			                                         )
+			                                     )
+			                                 ) and
+			                                 `status` != 'spam'
 			                             order by `created_at` desc",
 			                            array(
-			                            	":post_id" => $post->id,
-			                            	":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-			                            	":user_id" => $current_user
+			                                ":post_id" => $post->id,
+			                                ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
+			                                ":user_id" => $current_user
 			                            ));
 
 			$latest_timestamp = $sql->query("select `created_at` from `".$sql->prefix."comments`
 			                                 where
-			                                 	`post_id` = :post_id and (
-			                                 		`status` != 'denied' or (
-			                                 			`status` = 'denied' and (
-			                                 				`author_ip` = :current_ip or (
-			                                 					`user_id` != '' and
-			                                 					`user_id` = :user_id
-			                                 				)
-			                                 			)
-			                                 		)
-			                                 	) and
-			                                 	`status` != 'spam'
+			                                     `post_id` = :post_id and (
+			                                         `status` != 'denied' or (
+			                                             `status` = 'denied' and (
+			                                                 `author_ip` = :current_ip or (
+			                                                     `user_id` != '' and
+			                                                     `user_id` = :user_id
+			                                                 )
+			                                             )
+			                                         )
+			                                     ) and
+			                                     `status` != 'spam'
 			                                 order by `created_at` desc
 			                                 limit 1",
 			                                array(
-			                                	":post_id" => $post->id,
-			                                	":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-			                                	":user_id" => $current_user
+			                                    ":post_id" => $post->id,
+			                                    ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
+			                                    ":user_id" => $current_user
 			                                ))->fetchColumn();
 
 			$action = "comments_feed";
@@ -766,18 +766,18 @@ $(function(){
 			$trigger = Trigger::current();
 			$post->comment_count = $sql->count("comments",
 		                                       "`post_id` = :post_id and (
-		                                        	`status` != 'denied' or (
-		                                        		`status` = 'denied' and (
-		                                        			`author_ip` = :current_ip or
-		                                        			`user_id` = :user_id
-		                                        		)
-		                                        	)
+		                                            `status` != 'denied' or (
+		                                                `status` = 'denied' and (
+		                                                    `author_ip` = :current_ip or
+		                                                    `user_id` = :user_id
+		                                                )
+		                                            )
 		                                        ) and
 		                                        `status` != 'spam'",
 		                                       array(
-		                                       	":post_id" => $post->id,
-		                                       	":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-		                                       	":user_id" => $current_user
+		                                           ":post_id" => $post->id,
+		                                           ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
+		                                           ":user_id" => $current_user
 		                                       ));
 			$get_last_comment = $sql->query("select `id` from `".$sql->prefix."comments` where `post_id` = ".$sql->quote($post->id)." and (`status` != 'denied' or (`status` = 'denied' and (`author_ip` = '".ip2long($_SERVER['REMOTE_ADDR'])."' or `user_id` = ".$sql->quote($current_user)."))) and `status` != 'spam' order by `created_at` desc limit 1");
 			$post->last_comment = ($get_last_comment->rowCount() > 0) ? $get_last_comment->fetchColumn() : 0 ;
@@ -787,22 +787,22 @@ $(function(){
 				$get_comments = $paginate->select("comments", # table
 				                                  "*", # fields
 				                                  "`post_id` = :post_id and (
-				                                   	`status` != 'denied' or (
-				                                   		`status` = 'denied' and (
-				                                   			`author_ip` = :current_ip or (
-				                                   				`user_id` != '' and
-				                                   				`user_id` = :current_user
-				                                   			)
-				                                   		)
-				                                   	)
+				                                       `status` != 'denied' or (
+				                                           `status` = 'denied' and (
+				                                               `author_ip` = :current_ip or (
+				                                                   `user_id` != '' and
+				                                                   `user_id` = :current_user
+				                                               )
+				                                           )
+				                                       )
 				                                   ) and
 				                                   `status` != 'spam'", #where
 				                                  "`created_at` asc", # order
 				                                  $config->comments_per_page, "comments_page",
 				                                  array(
-				                                  	":post_id" => $post->id,
-				                                  	":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-				                                  	":current_user" => $current_user
+				                                      ":post_id" => $post->id,
+				                                      ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
+				                                      ":current_user" => $current_user
 				                                  ));
 
 				$shown_dates = array();
@@ -837,18 +837,18 @@ $(function(){
 		$sql = SQL::current();
 		$count = $sql->count("comments",
 		                     "`post_id` = :post_id and (
-		                      	`status` != 'denied' or (
-		                      		`status` = 'denied' and (
-		                      			`author_ip` = :current_ip or
-		                      			`user_id` = :user_id
-		                      		)
-		                      	)
+		                          `status` != 'denied' or (
+		                              `status` = 'denied' and (
+		                                  `author_ip` = :current_ip or
+		                                  `user_id` = :user_id
+		                              )
+		                          )
 		                      ) and
 		                      `status` != 'spam'",
 		                     array(
-		                     	":post_id" => $post_id,
-		                     	":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-		                     	":user_id" => $current_user
+		                         ":post_id" => $post_id,
+		                         ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
+		                         ":user_id" => $current_user
 		                     ));
 		$s = ($count == 1) ? "" : "s" ;
 		$string = str_replace("[s]", '<span class="comment_plural">'.$s.'</span>', $text);

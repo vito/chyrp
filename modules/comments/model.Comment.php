@@ -9,7 +9,7 @@
 			foreach ($sql->query("select * from `".$sql->prefix."comments`
 			                      where `id` = :id",
 			                     array(
-			                     	":id" => $id
+			                         ":id" => $id
 			                     ))->fetch() as $key => $val)
 				$this->$key = $val;
 		}
@@ -70,16 +70,16 @@
 			             (:body, :author, :author_url, :author_email, :author_ip,
 			              :author_agent, :status, :created_at, :post_id, :user_id)",
 			            array(
-			            	":body" => $body,
-			            	":author" => strip_tags($author),
-			            	":author_url" => strip_tags($url),
-			            	":author_email" => strip_tags($email),
-			            	":author_ip" => ip2long($ip),
-			            	":author_agent" => $agent,
-			            	":status" => $status,
-			            	":created_at" => $timestamp,
-			            	":post_id" => $post_id,
-			            	":user_id"=> $user_id
+			                ":body" => $body,
+			                ":author" => strip_tags($author),
+			                ":author_url" => strip_tags($url),
+			                ":author_email" => strip_tags($email),
+			                ":author_ip" => ip2long($ip),
+			                ":author_agent" => $agent,
+			                ":status" => $status,
+			                ":created_at" => $timestamp,
+			                ":post_id" => $post_id,
+			                ":user_id"=> $user_id
 			            ));
 			$id = $sql->db->lastInsertId();
 
@@ -94,7 +94,7 @@
 			$grab_info = $sql->query("select `".$column."` from `".$sql->prefix."comments`
 			                          where `id` = :id",
 			                         array(
-			                         	":id" => $comment_id
+			                             ":id" => $comment_id
 			                         ));
 			if ($grab_info->rowCount() == 1)
 				return $grab_info->fetchColumn();
@@ -126,21 +126,21 @@
 			$sql = SQL::current();
 			$sql->query("update `".$sql->prefix."comments`
 			             set
-			             	`author` = :author,
-			             	`author_email` = :author_email,
-			             	`author_url` = :author_url,
-			             	`body` = :body,
-			             	`status` = :status,
-			             	`created_at` = :created_at
+			                 `author` = :author,
+			                 `author_email` = :author_email,
+			                 `author_url` = :author_url,
+			                 `body` = :body,
+			                 `status` = :status,
+			                 `created_at` = :created_at
 			             where `id` = :id",
 			            array(
-			            	":author" => $author,
-			            	":author_email" => $author_email,
-			            	":author_url" => $author_url,
-			            	":body" => $body,
-			            	":status" => $status,
-			            	":created_at" => $timestamp,
-			            	":id" => $comment_id
+			                ":author" => $author,
+			                ":author_email" => $author_email,
+			                ":author_url" => $author_url,
+			                ":body" => $body,
+			                ":status" => $status,
+			                ":created_at" => $timestamp,
+			                ":id" => $comment_id
 			            ));
 			$trigger = Trigger::current();
 			$trigger->call('update_comment');
@@ -150,7 +150,7 @@
 			$sql->query("delete from `".$sql->prefix."comments`
 			             where `id` = :id",
 			            array(
-			            	":id" => $comment_id
+			                ":id" => $comment_id
 			            ));
 			$trigger = Trigger::current();
 			$trigger->call("delete_comment", $comment_id);
@@ -171,7 +171,7 @@
 			$count = $sql->query("select count(`id`) from `".$sql->prefix."comments`
 			                      where `user_id` = :user_id",
 			                     array(
-			                     	":user_id" => $user_id
+			                         ":user_id" => $user_id
 			                     ));
 			return $count->fetchColumn();
 		}
@@ -180,7 +180,7 @@
 			$count = $sql->query("select count(`id`) from `".$sql->prefix."comments`
 			                      where `post_id` = :post_id",
 			                     array(
-			                     	":post_id" => $post_id
+			                         ":post_id" => $post_id
 			                     ));
 			return $count->fetchColumn();
 		}

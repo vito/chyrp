@@ -45,7 +45,7 @@
 		                                  "`created_at` desc",
 		                                  25, "page",
 		                                  array(
-		                                  	":query" => "%".$_GET['query']."%"
+		                                      ":query" => "%".$_GET['query']."%"
 		                                  ));
 	} elseif (!empty($_GET['status'])) {
 		$status =  ($_GET['status'] == "all") ? "`status` != 'spam'" : "`status` = ".$sql->quote($_GET['status']) ;
@@ -62,7 +62,7 @@
 		                                  "`created_at` desc",
 		                                  25, "page",
 		                                  array(
-		                                  	":query" => "%".$_GET['query']."%"
+		                                      ":query" => "%".$_GET['query']."%"
 		                                  ));
 	} else {
 		$get_comments = $paginate->select("comments",

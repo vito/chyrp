@@ -14,9 +14,9 @@
 		 * Grabs the specified post and injects it into the <Post> class.
 		 *
 		 * Parameters:
-		 * 	$post_id - The post's unique ID.
-		 * 	$where - A SQL query to grab the post by.
-		 * 	$filter - Whether or not to run it through the _parse_post_ filter.
+		 *     $post_id - The post's unique ID.
+		 *     $where - A SQL query to grab the post by.
+		 *     $filter - Whether or not to run it through the _parse_post_ filter.
 		 */
 		public function __construct($post_id = null, $options = array()) {
 			global $current_post;
@@ -45,7 +45,7 @@
 				                     "`id` = :postid",
 				                     "id",
 				                     array(
-				                     	":postid" => $post_id
+				                         ":postid" => $post_id
 				                     ),
 				                     1)->fetch();
 
@@ -77,15 +77,15 @@
 		 * Calls the add_post trigger with the inserted ID and extra options.
 		 *
 		 * Parameters:
-		 * 	$values - The data to insert.
-		 * 	$clean - The sanitized URL (or empty to default to "(feather).(new post's id)").
-		 * 	$url - The unique URL (or empty to default to "(feather).(new post's id)").
+		 *     $values - The data to insert.
+		 *     $clean - The sanitized URL (or empty to default to "(feather).(new post's id)").
+		 *     $url - The unique URL (or empty to default to "(feather).(new post's id)").
 		 *
 		 * Returns:
-		 * 	self - An object containing the new post.
+		 *     self - An object containing the new post.
 		 *
 		 * See Also:
-		 * 	<update>
+		 *     <update>
 		 */
 		static function add($values, $clean = "", $url = "") {
 			global $user, $current_user;
@@ -107,24 +107,24 @@
 			$sql = SQL::current();
 			$sql->insert("posts",
 			             array(
-			             	"xml" => ":xml",
-			             	"feather" => ":feather",
-			             	"user_id" => ":user_id",
-			             	"pinned" => ":pinned",
-			             	"status" => ":status",
-			             	"clean" => ":clean",
-			             	"url" => ":url",
-			             	"created_at" => ":created_at",
+			                 "xml" => ":xml",
+			                 "feather" => ":feather",
+			                 "user_id" => ":user_id",
+			                 "pinned" => ":pinned",
+			                 "status" => ":status",
+			                 "clean" => ":clean",
+			                 "url" => ":url",
+			                 "created_at" => ":created_at",
 			             ),
 			             array(
-			             	":xml" => $xml->asXML(),
-			             	":feather" => $_POST['feather'],
-			             	":user_id" => $current_user,
-			             	":pinned" => $pinned,
-			             	":status" => $status,
-			             	":clean" => $clean,
-			             	":url" => $url,
-			             	":created_at" => $timestamp
+			                 ":xml" => $xml->asXML(),
+			                 ":feather" => $_POST['feather'],
+			                 ":user_id" => $current_user,
+			                 ":pinned" => $pinned,
+			                 ":status" => $status,
+			                 ":clean" => $clean,
+			                 ":url" => $url,
+			                 ":created_at" => $timestamp
 			             ));
 			$id = $sql->db->lastInsertId();
 
@@ -132,13 +132,13 @@
 				$sql->update("posts",
 				             "`id` = :id",
 				             array(
-				             	"clean" => ":clean",
-				             	"url" => ":url"
+				                 "clean" => ":clean",
+				                 "url" => ":url"
 				             ),
 				             array(
-				             	':clean' => $_POST['feather'].".".$id,
-				             	':url' => $_POST['feather'].".".$id,
-				             	':id' => $id
+				                 ':clean' => $_POST['feather'].".".$id,
+				                 ':url' => $_POST['feather'].".".$id,
+				                 ':id' => $id
 				             ));
 
 			$trackbacks = explode(",", $trackbacks);
@@ -162,10 +162,10 @@
 		 * Most of the $_POST variables will fall back gracefully if they don't exist, e.g. if they're posting from the Bookmarklet.
 		 *
 		 * Parameters:
-		 * 	$values - An array of data to set for the post.
+		 *     $values - An array of data to set for the post.
 		 *
 		 * See Also:
-		 * 	<add>
+		 *     <add>
 		 */
 		public function update($values, $pinned = null, $status = null, $slug = null, $timestamp = null) {
 			if (!isset($this->id)) return;
@@ -187,21 +187,21 @@
 			$sql->update("posts",
 			             "`id` = :id",
 			             array(
-			             	"xml" => ":xml",
-			             	"pinned" => ":pinned",
-			             	"status" => ":status",
-			             	"url" => ":url",
-			             	"created_at" => ":created_at",
-			             	"updated_at" => ":updated_at"
+			                 "xml" => ":xml",
+			                 "pinned" => ":pinned",
+			                 "status" => ":status",
+			                 "url" => ":url",
+			                 "created_at" => ":created_at",
+			                 "updated_at" => ":updated_at"
 			             ),
 			             array(
-			             	":xml" => $xml->asXML(),
-			             	":pinned" => $pinned,
-			             	":status" => $status,
-			             	":url" => $slug,
-			             	":created_at" => $timestamp,
-			             	":updated_at" => datetime(),
-			             	":id" => $this->id
+			                 ":xml" => $xml->asXML(),
+			                 ":pinned" => $pinned,
+			                 ":status" => $status,
+			                 ":url" => $slug,
+			                 ":created_at" => $timestamp,
+			                 ":updated_at" => datetime(),
+			                 ":id" => $this->id
 			             ));
 
 			$trigger = Trigger::current();
@@ -222,7 +222,7 @@
 			$sql->delete("posts",
 			             "`id` = :id",
 			             array(
-			             	':id' => $this->id
+			                 ':id' => $this->id
 			             ));
 		}
 
@@ -231,14 +231,14 @@
 		 * Grabs a specified column from a post's SQL row.
 		 *
 		 * Parameters:
-		 * 	$column - The name of the SQL column.
-		 * 	$post_id - The post ID to grab from.
-		 * 	$fallback - What to display if the result is empty.
+		 *     $column - The name of the SQL column.
+		 *     $post_id - The post ID to grab from.
+		 *     $fallback - What to display if the result is empty.
 		 *
 		 * Returns:
-		 * 	false - if $post_id isn't set.
-		 * 	SQL result - if the SQL result isn't empty.
-		 * 	$fallback - if the SQL result is empty.
+		 *     false - if $post_id isn't set.
+		 *     SQL result - if the SQL result isn't empty.
+		 *     $fallback - if the SQL result is empty.
 		 */
 		static function info($column, $post_id, $fallback = false) {
 			global $current_post;
@@ -252,7 +252,7 @@
 			                            "`id` = :id",
 			                            "id",
 			                            array(
-			                            	':id' => $post_id
+			                                ':id' => $post_id
 			                            ));
 			return ($grab_column->rowCount() == 1) ? $grab_column->fetchColumn() : $fallback ;
 		}
@@ -262,10 +262,10 @@
 		 * Checks if a post exists.
 		 *
 		 * Parameters:
-		 * 	$post_id - The post ID to check
+		 *     $post_id - The post ID to check
 		 *
 		 * Returns:
-		 * 	true - if a post with that ID is in the database.
+		 *     true - if a post with that ID is in the database.
 		 */
 		static function exists($post_id) {
 			$sql = SQL::current();
@@ -287,10 +287,10 @@
 		 * Checks if a given clean URL is already being used as another post's URL.
 		 *
 		 * Parameters:
-		 * 	$clean - The clean URL to check.
+		 *     $clean - The clean URL to check.
 		 *
 		 * Returns:
-		 * 	$url - The unique version of the passed clean URL. If it's not used, it's the same as $clean. If it is, a number is appended.
+		 *     $url - The unique version of the passed clean URL. If it's not used, it's the same as $clean. If it is, a number is appended.
 		 */
 		static function check_url($clean) {
 			$sql = SQL::current();
@@ -299,7 +299,7 @@
 			                          "`clean` = :clean",
 			                          "id",
 			                          array(
-			                          	':clean' => $clean
+			                              ':clean' => $clean
 			                          ));
 			$count = $check_url->rowCount() + 1;
 			return ($count == 1 or empty($clean)) ? $clean : $clean."_".$count ;
@@ -310,7 +310,7 @@
 		 * Returns the class name for the given posts's Feather.
 		 *
 		 * Parameters:
-		 * 	$post_id - The post ID to grab from.
+		 *     $post_id - The post ID to grab from.
 		 */
 		static function feather_class($post_id) {
 			$feather = self::info("feather", $post_id);
@@ -353,7 +353,7 @@
 		 * Generates an acceptable Title from the post's excerpt.
 		 *
 		 * Returns:
-		 * 	$normalized - The post's excerpt. filtered -> tags stripped -> truncated to 75 characters -> normalized.
+		 *     $normalized - The post's excerpt. filtered -> tags stripped -> truncated to 75 characters -> normalized.
 		 */
 		public function title_from_excerpt() {
 			global $feathers;
@@ -418,7 +418,7 @@
 			                          `created_at` > :created_at",
 			                          "`created_at` asc",
 			                          array(
-			                          	":created_at" => $post->created_at
+			                              ":created_at" => $post->created_at
 			                          ),
 			                          1);
 			if (!$grab_next->rowCount()) return;
@@ -450,7 +450,7 @@
 			                          `created_at` < :created_at",
 			                          "`created_at` desc",
 			                          array(
-			                          	":created_at" => $post->created_at
+			                              ":created_at" => $post->created_at
 			                          ),
 			                          1);
 			if (!$grab_prev->rowCount()) return;
@@ -476,7 +476,7 @@
 		 * Parses the passed XML and loads the tags and values into <Post>.
 		 *
 		 * Parameters:
-		 * 	$filter - Should the data be run through any triggers?
+		 *     $filter - Should the data be run through any triggers?
 		 */
 		private function parse($filter = false) {
 			global $post;

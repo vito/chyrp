@@ -33,8 +33,8 @@
 		 * Generates a recursive list of pages and their children. Outputs it as a <ul> list.
 		 *
 		 * Parameters:
-		 * 	$home_link - Whether or not to show the "Home" link
-		 * 	$home_text - Text for the "Home" link
+		 *     $home_link - Whether or not to show the "Home" link
+		 *     $home_text - Text for the "Home" link
 		 */
 		public function list_pages($home_link = true, $home_text = null, $main_class = "page_list", $list_class = "page_list_item", $show_order_fields = false) {
 			global $action;
@@ -65,10 +65,10 @@
 		 * Performs all of the recursion for generating the page lists. Used by <list_pages>.
 		 *
 		 * Parameters:
-		 * 	$id - The page ID to start at.
+		 *     $id - The page ID to start at.
 		 *
 		 * See Also:
-		 * 	<list_pages>
+		 *     <list_pages>
 		 */
 		public function recurse_pages($id, $main_class = "page_list", $list_class = "page_list_item", $show_order_fields = false) {
 			global $pages, $action;
@@ -101,12 +101,12 @@
 		 * Generates an array of all of the archives, by month.
 		 *
 		 * Parameters:
-		 * 	$limit - Amount of months to list
-		 * 	$order_by - What to sort it by
-		 * 	$order - "asc" or "desc"
+		 *     $limit - Amount of months to list
+		 *     $order_by - What to sort it by
+		 *     $order - "asc" or "desc"
 		 *
 		 * Returns:
-		 * 	$archives - The array. Each entry as "month", "year", and "url" values, stored as an array.
+		 *     $archives - The array. Each entry as "month", "year", and "url" values, stored as an array.
 		 */
 		public function list_archives($limit = 0, $order_by = "created_at", $order = "desc") {
 			$sql = SQL::current();
@@ -129,7 +129,7 @@
 		 * Returns whether a snippet exists with the specified $name.
 		 *
 		 * Parameters:
-		 * 	$name - The name of the snippet.
+		 *     $name - The name of the snippet.
 		 */
 		public function snippet_exists($name) {
 			global $snippet;
@@ -141,7 +141,7 @@
 		 * Returns whether the specified Twig file exists or not.
 		 *
 		 * Parameters:
-		 * 	$file - The file's name
+		 *     $file - The file's name
 		 */
 		public function file_exists($file) {
 			return file_exists($this->directory.$file.".twig");
@@ -198,10 +198,10 @@
 			$config = Config::current();
 			$request = ($config->clean_urls) ? rtrim($request, "/") : htmlspecialchars($_SERVER['REQUEST_URI']) ;
 			$append = ($config->clean_urls) ?
-			          	"/feed" :
-			          	((count($_GET) == 1 and $_GET['action'] == "index") ?
-			            	"/?feed" :
-			          		"&amp;feed") ;
+			              "/feed" :
+			              ((count($_GET) == 1 and $_GET['action'] == "index") ?
+			                "/?feed" :
+			                  "&amp;feed") ;
 
 			$route = Route::current();
 			$feeds = '<link rel="alternate" type="application/atom+xml" title="'.$config->name.' Feed" href="'.$route->url("feed/").'" />'."\n";

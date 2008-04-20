@@ -31,7 +31,7 @@
 		                   "`login` like :login",
 		                   "id",
 		                   array(
-		                   	":login" => "%".$_GET['query']."%"
+		                       ":login" => "%".$_GET['query']."%"
 		                   ))->fetchColumn();
 		$get_groups = $paginate->select("groups",
 		                                "*",
@@ -39,7 +39,7 @@
 		                                "id",
 		                                25, "page",
 		                                array(
-		                                	":id" => $id
+		                                    ":id" => $id
 		                                ));
 	} else {
 		$get_groups = $paginate->select("groups",

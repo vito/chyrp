@@ -52,7 +52,7 @@
 					<select name="locale" id="locale">
 <?php
 	if ($open = opendir(INCLUDES_DIR."/locale/")) {
-	 	while (($folder = readdir($open)) !== false) {
+	     while (($folder = readdir($open)) !== false) {
 			$split = explode(".", $folder);
 			if (end($split) == "mo") {
 				$selected = ($config->locale == $split[0]) ? ' selected="selected"' : '' ;

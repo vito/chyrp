@@ -38,11 +38,11 @@
 		 * parse_urls trigger.
 		 *
 		 * Parameters:
-		 * 	$clean_url - The clean URL.
+		 *     $clean_url - The clean URL.
 		 *
 		 * Returns:
-		 * 	Clean URL - if $config->clean_urls is set to *true*.
-		 * 	Dirty URL - if $config->clean_urls is set to *false*.
+		 *     Clean URL - if $config->clean_urls is set to *true*.
+		 *     Dirty URL - if $config->clean_urls is set to *false*.
 		 */
 		public function url($clean_url) {
 			$config = Config::current();
@@ -95,10 +95,10 @@
 		 * Converts the values in $config->post_url to regular expressions.
 		 *
 		 * Parameters:
-		 * 	$key - Input URL with the keys from <Routes->$code>.
+		 *     $key - Input URL with the keys from <Routes->$code>.
 		 *
 		 * Returns:
-		 * 	$regexp - $key values replaced with their regular expressions from <Routes->$code>.
+		 *     $regexp - $key values replaced with their regular expressions from <Routes->$code>.
 		 */
 		private function key_regexp($key) {
 			$trigger = Trigger::current();
@@ -239,10 +239,10 @@
 		 * For example, for /tags/ you won't need to do this, but you will for /tag/tag-name/.
 		 *
 		 * Parameters:
-		 * 	$path - The path to add. Wrap variables with parentheses, e.g. "/tag/(name)/".
+		 *     $path - The path to add. Wrap variables with parentheses, e.g. "/tag/(name)/".
 		 *
 		 * See Also:
-		 * 	<remove_route>
+		 *     <remove_route>
 		 */
 		public function add($path) {
 			$config = Config::current();
@@ -256,10 +256,10 @@
 		 * Removes a route from the install's .htaccess file.
 		 *
 		 * Parameters:
-		 * 	$path - The path to remove. Same as <add>.
+		 *     $path - The path to remove. Same as <add>.
 		 *
 		 * See Also:
-		 * 	<add_route>
+		 *     <add_route>
 		 */
 		public function remove($path) {
 			$new_routes = array();

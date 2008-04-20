@@ -9,12 +9,12 @@
 		 * Alters a query to take account for the current page.
 		 *
 		 * Parameters:
-		 * 	$query - The normal SQL query.
-		 * 	$limit - Amount of SQL results per page.
-		 * 	$var - The variable that holds the current page number in $_GET.
+		 *     $query - The normal SQL query.
+		 *     $limit - Amount of SQL results per page.
+		 *     $var - The variable that holds the current page number in $_GET.
 		 *
 		 * Returns:
-		 * 	A paginated SQL query.
+		 *     A paginated SQL query.
 		 */
 		public function query($query, $limit = 5, $var = "page", $params = array()) {
 			$remove_grab = preg_replace("/select (.*?) from/i", "select count(*) from", $query);
@@ -48,7 +48,7 @@
 		 * Checks whether or not it makes sense to show the Next Page link.
 		 *
 		 * Parameters:
-		 * 	$var - The variable to check for.
+		 *     $var - The variable to check for.
 		 */
 		public function next_page($var = "page") {
 			if (!isset($this->$var) or !isset($this->total_pages)) return false;
@@ -60,7 +60,7 @@
 		 * Checks whether or not it makes sense to show the Previous Page link.
 		 *
 		 * Parameters:
-		 * 	$var - The variable to check for.
+		 *     $var - The variable to check for.
 		 */
 		public function prev_page($var = "page") {
 			if (!isset($this->$var)) return false;
@@ -72,10 +72,10 @@
 		 * Outputs a link to the next page.
 		 *
 		 * Parameters:
-		 * 	$text - The text for the link.
-		 * 	$class - The CSS class for the link.
-		 * 	$var - The variable to link for.
-		 * 	$clean_urls - Whether to link with dirty or clean URLs.
+		 *     $text - The text for the link.
+		 *     $class - The CSS class for the link.
+		 *     $var - The variable to link for.
+		 *     $clean_urls - Whether to link with dirty or clean URLs.
 		 */
 		public function next_link($text, $class = "next_page", $var = "page", $clean_urls = true) {
 			if ($this->next_page($var))
@@ -87,10 +87,10 @@
 		 * Outputs a link to the previous page.
 		 *
 		 * Parameters:
-		 * 	$text - The text for the link.
-		 * 	$class - The CSS class for the link.
-		 * 	$var - The variable to link for.
-		 * 	$clean_urls - Whether to link with dirty or clean URLs.
+		 *     $text - The text for the link.
+		 *     $class - The CSS class for the link.
+		 *     $var - The variable to link for.
+		 *     $clean_urls - Whether to link with dirty or clean URLs.
 		 */
 		public function prev_link($text, $class = "prev_page", $var = "page", $clean_urls = true) {
 			if ($this->prev_page($var))
@@ -102,8 +102,8 @@
 		 * Returns the URL to the next page.
 		 *
 		 * Parameters:
-		 * 	$var - The variable to link to.
-		 * 	$clean_urls - Whether to link with dirty or clean URLs.
+		 *     $var - The variable to link to.
+		 *     $clean_urls - Whether to link with dirty or clean URLs.
 		 */
 		public function next_page_url($var = "page", $clean_urls = true) {
 			global $viewing;
@@ -124,8 +124,8 @@
 		 * Returns the URL to the previous page.
 		 *
 		 * Parameters:
-		 * 	$var - The variable to link to.
-		 * 	$clean_urls - Whether to link with dirty or clean URLs.
+		 *     $var - The variable to link to.
+		 *     $clean_urls - Whether to link with dirty or clean URLs.
 		 */
 		public function prev_page_url($var = "page", $clean_urls = true) {
 			global $viewing;

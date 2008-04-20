@@ -185,22 +185,22 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
-    	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    	<title><?php echo __("Chyrp!"); ?></title>
-    	<style type="text/css">
-    	    body {
-    	        background-color: #e1e1e1;
-    	        margin:           0px;
-    	        font:             15px normal 'Trebuchet MS',Verdana,Helvetica,sans-serif;
-    	        text-align:       center;
-    	    }
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title><?php echo __("Chyrp!"); ?></title>
+        <style type="text/css">
+            body {
+                background-color: #e1e1e1;
+                margin:           0px;
+                font:             15px normal 'Trebuchet MS',Verdana,Helvetica,sans-serif;
+                text-align:       center;
+            }
 
-    	    div#content {
-    	        margin:           137px 30px 0px 30px;
-    	        padding:          15px;
-    	    }
-    	</style>
-    	<script type="text/javascript">
+            div#content {
+                margin:           137px 30px 0px 30px;
+                padding:          15px;
+            }
+        </style>
+        <script type="text/javascript">
 			function countdown_func() {
 			    countdown--;
 			    el = document.getElementById('countdown');
@@ -216,7 +216,7 @@
 			    if (countdown > 0) setTimeout('countdown_func()', 1000);
 			}
 
-          	var countdown = 3;
+              var countdown = 3;
         </script>
     </head>
     <body>

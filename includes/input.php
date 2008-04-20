@@ -6,13 +6,13 @@
 	 * Chyrp - A Lightweight Blogging Engine
 	 *
 	 * Version:
-	 * 	v1.1.3
+	 *     v1.1.3
 	 *
 	 * License:
-	 * 	GPL-3
+	 *     GPL-3
 	 *
 	 * Chyrp Copyright:
-	 * 	Copyright (c) 2008 Alex Suraci, <http://i.am.toogeneric.com/>
+	 *     Copyright (c) 2008 Alex Suraci, <http://i.am.toogeneric.com/>
 	 */
 
 	/**
@@ -20,7 +20,7 @@
 	 * Makes sure no inherently broken ideas such as magic_quotes break our application
 	 *
 	 * Parameters:
-	 * 	$data - The array to be sanitized, usually one of ($_GET, $_POST, $_COOKIE, $_REQUEST)
+	 *     $data - The array to be sanitized, usually one of ($_GET, $_POST, $_COOKIE, $_REQUEST)
 	 */
 	function sanitize_input(& $data)
 	{

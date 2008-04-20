@@ -27,9 +27,9 @@
 		 * This function also calls any theme Snippets that have $name as their function name.
 		 *
 		 * Parameters:
-		 * 	$name - The name of the trigger.
-		 * 	$arg - Arguments to pass to the actions.
-		 * 	$array - If $arg is an array, should it be passed as multiple values or a single array?
+		 *     $name - The name of the trigger.
+		 *     $arg - Arguments to pass to the actions.
+		 *     $array - If $arg is an array, should it be passed as multiple values or a single array?
 		 */
 		public function call($name, $arg = null, $array = true) {
 			global $snippet;
@@ -66,12 +66,12 @@
 		 * modify something instead of inject code.
 		 *
 		 * Parameters:
-		 * 	$name - The name of the trigger.
-		 * 	$arg - Arguments to pass to the actions.
-		 * 	$array - If $arg is an array, should it be passed as multiple values or a single array?
+		 *     $name - The name of the trigger.
+		 *     $arg - Arguments to pass to the actions.
+		 *     $array - If $arg is an array, should it be passed as multiple values or a single array?
 		 *
 		 * Returns:
-		 * 	$arg, filtered through any/all actions for the trigger $name.
+		 *     $arg, filtered through any/all actions for the trigger $name.
 		 */
 		public function filter($name, $arg = "", $array = false) {
 			global $snippet;
@@ -120,8 +120,8 @@
 		 * Unregisters a given $action from a $trigger.
 		 *
 		 * Parameters:
-		 * 	$trigger - The trigger to unregister from.
-		 * 	$action - The action name.
+		 *     $trigger - The trigger to unregister from.
+		 *     $action - The action name.
 		 */
 		public function remove($trigger, $action) {
 			foreach ($this->actions[$trigger] as $index => $func) {
@@ -138,10 +138,10 @@
 		 * Checks if there are any actions for a given $trigger.
 		 *
 		 * Parameters:
-		 * 	$trigger - The trigger name.
+		 *     $trigger - The trigger name.
 		 *
 		 * Returns:
-		 * 	true - if there are actions for the trigger.
+		 *     true - if there are actions for the trigger.
 		 */
 		public function exists($name) {
 			global $snippet;

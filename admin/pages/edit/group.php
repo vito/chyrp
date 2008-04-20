@@ -4,7 +4,7 @@
 	                          "`id` = :id",
 	                          "id",
 	                          array(
-	                          	":id" => $_GET['id']
+	                              ":id" => $_GET['id']
 	                          ));
 	$the_group = $get_group->fetch();
 	$permissions = $sql->query("select * from `".$sql->prefix."permissions`");

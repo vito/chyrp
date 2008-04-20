@@ -185,7 +185,7 @@
 		 * Loads a given database YAML file.
 		 *
 		 * Parameters:
-		 * 	$file - The YAML file to load into <SQL>.
+		 *     $file - The YAML file to load into <SQL>.
 		 */
 		public function load($file) {
 			$this->yaml = Spyc::YAMLLoad($file);
@@ -199,8 +199,8 @@
 		 * Sets a variable's value.
 		 *
 		 * Parameters:
-		 * 	$setting - The setting name.
-		 * 	$value - The new value. Can be boolean, numeric, an array, a string, etc.
+		 *     $setting - The setting name.
+		 *     $value - The new value. Can be boolean, numeric, an array, a string, etc.
 		 */
 		public function set($setting, $value) {
 			if (isset($this->$setting) and $this->$setting == $value) return false; # No point in changing it

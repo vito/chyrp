@@ -63,7 +63,7 @@
 			$check_user = $sql->query("select count(`id`) from `".$sql->prefix."users`
 			                           where `login` = :login",
 			                          array(
-			                          	':login' => $_POST['login']
+			                              ':login' => $_POST['login']
 			                          ));
 			if ($check_user->fetchColumn())
 				error(__("Error"), __("That username is already in use."));
@@ -211,15 +211,15 @@
 
 			// $sql = SQL::current();
 			// if ($type != "group" and $type != "post" and $type != "page") {
-			// 	$get_it = $sql->query("select * from `".$sql->prefix.$type."s`
-			// 	                       where `id` = :id",
-			// 	                      array(
-			// 	                      	":id" => $_GET['id']
-			// 	                      ));
-			// 	$temp_array = $get_it->fetch();
-			// 	foreach ($temp_array as $key => $val)
-			// 		if (!is_int($key))
-			// 			$$type->$key = $val;
+			//     $get_it = $sql->query("select * from `".$sql->prefix.$type."s`
+			//                            where `id` = :id",
+			//                           array(
+			//                               ":id" => $_GET['id']
+			//                           ));
+			//     $temp_array = $get_it->fetch();
+			//     foreach ($temp_array as $key => $val)
+			//         if (!is_int($key))
+			//             $$type->$key = $val;
 			// }
 
 			if ($type == "post")
@@ -243,15 +243,15 @@
 
 			// $sql = SQL::current();
 			// if ($type != "post" and $type != "page") {
-			// 	$get_it = $sql->query("select * from `".$sql->prefix.$type."s`
-			// 	                       where `id` = :id",
-			// 	                      array(
-			// 	                      	":id" => $_GET['id']
-			// 	                      ));
-			// 	$temp_array = $get_it->fetch();
-			// 	foreach ($temp_array as $key => $val)
-			// 		if (!is_int($key))
-			// 			$$type->$key = $val;
+			//     $get_it = $sql->query("select * from `".$sql->prefix.$type."s`
+			//                            where `id` = :id",
+			//                           array(
+			//                               ":id" => $_GET['id']
+			//                           ));
+			//     $temp_array = $get_it->fetch();
+			//     foreach ($temp_array as $key => $val)
+			//         if (!is_int($key))
+			//             $$type->$key = $val;
 			// }
 
 			if ($type == "post")
@@ -337,7 +337,7 @@
 			$get_users = $sql->query("select * from `".$sql->prefix."users`
 			                          where `group_id` = :id",
 			                         array(
-			                         	":id" => $_POST['id']
+			                             ":id" => $_POST['id']
 			                         ));
 			while ($the_user = $get_users->fetchObject())
 				$user->update($the_user->id, $the_user->login, $the_user->password, $the_user->full_name, $the_user->email, $the_user->website, $_POST['move_group']);

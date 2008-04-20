@@ -9,8 +9,8 @@
 		 * Loads a given user into the <User> class.
 		 *
 		 * Parameters:
-		 * 	$user_id - The user ID to load. If no user is given, it defaults to the $current_user.
-		 * 						 If they are not logged in and no user ID is given, nothing happens.
+		 *     $user_id - The user ID to load. If no user is given, it defaults to the $current_user.
+		 *                          If they are not logged in and no user ID is given, nothing happens.
 		 */
 		function load($user_id = null, $password = null) {
 			global $current_user;
@@ -22,11 +22,11 @@
 			$sql = SQL::current();
 			$result = $sql->query("select * from `".$sql->prefix."users`
 			                        where
-			                        	`id` = :id and
-			                        	`password` = :password",
+			                            `id` = :id and
+			                            `password` = :password",
 			                        array(
-			                       		":id" => $user_id,
-			                       		":password" => $password
+			                               ":id" => $user_id,
+			                               ":password" => $password
 			                        ))->fetch();
 
 			if (!$result)
@@ -42,11 +42,11 @@
 		 * Checks to see if a given Login and Password match a user in the database.
 		 *
 		 * Parameters:
-		 * 	$login - The Login to check.
-		 * 	$password - The matching Password to check.
+		 *     $login - The Login to check.
+		 *     $password - The matching Password to check.
 		 *
 		 * Returns:
-		 * 	true - if a match is found.
+		 *     true - if a match is found.
 		 */
 		function authenticate($login, $password) {
 			if (isset($this->id)) return true;
@@ -54,11 +54,11 @@
 			$sql = SQL::current();
 			$check_user = $sql->query("select `id` from `{$sql->prefix}users`
 			                           where
-			                           	`login` = :login and
-			                           	`password` = :password",
+			                               `login` = :login and
+			                               `password` = :password",
 			                          array(
-			                          	":login" => $login,
-			                          	":password" => $password
+			                              ":login" => $login,
+			                              ":password" => $password
 			                          ));
 			return ($check_user->fetchColumn());
 		}
@@ -68,7 +68,7 @@
 		 * Checks to see if the current visitor is logged in. If Cookies are set, it validates them to make sure.
 		 *
 		 * Returns:
-		 * 	true - if they are logged in with a valid Username and Password.
+		 *     true - if they are logged in with a valid Username and Password.
 		 */
 		function logged_in() {
 			if (!XML_RPC and (empty($_COOKIE['chyrp_user_id']) or empty($_COOKIE['chyrp_password']))) return false;
@@ -77,11 +77,11 @@
 			$sql = SQL::current();
 			$check_user = $sql->query("select count(`id`) from `".$sql->prefix."users`
 			                           where
-			                           	`id` = :id and
-			                           	`password` = :password",
+			                               `id` = :id and
+			                               `password` = :password",
 			                          array(
-			                          	":id" => $_COOKIE['chyrp_user_id'],
-			                          	":password" => $_COOKIE['chyrp_password']
+			                              ":id" => $_COOKIE['chyrp_user_id'],
+			                              ":password" => $_COOKIE['chyrp_password']
 			                          ));
 			return ($check_user->fetchColumn() == 1);
 		}
@@ -91,14 +91,14 @@
 		 * Grabs a specified column from a users SQL row.
 		 *
 		 * Parameters:
-		 * 	$column - The name of the SQL column.
-		 * 	$user_id - The user ID to grab from. If not given, defaults to $current_user.
-		 * 	$fallback - What to display if the result is empty.
+		 *     $column - The name of the SQL column.
+		 *     $user_id - The user ID to grab from. If not given, defaults to $current_user.
+		 *     $fallback - What to display if the result is empty.
 		 *
 		 * Returns:
-		 * 	false - if $user_id isn't set and they aren't logged in.
-		 * 	SQL result - if the SQL result isn't empty.
-		 * 	$fallback - if the SQL result is empty.
+		 *     false - if $user_id isn't set and they aren't logged in.
+		 *     SQL result - if the SQL result isn't empty.
+		 *     $fallback - if the SQL result is empty.
 		 */
 		function info($column, $user_id = null, $fallback = null) {
 			global $current_user;
@@ -109,7 +109,7 @@
 			$grab_info = $sql->query("select `".$column."` from `".$sql->prefix."users`
 			                          where `id` = :id",
 			                         array(
-			                         	":id" => $user
+			                             ":id" => $user
 			                         ));
 			if ($grab_info->rowCount() == 1)
 				return ($grab_info->fetchColumn() == "") ? $fallback : $grab_info->fetchColumn() ;
@@ -121,11 +121,11 @@
 		 * Checks to see if a user can perform a specified function.
 		 *
 		 * Parameters:
-		 * 	$function - The permission name from their <Group>.
-		 * 	$user_id - The user ID to check. If not given, defaults to $current_user or the Guest group.
+		 *     $function - The permission name from their <Group>.
+		 *     $user_id - The user ID to check. If not given, defaults to $current_user or the Guest group.
 		 *
 		 * Returns:
-		 * 	true - if their group can perform the specified function.
+		 *     true - if their group can perform the specified function.
 		 */
 		function can($function, $user_id = null) {
 			global $group, $current_user;
@@ -140,7 +140,7 @@
 			$permissions = $sql->query("select `permissions` from `".$sql->prefix."groups`
 			                            where `id` = :id",
 			                           array(
-			                           	":id" => $group_id
+			                               ":id" => $group_id
 			                           ))->fetchColumn();
 			$permissions = Spyc::YAMLLoad($permissions);
 
@@ -154,15 +154,15 @@
 		 * Calls the add_user trigger with the inserted ID.
 		 *
 		 * Parameters:
-		 * 	$login - The Login for the new user.
-		 * 	$password - The Password for the new user. Don't MD5 this, it's done in the function.
-		 * 	$email - The E-Mail for the new user.
+		 *     $login - The Login for the new user.
+		 *     $password - The Password for the new user. Don't MD5 this, it's done in the function.
+		 *     $email - The E-Mail for the new user.
 		 *
 		 * Returns:
-		 * 	$id - The newly created users ID.
+		 *     $id - The newly created users ID.
 		 *
 		 * See Also:
-		 * 	<update>
+		 *     <update>
 		 */
 		function add($login, $password, $email, $full_name = '', $website = '', $group_id = null) {
 			$config = Config::current();
@@ -172,13 +172,13 @@
 			             values
 			             (:login, :password, :email, :full_name, :website, :group_id, :joined_at)",
 			            array(
-			            	":login" => strip_tags($login),
-			            	":password" => md5($password),
-			            	":email" => strip_tags($email),
-			            	":full_name" => strip_tags($full_name),
-			            	":website" => strip_tags($website),
-			            	":group_id" => ($group_id) ? intval($group_id) : $config->default_group,
-			            	":joined_at" => datetime()
+			                ":login" => strip_tags($login),
+			                ":password" => md5($password),
+			                ":email" => strip_tags($email),
+			                ":full_name" => strip_tags($full_name),
+			                ":website" => strip_tags($website),
+			                ":group_id" => ($group_id) ? intval($group_id) : $config->default_group,
+			                ":joined_at" => datetime()
 			            ));
 			$id = $sql->db->lastInsertId();
 			$trigger = Trigger::current();
@@ -193,36 +193,36 @@
 		 * Passes all of the arguments to the update_user trigger.
 		 *
 		 * Parameters:
-		 * 	$user_id - The user to update.
-		 * 	$login - The new Login to set.
-		 * 	$password - The new Password to set.
-		 * 	$full_name - The new Full Name to set.
-		 * 	$email - The new E-Mail to set.
-		 * 	$website - The new Website to set.
-		 * 	$group_id - The new <Group> to set.
+		 *     $user_id - The user to update.
+		 *     $login - The new Login to set.
+		 *     $password - The new Password to set.
+		 *     $full_name - The new Full Name to set.
+		 *     $email - The new E-Mail to set.
+		 *     $website - The new Website to set.
+		 *     $group_id - The new <Group> to set.
 		 *
 		 * See Also:
-		 * 	<add>
+		 *     <add>
 		 */
 		function update($user_id, $login, $password, $full_name, $email, $website, $group_id) {
 			$sql = SQL::current();
 			$sql->query("update `".$sql->prefix."users`
 			             set
-			             	`login` = :login,
-			             	`password` = :password,
-			             	`full_name` = :full_name,
-			             	`email` = :email,
-			             	`website` = :website,
-			             	`group_id` = :group_id
+			                 `login` = :login,
+			                 `password` = :password,
+			                 `full_name` = :full_name,
+			                 `email` = :email,
+			                 `website` = :website,
+			                 `group_id` = :group_id
 			             where `id` = :id",
 			            array(
-			            	":login" => $login,
-			            	":password" => $password,
-			            	":full_name" => $full_name,
-			            	":email" => $email,
-			            	":website" => $website,
-			            	":group_id" => $group_id,
-			            	":id" => $user_id
+			                ":login" => $login,
+			                ":password" => $password,
+			                ":full_name" => $full_name,
+			                ":email" => $email,
+			                ":website" => $website,
+			                ":group_id" => $group_id,
+			                ":id" => $user_id
 			            ));
 			$trigger = Trigger::current();
 			$trigger->call("update_user", array($user_id, $login, $password, $full_name, $email, $website, $group_id));
@@ -233,7 +233,7 @@
 		 * Deletes a given user. Calls the "delete_user" trigger with the users ID.
 		 *
 		 * Parameters:
-		 * 	$user_id - The user to delete.
+		 *     $user_id - The user to delete.
 		 */
 		function delete($user_id) {
 			$trigger = Trigger::current();
@@ -243,7 +243,7 @@
 			$sql->query("delete from `".$sql->prefix."users`
 			             where `id` = :id",
 			            array(
-			            	":id" => $user_id
+			                ":id" => $user_id
 			            ));
 		}
 
@@ -252,10 +252,10 @@
 		 * Outputs an edit link for the given user ID, if they <can> edit_user.
 		 *
 		 * Parameters:
-		 * 	$user_id - The user ID for the link.
-		 * 	$text - The text to show for the link.
-		 * 	$before - If the link can be shown, show this before it.
-		 * 	$after - If the link can be shown, show this after it.
+		 *     $user_id - The user ID for the link.
+		 *     $text - The text to show for the link.
+		 *     $before - If the link can be shown, show this before it.
+		 *     $after - If the link can be shown, show this after it.
 		 */
 		function edit_link($user_id, $text = null, $before = null, $after = null){
 			if (!$this->can('edit_user')) return;
@@ -269,10 +269,10 @@
 		 * Outputs a delete link for the given user ID, if they <can> delete_user.
 		 *
 		 * Parameters:
-		 * 	$user_id - The user ID for the link.
-		 * 	$text - The text to show for the link.
-		 * 	$before - If the link can be shown, show this before it.
-		 * 	$after - If the link can be shown, show this after it.
+		 *     $user_id - The user ID for the link.
+		 *     $text - The text to show for the link.
+		 *     $before - If the link can be shown, show this before it.
+		 *     $after - If the link can be shown, show this after it.
 		 */
 		function delete_link($user_id, $text = null, $before = null, $after = null){
 			if (!$this->can('delete_user')) return;
