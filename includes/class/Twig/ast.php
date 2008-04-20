@@ -464,7 +464,7 @@ class Twig_CompareExpression extends Twig_Expression
 			$node->compile($compiler);
 			$compiler->raw(')');
 		}
-		$compiler->raw(')');
+		#$compiler->raw(')');
 	}
 }
 

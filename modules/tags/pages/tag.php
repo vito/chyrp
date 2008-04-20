@@ -30,5 +30,5 @@
 		}
 		$theme->load("layout/footer");
 	} else
-		show_404($GLOBALS);
+		show_404();
 ?>

@@ -200,14 +200,14 @@
 				$page->body = $trigger->filter("markup_page_text", $page->body);
 				
 				if (file_exists(THEME_DIR."/content/".$page->url.".php"))
-					$theme->load("content/".$page->url);
+					$theme->load("content/".$page->url, array("page" => $page));
 				else {
 					$theme->load("layout/header");
-					$theme->load("content/page");
+					$theme->load("content/page", array("page" => $page));
 					$theme->load("layout/footer");
 				}
 			} else
-				show_404($GLOBALS);
+				show_404();
 			
 			break;
 		default:
@@ -232,7 +232,7 @@
 			}
 			
 			if (!$page_exists)
-				show_404($GLOBALS);
+				show_404();
 			
 			break;
 	}

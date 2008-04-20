@@ -158,7 +158,7 @@
 				<br />
 <?php
 			if ($comment->user_can($post->id))
-				$theme->load("forms/comment/new");
+				$theme->load("forms/comment/new", array("post" => $post));
 		}
 	}
 	
