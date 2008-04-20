@@ -1,5 +1,6 @@
 .DS_Store
 .htaccess
-*/cache/*
+feathers/photo/lib/cache/*
+upload/*
 includes/config.yaml.php
 includes/database.yaml.php
