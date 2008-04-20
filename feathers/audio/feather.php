@@ -9,11 +9,10 @@
 		}
 		static function submit() {
 			$filename = "";
-			if (isset($_FILES['audio']) and $_FILES['audio']['error'] == 0) {
+			if (isset($_FILES['audio']) and $_FILES['audio']['error'] == 0)
 				$filename = upload($_FILES['audio'], "mp3");
-			} else {
+			else
 				error(__("Error"), __("Couldn't upload audio file."));
-			}
 
 			$values = array("filename" => $filename, "description" => $_POST['description']);
 			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : "" ;
@@ -38,28 +37,23 @@
 			if (isset($_FILES['audio']) and $_FILES['audio']['error'] == 0) {
 				delete_audio_file($_POST['id']);
 				$filename = upload($_FILES['audio'], "mp3");
-			} else {
+			} else
 				$filename = $post->filename;
-			}
 
 			$values = array("filename" => $filename, "description" => $_POST['description']);
 
 			$post->update($values);
 		}
-		static function title($id) {
-			$post = new Post($id);
+		static function title($post) {
 			return fallback($post->title, $post->title_from_excerpt(), true);
 		}
-		static function excerpt($id) {
-			$post = new Post($id);
+		static function excerpt($post) {
 			return $post->description;
 		}
-		static function feed_content($id) {
-			$post = new Post($id);
+		static function feed_content($post) {
 			return $post->description;
 		}
-		static function delete_file($id) {
-			$post = new Post($id);
+		static function delete_file($post) {
 			if ($post->feather != "audio") return;
 
 			unlink(MAIN_DIR."/upload/".$post->filename);

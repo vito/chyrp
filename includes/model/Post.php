@@ -171,9 +171,9 @@
 			if (!isset($this->id)) return;
 
 			fallback($pinned, !empty($_POST['pinned']));
-			fallback($status, (isset($_POST['draft'])) ? "draft" : ((!empty($_POST['status'])) ? $_POST['status'] : $this->info("status", $this->id)));
+			fallback($status, (isset($_POST['draft'])) ? "draft" : ((!empty($_POST['status'])) ? $_POST['status'] : $this->status));
 			fallback($slug, (!empty($_POST['slug'])) ? $_POST['slug'] : $this->info("feather", $this->id).".".$this->id);
-			fallback($timestamp, (!empty($_POST['created_at'])) ? when("Y-m-d H:i:s", $_POST['created_at']) : $this->info("created_at", $this->id));
+			fallback($timestamp, (!empty($_POST['created_at'])) ? when("Y-m-d H:i:s", $_POST['created_at']) : $this->created_at);
 
 			$options = (isset($_POST['option'])) ? $_POST['option'] : array() ;
 
@@ -205,7 +205,7 @@
 			             ));
 
 			$trigger = Trigger::current();
-			$trigger->call("update_post", array($this->id, $options));
+			$trigger->call("update_post", array($this, $options));
 		}
 
 		/**
@@ -216,7 +216,7 @@
 			if (!isset($this->id)) return;
 
 			$trigger = Trigger::current();
-			$trigger->call("delete_post", $this->id);
+			$trigger->call("delete_post", $this);
 
 			$sql = SQL::current();
 			$sql->delete("posts",
@@ -375,7 +375,7 @@
 		public function title() {
 			global $feathers;
 			$trigger = Trigger::current();
-			return $trigger->filter("title", $feathers[$this->feather]->title($this->id));
+			return $trigger->filter("title", $feathers[$this->feather]->title($this));
 		}
 
 
@@ -386,7 +386,7 @@
 		public function excerpt() {
 			global $feathers;
 			$trigger = Trigger::current();
-			return $trigger->filter("excerpt", $feathers[$this->feather]->excerpt($this->id));
+			return $trigger->filter("excerpt", $feathers[$this->feather]->excerpt($this));
 		}
 
 
@@ -396,7 +396,7 @@
 		 */
 		public function feed_content() {
 			$class = self::feather_class($this->id);
-			return call_user_func(array($class, "feed_content"), $this->id);
+			return call_user_func(array($class, "feed_content"), $this);
 		}
 
 		/**

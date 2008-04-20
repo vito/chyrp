@@ -284,6 +284,13 @@
 		 */
 		public function select($tables, $fields, $conds, $order = null, $params = array(), $limit = null, $offset = null)
 		{
+			try {
+				throw new Exception();
+			} catch(Exception $error) {
+				$trace = $error->getTrace();
+				$root = str_replace($_SERVER['DOCUMENT_ROOT'], "", $trace[0]["file"]);
+				error_log("Called from ".$root." on line ".$trace[0]["line"].".");
+			}
 			return $this->query(QueryBuilder::build_select($tables, $fields, $conds, $order, $limit, $offset), $params);
 		}
 

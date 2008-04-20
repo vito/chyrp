@@ -232,7 +232,7 @@
 			                          "stylesheets" => $this->stylesheets(),
 			                          "javascripts" => $this->javascripts());
 			$context["user"] = array("logged_in" => $user->logged_in(), "can" => $can);
-			$context["archives"] = $this->list_archives();
+			$context["archive_list"] = $this->list_archives();
 			$context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);
 			$context["route"] = array("action" => $action);
 			$context["viewing"] = $viewing;

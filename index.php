@@ -29,8 +29,6 @@
 
 			break;
 		case "view": case "id":
-			$count = 0;
-
 			if ($action == "view")
 				fallback($post, new Post(null, array("where" => "`url` = :url", "params" => array(":url" => $_GET['url']))));
 
@@ -46,9 +44,6 @@
 		case "archive":
 			if (empty($year) or empty($month)) {
 				$theme->title = __("Archive");
-				$theme->load("layout/header");
-
-				$trigger->call("archive_list_top");
 
 				if (!empty($year))
 					$get_timestamps = $sql->query("select
@@ -74,10 +69,14 @@
 					                               group by year(`created_at`), month(`created_at`)
 					                               order by `created_at` desc, `id` desc");
 
-				$count = (int) (!$get_timestamps->rowCount()); # Set $count to 1 so the "no posts" message shows
-
+				$archives = array();
 				while ($time = $get_timestamps->fetchObject()) {
-					$trigger->call("archive_month", array(@date("F Y", mktime(0, 0, 0, $time->month + 1, 0, $time->year)), $route->url("archive/".when("Y/m/", $time->created_at))));
+					$timestamp = mktime(0, 0, 0, $time->month + 1, 0, $time->year);
+					$archives[$timestamp] = array("posts" => array(),
+					                              "year" => $time->year,
+					                              "month" => @date("F", $timestamp),
+					                              "url" => $route->url("archive/".when("Y/m/", $time->created_at)));
+
 					$get_posts = $sql->query("select * from `".$sql->prefix."posts`
 					                          where
 					                              `created_at` like :created_at and
@@ -87,14 +86,12 @@
 					                             ":created_at" => when("Y-m", $time->created_at)."%"
 					                         ));
 
-					$split_wrapper = explode("{LIST}", $trigger->call("archive_list_wrapper", $time, true));
-					echo $split_wrapper[0];
 					foreach ($get_posts->fetchAll() as $post) {
-						$post = new Post($post['id']);
-						$trigger->call("archive_list_item");
+						$archives[$timestamp]["posts"][] = new Post(null, array("read_from" => $post));
 					}
-					echo $split_wrapper[1];
 				}
+
+				$theme->load("content/archive", array("archives" => $archives));
 			} else {
 				if (!is_numeric($year) or !is_numeric($month))
 					error(__("Error"), __("Please enter a valid year and month."));
@@ -121,10 +118,6 @@
 					$count++;
 				}
 			}
-			if ($count == 1)
-				$trigger->call("no_posts", "archive");
-
-			$theme->load("layout/footer");
 			break;
 		case "login":
 			if ($user->logged_in())

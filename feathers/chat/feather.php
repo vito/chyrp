@@ -37,22 +37,17 @@
 
 			$post->update($values);
 		}
-		static function title($id) {
-			global $post;
-			$post = new Post($id);
-
+		static function title($post) {
 			$dialogue = explode("\n", $post->dialogue);
 			$line = preg_replace("/[ ]?[\[|\(]?[0-9]{1,2}:[0-9]{2}(:[0-9]{2})?[ ]?(pm|am)?[\]|\)]?[ ]?/i", "", $dialogue[0]);
 			$first_line = preg_replace("/([<]?)([^:|>]+)( \(me\)?)(:|>) (.+)/i", "\\1\\2\\4 \\5", $dialogue[0]);
 
 			return fallback($post->title, $first_line, true);
 		}
-		static function excerpt($id) {
-			$post = new Post($id);
+		static function excerpt($post) {
 			return $post->dialogue;
 		}
-		static function feed_content($id) {
-			$post = new Post($id);
+		static function feed_content($post) {
 			return $post->dialogue;
 		}
 		static function format_dialogue($text) {

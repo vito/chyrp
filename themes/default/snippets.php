@@ -65,9 +65,6 @@
 		function tags_top() {
 			echo '<h2>'.__("Tags", "theme").'</h2><br />';
 		}
-		function archive_top($year, $month) {
-			echo '<h2>'.sprintf(__("Archive of %s", "theme"), @date("F Y", mktime(0, 0, 0, $month + 1, 0, $year))).'</h2><br />';
-		}
 		function search_top() {
 			global $query;
 			echo '<h2>'.sprintf(__("Search results for &#8220;%s&#8221;", "theme"), fix(urldecode($query), "html")).'</h2><br />';

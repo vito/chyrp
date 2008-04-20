@@ -1,6 +1,6 @@
 <form id="add_comment" action="{% url "add_comment/" %}" method="post" accept-charset="utf-8">
 {% if user.logged_in %}
-	${ "Logged in as" | translate } ${ user.login }{# TODO: Fallback #}
+	${ "Logged in as" | translate } ${ user.login }{# TODO: Fallback & format #}
 	<a href="{% url "logout/" %}">${ "Log Out &rarr;" | translate }</a>
 	<input type="hidden" name="author" value="${ user.login }{# TODO: Fallback #}" id="author" />
 	<input type="hidden" name="email" value="$user.email" id="email" />

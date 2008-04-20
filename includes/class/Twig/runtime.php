@@ -36,6 +36,7 @@ $twig_filters = array(
 	'rstrip' =>		'rtrim',
 	'lstrip' =>		'ltrim',
 	'translate' =>	'twig_translate_string_filter',
+	'normalize' =>	'normalize',
 
 	// array helpers
 	'join' =>		'twig_join_filter',
@@ -46,7 +47,10 @@ $twig_filters = array(
 	// iteration and runtime
 	'default' =>		'twig_default_filter',
 	'keys' =>		'array_keys',
-	'items' =>		'twig_get_array_items_filter'
+	'items' =>		'twig_get_array_items_filter',
+
+	// debugging
+	'inspect' => 'var_dump'
 );
 
 

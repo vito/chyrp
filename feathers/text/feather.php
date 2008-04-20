@@ -34,16 +34,13 @@
 
 			$post->update($values);
 		}
-		static function title($id) {
-			$post = new Post($id);
+		static function title($post) {
 			return fallback($post->title, $post->title_from_excerpt(), true);
 		}
-		static function excerpt($id) {
-			$post = new Post($id);
+		static function excerpt($post) {
 			return $post->body;
 		}
-		static function feed_content($id) {
-			$post = new Post($id);
+		static function feed_content($post) {
 			return $post->body;
 		}
 	}

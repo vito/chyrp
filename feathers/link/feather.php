@@ -37,19 +37,16 @@
 
 			$post->update($values);
 		}
-		static function title($id) {
-			$post = new Post($id);
+		static function title($post) {
 			$return = $post->name;
 			fallback($return, $post->title_from_excerpt());
 			fallback($return, $post->source);
 			return $return;
 		}
-		static function excerpt($id) {
-			$post = new Post($id);
+		static function excerpt($post) {
 			return $post->description;
 		}
-		static function feed_content($id) {
-			$post = new Post($id);
+		static function feed_content($post) {
 			return $post->description;
 		}
 		static function set_feed_url() {

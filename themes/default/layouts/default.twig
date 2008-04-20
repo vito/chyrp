@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head profile="http://gmpg.org/xfn/11">
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-		<title>$site.name{% if title %} &raquo; $title{% endif %}</title>
+		<title>{% block title %}$site.name{% if title %} &raquo; $title{% endif %}{% endblock %}</title>
 		<meta name="generator" content="Chyrp" />
 		<link rel="pingback" href="$site.url/includes/xmlrpc.php" />
 		<link rel="EditURI" type="application/rsd+xml" href="$site.url/includes/rsd.php" />
@@ -69,7 +69,7 @@
 {% endif %}
 				<h1>${ "Archives" | translate }</h1>
 				<ul>
-{% for archive in archives %}
+{% for archive in archive_list %}
 					<li><a href="$archive.url">$archive.month $archive.year</a></li>
 {% endfor %}
 				</ul>

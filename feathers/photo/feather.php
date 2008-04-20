@@ -44,21 +44,17 @@
 
 			$post->update($values);
 		}
-		static function title($id) {
-			$post = new Post($id);
+		static function title($post) {
 			$caption = $post->title_from_excerpt();
 			return fallback($caption, $post->filename, true);
 		}
-		static function excerpt($id) {
-			$post = new Post($id);
+		static function excerpt($post) {
 			return $post->caption;
 		}
-		static function feed_content($id) {
-			$post = new Post($id);
+		static function feed_content($post) {
 			return image_tag_for($post->filename, 500, 500)."<br /><br />".$post->caption;
 		}
-		static function delete_file($id) {
-			$post = new Post($id);
+		static function delete_file($post) {
 			if ($post->feather != "photo") return;
 			unlink(MAIN_DIR."/upload/".$post->filename);
 		}

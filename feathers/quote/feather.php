@@ -37,19 +37,16 @@
 
 			$post->update($values);
 		}
-		static function title($id) {
-			$post = new Post($id);
+		static function title($post) {
 			return $post->title_from_excerpt();
 		}
-		static function excerpt($id) {
-			$post = new Post($id);
+		static function excerpt($post) {
 			return $post->quote;
 		}
 		static function add_dash($text) {
 			return preg_replace("/(<p(\s+[^>]+)?>|^)/si", "\\1&mdash; ", $text, 1);
 		}
-		static function feed_content($id) {
-			$post = new Post($id);
+		static function feed_content($post) {
 			$body = "<blockquote>";
 			$body.= $post->quote;
 			$body.= "</blockquote>";

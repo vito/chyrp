@@ -36,16 +36,13 @@
 
 			$post->update($values);
 		}
-		static function title($id) {
-			global $post;
-			return $post->title_from_excerpt($id);
+		static function title($post) {
+			return $post->title_from_excerpt();
 		}
-		static function excerpt($id) {
-			$post = new Post($id);
+		static function excerpt($post) {
 			return $post->caption;
 		}
-		static function feed_content($id) {
-			$post = new Post($id);
+		static function feed_content($post) {
 			return $post->embed."\n<br />\n<br />\n".$post->caption;
 		}
 		static function embed_tag($video) {
