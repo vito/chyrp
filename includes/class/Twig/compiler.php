@@ -59,7 +59,7 @@ class Twig_Compiler
 					$this->raw(', ');
 				$this->repr($key);
 				$this->raw(' => ');
-				$this->repr($value);
+				$this->repr($value);	
 			}
 			$this->raw(')');
 		}

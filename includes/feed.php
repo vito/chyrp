@@ -13,11 +13,11 @@
 		$post = new Post($post['id']);
 		$title = htmlspecialchars($post->title(), ENT_NOQUOTES, "utf-8");
 		fallback($title, ucfirst($post->feather)." Post #".$post->id);
-
+		
 		$author_uri = $user->info("website", $post->user_id);
-
+		
 		$updated = (substr($post->updated_at, 0, 4) == "0000") ? $post->created_at : $post->updated_at ;
-
+		
 		$tagged = substr(strstr($route->url("id/".$post->id."/"), "//"), 2);
 		$tagged = str_replace("#", "/", $tagged);
 		$tagged = preg_replace("/(".preg_quote(parse_url($post->url(), PHP_URL_HOST)).")/", "\\1,".when("Y-m-d", $updated).":", $tagged, 1);

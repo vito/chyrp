@@ -15,7 +15,7 @@ $(function(){
 		if (isError(response))
 			alert(response.replace(/HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW/, ""))
 	})
-
+	
 	$(".toggle_admin").click(function(){
 		if (!$("#admin_bar:visible").size()) {
 			$("#admin_bar").slideDown()
@@ -26,7 +26,7 @@ $(function(){
 		}
 		return false
 	})
-
+	
 <?php if ($user->can("edit_post")): ?>
 	$(".post_edit_link").click(function(){
 		var id = $(this).attr("id").replace(/post_edit_/, "")
@@ -176,7 +176,7 @@ var Cookie = {
 
 		if (expires)
 			expires = expires * 1000 * 60 * 60 * 24
-
+		
 		var expires_date = new Date(today.getTime() + (expires))
 
 		document.cookie = name+"="+escape(value)+
@@ -218,7 +218,7 @@ function appendNextPost(minus) {
 		$("#posts").append(data)
 		$("#posts .post:last").hide().fadeIn("slow")
 		var id = $("#posts .post:last").attr("id").replace(/post_/, "")
-
+		
 <?php if ($user->can("edit_post")): ?>
 		$("#post_edit_"+id).click(function(){
 			Post.edit(id)
@@ -242,7 +242,7 @@ function appendNextPost(minus) {
 					$("#posts").append(data)
 					$("#posts *:not(.nofade)").hide().fadeIn("slow")
 				} })
-
+			
 			$("#next_page_page").fadeOut("fast");
 		}
 	} });

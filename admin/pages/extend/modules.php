@@ -4,12 +4,12 @@
 	if ($open = opendir(MODULES_DIR)) {
 	  while (($folder = readdir($open)) !== false) {
 			if (!file_exists(MODULES_DIR."/".$folder."/module.php") or !file_exists(MODULES_DIR."/".$folder."/info.yaml")) continue;
-
+			
 			if (file_exists(MODULES_DIR."/".$folder."/locale/".$config->locale.".mo"))
 				load_translator($folder, MODULES_DIR."/".$folder."/locale/".$config->locale.".mo");
-
+	
 			$info = Spyc::YAMLLoad(MODULES_DIR."/".$folder."/info.yaml");
-
+			
 			if (!empty($info["conflicts"])) {
 				foreach ($info["conflicts"] as $conflict) {
 					$issues[$conflict] = true;
@@ -32,17 +32,17 @@
 	if (isset($_GET['enabled'])):
 		if (file_exists(MODULES_DIR."/".$_GET['enabled']."/locale/".$config->locale.".mo"))
 			load_translator($_GET['enabled'], MODULES_DIR."/".$_GET['enabled']."/locale/".$config->locale.".mo");
-
+		
 		$info = Spyc::YAMLLoad(MODULES_DIR."/".$_GET['enabled']."/info.yaml");
 		fallback($info["uploader"], false);
 		fallback($info["notifications"], array());
-
+		
 		if ($info["uploader"])
 			if (!file_exists(MAIN_DIR."/upload"))
 				$info["notifications"][] = __("Please create the <code>/upload</code> directory at your Chyrp install's root and CHMOD it to 777.");
 			elseif (!is_writable(MAIN_DIR."/upload"))
 				$info["notifications"][] = __("Please CHMOD <code>/upload</code> to 777.");
-
+		
 		foreach ($info["notifications"] as $message):
 ?>
 			<div class="notice"><?php echo __($message, $_GET['enabled']); ?></div>
@@ -57,20 +57,20 @@
 			<div class="success"><?php echo __("Module disabled."); ?></div>
 <?php
 	endif;
-
+	
   if ($open = opendir(MODULES_DIR)) {
     while (($folder = readdir($open)) !== false) {
 			if (!file_exists(MODULES_DIR."/".$folder."/module.php") or !file_exists(MODULES_DIR."/".$folder."/info.yaml")) continue;
-
+			
 			if (file_exists(MODULES_DIR."/".$folder."/locale/".$config->locale.".mo"))
 				load_translator($folder, MODULES_DIR."/".$folder."/locale/".$config->locale.".mo");
-
+	
 			$info = Spyc::YAMLLoad(MODULES_DIR."/".$folder."/info.yaml");
-
+			
 			$text = (module_enabled($folder)) ? __("enabled") : __("disabled") ;
 			$icon = (!module_enabled($folder)) ? "deny.png" : "success.png" ;
 			$class = (module_enabled($folder)) ? "enabled" : "disabled" ;
-
+			
 			if (strpos($info["description"], "<pre>"))
 				$info["description"] = preg_replace("/<pre>(.*?)<\/pre>/se", "'<pre>'.filter_highlight(highlight_string(htmlspecialchars_decode(stripslashes('\\1')), true)).'</pre>'", $info["description"]);
 ?>

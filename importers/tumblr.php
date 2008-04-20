@@ -1,19 +1,19 @@
 <?php
 	require_once "../includes/common.php";
-
+	
 	if (!in_array("text", $config->enabled_feathers) or !in_array("video", $config->enabled_feathers) or !in_array("audio", $config->enabled_feathers) or !in_array("chat", $config->enabled_feathers) or !in_array("photo", $config->enabled_feathers) or !in_array("quote", $config->enabled_feathers) or !in_array("link", $config->enabled_feathers))
 		error(__("Missing Feather"), __("Importing from Tumblr requires the Text, Video, Audio, Chat, Photo, Quote, and Link feathers to be installed and enabled."));
-
+	
 	if (!$user->can("add_post"))
 		error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
-
+	
 	class XMLParser { # Via http://php.net/xml, slightly modified.
 		var $parser;
 		var $filePath;
 		var $document;
 		var $currTag;
 		var $tagStack;
-
+	
 		function XMLParser($xml) {
 			$this->parser = xml_parser_create();
 			$this->xml = $xml;
@@ -21,7 +21,7 @@
 			$this->currTag =& $this->document;
 			$this->tagStack = array();
 		}
-
+	
 		function parse() {
 			xml_set_object($this->parser, $this);
 			xml_set_character_data_handler($this->parser, 'dataHandler');
@@ -33,25 +33,25 @@
 	  
 			return true;
 		}
-
+	
 		function startHandler($parser, $name, $attribs) {
 			if(!isset($this->currTag[$name]))
 				$this->currTag[$name] = array();
-
+		
 			$newTag = array();
 			if(!empty($attribs))
 				$newTag['attr'] = $attribs;
 			array_push($this->currTag[$name], $newTag);
-
+		
 			$t =& $this->currTag[$name];
 			$this->currTag =& $t[count($t)-1];
 			array_push($this->tagStack, $name);
 		}
-
+	
 		function dataHandler($parser, $data) {
 			$data = trim($data);
 			$data = (empty($data)) ? "\n" : $data ;
-
+		
 			if(!empty($data)) {
 				if(isset($this->currTag['data']))
 					$this->currTag['data'] .= $data;
@@ -59,18 +59,18 @@
 					$this->currTag['data'] = $data;
 			}
 		}
-
+	
 		function endHandler($parser, $name) {
 			$this->currTag =& $this->document;
 			array_pop($this->tagStack);
-
+		
 			for($i = 0; $i < count($this->tagStack); $i++) {
 				$t =& $this->currTag[$this->tagStack[$i]];
 				$this->currTag =& $t[count($t)-1];
 			}
 		}
 	}
-
+	
 	function fallback($index, $fallback = "") {
 		echo (isset($_POST[$index])) ? $_POST[$index] : $fallback ;
 	}
@@ -96,7 +96,7 @@
 			$path = (!isset($path)) ? '/' : $path ;
 			if (isset($query)) $path.= '?'.$query;
 			$port = (isset($port)) ? $port : 80 ;
-
+	
 			$connect = @fsockopen($host, $port, $errno, $errstr, 2);
 			if (!$connect) return false;
 
@@ -132,32 +132,32 @@
 		if (empty($a) or empty($b)) return 0;
 		return ($a["attr"]["ID"] < $b["attr"]["ID"]) ? -1 : 1 ;
 	}
-
+	
 	$errors = array();
-
+	
 	if (!file_exists(MAIN_DIR."/upload"))
 		$errors[] = __("Please create the <code>/upload</code> directory at your Chyrp install's root and CHMOD it to 777.");
 	elseif (!is_writable(MAIN_DIR."/upload"))
 		$errors[] = __("Please CHMOD <code>/upload</code> to 777.");
-
+	
 	if (!empty($_POST)) {
 		switch($_POST['step']) {
 			case "1":
 				$url = $_POST['url']."/api/read?num=50";
 				$xml = read_url($url);
 				$xml = cdatize($xml);
-
+								
 				$parser = new XMLParser($xml);
 				$parser->parse();
-
+				
 				$parsed = $parser->document["TUMBLR"][0]["POSTS"][0];
-
+				
 				usort($parsed["POST"], "reverse");
-
+				
 				$already_in = array();
 				foreach ($parsed["POST"] as $the_post)
 					$already_in[] = $the_post["attr"]["ID"];
-
+				
 				if ($parsed["attr"]["TOTAL"] <= count($parsed["POST"])) {
 					$parsed = $parsed;
 				} else {
@@ -175,31 +175,31 @@
 						}
 					}
 				}
-
+				
 				foreach ($parsed["POST"] as $the_post) {
 					if ($the_post["attr"]["TYPE"] == "audio")
 						continue; # Can't import them since Tumblr has them locked in.
-
+					
 					$translate_types = array("regular" => "text", "conversation" => "chat");
-
+					
 					switch($the_post["attr"]["TYPE"]) {
 						case "regular":
 							$title = (isset($the_post["REGULAR-TITLE"])) ? fix_html_tags($the_post["REGULAR-TITLE"][0]["data"]) : "" ;
 							$body = fix_html_tags($the_post["REGULAR-BODY"][0]["data"]);
-
+							
 							$values = array("title" => $title, "body" => $body);
 							$clean = sanitize($title);
 							break;
 						case "video":
 							$caption = (isset($the_post["VIDEO-CAPTION"])) ? fix_html_tags($the_post["VIDEO-CAPTION"][0]["data"]) : "" ;
-
+							
 							$values = array("embed" => $the_post["VIDEO-PLAYER"][0]["data"], "caption" => $caption);
 							$clean = "";
 							break;
 						case "conversation":
 							$title = (isset($the_post["CONVERSATION-TITLE"])) ? fix_html_tags($the_post["CONVERSATION-TITLE"][0]["data"]) : "" ;
 							$dialogue = trim(fix_html_tags($the_post["CONVERSATION-TEXT"][0]["data"]));
-
+							
 							$values = array("title" => $title, "dialogue" => $dialogue);
 							$clean = sanitize($title);
 							break;
@@ -207,49 +207,49 @@
 							$image = read_url($the_post["PHOTO-URL"][0]["data"]);
 							$info = pathinfo($the_post["PHOTO-URL"][0]["data"]);
 							$filename = $info['basename'];
-
+							
 							$open = fopen(MAIN_DIR."/upload/".$filename, "w");
 							fwrite($open, $image);
 							fclose($open);
-
+							
 							$caption = (isset($the_post["PHOTO-CAPTION"])) ? fix_html_tags($the_post["PHOTO-CAPTION"][0]["data"]) : "" ;
-
+							
 							$values = array("filename" => $filename, "caption" => $caption);
 							$clean = "";
 							break;
 						case "quote":
 							$quote = fix_html_tags($the_post["QUOTE-TEXT"][0]["data"]);
 							$source = (isset($the_post["QUOTE-SOURCE"])) ? fix_html_tags($the_post["QUOTE-SOURCE"][0]["data"]) : "" ;
-
+							
 							$values = array("quote" => $quote, "source" => $source);
 							$clean = "";
 							break;
 						case "link":
 							$name = (isset($the_post["LINK-TEXT"])) ? fix_html_tags($the_post["LINK-TEXT"][0]["data"]) : "" ;
 							$description = (isset($the_post["LINK-DESCRIPTION"])) ? fix_html_tags($the_post["LINK-DESCRIPTION"][0]["data"]) : "" ;
-
+							
 							$values = array("name" => $name, "source" => $the_post["LINK-URL"][0]["data"], "description" => $description);
 							$clean = "";
 							break;
 					}
 					$url = Post::check_url($clean);
 					$timestamp = when("Y-m-d H:i:s", $the_post["attr"]["DATE"]);
-
+					
 					# Damn it feels good to be a gangsta...
 					$_POST['status'] = "public";
 					$_POST['pinned'] = false;
 					$_POST['created_at'] = $timestamp;
 					$_POST['feather'] = str_replace(array_keys($translate_types), array_values($translate_types), $the_post["attr"]["TYPE"]);
-
+					
 					$id = Post::add($values, $clean, $url);
 					$trigger->call("import_tumble", array($the_post, $id));
 				}
-
+				
 				$step = "2";
 				break;
 		}
 	}
-
+	
 	$step = (isset($step)) ? $step : "1" ;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"

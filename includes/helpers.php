@@ -4,7 +4,7 @@
 	 * Times Chyrp.
 	 */
 	$time_start = 0;
-
+	
 	/**
 	 * Function: truncate
 	 * Truncates a string to the passed length, appending an ellipsis to the end.
@@ -48,7 +48,7 @@
 		}
 		return $text;
 	}
-
+	
 	/**
 	 * Function: nobreak
 	 * Returns a string with whitespace converted to non-breakable spaces.
@@ -56,7 +56,7 @@
 	function nobreak($string) {
 		return preg_replace("/\s+/", "&nbsp;", $string);
 	}
-
+	
 	/**
 	 * Function: when
 	 * Returns date formatting for a string that isn't a regular time() value
@@ -69,7 +69,7 @@
 		# STFU, php5.
 		return @date($formatting, @strtotime($time));
 	}
-
+	
 	/**
 	 * Function: datetime
 	 * Returns a standard datetime string based on their time offset, usually for MySQL inserts.
@@ -78,7 +78,7 @@
 		$config = Config::current();
 		return @date("Y-m-d H:i:s", (time() + $config->time_offset));
 	}
-
+	
 	/**
 	 * Function: fix
 	 * Returns a sanitized version of a string, for various purposes.
@@ -95,7 +95,7 @@
 			default: return $string; break;
 		}
 	}
-
+	
 	/**
 	 * Function: lang_code
 	 * Returns the passed language code (e.g. en_US) to the human-readable text (e.g. English (US))
@@ -143,7 +143,7 @@
 		               "bg_BG" => "Български");
 		return (isset($langs[$code])) ? str_replace(array_keys($langs), array_values($langs), $code) : $code ;
 	}
-
+	
 	/**
 	 * Function: sanitize
 	 * Returns a sanitized string, typically for URLs.
@@ -160,7 +160,7 @@
 		$clean = ($anal) ? preg_replace("/[^a-zA-Z0-9]/", "", $clean) : $clean ;
 		return (function_exists('mb_strtolower')) ? mb_strtolower($clean, 'UTF-8') : strtolower($clean) ;
 	}
-
+	
 	/**
 	 * Function: seems_utf8
 	 * Determines whether a string seems to use UTF-8 characters.
@@ -184,7 +184,7 @@
 		}
 		return true;
 	}
-
+	
 	/**
 	 * Function: remove_accents
 	 * Removes accents from letters in a string.
@@ -321,7 +321,7 @@
 
 		return $string;
 	}
-
+	
 	/**
 	 * Function: trackback_respond
 	 * Responds to a trackback request.
@@ -347,7 +347,7 @@
 		}
 		exit;
 	}
-
+	
 	/**
 	 * Function: trackback_send
 	 * Sends a trackback request.
@@ -358,35 +358,35 @@
 	 */
 	function trackback_send($post_id, $target) {
 		if (empty($post_id) or empty($target)) return false;
-
+		
 		$post = new Post($post_id);
-
+		
 		$target = parse_url($target);
 		$title = $post->title();
 		fallback($title, ucfirst($post->feather)." Post #".$post->id);
 		$excerpt = strip_tags(truncate($post->excerpt(), 255));
-
+		
 		if (!empty($target["query"])) $target["query"] = "?".$target["query"];
 		if (empty($target["port"])) $target["port"] = 80;
-
+		
 		$connect = fsockopen($target["host"], $target["port"]);
 		if (!$connect) return false;
-
+		
 		$config = Config::current();
 		$query = "url=".rawurlencode($post->url($post_id))."&title=".rawurlencode($title)."&blog_name=".rawurlencode($config->name)."&excerpt=".rawurlencode($excerpt);
-
+		
 		fwrite($connect, "POST ".$target["path"].$target["query"]." HTTP/1.1\n");
 		fwrite($connect, "Host: ".$target["host"]."\n");
 		fwrite($connect, "Content-type: application/x-www-form-urlencoded\n");
 		fwrite($connect, "Content-length: ". strlen($query)."\n");
 		fwrite($connect, "Connection: close\n\n");
 		fwrite($connect, $query);
-
+		
 		fclose($connect);
-
+		
 		return true;
 	}
-
+	
 	/**
 	 * Function: send_pingbacks
 	 * Sends pingback requests to the URLs in a string.
@@ -397,12 +397,12 @@
 	 */
 	function send_pingbacks($string, $post_id) {
 		$post = new Post($post_id);
-
+		
 		foreach (grab_urls($string) as $url) {
 			if ($ping_url = pingback_url($url)) {
 				if (!class_exists("IXR_Client"))
 					require INCLUDES_DIR."/lib/ixr.php";
-
+				
 				$client = new IXR_Client($ping_url);
 				$client->timeout = 3;
 				$client->useragent.= " -- Chyrp/".CHYRP_VERSION;
@@ -410,7 +410,7 @@
 			}
 		}
 	}
-
+	
 	/**
 	 * Function: grab_urls
 	 * Crawls a string for links.
@@ -427,7 +427,7 @@
 		$matches = $matches[1];
 		return $matches;
 	}
-
+	
 	/**
 	 * Function: pingback_url
 	 * Checks if a URL is pingback-capable.
@@ -481,12 +481,12 @@
 			$size += strlen($line);
 			if ($size > 2048) return false;
 		}
-
+		
 		fclose($connect);
 
 		return false;
 	}
-
+	
 	/**
 	 * Function: camelize
 	 * Converts a given string to camel-case.
@@ -502,7 +502,7 @@
 			$rep2 = str_replace(" ", "", $rep2);
 		return $rep2;
 	}
-
+	
 	/**
 	 * Function: selected
 	 * If $val1 == $val2, outputs ' selected="selected"'
@@ -510,7 +510,7 @@
 	function selected($val1, $val2) {
 		if ($val1 == $val2) echo ' selected="selected"';
 	}
-
+	
 	/**
 	 * Function: checked
 	 * If $val == 1 (true), outputs ' checked="checked"'
@@ -518,7 +518,7 @@
 	function checked($val) {
 		if ($val == 1) echo ' checked="checked"';
 	}
-
+	
 	/**
 	 * Function: module_enabled
 	 * Returns whether the given module is enabled or not.
@@ -530,7 +530,7 @@
 		$config = Config::current();
 		return in_array($name, $config->enabled_modules);
 	}
-
+	
 	/**
 	 * Function: feather_enabled
 	 * Returns whether the given feather is enabled or not.
@@ -542,7 +542,7 @@
 		$config = Config::current();
 		return in_array($name, $config->enabled_feathers);
 	}
-
+	
 	/**
 	 * Function: new_post_options
 	 * Outputs the optional fields for creating a new post.
@@ -580,7 +580,7 @@
 				</p>
 <?php
 	}
-
+	
 	/**
 	 * Function: edit_post_options
 	 * Outputs the optional fields for editing the given post.
@@ -616,7 +616,7 @@
 		$trigger = Trigger::current();
 		$trigger->call("edit_post_options", $post_id);
 	}
-
+	
 	/**
 	 * Function: fallback
 	 * Gracefully falls back a given variable if it's empty or not set.
@@ -636,7 +636,7 @@
 		       	((!isset($variable) or (is_string($variable) and trim($variable) == "") or empty($variable)) ? $fallback : $variable) :
 		       	((!isset($variable) or (is_string($variable) and trim($variable) == "") or empty($variable)) ? $variable = $fallback : false) ;
 	}
-
+	
 	/**
 	 * Function: random
 	 * Returns a random string.
@@ -646,19 +646,19 @@
 	 */
 	function random($length, $specialchars = false) {
 		$pattern = "1234567890abcdefghijklmnopqrstuvwxyz";
-
+		
 		if ($specialchars)
 			$pattern.= "!@#$%^&*()?~";
-
+		
 		$len = ($specialchars) ? 47 : 35 ;
-
+		
 		$key = $pattern{rand(0, $len)};
 		for($i = 1; $i < $length; $i++) {
 			$key.= $pattern{rand(0, $len)};
 		}
 		return $key;
 	}
-
+	
 	/**
 	 * Function: unique_filename
 	 * Makes a given filename unique for the /upload/ directory.
@@ -683,7 +683,7 @@
 		}
 		return unique_filename($clean);
 	}
-
+	
 	/**
 	 * Function: upload
 	 * Moves an uploaded file to the /upload/ directory.
@@ -699,7 +699,7 @@
 	function upload($file, $extension = null, $path = "") {
 		$file_split = explode(".", $file['name']);
 		$file_ext = end($file_split);
-
+		
 		if (is_array($extension)) {
 			if (!in_array(strtolower($file_ext), $extension)) {
 		    $list = "";
@@ -714,18 +714,18 @@
 		} elseif (isset($extension) and $file_ext != $extension and $file_ext != strtoupper($extension)) {
 			error(__("Error"), sprintf(__("Only %s files are supported."), "*.".$extension));
 		}
-
+		
 		array_pop($file_split);
 		$file_clean = implode(".", $file_split);
 		$file_clean = sanitize($file_clean).".".$file_ext;
 		$filename = unique_filename($file_clean);
-
+		
 		if (!@move_uploaded_file($file['tmp_name'], MAIN_DIR."/upload/".$path.$filename))
 			error(__("Error"), __("Couldn't upload file. CHMOD <code>/upload</code> to 777 and try again. If this problem persists, it's probably timing out; in which case, you must contact your system administrator to increase the maximum POST and upload sizes."));
-
+		
 		return $filename;
 	}
-
+	
 	/**
 	 * Function: timer_start
 	 * Starts the timer.
@@ -736,7 +736,7 @@
 		$mtime = $mtime[1] + $mtime[0];
 		$time_start = $mtime;
 	}
-
+	
 	/**
 	 * Function: timer_stop
 	 * Stops the timer and returns the total time.
@@ -757,7 +757,7 @@
 		$formatted = (function_exists("number_format_i18n")) ? number_format_i18n($time_total, $precision) : number_format($time_total, $precision);
 		return $formatted;
 	}
-
+	
 	/**
 	 * Function: normalize
 	 * Attempts to normalize all newlines and whitespace into single spaces.
@@ -769,14 +769,14 @@
 		$normalized = preg_replace("/[\s+]/", " ", $newlines);
 		return $normalized;
 	}
-
+	
 	/**
 	 * Function: get_remote
 	 * Grabs the contents of a website/location.
 	 */
 	function get_remote($url) {
 		extract(parse_url($url), EXTR_SKIP);
-
+	
 		if (ini_get("allow_url_fopen")) {
 			$connect = @fopen($url, "r");
 			if (!$connect) return false;
@@ -797,7 +797,7 @@
 			$path = (!isset($path)) ? '/' : $path ;
 			if (isset($query)) $path.= '?'.$query;
 			$port = (isset($port)) ? $port : 80 ;
-
+		
 			$connect = @fsockopen($host, $port, $errno, $errstr, 2);
 			if (!$connect) return false;
 
@@ -805,19 +805,19 @@
 			fwrite($connect, "GET ".$path." HTTP/1.1\r\n");
 			fwrite($connect, "Host: ".$host."\r\n");
 			fwrite($connect, "User-Agent: Chyrp/".CHYRP_VERSION."\r\n\r\n");
-
+	
 			$content = "";
 			while (!feof($connect)) {
 				$line = fgets($connect, 4096);
 				$content.= trim($line)."\n";
 			}
-
+	
 			fclose($connect);
 		}
-
+	
 		return $content;
 	}
-
+	
 	/**
 	 * Function: filter_highlight
 	 * Cleans up a highlight_string(), applying CSS classes and removing
@@ -834,7 +834,7 @@
 		$classes = str_replace(array_keys($colours), array_values($colours), $nbsp);
 		return $classes;
 	}
-
+	
 	/**
 	 * Function: self_url
 	 * Returns the current URL.
@@ -846,7 +846,7 @@
 		$port = ($_SERVER['SERVER_PORT'] == $default_port) ? "" : ":".$_SERVER['SERVER_PORT'] ;
 		return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI'];
 	}
-
+	
 	/**
 	 * Function: show_404
 	 * Shows a 404 error message, extracting the passed array into the scope.
@@ -865,7 +865,7 @@
 		$trigger->call("not_found");
 		$theme->load("layout/footer");
 	}
-
+	
 	/**
 	 * Function: month_to_number
 	 * Converts a month name (e.g. June) to its number (e.g. 6)

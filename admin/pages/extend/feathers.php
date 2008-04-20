@@ -3,17 +3,17 @@
 	if (isset($_GET['enabled'])):
 		if (file_exists(FEATHERS_DIR."/".$_GET['enabled']."/locale/".$config->locale.".mo"))
 			load_translator($_GET['enabled'], FEATHERS_DIR."/".$_GET['enabled']."/locale/".$config->locale.".mo");
-
+		
 		$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$_GET['enabled']."/info.yaml");
 		fallback($info["uploader"], false);
 		fallback($info["notifications"], array());
-
+		
 		if ($info["uploader"])
 			if (!file_exists(MAIN_DIR."/upload"))
 				$info["notifications"][] = __("Please create the <code>/upload</code> directory at your Chyrp install's root and CHMOD it to 777.");
 			elseif (!is_writable(MAIN_DIR."/upload"))
 				$info["notifications"][] = __("Please CHMOD <code>/upload</code> to 777.");
-
+		
 		foreach ($info["notifications"] as $message):
 ?>
 			<div class="notice"><?php echo __($message, $_GET['enabled']); ?></div>
@@ -28,22 +28,22 @@
 			<div class="success"><?php echo __("Feather disabled."); ?></div>
 <?php
 	endif;
-
+	
   if ($open = opendir(FEATHERS_DIR)) {
     while (($folder = readdir($open)) !== false) {
 			if (!file_exists(FEATHERS_DIR."/".$folder."/feather.php") or !file_exists(FEATHERS_DIR."/".$folder."/info.yaml")) continue;
-
+			
 			if (file_exists(FEATHERS_DIR."/".$folder."/locale/".$config->locale.".mo"))
 				load_translator($folder, FEATHERS_DIR."/".$folder."/locale/".$config->locale.".mo");
-
+		
 			$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$folder."/info.yaml");
-
+			
 			$text = (in_array($folder, $config->enabled_feathers)) ? __("disable") : __("enable") ;
 			$icon = (!in_array($folder, $config->enabled_feathers)) ? "success.png" : "deny.png" ;
 			$text = (feather_enabled($folder)) ? __("enabled") : __("disabled") ;
 			$icon = (!feather_enabled($folder)) ? "deny.png" : "success.png" ;
 			$class = (feather_enabled($folder)) ? "enabled" : "disabled" ;
-
+			
 			if (strpos($info["description"], "<pre>"))
 				$info["description"] = preg_replace("/<pre>(.*?)<\/pre>/se", "'<pre>'.filter_highlight(highlight_string(htmlspecialchars_decode(stripslashes('\\1')), true)).'</pre>'", $info["description"]);
 ?>

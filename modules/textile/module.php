@@ -1,6 +1,6 @@
-<?php
+<?php	
 	require "lib/textile.php";
-
+	
 	class Textile extends Module {
 		public function __construct() {
 			$this->setPriority("markup_post_text", 9);

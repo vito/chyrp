@@ -1,14 +1,14 @@
 <?php
 	$current_post = array("id" => 0);
 	$temp_id = null;
-
+	
 	/**
 	 * Class: Post
 	 * The model for the Posts SQL table.
 	 */
 	class Post {
 		public $no_results = false;
-
+		
 		/**
 		 * Function: __construct
 		 * Grabs the specified post and injects it into the <Post> class.
@@ -21,12 +21,12 @@
 		public function __construct($post_id = null, $options = array()) {
 			global $current_post;
 			if (!isset($post_id) and empty($options)) return; # Just using this to hold data?
-
+			
 			$where = fallback($options["where"], "", true);
 			$filter = (!isset($options["filter"]) or $options["filter"]);
 			$params = fallback($options["params"], array(), true);
 			$read_from = fallback($options["read_from"], array(), true);
-
+			
 			$sql = SQL::current();
 			if ((!empty($read_from) && $read_from))
 				$read = $read_from;
@@ -48,25 +48,25 @@
 				                     	":postid" => $post_id
 				                     ),
 				                     1)->fetch();
-
+			
 			if (!count($read) or !$read)
 				return $this->no_results = true;
-
+			
 			$config = Config::current();
 			$read["trackback_url"] = $config->url."/includes/trackback.php?id=".$read["id"];
 			$read["edit_url"] = $config->url.'/admin/?action=edit&amp;sub=post&amp;id='.$read["id"];
 			$read["delete_url"] = $config->url.'/admin/?action=delete&amp;sub=post&amp;id='.$read["id"];
-
+						
 			foreach ($read as $key => $val) {
 				if (!is_int($key))
 					$this->$key = $val;
-
+				
 				$current_post[$key] = $val;
 			}
-
+			
 			$this->parse($filter);
 		}
-
+		
 		/**
 		 * Function: add
 		 * Adds a post to the database with the passed XML, sanitized URL, and unique URL. The rest is read from $_POST.
@@ -89,7 +89,7 @@
 		 */
 		static function add($values, $clean = "", $url = "") {
 			global $user, $current_user;
-
+			
 			$pinned = (int) !empty($_POST['pinned']);
 			$status = (isset($_POST['draft'])) ? "draft" : ((!empty($_POST['status'])) ? $_POST['status'] : "public") ;
 			$timestamp = (!empty($_POST['created_at']) and (!isset($_POST['original_time']) or $_POST['created_at'] != $_POST['original_time'])) ?
@@ -103,7 +103,7 @@
 				$xml->addChild($key, $val);
 			foreach($options as $key => $val)
 				$xml->addChild($key, $val);
-
+			
 			$sql = SQL::current();
 			$sql->insert("posts",
 			             array(
@@ -127,7 +127,7 @@
 			             	":created_at" => $timestamp
 			             ));
 			$id = $sql->db->lastInsertId();
-
+			
 			if (empty($clean) or empty($url))
 				$sql->update("posts",
 				             "`id` = :id",
@@ -140,7 +140,7 @@
 				             	':url' => $_POST['feather'].".".$id,
 				             	':id' => $id
 				             ));
-
+			
 			$trackbacks = explode(",", $trackbacks);
 			$trackbacks = array_map('trim', $trackbacks);
 			$trackbacks = array_map('strip_tags', $trackbacks);
@@ -148,13 +148,13 @@
 			$trackbacks = array_diff($trackbacks, array(""));
 			foreach ($trackbacks as $url)
 				trackback_send($id, $url);
-
+			
 			$trigger = Trigger::current();
 			$trigger->call("add_post", array($id, $options));
-
+			
 			return new self($id);
 		}
-
+		
 		/**
 		 * Function: update
 		 * Updates a post with the given XML. The rest is read from $_POST.
@@ -182,7 +182,7 @@
 				$xml->addChild($key, $val);
 			foreach($options as $key => $val)
 				$xml->addChild($key, $val);
-
+			
 			$sql = SQL::current();
 			$sql->update("posts",
 			             "`id` = :id",
@@ -203,21 +203,21 @@
 			             	":updated_at" => datetime(),
 			             	":id" => $this->id
 			             ));
-
+			
 			$trigger = Trigger::current();
 			$trigger->call("update_post", array($this->id, $options));
 		}
-
+		
 		/**
 		 * Function: delete
 		 * Deletes the post. Calls the "delete_post" trigger with the post's ID.
 		 */
 		public function delete() {
 			if (!isset($this->id)) return;
-
+			
 			$trigger = Trigger::current();
 			$trigger->call("delete_post", $this->id);
-
+			
 			$sql = SQL::current();
 			$sql->delete("posts",
 			             "`id` = :id",
@@ -225,7 +225,7 @@
 			             	':id' => $this->id
 			             ));
 		}
-
+		
 		/**
 		 * Function: info
 		 * Grabs a specified column from a post's SQL row.
@@ -242,10 +242,10 @@
 		 */
 		static function info($column, $post_id, $fallback = false) {
 			global $current_post;
-
+			
 			if ($current_post["id"] == $post_id)
 				return $current_post[$column];
-
+			
 			$sql = SQL::current();
 			$grab_column = $sql->select("posts",
 			                            $column,
@@ -256,7 +256,7 @@
 			                            ));
 			return ($grab_column->rowCount() == 1) ? $grab_column->fetchColumn() : $fallback ;
 		}
-
+		
 		/**
 		 * Function: exists
 		 * Checks if a post exists.
@@ -275,13 +275,13 @@
 			                       array(
 			                          ':id' => $post_id
 			                       ));
-
+			
 			$count = $result->fetchColumn();
 			$result->closeCursor();
-
+			
 			return ($count == 1);
 		}
-
+		
 		/**
 		 * Function: check_url
 		 * Checks if a given clean URL is already being used as another post's URL.
@@ -304,7 +304,7 @@
 			$count = $check_url->rowCount() + 1;
 			return ($count == 1 or empty($clean)) ? $clean : $clean."_".$count ;
 		}
-
+		
 		/**
 		 * Function: feather_class
 		 * Returns the class name for the given posts's Feather.
@@ -316,14 +316,14 @@
 			$feather = self::info("feather", $post_id);
 			return camelize($feather);
 		}
-
+		
 		/**
 		 * Function: url
 		 * Returns a post's URL.
 		 */
 		public function url() {
 			global $user, $plural_feathers;
-
+			
 			$config = Config::current();
 			if ($config->clean_urls) {
 				$login = (strpos($config->post_url, "(author)") !== false) ? $user->info("login", $this->user_id) : null ;
@@ -347,7 +347,7 @@
 				return $config->url."/?action=view&url=".urlencode($this->url);
 			}
 		}
-
+		
 		/**
 		 * Function: title_from_excerpt
 		 * Generates an acceptable Title from the post's excerpt.
@@ -358,16 +358,16 @@
 		public function title_from_excerpt() {
 			global $feathers;
 			if (!isset($this->id)) return false;
-
+			
 			$trigger = Trigger::current();
 			$excerpt = $trigger->filter("title_from_excerpt", $this->excerpt());
 			$stripped = strip_tags($excerpt); # Strip all HTML
 			$truncated = truncate($stripped, 75); # Truncate the excerpt to 75 characters
 			$normalized = normalize($truncated); # Trim and normalize whitespace
-
+			
 			return $normalized;
 		}
-
+		
 		/**
 		 * Function: title
 		 * Returns the given post's title, provided by its Feather.
@@ -377,8 +377,8 @@
 			$trigger = Trigger::current();
 			return $trigger->filter("title", $feathers[$this->feather]->title($this->id));
 		}
-
-
+		
+		
 		/**
 		 * Function: excerpt
 		 * Returns the given post's excerpt, provided by its Feather.
@@ -388,8 +388,8 @@
 			$trigger = Trigger::current();
 			return $trigger->filter("excerpt", $feathers[$this->feather]->excerpt($this->id));
 		}
-
-
+		
+		
 		/**
 		 * Function: feed_content
 		 * Returns the given post's Feed content, provided by its Feather.
@@ -398,7 +398,7 @@
 			$class = self::feather_class($this->id);
 			return call_user_func(array($class, "feed_content"), $this->id);
 		}
-
+		
 		/**
 		 * Function: next_link
 		 * Displays a link to the next post.
@@ -407,10 +407,10 @@
 			global $private, $enabled_feathers, $temp_id;
 			$post = (!isset($temp_id)) ? $this : new self($temp_id) ;
 			if (!isset($post->created_at)) return;
-
+			
 			if (!isset($temp_id))
 				$temp_id = $this->id;
-
+			
 			$sql = SQL::current();
 			$grab_next = $sql->select("posts",
 			                          "id",
@@ -422,15 +422,15 @@
 			                          ),
 			                          1);
 			if (!$grab_next->rowCount()) return;
-
+			
 			$next = new self($grab_next->fetchColumn());
 			$text = str_replace("(name)", $next->title(), $text);
-
+			
 			echo '<a href="'.htmlspecialchars($next->url(), 2, "utf-8").'" class="'.$class.'">'.truncate($text, $truncate).'</a>';
-
+			
 			new self($post->id);
 		}
-
+		
 		/**
 		 * Function: prev_link
 		 * Displays a link to the previous post.
@@ -439,10 +439,10 @@
 			global $private, $enabled_feathers, $temp_id;
 			$post = (!isset($temp_id)) ? $this : new self($temp_id) ;
 			if (!isset($post->created_at)) return;
-
+			
 			if (!isset($temp_id))
 				$temp_id = $this->id;
-
+			
 			$sql = SQL::current();
 			$grab_prev = $sql->select("posts",
 			                          "id",
@@ -454,15 +454,15 @@
 			                          ),
 			                          1);
 			if (!$grab_prev->rowCount()) return;
-
+			
 			$prev = new self($grab_prev->fetchColumn());
 			$text = str_replace("(name)", $prev->title(), $text);
-
+			
 			echo '<a href="'.htmlspecialchars($prev->url(), 2, "utf-8").'" class="'.$class.'">'.truncate($text, $truncate).'</a>';
-
+			
 			new self($post->id);
 		}
-
+		
 		/**
 		 * Function: theme_exists
 		 * Checks if the current post's feather theme file exists.
@@ -480,24 +480,24 @@
 		 */
 		private function parse($filter = false) {
 			global $post;
-
+			
 			$parse = simplexml_load_string($this->xml);
 			foreach ($parse as $key => $val)
 				if (!is_int($key))
 					$this->$key = (string) $val;
-
+			
 			if ($filter) {
 				$class = camelize($this->feather);
-
+				
 				$post = $this;
-
+				
 				$trigger = Trigger::current();
 				$trigger->call("filter_post");
-
+				
 				if (isset(Feather::$custom_filters[$class])) # Run through feather-specified filters, first.
 					foreach (Feather::$custom_filters[$class] as $custom_filter)
 						$this->$custom_filter["field"] = call_user_func(array($class, $custom_filter["name"]), $this->$custom_filter["field"]);
-
+				
 				if (isset(Feather::$filters[$class])) # Now actually filter it.
 					foreach (Feather::$filters[$class] as $filter)
 						$this->$filter["field"] = $trigger->filter($filter["name"], $this->$filter["field"]);

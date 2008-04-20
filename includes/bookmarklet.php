@@ -1,19 +1,19 @@
 <?php
 	require_once "common.php";
-
+	
 	if (!$user->can("add_post"))
 		error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
-
+		
 	if (empty($config->enabled_feathers))
 		error(__("No Feathers"), __("Please install a feather or two in order to add a post."));
 
 	$feather = $config->enabled_feathers[0];
 	fallback($_GET['status']);
-
+	
 	$args['url'] = (isset($_GET['url'])) ? urldecode(stripslashes($_GET['url'])) : null ;
 	$args['title'] = (isset($_GET['title'])) ? urldecode(stripslashes($_GET['title'])) : null ;
 	$args['selection'] = (isset($_GET['selection'])) ? urldecode(stripslashes($_GET['selection'])) : null ;
-
+	
 	$post = new Post();
 
 	switch($_GET['status']) {
@@ -139,7 +139,7 @@
 	foreach ($config->enabled_feathers as $the_feather) {
 		if (file_exists(FEATHERS_DIR."/".$the_feather."/locale/".$config->locale.".mo"))
 			load_translator($the_feather, FEATHERS_DIR."/".$the_feather."/locale/".$config->locale.".mo");
-
+		
 		$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$the_feather."/info.yaml");
 ?>
 			<li id="nav_<?php echo $the_feather; ?>"<?php if ($feather == $the_feather) echo ' class="selected"'; ?>>
@@ -155,10 +155,10 @@
 <?php
 	foreach ($config->enabled_feathers as $the_feather) {
 		$style = ($feather == $the_feather) ? "block" : "none" ;
-
+		
 		if (file_exists(FEATHERS_DIR."/".$the_feather."/locale/".$config->locale.".mo"))
 			load_translator($the_feather, FEATHERS_DIR."/".$the_feather."/locale/".$config->locale.".mo");
-
+		
 		$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$the_feather."/info.yaml");
 ?>
 			<form action="<?php echo $config->url."/admin/?action=add_post"; ?>" id="<?php echo $the_feather; ?>_form" style="display: <?php echo $style; ?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">

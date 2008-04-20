@@ -18,7 +18,7 @@
 	</p>
 	<h4><?php echo __("Permissions"); ?></h4>
 	<p id="toggler">
-
+		
 	</p>
 <?php
 	foreach ($permissions->fetchAll() as $permission):

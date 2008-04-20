@@ -1,6 +1,6 @@
 <?php
 	require "lib/markdown.php";
-
+	
 	class Markdown extends Module {
 		public function __construct() {
 			$this->setPriority("markup_post_text", 9);

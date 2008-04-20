@@ -6,19 +6,19 @@
 		static function submit() {
 			if (empty($_POST['video']))
 				error(__("Error"), __("Video can't be blank."));
-
+			
 			$embed = self::embed_tag($_POST['video']);
 			$values = array("embed" => $embed, "caption" => $_POST['caption']);
 			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : "" ;
 			$url = Post::check_url($clean);
-
+			
 			$post = Post::add($values, $clean, $url);
-
+			
 			# Send any and all pingbacks to URLs in the caption
 			$config = Config::current();
 			if ($config->send_pingbacks)
 				send_pingbacks($_POST['caption'], $post->id);
-
+			
 			$route = Route::current();
 			if (isset($_POST['bookmarklet']))
 				$route->redirect($route->url("bookmarklet/done/"));
@@ -27,13 +27,13 @@
 		}
 		static function update() {
 			$post = new Post($_POST['id']);
-
+			
 			if (empty($_POST['video']))
 				error(__("Error"), __("Video can't be blank."));
-
+			
 			$embed = embed_tag($_POST['video']);
 			$values = array("embed" => $embed, "caption" => $_POST['caption']);
-
+			
 			$post->update($values);
 		}
 		static function title($id) {

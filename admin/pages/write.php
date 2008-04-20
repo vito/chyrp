@@ -13,7 +13,7 @@
 		foreach ($config->enabled_feathers as $feather) {
 			if (file_exists(FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo"))
 				load_translator($feather, FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo");
-
+			
 			$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$feather."/info.yaml");
 ?>
 			<li<?php admin_selected("write", $feather); ?>><a href="<?php url("write", $feather); ?>"><?php echo (count($config->enabled_feathers) == 1) ? __("Post") : __($info["name"], $feather) ; ?></a></li>

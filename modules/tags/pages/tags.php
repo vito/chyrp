@@ -6,17 +6,17 @@
 	                         	".$private.$enabled_feathers."
 	                         group by `name`
 	                         order by rand() asc");
-
+	
 	$theme->title = __("Tags", "tags");
 	$theme->load("layout/header");
-
+	
 	$trigger->call("tags_top");
-
+	
 	if ($get_tags->rowCount() > 0) {
 		$tags = array();
 		while ($tag = mysql_fetch_object($get_tags))
 			$tags[$tag->name] = $tag->count;
-
+		
 		$max_qty = max(array_values($tags));
 		$min_qty = min(array_values($tags));
 
@@ -26,7 +26,7 @@
 		}
 
 		$step = 75 / $spread;
-
+	
 		foreach ($tags as $key => $value) {
 			$size = 100 + (($value - $min_qty) * $step);
 			$title = sprintf(_p("%s post tagged with &quot;%s&quot;", "%s posts tagged with &quot;%s&quot;", $value), $value, $key);
@@ -37,7 +37,7 @@
 			                   ))->fetchColumn();
 			echo '<a class="tag" href="'.$route->url("tag/".$url."/").'" style="font-size: '.$size.'%" title="'.$title.'">'.$key.'</a> ';
 		}
-
+	
 	} elseif ($theme->snippet_exists("no_tags")) {
 		$trigger->call("no_tags");
 	} else {

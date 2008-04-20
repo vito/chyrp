@@ -3,7 +3,7 @@
 	 * Class: Trigger
 	 * Controls and keeps track of all of the Triggers and events.
 	 */
-
+	
 	/**
 	 * Function: cmp
 	 * Sorts actions by priority when used with usort.
@@ -12,14 +12,14 @@
 		if (empty($a) or empty($b)) return 0;
 		return ($a["priority"] < $b["priority"]) ? -1 : 1 ;
 	}
-
+	
 	class Trigger {
 		private $called = array();
 		public $priorities = array();
 		private $modified_text = array();
-
+		
 		private function __construct() {}
-
+		
 		/**
 		 * Function: call
 		 * Calls a trigger, passing the $arg to any actions for it.
@@ -34,31 +34,31 @@
 		public function call($name, $arg = null, $array = true) {
 			global $snippet;
 			$caller = (is_array($arg) and $array) ? "call_user_func_array" : "call_user_func" ;
-
+			
 			if (isset($this->priorities[$name])) { # Predefined priorities?
 				usort($this->priorities[$name], "cmp");
-
+				
 				foreach ($this->priorities[$name] as $action) {
 					$caller($action["function"], $arg);
 					$this->called[] = $action["function"];
 				}
 			}
-
+			
 			$config = Config::current();
 			foreach ($config->enabled_modules as $module) {
 				$camelized = camelize($module);
-
+				
 				if (in_array(array($camelized, $name), $this->called))
 					continue;
-
+				
 				if (is_callable(array($camelized, $name)))
 					$caller(array($camelized, $name), $arg);
 			}
-
+			
 			if (method_exists($snippet, $name))
 				$caller(array($snippet, $name), $arg);
 		}
-
+		
 		/**
 		 * Function: filter
 		 * Filters a string or array through a trigger's actions.
@@ -76,7 +76,7 @@
 		public function filter($name, $arg = "", $array = false) {
 			global $snippet;
 			$caller = (is_array($arg) and $array) ? "call_user_func_array" : "call_user_func" ;
-
+			
 			if (isset($this->priorities[$name])) { # Predefined priorities?
 				usort($this->priorities[$name], "cmp");
 				foreach ($this->priorities[$name] as $action) {
@@ -84,29 +84,29 @@
 					$this->called[] = $action["function"];
 				}
 			}
-
+			
 			$config = Config::current();
 			foreach ($config->enabled_modules as $module) {
 				$camelized = camelize($module);
-
+				
 				if (in_array(array($camelized, $name), $this->called))
 					continue;
-
+				
 				if (is_callable(array($camelized, $name))) {
 					$this->modified_text[$name] = $caller(array($camelized, $name), $this->modified($name, $arg));
 				}
 			}
-
+			
 			if (method_exists($snippet, $name))
 				$this->modified_text[$name] = $caller(array($snippet, $name), $this->modified($name, $arg));
-
+			
 			$final = $this->modified($name, $arg);
-
+			
 			$this->modified_text[$name] = null;
-
+			
 			return $final;
 		}
-
+		
 		/**
 		 * Function: modified
 		 * A little helper function for <filter>.
@@ -114,7 +114,7 @@
 		function modified($name, $arg) {
 			return (!isset($this->modified_text[$name])) ? $arg : $this->modified_text[$name] ;
 		}
-
+		
 		/**
 		 * Function: remove
 		 * Unregisters a given $action from a $trigger.
@@ -132,7 +132,7 @@
 			}
 			$this->actions[$trigger]["disabled"][] = $action;
 		}
-
+		
 		/**
 		 * Function: exists
 		 * Checks if there are any actions for a given $trigger.
@@ -149,14 +149,14 @@
 			foreach ($config->enabled_modules as $module)
 				if (is_callable(array(camelize($module), $name)))
 					return true;
-
+			
 			if (method_exists($snippet, $name))
 				return true;
-
+			
 			if (isset($this->priorities[$name]))
 				return true;
 		}
-
+		
 		/**
 		 * Function: current
 		 * Returns a singleton reference to the current connection.

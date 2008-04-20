@@ -16,20 +16,20 @@
 		function create($author, $email, $url, $body, $post_id, $type = null) {
 			global $user, $current_user;
 			if (!$this->user_can($post_id)) return;
-
+			
 			$post = new Post($post_id);
 			$config = Config::current();
 			$route = Route::current();
-
+			
 			if (!$type) {
 				$status = ($post->user_id == $current_user) ? "approved" : $config->default_comment_status ;
 				$type = "comment";
 			} else
 				$status = $type;
-
+			
 			if (!empty($config->akismet_api_key)) {
 				require_once "lib/Akismet.class.php";
-
+				
 				$akismet = new Akismet($config->url, $config->akismet_api_key);
 				$akismet->setCommentAuthor($author);
 				$akismet->setCommentAuthorEmail($email);
@@ -37,7 +37,7 @@
 				$akismet->setCommentContent($body);
 				$akismet->setPermalink($post->url());
 				$akismet->setCommentType($type);
-
+				
 				if ($akismet->isKeyValid() && $akismet->isCommentSpam()) {
 					$this->add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], "spam", datetime(), $post_id, $current_user);
 					error(__("Spam Comment"), __("Your comment has been marked as spam. It will have to be approved before it will show up.", "comments"));
@@ -61,7 +61,7 @@
 				if (!isset($parse["scheme"]))
 					$url = "http://".$url;
 			}
-
+			
 			$sql = SQL::current();
 			$sql->query("insert into `".$sql->prefix."comments`
 			             (`body`, `author`, `author_url`, `author_email`, `author_ip`,
@@ -82,14 +82,14 @@
 			            	":user_id"=> $user_id
 			            ));
 			$id = $sql->db->lastInsertId();
-
+			
 			$trigger = Trigger::current();
 			$trigger->call('add_comment', $id);
 			return $id;
 		}
 		function info($column, $comment_id = null) {
 			if (is_null($comment_id)) return null; # Can't do anything without a comment ID.
-
+			
 			$sql = SQL::current();
 			$grab_info = $sql->query("select `".$column."` from `".$sql->prefix."comments`
 			                          where `id` = :id",
@@ -116,7 +116,7 @@
 		}
 		function author_link() {
 			global $user;
-
+		
 			if ($this->author_url != "") # If a URL is set
 				echo '<a href="'.$this->author_url.'">'.$this->author.'</a>';
 			else # If not, just show their name
@@ -158,7 +158,7 @@
 		function user_can($post_id) {
 			global $user;
 			if (!$user->can("add_comment")) return false;
-
+			
 			$post = new Post($post_id, array("filter" => false));
 			// assume allowed comments by default
 			return empty($post->comment_status) or

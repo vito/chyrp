@@ -39,7 +39,7 @@ class Twig_Parser
 			'include' =>	array($this, 'parseInclude'),
 			'block' =>	array($this, 'parseBlock'),
 			'super' =>	array($this, 'parseSuper'),
-
+			
 			# Added by Alex
 			'trigger' =>	array($this, 'parseTrigger'),
 			'url' =>	array($this, 'parseURL')
@@ -429,7 +429,7 @@ class Twig_Parser
 			else
 				throw new Twig_SyntaxError('expected name or number',
 							   $lineno);
-
+			
 		}
 		else {
 			$token = $this->stream->next();

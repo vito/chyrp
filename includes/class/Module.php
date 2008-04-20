@@ -13,7 +13,7 @@
 			$trigger = Trigger::current();
 			$trigger->priorities[$name][] = array("priority" => $priority, "function" => array($class, $name));
 		}
-
+		
 		/**
 		 * Function: addAlias
 		 * Allows a module to respond to a trigger with multiple functions and custom priorities.

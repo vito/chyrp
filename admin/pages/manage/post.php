@@ -75,7 +75,7 @@
 		                               25);
 	}
 	$count = 1;
-
+	
 	foreach ($get_posts->fetchAll() as $post) {
 		$post = new Post(null, array("read_from" => $post));
 		$class = ($count == $get_posts->rowCount()) ? ' class="last '.$post->status.'"' : ' class="'.$post->status.'"' ;

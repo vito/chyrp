@@ -1,8 +1,7 @@
 <?php
 	define('ADMIN', true);
 	require_once "../includes/common.php";
-
-
+	
 	# Should the Manage tab be shown?
 	$show_manage_tab = false;
 	$manage_pages = array("post", "page", "user", "group");
@@ -13,19 +12,15 @@
 				$can_manage = $type;
 			$show_manage_tab = true;
 		}
-
-
+	
 	$allowed = ($user->can("add_post") or $user->can("add_page") or $user->can("change_settings") or $show_manage_tab);
-
-
+	
 	if (!$allowed)
 		error(__("Access Denied"), __("You are not allowed to view this area."));
-
-
+	
 	$action = (isset($_GET['action'])) ? strip_tags($_GET['action']) : "write" ;
 	$sub = (isset($_GET['sub'])) ? strip_tags($_GET['sub']) : null ;
-
-
+	
 	# I know I could just do __(ucfirst($whatever)) with these, but
 	# doing it this way lets my gettext scanner live a little easier.
 	$actions = array("write" => __("Write"),
@@ -46,8 +41,7 @@
 	              "themes" => __("Themes"));
 	$actions = $trigger->filter("admin_page_titles", $actions);
 	$subs = $trigger->filter("admin_sub_page_titles", $subs);
-
-
+	
 	if (!isset($_GET['action']) and !isset($_GET['sub']))
 		if (!$user->can("add_post") and !$user->can("add_page"))
 			if ($user->can("change_settings"))
@@ -59,13 +53,11 @@
 					$route->redirect("/admin/?action=manage&sub=".$can_manage);
 		elseif ($user->can("add_page"))
 			$route->redirect(url("write", "page", true));
-
-
+	
 	if ($action == "manage" and !isset($_GET['sub']) and $show_manage_tab)
 		if (!$user->can("edit_post") and !$user->can("delete_post"))
 			$route->redirect("/admin/?action=manage&sub=".$can_manage);
-
-
+	
 	function url($action, $sub = null, $return = false) {
 		$config = Config::current();
 		$url = $config->url."/admin/?action=".$action;
@@ -124,30 +116,26 @@
 		require "pages/".$action.".php";
 	} else {
 		$page_exists = false;
-
-
+		
 		foreach ($config->enabled_modules as $module) {
 			if (file_exists(MODULES_DIR."/".$module."/pages/admin/".$action.".php")) {
 				require MODULES_DIR."/".$module."/pages/admin/".$action.".php";
 				$page_exists = true;
 			}
 		}
-
-
+		
 		foreach ($config->enabled_feathers as $feather) {
 			if (file_exists(FEATHERS_DIR."/".$feather."/pages/admin/".$action.".php")) {
 				require FEATHERS_DIR."/".$feather."/pages/admin/".$action.".php";
 				$page_exists = true;
 			}
 		}
-
-
+		
 		if (file_exists(THEME_DIR."/pages/admin/".$action.".php")) {
 			require THEME_DIR."/pages/admin/".$action.".php";
 			$page_exists = true;
 		}
-
-
+		
 		if (!$page_exists) {
 ?>
 		<br />

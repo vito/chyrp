@@ -1,8 +1,8 @@
 <?php
 	$sub = (isset($_GET['sub'])) ? $_GET['sub'] : "post" ;
-
+	
 	$permission = $trigger->filter("manage_permission", $sub);
-
+	
 	$show_page = ($user->can("edit_".$permission) or $user->can("delete_".$permission));
 	$show_page = ($trigger->exists("show_admin_manage_page")) ?
 	             $trigger->filter("show_admin_manage_page", array($show_page, $sub), true) :
@@ -43,14 +43,14 @@
 					$page_exists = true;
 				}
 			}
-
+			
 			foreach ($config->enabled_feathers as $feather) {
 				if (file_exists(FEATHERS_DIR."/".$feather."/pages/admin/manage/".$sub.".php")) {
 					require FEATHERS_DIR."/".$feather."/pages/admin/manage/".$sub.".php";
 					$page_exists = true;
 				}
 			}
-
+		
 			if (file_exists(THEME_DIR."/pages/admin/manage/".$sub.".php")) {
 				require THEME_DIR."/pages/admin/manage/".$sub.".php";
 				$page_exists = true;

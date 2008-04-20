@@ -18,7 +18,7 @@
 			fallback($user_id, $current_user);
 			if (empty($user_id)) return;
 			fallback($password, $_COOKIE['chyrp_password']);
-
+			
 			$sql = SQL::current();
 			$result = $sql->query("select * from `".$sql->prefix."users`
 			                        where
@@ -28,15 +28,15 @@
 			                       		":id" => $user_id,
 			                       		":password" => $password
 			                        ))->fetch();
-
+			
 			if (!$result)
 				return;
-
+			
 			foreach ($result as $key => $val)
 				if (!is_int($key))
 					$this->$key = $val;
 		}
-
+		
 		/**
 		 * Function: authenticate
 		 * Checks to see if a given Login and Password match a user in the database.
@@ -50,7 +50,7 @@
 		 */
 		function authenticate($login, $password) {
 			if (isset($this->id)) return true;
-
+			
 			$sql = SQL::current();
 			$check_user = $sql->query("select `id` from `{$sql->prefix}users`
 			                           where
@@ -62,7 +62,7 @@
 			                          ));
 			return ($check_user->fetchColumn());
 		}
-
+		
 		/**
 		 * Function: logged_in
 		 * Checks to see if the current visitor is logged in. If Cookies are set, it validates them to make sure.
@@ -73,7 +73,7 @@
 		function logged_in() {
 			if (!XML_RPC and (empty($_COOKIE['chyrp_user_id']) or empty($_COOKIE['chyrp_password']))) return false;
 			if (isset($this->id)) return true;
-
+			
 			$sql = SQL::current();
 			$check_user = $sql->query("select count(`id`) from `".$sql->prefix."users`
 			                           where
@@ -85,7 +85,7 @@
 			                          ));
 			return ($check_user->fetchColumn() == 1);
 		}
-
+		
 		/**
 		 * Function: info
 		 * Grabs a specified column from a users SQL row.
@@ -104,7 +104,7 @@
 			global $current_user;
 			$user = (is_null($user_id)) ? $current_user : $user_id ;
 			if (isset($this->id) and $this->id == $user) return ($this->$column == "") ? $fallback : $this->$column ;
-
+			
 			$sql = SQL::current();
 			$grab_info = $sql->query("select `".$column."` from `".$sql->prefix."users`
 			                          where `id` = :id",
@@ -115,7 +115,7 @@
 				return ($grab_info->fetchColumn() == "") ? $fallback : $grab_info->fetchColumn() ;
 			return $fallback;
 		}
-
+		
 		/**
 		 * Function: can
 		 * Checks to see if a user can perform a specified function.
@@ -132,10 +132,10 @@
 			fallback($user_id, $current_user);
 			$config = Config::current();
 			$sql = SQL::current();
-
+			
 			if (($this->logged_in() and $group->id == $this->group_id) or (!$this->logged_in() and $group->id == $config->guest_group))
 				return isset($group->$function);
-
+			
 			$group_id = (!$this->logged_in()) ? $config->guest_group : $this->info("group_id", $user_id) ;
 			$permissions = $sql->query("select `permissions` from `".$sql->prefix."groups`
 			                            where `id` = :id",
@@ -143,10 +143,10 @@
 			                           	":id" => $group_id
 			                           ))->fetchColumn();
 			$permissions = Spyc::YAMLLoad($permissions);
-
+			
 			return in_array($function, $permissions);
 		}
-
+		
 		/**
 		 * Function: add
 		 * Adds a user to the database with the passed username, password, and e-mail.
@@ -185,7 +185,7 @@
 			$trigger->call("add_user", $id);
 			return $id;
 		}
-
+		
 		/**
 		 * Function: update
 		 * Updates a user with the given login, password, full name, e-mail, website, and <Group> ID.
@@ -227,7 +227,7 @@
 			$trigger = Trigger::current();
 			$trigger->call("update_user", array($user_id, $login, $password, $full_name, $email, $website, $group_id));
 		}
-
+		
 		/**
 		 * Function: delete
 		 * Deletes a given user. Calls the "delete_user" trigger with the users ID.
@@ -238,7 +238,7 @@
 		function delete($user_id) {
 			$trigger = Trigger::current();
 			$trigger->call("delete_user", $user_id);
-
+			
 			$sql = SQL::current();
 			$sql->query("delete from `".$sql->prefix."users`
 			             where `id` = :id",
@@ -246,7 +246,7 @@
 			            	":id" => $user_id
 			            ));
 		}
-
+		
 		/**
 		 * Function: edit_link
 		 * Outputs an edit link for the given user ID, if they <can> edit_user.
@@ -263,7 +263,7 @@
 			$config = Config::current();
 			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=user&amp;id='.$user_id.'" title="Edit" class="user_edit_link" id="user_edit_'.$user_id.'">'.$text.'</a>'.$after;
 		}
-
+		
 		/**
 		 * Function: delete_link
 		 * Outputs a delete link for the given user ID, if they <can> delete_user.
@@ -280,7 +280,7 @@
 			$config = Config::current();
 			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=user&amp;id='.$user_id.'" title="Delete" class="user_delete_link" id="user_delete_'.$user_id.'">'.$text.'</a>'.$after;
 		}
-
+		
 		function get_viewable_statuses($draft = false) {
 			$statuses = array('public');
 			if ($this->logged_in()) $statuses[] = 'registered_only';

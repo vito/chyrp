@@ -74,9 +74,9 @@
 	while ($temp_comment = $get_comments->fetch()):
 		foreach ($temp_comment as $key => $val) $comment->$key = $val;
 		$trigger->call("manage_comments");
-
+		
 		$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
-
+		
 		$post = new Post($comment->post_id);
 ?>
 					<div class="box">
