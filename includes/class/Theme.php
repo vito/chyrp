@@ -245,7 +245,7 @@
 			$context = $trigger->filter(str_replace("/", "_", $file), $context);
 
 			$template = $this->twig->getTemplate($file.".twig");
-			$template->display($context);
+			return $template->display($context);
 		}
 	}
 	$theme = new Theme();

@@ -1,15 +1,22 @@
+{% extends "layouts/default.twig" %}
+{% block content %}
 				<div class="page" id="page_$page.if">
 					<div id="page_inner_$page.id">
 						<h2>
-{# <?php if ($user->can("edit_page") or $user->can("delete_page")): ?>
+{% if user.can.edit_page or user.can.delete_page %}
 							<span class="info right">
-								<?php $page->edit_link(); ?>
-								<?php $page->delete_link(null, ' <em>/</em> '); ?>
+								{% if user.can.edit_page %}
+								<a href="$page.edit_url" class="page_edit_link" id="page_edit_$page.id">Edit</a>
+								{% endif %}
+								{% if user.can.delete_page %}
+								<em>|</em> <a href="$page.delete_url" class="page_delete_link" id="page_delete_$page.id">Delete</a>
+								{% endif %}
 							</span>
-<?php endif; ?> #}
+{% endif %}
 							$page.title
 						</h2>
 						<br />
 						$page.body
 					</div>
 				</div>
+{% endblock %}

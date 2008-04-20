@@ -1,3 +1,5 @@
+{% extends "layouts/default.twig" %}
+{% block content %}
 	<h2>${ "Log In" | translate }</h2>
 	<br />
 	<form action="{% url "process_login/" %}" method="post">
@@ -12,3 +14,4 @@
 
 		<p><input name="submit" type="submit" id="submit" value="${ "Log In" | translate }"></p>
 	</form>
+{% endblock %}

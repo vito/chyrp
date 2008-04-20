@@ -124,13 +124,8 @@
 				error(__("Error"), __("You're already logged in."));
 
 			$theme->title = __("Log In");
-			$theme->load("layout/header");
+			$theme->load("forms/user/login", array("incorrect" => isset($_GET['incorrect'])));
 
-			$incorrect = isset($_GET['incorrect']);
-
-			$theme->load("forms/user/login");
-
-			$theme->load("layout/footer");
 			break;
 		case "register":
 			if (!$config->can_register)
@@ -139,18 +134,16 @@
 				error(__("Error"), __("You're already logged in."));
 
 			$theme->title = __("Register");
-			$theme->load("layout/header");
 			$theme->load("forms/user/register");
-			$theme->load("layout/footer");
+
 			break;
 		case "controls":
 			if (!$user->logged_in())
 				error(__("Error"), __("You must be logged in to access this area."));
 
 			$theme->title = __("Controls");
-			$theme->load("layout/header");
 			$theme->load("forms/user/controls");
-			$theme->load("layout/footer");
+
 			break;
 		case "feed":
 			if (!isset($get_posts)) exit;
@@ -164,7 +157,6 @@
 		case "bookmarklet":
 			if (!$user->can("add_post"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
-
 			if (empty($config->enabled_feathers))
 				error(__("No Feathers"), __("Please install a feather or two in order to add a post."));
 
@@ -180,35 +172,24 @@
 
 				if (file_exists(THEME_DIR."/content/".$page->url.".php"))
 					$theme->load("content/".$page->url, array("page" => $page));
-				else {
-					$theme->load("layout/header");
+				else
 					$theme->load("content/page", array("page" => $page));
-					$theme->load("layout/footer");
-				}
 			} else
 				show_404();
 
 			break;
 		default:
 			$page_exists = false;
-			foreach ($config->enabled_modules as $module) {
-				if (file_exists(MODULES_DIR."/".$module."/pages/".$action.".php")) {
-					require MODULES_DIR."/".$module."/pages/".$action.".php";
-					$page_exists = true;
-				}
-			}
+			foreach ($config->enabled_modules as $module)
+				if (file_exists(MODULES_DIR."/".$module."/pages/".$action.".php"))
+					$page_exists = @include MODULES_DIR."/".$module."/pages/".$action.".php";
 
-			foreach ($config->enabled_feathers as $feather) {
-				if (file_exists(FEATHERS_DIR."/".$feather."/pages/".$action.".php")) {
-					require FEATHERS_DIR."/".$feather."/pages/".$action.".php";
-					$page_exists = true;
-				}
-			}
+			foreach ($config->enabled_feathers as $feather)
+				if (file_exists(FEATHERS_DIR."/".$feather."/pages/".$action.".php"))
+					$page_exists = @include FEATHERS_DIR."/".$feather."/pages/".$action.".php";
 
-			if (file_exists(THEME_DIR."/pages/".$action.".php")) {
-				$theme->load("pages/".$action);
-				$page_exists = true;
-			}
+			if (file_exists(THEME_DIR."/pages/".$action.".php"))
+				$page_exists = $theme->load("pages/".$action);
 
 			if (!$page_exists)
 				show_404();

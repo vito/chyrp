@@ -1,4 +1,7 @@
+{% extends "layouts/default.twig" %}
+{% block content %}
 	<h2>${ "Register" | translate }</h2>
+	<br />
 	<form action="{% url "process_registration/" %}" method="post">
 		<p>
 			<label for="login">${ "Username" | translate }</label>
@@ -19,3 +22,4 @@
 
 		<p><input type="submit" value="${ "Register" | translate }"></p>
 	</form>
+{% endblock %}

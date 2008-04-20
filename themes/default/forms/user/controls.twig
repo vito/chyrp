@@ -1,3 +1,5 @@
+{% extends "layouts/default.twig" %}
+{% block content %}
 	<h2>${ "Controls" | translate }</h2>
 	<br />
 	<form action="{% url "update_self/" %}" method="post">
@@ -24,3 +26,4 @@
 
 		<p><input name="submit" type="submit" id="submit" value="${ "Update" | translate }"></p>
 	</form>
+{% endblock %}
