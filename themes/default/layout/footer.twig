@@ -1,6 +1,8 @@
 				</div>
+{#
 				<?php $paginate->next_link(__("Next &rarr;", "theme"), "right"); ?>
 				<?php $paginate->prev_link(__("&larr; Previous", "theme")); ?>
+#}
 				<br />
 				<div class="footer">
 					<p><a href="<?php echo $route->url("feed/"); ?>">Feed</a> / theme &copy; <a href="http://lofisoami.com/">Aaron MacDonald</a> 2007</p>
@@ -8,13 +10,16 @@
 				</div>
 		    </div>
 		    <div class="sidebar">
-				<form action="<?php echo $route->url("search/"); ?>" method="get" accept-charset="utf-8">
+				<form action="{# TODO: route url #}$site.url/search/" method="get" accept-charset="utf-8">
 					<input type="hidden" name="action" value="search" id="action" />
 					<input type="text" id="search" name="query" />
 				</form>
 				<h1>${ "Pages" | translate }</h1>
+{#
 <?php $theme->list_pages(); ?>
-				<h1>${ "Welcome, %s!" | translate }</h1>
+#}
+				<h1>${ "Welcome, " | translate } $user.login!</h1>
+{#
 				<ul>
 {% if user.logged_in %}
 					<li><a href="<?php echo $route->url("controls/"); ?>"><?php echo __("User Controls", "theme"); ?></a></li>
@@ -22,21 +27,22 @@
 					<li><a class="toggle_admin" href="<?php echo $route->url("toggle_admin/"); ?>"><?php echo __("Toggle Admin Bar", "theme"); ?></a></li>
 <?php 	endif; ?>
 					<li><a href="<?php echo $route->url("logout/"); ?>"><?php echo __("Log Out", "theme"); ?></a></li>
-{# else %}
+{% else %}
 					<li><a href="<?php echo $route->url("login/"); ?>"><?php echo __("Log In", "theme"); ?></a></li>
 {% if site.can_register %}
 					<li><a href="<?php echo $route->url("register/"); ?>"><?php echo __("Register", "theme"); ?></a></li>
-{% endif #}
+{% endif %}
 {% endif %}
 				</ul>
-				<?php $trigger->call("sidebar"); ?>
+#}
+{# TODO: Sidebar trigger #}
 {% if tags %}
 				<h1>${ "Tags" | translate }</h1>
 				<ul id="tags_list">
 {% for tag in tags %}
-					<li><a href="<?php echo $route->url("tag/".$tag["url"]."/"); ?>">$tag.name</a></li>
+					<li><a href="{# TODO: route url #}$site.url/tag/$tag.url/">$tag.name</a></li>
 {% endfor %}
-					<li><a href="<?php echo $route->url("tags/"); ?>">${ "All &rarr;" | translate }</a></li>
+					<li><a href="{# TODO: route url #}$site.url/tags/">${ "All &rarr;" | translate }</a></li>
 				</ul>
 {% endif %}
 				<h1>${ "Archives" | translate }</h1>
@@ -52,6 +58,6 @@
 				</ul>
 			</div>
 		</div>
-<?php $trigger->call("end_content"); ?>
+{# TODO: End Content trigger #}
 	</body>
 </html>
