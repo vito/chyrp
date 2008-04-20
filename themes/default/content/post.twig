@@ -1,0 +1,38 @@
+{% if not ajax %}
+				<div class="post{% if post.pinned %} pinned{% endif %}" id="post_$post.id">
+					<div class="$post.feather target">
+{% endif %}
+						{% if post.pinned %}<span class="pinned_text">${ "pinned" | translate }</span>{% endif %}
+						{% include "content/feathers/" ~ post.feather ~ ".twig" %}
+						{% if post.next_page %}<a class="right" href="$post.next_page_url">Next &rarr;</a>{% endif %}
+						{% if post.prev_page %}<a class="left" href="$post.prev_page_url">&larr; Previous</a>{% endif %}
+						<div class="clear"></div>
+						<span class="info">
+							<strong><a href="$post.url">${ post.created_at | date }</a></strong>
+
+							{% if site.enabled_modules.comments %}
+							<em>|</em> <a href="$post.url#comments">$post.comment_count ${ "Comments" }</a>
+							{% endif %}
+
+							{% if site.enabled_modules.tags %}
+							<em>|</em> Tags: ${ post.tags.linked | join }
+							{% endif %}
+
+							<em>|</em> <a href="$post.trackback_url">${ "Trackback" | translate }</a>
+
+							{% if user.can.edit_post %}
+							<em>|</em> <a href="$post.edit_url" class="post_edit_link" id="post_edit_$post.id">Edit</a>
+							{% endif %}
+
+							{% if user.can.delete_post %}
+							<em>|</em> <a href="$post.delete_url" class="post_delete_link" id="post_delete_$post.id">Delete</a>
+							{% endif %}
+						</span>
+						<br class="clear" />
+{% if not ajax %}
+					</div>
+{% if not viewing and not loop.last %}
+					<br />
+{% endif %}
+				</div>
+{% endif %}

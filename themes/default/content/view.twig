@@ -1,43 +1,12 @@
 {% extends "layouts/default.twig" %}
 {% block content %}
-				<div class="post{% if post.pinned %} pinned{% endif %}" id="post_$post.id">
-					<div class="$post.feather target">
-	{% if post.pinned %}
-						<span class="pinned_text">${ "pinned" | translate }</span>
-	{% endif %}
-		{% include "content/feathers/" ~ post.feather ~ ".twig" %}
-	{% if post.next_page %}
-						    <a class="right" href="$post.next_page_url">Next &rarr;</a>
-	{% endif %}
-	{% if post.prev_page %}
-						    <a class="left" href="$post.prev_page_url">&larr; Previous</a>
-	{% endif %}
-						<div class="clear"></div>
-						<span class="info">
-							<strong><a href="$post.url">${ post.created_at | date }</a></strong>
-	{% if site.enabled_modules.comments %}
-							<em>|</em> <a href="$post.url#comments">$post.comment_count ${ "Comments" }</a>
-	{% endif %}
-	{% if site.enabled_modules.tags %}
-							<em>|</em> Tags: ${ post.tags.linked | join }
-	{% endif %}
-							<em>|</em> <a href="$post.trackback_url">${ "Trackback" | translate }</a>
-{#
-							<?php $post->edit_link(null, ' <em>|</em> '); ?>
-							<?php $post->delete_link(null, ' <em>|</em> '); ?>
-#}
-						</span>
-						<br class="clear" />
-					</div>
-				</div>
+{% include "content/post.twig" %}
 	{% if site.enabled_modules.comments %}
 				<br />
 				<h1 id="comments">${ "Comments" | translate }</h1>
 		{% if post.comment_count > 0 %}
 				<ol class="comments" id="comments_$post.id">
-			{% for comment in post.comments %}
-				{% include "content/comment.twig" %}
-			{% endfor %}
+					{% for comment in post.comments %}{% include "content/comment.twig" %}{% endfor %}
 				</ol>
 		{% endif %}
 				<input type="hidden" name="last_comment" value="$post.last_comment" id="last_comment" />
@@ -48,7 +17,7 @@
 				<br />
 				<br />
 		{% if post.commentable %}
-			{% include "forms/comment/new.twig" %}
+{% include "forms/comment/new.twig" %}
 		{% endif %}
 	{% endif %}
 {% endblock %}

@@ -216,7 +216,7 @@
 		 * Loads a theme's file and extracts the passed array into the scope.
 		 */
 		public function load($file, $context = array()) {
-			global $user, $group, $action;
+			global $user, $group, $action, $viewing;
 
 			fallback($_GET['action'], "index");
 			if (!file_exists($this->directory.$file.".twig"))
@@ -235,6 +235,7 @@
 			$context["archives"] = $this->list_archives();
 			$context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);
 			$context["route"] = array("action" => $action);
+			$context["viewing"] = $viewing;
 
 			foreach ($user as $key => $val)
 				$context["user"][$key] = $val;
