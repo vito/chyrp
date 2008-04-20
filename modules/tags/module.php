@@ -160,6 +160,11 @@
 			$context["tags"] = list_tags();
 			return $context;
 		}
+		
+		static function filter_post() {
+			global $post;
+			$post->tags = array("linked" => get_post_tags($post->id), "unlinked" => get_post_tags($post->id, false));
+		}
 	}
 	
 	$tags_limit_reached = false;
@@ -205,7 +210,7 @@
 		return $tags_limit_reached;
 	}
 	
-	function list_post_tags($post_id, $prefix = "Tags: ", $suffix = null, $fallback = null, $link = true, $echo = true, $order_by = "id", $order = "asc"){
+	function get_post_tags($post_id, $links = true, $order_by = "id", $order = "asc"){
 		global $user;
 		$sql = SQL::current();
 		$get_tags = $sql->query("select * from `".$sql->prefix."tags`
@@ -215,17 +220,11 @@
 		                        	":id" => $post_id
 		                        ));
 		
-		$tag_links = array();
+		$tags = array();
 		$route = Route::current();
-		while ($tag = $get_tags->fetchObject()) {
-			$link_before = ($link) ? '<a href="'.$route->url("tag/".$tag->clean."/").'" rel="tag">' : '' ;
-			$link_after = ($link) ? '</a>' : '' ;
-			$tag_links[] = $link_before.$tag->name.$link_after;
-		}
-		$tags = join(", ", $tag_links);
 		
-		if (!empty($tags) and !$echo) return $prefix.$tags.$suffix;
-		if (empty($tags) and !is_null($fallback) and !$echo) return $prefix.$fallback.$suffix;
-		if (!empty($tags) and $echo) echo $prefix.$tags.$suffix;
-		if (empty($tags) and !is_null($fallback) and $echo) echo $prefix.$fallback.$suffix;
+		while ($tag = $get_tags->fetchObject())
+			$tags[] = ($links ? '<a href="'.$route->url("tag/".$tag->clean."/").'" rel="tag">' : '').$tag->name.($links ? '</a>' : '');
+		
+		return $tags;
 	}

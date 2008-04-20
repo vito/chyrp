@@ -205,18 +205,22 @@
 		 * Loads a theme's file and extracts the passed array into the scope.
 		 */
 		public function load($file, $context = array()) {
-			global $user;
+			global $user, $group;
 			
 			fallback($_GET['action'], "index");
 			if (!file_exists($this->directory.$file.".twig"))
 				error(__("Theme Template Missing"), sprintf(__("Couldn't load theme template:<br /><br />%s"), $file.".twig"));
+			
+			$can = array();
+			foreach ($group->permissions as $permission)
+				$can[$permission] = true;
 			
 			$context["title"] = $this->title;
 			$context["site"] = Config::current();
 			$context["theme"] = array("feeds" => $this->feeds(),
 			                          "stylesheets" => $this->stylesheets(),
 			                          "javascripts" => $this->javascripts());
-			$context["user"] = array("logged_in" => $user->logged_in());
+			$context["user"] = array("logged_in" => $user->logged_in(), "can" => $can);
 			$context["archives"] = $this->list_archives();
 			$context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);
 			

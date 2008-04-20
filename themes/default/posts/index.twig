@@ -1,0 +1,40 @@
+{% extends "layouts/default.twig" %}
+{% block content %}
+	{% for post in posts %}
+				<div class="post{% if post.pinned %} pinned{% endif %}" id="post_$post.id">
+					<div class="$post.feather target">
+{% if post.pinned %}
+						<span class="pinned_text">${ "pinned" | translate }</span>
+{% endif %}
+		{% include "posts/feathers/" ~ post.feather ~ ".twig" %}
+{% if viewing and post.next_page or post.prev_page %}
+{% if post.next_page %}
+						    <a class="right" href="<?php echo next_page_url(); ?>">Next &rarr;</a>
+{% endif %}
+{% if post.prev_page %}
+						    <a class="left" href="<?php echo prev_page_url(); ?>">&larr; Previous</a>
+{% endif %}
+{% endif %}
+						<div class="clear"></div>
+						<span class="info">
+							<strong><a href="$post.url">${ post.created_at | date }</a></strong>
+{% if site.enabled_modules.comments %}
+							<em>|</em> <a href="$post.url#comments">$post.comments ${ "Comments" }</a>
+{% endif %}
+{% if site.enabled_modules.tags %}
+							<em>|</em> Tags: ${ post.tags.linked | join }
+{% endif %}
+							<em>|</em> <a href="$post.trackback_url">${ "Trackback" | translate }</a>
+{#
+							<?php $post->edit_link(null, ' <em>|</em> '); ?>
+							<?php $post->delete_link(null, ' <em>|</em> '); ?>
+#}
+						</span>
+						<br class="clear" />
+					</div>
+{% if not loop.last %}
+					<br />
+{% endif %}
+				</div>
+	{% endfor %}
+{% endblock %}

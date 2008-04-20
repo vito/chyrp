@@ -8,30 +8,24 @@
 			$theme->title = ($action == "feather") ? ucfirst($_GET['action']) : "" ;
 			$theme->title = ($action == "search") ? fix(sprintf(__("Search results for \"%s\""), urldecode($query)), "html") : $theme->title ;
 			$theme->title = ($action == "drafts") ? __("Drafts") : $theme->title ;
-			$theme->load("layout/header");
 			
 			$trigger->call($action."_top");
 			
-			$count = 1;
 			$shown_dates = array();
+			$posts = array();
 			foreach ($get_posts->fetchAll() as $post) {
 				$post = new Post(null, array("read_from" => $post));
 				if (!$post->theme_exists()) continue;
-			
-				$last = ($count == $get_posts->rowCount());
-				$date_shown = in_array(when("m-d-Y", $post->created_at), $shown_dates);
+				
+				$post->date_shown = in_array(when("m-d-Y", $post->created_at), $shown_dates);
 				if (!in_array(when("m-d-Y", $post->created_at), $shown_dates))
 					$shown_dates[] = when("m-d-Y", $post->created_at);
 			
-				$trigger->call("above_post");
-				$theme->load("content/posts/".$post->feather, array("post" => $post));
-				$trigger->call("below_post");
-				$count++;
+				$posts[] = $post;
 			}
-			if ($count == 1)
-				$trigger->call("no_posts", $action);
 			
-			$theme->load("layout/footer");
+			$theme->load("posts/".$action, array("posts" => $posts));
+			
 			break;
 		case "view": case "id":
 			$count = 0;

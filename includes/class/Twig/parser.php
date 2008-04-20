@@ -38,7 +38,11 @@ class Twig_Parser
 			'extends' =>	array($this, 'parseExtends'),
 			'include' =>	array($this, 'parseInclude'),
 			'block' =>	array($this, 'parseBlock'),
-			'super' =>	array($this, 'parseSuper')
+			'super' =>	array($this, 'parseSuper'),
+			
+			# Added by Alex
+			'trigger' =>	array($this, 'parseTrigger'),
+			'url' =>	array($this, 'parseURL')
 		);
 	}
 
@@ -159,6 +163,20 @@ class Twig_Parser
 			throw new Twig_SyntaxError('super outside block', $token->lineno);
 		$this->stream->expect(Twig_Token::BLOCK_END_TYPE);
 		return new Twig_Super($this->current_block, $token->lineno);
+	}
+
+	public function parseTrigger($token)
+	{
+		$expr = $this->parseExpression();
+		$this->stream->expect(Twig_Token::BLOCK_END_TYPE);
+		return new Twig_Trigger($expr, $token->lineno);
+	}
+
+	public function parseURL($token)
+	{
+		$expr = $this->parseExpression();
+		$this->stream->expect(Twig_Token::BLOCK_END_TYPE);
+		return new Twig_URL($expr, $token->lineno);
 	}
 
 	public function parseExpression()

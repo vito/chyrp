@@ -51,6 +51,9 @@
 			
 			if (!count($read) or !$read)
 				return $this->no_results = true;
+			
+			$config = Config::current();
+			$read["trackback_url"] = $config->url."/includes/trackback.php?id=".$read["id"];
 						
 			foreach ($read as $key => $val) {
 				if (!is_int($key))
@@ -499,7 +502,7 @@
 		 * Checks if the current post's feather theme file exists.
 		 */
 		public function theme_exists() {
-			return file_exists(THEME_DIR."/content/posts/".$this->feather.".twig");
+			return file_exists(THEME_DIR."/posts/feathers/".$this->feather.".twig");
 		}
 
 		/**

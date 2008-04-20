@@ -13,9 +13,9 @@
 		
 		/**
 		 * Variable: $yaml
-		 * Holds all of their YAML settings as a $key => $val array.
+		 * Holds all of the YAML settings as a $key => $val array.
 		 */
-		var $yaml = array();
+		private $yaml = array();
 		
 		/**
 		 * Function: load
@@ -32,6 +32,11 @@
 					$this->$setting = array();
 				elseif (!is_int($setting)) # Don't load the "---"
 					$this->$setting = (is_string($value)) ? stripslashes($value) : $value ;
+			
+			foreach ($this->enabled_modules as $index => $module) {
+				unset($this->enabled_modules[$index]);
+				$this->enabled_modules[$module] = $module;
+			}
 		}
 		
 		/**

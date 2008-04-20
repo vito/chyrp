@@ -1,4 +1,5 @@
 .DS_Store
 .htaccess
+*/cache/*
 includes/config.yaml.php
 includes/database.yaml.php

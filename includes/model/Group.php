@@ -27,8 +27,8 @@
 				if (!is_int($key))
 					$this->$key = $val;
 			
-			$permissions = Spyc::YAMLLoad($this->permissions);
-			foreach ($permissions as $name)
+			$this->permissions = Spyc::YAMLLoad($this->permissions);
+			foreach ($this->permissions as $name)
 				$this->$name = true;
 		}
 		

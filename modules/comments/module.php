@@ -758,6 +758,26 @@ $(function(){
 			$struct['mt_allow_comments'] = intval($post->comment_status == 'open');
 			return array($post, $struct);
 		}
+		
+		static function filter_post() {
+			global $post, $current_user;
+			$sql = SQL::current();
+			$post->comments = $sql->count("comments",
+		                                  "`post_id` = :post_id and (
+		                                   	`status` != 'denied' or (
+		                                   		`status` = 'denied' and (
+		                                   			`author_ip` = :current_ip or
+		                                   			`user_id` = :user_id
+		                                   		)
+		                                   	)
+		                                   ) and
+		                                   `status` != 'spam'",
+		                                  array(
+		                                  	":post_id" => $post->id,
+		                                  	":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
+		                                  	":user_id" => $current_user
+		                                  ));
+		}
 	}
 	$comments = new Comments();
 	
