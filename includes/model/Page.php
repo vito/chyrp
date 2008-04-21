@@ -57,6 +57,11 @@
 
 				$current_page[$key] = $val;
 			}
+
+			if ($this->parent_id)
+				$this->parent = new self($this->parent_id);
+
+			$this->user = new User($this->user_id);
 		}
 
 		/**

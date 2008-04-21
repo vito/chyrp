@@ -67,6 +67,8 @@
 				$current_post[$key] = $val;
 			}
 
+			$this->user = new User($this->user_id);
+
 			$this->parse($filter);
 		}
 
