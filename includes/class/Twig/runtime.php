@@ -185,7 +185,7 @@ function twig_make_array($object)
 
 function twig_date_format_filter($timestamp, $format='F j, Y, G:i')
 {
-	return date($format, strtotime($timestamp));
+	return @date($format, @strtotime($timestamp));
 }
 
 function twig_urlencode_filter($string, $raw=false)
