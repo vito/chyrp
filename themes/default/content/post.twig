@@ -21,11 +21,11 @@
 							<em>|</em> <a href="$post.trackback_url">${ "Trackback" | translate }</a>
 
 							{% if user.can.edit_post %}
-							<em>|</em> <a href="$post.edit_url" class="post_edit_link" id="post_edit_$post.id">Edit</a>
+							<em>|</em> $post.edit_link
 							{% endif %}
 
 							{% if user.can.delete_post %}
-							<em>|</em> <a href="$post.delete_url" class="post_delete_link" id="post_delete_$post.id">Delete</a>
+							<em>|</em> $post.delete_link
 							{% endif %}
 						</span>
 						<br class="clear" />

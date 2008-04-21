@@ -182,11 +182,11 @@
 			$page_exists = false;
 			foreach ($config->enabled_modules as $module)
 				if (file_exists(MODULES_DIR."/".$module."/pages/".$action.".php"))
-					$page_exists = @include MODULES_DIR."/".$module."/pages/".$action.".php";
+					$page_exists = require MODULES_DIR."/".$module."/pages/".$action.".php";
 
 			foreach ($config->enabled_feathers as $feather)
 				if (file_exists(FEATHERS_DIR."/".$feather."/pages/".$action.".php"))
-					$page_exists = @include FEATHERS_DIR."/".$feather."/pages/".$action.".php";
+					$page_exists = require FEATHERS_DIR."/".$feather."/pages/".$action.".php";
 
 			if (file_exists(THEME_DIR."/pages/".$action.".php"))
 				$page_exists = $theme->load("pages/".$action);

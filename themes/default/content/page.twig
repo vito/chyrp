@@ -5,11 +5,9 @@
 						<h2>
 {% if user.can.edit_page or user.can.delete_page %}
 							<span class="info right">
-								{% if user.can.edit_page %}
-								<a href="$page.edit_url" class="page_edit_link" id="page_edit_$page.id">Edit</a>
-								{% endif %}
+								$page.edit_link
 								{% if user.can.delete_page %}
-								<em>|</em> <a href="$page.delete_url" class="page_delete_link" id="page_delete_$page.id">Delete</a>
+								<em>|</em> $page.delete_link
 								{% endif %}
 							</span>
 {% endif %}

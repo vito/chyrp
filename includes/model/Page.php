@@ -261,10 +261,9 @@
 
 		/**
 		 * Function: edit_link
-		 * Outputs an edit link for the given page ID, if the <User.can> edit_page.
+		 * Outputs an edit link for the page, if the <User.can> edit_page.
 		 *
 		 * Parameters:
-		 *     $page_id - The page ID for the link.
 		 *     $text - The text to show for the link.
 		 *     $before - If the link can be shown, show this before it.
 		 *     $after - If the link can be shown, show this after it.
@@ -280,10 +279,9 @@
 
 		/**
 		 * Function: delete_link
-		 * Outputs a delete link for the given page ID, if the <User.can> delete_page.
+		 * Outputs a delete link for the page, if the <User.can> delete_page.
 		 *
 		 * Parameters:
-		 *     $page_id - The page ID for the link.
 		 *     $text - The text to show for the link.
 		 *     $before - If the link can be shown, show this before it.
 		 *     $after - If the link can be shown, show this after it.

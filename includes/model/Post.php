@@ -503,4 +503,40 @@
 						$this->$filter["field"] = $trigger->filter($filter["name"], $this->$filter["field"]);
 			}
 		}
+
+		/**
+		 * Function: edit_link
+		 * Outputs an edit link for the post, if the <User.can> edit_post.
+		 *
+		 * Parameters:
+		 *     $text - The text to show for the link.
+		 *     $before - If the link can be shown, show this before it.
+		 *     $after - If the link can be shown, show this after it.
+		 */
+		public function edit_link($text = null, $before = null, $after = null){
+			global $user;
+			if (!isset($this->id) or !$user->can("edit_post")) return false;
+
+			fallback($text, __("Edit"));
+			$config = Config::current();
+			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=post&amp;id='.$this->id.'" title="Edit" class="post_edit_link" id="post_edit_'.$this->id.'">'.$text.'</a>'.$after;
+		}
+
+		/**
+		 * Function: delete_link
+		 * Outputs a delete link for the post, if the <User.can> delete_post.
+		 *
+		 * Parameters:
+		 *     $text - The text to show for the link.
+		 *     $before - If the link can be shown, show this before it.
+		 *     $after - If the link can be shown, show this after it.
+		 */
+		public function delete_link($text = null, $before = null, $after = null){
+			global $user;
+			if (!isset($this->id) or !$user->can("delete_post")) return false;
+
+			fallback($text, __("Delete"));
+			$config = Config::current();
+			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=post&amp;id='.$this->id.'" title="Delete" class="post_delete_link" id="post_delete_'.$this->id.'">'.$text.'</a>'.$after;
+		}
 	}
