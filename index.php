@@ -96,7 +96,7 @@
 				if (!is_numeric($year) or !is_numeric($month))
 					error(__("Error"), __("Please enter a valid year and month."));
 
-				$timestamp = mktime(0, 0, 0, $month + 1, 0, $year);
+				$timestamp = @mktime(0, 0, 0, $month + 1, 0, $year);
 				$theme->title = sprintf(__("Archive of %s"), @date("F Y", $timestamp));
 
 				$shown_dates = array();
