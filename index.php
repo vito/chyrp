@@ -71,7 +71,7 @@
 
 				$archives = array();
 				while ($time = $get_timestamps->fetchObject()) {
-					$timestamp = mktime(0, 0, 0, $time->month + 1, 0, $time->year);
+					$timestamp = @mktime(0, 0, 0, $time->month + 1, 0, $time->year);
 					$archives[$timestamp] = array("posts" => array(),
 					                              "year" => $time->year,
 					                              "month" => @date("F", $timestamp),
