@@ -101,16 +101,14 @@
 			else return null;
 		}
 		function edit_link($comment_id = null, $text = null, $before = null, $after = null){
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			if (!$visitor->group->can('edit_comment')) return;
 			fallback($text, __("Edit"));
 			$config = Config::current();
 			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=comment&amp;id='.$comment_id.'" title="Edit" class="comment_edit_link" id="comment_edit_'.$comment_id.'">'.$text.'</a>'.$after;
 		}
 		function delete_link($comment_id = null, $text = null, $before = null, $after = null){
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			if (!$visitor->group->can('delete_comment')) return;
 			fallback($text, __("Delete"));
 			$config = Config::current();

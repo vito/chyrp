@@ -456,8 +456,7 @@
 		 * Returns an array of the most recent posts.
 		 */
 		private function getRecentPosts($limit) {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 
 			$statuses = "'public'";
 			$statuses.= ($visitor->group->can('view_drafts')) ? ", 'draft'" : '';

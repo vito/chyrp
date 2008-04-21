@@ -152,8 +152,7 @@
 		 * Outputs the default stylesheet links.
 		 */
 		public function stylesheets() {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			$config = Config::current();
 			$trigger = Trigger::current();
 			$theme = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $visitor->group->can("change_settings")) ?

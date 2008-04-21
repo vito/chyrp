@@ -99,13 +99,12 @@
 
 					</p>
 <?php
-	$get_columns = $sql->query("show columns from `".$sql->prefix."groups`");
-	while ($column = $get_columns->fetch()):
-		if (is_int($column) or $column["Field"] == "id" or $column["Field"] == "name") continue;
+	$get_permissions = $sql->query("select * from `".$sql->prefix."permissions`");
+	while ($permission = $get_permissions->fetchObject()):
 ?>
 					<p>
-						<label for="<?php echo $column["Field"]; ?>"><?php echo camelize($column["Field"], true); ?></label>
-						<input type="checkbox" name="permissions[<?php echo $column["Field"]; ?>]" id="<?php echo $column["Field"]; ?>" />
+						<label for="<?php echo $permission->name; ?>"><?php echo camelize($permission->name, true); ?></label>
+						<input type="checkbox" name="permissions[<?php echo $permission->name; ?>]" id="<?php echo $permission->name; ?>" />
 						&nbsp;
 					</p>
 <?php

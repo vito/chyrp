@@ -270,8 +270,7 @@
 		 *     $after - If the link can be shown, show this after it.
 		 */
 		public function edit_link($text = null, $before = null, $after = null){
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			if (!isset($this->id) or !$visitor->group->can("edit_page")) return false;
 
 			fallback($text, __("Edit"));
@@ -289,8 +288,7 @@ $visitor = Visitor::current();
 		 *     $after - If the link can be shown, show this after it.
 		 */
 		public function delete_link($text = null, $before = null, $after = null){
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			if (!isset($this->id) or !$visitor->group->can("delete_page")) return false;
 
 			fallback($text, __("Delete"));

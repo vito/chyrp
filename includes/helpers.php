@@ -556,8 +556,7 @@
 	 * Outputs the optional fields for creating a new post.
 	 */
 	function new_post_options() {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 		$config = Config::current();
 ?>
 <?php if ($visitor->group->can("add_post")): ?>

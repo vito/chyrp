@@ -3,8 +3,7 @@
 
 	class Comments extends Module {
 		static function __install() {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			$sql = SQL::current();
 			$sql->query("create table if not exists `".$sql->prefix."comments` (
 			                 `id` int(11) not null auto_increment,
@@ -25,16 +24,15 @@ $visitor = Visitor::current();
 			$config->set("allowed_comment_html", array("strong", "em", "blockquote", "code", "pre", "a"));
 			$config->set("comments_per_page", 25);
 			$config->set("akismet_api_key", null);
-			$group->add_permission("add_comment");
-			$group->add_permission("add_comment_private");
-			$group->add_permission("edit_comment");
-			$group->add_permission("delete_comment");
-			$group->add_permission("code_in_comments");
+			Group::add_permission("add_comment");
+			Group::add_permission("add_comment_private");
+			Group::add_permission("edit_comment");
+			Group::add_permission("delete_comment");
+			Group::add_permission("code_in_comments");
 		}
 
 		static function __uninstall($confirm) {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 
 			if ($confirm) {
 				$sql = SQL::current();
@@ -46,11 +44,11 @@ $visitor = Visitor::current();
 			$config->remove("allowed_comment_html");
 			$config->remove("comments_per_page");
 			$config->remove("akismet_api_key");
-			$group->remove_permission("add_comment");
-			$group->remove_permission("add_comment_private");
-			$group->remove_permission("edit_comment");
-			$group->remove_permission("delete_comment");
-			$group->remove_permission("code_in_comments");
+			Group::remove_permission("add_comment");
+			Group::remove_permission("add_comment_private");
+			Group::remove_permission("edit_comment");
+			Group::remove_permission("delete_comment");
+			Group::remove_permission("code_in_comments");
 		}
 
 		static function show($id) {
@@ -154,8 +152,7 @@ $visitor = Visitor::current();
 		}
 
 		static function admin_mark_spam($action) {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			if (!$visitor->group->can("edit_comment")) return;
 
 			$sql = SQL::current();
@@ -171,8 +168,7 @@ $visitor = Visitor::current();
 		}
 
 		static function admin_approve_comment($action) {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			if (!$visitor->group->can("edit_comment")) return;
 
 			$sql = SQL::current();
@@ -188,8 +184,7 @@ $visitor = Visitor::current();
 		}
 
 		static function admin_deny_comment($action) {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			if (!$visitor->group->can("edit_comment")) return;
 
 			$sql = SQL::current();
@@ -351,8 +346,7 @@ $visitor = Visitor::current();
 		}
 
 		static function admin_manage_nav() {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			if (!$visitor->group->can("edit_comment") and !$visitor->group->can("delete_comment")) return;
 ?>
 					<li<?php selected("manage", "comment").selected("edit", "comment"); ?>><a href="<?php url("manage", "comment"); ?>"><?php echo __("Comments", "comments"); ?></a></li>
@@ -658,8 +652,7 @@ $(function(){
 		}
 
 		static function show_admin_manage_page($show_page, $sub) {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			if ($sub == "spam")
 				return ($visitor->group->can("edit_comment") or $visitor->group->can("delete_comment"));
 			else

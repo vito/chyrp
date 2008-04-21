@@ -62,7 +62,7 @@
 						<tr>
 							<td class="main"><?php echo $user->login; ?></td>
 							<td><?php echo $user->full_name; ?></td>
-							<td class="center"><a href="mailto:<?php echo $temp_user->email; ?>"><?php echo $user->email; ?></a></td>
+							<td class="center"><a href="mailto:<?php echo $user->email; ?>"><?php echo $user->email; ?></a></td>
 							<td class="center"><?php if (!empty($temp_user->website)): ?><a href="<?php echo $user->website; ?>"><?php echo $user->website; ?></a><?php endif; ?></td>
 <?php if ($visitor->group->can("edit_user")): ?>
 							<td class="center"><?php echo $user->edit_link('<img src="icons/edit.png" alt="edit" />'); ?></td>

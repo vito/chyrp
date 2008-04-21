@@ -28,8 +28,7 @@
 		 * Adds a page when the form is submitted. Shows an error if the user lacks permissions.
 		 */
 		public function add_page() {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			if (empty($_POST)) return;
 			$config = Config::current();
 			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
@@ -52,8 +51,7 @@ $visitor = Visitor::current();
 		 * Add a user when the form is submitted. Shows an error if the user lacks permissions.
 		 */
 		public function add_user() {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			if (empty($_POST)) return;
 			$config = Config::current();
 			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
@@ -101,7 +99,7 @@ $visitor = Visitor::current();
 			if (!$visitor->group->can('add_group'))
 				error(__("Access Denied"), __("You do not have sufficient privileges to create groups."));
 
-			$group->add($_POST['name'], $_POST['permissions']);
+			Group::add($_POST['name'], array_keys($_POST['permissions']));
 
 			$route = Route::current();
 			$route->redirect("/admin/?action=manage&sub=group&added");
@@ -190,8 +188,7 @@ $visitor = Visitor::current();
 		 * Updates a group when the form is submitted. Shows an error if the user lacks permissions.
 		 */
 		public function update_group() {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			if (empty($_POST)) return;
 			$config = Config::current();
 			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
@@ -212,8 +209,7 @@ $visitor = Visitor::current();
 		 * Grabs the information for post editing in the Admin area. Shows an error if the user lacks permissions.
 		 */
 		public function edit() {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			/*
 				TODO Figure out why this and the below are different.
 			*/
@@ -238,8 +234,7 @@ $visitor = Visitor::current();
 		 * Grabs the information for post deleting in the Admin area. Shows an error if the user lacks permissions.
 		 */
 		public function delete() {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			$type = $_GET['sub'];
 			if (!$visitor->group->can("delete_".$type))
 				error(__("Access Denied"), sprintf(__("You do not have sufficient privileges to delete %ss."), $type));
@@ -258,8 +253,7 @@ $visitor = Visitor::current();
 		 * Deletes a post. Shows an error if the user lacks permissions.
 		 */
 		public function delete_post_real() {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			if (empty($_POST)) return;
 			$config = Config::current();
 			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
@@ -279,8 +273,7 @@ $visitor = Visitor::current();
 		 * Deletes a page. Shows an error if the user lacks permissions.
 		 */
 		public function delete_page_real() {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			if (empty($_POST)) return;
 			$config = Config::current();
 			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
@@ -300,8 +293,7 @@ $visitor = Visitor::current();
 		 * Deletes a user. Shows an error if the user lacks permissions.
 		 */
 		public function delete_user_real() {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			if (empty($_POST)) return;
 			$config = Config::current();
 			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
@@ -321,8 +313,7 @@ $visitor = Visitor::current();
 		 * Deletes a group. Shows an error if the user lacks permissions.
 		 */
 		public function delete_group_real() {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			if (empty($_POST)) return;
 			$config = Config::current();
 			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
@@ -346,7 +337,8 @@ $visitor = Visitor::current();
 			if (!empty($_POST['guest_group']))
 				$config->set("guest_group", $_POST['guest_group']);
 
-			$group->delete($_POST['id']);
+			$group = new Group($_POST['id']);
+			$group->delete();
 
 			$route = Route::current();
 			$route->redirect("/admin/?action=manage&sub=group&deleted");
@@ -357,8 +349,7 @@ $visitor = Visitor::current();
 		 * Enables or disables a module or feather. Shows an error if the user lacks permissions.
 		 */
 		public function toggle() {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			if (!$visitor->group->can("change_settings"))
 				if (isset($_GET['module']))
 					error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable modules."));
@@ -433,8 +424,7 @@ $visitor = Visitor::current();
 		 * Changes Chyrp settings. Shows an error if the user lacks permissions.
 		 */
 		public function settings() {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			if (empty($_POST)) return;
 			$config = Config::current();
 			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
@@ -485,8 +475,7 @@ $visitor = Visitor::current();
 		 * Changes the theme. Shows an error if the user lacks permissions.
 		 */
 		public function change_theme() {
-
-$visitor = Visitor::current();
+			$visitor = Visitor::current();
 			if (!$visitor->group->can('change_settings') or empty($_GET['theme'])) return;
 			$config = Config::current();
 			$config->set("theme", $_GET['theme']);
