@@ -4,7 +4,7 @@
 	if (!in_array("text", $config->enabled_feathers) or !in_array("video", $config->enabled_feathers) or !in_array("audio", $config->enabled_feathers) or !in_array("chat", $config->enabled_feathers) or !in_array("photo", $config->enabled_feathers) or !in_array("quote", $config->enabled_feathers) or !in_array("link", $config->enabled_feathers))
 		error(__("Missing Feather"), __("Importing from Tumblr requires the Text, Video, Audio, Chat, Photo, Quote, and Link feathers to be installed and enabled."));
 
-	if (!$user->can("add_post"))
+	if (!$visitor->group->can("add_post"))
 		error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
 	class XMLParser { # Via http://php.net/xml, slightly modified.

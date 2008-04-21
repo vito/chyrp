@@ -9,9 +9,8 @@
 		 * Grabs the posts for the main page.
 		 */
 		public function index() {
-			global $paginate, $private, $enabled_feathers, $get_posts, $user;
+			global $paginate, $private, $enabled_feathers, $get_posts;
 			$config = Config::current();
-			$sql = SQL::current();
 			$get_posts = $paginate->select("posts", # table
 			                               "*", # fields
 			                               $private.$enabled_feathers, # where
@@ -68,8 +67,9 @@
 		 * Grabs the posts for viewing the Drafts lists. Shows an error if the user lacks permissions.
 		 */
 		public function drafts() {
-			global $user, $paginate, $private, $enabled_feathers, $get_posts;
-			if (!$user->can("view_draft"))
+			global $paginate, $private, $enabled_feathers, $get_posts;
+			$visitor = Visitor::current();
+			if (!$visitor->group->can("view_draft"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to view drafts."));
 
 			$config = Config::current();
@@ -207,8 +207,9 @@
 		 * Handles theme previewing.
 		 */
 		public function theme_preview() {
-			global $user, $action;
-			if (!$user->can("change_settings")) {
+			global $action;
+			$visitor = Visitor::current();
+			if (!$visitor->group->can("change_settings")) {
 				$this->index();
 				return $action = "index";
 			}
@@ -238,12 +239,10 @@
 		 * Process registration. If registration is disabled or if the user is already logged in, it will error.
 		 */
 		public function process_registration() {
-			global $user;
-
 			$config = Config::current();
 			if (!$config->can_register)
 				error(__("Registration Disabled"), __("I'm sorry, but this site is not allowing registration."));
-			if ($user->logged_in())
+			if (logged_in())
 				error(__("Error"), __("You're already logged in."));
 
 			if (empty($_POST['login']))
@@ -266,7 +265,7 @@
 			if (!eregi("^[[:alnum:]][a-z0-9_.-\+]*@[a-z0-9.-]+\.[a-z]{2,6}$",$_POST['email']))
 				error(__("Error"), __("Unsupported e-mail address."));
 
-			$user->add($_POST['login'], $_POST['password1'], $_POST['email']);
+			User::add($_POST['login'], $_POST['password1'], $_POST['email']);
 
 			setcookie("chyrp_user_id", $sql->db->lastInsertId(), time() + 2592000, "/"); # 30 days
 			setcookie("chyrp_password", md5($_POST['password1']), time() + 2592000, "/"); # 30 days
@@ -280,10 +279,9 @@
 		 * Process logging in. If the username and password are incorrect or if the user is already logged in, it will error.
 		 */
 		public function process_login() {
-			global $user;
-			if (!$user->authenticate($_POST['login'], md5($_POST['password'])))
+			if (!User::authenticate($_POST['login'], md5($_POST['password'])))
 				error(__("Error"), __("Login incorrect."));
-			if ($user->logged_in())
+			if (logged_in())
 				error(__("Error"), __("You're already logged in."));
 
 			$sql = SQL::current();
@@ -305,8 +303,7 @@
 		 * Logs the current user out. If they are not logged in, it will error.
 		 */
 		public function logout() {
-			global $user;
-			if (!$user->logged_in())
+			if (!logged_in())
 				error(__("Error"), __("You aren't logged in."));
 
 			setcookie("chyrp_user_id", "", time() - 2592000, "/");
@@ -321,16 +318,17 @@
 		 * Updates the current user when the form is submitted. Shows an error if they aren't logged in.
 		 */
 		public function update_self() {
-			global $user, $current_user;
 			if (empty($_POST)) return;
-			if (!$user->logged_in())
+			if (!logged_in())
 				error(__("Error"), __("You must be logged in to access this area."));
 
-			$password = (!empty($_POST['new_password1']) and $_POST['new_password1'] == $_POST['new_password2']) ?
-									md5($_POST['new_password1']) :
-									$user->info("password") ;
+			$visitor = Visitor::current();
 
-			$user->update($user->info("id"), $user->info("login"), $password, $_POST['full_name'], $_POST['email'], $_POST['website'], $user->info("group_id"));
+			$password = (!empty($_POST['new_password1']) and $_POST['new_password1'] == $_POST['new_password2']) ?
+			            md5($_POST['new_password1']) :
+			            $visitor->password ;
+
+			$visitor->update($visitor->id, $visitor->login, $password, $_POST['full_name'], $_POST['email'], $_POST['website'], $visitor->group->id);
 
 			setcookie("chyrp_password", $password, time() + 2592000, "/"); # 30 days
 

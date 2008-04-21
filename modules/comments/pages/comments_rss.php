@@ -2,9 +2,9 @@
 	$config = Config::current();
 	$split_locale = explode("_", $config->locale);
 
-	fallback($get_comments, $sql->query("select * from `".$sql->prefix."comments` where (`status` != 'denied' or (`status` = 'denied' and (`author_ip` = '".ip2long($_SERVER['REMOTE_ADDR'])."' or (`user_id` != '' and `user_id` = ".fix($current_user).")))) and `status` != 'spam' order by `created_at` desc"));
+	fallback($get_comments, $sql->query("select * from `".$sql->prefix."comments` where (`status` != 'denied' or (`status` = 'denied' and (`author_ip` = '".ip2long($_SERVER['REMOTE_ADDR'])."' or (`user_id` != '' and `user_id` = ".fix($visitor->id).")))) and `status` != 'spam' order by `created_at` desc"));
 
-	fallback($latest_timestamp, $sql->query("select `created_at` from `".$sql->prefix."comments` where (`status` != 'denied' or (`status` = 'denied' and (`author_ip` = '".ip2long($_SERVER['REMOTE_ADDR'])."' or (`user_id` != '' and `user_id` = ".fix($current_user).")))) and `status` != 'spam' order by `created_at` desc limit 1")->fetchColumn());
+	fallback($latest_timestamp, $sql->query("select `created_at` from `".$sql->prefix."comments` where (`status` != 'denied' or (`status` = 'denied' and (`author_ip` = '".ip2long($_SERVER['REMOTE_ADDR'])."' or (`user_id` != '' and `user_id` = ".fix($visitor->id).")))) and `status` != 'spam' order by `created_at` desc limit 1")->fetchColumn());
 
 	fallback($title, $config->name);
 
@@ -30,7 +30,7 @@
 
 				$trigger->call("rss_comment", $comment->id);
 
-				if (($comment->status != "pingback" and !$comment->status != "trackback") and !$user->can("code_in_comments", $comment->user_id))
+				if (($comment->status != "pingback" and !$comment->status != "trackback") and !$visitor->group->can("code_in_comments", $comment->user_id))
 					$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
 
 				$comment->body = $trigger->filter("markup_comment_text", $comment->body);

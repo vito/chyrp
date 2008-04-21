@@ -14,7 +14,7 @@
 		$title = htmlspecialchars($post->title(), ENT_NOQUOTES, "utf-8");
 		fallback($title, ucfirst($post->feather)." Post #".$post->id);
 
-		$author_uri = $user->info("website", $post->user_id);
+		$author_uri = User::info("website", $post->user_id);
 
 		$updated = (substr($post->updated_at, 0, 4) == "0000") ? $post->created_at : $post->updated_at ;
 
@@ -30,7 +30,7 @@
 		<published><?php echo when("c", $post->created_at); ?></published>
 		<link href="<?php echo htmlspecialchars($trigger->filter("feed_url", html_entity_decode($post->url())), ENT_NOQUOTES, "utf-8"); ?>" />
 		<author>
-			<name><?php echo htmlspecialchars($user->info("full_name", $post->user_id, $user->info("login", $post->user_id)), ENT_NOQUOTES, "utf-8"); ?></name>
+			<name><?php echo htmlspecialchars(User::info("full_name", $post->user_id, User::info("login", $post->user_id)), ENT_NOQUOTES, "utf-8"); ?></name>
 <?php if (!empty($author_uri)): ?>
 			<uri><?php echo $author_uri; ?></uri>
 <?php endif; ?>

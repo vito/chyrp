@@ -1,35 +1,64 @@
 <?php
+	$current_group = array("id" => 0);
+
 	/**
 	 * Class: Group
 	 * The model for the Groups SQL table.
 	 */
 	class Group {
+		public $no_results = false;
+
 		/**
-		 * Function: load
-		 * Loads a given user into the <Group> class.
+		 * Function: __construct
+		 * Grabs the specified group and injects it into the <Group> class.
 		 *
 		 * Parameters:
-		 *     $group_id - The group ID to load. If no group is given, it defaults to the $current_user's group ID.
-		 *                 If they are not logged in and no group ID is given, it will load the Guest group.
+		 *     $group_id - The group's unique ID.
+		 *     $options - An array of options:
+		 *         where: A SQL query to grab the group by.
+		 *         params: Parameters to use for the "where" option.
+		 *         read_from: An associative array of values to load into the <Group> class.
 		 */
-		function load($group_id = null) {
-			global $user;
-			$config = Config::current();
-			$group = (isset($group_id)) ? $group_id : (($user->logged_in()) ? $user->group_id : $config->guest_group) ;
-			if (!isset($group)) return;
+		public function __construct($group_id = null, $options = array()) {
+			global $current_group;
+
+			$where = fallback($options["where"], "", true);
+			$params = isset($options["params"]) ? $options["params"] : array();
+			$read_from = (isset($options["read_from"])) ? $options["read_from"] : array() ;
 
 			$sql = SQL::current();
-			foreach ($sql->query("select * from `".$sql->prefix."groups`
-			                      where `id` = :id",
-			                     array(
-			                         ":id" => $group
-			                     ))->fetch() as $key => $val)
+			if ((!empty($read_from) && $read_from))
+				$read = $read_from;
+			elseif (isset($page_id) and $page_id == $current_page["id"])
+				$read = $current_page;
+			elseif (!empty($where))
+				$read = $sql->select("groups",
+				                     "*",
+				                     $where,
+				                     "id",
+				                     $params,
+				                     1)->fetch();
+			else
+				$read = $sql->select("groups",
+				                     "*",
+				                     "`id` = :groupid",
+				                     "id",
+				                     array(
+				                         ":groupid" => $group_id
+				                     ),
+				                     1)->fetch();
+
+			if (!count($read) or !$read)
+				return $this->no_results = true;
+
+			foreach ($read as $key => $val) {
 				if (!is_int($key))
 					$this->$key = $val;
 
+				$current_group[$key] = $val;
+			}
+
 			$this->permissions = Spyc::YAMLLoad($this->permissions);
-			foreach ($this->permissions as $name)
-				$this->$name = true;
 		}
 
 		/**
@@ -39,32 +68,24 @@
 		 * Parameters:
 		 *     $function - The function to check.
 		 */
-		public function can($function, $group_id) {
-			$sql = SQL::current();
-			$permissions = $sql->query("select `permissions` from `".$sql->prefix."groups`
-			                            where `id` = :id",
-			                           array(
-			                               ":id" => $group_id
-			                           ))->fetchColumn();
-			$permissions = Spyc::YAMLLoad($permissions);
-
-			return in_array($function, $permissions);
+		public function can($function) {
+			return in_array($function, $this->permissions);
 		}
 
 		/**
 		 * Function: add
 		 * Adds a group to the database with the passed Name and Permissions array.
 		 *
-		 * Calls the add_group trigger with the inserted ID, name, and permissions.
+		 * Calls the add_group trigger with the ID, name, and permissions or the new group.
 		 *
 		 * Parameters:
-		 *     $name - The group's Name
-		 *     $permissions - An array of all of the permissions.
+		 *     $name - The group's name
+		 *     $permissions - An array of the permissions.
 		 *
 		 * See Also:
 		 *     <update>
 		 */
-		function add($name, $permissions) {
+		static function add($name, $permissions) {
 			$query = "";
 
 			$sql = SQL::current();
@@ -92,17 +113,16 @@
 		 *     $name - The new Name to set.
 		 *     $permissions - An array of the new permissions to set.
 		 */
-		function update($group_id, $name, $permissions) {
+		public function update($name, $permissions) {
 			$sql = SQL::current();
 
 			$fields = array("`name`" => ":name", "`permissions`" => ":permissions");
-			$params = array(":name" => $name, ":permissions" => Spyc::YAMLDump($permissions), ":id" => $group_id);
+			$params = array(":name" => $name, ":permissions" => Spyc::YAMLDump($permissions), ":id" => $this->id);
 
-			$sql->query("update `".$sql->prefix."groups` set `name` = :name, `permissions` = :permissions where `id` = :id",
-			            $params);
+			$sql->query("update `".$sql->prefix."groups` set `name` = :name, `permissions` = :permissions where `id` = :id", $params);
 
 			$trigger = Trigger::current();
-			$trigger->call("update_group", array($group_id, $name, $permissions));
+			$trigger->call("update_group", array($this, $name, $permissions));
 		}
 
 		/**
@@ -112,16 +132,46 @@
 		 * Parameters:
 		 *     $group_id - The group to delete.
 		 */
-		function delete($group_id) {
+		public function delete() {
 			$trigger = Trigger::current();
-			$trigger->call("delete_group", $group_id);
+			$trigger->call("delete_group", $this->id);
 
 			$sql = SQL::current();
 			$sql->query("delete from `".$sql->prefix."groups`
 			             where `id` = :id",
 			            array(
-			                ":id" => $group_id
+			                ":id" => $this->id
 			            ));
+		}
+
+		/**
+		 * Function: info
+		 * Grabs a specified column from a group's SQL row.
+		 *
+		 * Parameters:
+		 *     $column - The name of the SQL column.
+		 *     $group_id - The group ID to grab from.
+		 *     $fallback - What to display if the result is empty.
+		 *
+		 * Returns:
+		 *     SQL result - if the SQL result isn't empty.
+		 *     $fallback - if the SQL result is empty.
+		 */
+		static function info($column, $group_id, $fallback = false) {
+			global $current_group;
+
+			if ($current_group["id"] == $group_id and isset($current_group[$column]))
+				return $current_group[$column];
+
+			$sql = SQL::current();
+			$grab_column = $sql->select("groups",
+			                            $column,
+			                            "`id` = :id",
+			                            "id",
+			                            array(
+			                                ':id' => $group_id
+			                            ));
+			return ($grab_column->rowCount() == 1) ? $grab_column->fetchColumn() : $fallback ;
 		}
 
 		/**
@@ -130,9 +180,9 @@
 		 *
 		 * Parameters:
 		 *     $name - The name of the permission to add. The naming scheme is simple; for example,
-		 *                     "code_in_comments" gets converted to "Code In Comments" at the group editing page.
+		 *             "code_in_comments" gets converted to "Code In Comments" at the group editing page.
 		 */
-		function add_permission($name) {
+		static function add_permission($name) {
 			$sql = SQL::current();
 
 			$check = $sql->query("select `name` from `".$sql->prefix."permissions` where `name` = '".$name."'")->fetchColumn();
@@ -150,7 +200,7 @@
 		 * Parameters:
 		 *     $name - The permission name to remove.
 		 */
-		function remove_permission($name) {
+		static function remove_permission($name) {
 			$sql = SQL::current();
 			$sql->query("delete from `".$sql->prefix."permissions` where `name` = '".$name."'");
 		}
@@ -162,7 +212,7 @@
 		 * Parameters:
 		 *     $group_id - The group ID.
 		 */
-		function user_count($group_id) {
+		static function count_users($group_id) {
 			$sql = SQL::current();
 			$get_count = $sql->query("select count(`id`) from `".$sql->prefix."users`
 			                          where `group_id` = :id",
@@ -175,38 +225,33 @@
 
 		/**
 		 * Function: edit_link
-		 * Outputs an edit link for the given group ID, if the <User.can> edit_group.
+		 * Outputs an edit link for the group, if the user can.
 		 *
 		 * Parameters:
-		 *     $group_id - The group ID for the link.
 		 *     $text - The text to show for the link.
 		 *     $before - If the link can be shown, show this before it.
 		 *     $after - If the link can be shown, show this after it.
 		 */
-		function edit_link($group_id, $text = null, $before = null, $after = null){
-			global $user;
-			if (!$user->can("edit_group")) return;
+		public function edit_link($text = null, $before = null, $after = null){
+			if (!$this->can("edit_group")) return;
 			fallback($text, __("Edit"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=group&amp;id='.$group_id.'" title="Edit" class="group_edit_link" id="group_edit_'.$group_id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=group&amp;id='.$this->id.'" title="Edit" class="group_edit_link" id="group_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
 		/**
 		 * Function: delete_link
-		 * Outputs an delete link for the given group ID, if the <User.can> delete_group.
+		 * Outputs an delete link for the group, if the user can.
 		 *
 		 * Parameters:
-		 *     $group_id - The group ID for the link.
 		 *     $text - The text to show for the link.
 		 *     $before - If the link can be shown, show this before it.
 		 *     $after - If the link can be shown, show this after it.
 		 */
-		function delete_link($group_id, $text = null, $before = null, $after = null){
-			global $user;
-			if (!$user->can("delete_group")) return;
+		public function delete_link($text = null, $before = null, $after = null){
+			if (!$this->can("delete_group")) return;
 			fallback($text, __("Delete"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=group&amp;id='.$group_id.'" title="Delete" class="group_delete_link" id="group_delete_'.$group_id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=group&amp;id='.$this->id.'" title="Delete" class="group_delete_link" id="group_delete_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 	}
-	$group = new Group();

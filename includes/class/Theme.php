@@ -21,8 +21,8 @@
 		 * Loads the Twig parser into <Theme>.
 		 */
 		public function __construct() {
-			global $user;
-			$this->directory = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $user->can("change_settings")) ?
+			$visitor = Visitor::current();
+			$this->directory = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $visitor->group->can("change_settings")) ?
 			                   THEMES_DIR."/".$_GET['theme']."/" :
 			                   THEME_DIR."/" ;
 			$this->twig = new Twig_Loader($this->directory, (is_writable(MAIN_DIR."/includes/twig_cache") ? MAIN_DIR."/includes/twig_cache" : null));
@@ -152,9 +152,11 @@
 		 * Outputs the default stylesheet links.
 		 */
 		public function stylesheets() {
+
+$visitor = Visitor::current();
 			$config = Config::current();
 			$trigger = Trigger::current();
-			$theme = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $user->can("change_settings")) ?
+			$theme = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $visitor->group->can("change_settings")) ?
 			         $_GET['theme'] :
 			         $config->theme ;
 
@@ -216,14 +218,15 @@
 		 * Loads a theme's file and extracts the passed array into the scope.
 		 */
 		public function load($file, $context = array()) {
-			global $user, $group, $action, $viewing;
+			global $action, $viewing;
 
+			$visitor = Visitor::current();
 			fallback($_GET['action'], "index");
 			if (!file_exists($this->directory.$file.".twig"))
 				error(__("Theme Template Missing"), sprintf(__("Couldn't load theme template:<br /><br />%s"), $file.".twig"));
 
 			$can = array();
-			foreach ($group->permissions as $permission)
+			foreach ($visitor->group->permissions as $permission)
 				$can[$permission] = true;
 
 			$context["title"] = $this->title;
@@ -231,14 +234,15 @@
 			$context["theme"] = array("feeds" => $this->feeds(),
 			                          "stylesheets" => $this->stylesheets(),
 			                          "javascripts" => $this->javascripts());
-			$context["user"] = array("logged_in" => $user->logged_in(), "can" => $can);
+			$context["user"] = array("logged_in" => logged_in(), "can" => $can);
 			$context["archive_list"] = $this->list_archives();
 			$context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);
 			$context["route"] = array("action" => $action);
 			$context["viewing"] = $viewing;
 
-			foreach ($user as $key => $val)
-				$context["user"][$key] = $val;
+			if (logged_in())
+				foreach ($visitor as $key => $val)
+					$context["user"][$key] = $val;
 
 			$trigger = Trigger::current();
 			$context = $trigger->filter("twig_global_context", $context);

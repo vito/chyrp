@@ -22,7 +22,7 @@
 	</p>
 <?php
 	foreach ($permissions->fetchAll() as $permission):
-		$checked = ($group->can($permission["name"], $_GET['id'])) ? ' checked="checked"' : '' ;
+		$checked = ($visitor->group->can($permission["name"], $_GET['id'])) ? ' checked="checked"' : '' ;
 ?>
 	<p>
 		<label for="<?php echo $permission["name"]; ?>"><?php echo camelize($permission["name"], true); ?></label>

@@ -81,6 +81,31 @@
 	# File: Helpers
 	require_once INCLUDES_DIR."/helpers.php";
 
+	# File: User
+	# See Also:
+	#     <User>
+	require_once INCLUDES_DIR."/model/User.php";
+
+	# File: Visitor
+	# See Also:
+	#     <Visitor>
+	require_once INCLUDES_DIR."/model/Visitor.php";
+
+	# File: Post
+	# See Also:
+	#     <Post>
+	require_once INCLUDES_DIR."/model/Post.php";
+
+	# File: Page
+	# See Also:
+	#     <Page>
+	require_once INCLUDES_DIR."/model/Page.php";
+
+	# File: Group
+	# See Also:
+	#     <Group>
+	require_once INCLUDES_DIR."/model/Group.php";
+
 	# File: Trigger
 	# See Also:
 	#     <Trigger>
@@ -114,26 +139,6 @@
 	# See Also:
 	#     <Route>
 	require_once INCLUDES_DIR."/class/Route.php";
-
-	# File: User
-	# See Also:
-	#     <User>
-	require_once INCLUDES_DIR."/model/User.php";
-
-	# File: Post
-	# See Also:
-	#     <Post>
-	require_once INCLUDES_DIR."/model/Post.php";
-
-	# File: Page
-	# See Also:
-	#     <Page>
-	require_once INCLUDES_DIR."/model/Page.php";
-
-	# File: Group
-	# See Also:
-	#     <Group>
-	require_once INCLUDES_DIR."/model/Group.php";
 
 	# File: Main
 	# See Also:
@@ -184,18 +189,6 @@
 		$action = "XML-RPC";
 	else {
 		/**
-		 * Integer: $current_user
-		 * The current user's ID. If not logged in, defaults to 0.
-		 */
-		$current_user = (int) fallback($_COOKIE['chyrp_user_id'], 0, true);
-
-		# Load the current user's information into User
-		$user->load();
-
-		# Load the current user's group's information into Group
-		$group->load();
-
-		/**
 		 * Function: error
 		 * Shows an error message.
 		 *
@@ -208,7 +201,11 @@
 			exit;
 		}
 
-		if (!$user->can("view_site") and $action != "process_login" and $action != "login" and $action != "logout")
+		# Variable: $visitor
+		# Holds the current user and their group.
+		$visitor = Visitor::current();
+
+		if (!$visitor->group->can("view_site") and $action != "process_login" and $action != "login" and $action != "logout")
 			error(__("Access Denied"), __("You are not allowed to view this site."));
 	}
 
@@ -241,11 +238,11 @@
 		 * SQL "where" text for which posts the current user can view.
 		 */
 		$statuses = array("public");
-		if ($user->logged_in())
+		if (logged_in())
 			$statuses[] = "registered_only";
-		if ($user->can("view_private"))
+		if ($visitor->group->can("view_private"))
 			$statuses[] = "private";
-		if ($action == "view" and $user->can("view_draft"))
+		if ($action == "view" and $visitor->group->can("view_draft"))
 			$statuses[] = "draft";
 		$private = "`status` in ('".implode("', '", $statuses)."')";
 

@@ -14,16 +14,17 @@
 		 *
 		 * Parameters:
 		 *     $page_id - The page's unique ID.
-		 *     $where - A SQL query to grab the page by.
-		 *     $filter - Whether or not to run it through the _parse_page_ filter.
+		 *     $options - An array of options:
+		 *         where: A SQL query to grab the page by.
+		 *         params: Parameters to use for the "where" option.
+		 *         read_from: An associative array of values to load into the <Page> class.
 		 */
 		public function __construct($page_id, $options = array()) {
 			global $current_page;
 
 			$where = fallback($options["where"], "", true);
-			$filter = (!isset($options["filter"]) or $options["filter"]);
-			$read_from = (isset($options["read_from"])) ? $options["read_from"] : array() ;
 			$params = isset($options["params"]) ? $options["params"] : array();
+			$read_from = (isset($options["read_from"])) ? $options["read_from"] : array() ;
 
 			$sql = SQL::current();
 			if ((!empty($read_from) && $read_from))
@@ -79,8 +80,8 @@
 		 *     <update>
 		 */
 		static function add($title, $body, $parent_id, $show_in_list, $clean, $url) {
-			global $current_user;
 			$sql = SQL::current();
+			$visitor = Visitor::current();
 			$sql->insert("pages",
 			             array(
 			                 "title" => ":title",
@@ -95,7 +96,7 @@
 			             array(
 			                 ":title" => $title,
 			                 ":body" => $body,
-			                 ":user_id" => $current_user,
+			                 ":user_id" => $visitor->id,
 			                 ":parent_id" => $parent_id,
 			                 ":show_in_list" => $show_in_list,
 			                 ":clean" => $clean,
@@ -269,8 +270,9 @@
 		 *     $after - If the link can be shown, show this after it.
 		 */
 		public function edit_link($text = null, $before = null, $after = null){
-			global $user;
-			if (!isset($this->id) or !$user->can("edit_page")) return false;
+
+$visitor = Visitor::current();
+			if (!isset($this->id) or !$visitor->group->can("edit_page")) return false;
 
 			fallback($text, __("Edit"));
 			$config = Config::current();
@@ -287,8 +289,9 @@
 		 *     $after - If the link can be shown, show this after it.
 		 */
 		public function delete_link($text = null, $before = null, $after = null){
-			global $user;
-			if (!isset($this->id) or !$user->can("delete_page")) return false;
+
+$visitor = Visitor::current();
+			if (!isset($this->id) or !$visitor->group->can("delete_page")) return false;
 
 			fallback($text, __("Delete"));
 			$config = Config::current();

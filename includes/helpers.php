@@ -6,6 +6,14 @@
 	$time_start = 0;
 
 	/**
+	 * Function: logged_in
+	 * Returns whether $user is set.
+	 */
+	function logged_in() {
+		return Visitor::current()->id;
+	}
+
+	/**
 	 * Function: truncate
 	 * Truncates a string to the passed length, appending an ellipsis to the end.
 	 *
@@ -548,10 +556,11 @@
 	 * Outputs the optional fields for creating a new post.
 	 */
 	function new_post_options() {
-		global $user;
+
+$visitor = Visitor::current();
 		$config = Config::current();
 ?>
-<?php if ($user->can("add_post")): ?>
+<?php if ($visitor->group->can("add_post")): ?>
 				<p>
 					<label for="status"><?php echo __("Status"); ?></label>
 					<select name="status" id="status">

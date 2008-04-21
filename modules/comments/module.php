@@ -3,7 +3,8 @@
 
 	class Comments extends Module {
 		static function __install() {
-			global $group;
+
+$visitor = Visitor::current();
 			$sql = SQL::current();
 			$sql->query("create table if not exists `".$sql->prefix."comments` (
 			                 `id` int(11) not null auto_increment,
@@ -32,7 +33,8 @@
 		}
 
 		static function __uninstall($confirm) {
-			global $group;
+
+$visitor = Visitor::current();
 
 			if ($confirm) {
 				$sql = SQL::current();
@@ -52,10 +54,11 @@
 		}
 
 		static function show($id) {
-			global $theme, $paginate, $user, $comment, $current_user;
+			global $theme, $paginate, $comment;
 
 			$config = Config::current();
 			$sql = SQL::current();
+			$visitor = Visitor::current();
 			$get_comments = $paginate->select("comments", # table
 			                                  "*", # fields
 			                                  "`post_id` = :post_id and (
@@ -74,7 +77,7 @@
 			                                  array(
 			                                      ":post_id" => $id,
 			                                      ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-			                                      ":current_user" => $current_user
+			                                      ":current_user" => $visitor->id
 			                                  ));
 
 			$count = 1;
@@ -91,7 +94,7 @@
 				if (!in_array(when("m-d-Y", $comment->created_at), $shown_dates))
 					$shown_dates[] = when("m-d-Y", $comment->created_at);
 
-				if (($comment->status != "pingback" and !$comment->status != "trackback") and !$user->can("code_in_comments", $comment->user_id))
+				if (($comment->status != "pingback" and !$comment->status != "trackback") and !$visitor->group->can("code_in_comments", $comment->user_id))
 					$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
 
 				$comment->body = $trigger->filter("markup_comment_text", $comment->body);
@@ -104,10 +107,11 @@
 		}
 
 		static function route_add_comment() {
-			global $user, $comment;
+			global $comment;
+			$visitor = Visitor::current();
 			# If the user can't add a comment, and if they can add a private comment
 			# but the post isn't set to private, or if $_POST is empty.
-			if ((!$user->can("add_comment") and ($user->can("add_comment_private") and Post::info("status", $_POST['post_id']) != "private")) or empty($_POST))
+			if ((!$visitor->group->can("add_comment") and ($visitor->group->can("add_comment_private") and Post::info("status", $_POST['post_id']) != "private")) or empty($_POST))
 				return;
 
 			if ($_POST['author'] == "") error(__("Error"), __("Author can't be blank.", "comments"));
@@ -121,8 +125,9 @@
 		}
 
 		static function admin_update_comment($action) {
-			global $user, $comment;
-			if (!$user->can("edit_comment") or empty($_POST)) return;
+			global $comment;
+			$visitor = Visitor::current();
+			if (!$visitor->group->can("edit_comment") or empty($_POST)) return;
 			$timestamp = when("Y-m-d H:i:s", $_POST['created_at']);
 			$comment->update($_POST['id'],
 			                 $_POST['author'],
@@ -139,8 +144,9 @@
 		}
 
 		static function admin_delete_comment_real($action) {
-			global $user, $comment;
-			if (!$user->can("delete_comment") or empty($_POST)) return;
+			global $comment;
+			$visitor = Visitor::current();
+			if (!$visitor->group->can("delete_comment") or empty($_POST)) return;
 			$comment->delete($_POST['id']);
 			$config = Config::current();
 			$route = Route::current();
@@ -148,8 +154,9 @@
 		}
 
 		static function admin_mark_spam($action) {
-			global $user;
-			if (!$user->can("edit_comment")) return;
+
+$visitor = Visitor::current();
+			if (!$visitor->group->can("edit_comment")) return;
 
 			$sql = SQL::current();
 			$sql->query("update `".$sql->prefix."comments`
@@ -164,8 +171,9 @@
 		}
 
 		static function admin_approve_comment($action) {
-			global $user;
-			if (!$user->can("edit_comment")) return;
+
+$visitor = Visitor::current();
+			if (!$visitor->group->can("edit_comment")) return;
 
 			$sql = SQL::current();
 			$sql->query("update `".$sql->prefix."comments`
@@ -180,8 +188,9 @@
 		}
 
 		static function admin_deny_comment($action) {
-			global $user;
-			if (!$user->can("edit_comment")) return;
+
+$visitor = Visitor::current();
+			if (!$visitor->group->can("edit_comment")) return;
 
 			$sql = SQL::current();
 			$sql->query("update `".$sql->prefix."comments`
@@ -197,18 +206,19 @@
 		}
 
 		static function admin_manage_spam($action) {
-			global $user, $comment;
+			global $comment;
+			$visitor = Visitor::current();
 			$config = Config::current();
 			$route = Route::current();
 			if (empty($_POST['comments'])) $route->redirect("/admin/?action=manage&sub=spam&noneselected");
 			if (isset($_POST['delete'])) {
-				if (!$user->can("delete_comment")) return;
+				if (!$visitor->group->can("delete_comment")) return;
 				foreach ($_POST['comments'] as $id => $value)
 					$comment->delete($id);
 				$route->redirect("/admin/?action=manage&sub=spam&deleted");
 			}
 			if (isset($_POST['despam'])) {
-				if (!$user->can("edit_comment")) return;
+				if (!$visitor->group->can("edit_comment")) return;
 
 				$sql = SQL::current();
 				foreach ($_POST['comments'] as $id => $value)
@@ -224,8 +234,9 @@
 		}
 
 		static function admin_purge_spam($action) {
-			global $user, $comment;
-			if (!$user->can("delete_comment")) return;
+			global $comment;
+			$visitor = Visitor::current();
+			if (!$visitor->group->can("delete_comment")) return;
 
 			$sql = SQL::current();
 			$sql->query("delete from `".$sql->prefix."comments`
@@ -340,8 +351,9 @@
 		}
 
 		static function admin_manage_nav() {
-			global $user;
-			if (!$user->can("edit_comment") and !$user->can("delete_comment")) return;
+
+$visitor = Visitor::current();
+			if (!$visitor->group->can("edit_comment") and !$visitor->group->can("delete_comment")) return;
 ?>
 					<li<?php selected("manage", "comment").selected("edit", "comment"); ?>><a href="<?php url("manage", "comment"); ?>"><?php echo __("Comments", "comments"); ?></a></li>
 					<li<?php selected("manage", "spam").selected("edit", "spam"); ?>><a href="<?php url("manage", "spam"); ?>"><?php echo __("Spam", "comments"); ?></a></li>
@@ -518,12 +530,13 @@ $(function(){
 		}
 
 		static function ajax() {
-			global $theme, $user, $comment, $current_user;
+			global $theme, $comment;
 			header("Content-Type: application/x-javascript", true);
 
 			$config = Config::current();
 			$sql = SQL::current();
 			$trigger = Trigger::current();
+			$visitor = Visitor::current();
 			switch($_POST['action']) {
 				case "reload_comments":
 					$last_comment = $sql->query("select `id` from `".$sql->prefix."comments`
@@ -542,7 +555,7 @@ $(function(){
 					                            array(
 					                                ":post_id" => $_POST['post_id'],
 					                                ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-					                                ":user_id" => $current_user
+					                                ":user_id" => $visitor->id
 					                            ))->fetchColumn();
 					if ($last_comment > $_POST['last_comment']) {
 						$new_comments = $sql->query("select `id` from `".$sql->prefix."comments`
@@ -562,7 +575,7 @@ $(function(){
 						                                ":post_id" => $_POST['post_id'],
 						                                ":last_comment" => $_POST['last_comment'],
 						                                ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-						                                ":user_id" => $current_user
+						                                ":user_id" => $visitor->id
 						                            ));
 						$count = 1;
 						$ids = "";
@@ -580,20 +593,20 @@ $(function(){
 					$comment->find($_POST['comment_id']);
 					$trigger->call("show_comment", $comment->id);
 
-					if (($comment->status != "pingback" and !$comment->status != "trackback") and !$user->can("code_in_comments", $comment->user_id))
+					if (($comment->status != "pingback" and !$comment->status != "trackback") and !$visitor->group->can("code_in_comments", $comment->user_id))
 						$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
 
 					$comment->body = $trigger->filter("markup_comment_text", $comment->body);
 					$theme->load("content/comment", array("comment" => $comment));
 					break;
 				case "delete_comment":
-					if (!$user->can("delete_comment") or !isset($_POST['id']))
+					if (!$visitor->group->can("delete_comment") or !isset($_POST['id']))
 						break;
 
 					$comment->delete($_POST['id']);
 					break;
 				case "edit_comment":
-					if (!$user->can("edit_comment") or !isset($_POST['comment_id']))
+					if (!$visitor->group->can("edit_comment") or !isset($_POST['comment_id']))
 						break;
 
 					$comment->find($_POST['comment_id']);
@@ -645,9 +658,10 @@ $(function(){
 		}
 
 		static function show_admin_manage_page($show_page, $sub) {
-			global $user;
+
+$visitor = Visitor::current();
 			if ($sub == "spam")
-				return ($user->can("edit_comment") or $user->can("delete_comment"));
+				return ($visitor->group->can("edit_comment") or $visitor->group->can("delete_comment"));
 			else
 				return $show_page;
 		}
@@ -704,12 +718,13 @@ $(function(){
 		}
 
 		static function view_feed() {
-			global $post, $current_user, $action, $get_comments, $latest_timestamp, $title;
+			global $post, $action, $get_comments, $latest_timestamp, $title;
 
 			$title = $post->title();
 			fallback($title, ucfirst($post->feather)." Post #".$post->id);
 
 			$sql = SQL::current();
+			$visitor = Visitor::current();
 			$get_comments = $sql->query("select * from `".$sql->prefix."comments`
 			                             where
 			                                 `post_id` = :post_id and (
@@ -727,7 +742,7 @@ $(function(){
 			                            array(
 			                                ":post_id" => $post->id,
 			                                ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-			                                ":user_id" => $current_user
+			                                ":user_id" => $visitor->id
 			                            ));
 
 			$latest_timestamp = $sql->query("select `created_at` from `".$sql->prefix."comments`
@@ -748,7 +763,7 @@ $(function(){
 			                                array(
 			                                    ":post_id" => $post->id,
 			                                    ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-			                                    ":user_id" => $current_user
+			                                    ":user_id" => $visitor->id
 			                                ))->fetchColumn();
 
 			$action = "comments_feed";
@@ -760,10 +775,11 @@ $(function(){
 		}
 
 		static function filter_post() {
-			global $post, $user, $paginate, $comment, $current_user, $viewing;
+			global $post, $paginate, $comment, $viewing;
 			$sql = SQL::current();
 			$config = Config::current();
 			$trigger = Trigger::current();
+			$visitor = Visitor::current();
 			$post->comment_count = $sql->count("comments",
 		                                       "`post_id` = :post_id and (
 		                                            `status` != 'denied' or (
@@ -777,9 +793,9 @@ $(function(){
 		                                       array(
 		                                           ":post_id" => $post->id,
 		                                           ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-		                                           ":user_id" => $current_user
+		                                           ":user_id" => $visitor->id
 		                                       ));
-			$get_last_comment = $sql->query("select `id` from `".$sql->prefix."comments` where `post_id` = ".$sql->quote($post->id)." and (`status` != 'denied' or (`status` = 'denied' and (`author_ip` = '".ip2long($_SERVER['REMOTE_ADDR'])."' or `user_id` = ".$sql->quote($current_user)."))) and `status` != 'spam' order by `created_at` desc limit 1");
+			$get_last_comment = $sql->query("select `id` from `".$sql->prefix."comments` where `post_id` = ".$sql->quote($post->id)." and (`status` != 'denied' or (`status` = 'denied' and (`author_ip` = '".ip2long($_SERVER['REMOTE_ADDR'])."' or `user_id` = ".$sql->quote($visitor->id)."))) and `status` != 'spam' order by `created_at` desc limit 1");
 			$post->last_comment = ($get_last_comment->rowCount() > 0) ? $get_last_comment->fetchColumn() : 0 ;
 			$post->commentable = $comment->user_can($post->id);
 
@@ -802,7 +818,7 @@ $(function(){
 				                                  array(
 				                                      ":post_id" => $post->id,
 				                                      ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-				                                      ":current_user" => $current_user
+				                                      ":current_user" => $visitor->id
 				                                  ));
 
 				$shown_dates = array();
@@ -812,7 +828,7 @@ $(function(){
 					if (!in_array(when("m-d-Y", $temp_comment["created_at"]), $shown_dates))
 						$shown_dates[] = when("m-d-Y", $temp_comment["created_at"]);
 
-					if (($temp_comment["status"] != "pingback" and $temp_comment["status"] != "trackback") and !$user->can("code_in_comments", $temp_comment["user_id"]))
+					if (($temp_comment["status"] != "pingback" and $temp_comment["status"] != "trackback") and !$visitor->group->can("code_in_comments", $temp_comment["user_id"]))
 						$temp_comment["body"] = strip_tags($temp_comment["body"], "<".join("><", $config->allowed_comment_html).">");
 
 					$temp_comment["body"] = $trigger->filter("markup_comment_text", $temp_comment["body"]);
@@ -828,13 +844,12 @@ $(function(){
 	$comments = new Comments();
 
 	function post_comments($post_id, $text = null, $link = true, $echo = true){
-		global $current_user;
-
 		$post = new Post($post_id);
 
 		fallback($text, __("% Comment[s]", "comments"));
 
 		$sql = SQL::current();
+			$visitor = Visitor::current();
 		$count = $sql->count("comments",
 		                     "`post_id` = :post_id and (
 		                          `status` != 'denied' or (
@@ -848,7 +863,7 @@ $(function(){
 		                     array(
 		                         ":post_id" => $post_id,
 		                         ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-		                         ":user_id" => $current_user
+		                         ":user_id" => $visitor->id
 		                     ));
 		$s = ($count == 1) ? "" : "s" ;
 		$string = str_replace("[s]", '<span class="comment_plural">'.$s.'</span>', $text);

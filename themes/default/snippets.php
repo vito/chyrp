@@ -32,17 +32,17 @@
 			}
 		}
 		function controls() {
-			global $user;
 			$config = Config::current();
 			$route = Route::current();
-			if ($user->can('add_post') or $user->can('add_page') or $user->can('view_draft') or $user->can('change_settings')):
+			$visitor = Visitor::current();
+			if ($visitor->group->can('add_post') or $visitor->group->can('add_page') or $visitor->group->can('view_draft') or $visitor->group->can('change_settings')):
 ?>
 		<div class="controls" id="admin_bar"<?php if (isset($_COOKIE['chyrp_hide_admin'])) { echo ' style="display: none"'; } ?>>
 			<ul>
-				<?php if ($user->can('add_post')): ?><li><a id="add_post" href="<?php echo $config->url; ?>/admin/?action=write"><?php echo __("Write", "theme"); ?></a></li><?php endif; ?>
-				<?php if ($user->can('add_page')): ?><li><a id="add_page" href="<?php echo $config->url; ?>/admin/?action=write&amp;sub=page"><?php echo __("Add Page", "theme"); ?></a></li><?php endif; ?>
-				<?php if ($user->can('view_draft')): ?><li><a id="your_drafts" href="<?php echo $route->url("drafts/"); ?>"><?php echo __("Drafts", "theme"); ?></a></li><?php endif; ?>
-				<?php if ($user->can('change_settings')): ?><li><a id="site_settings" href="<?php echo $config->url; ?>/admin/"><?php echo __("Admin", "theme"); ?></a></li><?php endif; ?>
+				<?php if ($visitor->group->can('add_post')): ?><li><a id="add_post" href="<?php echo $config->url; ?>/admin/?action=write"><?php echo __("Write", "theme"); ?></a></li><?php endif; ?>
+				<?php if ($visitor->group->can('add_page')): ?><li><a id="add_page" href="<?php echo $config->url; ?>/admin/?action=write&amp;sub=page"><?php echo __("Add Page", "theme"); ?></a></li><?php endif; ?>
+				<?php if ($visitor->group->can('view_draft')): ?><li><a id="your_drafts" href="<?php echo $route->url("drafts/"); ?>"><?php echo __("Drafts", "theme"); ?></a></li><?php endif; ?>
+				<?php if ($visitor->group->can('change_settings')): ?><li><a id="site_settings" href="<?php echo $config->url; ?>/admin/"><?php echo __("Admin", "theme"); ?></a></li><?php endif; ?>
 				<li class="close"><a class="toggle_admin" href="<?php echo $route->url("toggle_admin/"); ?>"><?php echo __("Close", "theme"); ?></a></li>
 			</ul>
 		</div>

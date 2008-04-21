@@ -120,7 +120,7 @@
 			}
 			break;
 		case "login":
-			if ($user->logged_in())
+			if (logged_in())
 				error(__("Error"), __("You're already logged in."));
 
 			$theme->title = __("Log In");
@@ -130,7 +130,7 @@
 		case "register":
 			if (!$config->can_register)
 				error(__("Registration Disabled"), __("I'm sorry, but this site is not allowing registration."));
-			if ($user->logged_in())
+			if (logged_in())
 				error(__("Error"), __("You're already logged in."));
 
 			$theme->title = __("Register");
@@ -138,7 +138,7 @@
 
 			break;
 		case "controls":
-			if (!$user->logged_in())
+			if (!logged_in())
 				error(__("Error"), __("You must be logged in to access this area."));
 
 			$theme->title = __("Controls");
@@ -155,7 +155,7 @@
 			require "includes/feed.php";
 			break;
 		case "bookmarklet":
-			if (!$user->can("add_post"))
+			if (!$visitor->group->can("add_post"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 			if (empty($config->enabled_feathers))
 				error(__("No Feathers"), __("Please install a feather or two in order to add a post."));

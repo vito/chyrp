@@ -362,17 +362,16 @@
 		 * Retrieves a specified user.
 		 */
 		public function blogger_getUserInfo($args) {
-			global $user;
-
 			$this->auth($args[1], $args[2]);
 
+			$visitor = Visitor::current();
 			return array(array(
-				'userid'    => $user->id,
-				'nickname'  => $user->fullname,
+				'userid'    => $visitor->id,
+				'nickname'  => $visitor->fullname,
 				'firstname' => '',
 				'lastname'  => '',
-				'email'     => $user->email,
-				'url'       => $user->website));
+				'email'     => $visitor->email,
+				'url'       => $visitor->website));
 		}
 
 		/**
@@ -457,10 +456,11 @@
 		 * Returns an array of the most recent posts.
 		 */
 		private function getRecentPosts($limit) {
-			global $user;
+
+$visitor = Visitor::current();
 
 			$statuses = "'public'";
-			$statuses.= ($user->can('view_drafts')) ? ", 'draft'" : '';
+			$statuses.= ($visitor->group->can('view_drafts')) ? ", 'draft'" : '';
 
 			$config = Config::current();
 			if (!in_array(XML_RPC_FEATHER, $config->enabled_feathers))
@@ -497,14 +497,11 @@
 		 * Authenticates a given login and password, and checks for appropriate permission
 		 */
 		private function auth($login, $password, $do = 'add') {
-			global $current_user, $user, $group;
+			$current_user = User::authenticate($login, md5($password));
 
-			$current_user = $user->authenticate($login, md5($password));
+			$user = new User($current_user);
 
-			$user->load($current_user, md5($password));
-			$group->load();
-
-			if (!$user->can($do.'_post'))
+			if (!$user->group->can($do.'_post'))
 				throw new Exception(__(sprintf("You don't have permission to %s posts.", $do)));
 		}
 

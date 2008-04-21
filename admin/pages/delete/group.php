@@ -1,6 +1,6 @@
 						<form class="delete" action="<?php url("delete_group_real"); ?>" method="post" accept-charset="utf-8">
 							<blockquote class="noitalics">
-<?php if ($group->user_count($_GET['id']) > 0): ?>
+<?php if (Group::count_users($_GET['id']) > 0): ?>
 								<h4><?php echo __("Move members to:"); ?></h4>
 								<div class="center">
 									<select name="move_group" id="move_group" class="big2">

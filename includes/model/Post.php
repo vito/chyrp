@@ -15,8 +15,11 @@
 		 *
 		 * Parameters:
 		 *     $post_id - The post's unique ID.
-		 *     $where - A SQL query to grab the post by.
-		 *     $filter - Whether or not to run it through the _parse_post_ filter.
+		 *     $options - An array of options:
+		 *         where: A SQL query to grab the post by.
+		 *         params: Parameters to use for the "where" option.
+		 *         filter: Whether or not to run it through the _parse_post_ filter.
+		 *         read_from: An associative array of values to load into the <Post> class.
 		 */
 		public function __construct($post_id = null, $options = array()) {
 			global $current_post;
@@ -88,8 +91,6 @@
 		 *     <update>
 		 */
 		static function add($values, $clean = "", $url = "") {
-			global $user, $current_user;
-
 			$pinned = (int) !empty($_POST['pinned']);
 			$status = (isset($_POST['draft'])) ? "draft" : ((!empty($_POST['status'])) ? $_POST['status'] : "public") ;
 			$timestamp = (!empty($_POST['created_at']) and (!isset($_POST['original_time']) or $_POST['created_at'] != $_POST['original_time'])) ?
@@ -105,6 +106,7 @@
 				$xml->addChild($key, $val);
 
 			$sql = SQL::current();
+			$visitor = Visitor::current();
 			$sql->insert("posts",
 			             array(
 			                 "xml" => ":xml",
@@ -119,7 +121,7 @@
 			             array(
 			                 ":xml" => $xml->asXML(),
 			                 ":feather" => $_POST['feather'],
-			                 ":user_id" => $current_user,
+			                 ":user_id" => $visitor->id,
 			                 ":pinned" => $pinned,
 			                 ":status" => $status,
 			                 ":clean" => $clean,
@@ -243,7 +245,7 @@
 		static function info($column, $post_id, $fallback = false) {
 			global $current_post;
 
-			if ($current_post["id"] == $post_id)
+			if ($current_post["id"] == $post_id and isset($current_post[$column]))
 				return $current_post[$column];
 
 			$sql = SQL::current();
@@ -322,11 +324,12 @@
 		 * Returns a post's URL.
 		 */
 		public function url() {
-			global $user, $plural_feathers;
+			global $plural_feathers;
 
 			$config = Config::current();
+			$visitor = Visitor::current();
 			if ($config->clean_urls) {
-				$login = (strpos($config->post_url, "(author)") !== false) ? $user->info("login", $this->user_id) : null ;
+				$login = (strpos($config->post_url, "(author)") !== false) ? User::info("login", $this->user_id) : null ;
 				$vals = array(when("Y", $this->created_at),
 				              when("m", $this->created_at),
 				              when("d", $this->created_at),
@@ -343,9 +346,8 @@
 				$vals = $trigger->filter("url_vals", $vals);
 				$route = Route::current();
 				return $config->url."/".str_replace(array_keys($route->code), $vals, $config->post_url);
-			} else {
+			} else
 				return $config->url."/?action=view&url=".urlencode($this->url);
-			}
 		}
 
 		/**
@@ -374,8 +376,7 @@
 		 */
 		public function title() {
 			global $feathers;
-			$trigger = Trigger::current();
-			return $trigger->filter("title", $feathers[$this->feather]->title($this));
+			return Trigger::current()->filter("title", $feathers[$this->feather]->title($this));
 		}
 
 
@@ -385,8 +386,7 @@
 		 */
 		public function excerpt() {
 			global $feathers;
-			$trigger = Trigger::current();
-			return $trigger->filter("excerpt", $feathers[$this->feather]->excerpt($this));
+			return Trigger::current()->filter("excerpt", $feathers[$this->feather]->excerpt($this));
 		}
 
 
@@ -395,8 +395,7 @@
 		 * Returns the given post's Feed content, provided by its Feather.
 		 */
 		public function feed_content() {
-			$class = self::feather_class($this->id);
-			return call_user_func(array($class, "feed_content"), $this);
+			return call_user_func(array(self::feather_class($this->id), "feed_content"), $this);
 		}
 
 		/**
@@ -514,8 +513,9 @@
 		 *     $after - If the link can be shown, show this after it.
 		 */
 		public function edit_link($text = null, $before = null, $after = null){
-			global $user;
-			if (!isset($this->id) or !$user->can("edit_post")) return false;
+
+$visitor = Visitor::current();
+			if (!isset($this->id) or !$visitor->group->can("edit_post")) return false;
 
 			fallback($text, __("Edit"));
 			$config = Config::current();
@@ -532,8 +532,9 @@
 		 *     $after - If the link can be shown, show this after it.
 		 */
 		public function delete_link($text = null, $before = null, $after = null){
-			global $user;
-			if (!isset($this->id) or !$user->can("delete_post")) return false;
+
+$visitor = Visitor::current();
+			if (!isset($this->id) or !$visitor->group->can("delete_post")) return false;
 
 			fallback($text, __("Delete"));
 			$config = Config::current();

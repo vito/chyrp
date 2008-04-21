@@ -211,7 +211,6 @@
 	}
 
 	function get_post_tags($post_id, $links = true, $order_by = "id", $order = "asc"){
-		global $user;
 		$sql = SQL::current();
 		$get_tags = $sql->query("select * from `".$sql->prefix."tags`
 		                         where `post_id` = :id

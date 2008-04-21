@@ -14,15 +14,15 @@
 				$this->$key = $val;
 		}
 		function create($author, $email, $url, $body, $post_id, $type = null) {
-			global $user, $current_user;
 			if (!$this->user_can($post_id)) return;
 
 			$post = new Post($post_id);
 			$config = Config::current();
 			$route = Route::current();
+			$visitor = Visitor::current();
 
 			if (!$type) {
-				$status = ($post->user_id == $current_user) ? "approved" : $config->default_comment_status ;
+				$status = ($post->user_id == $visitor->id) ? "approved" : $config->default_comment_status ;
 				$type = "comment";
 			} else
 				$status = $type;
@@ -39,16 +39,16 @@
 				$akismet->setCommentType($type);
 
 				if ($akismet->isKeyValid() && $akismet->isCommentSpam()) {
-					$this->add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], "spam", datetime(), $post_id, $current_user);
+					$this->add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], "spam", datetime(), $post_id, $visitor->id);
 					error(__("Spam Comment"), __("Your comment has been marked as spam. It will have to be approved before it will show up.", "comments"));
 				} else {
-					$id = $this->add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, datetime(), $post_id, $current_user);
+					$id = $this->add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, datetime(), $post_id, $visitor->id);
 					if (isset($_POST['ajax']))
 						exit("{ comment_id: ".$id." }");
 					$route->redirect($post->url()."#comment_".$id);
 				}
 			} else {
-				$id = $this->add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, datetime(), $post_id, $current_user);
+				$id = $this->add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, datetime(), $post_id, $visitor->id);
 				if (isset($_POST['ajax']))
 					exit("{ comment_id: ".$id." }");
 				$route->redirect($post->url()."#comment_".$id);
@@ -101,22 +101,22 @@
 			else return null;
 		}
 		function edit_link($comment_id = null, $text = null, $before = null, $after = null){
-			global $user;
-			if (!$user->can('edit_comment')) return;
+
+$visitor = Visitor::current();
+			if (!$visitor->group->can('edit_comment')) return;
 			fallback($text, __("Edit"));
 			$config = Config::current();
 			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=comment&amp;id='.$comment_id.'" title="Edit" class="comment_edit_link" id="comment_edit_'.$comment_id.'">'.$text.'</a>'.$after;
 		}
 		function delete_link($comment_id = null, $text = null, $before = null, $after = null){
-			global $user;
-			if (!$user->can('delete_comment')) return;
+
+$visitor = Visitor::current();
+			if (!$visitor->group->can('delete_comment')) return;
 			fallback($text, __("Delete"));
 			$config = Config::current();
 			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=comment&amp;id='.$comment_id.'" title="Delete" class="comment_delete_link" id="comment_delete_'.$comment_id.'">'.$text.'</a>'.$after;
 		}
 		function author_link() {
-			global $user;
-
 			if ($this->author_url != "") # If a URL is set
 				echo '<a href="'.$this->author_url.'">'.$this->author.'</a>';
 			else # If not, just show their name
@@ -156,15 +156,15 @@
 			$trigger->call("delete_comment", $comment_id);
 		}
 		function user_can($post_id) {
-			global $user;
-			if (!$user->can("add_comment")) return false;
+			$visitor = Visitor::current();
+			if (!$visitor->group->can("add_comment")) return false;
 
 			$post = new Post($post_id, array("filter" => false));
 			// assume allowed comments by default
 			return empty($post->comment_status) or
 			       !($post->comment_status == "closed" or
-			        ($post->comment_status == "registered_only" and !$user->logged_in()) or
-			        ($post->comment_status == "private" and !$user->can("add_comment_private")));
+			        ($post->comment_status == "registered_only" and !logged_in()) or
+			        ($post->comment_status == "private" and !$visitor->group->can("add_comment_private")));
 		}
 		function user_count($user_id) {
 			$sql = SQL::current();

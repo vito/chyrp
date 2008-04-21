@@ -1,40 +1,65 @@
 <?php
+	$current_user = array("id" => 0);
+
 	/**
 	 * Class: User
 	 * The model for the Users SQL table.
 	 */
 	class User {
+		public $no_results = false;
+		public $group;
+
 		/**
-		 * Function: load
-		 * Loads a given user into the <User> class.
+		 * Function: __construct
+		 * Grabs the specified user and injects it into the <User> class.
 		 *
 		 * Parameters:
-		 *     $user_id - The user ID to load. If no user is given, it defaults to the $current_user.
-		 *                          If they are not logged in and no user ID is given, nothing happens.
+		 *     $user_id - The user's unique ID.
+		 *     $options - An array of options:
+		 *         where: A SQL query to grab the user by.
+		 *         params: Parameters to use for the "where" option.
+		 *         read_from: An associative array of values to load into the <User> class.
 		 */
-		function load($user_id = null, $password = null) {
+		public function __construct($user_id, $options = array()) {
 			global $current_user;
-			if (!XML_RPC and (empty($_COOKIE['chyrp_user_id']) or empty($_COOKIE['chyrp_password']))) return false;
-			fallback($user_id, $current_user);
-			if (empty($user_id)) return;
-			fallback($password, $_COOKIE['chyrp_password']);
+
+			$where = fallback($options["where"], "", true);
+			$params = isset($options["params"]) ? $options["params"] : array();
+			$read_from = (isset($options["read_from"])) ? $options["read_from"] : array() ;
 
 			$sql = SQL::current();
-			$result = $sql->query("select * from `".$sql->prefix."users`
-			                        where
-			                            `id` = :id and
-			                            `password` = :password",
-			                        array(
-			                               ":id" => $user_id,
-			                               ":password" => $password
-			                        ))->fetch();
+			if ((!empty($read_from) && $read_from))
+				$read = $read_from;
+			elseif (isset($user_id) and $user_id == $current_user["id"])
+				$read = $current_user;
+			elseif (!empty($where))
+				$read = $sql->select("users",
+				                     "*",
+				                     $where,
+				                     "id",
+				                     $params,
+				                     1)->fetch();
+			else
+				$read = $sql->select("users",
+				                     "*",
+				                     "`id` = :userid",
+				                     "id",
+				                     array(
+				                         ":userid" => $user_id
+				                     ),
+				                     1)->fetch();
 
-			if (!$result)
-				return;
+			if (!count($read) or !$read)
+				return $this->no_results = true;
 
-			foreach ($result as $key => $val)
+			foreach ($read as $key => $val) {
 				if (!is_int($key))
 					$this->$key = $val;
+
+				$current_user[$key] = $val;
+			}
+
+			$this->group = new Group($this->id);
 		}
 
 		/**
@@ -48,103 +73,39 @@
 		 * Returns:
 		 *     true - if a match is found.
 		 */
-		function authenticate($login, $password) {
-			if (isset($this->id)) return true;
-
-			$sql = SQL::current();
-			$check_user = $sql->query("select `id` from `{$sql->prefix}users`
-			                           where
-			                               `login` = :login and
-			                               `password` = :password",
-			                          array(
-			                              ":login" => $login,
-			                              ":password" => $password
-			                          ));
-			return ($check_user->fetchColumn());
-		}
-
-		/**
-		 * Function: logged_in
-		 * Checks to see if the current visitor is logged in. If Cookies are set, it validates them to make sure.
-		 *
-		 * Returns:
-		 *     true - if they are logged in with a valid Username and Password.
-		 */
-		function logged_in() {
-			if (!XML_RPC and (empty($_COOKIE['chyrp_user_id']) or empty($_COOKIE['chyrp_password']))) return false;
-			if (isset($this->id)) return true;
-
-			$sql = SQL::current();
-			$check_user = $sql->query("select count(`id`) from `".$sql->prefix."users`
-			                           where
-			                               `id` = :id and
-			                               `password` = :password",
-			                          array(
-			                              ":id" => $_COOKIE['chyrp_user_id'],
-			                              ":password" => $_COOKIE['chyrp_password']
-			                          ));
-			return ($check_user->fetchColumn() == 1);
+		static function authenticate($login, $password) {
+			return new self(null, array("where" => "`login` = :login and `password` = :password",
+			                            "params" => array(":login" => $login, ":password" => $password)));
 		}
 
 		/**
 		 * Function: info
-		 * Grabs a specified column from a users SQL row.
+		 * Grabs a specified column from a user's SQL row.
 		 *
 		 * Parameters:
 		 *     $column - The name of the SQL column.
-		 *     $user_id - The user ID to grab from. If not given, defaults to $current_user.
+		 *     $user_id - The user ID to grab from.
 		 *     $fallback - What to display if the result is empty.
 		 *
 		 * Returns:
-		 *     false - if $user_id isn't set and they aren't logged in.
 		 *     SQL result - if the SQL result isn't empty.
 		 *     $fallback - if the SQL result is empty.
 		 */
-		function info($column, $user_id = null, $fallback = null) {
+		static function info($column, $user_id, $fallback = false) {
 			global $current_user;
-			$user = (is_null($user_id)) ? $current_user : $user_id ;
-			if (isset($this->id) and $this->id == $user) return ($this->$column == "") ? $fallback : $this->$column ;
+
+			if ($current_user["id"] == $user_id and isset($current_user[$column]))
+				return $current_user[$column];
 
 			$sql = SQL::current();
-			$grab_info = $sql->query("select `".$column."` from `".$sql->prefix."users`
-			                          where `id` = :id",
-			                         array(
-			                             ":id" => $user
-			                         ));
-			if ($grab_info->rowCount() == 1)
-				return ($grab_info->fetchColumn() == "") ? $fallback : $grab_info->fetchColumn() ;
-			return $fallback;
-		}
-
-		/**
-		 * Function: can
-		 * Checks to see if a user can perform a specified function.
-		 *
-		 * Parameters:
-		 *     $function - The permission name from their <Group>.
-		 *     $user_id - The user ID to check. If not given, defaults to $current_user or the Guest group.
-		 *
-		 * Returns:
-		 *     true - if their group can perform the specified function.
-		 */
-		function can($function, $user_id = null) {
-			global $group, $current_user;
-			fallback($user_id, $current_user);
-			$config = Config::current();
-			$sql = SQL::current();
-
-			if (is_null($user_id) and ($this->logged_in() and $group->id == $this->group_id) or (!$this->logged_in() and $group->id == $config->guest_group))
-				return isset($group->$function);
-
-			$group_id = (!$this->logged_in()) ? $config->guest_group : $this->info("group_id", $user_id) ;
-			$permissions = $sql->query("select `permissions` from `".$sql->prefix."groups`
-			                            where `id` = :id",
-			                           array(
-			                               ":id" => $group_id
-			                           ))->fetchColumn();
-			$permissions = Spyc::YAMLLoad($permissions);
-
-			return in_array($function, $permissions);
+			$grab_column = $sql->select("users",
+			                            $column,
+			                            "`id` = :id",
+			                            "id",
+			                            array(
+			                                ':id' => $user_id
+			                            ));
+			return ($grab_column->rowCount() == 1) ? $grab_column->fetchColumn() : $fallback ;
 		}
 
 		/**
@@ -164,7 +125,7 @@
 		 * See Also:
 		 *     <update>
 		 */
-		function add($login, $password, $email, $full_name = '', $website = '', $group_id = null) {
+		static function add($login, $password, $email, $full_name = '', $website = '', $group_id = null) {
 			$config = Config::current();
 			$sql = SQL::current();
 			$sql->query("insert into `".$sql->prefix."users`
@@ -183,7 +144,8 @@
 			$id = $sql->db->lastInsertId();
 			$trigger = Trigger::current();
 			$trigger->call("add_user", $id);
-			return $id;
+
+			return new self($id);
 		}
 
 		/**
@@ -292,4 +254,3 @@
 			return $statuses;
 		}
 	}
-	$user = new User();

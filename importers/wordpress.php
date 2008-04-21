@@ -4,7 +4,7 @@
 	if (!in_array("text", $config->enabled_feathers))
 		error(__("Missing Feather"), __("Importing from WordPress requires the Text feather to be installed and enabled."));
 
-	if (!$user->can("add_post"))
+	if (!$visitor->group->can("add_post"))
 		error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
 	class XMLParser { # Via http://php.net/xml, slightly modified.

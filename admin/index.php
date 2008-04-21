@@ -7,13 +7,13 @@
 	$manage_pages = array("post", "page", "user", "group");
 	$manage_pages = $trigger->filter("show_admin_manage_tab", $manage_pages);
 	foreach($manage_pages as $type)
-		if ($user->can("edit_".$type) or $user->can("delete_".$type)) {
+		if ($visitor->group->can("edit_".$type) or $visitor->group->can("delete_".$type)) {
 			if (!isset($can_manage))
 				$can_manage = $type;
 			$show_manage_tab = true;
 		}
 
-	$allowed = ($user->can("add_post") or $user->can("add_page") or $user->can("change_settings") or $show_manage_tab);
+	$allowed = ($visitor->group->can("add_post") or $visitor->group->can("add_page") or $visitor->group->can("change_settings") or $show_manage_tab);
 
 	if (!$allowed)
 		error(__("Access Denied"), __("You are not allowed to view this area."));
@@ -43,19 +43,19 @@
 	$subs = $trigger->filter("admin_sub_page_titles", $subs);
 
 	if (!isset($_GET['action']) and !isset($_GET['sub']))
-		if (!$user->can("add_post") and !$user->can("add_page"))
-			if ($user->can("change_settings"))
+		if (!$visitor->group->can("add_post") and !$visitor->group->can("add_page"))
+			if ($visitor->group->can("change_settings"))
 				$route->redirect(url("settings", null, true));
 			elseif ($show_manage_tab)
-				if ($user->can("edit_post") or $user->can("delete_post"))
+				if ($visitor->group->can("edit_post") or $visitor->group->can("delete_post"))
 					$route->redirect("/admin/?action=manage");
 				else
 					$route->redirect("/admin/?action=manage&sub=".$can_manage);
-		elseif ($user->can("add_page"))
+		elseif ($visitor->group->can("add_page"))
 			$route->redirect(url("write", "page", true));
 
 	if ($action == "manage" and !isset($_GET['sub']) and $show_manage_tab)
-		if (!$user->can("edit_post") and !$user->can("delete_post"))
+		if (!$visitor->group->can("edit_post") and !$visitor->group->can("delete_post"))
 			$route->redirect("/admin/?action=manage&sub=".$can_manage);
 
 	function url($action, $sub = null, $return = false) {
@@ -96,16 +96,16 @@
 		</div>
 		<div class="main-nav">
 			<ul>
-<?php if ($user->can("add_post") or $user->can("add_page")): ?>
+<?php if ($visitor->group->can("add_post") or $visitor->group->can("add_page")): ?>
 				<li<?php admin_selected('write'); ?>><a href="<?php url('write'); ?>"><?php echo __("Write"); ?></a></li>
 <?php endif; ?>
 <?php if ($show_manage_tab): ?>
 				<li<?php admin_selected('manage'); ?><?php admin_selected('edit'); ?><?php admin_selected('delete'); ?>><a href="<?php url('manage'); ?>"><?php echo __("Manage"); ?></a></li>
 <?php endif; ?>
-<?php if ($user->can("change_settings")): ?>
+<?php if ($visitor->group->can("change_settings")): ?>
 				<li<?php admin_selected('settings'); ?>><a href="<?php url('settings'); ?>"><?php echo __("Settings"); ?></a></li>
 <?php endif; ?>
-<?php if ($user->can("change_settings")): ?>
+<?php if ($visitor->group->can("change_settings")): ?>
 				<li<?php admin_selected('extend'); ?>><a href="<?php url('extend'); ?>"><?php echo __("Extend"); ?></a></li>
 <?php endif; ?>
 <?php $trigger->call("admin_nav"); ?>

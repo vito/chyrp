@@ -11,7 +11,7 @@
 					<form class="detail" action="index.php" method="get" accept-charset="utf-8">
 						<input type="hidden" name="action" value="manage" />
 						<input type="hidden" name="sub" value="group" />
-<?php if ($user->can("add_group")): ?>
+<?php if ($visitor->group->can("add_group")): ?>
 						<a href="<?php echo $config->url."/admin/?action=manage&amp;sub=group&amp;new"; ?>" class="button positive right">
 							<img src="<?php echo $config->url."/admin/icons/add.png"; ?>" alt="add" /> <?php echo __("New Group"); ?>
 						</a>
@@ -51,13 +51,13 @@
 	while ($the_group = $get_groups->fetch()) {
 		$members = ($the_group["id"] == $config->guest_group) ?
 		           sprintf(__("&#8220;%s&#8221; is the default group for guests"), $the_group["name"]) :
-		           sprintf(_p("&#8220;%s&#8221; has %s member", "&#8220;%s&#8221; has %s members", $group->user_count($the_group["id"])), $the_group["name"], $group->user_count($the_group["id"])) ;
+		           sprintf(_p("&#8220;%s&#8221; has %s member", "&#8220;%s&#8221; has %s members", Group::count_users($the_group["id"])), $the_group["name"], Group::count_users($the_group["id"])) ;
 ?>
 					<div class="box">
 						<h1>
 							<span class="right">
-								<?php if ($user->can("edit_group")) echo $group->edit_link($the_group["id"], '<img src="icons/edit.png" alt="edit" /> '.__("edit")); ?>
-								<?php if ($user->can("delete_group")) echo $group->delete_link($the_group["id"], '<img src="icons/delete.png" alt="delete" /> '.__("delete")); ?>
+								<?php if ($visitor->group->can("edit_group")) echo $group->edit_link($the_group["id"], '<img src="icons/edit.png" alt="edit" /> '.__("edit")); ?>
+								<?php if ($visitor->group->can("delete_group")) echo $group->delete_link($the_group["id"], '<img src="icons/delete.png" alt="delete" /> '.__("delete")); ?>
 							</span>
 							<?php echo $members; ?>
 						</h1>

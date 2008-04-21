@@ -33,7 +33,7 @@
 							<th><?php echo __("Posted"); ?></th>
 							<th><?php echo __("Author"); ?></th>
 							<?php $trigger->call("admin_manage_posts_column_header"); ?>
-<?php if ($user->can("edit_post") and $user->can("delete_post")): ?>
+<?php if ($visitor->group->can("edit_post") and $visitor->group->can("delete_post")): ?>
 							<th colspan="2"></th>
 <?php else: ?>
 							<th></th>
@@ -83,12 +83,12 @@
 						<tr id="post_<?php echo $post->id; ?>"<?php echo $class; ?>>
 							<td class="main"><a href="<?php echo $post->url($post->id); ?>"><?php echo $post->title($post->id); ?></a></td>
 							<td><?php echo when("F jS, Y", $post->created_at); ?></td>
-							<td class="center"><?php echo $user->info('full_name', $post->user_id, $user->info('login', $post->user_id)); ?></td>
+							<td class="center"><?php echo User::info('full_name', $post->user_id, User::info('login', $post->user_id)); ?></td>
 							<?php $trigger->call("admin_manage_posts_column", $post->id); ?>
-<?php if ($user->can("edit_post")): ?>
+<?php if ($visitor->group->can("edit_post")): ?>
 							<td class="center"><?php echo $post->edit_link('<img src="icons/edit.png" alt="edit" />'); ?></td>
 <?php endif; ?>
-<?php if ($user->can("delete_post")): ?>
+<?php if ($visitor->group->can("delete_post")): ?>
 							<td class="center"><?php echo $post->delete_link('<img src="icons/delete.png" alt="edit" />'); ?></td>
 <?php endif; ?>
 						</tr>

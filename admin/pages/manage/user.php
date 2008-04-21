@@ -11,7 +11,7 @@
 					<form class="detail" action="index.php" method="get" accept-charset="utf-8">
 						<input type="hidden" name="action" value="manage" />
 						<input type="hidden" name="sub" value="user" />
-<?php if ($user->can("edit_user")): ?>
+<?php if ($visitor->group->can("edit_user")): ?>
 						<a href="<?php echo $config->url."/admin/?action=manage&amp;sub=user&amp;new"; ?>" class="button positive right">
 							<img src="<?php echo $config->url."/admin/icons/add.png"; ?>" alt="add" /> <?php echo __("New User"); ?>
 						</a>
@@ -30,7 +30,7 @@
 							<th width="15%"><?php echo __("Real&nbsp;Name"); ?></th>
 							<th width="15%"><?php echo __("E-Mail"); ?></th>
 							<th width="15%"><?php echo __("Website"); ?></th>
-<?php if ($user->can("edit_user") and $user->can("delete_user")): ?>
+<?php if ($visitor->group->can("edit_user") and $visitor->group->can("delete_user")): ?>
 							<th colspan="2" width="10%"></th>
 <?php else: ?>
 							<th width="10%"></th>
@@ -56,22 +56,23 @@
 		                               "`id` asc",
 		                               25);
 	}
-	while ($temp_user = $get_users->fetchObject()):
+	foreach ($get_users->fetchAll() as $user):
+		$user = new User(null, array("read_from" => $user));
 ?>
 						<tr>
-							<td class="main"><?php echo $temp_user->login; ?></td>
-							<td><?php echo $temp_user->full_name; ?></td>
-							<td class="center"><a href="mailto:<?php echo $temp_user->email; ?>"><?php echo $temp_user->email; ?></a></td>
-							<td class="center"><?php if (!empty($temp_user->website)): ?><a href="<?php echo $temp_user->website; ?>"><?php echo $temp_user->website; ?></a><?php endif; ?></td>
-<?php if ($user->can("edit_user")): ?>
-							<td class="center"><?php echo $user->edit_link($temp_user->id, '<img src="icons/edit.png" alt="edit" />'); ?></td>
+							<td class="main"><?php echo $user->login; ?></td>
+							<td><?php echo $user->full_name; ?></td>
+							<td class="center"><a href="mailto:<?php echo $temp_user->email; ?>"><?php echo $user->email; ?></a></td>
+							<td class="center"><?php if (!empty($temp_user->website)): ?><a href="<?php echo $user->website; ?>"><?php echo $user->website; ?></a><?php endif; ?></td>
+<?php if ($visitor->group->can("edit_user")): ?>
+							<td class="center"><?php echo $user->edit_link('<img src="icons/edit.png" alt="edit" />'); ?></td>
 <?php endif; ?>
-<?php if ($user->can("delete_user")): ?>
-							<td class="center"><?php echo $user->delete_link($temp_user->id, '<img src="icons/delete.png" alt="delete" />'); ?></td>
+<?php if ($visitor->group->can("delete_user")): ?>
+							<td class="center"><?php echo $user->delete_link('<img src="icons/delete.png" alt="delete" />'); ?></td>
 <?php endif; ?>
 						</tr>
 <?php
-	endwhile;
+	endforeach;
 ?>
 					</table>
 <?php if ($paginate->next_page()): ?>
