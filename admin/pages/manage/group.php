@@ -48,16 +48,17 @@
 		                                "`id` asc",
 		                                25);
 	}
-	while ($the_group = $get_groups->fetch()) {
-		$members = ($the_group["id"] == $config->guest_group) ?
-		           sprintf(__("&#8220;%s&#8221; is the default group for guests"), $the_group["name"]) :
-		           sprintf(_p("&#8220;%s&#8221; has %s member", "&#8220;%s&#8221; has %s members", Group::count_users($the_group["id"])), $the_group["name"], Group::count_users($the_group["id"])) ;
+	foreach ($get_groups->fetchAll() as $group) {
+		$group = new Group(null, array("read_from" => $group));
+		$members = ($group->id == $config->guest_group) ?
+		           sprintf(__("&#8220;%s&#8221; is the default group for guests"), $group->name) :
+		           sprintf(_p("&#8220;%s&#8221; has %s member", "&#8220;%s&#8221; has %s members", Group::count_users($group->id)), $group->name, Group::count_users($group->id)) ;
 ?>
 					<div class="box">
 						<h1>
 							<span class="right">
-								<?php if ($visitor->group->can("edit_group")) echo $group->edit_link($the_group["id"], '<img src="icons/edit.png" alt="edit" /> '.__("edit")); ?>
-								<?php if ($visitor->group->can("delete_group")) echo $group->delete_link($the_group["id"], '<img src="icons/delete.png" alt="delete" /> '.__("delete")); ?>
+								<?php if ($visitor->group->can("edit_group")) echo $group->edit_link('<img src="icons/edit.png" alt="edit" /> '.__("edit")); ?>
+								<?php if ($visitor->group->can("delete_group")) echo $group->delete_link('<img src="icons/delete.png" alt="delete" /> '.__("delete")); ?>
 							</span>
 							<?php echo $members; ?>
 						</h1>

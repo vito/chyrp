@@ -150,12 +150,11 @@
 
 		/**
 		 * Function: update
-		 * Updates a user with the given login, password, full name, e-mail, website, and <Group> ID.
+		 * Updates the user with the given login, password, full name, e-mail, website, and <Group> ID.
 		 *
 		 * Passes all of the arguments to the update_user trigger.
 		 *
 		 * Parameters:
-		 *     $user_id - The user to update.
 		 *     $login - The new Login to set.
 		 *     $password - The new Password to set.
 		 *     $full_name - The new Full Name to set.
@@ -166,7 +165,7 @@
 		 * See Also:
 		 *     <add>
 		 */
-		function update($user_id, $login, $password, $full_name, $email, $website, $group_id) {
+		public function update($login, $password, $full_name, $email, $website, $group_id) {
 			$sql = SQL::current();
 			$sql->query("update `".$sql->prefix."users`
 			             set
@@ -184,22 +183,19 @@
 			                ":email" => $email,
 			                ":website" => $website,
 			                ":group_id" => $group_id,
-			                ":id" => $user_id
+			                ":id" => $this->id
 			            ));
 			$trigger = Trigger::current();
-			$trigger->call("update_user", array($user_id, $login, $password, $full_name, $email, $website, $group_id));
+			$trigger->call("update_user", array($this->id, $login, $password, $full_name, $email, $website, $group_id));
 		}
 
 		/**
 		 * Function: delete
-		 * Deletes a given user. Calls the "delete_user" trigger with the users ID.
-		 *
-		 * Parameters:
-		 *     $user_id - The user to delete.
+		 * Deletes the user. Calls the "delete_user" trigger with the user's ID.
 		 */
-		function delete($user_id) {
+		public function delete() {
 			$trigger = Trigger::current();
-			$trigger->call("delete_user", $user_id);
+			$trigger->call("delete_user", $this->id);
 
 			$sql = SQL::current();
 			$sql->query("delete from `".$sql->prefix."users`
@@ -211,46 +207,33 @@
 
 		/**
 		 * Function: edit_link
-		 * Outputs an edit link for the given user ID, if they <can> edit_user.
+		 * Outputs an edit link for the user, if they can edit_user.
 		 *
 		 * Parameters:
-		 *     $user_id - The user ID for the link.
 		 *     $text - The text to show for the link.
 		 *     $before - If the link can be shown, show this before it.
 		 *     $after - If the link can be shown, show this after it.
 		 */
-		function edit_link($user_id, $text = null, $before = null, $after = null){
-			if (!$this->can('edit_user')) return;
+		public function edit_link($text = null, $before = null, $after = null){
+			if (!$this->group->can('edit_user')) return;
 			fallback($text, __("Edit"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=user&amp;id='.$user_id.'" title="Edit" class="user_edit_link" id="user_edit_'.$user_id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=user&amp;id='.$this->id.'" title="Edit" class="user_edit_link" id="user_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
 		/**
 		 * Function: delete_link
-		 * Outputs a delete link for the given user ID, if they <can> delete_user.
+		 * Outputs an delete link for the user, if they can delete_user.
 		 *
 		 * Parameters:
-		 *     $user_id - The user ID for the link.
 		 *     $text - The text to show for the link.
 		 *     $before - If the link can be shown, show this before it.
 		 *     $after - If the link can be shown, show this after it.
 		 */
-		function delete_link($user_id, $text = null, $before = null, $after = null){
-			if (!$this->can('delete_user')) return;
+		public function delete_link($text = null, $before = null, $after = null){
+			if (!$this->group->can('delete_user')) return;
 			fallback($text, __("Delete"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=user&amp;id='.$user_id.'" title="Delete" class="user_delete_link" id="user_delete_'.$user_id.'">'.$text.'</a>'.$after;
-		}
-
-		function get_viewable_statuses($draft = false) {
-			$statuses = array('public');
-			if ($this->logged_in()) $statuses[] = 'registered_only';
-			if ($this->can('view_private')) $statuses[] = 'private';
-			if ($draft and $this->can('view_draft')) $statuses[] = 'draft';
-			$sql = SQL::current();
-			foreach ($statuses as & $status)
-				$status = $sql->quote($status);
-			return $statuses;
+			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=user&amp;id='.$this->id.'" title="Delete" class="user_delete_link" id="user_delete_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 	}

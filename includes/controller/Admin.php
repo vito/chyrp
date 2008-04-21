@@ -93,10 +93,9 @@ $visitor = Visitor::current();
 		 * Adds a group when the form is submitted. Shows an error if the user lacks permissions.
 		 */
 		public function add_group() {
-
-$visitor = Visitor::current();
 			if (empty($_POST)) return;
 			$config = Config::current();
+			$visitor = Visitor::current();
 			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
 			if (!$visitor->group->can('add_group'))
@@ -113,7 +112,7 @@ $visitor = Visitor::current();
 		 * Updates a post when the form is submitted. Shows an error if the user lacks permissions.
 		 */
 		public function update_post() {
-			global $feathers
+			global $feathers;
 			if (empty($_POST)) return;
 			$config = Config::current();
 			$visitor = Visitor::current();
@@ -138,10 +137,9 @@ $visitor = Visitor::current();
 		 * Updates a page when the form is submitted. Shows an error if the user lacks permissions.
 		 */
 		public function update_page() {
-
-$visitor = Visitor::current();
 			if (empty($_POST)) return;
 			$config = Config::current();
+			$visitor = Visitor::current();
 			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
 			if (!$visitor->group->can('edit_page'))
