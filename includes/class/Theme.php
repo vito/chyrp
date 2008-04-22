@@ -9,12 +9,10 @@
 		 * The title for the current page.
 		 */
 		public $title = "";
-
 		private $twig;
-
 		private $directory;
-
 		private $pages = array();
+		private $context = array();
 
 		/**
 		 * Function: __construct
@@ -25,6 +23,7 @@
 			$this->directory = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $visitor->group->can("change_settings")) ?
 			                   THEMES_DIR."/".$_GET['theme']."/" :
 			                   THEME_DIR."/" ;
+
 			$this->twig = new Twig_Loader($this->directory, (is_writable(MAIN_DIR."/includes/twig_cache") ? MAIN_DIR."/includes/twig_cache" : null));
 		}
 
@@ -212,6 +211,29 @@
 			return $feeds;
 		}
 
+		public function prepare($context) {
+			global $action;
+
+			$this->context = array_merge($context, $this->context);
+
+			$visitor = Visitor::current();
+
+			$this->context["title"] = $this->title;
+			$this->context["site"] = Config::current();
+			$this->context["theme"] = array("feeds" => $this->feeds(),
+			                          "stylesheets" => $this->stylesheets(),
+			                          "javascripts" => $this->javascripts());
+			$this->context["visitor"] = $visitor;
+			$this->context["visitor"]->logged_in = logged_in();
+			$this->context["archive_list"] = $this->list_archives();
+			$this->context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);
+			$this->context["route"] = array("action" => $action);
+
+			$trigger = Trigger::current();
+			$this->context = $trigger->filter("twig_global_context", $this->context);
+			$this->context = $trigger->filter(str_replace("/", "_", $this->file), $this->context);
+		}
+
 		/**
 		 * Function: load
 		 * Loads a theme's file and extracts the passed array into the scope.
@@ -219,36 +241,14 @@
 		public function load($file, $context = array()) {
 			global $action, $viewing;
 
-			$visitor = Visitor::current();
-			fallback($_GET['action'], "index");
 			if (!file_exists($this->directory.$file.".twig"))
 				error(__("Theme Template Missing"), sprintf(__("Couldn't load theme template:<br /><br />%s"), $file.".twig"));
 
-			$can = array();
-			foreach ($visitor->group->permissions as $permission)
-				$can[$permission] = true;
-
-			$context["title"] = $this->title;
-			$context["site"] = Config::current();
-			$context["theme"] = array("feeds" => $this->feeds(),
-			                          "stylesheets" => $this->stylesheets(),
-			                          "javascripts" => $this->javascripts());
-			$context["user"] = array("logged_in" => logged_in(), "can" => $can);
-			$context["archive_list"] = $this->list_archives();
-			$context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);
-			$context["route"] = array("action" => $action);
-			$context["viewing"] = $viewing;
-
-			if (logged_in())
-				foreach ($visitor as $key => $val)
-					$context["user"][$key] = $val;
-
-			$trigger = Trigger::current();
-			$context = $trigger->filter("twig_global_context", $context);
-			$context = $trigger->filter(str_replace("/", "_", $file), $context);
+			$this->file = $file;
+			$this->prepare($context);
 
 			$template = $this->twig->getTemplate($file.".twig");
-			return $template->display($context);
+			return $template->display($this->context);
 		}
 	}
 	$theme = new Theme();

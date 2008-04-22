@@ -41,16 +41,16 @@
 {#
 <?php $theme->list_pages(); ?>
 #}
-				<h1>${ "Welcome, " | translate } $user.login!</h1>
+				<h1>${ "Welcome, " | translate } $visitor.login!</h1>
 				<ul>
-{% if user.logged_in %}
+{% if visitor.logged_in %}
 					<li><a href="{% url "controls/" %}">${ "User Controls" | translate }</a></li>
-{% if user.can.add_post or user.can.add_page or user.can.view_draft or user.can.change_settings %}
+{% if visitor.can.add_post or visitor.can.add_page or visitor.can.view_draft or visitor.can.change_settings %}
 					<li><a class="toggle_admin" href="{% url "toggle_admin/" %}">${ "Toggle Admin Bar" | translate }</a></li>
 {% endif %}
 					<li><a href="{% url "logout/" %}">${ "Log Out" | translate }</a></li>
 {% endif %}
-{% if not user.logged_in %}
+{% if not visitor.logged_in %}
 					<li><a href="{% url "login/" %}">${ "Log In" | translate }</a></li>
 {% if site.can_register %}
 					<li><a href="{% url "register/" %}">${ "Register" | translate }</a></li>

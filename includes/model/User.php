@@ -8,6 +8,7 @@
 	class User {
 		public $no_results = false;
 		public $group;
+		public $can = array();
 
 		/**
 		 * Function: __construct
@@ -60,6 +61,9 @@
 			}
 
 			$this->group = new Group($this->id);
+
+			foreach ($this->group->permissions as $permission)
+				$this->can[$permission] = true;
 		}
 
 		/**

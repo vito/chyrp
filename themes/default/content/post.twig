@@ -20,18 +20,18 @@
 
 							<em>|</em> <a href="$post.trackback_url">${ "Trackback" | translate }</a>
 
-							{% if user.can.edit_post %}
+							{% if visitor.can.edit_post %}
 							<em>|</em> $post.edit_link
 							{% endif %}
 
-							{% if user.can.delete_post %}
+							{% if visitor.can.delete_post %}
 							<em>|</em> $post.delete_link
 							{% endif %}
 						</span>
 						<br class="clear" />
 {% if not ajax %}
 					</div>
-{% if not viewing and not loop.last %}
+{% if not route.action == view and not loop.last %}
 					<br />
 {% endif %}
 				</div>

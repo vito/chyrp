@@ -3,10 +3,10 @@
 				<div class="page" id="page_$page.if">
 					<div id="page_inner_$page.id">
 						<h2>
-{% if user.can.edit_page or user.can.delete_page %}
+{% if visitor.can.edit_page or visitor.can.delete_page %}
 							<span class="info right">
 								$page.edit_link
-								{% if user.can.delete_page %}
+								{% if visitor.can.delete_page %}
 								<em>|</em> $page.delete_link
 								{% endif %}
 							</span>

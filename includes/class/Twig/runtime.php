@@ -165,7 +165,7 @@ function twig_make_loop_context($iterator)
 		'revindex0' =>  $iterator->length - $iterator->idx - 1,
 		'revindex '=>   $iterator->length - $iterator->idx,
 		'first' =>      $iterator->idx == 0,
-		'last' =>       $iterator->idx + 1 == $iterator->length, # BUGFIX: Was $iterator->idx - 1
+		'last' =>       $iterator->idx + 1 == $iterator->length,
 		'iterated' =>	true
 	);
 }
