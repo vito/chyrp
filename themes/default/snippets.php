@@ -1,8 +1,5 @@
 <?php
 	class Snippet {
-		function read_more() {
-			return __("Read More &raquo;", "theme");
-		}
 		function no_posts($action) {
 			switch($action) {
 				default:
@@ -31,44 +28,8 @@
 					break;
 			}
 		}
-		function controls() {
-			$config = Config::current();
-			$route = Route::current();
-			$visitor = Visitor::current();
-			if ($visitor->group->can('add_post') or $visitor->group->can('add_page') or $visitor->group->can('view_draft') or $visitor->group->can('change_settings')):
-?>
-		<div class="controls" id="admin_bar"<?php if (isset($_COOKIE['chyrp_hide_admin'])) { echo ' style="display: none"'; } ?>>
-			<ul>
-				<?php if ($visitor->group->can('add_post')): ?><li><a id="add_post" href="<?php echo $config->url; ?>/admin/?action=write"><?php echo __("Write", "theme"); ?></a></li><?php endif; ?>
-				<?php if ($visitor->group->can('add_page')): ?><li><a id="add_page" href="<?php echo $config->url; ?>/admin/?action=write&amp;sub=page"><?php echo __("Add Page", "theme"); ?></a></li><?php endif; ?>
-				<?php if ($visitor->group->can('view_draft')): ?><li><a id="your_drafts" href="<?php echo $route->url("drafts/"); ?>"><?php echo __("Drafts", "theme"); ?></a></li><?php endif; ?>
-				<?php if ($visitor->group->can('change_settings')): ?><li><a id="site_settings" href="<?php echo $config->url; ?>/admin/"><?php echo __("Admin", "theme"); ?></a></li><?php endif; ?>
-				<li class="close"><a class="toggle_admin" href="<?php echo $route->url("toggle_admin/"); ?>"><?php echo __("Close", "theme"); ?></a></li>
-			</ul>
-		</div>
-<?php
-			endif;
-		}
-		function drafts_top() {
-			echo '<h2>'.__("Your Drafts", "theme").'</h2><br />';
-		}
-		function feather_top() {
-			$feather = $_GET['action'];
-			echo '<h2>'.ucfirst($feather).'</h2><br />';
-		}
 		function tags_top() {
 			echo '<h2>'.__("Tags", "theme").'</h2><br />';
-		}
-		function search_top() {
-			global $query;
-			echo '<h2>'.sprintf(__("Search results for &#8220;%s&#8221;", "theme"), fix(urldecode($query), "html")).'</h2><br />';
-		}
-		function tag_view_top() {
-			global $tag_name;
-			echo '<h2>'.sprintf(__("Posts tagged with &#8220;%s&#8221;", "theme"), fix(urldecode($tag_name), "html")).'</h2><br />';
-		}
-		function draft_view_top() {
-			echo "<div class=\"notice\" onClick=\"$(this).fadeOut('fast')\">".__("This post is a draft.", "theme")."<span class=\"sub\">".__("(click to hide)", "theme")."</span></div>";
 		}
 		function above_post_added() {
 			echo "<div class=\"success\" onClick=\"$(this).fadeOut('fast')\">".__("Post added.", "theme")."<span class=\"sub\">".__("(click to hide)", "theme")."</span></div>";
@@ -77,16 +38,3 @@
 			echo "<div class=\"success\" onClick=\"$(this).fadeOut('fast')\">".__("Post updated.", "theme")."<span class=\"sub\">".__("(click to hide)", "theme")."</span></div>";
 		}
 	}
-
-	function change_field_to_search() {
-		$config = Config::current();
-?>
-	if ($.browser.safari) {
-		document.getElementById("search").type = "search"
-		$("input#search").attr("results", "5").attr("placeholder", "<?php echo __("Search...", "theme"); ?>").attr("autosave", "com.<?php echo sanitize($config->name, true); ?>.search")
-	}
-<?php
-	}
-
-	# New module system does not yet have a way for themes to plug in to it.
-	#$trigger->add("javascript_domready", "change_field_to_search");

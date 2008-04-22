@@ -1,3 +1,6 @@
+{% if route.action == "view" and post.status == "draft" %}
+				<div class="notice" onClick="$$(this).fadeOut('fast')">${ "This post is a draft." | translate }<span class="sub">${ "(click to hide)" | translate }</span></div>
+{% endif %}
 {% if not ajax %}
 				<div class="post{% if post.pinned %} pinned{% endif %}" id="post_$post.id">
 					<div class="$post.feather target">
@@ -31,7 +34,7 @@
 						<br class="clear" />
 {% if not ajax %}
 					</div>
-{% if not route.action == view and not loop.last %}
+{% if not route.action == "view" and not loop.last %}
 					<br />
 {% endif %}
 				</div>

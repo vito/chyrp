@@ -33,7 +33,7 @@
 		}
 
 		static function edit_post_options($id) {
-			$tags = list_post_tags($id, null, null, null, false, false);
+			$tags = implode(", ", get_post_tags($id, false));
 ?>
 					<p>
 						<label for="tags"><?php echo __("Tags", "tags"); ?><span class="sub"> <?php echo __("(comma separated)", "tags"); ?></span></label>
@@ -110,7 +110,7 @@
 
 		static function admin_manage_posts_column($id) {
 			echo "<td>";
-			list_post_tags($id, null);
+			echo implode(", ", get_post_tags($id));
 			echo "</td>";
 		}
 

@@ -220,14 +220,15 @@
 
 			$this->context["title"] = $this->title;
 			$this->context["site"] = Config::current();
-			$this->context["theme"] = array("feeds" => $this->feeds(),
-			                          "stylesheets" => $this->stylesheets(),
-			                          "javascripts" => $this->javascripts());
+			$this->context["feeds"] = $this->feeds();
+			$this->context["stylesheets"] = $this->stylesheets();
+			$this->context["javascripts"] = $this->javascripts();
 			$this->context["visitor"] = $visitor;
 			$this->context["visitor"]->logged_in = logged_in();
 			$this->context["archive_list"] = $this->list_archives();
 			$this->context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);
 			$this->context["route"] = array("action" => $action);
+			$this->context["hide_admin"] = isset($_COOKIE["chyrp_hide_admin"]);
 
 			$trigger = Trigger::current();
 			$this->context = $trigger->filter("twig_global_context", $this->context);

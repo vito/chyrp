@@ -6,20 +6,37 @@
 		<meta name="generator" content="Chyrp" />
 		<link rel="pingback" href="$site.url/includes/xmlrpc.php" />
 		<link rel="EditURI" type="application/rsd+xml" href="$site.url/includes/rsd.php" />
-		$theme.feeds
-		$theme.stylesheets
-		$theme.javascripts
+		$feeds
+		$stylesheets
+		$javascripts
 {% trigger "head" %}
 	</head>
 	<body>
-{% trigger "controls" %}
+{% if visitor.can.add_post or visitor.can.add_page or visitor.can.view_draft or visitor.can.change_settings %}
+		<div class="controls" id="admin_bar"{% if hide_admin %} style="display: none"{% endif %}>
+			<ul>
+{% if visitor.can.add_post %}
+				<li><a id="add_post" href="$site.url/admin/?action=write">${ "Write" | translate }</a></li>
+{% endif %}
+{% if visitor.can.add_page %}
+				<li><a id="add_page" href="$site.url/admin/?action=write&amp;sub=page">${ "Add Page" | translate }</a></li>
+{% endif %}
+{% if visitor.can.view_draft %}
+				<li><a id="your_drafts" href="{% url "drafts/" %}">${ "Drafts" | translate }</a></li>
+{% endif %}
+{% if visitor.can.change_settings %}
+				<li><a id="site_settings" href="$site.url/admin/">${ "Admin" | translate }</a></li>
+{% endif %}
+				<li class="close"><a class="toggle_admin" href="{% url "toggle_admin/" %}">${ "Close" | translate }</a></li>
+			</ul>
+		</div>
+{% endif %}
 		<div class="wrapper">
 			<div class="container">
 				<div class="header">
 					<h1><a href="$site.url">$site.name</a> <span>$site.description</span></h1>
 				</div>
 				<div id="posts">
-					{% trigger route.action ~ "_top" %}
 {% block content %}{% endblock %}
 				</div>
 {#

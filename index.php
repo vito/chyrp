@@ -25,7 +25,12 @@
 			$file = ($theme->file_exists("content/".$action)) ?
 			        "content/".$action :
 			        "content/index" ;
-			$theme->load($file, array("posts" => $posts));
+			$context = array("posts" => $posts);
+			if ($action == "search")
+				$context["search"] = urldecode($query);
+			if ($action == "feather")
+				$context["feather"] = $_GET['action'];
+			$theme->load($file, $context);
 
 			break;
 		case "view": case "id":
