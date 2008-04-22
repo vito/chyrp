@@ -102,12 +102,8 @@ function twig_missing_filter($name)
 	$args = func_get_args();
 	array_shift($args);
 
-	$trigger = Trigger::current();
-	if ($trigger->exists($name)) {
+	if (Trigger::current()->exists($name))
 		return $trigger->filter($name, $args, true);
-	}
-
-	throw new Twig_RuntimeError("filter '$name' does not exist.");
 }
 
 function twig_get_attribute($context, $obj, $item)
