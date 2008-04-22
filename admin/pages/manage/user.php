@@ -30,6 +30,7 @@
 							<th width="15%"><?php echo __("Real&nbsp;Name"); ?></th>
 							<th width="15%"><?php echo __("E-Mail"); ?></th>
 							<th width="15%"><?php echo __("Website"); ?></th>
+<?php $trigger->call("admin_manage_users_column_header"); ?>
 <?php if ($visitor->group->can("edit_user") and $visitor->group->can("delete_user")): ?>
 							<th colspan="2" width="10%"></th>
 <?php else: ?>
@@ -63,7 +64,8 @@
 							<td class="main"><?php echo $user->login; ?></td>
 							<td><?php echo $user->full_name; ?></td>
 							<td class="center"><a href="mailto:<?php echo $user->email; ?>"><?php echo $user->email; ?></a></td>
-							<td class="center"><?php if (!empty($temp_user->website)): ?><a href="<?php echo $user->website; ?>"><?php echo $user->website; ?></a><?php endif; ?></td>
+							<td class="center"><?php if (!empty($user->website)): ?><a href="<?php echo $user->website; ?>"><?php echo $user->website; ?></a><?php endif; ?></td>
+<?php $trigger->call("admin_manage_users_column", $user); ?>
 <?php if ($visitor->group->can("edit_user")): ?>
 							<td class="center"><?php echo $user->edit_link('<img src="icons/edit.png" alt="edit" />'); ?></td>
 <?php endif; ?>
@@ -123,6 +125,7 @@
 						<label for="website"><?php echo __("Website"); ?></label>
 						<input class="text" type="text" name="website" value="" id="website" />
 					</p>
+<?php $trigger->call("admin_new_user_form"); ?>
 
 					<p style="margin-top: 2em">
 						<input type="hidden" name="hash" value="<?php echo $config->secure_hashkey; ?>" id="hash" />

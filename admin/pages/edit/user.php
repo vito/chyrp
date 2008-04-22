@@ -42,6 +42,7 @@ $edit_user = $edit_user->fetchObject();
 		<label for="website"><?php echo __("Website"); ?></label>
 		<input class="text" type="text" name="website" value="<?php echo fix($edit_user->website, "html"); ?>" id="website" tabindex="1" />
 	</p>
+<?php $trigger->call("admin_edit_user_form", $edit_user); ?>
 	<p style="margin-top: 2em">
 		<input type="hidden" name="hash" value="<?php echo $config->secure_hashkey; ?>" id="hash" />
 		<button type="submit" accesskey="s" class="right">
