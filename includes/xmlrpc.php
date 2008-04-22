@@ -237,20 +237,15 @@
 			if (trim($body) == '')
 				return new IXR_Error(500, __("Body can't be blank."));
 
-			# Support for adding tags to post xml
-			if (isset($args[3]['mt_tags']))
-				$_POST['option']['tags'] = $args[3]['mt_tags'];
-
-			# Support for adding comment_status to post xml
-			if (isset($args[3]['mt_allow_comments']))
-				$_POST['option']['comment_status'] = ($args[3]['mt_allow_comments'] == 1) ? 'open' : 'closed';
-
 			$clean = sanitize(fallback($args[3]['mt_basename'], $args[3]['title'], true));
 			$url = Post::check_url($clean);
 
 			$_POST['created_at'] = fallback($this->convertFromDateCreated($args[3]), datetime(), true);
 			$_POST['feather'] = XML_RPC_FEATHER;
 			if ($args[4] === 0) $_POST['draft'] = true;
+
+			$trigger = Trigger::current();
+			$trigger->call('metaWeblog_newPost_preQuery', array($args[3]), true);
 
 			$post = Post::add(
 				array(
@@ -260,7 +255,6 @@
 				$clean,
 				$url);
 
-			$trigger = Trigger::current();
 			$trigger->call('metaWeblog_newPost', array($post, $args[3]), true);
 
 			# Send any and all pingbacks to URLs in the body
@@ -279,7 +273,7 @@
 			$this->auth($args[1], $args[2], 'edit');
 
 			if (!Post::exists($args[0]))
-				throw new Exception (__('Fake post ID, or nonexistant post.'));
+				return new IXR_Error(500, __('Fake post ID, or nonexistant post.'));
 
 			# Support for extended body
 			if (empty($args[3]['mt_text_more']))
@@ -294,15 +288,11 @@
 			if (trim($body) == '')
 				return new IXR_Error(500, __("Body can't be blank."));
 
-			# Support for adding tags to post xml
-			if (isset($args[3]['mt_tags']) and module_enabled('tags'))
-				$_POST['option']['tags'] = $args[3]['mt_tags'];
-
-			# Support for adding comment_status to post xml
-			if (isset($args[3]['mt_allow_comments']) and module_enabled('comments'))
-				$_POST['option']['comment_status'] = ($args[3]['mt_allow_comments'] == 1) ? 'open' : 'closed';
-
 			$post = new Post($args[0], array('filter' => false));
+
+			$trigger = Trigger::current();
+			$trigger->call('metaWeblog_editPost_preQuery', array($args[3], $post), true);
+
 			$post->update(
 				array(
 					'title' => $args[3]['title'],
@@ -323,7 +313,6 @@
 					true
 				));
 
-			$trigger = Trigger::current();
 			$trigger->call('metaWeblog_editPost', array($post, $args[3]), true);
 
 			return true;
@@ -337,7 +326,7 @@
 			$this->auth($args[2], $args[3], 'delete');
 
 			if (!Post::exists($args[1]))
-				throw new Exception (__('Fake post ID, or nonexistant post.'));
+				return new IXR_Error(500, __('Fake post ID, or nonexistant post.'));
 
 			$post = new Post($args[1]);
 			$post->delete();
@@ -435,7 +424,7 @@
 			$this->auth($args[1], $args[2], 'edit');
 
 			if (!Post::exists($args[0]))
-				throw new Exception(__('Fake post ID, or nonexistant post.'));
+				return new IXR_Error(500, __('Fake post ID, or nonexistant post.'));
 
 			$post = new Post($args[0]);
 

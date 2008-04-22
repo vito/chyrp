@@ -1,5 +1,9 @@
 <?php
 	class Tags extends Module {
+		function __construct() {
+			$this->addAlias('metaWeblog_newPost_preQuery', 'metaWeblog_editPost_preQuery');
+		}
+
 		static function __install() {
 			$sql = SQL::current();
 			$sql->query("create table if not exists `".$sql->prefix."tags` (
@@ -156,6 +160,11 @@
 			return array($post, $struct);
 		}
 
+		static function metaWeblog_editPost_preQuery($struct, $post = null) {
+			if (isset($args[3]['mt_tags']))
+				$_POST['option']['tags'] = $args[3]['mt_tags'];
+		}
+
 		static function twig_global_context($context) {
 			$context["tags"] = list_tags();
 			return $context;
@@ -166,6 +175,7 @@
 			$post->tags = array("linked" => get_post_tags($post->id), "unlinked" => get_post_tags($post->id, false));
 		}
 	}
+	$tags = new Tags();
 
 	$tags_limit_reached = false;
 	function list_tags($limit = 10, $order_by = "id", $order = "asc") {

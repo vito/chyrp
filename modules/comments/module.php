@@ -2,6 +2,10 @@
 	require_once "model.Comment.php";
 
 	class Comments extends Module {
+		function __construct() {
+			$this->addAlias('metaWeblog_newPost_preQuery', 'metaWeblog_editPost_preQuery');
+		}
+
 		static function __install() {
 			$visitor = Visitor::current();
 			$sql = SQL::current();
@@ -765,6 +769,11 @@ $(function(){
 		static function metaWeblog_getPost($post, $struct) {
 			$struct['mt_allow_comments'] = intval($post->comment_status == 'open');
 			return array($post, $struct);
+		}
+
+		static function metaWeblog_editPost_preQuery($struct, $post = null) {
+			if (isset($struct['mt_allow_comments']))
+				$_POST['option']['comment_status'] = ($struct['mt_allow_comments'] == 1) ? 'open' : 'closed';
 		}
 
 		static function filter_post() {
