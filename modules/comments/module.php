@@ -323,12 +323,12 @@
 			                 "pingback");
 		}
 
-		static function delete_post($id) {
+		static function delete_post($post) {
 			$sql = SQL::current();
 			$sql->query("delete from `".$sql->prefix."comments`
 			             where `post_id` = :id",
 			            array(
-			                ":id" => $id
+			                ":id" => $post->id
 			            ));
 		}
 

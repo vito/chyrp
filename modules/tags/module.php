@@ -46,7 +46,7 @@
 <?php
 		}
 
-		static function add_post($id, $options) {
+		static function add_post($post, $options) {
 			if (!isset($options["tags"])) return;
 
 			$tags = explode(",", $options["tags"]); // Split at the comma
@@ -62,18 +62,18 @@
 				             (:name, :post_id, :clean)",
 				            array(
 				                ":name" => $tag,
-				                ":post_id" => $id,
+				                ":post_id" => $post->id,
 				                ":clean" => sanitize($tag)
 				            ));
 			}
 		}
 
-		static function update_post($id, $options) {
+		static function update_post($post, $options) {
 			$sql = SQL::current();
 			$sql->query("delete from `".$sql->prefix."tags`
 			             where `post_id` = :id",
 			            array(
-			                ":id" => $id
+			                ":id" => $post->id
 			            ));
 
 			$tags = explode(",", $options["tags"]); // Split at the comma
@@ -88,18 +88,18 @@
 				             (:name, :post_id, :clean)",
 				            array(
 				                ":name" => $tag,
-				                ":post_id" => $id,
+				                ":post_id" => $post->id,
 				                ":clean" => sanitize($tag)
 				            ));
 			}
 		}
 
-		static function delete_post($id) {
+		static function delete_post($post) {
 			$sql = SQL::current();
 			$sql->query("delete from `".$sql->prefix."tags`
 			             where `post_id` = :id",
 			            array(
-			                ":id" => $id
+			                ":id" => $post->id
 			            ));
 		}
 
