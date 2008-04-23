@@ -59,7 +59,7 @@
 
 			$urls = array(
 				"/\/id\/([0-9]+)\//" => "?action=view&amp;id=$1",
-				"/\/page\/([^\/]+)\//" => "?action=page&amp;url=$1",
+				"/\/page\/(([^\/]+)\/)+/" => "?action=page&amp;url=$2",
 				"/\/search\//" => "?action=search",
 				"/\/search\/([^\/]+)\//" => "?action=search&amp;query=$1",
 				"/\/archive\/([^\/]+)\/([^\/]+)\//" => "?action=archive&amp;year=$1&amp;month=$2",
@@ -207,6 +207,20 @@
 					}
 				}
 
+			# Page viewing
+			$parent_id = 0;
+			$count = count($arg) - 1;
+			for ($i = 0; $i <= $count; $i++) {
+				$page = new Page(null, array("where" => "`url` = :url and `parent_id` = :parent_id", "params" => array(":url" => $arg[$i], ":parent_id" => $parent_id)));
+				if ($page->no_results)
+					break;
+				else if ($i == $count) {
+					$_GET['url'] = $arg[$i];
+					return $_GET['action'] = "page";
+				}
+				$parent_id = $page->id;
+			}
+
 			# Post viewing
 			$post_url = $this->key_regexp($config->post_url);
 			preg_match_all("/([^\/]+)(\/|$)/", $config->post_url, $parameters);
@@ -221,13 +235,6 @@
 				}
 
 				return $_GET['action'] = "view";
-			}
-
-			# Page viewing
-			$page = new Page(null, array("where" => "`url` = :url", "params" => array(":url" => $arg[0])));
-			if (!$page->no_results) {
-				$_GET['url'] = $arg[0];
-				return $_GET['action'] = "page";
 			}
 
 			return $_GET['action'] = (empty($arg[0])) ? "index" : $arg[0] ;

@@ -39,9 +39,9 @@
 			global $action;
 			fallback($home_text, __("Home"));
 			$sql = SQL::current();
-			$query = $sql->query("select * from `".$sql->prefix."pages` where `show_in_list` = 1 order by `list_order` asc");
-			while ($row = $query->fetch()) {
-				$this->pages[$row["id"]] = array("id" => $row["id"], "title" => $row["title"], "parent" => $row["parent_id"], "url" => $row["url"], "order" => $row["list_order"]);
+			$query = $sql->query("select `id` from `".$sql->prefix."pages` where `parent_id` = :parent and `show_in_list` = 1 order by `list_order` asc", array(':parent' => 0));
+			while ($id = $query->fetchColumn()) {
+				$this->pages[$id] = new Page($id);
 			}
 
 			echo '<ul class="'.$main_class.'">'."\n";
@@ -52,9 +52,8 @@
 				echo '<li class="'.$list_class.$selected.'"><a href="'.$config->url.'">'.$home_text.'</a></li>'."\n";
 			}
 
-			foreach ($this->pages as $id => $values)
-				if ($values["parent"] == 0)
-					$this->recurse_pages($values["id"], $main_class, $list_class, $show_order_fields);
+			foreach ($this->pages as $page)
+				$this->recurse_pages($page, $main_class, $list_class, $show_order_fields);
 
 			echo "</ul>\n";
 		}
@@ -69,24 +68,27 @@
 		 * See Also:
 		 *     <list_pages>
 		 */
-		public function recurse_pages($id, $main_class = "page_list", $list_class = "page_list_item", $show_order_fields = false) {
+		public function recurse_pages($page, $main_class = "page_list", $list_class = "page_list_item", $show_order_fields = false) {
 			global $pages, $action;
-			$route = Route::current();
 
-			$selected = ($action == 'page' and $_GET['url'] == $this->pages[$id]["url"]) ? ' selected' : '';
-			echo '<li class="'.$list_class.$selected.'" id="page_list_'.$id.'"><a href="'.$route->url("page/".$this->pages[$id]["url"]."/").'">'.$this->pages[$id]["title"].'</a>';
+			$selected = ($action == 'page' and $_GET['url'] == $page->url) ? ' selected' : '';
+			printf('<li class="%s" id="page_list_%s"><a href="%s">%s</a>',
+				$list_class.$selected,
+				$page->id,
+				$page->url(),
+				$page->title);
 
 			if ($show_order_fields)
-				echo ' <input type="text" size="2" name="list_order['.$id.']" value="'.$this->pages[$id]["order"].'" />';
+				echo ' <input type="text" size="2" name="list_order['.$page->id.']" value="'.$page->list_order.'" />';
 
 			$sql = SQL::current();
-			$get_children = $sql->query("select * from `".$sql->prefix."pages` where `parent_id` = :parent and `show_in_list` = 1 order by `list_order` asc", array(':parent' => $id));
+			$get_children = $sql->query("select `id` from `".$sql->prefix."pages` where `parent_id` = :parent and `show_in_list` = 1 order by `list_order` asc", array(':parent' => $page->id));
 			$count = 1;
-			while ($row = $get_children->fetch()) {
+			while ($id = $get_children->fetchColumn()) {
 				if ($count == 1)
 					echo "\n".'<ul class="'.$main_class.'">'."\n";
 
-				$this->recurse_pages($row["id"], $main_class, $list_class, $show_order_fields);
+				$this->recurse_pages(new Page($id), $main_class, $list_class, $show_order_fields);
 
 				if ($count == $get_children->rowCount())
 					echo "</ul>\n";

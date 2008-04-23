@@ -170,7 +170,7 @@
 		case "page":
 			fallback($page, new Page(null, array("where" => "`url` = :url", "params" => array(":url" => $_GET['url']))));
 
-			if ($page) {
+			if (empty($page->no_results)) {
 				$theme->title = $page->title;
 
 				$page->body = $trigger->filter("markup_page_text", $page->body);

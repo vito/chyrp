@@ -266,6 +266,23 @@
 		}
 
 		/**
+		 * Function: url
+		 * Returns a page's URL.
+		 */
+		public function url() {
+			$url = array('', $this->url);
+			$page = $this;
+
+			while (isset($page->parent)) {
+				$url[] = $page->parent->url;
+				$page = $page->parent;
+			}
+
+			$route = Route::current();
+			return $route->url('page/'.implode('/', array_reverse($url)));
+		}
+
+		/**
 		 * Function: edit_link
 		 * Outputs an edit link for the page, if the <User.can> edit_page.
 		 *
