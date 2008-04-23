@@ -163,7 +163,7 @@
 				elseif ($attr == "feathers")
 				{
 					$where.= " and `feather` = :feather";
-					$params[':feather'] = $plural_feathers[$_GET['feathers']];
+					$params[':feather'] = @$plural_feathers[$_GET['feathers']];
 				}
 				else
 				{
