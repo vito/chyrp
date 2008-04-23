@@ -15,7 +15,7 @@ These requirements are more of guidelines, as these are the earliest versions of
 
 Installation
 ============
-Installing Chyrp 1.1.3 is easier than you expect. You can do it in four steps:
+Installing Chyrp is easier than you expect. You can do it in four steps:
 
 1. Create a MySQL database with a username and password.
 2. Download, unzip, and upload.

@@ -5,7 +5,7 @@
 	 * Chyrp - A Lightweight Blogging Engine
 	 *
 	 * Version:
-	 *     v1.1.3
+	 *     v2.0
 	 *
 	 * License:
 	 *     GPL-3
@@ -16,7 +16,7 @@
 
 	# Constant: CHYRP_VERSION
 	# Chyrp's version number.
-	define('CHYRP_VERSION', "1.1.3");
+	define('CHYRP_VERSION', "2.0");
 	error_reporting(E_ALL | E_STRICT);
 	if (!defined('JAVASCRIPT')) define('JAVASCRIPT', false);
 	if (!defined('ADMIN')) define('ADMIN', false);

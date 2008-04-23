@@ -53,7 +53,7 @@
 <?php
 	$current_version = 113;
 
-	function to_103() {
+	function to_1030() {
 		$sql = SQL::current();
 		$sql->query("rename table `".$sql->prefix."tweets` to `".$sql->prefix."posts`");
 		$sql->query("alter table `".$sql->prefix."groups`
@@ -64,23 +64,26 @@
 		             change `delete_tweet` `delete_post` tinyint(1) not null default '0'");
 		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v1.0.3")."</p>\n";
 	}
-	function to_104() {
+	function to_1040() {
 		$sql = SQL::current();
 		$sql->query("alter table `".$sql->prefix."pages`
 		             add `parent_id` int(11) not null default '0' after `user_id`");
 		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v1.0.4a")."</p>\n";
 	}
-	function to_110() {
+	function to_1100() {
 		$sql = SQL::current();
 		$sql->query("alter table `".$sql->prefix."pages`
 		             add `list_order` int(11) not null default '0' after `show_in_list`");
 
 		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v1.1")."</p>\n";
 	}
-	function to_113() {
+	function to_1130() {
 		$config = Config::current();
 		$config->set("secure_hashkey", md5(random(32, true)));
 		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v1.1.3")."</p>\n";
+	}
+	function to_2000() {
+		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v2.0")."</p>\n";
 	}
 
 	if (!empty($_POST)) {
@@ -102,12 +105,13 @@
 			<form action="upgrade.php" method="post" accept-charset="utf-8">
 				<label for="version"><?php echo __("What are you upgrading from?"); ?></label>
 				<select name="version">
-					<option value="110">1.1.x</option>
-					<option value="104">1.0.4a</option>
-					<option value="103">1.0.3</option>
-					<option value="102">1.0.2</option>
-					<option value="101">1.0.1</option>
-					<option value="100">1.0.0</option>
+					<option value="1130">1.1.3.x</option>
+					<option value="1100">1.1.x</option>
+					<option value="1040">1.0.4a</option>
+					<option value="1030">1.0.3</option>
+					<option value="1020">1.0.2</option>
+					<option value="1010">1.0.1</option>
+					<option value="1000">1.0.0</option>
 				</select>
 				<p class="center"><input type="submit" value="<?php echo __("Upgrade &rarr;"); ?>"></p>
 			</form>
