@@ -40,10 +40,10 @@
 			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : sanitize($_POST['title']) ;
 			$url = Page::check_url($clean);
 
-			Page::add($_POST['title'], $_POST['body'], $_POST['parent_id'], $show_in_list, $clean, $url);
+			$page = Page::add($_POST['title'], $_POST['body'], $_POST['parent_id'], $show_in_list, $clean, $url);
 
 			$route = Route::current();
-			$route->redirect($route->url("page/".$url."/"));
+			$route->redirect($page->url());
 		}
 
 		/**
