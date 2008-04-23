@@ -208,17 +208,28 @@
 				}
 
 			# Page viewing
+			$sql = SQL::current();
 			$parent_id = 0;
 			$count = count($arg) - 1;
 			for ($i = 0; $i <= $count; $i++) {
-				$page = new Page(null, array("where" => "`url` = :url and `parent_id` = :parent_id", "params" => array(":url" => $arg[$i], ":parent_id" => $parent_id)));
-				if ($page->no_results)
+				$result = $sql->query("select `id`
+				                       from `{$sql->prefix}pages`
+				                       where
+				                       `url` = :url and
+				                       `parent_id` = :parent
+				                       limit 1",
+				                       array(
+				                           ':url' => $arg[$i],
+				                           ':parent' => $parent_id
+				                       ));
+				$parent_id = $result->fetchColumn();
+
+				if (!$parent_id)
 					break;
 				else if ($i == $count) {
 					$_GET['url'] = $arg[$i];
 					return $_GET['action'] = "page";
 				}
-				$parent_id = $page->id;
 			}
 
 			# Post viewing
