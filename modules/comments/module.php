@@ -767,7 +767,11 @@ $(function(){
 		}
 
 		static function metaWeblog_getPost($post, $struct) {
-			$struct['mt_allow_comments'] = intval($post->comment_status == 'open');
+			if (isset($post->comment_status))
+				$struct['mt_allow_comments'] = intval($post->comment_status == 'open');
+			else
+				$struct['mt_allow_comments'] = 1;
+
 			return array($post, $struct);
 		}
 

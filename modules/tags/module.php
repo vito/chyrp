@@ -161,8 +161,12 @@
 		}
 
 		static function metaWeblog_editPost_preQuery($struct, $post = null) {
-			if (isset($args[3]['mt_tags']))
-				$_POST['option']['tags'] = $args[3]['mt_tags'];
+			if (isset($struct['mt_tags']))
+				$_POST['option']['tags'] = $struct['mt_tags'];
+			else if (isset($post->tags))
+				$_POST['option']['tags'] = $post->tags;
+			else
+				$_POST['option']['tags'] = '';
 		}
 
 		static function twig_global_context($context) {
