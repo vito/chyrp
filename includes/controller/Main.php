@@ -278,7 +278,7 @@
 			            md5($_POST['new_password1']) :
 			            $visitor->password ;
 
-			$visitor->update($visitor->id, $visitor->login, $password, $_POST['full_name'], $_POST['email'], $_POST['website'], $visitor->group()->id);
+			$visitor->update($visitor->login, $password, $_POST['full_name'], $_POST['email'], $_POST['website'], $visitor->group()->id);
 
 			setcookie("chyrp_password", $password, time() + 2592000, "/"); # 30 days
 
