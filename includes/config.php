@@ -48,7 +48,7 @@
 		 *     $value - The new value. Can be boolean, numeric, an array, a string, etc.
 		 */
 		public function set($setting, $value, $overwrite = true) {
-			if (isset($this->$setting) and ($this->$setting == $value or !$overwrite)
+			if (isset($this->$setting) and ($this->$setting == $value or !$overwrite))
 				return false;
 
 			# Add the PHP protection!
