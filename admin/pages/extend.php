@@ -1,6 +1,6 @@
 <?php
 	$sub = (isset($_GET['sub'])) ? $_GET['sub'] : "modules" ;
-	if (!$visitor->group->can("change_settings"))
+	if (!$visitor->group()->can("change_settings"))
 		error(__("Access Denied"), __("You do not have sufficient privileges to extend this site."));
 ?>
 		<ul class="sub-nav">

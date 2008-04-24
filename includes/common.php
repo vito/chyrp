@@ -205,7 +205,7 @@
 		# Holds the current user and their group.
 		$visitor = Visitor::current();
 
-		if (!$visitor->group->can("view_site") and $action != "process_login" and $action != "login" and $action != "logout")
+		if (!$visitor->group()->can("view_site") and $action != "process_login" and $action != "login" and $action != "logout")
 			error(__("Access Denied"), __("You are not allowed to view this site."));
 	}
 
@@ -240,9 +240,9 @@
 		$statuses = array("public");
 		if (logged_in())
 			$statuses[] = "registered_only";
-		if ($visitor->group->can("view_private"))
+		if ($visitor->group()->can("view_private"))
 			$statuses[] = "private";
-		if ($action == "view" and $visitor->group->can("view_draft"))
+		if ($action == "view" and $visitor->group()->can("view_draft"))
 			$statuses[] = "draft";
 		$private = "`status` in ('".implode("', '", $statuses)."')";
 

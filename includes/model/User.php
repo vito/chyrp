@@ -53,16 +53,11 @@
 			if (!count($read) or !$read)
 				return $this->no_results = true;
 
-			foreach ($read as $key => $val) {
+			foreach ($read as $key => $val)
 				if (!is_int($key))
-					$this->$key = $val;
+					$this->$key = $current_user[$key] = $val;
 
-				$current_user[$key] = $val;
-			}
-
-			$this->group = new Group($this->id);
-
-			foreach ($this->group->permissions as $permission)
+			foreach ($this->group()->permissions as $permission)
 				$this->can[$permission] = true;
 		}
 
@@ -207,6 +202,14 @@
 			            array(
 			                ":id" => $user_id
 			            ));
+		}
+
+		/**
+		 * Function: group
+		 * Returns a user's group. Example: $user->group()->can("do_something")
+		 */
+		public function group() {
+			return new Group($this->group_id);
 		}
 
 		/**

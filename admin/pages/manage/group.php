@@ -11,7 +11,7 @@
 					<form class="detail" action="index.php" method="get" accept-charset="utf-8">
 						<input type="hidden" name="action" value="manage" />
 						<input type="hidden" name="sub" value="group" />
-<?php if ($visitor->group->can("add_group")): ?>
+<?php if ($visitor->group()->can("add_group")): ?>
 						<a href="<?php echo $config->url."/admin/?action=manage&amp;sub=group&amp;new"; ?>" class="button positive right">
 							<img src="<?php echo $config->url."/admin/icons/add.png"; ?>" alt="add" /> <?php echo __("New Group"); ?>
 						</a>
@@ -57,8 +57,8 @@
 					<div class="box">
 						<h1>
 							<span class="right">
-								<?php if ($visitor->group->can("edit_group")) echo $group->edit_link('<img src="icons/edit.png" alt="edit" /> '.__("edit")); ?>
-								<?php if ($visitor->group->can("delete_group")) echo $group->delete_link('<img src="icons/delete.png" alt="delete" /> '.__("delete")); ?>
+								<?php if ($visitor->group()->can("edit_group")) echo $group->edit_link('<img src="icons/edit.png" alt="edit" /> '.__("edit")); ?>
+								<?php if ($visitor->group()->can("delete_group")) echo $group->delete_link('<img src="icons/delete.png" alt="delete" /> '.__("delete")); ?>
 							</span>
 							<?php echo $members; ?>
 						</h1>

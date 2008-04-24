@@ -1,6 +1,6 @@
 <?php
 	$sub = (isset($_GET['sub'])) ? $_GET['sub'] : "website" ;
-	if (!$visitor->group->can("change_settings"))
+	if (!$visitor->group()->can("change_settings"))
 		error(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 ?>
 		<ul class="sub-nav">

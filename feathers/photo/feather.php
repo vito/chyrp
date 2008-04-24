@@ -58,8 +58,7 @@
 			if ($post->feather != "photo") return;
 			unlink(MAIN_DIR."/upload/".$post->filename);
 		}
-		static function filter_post() {
-			global $post;
+		static function filter_post($post) {
 			if ($post->feather != "photo") return;
 			$post->image = image_tag_for($post->filename);
 		}

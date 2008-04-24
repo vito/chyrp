@@ -34,9 +34,7 @@
 
 			return $split_pages[$offset];
 		}
-		static function filter_post() {
-			global $post, $viewing;
-
+		static function filter_post($post) {
 			$post->next_page = false;
 			$post->prev_page = false;
 

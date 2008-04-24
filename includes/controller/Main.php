@@ -69,7 +69,7 @@
 		public function drafts() {
 			global $paginate, $private, $enabled_feathers, $get_posts;
 			$visitor = Visitor::current();
-			if (!$visitor->group->can("view_draft"))
+			if (!$visitor->group()->can("view_draft"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to view drafts."));
 
 			$config = Config::current();
@@ -209,7 +209,7 @@
 		public function theme_preview() {
 			global $action;
 			$visitor = Visitor::current();
-			if (!$visitor->group->can("change_settings")) {
+			if (!$visitor->group()->can("change_settings")) {
 				$this->index();
 				return $action = "index";
 			}
@@ -328,7 +328,7 @@
 			            md5($_POST['new_password1']) :
 			            $visitor->password ;
 
-			$visitor->update($visitor->id, $visitor->login, $password, $_POST['full_name'], $_POST['email'], $_POST['website'], $visitor->group->id);
+			$visitor->update($visitor->id, $visitor->login, $password, $_POST['full_name'], $_POST['email'], $_POST['website'], $visitor->group()->id);
 
 			setcookie("chyrp_password", $password, time() + 2592000, "/"); # 30 days
 

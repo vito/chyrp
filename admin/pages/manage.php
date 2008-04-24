@@ -3,22 +3,22 @@
 
 	$permission = $trigger->filter("manage_permission", $sub);
 
-	$show_page = ($visitor->group->can("edit_".$permission) or $visitor->group->can("delete_".$permission));
+	$show_page = ($visitor->group()->can("edit_".$permission) or $visitor->group()->can("delete_".$permission));
 	$show_page = ($trigger->exists("show_admin_manage_page")) ?
 	             $trigger->filter("show_admin_manage_page", array($show_page, $sub), true) :
 	             $show_page ;
 ?>
 		<ul class="sub-nav">
-<?php if ($visitor->group->can("edit_post") or $visitor->group->can("delete_post")): ?>
+<?php if ($visitor->group()->can("edit_post") or $visitor->group()->can("delete_post")): ?>
 			<li<?php admin_selected("manage", "post"); ?>><a href="<?php url("manage", "post"); ?>"><?php echo __("Posts"); ?></a></li>
 <?php endif; ?>
-<?php if ($visitor->group->can("edit_page") or $visitor->group->can("delete_page")): ?>
+<?php if ($visitor->group()->can("edit_page") or $visitor->group()->can("delete_page")): ?>
 			<li<?php admin_selected("manage", "page"); ?>><a href="<?php url("manage", "page"); ?>"><?php echo __("Pages"); ?></a></li>
 <?php endif; ?>
-<?php if ($visitor->group->can("edit_user") or $visitor->group->can("delete_user")): ?>
+<?php if ($visitor->group()->can("edit_user") or $visitor->group()->can("delete_user")): ?>
 			<li<?php admin_selected("manage", "user"); ?>><a href="<?php url("manage", "user"); ?>"><?php echo __("Users"); ?></a></li>
 <?php endif; ?>
-<?php if ($visitor->group->can("edit_group") or $visitor->group->can("delete_group")): ?>
+<?php if ($visitor->group()->can("edit_group") or $visitor->group()->can("delete_group")): ?>
 			<li<?php admin_selected("manage", "group"); ?>><a href="<?php url("manage", "group"); ?>"><?php echo __("Groups"); ?></a></li>
 <?php endif; ?>
 			<?php $trigger->call("admin_manage_nav"); ?>

@@ -1,15 +1,15 @@
 <?php
 	$sub = (isset($_GET['sub'])) ?
 	           $_GET['sub'] :
-	           ((!empty($config->enabled_feathers) and $visitor->group->can("add_post")) ?
+	           ((!empty($config->enabled_feathers) and $visitor->group()->can("add_post")) ?
 	               $config->enabled_feathers[0] :
 	               "page")
 	       ;
-	$show_page = (($sub != "page" and !$visitor->group->can("add_post")) or ($sub == "page" and !$visitor->group->can("add_page"))) ? false : true ;
+	$show_page = (($sub != "page" and !$visitor->group()->can("add_post")) or ($sub == "page" and !$visitor->group()->can("add_page"))) ? false : true ;
 ?>
 		<ul class="sub-nav write-nav">
 <?php
-	if ($visitor->group->can("add_post")) {
+	if ($visitor->group()->can("add_post")) {
 		foreach ($config->enabled_feathers as $feather) {
 			if (file_exists(FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo"))
 				load_translator($feather, FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo");
@@ -20,7 +20,7 @@
 <?php
 		}
 	}
-	if ($visitor->group->can("add_page")):
+	if ($visitor->group()->can("add_page")):
 ?>
 			<li<?php admin_selected("write", "page"); ?>><a href="<?php url("write", "page"); ?>"><?php echo __("Page"); ?></a></li>
 <?php

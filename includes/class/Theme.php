@@ -20,7 +20,7 @@
 		 */
 		public function __construct() {
 			$visitor = Visitor::current();
-			$this->directory = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $visitor->group->can("change_settings")) ?
+			$this->directory = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $visitor->group()->can("change_settings")) ?
 			                   THEMES_DIR."/".$_GET['theme']."/" :
 			                   THEME_DIR."/" ;
 
@@ -156,7 +156,7 @@
 			$visitor = Visitor::current();
 			$config = Config::current();
 			$trigger = Trigger::current();
-			$theme = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $visitor->group->can("change_settings")) ?
+			$theme = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $visitor->group()->can("change_settings")) ?
 			         $_GET['theme'] :
 			         $config->theme ;
 

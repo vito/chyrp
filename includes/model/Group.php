@@ -51,12 +51,9 @@
 			if (!count($read) or !$read)
 				return $this->no_results = true;
 
-			foreach ($read as $key => $val) {
+			foreach ($read as $key => $val)
 				if (!is_int($key))
-					$this->$key = $val;
-
-				$current_group[$key] = $val;
-			}
+					$this->$key = $current_group[$key] = $val;
 
 			$this->permissions = Spyc::YAMLLoad($this->permissions);
 		}
@@ -234,7 +231,7 @@
 		 */
 		public function edit_link($text = null, $before = null, $after = null){
 			$visitor = Visitor::current();
-			if (!$visitor->group->can("edit_group")) return;
+			if (!$visitor->group()->can("edit_group")) return;
 			fallback($text, __("Edit"));
 			$config = Config::current();
 			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=group&amp;id='.$this->id.'" title="Edit" class="group_edit_link" id="group_edit_'.$this->id.'">'.$text.'</a>'.$after;
@@ -251,7 +248,7 @@
 		 */
 		public function delete_link($text = null, $before = null, $after = null){
 			$visitor = Visitor::current();
-			if (!$visitor->group->can("delete_group")) return;
+			if (!$visitor->group()->can("delete_group")) return;
 			fallback($text, __("Delete"));
 			$config = Config::current();
 			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=group&amp;id='.$this->id.'" title="Delete" class="group_delete_link" id="group_delete_'.$this->id.'">'.$text.'</a>'.$after;

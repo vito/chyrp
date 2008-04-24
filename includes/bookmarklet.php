@@ -1,7 +1,7 @@
 <?php
 	require_once "common.php";
 
-	if (!$visitor->group->can("add_post"))
+	if (!$visitor->group()->can("add_post"))
 		error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
 	if (empty($config->enabled_feathers))

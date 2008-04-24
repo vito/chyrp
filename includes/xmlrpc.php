@@ -449,7 +449,7 @@
 			global $user;
 
 			$statuses = "'public'";
-			$statuses.= ($user->group->can('view_drafts')) ? ", 'draft'" : '';
+			$statuses.= ($user->group()->can('view_drafts')) ? ", 'draft'" : '';
 
 			$config = Config::current();
 			if (!in_array(XML_RPC_FEATHER, $config->enabled_feathers))
@@ -488,7 +488,7 @@
 		private function auth($login, $password, $do = 'add') {
 			global $user;
 			$user = User::authenticate($login, md5($password));
-			if (!$user->group->can($do.'_post'))
+			if (!$user->group()->can($do.'_post'))
 				throw new Exception(__(sprintf("You don't have permission to %s posts.", $do)));
 		}
 

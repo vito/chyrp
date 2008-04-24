@@ -58,10 +58,8 @@
 
 			unlink(MAIN_DIR."/upload/".$post->filename);
 		}
-		static function filter_post() {
-			global $post;
+		static function filter_post($post) {
 			if ($post->feather != "audio") return;
-
 			$post->audio_player = flash_player_for($post->filename);
 		}
 		static function player_js() {

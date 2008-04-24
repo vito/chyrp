@@ -82,8 +82,8 @@
 					<div class="box">
 						<h1>
 							<span class="right">
-								<?php if ($visitor->group->can("edit_comment")) echo $comment->edit_link($comment->id, '<img src="icons/edit.png" /> '.__("edit")); ?>
-								<?php if ($visitor->group->can("delete_comment")) echo $comment->delete_link($comment->id, '<img src="icons/delete.png" /> '.__("delete")); ?>
+								<?php if ($visitor->group()->can("edit_comment")) echo $comment->edit_link($comment->id, '<img src="icons/edit.png" /> '.__("edit")); ?>
+								<?php if ($visitor->group()->can("delete_comment")) echo $comment->delete_link($comment->id, '<img src="icons/delete.png" /> '.__("delete")); ?>
 <?php if ($comment->status == "approved"): ?>
 								<a href="<?php echo $config->url."/admin/?action=deny_comment&amp;id=".$comment->id; ?>"><img src="icons/deny.png" /> <?php echo __("deny", "comments"); ?></a>
 <?php elseif ($comment->status == "denied"): ?>

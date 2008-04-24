@@ -22,7 +22,7 @@
 							<th width="15%"><?php echo __("Created"); ?></th>
 							<th width="15%"><?php echo __("Updated"); ?></th>
 							<th width="15%"><?php echo __("Owner"); ?></th>
-<?php if ($visitor->group->can("edit_page") and $visitor->group->can("delete_page")): ?>
+<?php if ($visitor->group()->can("edit_page") and $visitor->group()->can("delete_page")): ?>
 							<th colspan="2" width="10%"></th>
 <?php else: ?>
 							<th width="10%"></th>
@@ -50,14 +50,14 @@
 		$page = new Page(null, array("read_from" => $page));
 ?>
 						<tr>
-							<td class="main"><a href="<?php echo $route->url($page->url."/"); ?>"><?php echo $page->title; ?></a></td>
+							<td class="main"><a href="<?php echo $page->url(); ?>"><?php echo $page->title; ?></a></td>
 							<td><?php echo when("F jS, Y", $page->created_at); ?></td>
 							<td><?php if ($page->updated_at != "0000-00-00 00:00:00") echo when("F jS, Y", $page->updated_at); ?></td>
 							<td class="center"><?php echo User::info('full_name', $page->user_id, User::info('login', $page->user_id)); ?></td>
-<?php if ($visitor->group->can("edit_page")): ?>
+<?php if ($visitor->group()->can("edit_page")): ?>
 							<td class="center"><?php echo $page->edit_link('<img src="icons/edit.png" alt="edit" />'); ?></td>
 <?php endif; ?>
-<?php if ($visitor->group->can("delete_page")): ?>
+<?php if ($visitor->group()->can("delete_page")): ?>
 							<td class="center"><?php echo $page->delete_link('<img src="icons/delete.png" alt="delete" />'); ?></td>
 <?php endif; ?>
 						</tr>

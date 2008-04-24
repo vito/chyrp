@@ -103,7 +103,7 @@ function twig_missing_filter($name)
 	array_shift($args);
 
 	if (Trigger::current()->exists($name))
-		return $trigger->filter($name, $args, true);
+		return Trigger::current()->filter($name, $args, true);
 }
 
 function twig_get_attribute($context, $obj, $item)

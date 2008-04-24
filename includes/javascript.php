@@ -27,14 +27,14 @@ $(function(){
 		return false
 	})
 
-<?php if ($visitor->group->can("edit_post")): ?>
+<?php if ($visitor->group()->can("edit_post")): ?>
 	$(".post_edit_link").click(function(){
 		var id = $(this).attr("id").replace(/post_edit_/, "")
 		Post.edit(id)
 		return false
 	})
 <?php endif; ?>
-<?php if ($visitor->group->can("edit_post")): ?>
+<?php if ($visitor->group()->can("edit_post")): ?>
 	$(".post_delete_link").click(function(){
 		if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
 		var id = $(this).attr("id").replace(/post_delete_/, "")
@@ -46,7 +46,7 @@ $(function(){
 })
 
 var Post = {
-<?php if ($visitor->group->can("edit_post")): ?>
+<?php if ($visitor->group()->can("edit_post")): ?>
   edit: function(id) {
 		$("#post_"+id+" .target, #post_"+id+".target").loader()
 		$.post("<?php echo $config->url; ?>/includes/ajax.php", { action: "edit_post", id: id }, function(data) {
@@ -114,7 +114,7 @@ var Post = {
 		})
 	}
 <?php endif; ?>
-<?php if ($visitor->group->can("delete_post")): ?>
+<?php if ($visitor->group()->can("delete_post")): ?>
 	,
 	destroy: function(id) {
 		$("#post_"+id+" .target, #post_"+id+".target").loader()
@@ -189,7 +189,7 @@ var Cookie = {
 
 function appendNextPost(minus) {
 	var minus = (minus == "") ? 1 : minus ;
-<?php if ($action == "index" or ($action == "drafts" and $visitor->group->can("view_draft")) or $action == "archive" or $action == "search"): ?>
+<?php if ($action == "index" or ($action == "drafts" and $visitor->group()->can("view_draft")) or $action == "archive" or $action == "search"): ?>
 	if ($("#posts").length == 0) return;
 <?php
 	switch($action):
@@ -219,13 +219,13 @@ function appendNextPost(minus) {
 		$("#posts .post:last").hide().fadeIn("slow")
 		var id = $("#posts .post:last").attr("id").replace(/post_/, "")
 
-<?php if ($visitor->group->can("edit_post")): ?>
+<?php if ($visitor->group()->can("edit_post")): ?>
 		$("#post_edit_"+id).click(function(){
 			Post.edit(id)
 			return false
 		})
 <?php endif; ?>
-<?php if ($visitor->group->can("edit_post")): ?>
+<?php if ($visitor->group()->can("edit_post")): ?>
 		$("#post_delete_"+id).click(function(){
 			if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
 			Post.destroy(id)

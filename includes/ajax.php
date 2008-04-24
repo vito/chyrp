@@ -4,7 +4,7 @@
 
 	switch($_POST['action']) {
 		case "edit_post":
-			if (!$visitor->group->can("edit_post"))
+			if (!$visitor->group()->can("edit_post"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to edit posts."));
 			if (!isset($_POST['id']))
 				error(__("Unspecified ID"), __("Please specify an ID of the post you would like to edit."));
@@ -37,7 +37,7 @@
 <?php
 			break;
 		case "delete_post":
-			if (!$visitor->group->can('delete_post'))
+			if (!$visitor->group()->can('delete_post'))
 				error(__("Access Denied"), __("You do not have sufficient privileges to delete posts."));
 
 			$post = new Post($_POST['id']);
@@ -92,7 +92,7 @@
 			$trigger->call($_POST['name'], $_POST['argument']);
 			break;
 		case "check_confirm":
-			if (!$visitor->group->can("change_settings"))
+			if (!$visitor->group()->can("change_settings"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable extensions."));
 
 			$dir = ($_POST['type'] == "module") ? MODULES_DIR : FEATHERS_DIR ;

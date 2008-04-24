@@ -559,7 +559,7 @@
 			$visitor = Visitor::current();
 		$config = Config::current();
 ?>
-<?php if ($visitor->group->can("add_post")): ?>
+<?php if ($visitor->group()->can("add_post")): ?>
 				<p>
 					<label for="status"><?php echo __("Status"); ?></label>
 					<select name="status" id="status">

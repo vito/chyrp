@@ -174,8 +174,7 @@
 			return $context;
 		}
 
-		static function filter_post() {
-			global $post;
+		static function filter_post($post) {
 			$post->tags = array("linked" => get_post_tags($post->id), "unlinked" => get_post_tags($post->id, false));
 		}
 	}

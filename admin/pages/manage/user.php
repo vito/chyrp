@@ -11,7 +11,7 @@
 					<form class="detail" action="index.php" method="get" accept-charset="utf-8">
 						<input type="hidden" name="action" value="manage" />
 						<input type="hidden" name="sub" value="user" />
-<?php if ($visitor->group->can("edit_user")): ?>
+<?php if ($visitor->group()->can("edit_user")): ?>
 						<a href="<?php echo $config->url."/admin/?action=manage&amp;sub=user&amp;new"; ?>" class="button positive right">
 							<img src="<?php echo $config->url."/admin/icons/add.png"; ?>" alt="add" /> <?php echo __("New User"); ?>
 						</a>
@@ -31,7 +31,7 @@
 							<th width="15%"><?php echo __("E-Mail"); ?></th>
 							<th width="15%"><?php echo __("Website"); ?></th>
 <?php $trigger->call("admin_manage_users_column_header"); ?>
-<?php if ($visitor->group->can("edit_user") and $visitor->group->can("delete_user")): ?>
+<?php if ($visitor->group()->can("edit_user") and $visitor->group()->can("delete_user")): ?>
 							<th colspan="2" width="10%"></th>
 <?php else: ?>
 							<th width="10%"></th>
@@ -66,10 +66,10 @@
 							<td class="center"><a href="mailto:<?php echo $user->email; ?>"><?php echo $user->email; ?></a></td>
 							<td class="center"><?php if (!empty($user->website)): ?><a href="<?php echo $user->website; ?>"><?php echo $user->website; ?></a><?php endif; ?></td>
 <?php $trigger->call("admin_manage_users_column", $user); ?>
-<?php if ($visitor->group->can("edit_user")): ?>
+<?php if ($visitor->group()->can("edit_user")): ?>
 							<td class="center"><?php echo $user->edit_link('<img src="icons/edit.png" alt="edit" />'); ?></td>
 <?php endif; ?>
-<?php if ($visitor->group->can("delete_user")): ?>
+<?php if ($visitor->group()->can("delete_user")): ?>
 							<td class="center"><?php echo $user->delete_link('<img src="icons/delete.png" alt="delete" />'); ?></td>
 <?php endif; ?>
 						</tr>

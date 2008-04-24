@@ -51,15 +51,9 @@
 			if (!count($read) or !$read)
 				return $this->no_results = true;
 
-			foreach ($read as $key => $val) {
+			foreach ($read as $key => $val)
 				if (!is_int($key))
-					$this->$key = $val;
-
-				$current_page[$key] = $val;
-			}
-
-			if ($this->parent_id)
-				$this->parent = new self($this->parent_id);
+					$this->$key = $current_page[$key] = $val;
 
 			$this->user = new User($this->user_id);
 		}
@@ -283,6 +277,15 @@
 		}
 
 		/**
+		 * Function: parent
+		 * Returns a page's parent. Example: $page->parent()->parent()->title
+		 */
+		public function parent() {
+			if (!$this->parent_id) return;
+			return new self($this->parent_id);
+		}
+
+		/**
 		 * Function: edit_link
 		 * Outputs an edit link for the page, if the <User.can> edit_page.
 		 *
@@ -293,7 +296,7 @@
 		 */
 		public function edit_link($text = null, $before = null, $after = null){
 			$visitor = Visitor::current();
-			if (!isset($this->id) or !$visitor->group->can("edit_page")) return false;
+			if (!isset($this->id) or !$visitor->group()->can("edit_page")) return false;
 
 			fallback($text, __("Edit"));
 			$config = Config::current();
@@ -311,7 +314,7 @@
 		 */
 		public function delete_link($text = null, $before = null, $after = null){
 			$visitor = Visitor::current();
-			if (!isset($this->id) or !$visitor->group->can("delete_page")) return false;
+			if (!isset($this->id) or !$visitor->group()->can("delete_page")) return false;
 
 			fallback($text, __("Delete"));
 			$config = Config::current();

@@ -67,8 +67,6 @@
 				$current_post[$key] = $val;
 			}
 
-			$this->user = new User($this->user_id);
-
 			$this->parse($filter);
 		}
 
@@ -353,6 +351,14 @@
 		}
 
 		/**
+		 * Function: user
+		 * Returns a post's user. Example: $post->user()->login
+		 */
+		public function user() {
+			return new User($this->user_id);
+		}
+
+		/**
 		 * Function: title_from_excerpt
 		 * Generates an acceptable Title from the post's excerpt.
 		 *
@@ -489,11 +495,10 @@
 
 			if ($filter) {
 				$class = camelize($this->feather);
-
 				$post = $this;
 
 				$trigger = Trigger::current();
-				$trigger->call("filter_post");
+				$trigger->call("filter_post", $this);
 
 				if (isset(Feather::$custom_filters[$class])) # Run through feather-specified filters, first.
 					foreach (Feather::$custom_filters[$class] as $custom_filter)
@@ -516,7 +521,7 @@
 		 */
 		public function edit_link($text = null, $before = null, $after = null){
 			$visitor = Visitor::current();
-			if (!isset($this->id) or !$visitor->group->can("edit_post")) return false;
+			if (!isset($this->id) or !$visitor->group()->can("edit_post")) return false;
 
 			fallback($text, __("Edit"));
 			$config = Config::current();
@@ -534,7 +539,7 @@
 		 */
 		public function delete_link($text = null, $before = null, $after = null){
 			$visitor = Visitor::current();
-			if (!isset($this->id) or !$visitor->group->can("delete_post")) return false;
+			if (!isset($this->id) or !$visitor->group()->can("delete_post")) return false;
 
 			fallback($text, __("Delete"));
 			$config = Config::current();

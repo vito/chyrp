@@ -1,6 +1,6 @@
 						<form class="delete" action="<?php url("delete_post_real"); ?>" method="post" accept-charset="utf-8">
 							<blockquote>
-								<?php echo $trigger->filter("markup_post_text", truncate($post->excerpt($_GET['id']), 500)); ?>
+								<?php echo $trigger->filter("markup_post_text", array(truncate($post->excerpt($_GET['id']), 500), $post)); ?>
 							</blockquote>
 							<div class="center pad">
 								<input type="hidden" name="hash" value="<?php echo $config->secure_hashkey; ?>" id="hash" />

@@ -33,7 +33,7 @@
 							<th><?php echo __("Posted"); ?></th>
 							<th><?php echo __("Author"); ?></th>
 <?php $trigger->call("admin_manage_posts_column_header"); ?>
-<?php if ($visitor->group->can("edit_post") and $visitor->group->can("delete_post")): ?>
+<?php if ($visitor->group()->can("edit_post") and $visitor->group()->can("delete_post")): ?>
 							<th colspan="2"></th>
 <?php else: ?>
 							<th></th>
@@ -85,10 +85,10 @@
 							<td><?php echo when("F jS, Y", $post->created_at); ?></td>
 							<td class="center"><?php echo User::info('full_name', $post->user_id, User::info('login', $post->user_id)); ?></td>
 <?php $trigger->call("admin_manage_posts_column", $post->id); ?>
-<?php if ($visitor->group->can("edit_post")): ?>
+<?php if ($visitor->group()->can("edit_post")): ?>
 							<td class="center"><?php echo $post->edit_link('<img src="icons/edit.png" alt="edit" />'); ?></td>
 <?php endif; ?>
-<?php if ($visitor->group->can("delete_post")): ?>
+<?php if ($visitor->group()->can("delete_post")): ?>
 							<td class="center"><?php echo $post->delete_link('<img src="icons/delete.png" alt="edit" />'); ?></td>
 <?php endif; ?>
 						</tr>

@@ -30,7 +30,7 @@
 
 				$trigger->call("rss_comment", $comment->id);
 
-				if (($comment->status != "pingback" and !$comment->status != "trackback") and !$visitor->group->can("code_in_comments", $comment->user_id))
+				if (($comment->status != "pingback" and !$comment->status != "trackback") and !$visitor->group()->can("code_in_comments", $comment->user_id))
 					$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
 
 				$comment->body = $trigger->filter("markup_comment_text", $comment->body);
