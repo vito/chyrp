@@ -412,8 +412,10 @@
 
 				$config->set($enabled_array, $new);
 
-				if (!isset($_POST['ajax']))
+				if (!isset($_POST['ajax'])) {
+					$route = Route::current();
 					$route->redirect("/admin/?action=extend&sub=".$type."s&disabled=".$_GET[$type]);
+				}
 				else
 					exit('{ notifications: [] }');
 			}
