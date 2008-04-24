@@ -66,20 +66,19 @@
 			if ($_POST['author'] == "") error(__("Error"), __("Author can't be blank.", "comments"));
 			if ($_POST['email'] == "") error(__("Error"), __("E-Mail address can't be blank.", "comments"));
 			if ($_POST['body'] == "") error(__("Error"), __("Message can't be blank.", "comments"));
-			$comment->create($_POST['author'],
-			                 $_POST['email'],
-			                 $_POST['url'],
-			                 $_POST['body'],
-			                 $_POST['post_id']);
+			Comment::create($_POST['author'],
+			                $_POST['email'],
+			                $_POST['url'],
+			                $_POST['body'],
+			                $_POST['post_id']);
 		}
 
 		static function admin_update_comment($action) {
-			global $comment;
 			$visitor = Visitor::current();
 			if (!$visitor->group()->can("edit_comment") or empty($_POST)) return;
 			$timestamp = when("Y-m-d H:i:s", $_POST['created_at']);
-			$comment->update($_POST['id'],
-			                 $_POST['author'],
+			$comment = new Comment($_POST['id']);
+			$comment->update($_POST['author'],
 			                 $_POST['author_email'],
 			                 $_POST['author_url'],
 			                 $_POST['body'],
@@ -239,12 +238,12 @@
 
 			$url = fix($url, "html");
 			$title = fix($title, "html");
-			$comment->create($blog_name,
-			                 "",
-			                 $_POST["url"],
-			                 "<strong><a href=\"$url\">$title</a></strong> $excerpt",
-			                 $_GET["id"],
-			                 "trackback");
+			Comment::create($blog_name,
+			                "",
+			                $_POST["url"],
+			                "<strong><a href=\"$url\">$title</a></strong> $excerpt",
+			                $_GET["id"],
+			                "trackback");
 		}
 
 		static function pingback($id, $to, $from, $title, $excerpt) {
@@ -262,12 +261,12 @@
 			if ($dupe->rowCount() == 1)
 				return new IXR_Error(48, __("A ping from that URL is already registered.", "comments"));
 
-			$comment->create($title,
-			                 "",
-			                 $from,
-			                 $excerpt,
-			                 $id,
-			                 "pingback");
+			Comment::create($title,
+			                "",
+			                $from,
+			                $excerpt,
+			                $id,
+			                "pingback");
 		}
 
 		static function delete_post($post) {

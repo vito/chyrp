@@ -6,11 +6,14 @@
 				<p>$comment.body</p>
 			</blockquote>
 			<cite>
-{#				<strong><?php $comment->author_link($comment->id); ?></strong> ${ "on" | translate }#}
+				<strong>$comment.author_link</strong> ${ "on" | translate }
 				${ comment.created_at | date }
-{#
-				<?php $comment->edit_link(null, ' <em>/</em> ', null); ?>
-				<?php $comment->delete_link(null, ' <em>/</em> ', null); ?>
-#}
+				{% if visitor.can.edit_comment %}
+				<em>|</em> $comment.edit_link
+				{% endif %}
+
+				{% if visitor.can.delete_comment %}
+				<em>|</em> $comment.delete_link
+				{% endif %}
 			</cite>
 		</li>

@@ -51,15 +51,9 @@
 			if (!count($read) or !$read)
 				return $this->no_results = true;
 
-			foreach ($read as $key => $val) {
+			foreach ($read as $key => $val)
 				if (!is_int($key))
-					$this->$key = $val;
-
-				$current_comment[$key] = $val;
-			}
-
-			if ($this->user_id)
-				$this->user = new User($this->user_id);
+					$this->$key = $current_comment[$key] = $val;
 		}
 
 		/**
@@ -75,7 +69,7 @@
 		 *     $type - The type of comment. Optional, used for trackbacks/pingbacks.
 		 */
 		static function create($author, $email, $url, $body, $post_id, $type = null) {
-			if (!$this->user_can($post_id)) return;
+			if (!self::user_can($post_id)) return;
 
 			$post = new Post($post_id);
 			$config = Config::current();
