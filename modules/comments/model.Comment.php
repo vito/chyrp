@@ -272,4 +272,10 @@
 		public function post() {
 			return new Post($this->post_id);
 		}
+		public function user() {
+			if ($this->user_id)
+				return new User($this->user_id);
+			else
+				return Visitor::current();
+		}
 	}

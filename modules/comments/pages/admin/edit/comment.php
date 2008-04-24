@@ -1,4 +1,6 @@
-<?php $comment->find($_GET['id']); ?>
+<?php
+	$comment = new Comment($_GET['id']);
+?>
 					<form action="<?php url("update_comment"); ?>" method="post" accept-charset="utf-8">
 						<p>
 							<label for="body"><?php echo __("Body", "comments"); ?></label>

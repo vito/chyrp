@@ -535,10 +535,10 @@ $(function(){
 					}
 					break;
 				case "show_comment":
-					$comment->find($_POST['comment_id']);
-					$trigger->call("show_comment", $comment->id);
+					$comment = new Comment($_POST['comment_id']);
+					$trigger->call("show_comment", $comment);
 
-					if (($comment->status != "pingback" and !$comment->status != "trackback") and !$visitor->group()->can("code_in_comments", $comment->user_id))
+					if (($comment->status != "pingback" and !$comment->status != "trackback") and !$comment->user()->group()->can("code_in_comments"))
 						$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
 
 					$comment->body = $trigger->filter("markup_comment_text", $comment->body);
@@ -554,7 +554,7 @@ $(function(){
 					if (!$visitor->group()->can("edit_comment") or !isset($_POST['comment_id']))
 						break;
 
-					$comment->find($_POST['comment_id']);
+					$comment = new Comment($_POST['comment_id']);
 ?>
 <form id="comment_edit_<?php echo $comment->id; ?>" class="inline comment" action="<?php echo $config->url."/admin/?action=update_comment"; ?>" method="post" accept-charset="utf-8">
 	<p>
@@ -765,7 +765,7 @@ $(function(){
 					if (!in_array(when("m-d-Y", $comment->created_at), $shown_dates))
 						$shown_dates[] = when("m-d-Y", $comment->created_at);
 
-					if (($comment->status != "pingback" and $comment->status != "trackback") and !$visitor->group()->can("code_in_comments", $comment->user_id))
+					if (($comment->status != "pingback" and $comment->status != "trackback") and !$comment->user()->group()->can("code_in_comments"))
 						$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
 
 					$comment->body = $trigger->filter("markup_comment_text", $comment->body);
