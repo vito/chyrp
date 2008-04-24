@@ -3,11 +3,8 @@
 	$split_locale = explode("_", $config->locale);
 
 	fallback($get_comments, $sql->query("select * from `".$sql->prefix."comments` where (`status` != 'denied' or (`status` = 'denied' and (`author_ip` = '".ip2long($_SERVER['REMOTE_ADDR'])."' or (`user_id` != '' and `user_id` = ".fix($visitor->id).")))) and `status` != 'spam' order by `created_at` desc"));
-
 	fallback($latest_timestamp, $sql->query("select `created_at` from `".$sql->prefix."comments` where (`status` != 'denied' or (`status` = 'denied' and (`author_ip` = '".ip2long($_SERVER['REMOTE_ADDR'])."' or (`user_id` != '' and `user_id` = ".fix($visitor->id).")))) and `status` != 'spam' order by `created_at` desc limit 1")->fetchColumn());
-
 	fallback($title, $config->name);
-
 	fallback($url, $route->url("comments_rss/"));
 
 	echo "<".'?xml version="1.0" encoding="utf-8"?'.">\r";
@@ -23,10 +20,8 @@
 		<pubDate><?php echo when("r", $latest_timestamp); ?></pubDate>
 		<docs>http://backend.userland.com/rss2</docs>
 <?php
-			while ($temp_comment = $get_comments->fetch()) {
-				foreach ($temp_comment as $key => $val)
-					if (!is_int($key))
-						$comment->$key = $val;
+			foreach ($get_comments->fetchAll() as $comment):
+				$comment = new Comment($comment["id"]);
 
 				$trigger->call("rss_comment", $comment->id);
 

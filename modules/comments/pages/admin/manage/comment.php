@@ -71,19 +71,17 @@
 		                                  "`created_at` desc",
 		                                  25);
 	}
-	while ($temp_comment = $get_comments->fetch()):
-		foreach ($temp_comment as $key => $val) $comment->$key = $val;
+	foreach ($get_comments->fetchAll() as $comment):
+		$comment = new Comment($comment["id"]);
 		$trigger->call("manage_comments");
 
 		$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
-
-		$post = new Post($comment->post_id);
 ?>
 					<div class="box">
 						<h1>
 							<span class="right">
-								<?php if ($visitor->group()->can("edit_comment")) echo $comment->edit_link($comment->id, '<img src="icons/edit.png" /> '.__("edit")); ?>
-								<?php if ($visitor->group()->can("delete_comment")) echo $comment->delete_link($comment->id, '<img src="icons/delete.png" /> '.__("delete")); ?>
+								<?php if ($visitor->group()->can("edit_comment")) echo $comment->edit_link('<img src="icons/edit.png" /> '.__("edit")); ?>
+								<?php if ($visitor->group()->can("delete_comment")) echo $comment->delete_link('<img src="icons/delete.png" /> '.__("delete")); ?>
 <?php if ($comment->status == "approved"): ?>
 								<a href="<?php echo $config->url."/admin/?action=deny_comment&amp;id=".$comment->id; ?>"><img src="icons/deny.png" /> <?php echo __("deny", "comments"); ?></a>
 <?php elseif ($comment->status == "denied"): ?>
@@ -96,11 +94,11 @@
 						<div class="excerpt">
 							<?php echo truncate($comment->body, 250); ?>
 							<br />
-							<span class="sub">(<a href="<?php echo $post->url(); ?>"><?php echo $post->title() ?></a>)</span>
+							<span class="sub">(<a href="<?php echo $comment->post()->url(); ?>"><?php echo $comment->post()->title() ?></a>)</span>
 						</div>
 					</div>
 <?php
-	endwhile;
+	endforeach;
 ?>
 <?php if ($paginate->next_page()): ?>
 					<a class="right button" href="<?php echo $paginate->next_page_url("page", false); ?>"><?php echo __("Next &raquo;"); ?></a>

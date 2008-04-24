@@ -152,22 +152,21 @@
 
 		/**
 		 * Function: delete
-		 * Deletes the given page.
+		 * Deletes the given page. Calls the "delete_page" trigger with the page's ID.
 		 *
 		 * Parameters:
 		 *     $page_id - The page to delete. Sub-pages if this page will be removed as well.
 		 */
-		public function delete() {
-			if (!isset($this->id)) return;
-
+		static function delete($page_id) {
 			$trigger = Trigger::current();
-			$trigger->call("delete_page", $id);
+			if ($trigger->exists("delete_page"))
+				$trigger->call("delete_page", new self($page_id));
 
 			$sql = SQL::current();
 			$sql->delete("pages",
 			             "`id` = :id",
 			             array(
-			                 ":id" => $this->id
+			                 ":id" => $page_id
 			             ));
 
 			$get_sub_pages = $sql->select("pages",
@@ -175,12 +174,10 @@
 			                              "`parent_id` = :id",
 			                              "id",
 			                              array(
-			                                  ":id" => $this->id
+			                                  ":id" => $page_id
 			                              ));
-			while ($sub_page = $get_sub_pages->fetchObject()) {
-				$sub = new self($sub_page->id);
-				$sub->delete();
-			}
+			while ($sub_page = $get_sub_pages->fetchObject())
+				self::delete($sub_page->id);
 		}
 
 		/**

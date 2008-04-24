@@ -190,11 +190,15 @@
 
 		/**
 		 * Function: delete
-		 * Deletes the user. Calls the "delete_user" trigger with the user's ID.
+		 * Deletes a given user. Calls the "delete_user" trigger with the user's ID.
+		 *
+		 * Parameters:
+		 *     $user_id - The user to delete.
 		 */
-		public function delete() {
+		static function delete($user_id) {
 			$trigger = Trigger::current();
-			$trigger->call("delete_user", $this->id);
+			if ($trigger->exists("delete_user"))
+				$trigger->call("delete_user", new self($user_id));
 
 			$sql = SQL::current();
 			$sql->query("delete from `".$sql->prefix."users`

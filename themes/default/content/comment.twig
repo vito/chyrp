@@ -9,8 +9,8 @@
 {#				<strong><?php $comment->author_link($comment->id); ?></strong> ${ "on" | translate }#}
 				${ comment.created_at | date }
 {#
-				<?php $comment->edit_link($comment->id, null, ' <em>/</em> ', null); ?>
-				<?php $comment->delete_link($comment->id, null, ' <em>/</em> ', null); ?>
+				<?php $comment->edit_link(null, ' <em>/</em> ', null); ?>
+				<?php $comment->delete_link(null, ' <em>/</em> ', null); ?>
 #}
 			</cite>
 		</li>

@@ -53,26 +53,24 @@
 		                                  25);
 	}
 	$count = 1;
-	while ($temp_comment = $get_comments->fetch()):
-		foreach ($temp_comment as $key => $val) $comment->$key = $val;
+	foreach ($get_comments->fetchAll() as $comment):
+		$comment = new Comment($comment["id"]);
 		$trigger->call("manage_comments");
 		$class = ($count == $get_comments->rowCount()) ? ' class="last"' : "" ;
 		$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
-
-		$post = new Post($comment->post_id);
 ?>
 							<tr<?php echo $class; ?>>
 								<td><input type="checkbox" name="comments[<?php echo $comment->id; ?>]" id="comments[<?php echo $comment->id; ?>" /></td>
 								<td class="center main"><?php echo $comment->author; ?></td>
-								<td class="center"><a href="<?php echo $post->url(); ?>"><?php echo $post->title(); ?></a></td>
+								<td class="center"><a href="<?php echo $comment->post()->url(); ?>"><?php echo $comment->post()->title(); ?></a></td>
 								<td><?php echo truncate($comment->body, 100); ?></td>
 								<?php $trigger->call("admin_manage_comments_column", $comment->id); ?>
-								<td class="center"><?php echo $comment->edit_link($comment->id, '<img src="icons/edit.png" />'); ?></td>
-								<td class="center"><?php echo $comment->delete_link($comment->id, '<img src="icons/delete.png" />'); ?></td>
+								<td class="center"><?php echo $comment->edit_link('<img src="icons/edit.png" />'); ?></td>
+								<td class="center"><?php echo $comment->delete_link('<img src="icons/delete.png" />'); ?></td>
 							</tr>
 <?php
 		$count++;
-	endwhile;
+	endforeach;
 ?>
 						</table>
 						<br />

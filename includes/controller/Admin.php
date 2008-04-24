@@ -265,8 +265,7 @@
 			if (!$visitor->group()->can("delete_post"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to delete posts."));
 
-			$post = new Post($_POST['id']);
-			$post->delete();
+			Post::delete($_POST['id']);
 
 			$route = Route::current();
 			$route->redirect("/admin/?action=manage&sub=post&deleted");
@@ -285,8 +284,7 @@
 			if (!$visitor->group()->can('delete_page'))
 				error(__("Access Denied"), __("You do not have sufficient privileges to delete pages."));
 
-			$page = new Page($_POST['id']);
-			$page->delete();
+			Page::delete($_POST['id']);
 
 			$route = Route::current();
 			$route->redirect("/admin/?action=manage&sub=page&deleted");
@@ -305,8 +303,7 @@
 			if (!$visitor->group()->can('delete_user'))
 				error(__("Access Denied"), __("You do not have sufficient privileges to delete users."));
 
-			$user = new User($_POST['id']);
-			$user->delete();
+			User::delete($_POST['id']);
 
 			$route = Route::current();
 			$route->redirect("/admin/?action=manage&sub=user&deleted");
@@ -341,8 +338,7 @@
 			if (!empty($_POST['guest_group']))
 				$config->set("guest_group", $_POST['guest_group']);
 
-			$group = new Group($_POST['id']);
-			$group->delete();
+			Group::delete($_POST['id']);
 
 			$route = Route::current();
 			$route->redirect("/admin/?action=manage&sub=group&deleted");

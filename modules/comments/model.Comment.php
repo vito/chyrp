@@ -180,14 +180,14 @@
 			if (!$visitor->group()->can('edit_comment')) return;
 			fallback($text, __("Edit"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=comment&amp;id='.$this->id.'" title="Edit" class="comment_edit_link" id="comment_edit_'.$comment_id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=comment&amp;id='.$this->id.'" title="Edit" class="comment_edit_link" id="comment_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 		public function delete_link($text = null, $before = null, $after = null){
 			$visitor = Visitor::current();
 			if (!$visitor->group()->can('delete_comment')) return;
 			fallback($text, __("Delete"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=comment&amp;id='.$this->id.'" title="Delete" class="comment_delete_link" id="comment_delete_'.$comment_id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=comment&amp;id='.$this->id.'" title="Delete" class="comment_delete_link" id="comment_delete_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 		public function author_link() {
 			if ($this->author_url != "") # If a URL is set
@@ -218,15 +218,17 @@
 			$trigger = Trigger::current();
 			$trigger->call("update_comment", $this);
 		}
-		public function delete() {
+		static function delete($comment_id) {
+			$trigger = Trigger::current();
+			if ($trigger->exists("delete_comment"))
+				$trigger->call("delete_comment", new self($comment_id));
+
 			$sql = SQL::current();
 			$sql->query("delete from `".$sql->prefix."comments`
 			             where `id` = :id",
 			            array(
-			                ":id" => $this->id
+			                ":id" => $comment_id
 			            ));
-			$trigger = Trigger::current();
-			$trigger->call("delete_comment", $this->id);
 		}
 		static function user_can($post_id) {
 			$visitor = Visitor::current();
@@ -266,5 +268,8 @@
 		                             ":user_id" => Visitor::current()->id
 			                     ));
 			return $count->fetchColumn();
+		}
+		public function post() {
+			return new Post($this->post_id);
 		}
 	}

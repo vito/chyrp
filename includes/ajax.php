@@ -40,8 +40,7 @@
 			if (!$visitor->group()->can('delete_post'))
 				error(__("Access Denied"), __("You do not have sufficient privileges to delete posts."));
 
-			$post = new Post($_POST['id']);
-			$post->delete();
+			Post::delete($_POST['id']);
 			break;
 		case "view_post":
 			fallback($_POST['offset'], 0);

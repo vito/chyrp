@@ -96,7 +96,7 @@
 			global $comment;
 			$visitor = Visitor::current();
 			if (!$visitor->group()->can("delete_comment") or empty($_POST)) return;
-			$comment->delete($_POST['id']);
+			Comment::delete($_POST['id']);
 			$config = Config::current();
 			$route = Route::current();
 			$route->redirect("/admin/?action=manage&sub=comment&deleted");
@@ -160,7 +160,7 @@
 			if (isset($_POST['delete'])) {
 				if (!$visitor->group()->can("delete_comment")) return;
 				foreach ($_POST['comments'] as $id => $value)
-					$comment->delete($id);
+					Comment::delete($id);
 				$route->redirect("/admin/?action=manage&sub=spam&deleted");
 			}
 			if (isset($_POST['despam'])) {
@@ -548,7 +548,7 @@ $(function(){
 					if (!$visitor->group()->can("delete_comment") or !isset($_POST['id']))
 						break;
 
-					$comment->delete($_POST['id']);
+					Comment::delete($_POST['id']);
 					break;
 				case "edit_comment":
 					if (!$visitor->group()->can("edit_comment") or !isset($_POST['comment_id']))
@@ -761,9 +761,9 @@ $(function(){
 				foreach ($get_comments->fetchAll() as $comment) {
 					$comment = new Comment($comment["id"]);
 
-					$comment->date_shown = in_array(when("m-d-Y", $temp_comment["created_at"]), $shown_dates);
-					if (!in_array(when("m-d-Y", $temp_comment["created_at"]), $shown_dates))
-						$shown_dates[] = when("m-d-Y", $temp_comment["created_at"]);
+					$comment->date_shown = in_array(when("m-d-Y", $comment->created_at), $shown_dates);
+					if (!in_array(when("m-d-Y", $comment->created_at), $shown_dates))
+						$shown_dates[] = when("m-d-Y", $comment->created_at);
 
 					if (($comment->status != "pingback" and $comment->status != "trackback") and !$visitor->group()->can("code_in_comments", $comment->user_id))
 						$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");

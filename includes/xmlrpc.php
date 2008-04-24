@@ -328,8 +328,7 @@
 			if (!Post::exists($args[1]))
 				return new IXR_Error(500, __('Fake post ID, or nonexistant post.'));
 
-			$post = new Post($args[1]);
-			$post->delete();
+			Post::delete($args[1]);
 			return true;
 		}
 

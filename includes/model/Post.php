@@ -212,19 +212,21 @@
 
 		/**
 		 * Function: delete
-		 * Deletes the post. Calls the "delete_post" trigger with the post's ID.
+		 * Deletes a given post. Calls the "delete_post" trigger with the post's ID.
+		 *
+		 * Parameters:
+		 *     $post_id - The post to delete.
 		 */
-		public function delete() {
-			if (!isset($this->id)) return;
-
+		static function delete($post_id) {
 			$trigger = Trigger::current();
-			$trigger->call("delete_post", $this);
+			if ($trigger->exists("delete_post"))
+				$trigger->call("delete_post", new self($post_id));
 
 			$sql = SQL::current();
 			$sql->delete("posts",
 			             "`id` = :id",
 			             array(
-			                 ':id' => $this->id
+			                 ':id' => $post_id
 			             ));
 		}
 
