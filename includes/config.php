@@ -47,8 +47,9 @@
 		 *     $setting - The setting name.
 		 *     $value - The new value. Can be boolean, numeric, an array, a string, etc.
 		 */
-		public function set($setting, $value) {
-			if (isset($this->$setting) and $this->$setting == $value) return false; # No point in changing it
+		public function set($setting, $value, $overwrite = true) {
+			if (isset($this->$setting) and ($this->$setting == $value or !$overwrite)
+				return false;
 
 			# Add the PHP protection!
 			$contents = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
