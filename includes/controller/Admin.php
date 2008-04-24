@@ -189,6 +189,7 @@
 		 */
 		public function update_group() {
 			$visitor = Visitor::current();
+			$route = Route::current();
 			if (empty($_POST)) return;
 			$config = Config::current();
 			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
@@ -198,9 +199,12 @@
 
 			$permissions = array_keys($_POST['permissions']);
 
-			$group->update($_POST['id'], $_POST['name'], $permissions);
+			$group = new Group($_POST['id']);
 
-			$route = Route::current();
+			if ($group->no_results)
+				$route->redirect("/admin/?action=manage&sub=group");
+
+			$group->update($_POST['name'], $permissions);
 			$route->redirect("/admin/?action=manage&sub=group&updated");
 		}
 
