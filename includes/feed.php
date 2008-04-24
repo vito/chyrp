@@ -9,8 +9,7 @@
 	<link href="<?php echo self_url() ?>" rel="self" />
 	<generator uri="http://chyrp.net/" version="<?php echo CHYRP_VERSION; ?>">Chyrp</generator>
 <?php
-	foreach ($get_posts->fetchAll() as $post) {
-		$post = new Post($post['id']);
+	foreach ($posts as $post) {
 		$title = htmlspecialchars($post->title(), ENT_NOQUOTES, "utf-8");
 		fallback($title, ucfirst($post->feather)." Post #".$post->id);
 

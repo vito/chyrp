@@ -250,16 +250,19 @@
 		 */
 		public function query($query, $params = array(), $throw_exceptions = false) {
 			$this->queries++;
+
 			if (defined('DEBUG') and DEBUG) {
 				#echo '<div style="position: absolute; z-index: 1000"><span style="background: rgba(0,0,0,.5); padding: 0 1px; border: 1px solid rgba(0,0,0,.25); color: white; font: 9px/14px normal \'Monaco\', monospace;">'.$query.'</span></div>';
 				$trace = debug_backtrace();
-				$index = 0;
-				$target = $trace[$index];
-				while (strpos($target["file"], "database.php"))
-					$target = $trace[$index++];
+
+				$target = $trace[$index = 0];
+				while (strpos($target["file"], "database.php")) # Getting a traceback from this file is pretty
+					$target = $trace[$index++];                 # useless (mostly when using $sql->select() and such)
+
 				$file = str_replace(MAIN_DIR."/", "", $target["file"]);
-				echo '<script type="text/javascript">console.log(\''.$file.'['.$target["line"].']: '.normalize(addslashes($query)).'\');</script>';
+				#error_log($this->queries.'. '.$file.'['.$target["line"].']: '.normalize(addslashes($query)));
 			}
+
 			try {
 				$q = $this->db->prepare($query);
 				$result = $q->execute($params);
@@ -270,10 +273,7 @@
 				if (XML_RPC or $throw_exceptions)
 					throw new Exception($message);
 
-				echo "<pre>".print_r($query, true)."</pre>";
-				echo "<pre>".print_r(debug_backtrace(), true)."</pre>";
 				error(__("Database Error"), $message);
-				//throw $error;
 			}
 
 			return $q;

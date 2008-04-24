@@ -5,7 +5,7 @@
 	 * Class: Group
 	 * The model for the Groups SQL table.
 	 */
-	class Group {
+	class Group extends Model {
 		public $no_results = false;
 
 		/**
@@ -140,6 +140,17 @@
 			            array(
 			                ":id" => $group_id
 			            ));
+		}
+
+		/**
+		 * Function: find
+		 * Grab all groups that match the passed options.
+		 *
+		 * Returns:
+		 * An array of <Group>s from the result.
+		 */
+		static function find($options = array()) {
+			return parent::grab("Post", $options);
 		}
 
 		/**

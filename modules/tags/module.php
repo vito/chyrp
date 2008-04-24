@@ -119,21 +119,12 @@
 		}
 
 		static function route_tag() {
-			global $paginate, $private, $enabled_feathers, $tag, $get_posts;
-			$tag = $_GET['name'];
+			global $private, $enabled_feathers, $posts;
 
-			$config = Config::current();
-			$sql = SQL::current();
-			$get_posts = $paginate->select(array("posts AS p", "tags AS t"), # from
-			                               "p.*", # fields
-			                               $private.$enabled_feathers." and
-			                               `post_id` = `p`.`id` and
-			                               `t`.`clean` = :clean",
-			                               "`pinned` desc, `created_at` desc, `p`.`id` desc",
-			                               $config->posts_per_page, "page",
-			                               array(
-			                                   ":clean" => $tag
-			                               ));
+			$posts = Post::find(array("select" => "p.*",
+			                          "from" => array("posts AS p", "tags AS t"),
+			                          "where" => $private.$enabled_feathers." and `post_id` = `p`.`id` and `t`.`clean` = :clean",
+			                          "params" => array(":clean" => $_GET['name'])));
 		}
 
 		static function import_wordpress_post($data, $id) {

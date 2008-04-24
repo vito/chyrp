@@ -40,7 +40,6 @@
 
 		}
 	}
-	new Paging();
 
 	function prev_page_url() {
 		global $post, $viewing;

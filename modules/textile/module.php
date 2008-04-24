@@ -10,4 +10,3 @@
 			return $textile->TextileThis($text);
 		}
 	}
-	new Textile();

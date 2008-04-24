@@ -82,6 +82,11 @@
 	# File: Helpers
 	require_once INCLUDES_DIR."/helpers.php";
 
+	# File: Model
+	# See Also:
+	#     <Model>
+	require_once INCLUDES_DIR."/class/Model.php";
+
 	# File: User
 	# See Also:
 	#     <User>
@@ -164,25 +169,31 @@
 		if (file_exists(FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo"))
 			load_translator($feather, FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo");
 
-		$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$feather."/info.yaml");
-		fallback($info["plural"], null);
-
 		require FEATHERS_DIR."/".$feather."/feather.php";
-		$class = camelize($feather);
-		$feathers[$feather] = new $class();
-		$index = (isset($info["plural"])) ? $info["plural"] : $feather."s" ;
-		$plural_feathers[$index] = $feather;
+
+		$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$feather."/info.yaml");
+		$plural_feathers[(isset($info["plural"]) ? fallback($info["plural"], null, true) : $feather."s")] = $feather;
 	}
 
+	$modules = array();
 	foreach ($config->enabled_modules as $module) {
 		if (file_exists(MODULES_DIR."/".$module."/locale/".$config->locale.".mo"))
 			load_translator($module, MODULES_DIR."/".$module."/locale/".$config->locale.".mo");
 
-		$module_class = camelize($module);
 		require MODULES_DIR."/".$module."/module.php";
 	}
 
 	$route->determine_action();
+
+	foreach ($config->enabled_feathers as $feather) {
+		$camelized = camelize($feather);
+		$feathers[$feather] = new $camelized;
+	}
+
+	foreach ($config->enabled_modules as $module) {
+		$camelized = camelize($module);
+		$modules[$module] = new $camelized();
+	}
 
 	$action = (isset($_GET['action'])) ? strip_tags($_GET['action']) : "index" ;
 
@@ -275,11 +286,10 @@
 		 * Returns whether they're viewing a post or not.
 		 */
 		$viewing = ($action == "view");
-
 		if ($is_feed)
 			if ($trigger->exists($action."_feed")) # What about custom feeds?
 				$trigger->call($action."_feed");
-			elseif (isset($get_posts)) # Are there already posts to show?
+			elseif (isset($posts)) # Are there already posts to show?
 				$action = "feed";
 			else
 				$route->redirect($route->url("feed/")); # Really? Nothing? Too bad. MAIN FEED 4 U.

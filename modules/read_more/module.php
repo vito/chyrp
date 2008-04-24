@@ -2,6 +2,8 @@
 	class ReadMore extends Module {
 		public function __construct() {
 			$this->addAlias("markup_post_text", "makesafe", 8);
+			if (isset($_GET['feed']))
+				$this->addAlias("markup_post_text", "read_more");
 		}
 		static function makesafe($text) {
 			global $post, $viewing;
@@ -11,8 +13,7 @@
 			# For the curious: e51b2b9a58824dd068d8777ec6e97e4d is a md5 of "replace me!"
 			return str_replace("<!--more-->", '<a class="read_more" href="'.$post->url().'">e51b2b9a58824dd068d8777ec6e97e4d</a>(((more)))', $text);
 		}
-
-		# To be used in the Twig templace as ${ post.body | read_more("Read more...") }
+		# To be used in the Twig template as ${ post.body | read_more("Read more...") }
 		static function read_more($text, $string = null) {
 			global $post, $viewing;
 			fallback($string, __("Read More &raquo;", "theme"));
@@ -32,4 +33,3 @@
 			return $split[0];
 		}
 	}
-	new ReadMore();

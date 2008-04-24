@@ -9,14 +9,8 @@
 		 * Grabs the posts for the main page.
 		 */
 		public function index() {
-			global $paginate, $private, $enabled_feathers, $get_posts;
-			$config = Config::current();
-			$get_posts = $paginate->select("posts", # table
-			                               "*", # fields
-			                               $private.$enabled_feathers, # where
-			                               "`pinned` desc, `created_at` desc, `id` desc", # order
-			                               $config->posts_per_page, "page",
-			                               array());
+			global $posts;
+			$posts = Post::find();
 		}
 
 		/**
@@ -24,22 +18,11 @@
 		 * Grabs the posts for the Archive page when viewing a year or a month.
 		 */
 		public function archive() {
-			global $paginate, $private, $enabled_feathers, $year, $month, $get_posts;
-			$year = fallback($_GET['year'], "", true);
-			$month = fallback($_GET['month'], "", true);
-			if (empty($year) or empty($month)) return;
+			global $private, $enabled_feathers, $posts;
+			if (!isset($_GET['year']) or !isset($_GET['month'])) return;
 
-			$config = Config::current();
-			$sql = SQL::current();
-			$get_posts = $paginate->select("posts",
-			                               "*",
-			                               "`created_at` like :date and
-			                               ".$private.$enabled_feathers,
-			                               "`pinned` desc, `created_at` desc, `id` desc",
-			                               $config->posts_per_page, "page",
-			                               array(
-			                                   ':date' => $year.'-'.$month.'%'
-			                               ));
+			$posts = Post::find(array("where" => "`created_at like :date and ".$private.$enabled_feathers,
+			                          "params" => array(":date" => $_GET['year']."-".$_GET['month']."%")));
 		}
 
 		/**
@@ -47,19 +30,10 @@
 		 * Grabs the posts for a search query.
 		 */
 		public function search() {
-			global $paginate, $private, $enabled_feathers, $query, $get_posts;
-			$query = fallback($_GET['query'], "", true);
-			$config = Config::current();
-			$sql = SQL::current();
-			$get_posts = $paginate->select("posts",
-			                               "*",
-			                               "`xml` like :query and
-			                               ".$private.$enabled_feathers,
-			                               "`pinned` desc, `created_at` desc, `id` desc",
-			                               $config->posts_per_page, "page",
-			                               array(
-			                                   ':query' => '%'.urldecode($query).'%'
-			                               ));
+			global $private, $enabled_feathers, $posts;
+			fallback($_GET['query'], "");
+			$posts = Post::find(array("where" => "`xml` like :query and ".$private.$enabled_feathers,
+			                          "params" => array(":query" => '%'.urldecode($_GET['query']).'%')));
 		}
 
 		/**
@@ -67,18 +41,11 @@
 		 * Grabs the posts for viewing the Drafts lists. Shows an error if the user lacks permissions.
 		 */
 		public function drafts() {
-			global $paginate, $private, $enabled_feathers, $get_posts;
-			$visitor = Visitor::current();
-			if (!$visitor->group()->can("view_draft"))
+			global $posts;
+			if (!Visitor::current()->group()->can("view_draft"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to view drafts."));
 
-			$config = Config::current();
-			$sql = SQL::current();
-			$get_posts = $paginate->select("posts",
-			                               "*",
-			                               "`status` = 'draft'",
-			                               "`pinned` desc, `created_at` desc, `id` desc",
-			                               $config->posts_per_page);
+			$posts = Post::find(array("where" => "`status` = 'draft'"));
 		}
 
 		/**
@@ -86,19 +53,9 @@
 		 * Views posts of a specific feather.
 		 */
 		public function feather() {
-			global $paginate, $private, $enabled_feathers, $plural_feathers, $get_posts;
-
-			$config = Config::current();
-			$sql = SQL::current();
-			$get_posts = $paginate->select("posts",
-			                               "*",
-			                               $private.$enabled_feathers." and
-			                               `feather` = :feather",
-			                               "`pinned` desc, `created_at` desc, `id` desc",
-			                               $config->posts_per_page, "page",
-			                               array(
-			                                   ':feather' => $plural_feathers[$_GET['action']]
-			                               ));
+			global $private, $enabled_feathers, $plural_feathers, $posts;
+			$posts = Post::find(array("where" => "`feather` = :feather and ".$private.$enabled_feathers,
+			                          "params" => array(":feather" => $plural_feathers[$_GET['action']])));
 		}
 
 		/**
@@ -106,15 +63,8 @@
 		 * Grabs posts for the feed.
 		 */
 		public function feed() {
-			global $paginate, $private, $enabled_feathers, $get_posts;
-
-			$config = Config::current();
-			$sql = SQL::current();
-			$get_posts = $paginate->select("posts",
-			                               "*",
-			                               $private.$enabled_feathers,
-			                               "`pinned` desc, `created_at` desc, `id` desc",
-			                               $config->posts_per_page);
+			global $posts;
+			$posts = Post::find();
 		}
 
 		/**

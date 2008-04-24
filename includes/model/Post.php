@@ -6,7 +6,7 @@
 	 * Class: Post
 	 * The model for the Posts SQL table.
 	 */
-	class Post {
+	class Post extends Model {
 		public $no_results = false;
 
 		/**
@@ -228,6 +228,23 @@
 			             array(
 			                 ':id' => $post_id
 			             ));
+		}
+
+		/**
+		 * Function: find
+		 * Grab all posts that match the passed options.
+		 *
+		 * Returns:
+		 * An array of <Post>s from the result.
+		 */
+		static function find($options = array()) {
+			$posts = parent::grab("Post", $options);
+
+			foreach ($posts as $index => $post)
+				if (!$post->theme_exists())
+					unset($posts[$index]);
+
+			return $posts;
 		}
 
 		/**

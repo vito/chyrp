@@ -5,7 +5,7 @@
 	 * Class: User
 	 * The model for the Users SQL table.
 	 */
-	class User {
+	class User extends Model {
 		public $no_results = false;
 		public $group;
 		public $can = array();
@@ -206,6 +206,17 @@
 			            array(
 			                ":id" => $user_id
 			            ));
+		}
+
+		/**
+		 * Function: find
+		 * Grab all users that match the passed options.
+		 *
+		 * Returns:
+		 * An array of <User>s from the result.
+		 */
+		static function find($options = array()) {
+			return parent::grab("Post", $options);
 		}
 
 		/**

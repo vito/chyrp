@@ -15,4 +15,3 @@
 			return Markdown($text);
 		}
 	}
-	new Markdown();

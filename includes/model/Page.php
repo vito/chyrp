@@ -5,7 +5,7 @@
 	 * Class: Page
 	 * The model for the Pages SQL table.
 	 */
-	class Page {
+	class Page extends Model {
 		public $no_results = false;
 
 		/**
@@ -176,6 +176,17 @@
 			                              ));
 			while ($sub_page = $get_sub_pages->fetchObject())
 				self::delete($sub_page->id);
+		}
+
+		/**
+		 * Function: find
+		 * Grab all pages that match the passed options.
+		 *
+		 * Returns:
+		 * An array of <Page>s from the result.
+		 */
+		static function find($options = array()) {
+			return parent::grab("Post", $options);
 		}
 
 		/**

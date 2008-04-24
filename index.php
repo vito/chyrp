@@ -6,28 +6,15 @@
 	switch($action) {
 		case "index": case "search": case "drafts": case "feather":
 			$theme->title = ($action == "feather") ? ucfirst($_GET['action']) : "" ;
-			$theme->title = ($action == "search") ? fix(sprintf(__("Search results for \"%s\""), urldecode($query)), "html") : $theme->title ;
+			$theme->title = ($action == "search") ? fix(sprintf(__("Search results for \"%s\""), urldecode($_GET['query'])), "html") : $theme->title ;
 			$theme->title = ($action == "drafts") ? __("Drafts") : $theme->title ;
-
-			$shown_dates = array();
-			$posts = array();
-			foreach ($get_posts->fetchAll() as $post) {
-				$post = new Post(null, array("read_from" => $post));
-				if (!$post->theme_exists()) continue;
-
-				$post->date_shown = in_array(when("m-d-Y", $post->created_at), $shown_dates);
-				if (!in_array(when("m-d-Y", $post->created_at), $shown_dates))
-					$shown_dates[] = when("m-d-Y", $post->created_at);
-
-				$posts[] = $post;
-			}
 
 			$file = ($theme->file_exists("content/".$action)) ?
 			        "content/".$action :
 			        "content/index" ;
 			$context = array("posts" => $posts);
 			if ($action == "search")
-				$context["search"] = urldecode($query);
+				$context["search"] = urldecode($_GET['query']);
 			if ($action == "feather")
 				$context["feather"] = $_GET['action'];
 			$theme->load($file, $context);
@@ -151,11 +138,14 @@
 
 			break;
 		case "feed":
-			if (!isset($get_posts)) exit;
+			if (!isset($posts)) exit;
 
 			header("Content-Type: application/atom+xml; charset=UTF-8");
-			$get_latest_timestamp = $sql->query(preg_replace("/select (.*?) from/i", "select `created_at` from", $get_posts->queryString));
-			$latest_timestamp = (!$get_latest_timestamp->rowCount()) ? 0 : $get_latest_timestamp->fetchColumn() ;
+
+			$latest_timestamp = 0;
+			foreach ($posts as $post)
+				if (@strtotime($post->created_at) > $latest_timestamp)
+					$latest_timestamp = @strtotime($post->created_at);
 
 			require "includes/feed.php";
 			break;

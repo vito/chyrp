@@ -15,4 +15,3 @@
 			return Smartypants($text);
 		}
 	}
-	new Smartypants();

@@ -106,4 +106,3 @@
 			return wptexturize(wpautop($text));
 		}
 	}
-	new WPTexturize();
