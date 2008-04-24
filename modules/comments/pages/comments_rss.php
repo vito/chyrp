@@ -21,7 +21,7 @@
 		<docs>http://backend.userland.com/rss2</docs>
 <?php
 			foreach ($get_comments->fetchAll() as $comment):
-				$comment = new Comment($comment["id"]);
+				$comment = new Comment($comment["id"], array("read_from" => $comment));
 
 				$trigger->call("rss_comment", $comment->id);
 

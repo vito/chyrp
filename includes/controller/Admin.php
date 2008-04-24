@@ -329,7 +329,7 @@
 			                             ":id" => $_POST['id']
 			                         ));
 			foreach ($get_users->fetchAll() as $user) {
-				$user = new User($user["id"]);
+				$user = new User($user["id"], array("read_from" => $user));
 				$user->update($user->login, $user->password, $user->full_name, $user->email, $user->website, $_POST['move_group']);
 			}
 

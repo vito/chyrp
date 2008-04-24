@@ -758,7 +758,7 @@ $(function(){
 				$shown_dates = array();
 				$post->comments = array();
 				foreach ($get_comments->fetchAll() as $comment) {
-					$comment = new Comment($comment["id"]);
+					$comment = new Comment($comment["id"], array("read_from" => $comment));
 
 					$comment->date_shown = in_array(when("m-d-Y", $comment->created_at), $shown_dates);
 					if (!in_array(when("m-d-Y", $comment->created_at), $shown_dates))

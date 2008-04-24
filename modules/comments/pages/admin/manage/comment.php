@@ -72,7 +72,7 @@
 		                                  25);
 	}
 	foreach ($get_comments->fetchAll() as $comment):
-		$comment = new Comment($comment["id"]);
+		$comment = new Comment($comment["id"], array("read_from" => $comment));
 		$trigger->call("manage_comments");
 
 		$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");

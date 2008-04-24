@@ -54,8 +54,6 @@
 			foreach ($read as $key => $val)
 				if (!is_int($key))
 					$this->$key = $current_page[$key] = $val;
-
-			$this->user = new User($this->user_id);
 		}
 
 		/**
@@ -280,6 +278,14 @@
 		public function parent() {
 			if (!$this->parent_id) return;
 			return new self($this->parent_id);
+		}
+
+		/**
+		 * Function: user
+		 * Returns a page's creator. Example: $page->user()->full_name
+		 */
+		public function user() {
+			return new User($this->user_id);
 		}
 
 		/**
