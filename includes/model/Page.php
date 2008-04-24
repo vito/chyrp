@@ -267,9 +267,9 @@
 			$url = array('', $this->url);
 			$page = $this;
 
-			while (isset($page->parent)) {
-				$url[] = $page->parent->url;
-				$page = $page->parent;
+			while ($page->parent_id) {
+				$url[] = $page->parent()->url;
+				$page = $page->parent();
 			}
 
 			$route = Route::current();
