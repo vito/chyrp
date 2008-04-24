@@ -29,8 +29,8 @@
 			$sql = SQL::current();
 			if ((!empty($read_from) && $read_from))
 				$read = $read_from;
-			elseif (isset($page_id) and $page_id == $current_page["id"])
-				$read = $current_page;
+			elseif (isset($group_id) and $group_id == $current_group["id"])
+				$read = $current_group;
 			elseif (!empty($where))
 				$read = $sql->select("groups",
 				                     "*",
