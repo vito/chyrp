@@ -177,7 +177,7 @@
 			$user->update($_POST['login'], $password, $_POST['full_name'], $_POST['email'], $_POST['website'], $_POST['group']);
 
 			if ($_POST['id'] == $visitor->id)
-				setcookie("chyrp_password", $password, time() + 2592000, "/"); # 30 days
+				cookie_cutter("chyrp_password", $password);
 
 			$route = Route::current();
 			$route->redirect("/admin/?action=manage&sub=user&updated");

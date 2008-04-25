@@ -23,6 +23,7 @@
 			<label for="new_password2">${ "Confirm" | translate }</label>
 			<input type="password" name="new_password2" value="" id="new_password2" />
 		</p>
+{% trigger "user_controls" %}
 
 		<p><input name="submit" type="submit" id="submit" value="${ "Update" | translate }"></p>
 	</form>
