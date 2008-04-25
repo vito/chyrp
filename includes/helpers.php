@@ -880,3 +880,15 @@
 		$int = array_search($month, array("January", "February", "March", "April", "May", "June", "July", "August", "September", "August", "November", "December")) + 1;
 		return ($int < 9) ? "0".$int : $int ;
 	}
+
+	function cookie_cutter($name, $data, $time = null) {
+		$config = Config::current();
+
+		if ($time == null) $time = time() + 2592000; # 30 days
+		$host = '.'.parse_url($config->url, PHP_URL_HOST);
+
+		if (version_compare(PHP_VERSION, '5.2.0', '>='))
+			return setcookie($name, $data, $time, '/', $host, false, true);
+		else
+			return setcookie($name, $data, $time, '/', $host);
+	}

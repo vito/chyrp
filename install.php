@@ -218,8 +218,8 @@
 				                ":datetime" => datetime()
 				            ));
 
-			setcookie("chyrp_user_id", $sql->db->lastInsertId(), time() + 2592000, "/");
-			setcookie("chyrp_password", md5($_POST['password_1']), time() + 2592000, "/");
+			cookie_cutter("chyrp_user_id", $sql->db->lastInsertId());
+			cookie_cutter("chyrp_password", md5($_POST['password_1']));
 
 			$installed = true;
 		}

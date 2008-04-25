@@ -176,9 +176,9 @@
 		 */
 		public function toggle_admin() {
 			if (!isset($_COOKIE['chyrp_hide_admin']))
-				setcookie("chyrp_hide_admin", "true", time() + 2592000, "/"); # 30 days
+				cookie_cutter("chyrp_hide_admin", "true", 0);
 			else
-				setcookie("chyrp_hide_admin", "", time() - 2592000, "/");
+				cookie_cutter("chyrp_hide_admin", "");
 
 			$route = Route::current();
 			$route->redirect('/');
@@ -217,8 +217,8 @@
 
 			User::add($_POST['login'], $_POST['password1'], $_POST['email']);
 
-			setcookie("chyrp_user_id", $sql->db->lastInsertId(), time() + 2592000, "/"); # 30 days
-			setcookie("chyrp_password", md5($_POST['password1']), time() + 2592000, "/"); # 30 days
+			cookie_cutter("chyrp_user_id", $sql->db->lastInsertId());
+			cookie_cutter("chyrp_password", md5($_POST['password1']));
 
 			$route = Route::current();
 			$route->redirect('/');
@@ -241,8 +241,8 @@
 			                          ':login' => $_POST['login']
 			                      ));
 
-			setcookie("chyrp_user_id", $get_id->fetchColumn(), time() + 2592000, "/"); # 30 days
-			setcookie("chyrp_password", md5($_POST['password']), time() + 2592000, "/"); # 30 days
+			cookie_cutter("chyrp_user_id", $get_id->fetchColumn());
+			cookie_cutter("chyrp_password", md5($_POST['password']));
 
 			$route = Route::current();
 			$route->redirect('/');
@@ -256,8 +256,8 @@
 			if (!logged_in())
 				error(__("Error"), __("You aren't logged in."));
 
-			setcookie("chyrp_user_id", "", time() - 2592000, "/");
-			setcookie("chyrp_password", "", time() - 2592000, "/");
+			cookie_cutter("chyrp_user_id", "", time() - 2592000);
+			cookie_cutter("chyrp_password", "", time() - 2592000);
 
 			$route = Route::current();
 			$route->redirect('/');
@@ -280,7 +280,7 @@
 
 			$visitor->update($visitor->login, $password, $_POST['full_name'], $_POST['email'], $_POST['website'], $visitor->group()->id);
 
-			setcookie("chyrp_password", $password, time() + 2592000, "/"); # 30 days
+			cookie_cutter("chyrp_password", $password);
 
 			$route = Route::current();
 			$route->redirect('/');
