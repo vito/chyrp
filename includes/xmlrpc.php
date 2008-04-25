@@ -492,7 +492,7 @@
 		}
 
 		static public function error_handler($errno, $errstr, $errfile, $errline) {
-			if ($errno == E_STRICT) return;
+			if ($errno == E_STRICT or error_reporting() == 0) return;
 			throw new Exception($errstr.' in '.$errfile.' on line '.$errline.'.');
 		}
 
