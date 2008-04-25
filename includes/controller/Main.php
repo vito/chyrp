@@ -21,7 +21,7 @@
 			global $private, $enabled_feathers, $posts;
 			if (!isset($_GET['year']) or !isset($_GET['month'])) return;
 
-			$posts = Post::find(array("where" => "`created_at like :date and ".$private.$enabled_feathers,
+			$posts = Post::find(array("where" => "`created_at` like :date and ".$private.$enabled_feathers,
 			                          "params" => array(":date" => $_GET['year']."-".$_GET['month']."%")));
 		}
 

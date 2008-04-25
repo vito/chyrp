@@ -268,7 +268,7 @@
 				$result = $q->execute($params);
 				if (!$result) throw PDOException();
 			} catch (PDOException $error) {
-				$message = preg_replace("/[A-Z0-9\[\]]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
+				$message = preg_replace("/SQLSTATE\[[0-9]+\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
 
 				if (XML_RPC or $throw_exceptions)
 					throw new Exception($message);
