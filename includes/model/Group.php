@@ -124,22 +124,13 @@
 
 		/**
 		 * Function: delete
-		 * Deletes a given group. Calls the "delete_group" trigger with the group's ID.
+		 * Deletes a given group. Calls the "delete_group" trigger and passes the <Group> as an argument.
 		 *
 		 * Parameters:
-		 *     $group_id - The group to delete.
+		 *     $id - The group to delete.
 		 */
-		static function delete($group_id) {
-			$trigger = Trigger::current();
-			if ($trigger->exists("delete_group"))
-				$trigger->call("delete_group", new self($group_id));
-
-			$sql = SQL::current();
-			$sql->query("delete from `".$sql->prefix."groups`
-			             where `id` = :id",
-			            array(
-			                ":id" => $group_id
-			            ));
+		static function delete($id) {
+			parent::destroy(get_class(), $id);
 		}
 
 		/**
@@ -150,7 +141,7 @@
 		 * An array of <Group>s from the result.
 		 */
 		static function find($options = array()) {
-			return parent::grab("Post", $options);
+			return parent::grab(get_class(), $options);
 		}
 
 		/**

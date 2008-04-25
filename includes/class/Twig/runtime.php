@@ -193,7 +193,7 @@ function twig_urlencode_filter($string, $raw=false)
 	return urlencode($url);
 }
 
-function twig_join_filter($value, $glue='')
+function twig_join_filter($value, $glue=', ')
 {
 	return implode($glue, $value);
 }

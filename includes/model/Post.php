@@ -212,22 +212,13 @@
 
 		/**
 		 * Function: delete
-		 * Deletes a given post. Calls the "delete_post" trigger with the post's ID.
+		 * Deletes a given post. Calls the "delete_post" trigger and passes the <Post> as an argument.
 		 *
 		 * Parameters:
-		 *     $post_id - The post to delete.
+		 *     $id - The user to delete.
 		 */
-		static function delete($post_id) {
-			$trigger = Trigger::current();
-			if ($trigger->exists("delete_post"))
-				$trigger->call("delete_post", new self($post_id));
-
-			$sql = SQL::current();
-			$sql->delete("posts",
-			             "`id` = :id",
-			             array(
-			                 ':id' => $post_id
-			             ));
+		static function delete($id) {
+			parent::destroy(get_class(), $id);
 		}
 
 		/**
@@ -238,7 +229,7 @@
 		 * An array of <Post>s from the result.
 		 */
 		static function find($options = array()) {
-			$posts = parent::grab("Post", $options);
+			$posts = parent::grab(get_class(), $options);
 
 			foreach ($posts as $index => $post)
 				if (!$post->theme_exists())

@@ -35,4 +35,21 @@
 
 			return $results;
 		}
+
+		/**
+		 * Function: delete
+		 * Deletes a given object. Calls the "delete_(model)" trigger with the objects ID.
+		 *
+		 * Parameters:
+		 *     $model - The model name.
+		 *     $id - The object to delete.
+		 */
+		static function destroy($model, $id) {
+			$class = $model;
+			$model = strtolower($model);
+			if (Trigger::current()->exists("delete_".$model))
+				Trigger::current()->call("delete_".$model, new $class($id));
+
+			SQL::current()->delete($model."s", "`id` = :id", array(":id" => $id));
+		}
 	}

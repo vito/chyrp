@@ -252,20 +252,19 @@
 			$this->queries++;
 			fallback($this->debug, array());
 
-			if (defined('DEBUG') and DEBUG) {
-				#echo '<div class="sql_query" style="position: relative; z-index: 1000"><span style="background: rgba(0,0,0,.5); padding: 0 1px; border: 1px solid rgba(0,0,0,.25); color: white; font: 9px/14px normal \'Monaco\', monospace;">'.$query.'</span></div>';
-				$trace = debug_backtrace();
-				$target = $trace[$index = 0];
-
-				while (strpos($target["file"], "database.php")) # Getting a traceback from this file is pretty
-					$target = $trace[$index++];                 # useless (mostly when using $sql->select() and such)
-
-				$this->debug[] = array("number" => $this->queries, "file" => str_replace(MAIN_DIR."/", "", $target["file"]), "line" => $target["line"], "string" => normalize($query));
-			}
-
 			try {
 				$q = $this->db->prepare($query);
 				$result = $q->execute($params);
+				if (defined('DEBUG') and DEBUG) {
+					#echo '<div class="sql_query" style="position: relative; z-index: 1000"><span style="background: rgba(0,0,0,.5); padding: 0 1px; border: 1px solid rgba(0,0,0,.25); color: white; font: 9px/14px normal \'Monaco\', monospace;">'.$query.'</span></div>';
+					$trace = debug_backtrace();
+					$target = $trace[$index = 0];
+
+					while (strpos($target["file"], "database.php")) # Getting a traceback from this file is pretty
+						$target = $trace[$index++];                 # useless (mostly when using $sql->select() and such)
+
+					$this->debug[] = array("number" => $this->queries, "file" => str_replace(MAIN_DIR."/", "", $target["file"]), "line" => $target["line"], "string" => normalize(str_replace(array_keys($params), array_values($params), $query)));
+				}
 				if (!$result) throw PDOException();
 			} catch (PDOException $error) {
 				$message = preg_replace("/SQLSTATE\[[0-9]+\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());

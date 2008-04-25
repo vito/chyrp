@@ -150,32 +150,16 @@
 
 		/**
 		 * Function: delete
-		 * Deletes the given page. Calls the "delete_page" trigger with the page's ID.
+		 * Deletes the given page. Calls the "delete_page" trigger and passes the <Page> as an argument.
 		 *
 		 * Parameters:
-		 *     $page_id - The page to delete. Sub-pages if this page will be removed as well.
+		 *     $id - The page to delete. Child pages if this page will be removed as well.
 		 */
-		static function delete($page_id) {
-			$trigger = Trigger::current();
-			if ($trigger->exists("delete_page"))
-				$trigger->call("delete_page", new self($page_id));
+		static function delete($id) {
+			parent::destroy(get_class(), $id);
 
-			$sql = SQL::current();
-			$sql->delete("pages",
-			             "`id` = :id",
-			             array(
-			                 ":id" => $page_id
-			             ));
-
-			$get_sub_pages = $sql->select("pages",
-			                              "id",
-			                              "`parent_id` = :id",
-			                              "id",
-			                              array(
-			                                  ":id" => $page_id
-			                              ));
-			while ($sub_page = $get_sub_pages->fetchObject())
-				self::delete($sub_page->id);
+			while ($child = $sql->select("pages", "id", "`parent_id` = :id", "id", array(":id" => $page_id))->fetchObject())
+				parent::destroy(get_class(), $child->id);
 		}
 
 		/**
@@ -186,7 +170,7 @@
 		 * An array of <Page>s from the result.
 		 */
 		static function find($options = array()) {
-			return parent::grab("Post", $options);
+			return parent::grab(get_class(), $options);
 		}
 
 		/**

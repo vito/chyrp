@@ -166,7 +166,7 @@
 		}
 
 		static function filter_post($post) {
-			$post->tags = array("linked" => get_post_tags($post->id), "unlinked" => get_post_tags($post->id, false));
+			$post->tags = get_post_tags($post->id);
 		}
 	}
 	$tags = new Tags();
@@ -209,11 +209,6 @@
 		return $tags;
 	}
 
-	function tags_limit_reached() {
-		global $tags_limit_reached;
-		return $tags_limit_reached;
-	}
-
 	function get_post_tags($post_id, $links = true, $order_by = "id", $order = "asc"){
 		$sql = SQL::current();
 		$get_tags = $sql->query("select * from `".$sql->prefix."tags`
@@ -223,11 +218,13 @@
 		                            ":id" => $post_id
 		                        ));
 
-		$tags = array();
+		$tags = array("linked" => array(), "unlinked" => array());
 		$route = Route::current();
 
-		while ($tag = $get_tags->fetchObject())
-			$tags[] = ($links ? '<a href="'.$route->url("tag/".$tag->clean."/").'" rel="tag">' : '').$tag->name.($links ? '</a>' : '');
+		while ($tag = $get_tags->fetchObject()) {
+			$tags["linked"][] = '<a href="'.$route->url("tag/".$tag->clean."/").'" rel="tag">'.$tag->name.'</a>';
+			$tags["unlinked"][] = $tag->name;
+		}
 
 		return $tags;
 	}

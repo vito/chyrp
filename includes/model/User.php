@@ -190,22 +190,13 @@
 
 		/**
 		 * Function: delete
-		 * Deletes a given user. Calls the "delete_user" trigger with the user's ID.
+		 * Deletes a given user. Calls the "delete_user" trigger and passes the <User> as an argument.
 		 *
 		 * Parameters:
-		 *     $user_id - The user to delete.
+		 *     $id - The user to delete.
 		 */
-		static function delete($user_id) {
-			$trigger = Trigger::current();
-			if ($trigger->exists("delete_user"))
-				$trigger->call("delete_user", new self($user_id));
-
-			$sql = SQL::current();
-			$sql->query("delete from `".$sql->prefix."users`
-			             where `id` = :id",
-			            array(
-			                ":id" => $user_id
-			            ));
+		static function delete($id) {
+			parent::destroy(get_class(), $id);
 		}
 
 		/**
@@ -216,7 +207,7 @@
 		 * An array of <User>s from the result.
 		 */
 		static function find($options = array()) {
-			return parent::grab("Post", $options);
+			return parent::grab(get_class(), $options);
 		}
 
 		/**
