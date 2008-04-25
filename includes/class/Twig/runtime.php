@@ -26,6 +26,7 @@ $twig_filters = array(
 	'escape' =>		'htmlspecialchars',
 	'e' =>			'htmlspecialchars',
 	'urlencode' =>		'twig_urlencode_filter',
+	'quotes' =>		'addslashes',
 
 	// string filters
 	'title' =>		'twig_title_string_filter',

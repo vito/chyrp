@@ -98,5 +98,10 @@
 			</div>
 		</div>
 {% trigger "end_content" %}
+		<script type="text/javascript">
+{% for query in sql_debug %}
+			console.log('${ query.number }. $query.file[$query.line]: ${ query.string | quotes}')
+{% endfor %}
+		</script>
 	</body>
 </html>

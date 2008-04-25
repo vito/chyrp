@@ -231,6 +231,7 @@
 			$this->context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);
 			$this->context["route"] = array("action" => $action);
 			$this->context["hide_admin"] = isset($_COOKIE["chyrp_hide_admin"]);
+			$this->context["sql_debug"] = SQL::current()->debug;
 
 			$trigger = Trigger::current();
 			$this->context = $trigger->filter("twig_global_context", $this->context);
