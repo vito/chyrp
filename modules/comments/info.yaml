@@ -1,7 +1,7 @@
 name: Comment System
 url: http://chyrp.net/
 version: 1.0.6
-description: Adds commenting functionality to posts, including Akismet spam protection, auto-reloading, pagination, etc. etc.
+description: Adds commenting functionality to posts, including Defensio spam protection, auto-reloading, pagination, etc. etc.
 author:
   name: Alex Suraci
   url: http://i.am.toogeneric.com/

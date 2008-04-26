@@ -82,18 +82,24 @@
 			} else
 				$status = $type;
 
-			if (!empty($config->akismet_api_key)) {
-				require_once "lib/Akismet.class.php";
+			if (!empty($config->defensio_api_key)) {
+				require_once "lib/Defensio.php";
 
-				$akismet = new Akismet($config->url, $config->akismet_api_key);
-				$akismet->setCommentAuthor($author);
-				$akismet->setCommentAuthorEmail($email);
-				$akismet->setCommentAuthorURL($url);
-				$akismet->setCommentContent($body);
-				$akismet->setPermalink($post->url());
-				$akismet->setCommentType($type);
+				$defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
+				$comment = array("owner-url" => $config->url,
+				                 "user-ip" => $_SERVER['REMOTE_ADDR'],
+				                 "article-date" => when("Y/m/d", $post->created_at),
+				                 "comment-author" => $author,
+				                 "comment-type" => $type,
+				                 "comment-content" => $body,
+				                 "comment-author-email" => $email,
+				                 "comment-author-url" => $url,
+				                 "permalink" => $post->url(),
+				                 "referrer" => $_SERVER['HTTP_REFERER'],
+				                 "user-logged-in" => logged_in());
+				$check_comment = $defensio->audit_comment($comment);
 
-				if ($akismet->isKeyValid() && $akismet->isCommentSpam()) {
+				if ($check_comment["spam"]) {
 					self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], "spam", datetime(), $post_id, $visitor->id);
 					error(__("Spam Comment"), __("Your comment has been marked as spam. It will have to be approved before it will show up.", "comments"));
 				} else {

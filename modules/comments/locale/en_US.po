@@ -21,7 +21,7 @@ msgid "Comment Settings"
 msgstr ""
 
 #: modules/comments/pages/admin/settings/comments.php:4
-msgid "Akismet API Key"
+msgid "Defensio API Key"
 msgstr ""
 
 #: modules/comments/pages/admin/settings/comments.php:4
@@ -366,7 +366,7 @@ msgid "Comment System"
 msgstr ""
 
 #: modules/comments/info.yaml:5
-msgid "Adds commenting functionality to posts, including Akismet spam protection, auto-reloading, pagination, etc. etc."
+msgid "Adds commenting functionality to posts, including Defensio spam protection, auto-reloading, pagination, etc. etc."
 msgstr ""
 
 #: modules/comments/info.yaml:7

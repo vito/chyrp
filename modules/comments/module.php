@@ -27,7 +27,7 @@
 			$config->set("default_comment_status", "denied");
 			$config->set("allowed_comment_html", array("strong", "em", "blockquote", "code", "pre", "a"));
 			$config->set("comments_per_page", 25);
-			$config->set("akismet_api_key", null);
+			$config->set("defensio_api_key", null);
 			Group::add_permission("add_comment");
 			Group::add_permission("add_comment_private");
 			Group::add_permission("edit_comment");
@@ -47,7 +47,7 @@
 			$config->remove("default_comment_status");
 			$config->remove("allowed_comment_html");
 			$config->remove("comments_per_page");
-			$config->remove("akismet_api_key");
+			$config->remove("defensio_api_key");
 			Group::remove_permission("add_comment");
 			Group::remove_permission("add_comment_private");
 			Group::remove_permission("edit_comment");
@@ -283,7 +283,7 @@
 			if ($sub != "comments") return;
 
 			$config = Config::current();
-			$config->set("akismet_api_key", $_POST['akismet_api_key']);
+			$config->set("defensio_api_key", $_POST['defensio_api_key']);
 			$config->set("allowed_comment_html", explode(", ", $_POST['allowed_comment_html']));
 			$config->set("default_comment_status", $_POST['default_comment_status']);
 			$config->set("comments_per_page", $_POST['comments_per_page']);
