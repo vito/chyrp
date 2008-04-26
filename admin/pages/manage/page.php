@@ -46,8 +46,7 @@
 		                               "`created_at` desc",
 		                               25);
 	}
-	foreach ($get_pages->fetchAll() as $page):
-		$page = new Page(null, array("read_from" => $page));
+	foreach (Page::find() as $page):
 ?>
 						<tr>
 							<td class="main"><a href="<?php echo $page->url(); ?>"><?php echo $page->title; ?></a></td>
@@ -67,7 +66,10 @@
 					</table>
 					<br />
 					<h2>Organize Pages</h2>
+					<form action="<?php url("reorder_pages"); ?>" method="post" accept-charset="utf-8">
 					<?php $theme->list_pages(false, null, "sort_pages", "page-item", true); ?>
+						<p><input type="submit" value="Continue &rarr;"></p>
+					</form>
 <?php if ($paginate->next_page()): ?>
 					<a class="right button" href="<?php echo $paginate->next_page_url("page", false); ?>"><?php echo __("Next &raquo;"); ?></a>
 <?php endif; ?>
