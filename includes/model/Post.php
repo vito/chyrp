@@ -1,5 +1,4 @@
 <?php
-	$current_post = array("id" => 0);
 	$temp_id = null;
 
 	/**
@@ -22,52 +21,8 @@
 		 *         read_from: An associative array of values to load into the <Post> class.
 		 */
 		public function __construct($post_id = null, $options = array()) {
-			global $current_post;
-			if (!isset($post_id) and empty($options)) return; # Just using this to hold data?
-
-			$where = fallback($options["where"], "", true);
-			$filter = (!isset($options["filter"]) or $options["filter"]);
-			$params = fallback($options["params"], array(), true);
-			$read_from = fallback($options["read_from"], array(), true);
-
-			$sql = SQL::current();
-			if ((!empty($read_from) && $read_from))
-				$read = $read_from;
-			elseif (isset($post_id) and $post_id == $current_post["id"])
-				$read = $current_post;
-			elseif (!empty($where))
-				$read = $sql->select("posts",
-				                     "*",
-				                     $where,
-				                     "id",
-				                     $params,
-				                     1)->fetch();
-			else
-				$read = $sql->select("posts",
-				                     "*",
-				                     "`id` = :postid",
-				                     "id",
-				                     array(
-				                         ":postid" => $post_id
-				                     ),
-				                     1)->fetch();
-
-			if (!count($read) or !$read)
-				return $this->no_results = true;
-
-			$config = Config::current();
-			$read["trackback_url"] = $config->url."/includes/trackback.php?id=".$read["id"];
-			$read["edit_url"] = $config->url.'/admin/?action=edit&amp;sub=post&amp;id='.$read["id"];
-			$read["delete_url"] = $config->url.'/admin/?action=delete&amp;sub=post&amp;id='.$read["id"];
-
-			foreach ($read as $key => $val) {
-				if (!is_int($key))
-					$this->$key = $val;
-
-				$current_post[$key] = $val;
-			}
-
-			$this->parse($filter);
+			parent::grab($this, $post_id, $options);
+			$this->parse(!isset($options["filter"]) or $options["filter"]);
 		}
 
 		/**
@@ -257,7 +212,7 @@
 		 * An array of <Post>s from the result.
 		 */
 		static function find($options = array()) {
-			$posts = parent::grab(get_class(), $options);
+			$posts = parent::search(get_class(), $options);
 
 			foreach ($posts as $index => $post)
 				if (!$post->theme_exists())
@@ -281,10 +236,10 @@
 		 *     $fallback - if the SQL result is empty.
 		 */
 		static function info($column, $post_id, $fallback = false) {
-			global $current_post;
+			global $loaded_models;
 
-			if ($current_post["id"] == $post_id and isset($current_post[$column]))
-				return $current_post[$column];
+			if (isset($loaded_models["post"][$post_id][$column]))
+				return $loaded_models["post"][$post_id][$column];
 
 			$sql = SQL::current();
 			$grab_column = $sql->select("posts",
@@ -580,5 +535,9 @@
 			fallback($text, __("Delete"));
 			$config = Config::current();
 			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=post&amp;id='.$this->id.'" title="Delete" class="post_delete_link" id="post_delete_'.$this->id.'">'.$text.'</a>'.$after;
+		}
+
+		public function trackback_url() {
+			return Config::current()->url."/includes/trackback.php?id=".$this->id;
 		}
 	}

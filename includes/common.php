@@ -202,19 +202,6 @@
 	if (XML_RPC)
 		$action = "XML-RPC";
 	else {
-		/**
-		 * Function: error
-		 * Shows an error message.
-		 *
-		 * Parameters:
-		 *     $title - The title for the error dialog.
-		 *     $body - The message for the error dialog.
-		 */
-		function error($title, $body) {
-			require (defined('THEME_DIR') and file_exists(THEME_DIR."/content/error.php")) ? THEME_DIR."/content/error.php" : INCLUDES_DIR."/error.php" ;
-			exit;
-		}
-
 		# Variable: $visitor
 		# Holds the current user and their group.
 		$visitor = Visitor::current();

@@ -1,11 +1,9 @@
 <?php
-	$current_comment = array("id" => 0);
-
 	/**
 	 * Class: Comment
 	 * The model for the Comments SQL table.
 	 */
-	class Comment {
+	class Comment extends Model {
 		public $no_results = false;
 
 		/**
@@ -20,40 +18,7 @@
 		 *         read_from: An associative array of values to load into the <Comment> class.
 		 */
 		public function __construct($comment_id, $options = array()) {
-			global $current_comment;
-
-			$where = fallback($options["where"], "", true);
-			$params = isset($options["params"]) ? $options["params"] : array();
-			$read_from = (isset($options["read_from"])) ? $options["read_from"] : array() ;
-
-			$sql = SQL::current();
-			if ((!empty($read_from) && $read_from))
-				$read = $read_from;
-			elseif (isset($comment_id) and $comment_id == $current_comment["id"])
-				$read = $current_comment;
-			elseif (!empty($where))
-				$read = $sql->select("comments",
-				                     "*",
-				                     $where,
-				                     "id",
-				                     $params,
-				                     1)->fetch();
-			else
-				$read = $sql->select("comments",
-				                     "*",
-				                     "`id` = :commentid",
-				                     "id",
-				                     array(
-				                         ":commentid" => $comment_id
-				                     ),
-				                     1)->fetch();
-
-			if (!count($read) or !$read)
-				return $this->no_results = true;
-
-			foreach ($read as $key => $val)
-				if (!is_int($key))
-					$this->$key = $current_comment[$key] = $val;
+			parent::grab($this, $comment_id, $options);
 		}
 
 		/**
@@ -162,7 +127,10 @@
 			return $id;
 		}
 		static function info($column, $comment_id = null) {
-			if (is_null($comment_id)) return null;
+			global $loaded_models;
+
+			if (isset($loaded_models["model"][$comment_id][$column]))
+				return $loaded_models["model"][$comment_id][$column];
 
 			$sql = SQL::current();
 			$grab_info = $sql->query("select `".$column."` from `".$sql->prefix."comments`

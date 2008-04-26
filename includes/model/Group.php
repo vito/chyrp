@@ -1,6 +1,4 @@
 <?php
-	$current_group = array("id" => 0);
-
 	/**
 	 * Class: Group
 	 * The model for the Groups SQL table.
@@ -20,41 +18,7 @@
 		 *         read_from: An associative array of values to load into the <Group> class.
 		 */
 		public function __construct($group_id = null, $options = array()) {
-			global $current_group;
-
-			$where = fallback($options["where"], "", true);
-			$params = isset($options["params"]) ? $options["params"] : array();
-			$read_from = (isset($options["read_from"])) ? $options["read_from"] : array() ;
-
-			$sql = SQL::current();
-			if ((!empty($read_from) && $read_from))
-				$read = $read_from;
-			elseif (isset($group_id) and $group_id == $current_group["id"])
-				$read = $current_group;
-			elseif (!empty($where))
-				$read = $sql->select("groups",
-				                     "*",
-				                     $where,
-				                     "id",
-				                     $params,
-				                     1)->fetch();
-			else
-				$read = $sql->select("groups",
-				                     "*",
-				                     "`id` = :groupid",
-				                     "id",
-				                     array(
-				                         ":groupid" => $group_id
-				                     ),
-				                     1)->fetch();
-
-			if (!count($read) or !$read)
-				return $this->no_results = true;
-
-			foreach ($read as $key => $val)
-				if (!is_int($key))
-					$this->$key = $current_group[$key] = $val;
-
+			parent::grab($this, $group_id, $options);
 			$this->permissions = Spyc::YAMLLoad($this->permissions);
 		}
 
@@ -141,7 +105,7 @@
 		 * An array of <Group>s from the result.
 		 */
 		static function find($options = array()) {
-			return parent::grab(get_class(), $options);
+			return parent::search(get_class(), $options);
 		}
 
 		/**
@@ -158,10 +122,10 @@
 		 *     $fallback - if the SQL result is empty.
 		 */
 		static function info($column, $group_id, $fallback = false) {
-			global $current_group;
+			global $loaded_models;
 
-			if ($current_group["id"] == $group_id and isset($current_group[$column]))
-				return $current_group[$column];
+			if (isset($loaded_models["group"][$page_id][$column]))
+				return $loaded_models["group"][$page_id][$column];
 
 			$sql = SQL::current();
 			$grab_column = $sql->select("groups",

@@ -1,6 +1,4 @@
 <?php
-	$current_page = array("id" => 0);
-
 	/**
 	 * Class: Page
 	 * The model for the Pages SQL table.
@@ -20,40 +18,7 @@
 		 *         read_from: An associative array of values to load into the <Page> class.
 		 */
 		public function __construct($page_id, $options = array()) {
-			global $current_page;
-
-			$where = fallback($options["where"], "", true);
-			$params = isset($options["params"]) ? $options["params"] : array();
-			$read_from = (isset($options["read_from"])) ? $options["read_from"] : array() ;
-
-			$sql = SQL::current();
-			if ((!empty($read_from) && $read_from))
-				$read = $read_from;
-			elseif (isset($page_id) and $page_id == $current_page["id"])
-				$read = $current_page;
-			elseif (!empty($where))
-				$read = $sql->select("pages",
-				                     "*",
-				                     $where,
-				                     "id",
-				                     $params,
-				                     1)->fetch();
-			else
-				$read = $sql->select("pages",
-				                     "*",
-				                     "`id` = :pageid",
-				                     "id",
-				                     array(
-				                         ":pageid" => $page_id
-				                     ),
-				                     1)->fetch();
-
-			if (!count($read) or !$read)
-				return $this->no_results = true;
-
-			foreach ($read as $key => $val)
-				if (!is_int($key))
-					$this->$key = $current_page[$key] = $val;
+			parent::grab($this, $page_id, $options);
 		}
 
 		/**
@@ -177,7 +142,7 @@
 		 * An array of <Page>s from the result.
 		 */
 		static function find($options = array()) {
-			return parent::grab(get_class(), $options);
+			return parent::search(get_class(), $options);
 		}
 
 		/**
@@ -195,10 +160,10 @@
 		 *     $fallback - if the SQL result is empty.
 		 */
 		static function info($column, $page_id, $fallback = false) {
-			global $current_page;
+			global $loaded_models;
 
-			if ($current_page["id"] == $page_id)
-				return $current_page[$column];
+			if (isset($loaded_models["page"][$page_id][$column]))
+				return $loaded_models["page"][$page_id][$column];
 
 			$sql = SQL::current();
 			$grab_column = $sql->select("pages",

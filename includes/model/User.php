@@ -1,6 +1,4 @@
 <?php
-	$current_user = array("id" => 0);
-
 	/**
 	 * Class: User
 	 * The model for the Users SQL table.
@@ -22,41 +20,7 @@
 		 *         read_from: An associative array of values to load into the <User> class.
 		 */
 		public function __construct($user_id, $options = array()) {
-			global $current_user;
-
-			$where = fallback($options["where"], "", true);
-			$params = isset($options["params"]) ? $options["params"] : array();
-			$read_from = (isset($options["read_from"])) ? $options["read_from"] : array() ;
-
-			$sql = SQL::current();
-			if ((!empty($read_from) && $read_from))
-				$read = $read_from;
-			elseif (isset($user_id) and $user_id == $current_user["id"])
-				$read = $current_user;
-			elseif (!empty($where))
-				$read = $sql->select("users",
-				                     "*",
-				                     $where,
-				                     "id",
-				                     $params,
-				                     1)->fetch();
-			else
-				$read = $sql->select("users",
-				                     "*",
-				                     "`id` = :userid",
-				                     "id",
-				                     array(
-				                         ":userid" => $user_id
-				                     ),
-				                     1)->fetch();
-
-			if (!count($read) or !$read)
-				return $this->no_results = true;
-
-			foreach ($read as $key => $val)
-				if (!is_int($key))
-					$this->$key = $current_user[$key] = $val;
-
+			parent::grab($this, $user_id, $options);
 			foreach ($this->group()->permissions as $permission)
 				$this->can[$permission] = true;
 		}
@@ -91,10 +55,10 @@
 		 *     $fallback - if the SQL result is empty.
 		 */
 		static function info($column, $user_id, $fallback = false) {
-			global $current_user;
+			global $loaded_models;
 
-			if ($current_user["id"] == $user_id and isset($current_user[$column]))
-				return $current_user[$column];
+			if (isset($loaded_models["user"][$user_id][$column]))
+				return $loaded_models["user"][$user_id][$column];
 
 			$sql = SQL::current();
 			$grab_column = $sql->select("users",
@@ -207,7 +171,7 @@
 		 * An array of <User>s from the result.
 		 */
 		static function find($options = array()) {
-			return parent::grab(get_class(), $options);
+			return parent::search(get_class(), $options);
 		}
 
 		/**
