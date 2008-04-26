@@ -24,6 +24,15 @@ $(function(){
 		$("#more_options").slideToggle()
 	})
 
+<?php if ($_GET['action'] == "edit"): ?>
+	$("input.text").keyup(function(){
+		if ($(this).val().length > 10 && ($(this).parent().width() - $(this).width()) < 10)
+			return;
+
+		$(this).attr("size", $(this).val().length)
+	})
+
+<?php endif; ?>
 	if ($(".preview_me").length > 0) {
 		var feather = ($("#write_feather").size()) ? $("#write_feather").val() : ""
 		var feather = ($("#edit_feather").size()) ? $("#edit_feather").val() : feather

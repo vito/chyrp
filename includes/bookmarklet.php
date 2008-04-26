@@ -117,19 +117,22 @@
 				display: none;
 			}
 		</style>
+		<script src="<?php echo $config->url; ?>/includes/lib/jquery.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			function activate_nav_tab(id) {
-<?php
-	foreach ($config->enabled_feathers as $the_feather) {
-?>
-				document.getElementById('nav_<?php echo $the_feather; ?>').className = "";
-				document.getElementById('<?php echo $the_feather; ?>_form').style.display = "none";
-<?php
-	}
-?>
-				document.getElementById('nav_' + id).className = "selected";
-				document.getElementById(id + '_form').style.display = "";
+				$("[id^='nav_']").removeClass("selected")
+				$("[id$='_form']").hide()
+				$("#"+id+"_form").show()
+				$("#nav_" + id).addClass("selected")
 			}
+			$(function(){
+				$("input.text").keyup(function(){
+					if ($(this).val().length > 10 && ($(this).parent().width() - $(this).width()) < 10)
+						return;
+
+					$(this).attr("size", $(this).val().length)
+				})
+			})
 		</script>
 	</head>
 	<body>
