@@ -927,7 +927,7 @@
 	 * Returns:
 	 *     The encoding name used by locale-aware functions.
 	 */
-    function set_locale($locale) { # originall via http://www.onphp5.com/article/22; heavily modified
+    function set_locale($locale) { # originally via http://www.onphp5.com/article/22; heavily modified
 		if ($locale == "en_US") return; # en_US is the default in Chyrp; their system may have
 		                                # its own locale setting and no Chyrp translation available
 		                                #for their locale, so let's just leave it alone.
