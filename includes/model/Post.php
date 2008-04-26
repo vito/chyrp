@@ -575,7 +575,7 @@
 		 *     $after - If the link can be shown, show this after it.
 		 */
 		public function delete_link($text = null, $before = null, $after = null){
-			if ($this->deletable()) return false;
+			if (!$this->deletable()) return false;
 
 			fallback($text, __("Delete"));
 			$config = Config::current();
