@@ -70,6 +70,7 @@
 		 */
 		static function create($author, $email, $url, $body, $post_id, $type = null) {
 			if (!self::user_can($post_id)) return;
+			global $modules;
 
 			$post = new Post($post_id);
 			$config = Config::current();
@@ -83,9 +84,6 @@
 				$status = $type;
 
 			if (!empty($config->defensio_api_key)) {
-				require_once "lib/Defensio.php";
-
-				$defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
 				$comment = array("owner-url" => $config->url,
 				                 "user-ip" => $_SERVER['REMOTE_ADDR'],
 				                 "article-date" => when("Y/m/d", $post->created_at),
@@ -97,19 +95,19 @@
 				                 "permalink" => $post->url(),
 				                 "referrer" => $_SERVER['HTTP_REFERER'],
 				                 "user-logged-in" => logged_in());
-				$check_comment = $defensio->audit_comment($comment);
+				$check_comment = $modules["comments"]->defensio->audit_comment($comment);
 
-				if ($check_comment["spam"]) {
-					self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], "spam", datetime(), $post_id, $visitor->id);
+				if ($check_comment["spam"] == "true") {
+					self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], "spam", $check_comment["signature"], datetime(), $post_id, $visitor->id);
 					error(__("Spam Comment"), __("Your comment has been marked as spam. It will have to be approved before it will show up.", "comments"));
 				} else {
-					$id = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, datetime(), $post_id, $visitor->id);
+					$id = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, $check_comment["signature"], datetime(), $post_id, $visitor->id);
 					if (isset($_POST['ajax']))
 						exit("{ comment_id: ".$id." }");
 					$route->redirect($post->url()."#comment_".$id);
 				}
 			} else {
-				$id = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, datetime(), $post_id, $visitor->id);
+				$id = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, $check_comment["signature"], datetime(), $post_id, $visitor->id);
 				if (isset($_POST['ajax']))
 					exit("{ comment_id: ".$id." }");
 				$route->redirect($post->url()."#comment_".$id);
@@ -131,8 +129,9 @@
 		 *     $timestamp - The new comment's timestamp of creation.
 		 *     $post_id - The ID of the <Post> they're commenting on.
 		 *     $user_id - If the user is logged in, this should be their user ID. Optional.
+		 *     $signature - Defensio's data signature of the comment, generated when it is checked if it's spam in <Comment.create>. Optional.
 		 */
-		static function add($body, $author, $url, $email, $ip, $agent, $status, $timestamp, $post_id, $user_id) {
+		static function add($body, $author, $url, $email, $ip, $agent, $status, $signature, $timestamp, $post_id, $user_id) {
 			if (!empty($url)) # Add the http:// if it isn't there.
 				if (!parse_url($url, PHP_URL_SCHEME))
 					$url = "http://".$url;
@@ -140,10 +139,10 @@
 			$sql = SQL::current();
 			$sql->query("insert into `".$sql->prefix."comments`
 			             (`body`, `author`, `author_url`, `author_email`, `author_ip`,
-			              `author_agent`, `status`, `created_at`, `post_id`, `user_id`)
+			              `author_agent`, `status`, `signature`, `created_at`, `post_id`, `user_id`)
 			             values
 			             (:body, :author, :author_url, :author_email, :author_ip,
-			              :author_agent, :status, :created_at, :post_id, :user_id)",
+			              :author_agent, :status, :signature, :created_at, :post_id, :user_id)",
 			            array(
 			                ":body" => $body,
 			                ":author" => strip_tags($author),
@@ -152,14 +151,14 @@
 			                ":author_ip" => ip2long($ip),
 			                ":author_agent" => $agent,
 			                ":status" => $status,
+			                ":signature" => $signature,
 			                ":created_at" => $timestamp,
 			                ":post_id" => $post_id,
 			                ":user_id"=> $user_id
 			            ));
 			$id = $sql->db->lastInsertId();
 
-			$trigger = Trigger::current();
-			$trigger->call('add_comment', $id);
+			Trigger::current()->call("add_comment", new self($id));
 			return $id;
 		}
 		static function info($column, $comment_id = null) {

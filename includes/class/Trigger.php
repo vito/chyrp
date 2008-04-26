@@ -32,7 +32,7 @@
 		 *     $array - If $arg is an array, should it be passed as multiple values or a single array?
 		 */
 		public function call($name, $arg = null, $array = true) {
-			global $snippet;
+			global $snippet, $modules;
 			$caller = (is_array($arg) and $array) ? "call_user_func_array" : "call_user_func" ;
 
 			if (isset($this->priorities[$name])) { # Predefined priorities?

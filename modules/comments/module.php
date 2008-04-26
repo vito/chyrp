@@ -1,8 +1,14 @@
 <?php
 	require_once "model.Comment.php";
+	require_once "lib/Defensio.php";
 
 	class Comments extends Module {
 		public function __construct() {
+			$config = Config::current();
+
+			if (!empty($config->defensio_api_key))
+				$this->defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
+
 			$this->addAlias('metaWeblog_newPost_preQuery', 'metaWeblog_editPost_preQuery');
 		}
 
@@ -18,6 +24,7 @@
 			                 `author_ip` int(10) not null,
 			                 `author_agent` varchar(255) not null default '',
 			                 `status` enum('denied','approved','spam','trackback','pingback') not null default 'denied',
+			                 `signature` varchar(32) not null default '',
 			                 `created_at` datetime not null,
 			                 `post_id` int(11) not null,
 			                 `user_id` int(11) not null,
@@ -102,9 +109,9 @@
 		}
 
 		static function admin_mark_spam($action) {
-			$visitor = Visitor::current();
-			if (!$visitor->group()->can("edit_comment")) return;
+			if (!Visitor::current()->group()->can("edit_comment")) return;
 
+			$comment = new Comment($_GET['id']);
 			$sql = SQL::current();
 			$sql->query("update `".$sql->prefix."comments`
 			             set `status` = 'spam'
@@ -112,9 +119,11 @@
 			            array(
 			                ":id" => $_GET['id']
 			            ));
+
 			$config = Config::current();
-			$route = Route::current();
-			$route->redirect("/admin/?action=manage&sub=comment&spammed");
+			$defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
+			$defensio->report_false_negatives(array("owner-url" => Config::current()->url, "signatures" => $comment->signature));
+			Route::current()->redirect("/admin/?action=manage&sub=comment&spammed");
 		}
 
 		static function admin_approve_comment($action) {
@@ -166,13 +175,19 @@
 				if (!$visitor->group()->can("edit_comment")) return;
 
 				$sql = SQL::current();
-				foreach ($_POST['comments'] as $id => $value)
+				$signatures = array();
+				foreach ($_POST['comments'] as $id => $value) {
+					$comment = new Comment($id);
 					$sql->query("update `".$sql->prefix."comments`
 					             set `status` = 'approved'
 					             where `id` = :id",
 					            array(
 					                ":id" => $id
 					            ));
+					$signatures[] = $comment->signature;
+				}
+				$defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
+				$defensio->report_false_positives(array("owner-url" => $config->url, "signatures" => implode(",", $signatures)));
 				$route->redirect("/admin/?action=manage&sub=spam&despammed");
 			}
 			$route->redirect("/admin/?action=manage&sub=spam");
@@ -281,12 +296,20 @@
 		static function change_settings($sub) {
 			# Don't do anything if they're not submitting to the "comments" page
 			if ($sub != "comments") return;
+			global $route, $invalid_defensio_key;
 
 			$config = Config::current();
-			$config->set("defensio_api_key", $_POST['defensio_api_key']);
 			$config->set("allowed_comment_html", explode(", ", $_POST['allowed_comment_html']));
 			$config->set("default_comment_status", $_POST['default_comment_status']);
 			$config->set("comments_per_page", $_POST['comments_per_page']);
+			if (!empty($_POST['defensio_api_key'])) {
+				$defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
+				$check = $defensio->validate_key(array("owner-url" => $config->url));
+				if ($check["status"] == "fail")
+					$route->redirect("/admin/?action=settings&sub=".$_GET['sub']."&updated&invalid_defensio");
+				else
+					$config->set("defensio_api_key", $_POST['defensio_api_key']);
+			}
 		}
 
 		static function admin_settings_nav() {

@@ -1,3 +1,6 @@
+<?php if (isset($_GET['invalid_defensio'])): ?>
+			<div class="failure"><?php echo __("Invalid Defensio API key."); ?></div>
+<?php endif; ?>
 			<h1><?php echo __("Comment Settings", "comments"); ?></h1>
 			<form class="settings" action="index.php?action=settings&amp;sub=comments" method="post">
 				<p>
