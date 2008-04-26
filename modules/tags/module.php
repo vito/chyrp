@@ -37,7 +37,8 @@
 		}
 
 		static function edit_post_options($id) {
-			$tags = implode(", ", get_post_tags($id, false));
+			$tags = get_post_tags($id, false);
+			$tags = implode(", ", $tags["unlinked"]);
 ?>
 					<p>
 						<label for="tags"><?php echo __("Tags", "tags"); ?><span class="sub"> <?php echo __("(comma separated)", "tags"); ?></span></label>
