@@ -448,7 +448,7 @@
 			global $user;
 
 			$statuses = "'public'";
-			$statuses.= ($user->group()->can('view_drafts')) ? ", 'draft'" : '';
+			$statuses.= ($user->group()->can("view_drafts")) ? ", 'draft'" : '';
 
 			$config = Config::current();
 			if (!in_array(XML_RPC_FEATHER, $config->enabled_feathers))
@@ -492,7 +492,7 @@
 		}
 
 		static public function error_handler($errno, $errstr, $errfile, $errline) {
-			if ($errno == E_STRICT or error_reporting() == 0) return;
+			if ($errno == E_STRICT) return;
 			throw new Exception($errstr.' in '.$errfile.' on line '.$errline.'.');
 		}
 

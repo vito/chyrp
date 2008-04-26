@@ -222,6 +222,34 @@
 		}
 
 		/**
+		 * Function: deletable
+		 * Checks if the <Visitor> can delete the post.
+		 */
+		public function deletable() {
+			$visitor = Visitor::current();
+			if ($visitor->group()->can("delete_post"))
+				return true;
+
+			return ($this->status == "draft" and $visitor->group()->can("delete_draft")) or
+			       ($visitor->group()->can("delete_own_post") and $this->user_id == $visitor->id) or
+			       (($visitor->group()->can("delete_own_draft") and $this->status == "draft") and $this->user_id == $visitor->id);
+		}
+
+		/**
+		 * Function: editable
+		 * Checks if the <Visitor> can edit the post.
+		 */
+		public function editable() {
+			$visitor = Visitor::current();
+			if ($visitor->group()->can("edit_post"))
+				return true;
+
+			return ($this->status == "draft" and $visitor->group()->can("edit_draft")) or
+			       ($visitor->group()->can("edit_own_post") and $this->user_id == $visitor->id) or
+			       (($visitor->group()->can("edit_own_draft") and $this->status == "draft") and $this->user_id == $visitor->id);
+		}
+
+		/**
 		 * Function: find
 		 * Grab all posts that match the passed options.
 		 *
@@ -530,8 +558,7 @@
 		 *     $after - If the link can be shown, show this after it.
 		 */
 		public function edit_link($text = null, $before = null, $after = null){
-			$visitor = Visitor::current();
-			if (!isset($this->id) or !$visitor->group()->can("edit_post")) return false;
+			if (!$this->editable()) return false;
 
 			fallback($text, __("Edit"));
 			$config = Config::current();
@@ -548,8 +575,7 @@
 		 *     $after - If the link can be shown, show this after it.
 		 */
 		public function delete_link($text = null, $before = null, $after = null){
-			$visitor = Visitor::current();
-			if (!isset($this->id) or !$visitor->group()->can("delete_post")) return false;
+			if ($this->deletable()) return false;
 
 			fallback($text, __("Delete"));
 			$config = Config::current();

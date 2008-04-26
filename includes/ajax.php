@@ -4,12 +4,13 @@
 
 	switch($_POST['action']) {
 		case "edit_post":
-			if (!$visitor->group()->can("edit_post"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to edit posts."));
 			if (!isset($_POST['id']))
 				error(__("Unspecified ID"), __("Please specify an ID of the post you would like to edit."));
 
 			$post = new Post($_POST['id'], array("filter" => false));
+
+			if (!$post->editable())
+				error(__("Access Denied"), __("You do not have sufficient privileges to edit posts."));
 
 			$title = call_user_func(array(Post::feather_class($_POST['id']), "title"), $post);
 			$theme_file = THEME_DIR."/forms/feathers/".$post->feather.".php";
@@ -37,8 +38,9 @@
 <?php
 			break;
 		case "delete_post":
-			if (!$visitor->group()->can('delete_post'))
-				error(__("Access Denied"), __("You do not have sufficient privileges to delete posts."));
+			$post = new Post($_POST['id']);
+			if ($post->deletable())
+				error(__("Access Denied"), __("You do not have sufficient privileges to delete this post."));
 
 			Post::delete($_POST['id']);
 			break;

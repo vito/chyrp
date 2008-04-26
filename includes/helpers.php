@@ -930,7 +930,7 @@
     function set_locale($locale) { # originally via http://www.onphp5.com/article/22; heavily modified
 		if ($locale == "en_US") return; # en_US is the default in Chyrp; their system may have
 		                                # its own locale setting and no Chyrp translation available
-		                                #for their locale, so let's just leave it alone.
+		                                # for their locale, so let's just leave it alone.
 
 		list($lang, $cty) = explode("_", $locale);
 		$locales = array($locale.".UTF-8", $lang, "en_US.UTF-8", "en");

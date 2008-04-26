@@ -152,7 +152,28 @@
 			                 unique (`name`)
 			             ) default charset=utf8");
 
-			$permissions = array("view_site", "change_settings", "add_post", "edit_post", "delete_post", "view_private", "view_draft", "add_page", "edit_page", "delete_page", "edit_user", "delete_user", "add_group", "edit_group", "delete_group");
+			$permissions = array("view_site",
+			                     "change_settings",
+			                     "add_post",
+			                     "add_draft",
+			                     "edit_post",
+			                     "edit_own_post",
+			                     "edit_draft",
+			                     "edit_own_draft",
+			                     "delete_post",
+			                     "delete_own_post",
+			                     "delete_draft",
+			                     "delete_own_draft",
+			                     "view_private",
+			                     "view_draft",
+			                     "add_page",
+			                     "edit_page",
+			                     "delete_page",
+			                     "edit_user",
+			                     "delete_user",
+			                     "add_group",
+			                     "edit_group",
+			                     "delete_group");
 
 			foreach ($permissions as $permission)
 				$sql->query("insert into `".$sql->prefix."permissions` set `name` = '".$permission."'");

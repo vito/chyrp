@@ -176,14 +176,14 @@
 		}
 		public function edit_link($text = null, $before = null, $after = null){
 			$visitor = Visitor::current();
-			if (!$visitor->group()->can('edit_comment')) return;
+			if (!$visitor->group()->can("edit_comment")) return;
 			fallback($text, __("Edit"));
 			$config = Config::current();
 			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=comment&amp;id='.$this->id.'" title="Edit" class="comment_edit_link" id="comment_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 		public function delete_link($text = null, $before = null, $after = null){
 			$visitor = Visitor::current();
-			if (!$visitor->group()->can('delete_comment')) return;
+			if (!$visitor->group()->can("delete_comment")) return;
 			fallback($text, __("Delete"));
 			$config = Config::current();
 			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=comment&amp;id='.$this->id.'" title="Delete" class="comment_delete_link" id="comment_delete_'.$this->id.'">'.$text.'</a>'.$after;
