@@ -21,6 +21,7 @@
 		 *         read_from: An associative array of values to load into the <Post> class.
 		 */
 		public function __construct($post_id = null, $options = array()) {
+			if (!isset($post_id)) return;
 			parent::grab($this, $post_id, $options);
 			$this->parse(!isset($options["filter"]) or $options["filter"]);
 		}
