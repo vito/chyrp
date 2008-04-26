@@ -11,7 +11,12 @@
 	{% endfor %}
 {% endif %}
 {% if posts %}
-	<h2>${ "Archive of" | translate } $archive.month $archive.year</h2><br />
+{% if archive.depth == "day" %}
+	<h2>${ "Archive of" | translate } $archive.month $archive.day, $archive.year</h2>
+{% endif %}
+{% if archive.depth == "month" %}
+	<h2>${ "Archive of" | translate } $archive.month $archive.year</h2>
+{% endif %}
 	{% for post in posts %}
 	{% include "content/post.twig" %}
 	{% endfor %}

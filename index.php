@@ -34,10 +34,13 @@
 			$theme->load("content/view", array("post" => $post));
 			break;
 		case "archive":
-			if (empty($year) or empty($month)) {
+			fallback($_GET['year']);
+			fallback($_GET['month']);
+			fallback($_GET['day']);
+			if (empty($_GET['year']) or empty($_GET['month'])) {
 				$theme->title = __("Archive");
 
-				if (!empty($year))
+				if (!empty($_GET['year']))
 					$get_timestamps = $sql->query("select
 					                                   distinct year(`created_at`) as `year`,
 					                                   month(`created_at`) as `month`,
@@ -49,7 +52,7 @@
 					                               group by year(`created_at`), month(`created_at`)
 					                               order by `created_at` desc, `id` desc",
 					                              array(
-					                                  ":year" => $year
+					                                  ":year" => $_GET['year']
 					                              ));
 				else
 					$get_timestamps = $sql->query("select
@@ -85,28 +88,17 @@
 
 				$theme->load("content/archive", array("archives" => $archives));
 			} else {
-				if (!is_numeric($year) or !is_numeric($month))
+				if (!is_numeric($_GET['year']) or !is_numeric($_GET['month']))
 					error(__("Error"), __("Please enter a valid year and month."));
 
-				$timestamp = @mktime(0, 0, 0, $month + 1, 0, $year);
+				$timestamp = @mktime(0, 0, 0, $_GET['month'], fallback($_GET['day'], "1", true), $_GET['year']);
 				$theme->title = sprintf(__("Archive of %s"), @date("F Y", $timestamp));
 
-				$shown_dates = array();
-				$posts = array();
-				foreach ($get_posts->fetchAll() as $post) {
-					$post = new Post(null, array("read_from" => $post));
-					if (!$post->theme_exists()) continue;
-
-					$post->date_shown = in_array(when("m-d-Y", $post->created_at), $shown_dates);
-					if (!in_array(when("m-d-Y", $post->created_at), $shown_dates))
-						$shown_dates[] = when("m-d-Y", $post->created_at);
-
-					$posts[] = $post;
-				}
-
 				$theme->load("content/archive", array("posts" => $posts,
-				                                      "archive" => array("year" => $year,
-				                                                         "month" => @date("F", $timestamp)
+				                                      "archive" => array("year" => $_GET['year'],
+				                                                         "month" => @date("F", $timestamp),
+				                                                         "day" => @date("jS", $timestamp),
+				                                                         "depth" => isset($_GET['day']) ? "day" : (isset($_GET['month']) ? "month" : (isset($_GET['year']) ? "year" : ""))
 				                                                   )
 				                                ));
 			}

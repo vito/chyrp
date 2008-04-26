@@ -27,8 +27,7 @@
 		 * Filters the key => val code so that modules may extend it.
 		 */
 		private function __construct() {
-			$trigger = Trigger::current();
-			$this->code = $trigger->filter("route_code", $this->code, true);
+			$this->code = Trigger::current()->filter("route_code", $this->code, true);
 		}
 
 		/**
@@ -157,6 +156,8 @@
 					$_GET['year'] = $arg[1];
 				if (isset($arg[2]))
 					$_GET['month'] = $arg[2];
+				if (isset($arg[3]))
+					$_GET['day'] = $arg[3];
 
 				return $_GET['action'] = "archive";
 			}
