@@ -159,6 +159,8 @@
 
 	timer_start();
 
+	set_locale($config->locale);
+
 	/**
 	 * Array: $feathers
 	 * Contains all of the enabled Feather's Classes.

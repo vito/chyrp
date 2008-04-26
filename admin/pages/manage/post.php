@@ -82,7 +82,7 @@
 ?>
 						<tr id="post_<?php echo $post->id; ?>"<?php echo $class; ?>>
 							<td class="main"><a href="<?php echo $post->url($post->id); ?>"><?php echo $post->title($post->id); ?></a></td>
-							<td><?php echo when("F jS, Y", $post->created_at); ?></td>
+							<td><?php echo when("%x", $post->created_at, true); ?></td>
 							<td class="center"><?php echo User::info('full_name', $post->user_id, User::info('login', $post->user_id)); ?></td>
 <?php $trigger->call("admin_manage_posts_column", $post->id); ?>
 <?php if ($visitor->group()->can("edit_post")): ?>

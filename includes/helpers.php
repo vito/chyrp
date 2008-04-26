@@ -73,9 +73,12 @@
 	 *     $formatting - The formatting for date().
 	 *     $time - The string to convert to time (typically a datetime).
 	 */
-	function when($formatting, $time) {
+	function when($formatting, $time, $strftime = false) {
 		# STFU, php5.
-		return @date($formatting, @strtotime($time));
+		if ($strftime)
+			return @strftime($formatting, @strtotime($time));
+		else
+			return @date($formatting, @strtotime($time));
 	}
 
 	/**
@@ -913,3 +916,24 @@
 		else
 			return setcookie($name, $data, $time, '/', $host);
 	}
+
+	/**
+	 * Function: set_locale
+	 * Set locale in a platform-independent way
+	 *
+	 * Parameters:
+	 *     $locale - the locale name ('en_US', 'uk_UA', 'fr_FR' etc.)
+	 *
+	 * Returns:
+	 *     The encoding name used by locale-aware functions.
+	 */
+    function set_locale($locale) { # via arbor?
+		list($lang, $cty) = explode("_", $locale);
+		$locales = array($locale.".UTF-8", $lang);
+		$result = setlocale(LC_ALL, $locales);
+
+		if (!$result)
+			throw new Exception("Unknown locale name ".$locale);
+
+		return (!strpos($result, 'UTF-8')) ? "CP".preg_replace('~\.(\d+)$~', "\\1", $result) : "UTF-8" ;
+    }

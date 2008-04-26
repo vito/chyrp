@@ -40,8 +40,8 @@
 ?>
 						<tr>
 							<td class="main"><a href="<?php echo $page->url(); ?>"><?php echo $page->title; ?></a></td>
-							<td><?php echo when("F jS, Y", $page->created_at); ?></td>
-							<td><?php if ($page->updated_at != "0000-00-00 00:00:00") echo when("F jS, Y", $page->updated_at); ?></td>
+							<td><?php echo when("%x", $page->created_at, true); ?></td>
+							<td><?php if ($page->updated_at != "0000-00-00 00:00:00") echo when("%x", $page->updated_at, true); ?></td>
 							<td class="center"><?php echo User::info('full_name', $page->user_id, User::info('login', $page->user_id)); ?></td>
 <?php if ($visitor->group()->can("edit_page")): ?>
 							<td class="center"><?php echo $page->edit_link('<img src="icons/edit.png" alt="edit" />'); ?></td>
@@ -58,11 +58,11 @@
 					<h2>Organize Pages</h2>
 					<form action="<?php url("reorder_pages"); ?>" method="post" accept-charset="utf-8">
 <?php $theme->list_pages(false, null, "sort_pages", "page-item", true); ?>
-						<br />
-						<button type="submit" id="save" class="positive" accesskey="s">
+						<br class="js_disabled" />
+						<button type="submit" id="save" class="js_disabled positive" accesskey="s">
 							<?php echo __("Reorder &rarr;"); ?>
 						</button>
-						<br class="clear" />
+						<br class="js_disabled clear" />
 					</form>
 <?php if ($paginate->next_page()): ?>
 					<a class="right button" href="<?php echo $paginate->next_page_url("page", false); ?>"><?php echo __("Next &raquo;"); ?></a>
