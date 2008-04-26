@@ -48,27 +48,12 @@
 		 * Parameters:
 		 *     $column - The name of the SQL column.
 		 *     $user_id - The user ID to grab from.
-		 *     $fallback - What to display if the result is empty.
 		 *
 		 * Returns:
 		 *     SQL result - if the SQL result isn't empty.
-		 *     $fallback - if the SQL result is empty.
 		 */
-		static function info($column, $user_id, $fallback = false) {
-			global $loaded_models;
-
-			if (isset($loaded_models["user"][$user_id][$column]))
-				return $loaded_models["user"][$user_id][$column];
-
-			$sql = SQL::current();
-			$grab_column = $sql->select("users",
-			                            $column,
-			                            "`id` = :id",
-			                            "id",
-			                            array(
-			                                ':id' => $user_id
-			                            ));
-			return ($grab_column->rowCount() == 1) ? $grab_column->fetchColumn() : $fallback ;
+		static function info($column, $user_id) {
+			return SQL::current()->select("users", $column, "`id` = :id", "`id` desc", array(":id" => $user_id))->fetchColumn();
 		}
 
 		/**

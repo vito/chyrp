@@ -83,7 +83,7 @@
 						<tr id="post_<?php echo $post->id; ?>"<?php echo $class; ?>>
 							<td class="main"><a href="<?php echo $post->url($post->id); ?>"><?php echo $post->title($post->id); ?></a></td>
 							<td><?php echo when("%x", $post->created_at, true); ?></td>
-							<td class="center"><?php echo User::info('full_name', $post->user_id, User::info('login', $post->user_id)); ?></td>
+							<td class="center"><?php echo fallback($post->user()->full_name, $post->user()->login, true); ?></td>
 <?php $trigger->call("admin_manage_posts_column", $post->id); ?>
 <?php if ($visitor->group()->can("edit_post")): ?>
 							<td class="center"><?php echo $post->edit_link('<img src="icons/edit.png" alt="edit" />'); ?></td>

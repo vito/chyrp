@@ -42,7 +42,7 @@
 							<td class="main"><a href="<?php echo $page->url(); ?>"><?php echo $page->title; ?></a></td>
 							<td><?php echo when("%x", $page->created_at, true); ?></td>
 							<td><?php if ($page->updated_at != "0000-00-00 00:00:00") echo when("%x", $page->updated_at, true); ?></td>
-							<td class="center"><?php echo User::info('full_name', $page->user_id, User::info('login', $page->user_id)); ?></td>
+							<td class="center"><?php echo fallback($page->user()->full_name, $page->user()->login, true); ?></td>
 <?php if ($visitor->group()->can("edit_page")): ?>
 							<td class="center"><?php echo $page->edit_link('<img src="icons/edit.png" alt="edit" />'); ?></td>
 <?php endif; ?>

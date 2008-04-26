@@ -115,27 +115,12 @@
 		 * Parameters:
 		 *     $column - The name of the SQL column.
 		 *     $group_id - The group ID to grab from.
-		 *     $fallback - What to display if the result is empty.
 		 *
 		 * Returns:
 		 *     SQL result - if the SQL result isn't empty.
-		 *     $fallback - if the SQL result is empty.
 		 */
-		static function info($column, $group_id, $fallback = false) {
-			global $loaded_models;
-
-			if (isset($loaded_models["group"][$page_id][$column]))
-				return $loaded_models["group"][$page_id][$column];
-
-			$sql = SQL::current();
-			$grab_column = $sql->select("groups",
-			                            $column,
-			                            "`id` = :id",
-			                            "id",
-			                            array(
-			                                ':id' => $group_id
-			                            ));
-			return ($grab_column->rowCount() == 1) ? $grab_column->fetchColumn() : $fallback ;
+		static function info($column, $group_id) {
+			return SQL::current()->select("groups", $column, "`id` = :id", "`id` desc", array(":id" => $group_id))->fetchColumn();
 		}
 
 		/**

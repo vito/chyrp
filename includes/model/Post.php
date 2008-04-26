@@ -129,7 +129,7 @@
 
 			fallback($pinned, !empty($_POST['pinned']));
 			fallback($status, (isset($_POST['draft'])) ? "draft" : ((!empty($_POST['status'])) ? $_POST['status'] : $this->status));
-			fallback($slug, (!empty($_POST['slug'])) ? $_POST['slug'] : $this->info("feather", $this->id).".".$this->id);
+			fallback($slug, (!empty($_POST['slug'])) ? $_POST['slug'] : $this->feather.".".$this->id);
 			fallback($timestamp, (!empty($_POST['created_at'])) ? when("Y-m-d H:i:s", $_POST['created_at']) : $this->created_at);
 
 			$options = (isset($_POST['option'])) ? $_POST['option'] : array() ;
@@ -236,20 +236,7 @@
 		 *     $fallback - if the SQL result is empty.
 		 */
 		static function info($column, $post_id, $fallback = false) {
-			global $loaded_models;
-
-			if (isset($loaded_models["post"][$post_id][$column]))
-				return $loaded_models["post"][$post_id][$column];
-
-			$sql = SQL::current();
-			$grab_column = $sql->select("posts",
-			                            $column,
-			                            "`id` = :id",
-			                            "id",
-			                            array(
-			                                ':id' => $post_id
-			                            ));
-			return ($grab_column->rowCount() == 1) ? $grab_column->fetchColumn() : $fallback ;
+			return SQL::current()->select("posts", $column, "`id` = :id", "`id` desc", array(":id" => $post_id))->fetchColumn();
 		}
 
 		/**

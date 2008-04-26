@@ -152,28 +152,12 @@
 		 * Parameters:
 		 *     $column - The name of the SQL column.
 		 *     $page_id - The page ID to grab from.
-		 *     $fallback - What to display if the result is empty.
 		 *
 		 * Returns:
-		 *     false - if $page_id isn't set.
 		 *     SQL result - if the SQL result isn't empty.
-		 *     $fallback - if the SQL result is empty.
 		 */
-		static function info($column, $page_id, $fallback = false) {
-			global $loaded_models;
-
-			if (isset($loaded_models["page"][$page_id][$column]))
-				return $loaded_models["page"][$page_id][$column];
-
-			$sql = SQL::current();
-			$grab_column = $sql->select("pages",
-			                            $column,
-			                            "`id` = :id",
-			                            "id",
-			                            array(
-			                                ":id" => $page_id
-			                            ));
-			return ($grab_column->rowCount() == 1) ? $grab_column->fetchColumn() : $fallback ;
+		static function info($column, $page_id) {
+			return SQL::current()->select("pages", $column, "`id` = :id", "`id` desc", array(":id" => $page_id))->fetchColumn();
 		}
 
 		/**

@@ -29,7 +29,7 @@
 		<published><?php echo when("c", $post->created_at); ?></published>
 		<link href="<?php echo htmlspecialchars($trigger->filter("feed_url", html_entity_decode($post->url())), ENT_NOQUOTES, "utf-8"); ?>" />
 		<author>
-			<name><?php echo htmlspecialchars(User::info("full_name", $post->user_id, User::info("login", $post->user_id)), ENT_NOQUOTES, "utf-8"); ?></name>
+			<name><?php echo htmlspecialchars(fallback($post->user()->full_name, $post->user()->login, true), ENT_NOQUOTES, "utf-8"); ?></name>
 <?php if (!empty($author_uri)): ?>
 			<uri><?php echo $author_uri; ?></uri>
 <?php endif; ?>

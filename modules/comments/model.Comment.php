@@ -127,20 +127,7 @@
 			return $id;
 		}
 		static function info($column, $comment_id = null) {
-			global $loaded_models;
-
-			if (isset($loaded_models["model"][$comment_id][$column]))
-				return $loaded_models["model"][$comment_id][$column];
-
-			$sql = SQL::current();
-			$grab_info = $sql->query("select `".$column."` from `".$sql->prefix."comments`
-			                          where `id` = :id",
-			                         array(
-			                             ":id" => $comment_id
-			                         ));
-			if ($grab_info->rowCount() == 1)
-				return $grab_info->fetchColumn();
-			else return null;
+			return SQL::current()->select("comments", $column, "`id` = :id", "`id` desc", array(":id" => $comment_id))->fetchColumn();
 		}
 		public function edit_link($text = null, $before = null, $after = null){
 			$visitor = Visitor::current();

@@ -1,7 +1,7 @@
 						<form class="delete" action="<?php url("delete_comment_real"); ?>" method="post" accept-charset="utf-8">
 							<blockquote>
-								<h4><?php echo $comment->info("author", $_GET['id']); ?></h4>
-								<?php echo $trigger->filter("markup_comment_text", truncate($comment->info("body", $_GET['id']), 500)); ?>
+								<h4><?php echo Comment::info("author", $_GET['id']); ?></h4>
+								<?php echo $trigger->filter("markup_comment_text", truncate(Comment::info("body", $_GET['id']), 500)); ?>
 							</blockquote>
 							<div class="center pad">
 								<input type="hidden" name="id" value="<?php echo fix($_GET['id'], "html"); ?>" id="id" />
