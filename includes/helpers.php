@@ -96,7 +96,7 @@
 	 *
 	 * Parameters:
 	 *     $string - String to sanitize.
-	 *     $mode - One of "mysql", "form", or "setting"; the mode to clean the string with.
+	 *     $mode - One of "html" or "setting"; the mode to clean the string with.
 	 */
 	function fix($string, $mode = "html") {
 		switch($mode) {
