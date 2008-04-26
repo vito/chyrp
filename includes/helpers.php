@@ -881,11 +881,20 @@
 		return ($int < 9) ? "0".$int : $int ;
 	}
 
+	/**
+	 * Function: cookie_cutter
+	 * Sets a cookie.
+	 *
+	 * Parameters:
+	 *     $name - The name of the cookie.
+	 *     $data - The data to store in the cookie.
+	 *     $time - The timestamp (time()) at which point the cookie expire.
+	 */
 	function cookie_cutter($name, $data, $time = null) {
+		fallback($time, time() + 2592000); # 30 days
 		$config = Config::current();
-
-		if ($time == null) $time = time() + 2592000; # 30 days
-		$host = '.'.parse_url($config->url, PHP_URL_HOST);
+		$host = parse_url($config->url, PHP_URL_HOST);
+		$host = ($host == "localhost") ? null : '.'.parse_url($config->url, PHP_URL_HOST) ;
 
 		if (version_compare(PHP_VERSION, '5.2.0', '>='))
 			return setcookie($name, $data, $time, '/', $host, false, true);

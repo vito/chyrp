@@ -176,12 +176,12 @@
 		 */
 		public function toggle_admin() {
 			if (!isset($_COOKIE['chyrp_hide_admin']))
-				cookie_cutter("chyrp_hide_admin", "true", 0);
+				cookie_cutter("chyrp_hide_admin", "true");
 			else
-				cookie_cutter("chyrp_hide_admin", "");
+				cookie_cutter("chyrp_hide_admin", null, 0);
 
 			$route = Route::current();
-			$route->redirect('/');
+			$route->redirect("/");
 		}
 
 		/**
