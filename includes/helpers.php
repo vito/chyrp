@@ -634,14 +634,16 @@
 	 * Parameters:
 	 *     &$variable - The variable to check for.
 	 *     $fallback - What to set if the variable is empty or not set.
-	 *     $mode - Whether to set it or to return.
+	 *     $return - Whether to set it or to return.
 	 *
 	 * Returns:
-	 *     $variable = $fallback - If $mode is set to "set" and $variable is empty or not set.
-	 *     $fallback - If $mode is set to "return" and $variable is empty or not set.
-	 *     $return - Whether to return it or set it
+	 *     $variable = $fallback - If $return is false and $variable is empty or not set.
+	 *     $fallback - If $return is true and $variable is empty or not set.
 	 */
 	function fallback(&$variable, $fallback = null, $return = false) {
+		if (is_bool($variable))
+			return $variable;
+
 		return ($return) ?
 		           ((!isset($variable) or (is_string($variable) and trim($variable) == "") or empty($variable)) ? $fallback : $variable) :
 		           ((!isset($variable) or (is_string($variable) and trim($variable) == "") or empty($variable)) ? $variable = $fallback : false) ;

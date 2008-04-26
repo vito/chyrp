@@ -5,33 +5,15 @@
 	 */
 	class Pagination {
 		/**
-		 * Function: query
-		 * Alters a query to take account for the current page.
-		 *
-		 * Parameters:
-		 *     $query - The normal SQL query.
-		 *     $limit - Amount of SQL results per page.
-		 *     $var - The variable that holds the current page number in $_GET.
+		 * Function: select
+		 * Performs a select statement that takes pagination into account.
 		 *
 		 * Returns:
-		 *     A paginated SQL query.
+		 *     A paginated SQL select.
+		 *
+		 * See Also:
+		 * <SQL.select>
 		 */
-		public function query($query, $limit = 5, $var = "page", $params = array()) {
-			$remove_grab = preg_replace("/select (.*?) from/i", "select count(*) from", $query);
-
-			$sql = SQL::current();
-			$total_results = $sql->query($remove_grab, $params)->fetchColumn();
-
-			$this->$var = (isset($_GET[$var])) ? $_GET[$var] : 1 ;
-			$this->total_pages = ceil($total_results / $limit);
-			$this->offset = ($this->$var - 1) * $limit;
-
-			$limited_query = $query." limit ".$this->offset.", ".$limit;
-
-			return $sql->query($limited_query, $params);
-		}
-
-
 		public function select($tables, $fields, $conds, $order = null, $limit = 5, $var = "page", $params = array()) {
 			$sql = SQL::current();
 			$total_results = $sql->count($tables, $conds, $params);

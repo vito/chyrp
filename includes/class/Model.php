@@ -7,7 +7,7 @@
 		public $table = "test";
 
 		static function grab($model, $options = array()) {
-			global $paginate, $private, $enabled_feathers;
+			global $private, $enabled_feathers;
 
 			if ($model == "Post")
 				$order = "`pinned` desc, `created_at` desc, `id` desc";
@@ -23,8 +23,8 @@
 			$per_page = fallback($options["per_page"], Config::current()->posts_per_page, true);
 			$page_var = fallback($options["page_var"], "page", true);
 
-			$paginate = new Pagination();
-			$grab = (!$paginate) ? SQL::current()->select($from, $select, $where, $order, $params) : $paginate->select($from, $select, $where, $order, $per_page, $page_var, $params) ;
+			$pagination = new Pagination();
+			$grab = (!$paginate) ? SQL::current()->select($from, $select, $where, $order, $params) : $pagination->select($from, $select, $where, $order, $per_page, $page_var, $params) ;
 
 			$shown_dates = array();
 			$results = array();
