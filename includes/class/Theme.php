@@ -13,7 +13,7 @@
 		private $directory;
 		private $pages = array();
 		private $context = array();
-		private $tabs = "";
+		private $tabs = "\t";
 
 		/**
 		 * Function: __construct
@@ -91,11 +91,14 @@
 				$count++;
 			}
 
+			if (count($children) == 0)
+				echo "\n";
+
 			$this->tabs = substr($this->tabs, 0, -2);
 
-			echo ((isset($this->last_recursion) and $this->last_recursion) ? "" : "\t\t").$this->tabs."</li>\n";
+			echo ((isset($this->last_recursion) and $this->last_recursion) ? "\t" : "\t\t").$this->tabs."</li>\n";
 
-			if (strlen($this->tabs) == 0)
+			if (strlen($this->tabs) == 1)
 				$this->last_recursion.= !isset($this->last_recursion);
 		}
 

@@ -146,7 +146,7 @@
 			$show_in_list = !empty($_POST['show_in_list']);
 
 			$page = new Page($_POST['id']);
-			$page->update($_POST['title'], $_POST['body'], $_POST['parent_id'], $show_in_list, $_POST['slug']);
+			$page->update($_POST['title'], $_POST['body'], $_POST['parent_id'], $show_in_list, $page->list_order, $_POST['slug']);
 
 			if (!isset($_POST['ajax'])) {
 				$route->redirect("/admin/?action=manage&sub=page&updated=".$_POST['id']);
@@ -483,6 +483,15 @@
 			$config->set("theme", $_GET['theme']);
 			$route = Route::current();
 			$route->redirect("/admin/?action=extend&sub=themes&changed");
+		}
+
+		public function reorder_pages() {
+			global $route;
+			foreach ($_POST['list_order'] as $id => $order) {
+				$page = new Page($id);
+				$page->update($page->title, $page->body, $page->parent_id, $page->show_in_list, $order, $page->url);
+			}
+			$route->redirect("/admin/?action=manage&sub=page&reordered");
 		}
 	}
 	$admin = new AdminController();

@@ -95,9 +95,8 @@
 	 *     $string - String to sanitize.
 	 *     $mode - One of "mysql", "form", or "setting"; the mode to clean the string with.
 	 */
-	function fix($string, $mode = 'mysql') {
+	function fix($string, $mode = "html") {
 		switch($mode) {
-			case "mysql": throw new Exception("Use PDO statements."); break;
 			case "html": return htmlspecialchars($string, ENT_QUOTES); break;
 			case "setting": return str_replace("\"", "\\\"", str_replace("\n", "\\n", stripslashes($string))); break;
 			default: return $string; break;

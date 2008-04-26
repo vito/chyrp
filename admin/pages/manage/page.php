@@ -3,6 +3,8 @@
 					<div class="success"><?php echo __("Page updated."); ?> <a href="<?php echo $route->url(Page::info("url", $_GET['updated'])."/"); ?>"><?php echo __("View &raquo;"); ?></a></div>
 <?php elseif (isset($_GET['deleted'])): ?>
 					<div class="success"><?php echo __("Page deleted."); ?></div>
+<?php elseif (isset($_GET['reordered'])): ?>
+					<div class="success"><?php echo __("Pages reordered."); ?></div>
 <?php endif; ?>
 					<h2><?php echo __("Need more detail?"); ?></h2>
 					<form class="detail" action="index.php" method="get" accept-charset="utf-8">
@@ -29,24 +31,12 @@
 <?php endif; ?>
 						</tr>
 <?php
-	if (!empty($_GET['query'])) {
-		$get_pages = $paginate->select("pages",
-		                               "*",
-		                               "`title` like :query or
-		                                `body` like :query",
-		                               "`created_at` desc",
-		                               25, "page",
-		                               array(
-		                                   ":query" => "%".$_GET['query']."%"
-		                               ));
-	} else {
-		$get_pages = $paginate->select("pages",
-		                               "*",
-		                               null,
-		                               "`created_at` desc",
-		                               25);
-	}
-	foreach (Page::find() as $page):
+	if (!empty($_GET['query']))
+		$pages = Page::find(array("where" => "`title` like :query or `body` like :query", "params" => array(":query" => "%".$_GET['query']."%")));
+	else
+		$pages = Page::find();
+
+	foreach ($pages as $page):
 ?>
 						<tr>
 							<td class="main"><a href="<?php echo $page->url(); ?>"><?php echo $page->title; ?></a></td>
@@ -67,8 +57,12 @@
 					<br />
 					<h2>Organize Pages</h2>
 					<form action="<?php url("reorder_pages"); ?>" method="post" accept-charset="utf-8">
-					<?php $theme->list_pages(false, null, "sort_pages", "page-item", true); ?>
-						<p><input type="submit" value="Continue &rarr;"></p>
+<?php $theme->list_pages(false, null, "sort_pages", "page-item", true); ?>
+						<br />
+						<button type="submit" id="save" class="positive" accesskey="s">
+							<?php echo __("Reorder &rarr;"); ?>
+						</button>
+						<br class="clear" />
 					</form>
 <?php if ($paginate->next_page()): ?>
 					<a class="right button" href="<?php echo $paginate->next_page_url("page", false); ?>"><?php echo __("Next &raquo;"); ?></a>
