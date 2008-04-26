@@ -39,10 +39,8 @@
 				<div id="posts">
 {% block content %}{% endblock %}
 				</div>
-{#
-				<?php $paginate->next_link(__("Next &rarr;", "theme"), "right"); ?>
-				<?php $paginate->prev_link(__("&larr; Previous", "theme")); ?>
-#}
+				$pagination.next_link
+				$pagination.prev_link
 				<br />
 				<div class="footer">
 					<p><a href="{% url "feed/" %}">Feed</a> / theme &copy; <a href="http://lofisoami.com/">Aaron MacDonald</a> 2007</p>
@@ -55,9 +53,7 @@
 					<input type="text" id="search" name="query" />
 				</form>
 				<h1>${ "Pages" | translate }</h1>
-{#
-<?php $theme->list_pages(); ?>
-#}
+				$page_list
 				<h1>${ "Welcome, " | translate } $visitor.login!</h1>
 				<ul>
 {% if visitor.logged_in %}

@@ -77,7 +77,8 @@
 		 *     $var - The variable to link for.
 		 *     $clean_urls - Whether to link with dirty or clean URLs.
 		 */
-		public function next_link($text, $class = "next_page", $var = "page", $clean_urls = true) {
+		public function next_link($text = null, $class = "next_page", $var = "page", $clean_urls = true) {
+			fallback($text, __("Next &rarr;", "theme"));
 			if ($this->next_page($var))
 				echo '<a class="'.$class.'" id="next_page_'.$var.'" href="'.$this->next_page_url($var, $clean_urls).'">'.$text.'</a>';
 		}
@@ -92,7 +93,8 @@
 		 *     $var - The variable to link for.
 		 *     $clean_urls - Whether to link with dirty or clean URLs.
 		 */
-		public function prev_link($text, $class = "prev_page", $var = "page", $clean_urls = true) {
+		public function prev_link($text = null, $class = "prev_page", $var = "page", $clean_urls = true) {
+			fallback($text, __("&larr; Previous", "theme"));
 			if ($this->prev_page($var))
 				echo '<a class="'.$class.'" id="prev_page_'.$var.'" href="'.$this->prev_page_url($var, $clean_urls).'">'.$text.'</a>';
 		}

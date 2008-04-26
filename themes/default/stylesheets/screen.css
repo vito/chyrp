@@ -239,7 +239,7 @@ div.post .quote blockquote {
 .link h2 a {
 	border: none;
 }
-.right {
+.right, .next_page {
 	float: right;
 }
 div.success, div.notice, div.failure {

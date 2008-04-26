@@ -14,6 +14,7 @@
 		private $pages = array();
 		private $context = array();
 		private $tabs = "\t";
+		private $page_list = "";
 
 		/**
 		 * Function: __construct
@@ -40,15 +41,16 @@
 			global $action;
 			fallback($home_text, __("Home"));
 
-			echo '<ul class="'.$main_class.'">'."\n";
+			$this->page_list.= '<ul class="'.$main_class.'">'."\n";
 
 			if ($home_link)
-				echo $this->tabs.'<li class="'.$list_class.($action == "index" ? " selected" : "").'"><a href="'.Config::current()->url.'">'.$home_text.'</a></li>'."\n";
+				$this->page_list.= $this->tabs.'<li class="'.$list_class.($action == "index" ? " selected" : "").'"><a href="'.Config::current()->url.'">'.$home_text.'</a></li>'."\n";
 
 			foreach (Page::find(array("where" => "`parent_id` = 0 and `show_in_list` = 1", "order" => "`list_order` asc")) as $page)
 				$this->recurse_pages($page, $main_class, $list_class, $show_order_fields);
 
-			echo "</ul>\n";
+			$this->page_list.= "</ul>\n";
+			return $this->page_list;
 		}
 
 		/**
@@ -65,14 +67,10 @@
 			global $pages, $action;
 
 			$selected = ($action == 'page' and $_GET['url'] == $page->url) ? ' selected' : '';
-			printf($this->tabs.'<li class="%s" id="page_list_%s"><a href="%s">%s</a>',
-				$list_class.$selected,
-				$page->id,
-				$page->url(),
-				$page->title);
+			$this->page_list.= sprintf($this->tabs.'<li class="%s" id="page_list_%s"><a href="%s">%s</a>', $list_class.$selected, $page->id, $page->url(), $page->title);
 
 			if ($show_order_fields)
-				echo ' <input type="text" size="2" name="list_order['.$page->id.']" value="'.$page->list_order.'" />';
+				$this->page_list.= ' <input type="text" size="2" name="list_order['.$page->id.']" value="'.$page->list_order.'" />';
 
 			$count = 1;
 			$children = Page::find(array("where" => "`parent_id` = :parent and `show_in_list` = 1", "params" => array(":parent" => $page->id), "order" => "`list_order` asc"));
@@ -81,22 +79,22 @@
 					$this->tabs.= "\t";
 
 				if ($count == 1)
-					echo "\n".$this->tabs.'<ul class="'.$main_class.'">'."\n";
+					$this->page_list.= "\n".$this->tabs.'<ul class="'.$main_class.'">'."\n";
 				$this->tabs .= "\t";
 				$this->recurse_pages($child, $main_class, $list_class, $show_order_fields);
 
 				if ($count == count($children))
-					echo "\t".$this->tabs."</ul>\n";
+					$this->page_list.= "\t".$this->tabs."</ul>\n";
 
 				$count++;
 			}
 
 			if (count($children) == 0)
-				echo "\n";
+				$this->page_list.= "\n";
 
 			$this->tabs = substr($this->tabs, 0, -2);
 
-			echo ((isset($this->last_recursion) and $this->last_recursion) ? "\t" : "\t\t").$this->tabs."</li>\n";
+			$this->page_list.= ((isset($this->last_recursion) and $this->last_recursion) ? "\t" : "\t\t").$this->tabs."</li>\n";
 
 			if (strlen($this->tabs) == 1)
 				$this->last_recursion.= !isset($this->last_recursion);
@@ -219,7 +217,7 @@
 		}
 
 		public function prepare($context) {
-			global $action;
+			global $action, $paginate;
 
 			$this->context = array_merge($context, $this->context);
 
@@ -233,10 +231,14 @@
 			$this->context["visitor"] = $visitor;
 			$this->context["visitor"]->logged_in = logged_in();
 			$this->context["archive_list"] = $this->list_archives();
+			$this->context["page_list"] = $this->list_pages();
 			$this->context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);
-			$this->context["route"] = array("action" => $action);
+			$this->context["route"] = array("action" => $action, "ajax" => AJAX);
 			$this->context["hide_admin"] = isset($_COOKIE["chyrp_hide_admin"]);
 			$this->context["sql_debug"] = SQL::current()->debug;
+			$this->context["pagination"] = $paginate;
+			$this->context["POST"] = $_POST;
+			$this->context["GET"] = $_GET;
 
 			$trigger = Trigger::current();
 			$this->context = $trigger->filter("twig_global_context", $this->context);
