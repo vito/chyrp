@@ -677,12 +677,25 @@
 	 *     $name - A unique version of the given $name.
 	 */
 	function unique_filename($name) {
+		$double_exts = array(".tar.gz");
+		$original = $name;
+		$double = "";
 		if (file_exists(MAIN_DIR."/upload/".$name)) {
-			$split_dots = explode(".", $name);
-			$ext = end($split_dots);
-			array_pop($split_dots);
-			$filename = implode(".", $split_dots);
-			$name = $filename.random(3).".".$ext;
+			foreach ($double_exts as $dub)
+				if (strpos($original, $dub)) {
+					$double = $dub;
+					$name = str_replace($dub, "", $original);
+				}
+
+			if (empty($double)) {
+				$split_dots = explode(".", $name);
+				$filename = $split_dots[0];
+				array_shift($split_dots);
+				$ext = implode(".", $split_dots);
+				$name = $filename.random(3).".".$ext;
+			} else
+				$name = $name.random(3).$double;
+
 			if (!file_exists(MAIN_DIR."/upload/".$name))
 				return $name;
 		} else {
