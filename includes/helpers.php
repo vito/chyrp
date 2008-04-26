@@ -928,12 +928,13 @@
 	 *     The encoding name used by locale-aware functions.
 	 */
     function set_locale($locale) { # via arbor?
-		list($lang, $cty) = explode("_", $locale);
-		$locales = array($locale.".UTF-8", $lang);
-		$result = setlocale(LC_ALL, $locales);
+		if ($locale == "en_US") return; # en_US is the default in Chyrp; their system may have
+		                                # its own locale setting and no Chyrp translation available
+		                                #for their locale, so let's just leave it alone.
 
-		if (!$result)
-			throw new Exception("Unknown locale name ".$locale);
+		list($lang, $cty) = explode("_", $locale);
+		$locales = array($locale.".UTF-8", $lang, "en_US.UTF-8", "en");
+		$result = setlocale(LC_ALL, $locales);
 
 		return (!strpos($result, 'UTF-8')) ? "CP".preg_replace('~\.(\d+)$~', "\\1", $result) : "UTF-8" ;
     }
