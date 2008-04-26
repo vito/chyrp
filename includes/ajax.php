@@ -39,7 +39,7 @@
 			break;
 		case "delete_post":
 			$post = new Post($_POST['id']);
-			if ($post->deletable())
+			if (!$post->deletable())
 				error(__("Access Denied"), __("You do not have sufficient privileges to delete this post."));
 
 			Post::delete($_POST['id']);
@@ -79,7 +79,7 @@
 			$last = false;
 
 			$trigger->call("above_post".$reason);
-			$theme->load("content/post", array("post" => $post, "ajax" => true));
+			$theme->load("content/post", array("post" => $post));
 			$trigger->call("below_post");
 			break;
 		case "preview":
