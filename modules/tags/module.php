@@ -113,8 +113,9 @@
 		}
 
 		static function admin_manage_posts_column($id) {
+			$tags = get_post_tags($id);
 			echo "<td>";
-			echo implode(", ", get_post_tags($id));
+			echo implode(", ", $tags["linked"]);
 			echo "</td>";
 		}
 
