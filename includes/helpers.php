@@ -918,9 +918,9 @@
 		$host = parse_url($config->url, PHP_URL_HOST);
 		$host = ($host == "localhost") ? null : '.'.parse_url($config->url, PHP_URL_HOST) ;
 
-		if (version_compare(PHP_VERSION, '5.2.0', '>='))
-			return setcookie($name, $data, $time, '/', $host, false, true);
-		else
+		#if (version_compare(PHP_VERSION, '5.2.0', '>='))
+		#	return setcookie($name, $data, $time, '/', $host, false, true);
+		#else
 			return setcookie($name, $data, $time, '/', $host);
 	}
 
@@ -945,3 +945,18 @@
 
 		return (!strpos($result, 'UTF-8')) ? "CP".preg_replace('~\.(\d+)$~', "\\1", $result) : "UTF-8" ;
     }
+
+	/**
+	 * Function: sanitize_input
+	 * Makes sure no inherently broken ideas such as magic_quotes break our application
+	 *
+	 * Parameters:
+	 *     $data - The array to be sanitized, usually one of ($_GET, $_POST, $_COOKIE, $_REQUEST)
+	 */
+	function sanitize_input(& $data) {
+		foreach ($data as & $value)
+			if (is_array($value))
+				sanitize_input($value);
+			else
+				$value = get_magic_quotes_gpc() ? stripslashes($value) : $value ;
+	}

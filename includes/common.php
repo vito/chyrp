@@ -39,7 +39,7 @@
 		exit;
 	}
 
-	require_once INCLUDES_DIR."/input.php"; # Input sanitizer
+	require_once INCLUDES_DIR."/class/QueryBuilder.php"; # SQL query builder
 	require_once INCLUDES_DIR."/lib/spyc.php"; # YAML parser
 
 	require_once INCLUDES_DIR."/config.php"; # Configuration
@@ -81,6 +81,11 @@
 
 	# File: Helpers
 	require_once INCLUDES_DIR."/helpers.php";
+
+	sanitize_input($_GET);
+	sanitize_input($_POST);
+	sanitize_input($_COOKIE);
+	sanitize_input($_REQUEST);
 
 	# File: Model
 	# See Also:

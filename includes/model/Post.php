@@ -56,10 +56,8 @@
 			$options = (isset($_POST['option'])) ? $_POST['option'] : array() ;
 
 			$xml = new SimpleXMLElement("<post></post>");
-			foreach($values as $key => $val)
-				$xml->addChild($key, $val);
-			foreach($options as $key => $val)
-				$xml->addChild($key, $val);
+			self::arr2xml($xml, $values);
+			self::arr2xml($xml, $options);
 
 			$sql = SQL::current();
 			$visitor = Visitor::current();
@@ -136,10 +134,8 @@
 			$options = (isset($_POST['option'])) ? $_POST['option'] : array() ;
 
 			$xml = new SimpleXMLElement("<post></post>");
-			foreach($values as $key => $val)
-				$xml->addChild($key, $val);
-			foreach($options as $key => $val)
-				$xml->addChild($key, $val);
+			self::arr2xml($xml, $values);
+			self::arr2xml($xml, $options);
 
 			$sql = SQL::current();
 			$sql->update("posts",
@@ -469,10 +465,8 @@
 		private function parse($filter = false) {
 			global $post;
 
-			$parse = simplexml_load_string($this->xml);
-			foreach ($parse as $key => $val)
-				if (!is_int($key))
-					$this->$key = (string) $val;
+			foreach (self::xml2arr(simplexml_load_string($this->xml)) as $key => $val)
+				$this->$key = $val;
 
 			if ($filter) {
 				$class = camelize($this->feather);
@@ -527,5 +521,46 @@
 
 		public function trackback_url() {
 			return Config::current()->url."/includes/trackback.php?id=".$this->id;
+		}
+
+		/**
+		 * Function: arr2xml
+		 * Recursively adds an array (or object I guess) to a SimpleXML object.
+		 *
+		 * Parameters:
+		 *     $object - The SimpleXML object to add to.
+		 *     $data - The data to add to the SimpleXML object.
+		 */
+		static function arr2xml(&$object, $data) {
+			foreach ($data as $key => $val) {
+				if (is_int($key))
+					$key = "data";
+
+				if (is_array($val)) {
+					$xml = $object->addChild($key);
+					self::arr2xml($xml, $val);
+				} else
+					$object->addChild($key, $val);
+			}
+		}
+
+		/**
+		 * Function: xml2arr
+		 * Recursively converts a SimpleXML object (and children) to an array.
+		 *
+		 * Parameters:
+		 *     $parse - The SimpleXML object to convert into an array.
+		 */
+		static function xml2arr($parse) {
+			if (empty($parse))
+				return "";
+
+			$parse = (array) $parse;
+
+			foreach ($parse as &$val)
+				if (get_class($val) == "SimpleXMLElement")
+					$val = self::xml2arr($val);
+
+			return $parse;
 		}
 	}

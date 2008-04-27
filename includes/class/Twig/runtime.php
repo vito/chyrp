@@ -51,7 +51,7 @@ $twig_filters = array(
 	'items' =>		'twig_get_array_items_filter',
 
 	// debugging
-	'inspect' => 'var_dump'
+	'inspect' => 'twig_inspect_filter'
 );
 
 
@@ -293,4 +293,8 @@ else {
 
 function twig_translate_string_filter($string) {
 	return __($string, "theme");
+}
+
+function twig_inspect_filter($thing) {
+	return '<pre class="chyrp_inspect"><code>'.var_export($thing, true).'</code></pre>';
 }
