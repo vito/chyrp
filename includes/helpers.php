@@ -105,18 +105,10 @@
 
 	/**
 	 * Function: fix
-	 * Returns a sanitized version of a string, for various purposes.
-	 *
-	 * Parameters:
-	 *     $string - String to sanitize.
-	 *     $mode - One of "html" or "setting"; the mode to clean the string with.
+	 * Returns a HTML-sanitized version of a string.
 	 */
-	function fix($string, $mode = "html") {
-		switch($mode) {
-			case "html": return htmlspecialchars($string, ENT_QUOTES); break;
-			case "setting": return str_replace("\"", "\\\"", str_replace("\n", "\\n", stripslashes($string))); break;
-			default: return $string; break;
-		}
+	function fix($string) {
+		return htmlspecialchars($string, ENT_QUOTES);
 	}
 
 	/**
