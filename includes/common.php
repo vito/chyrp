@@ -195,6 +195,7 @@
 	foreach ($config->enabled_feathers as $feather) {
 		$camelized = camelize($feather);
 		$feathers[$feather] = new $camelized;
+		$feathers[$feather]->name = $feather;
 	}
 
 	foreach ($config->enabled_modules as $module) {

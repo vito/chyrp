@@ -1,0 +1,43 @@
+<?php
+$this->requireTemplate("layout.twig");
+class __TwigTemplate_22e86c3adc7a3c0863e73992b5716f80 extends __TwigTemplate_d8fb9d03f55738ff78518e1bc2741faf {
+/* LINE:3 */
+public function block_title($context) {
+$context['::superblock'] = array($this, 'parent::block_title');
+/* LINE:3 */
+echo "Admin";
+}
+
+/* LINE:5 */
+public function block_subnav($context) {
+$context['::superblock'] = array($this, 'parent::block_subnav');
+/* LINE:5 */
+echo "\n\t\t\t<li class=\"right\">Bookmarklet: <a href=\"#\">Chyrp!</a></li>\n\t\t\t";
+/* LINE:7 */
+$context['::parent'] = $context;
+foreach (twig_iterate($context, twig_get_attribute($context, (isset($context['site']) ? $context['site'] : NULL), "enabled_feathers")) as $iterator) {
+twig_set_loop_context($context, $iterator, "feather");
+/* LINE:7 */
+echo "\n\t\t\t<li><a href=\"";
+/* LINE:8 */
+echo urlencode(htmlspecialchars(Config::current()->url."/admin/?action=".(("write&feather=") . ((isset($context['feather']) ? $context['feather'] : NULL)))));
+/* LINE:8 */
+echo "\">";
+/* LINE:8 */
+echo twig_capitalize_string_filter((isset($context['feather']) ? $context['feather'] : NULL));
+/* LINE:8 */
+echo "</a></li>\n\t\t\t";
+}
+$context = $context['::parent'];
+/* LINE:9 */
+echo "\n";
+}
+
+/* LINE:12 */
+public function block_content($context) {
+$context['::superblock'] = array($this, 'parent::block_content');
+/* LINE:12 */
+echo "\n\t<h1>Add Post</h1>\n";
+}
+
+}

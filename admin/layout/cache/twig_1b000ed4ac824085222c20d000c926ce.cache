@@ -1,0 +1,18 @@
+<?php
+$this->requireTemplate("layout.twig");
+class __TwigTemplate_1b000ed4ac824085222c20d000c926ce extends __TwigTemplate_d8fb9d03f55738ff78518e1bc2741faf {
+/* LINE:2 */
+public function block_title($context) {
+$context['::superblock'] = array($this, 'parent::block_title');
+/* LINE:2 */
+echo "Admin";
+}
+
+/* LINE:3 */
+public function block_content($context) {
+$context['::superblock'] = array($this, 'parent::block_content');
+/* LINE:3 */
+echo "\n\t<h1>Add Post</h1>\n";
+}
+
+}

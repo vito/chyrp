@@ -12,11 +12,11 @@
 
 $twig_filters = array(
 	// formatting filters
-	'date' =>		'twig_date_format_filter',
+	'date' =>			'twig_date_format_filter',
 	'numberformat' =>	'number_format',
 	'moneyformat' =>	'money_format',
 	'filesizeformat' =>	'twig_filesize_format_filter',
-	'format' =>		'sprintf',
+	'format' =>			'sprintf',
 
 	// numbers
 	'even' =>		'twig_is_even_filter',
@@ -25,12 +25,12 @@ $twig_filters = array(
 	// escaping and encoding
 	'escape' =>		'htmlspecialchars',
 	'e' =>			'htmlspecialchars',
-	'urlencode' =>		'twig_urlencode_filter',
+	'urlencode' =>	'twig_urlencode_filter',
 	'quotes' =>		'addslashes',
 
 	// string filters
 	'title' =>		'twig_title_string_filter',
-	'capitalize' =>		'twig_capitalize_string_filter',
+	'capitalize' =>	'twig_capitalize_string_filter',
 	'upper' =>		'strtoupper',
 	'lower' =>		'strtolower',
 	'strip' =>		'trim',
@@ -41,12 +41,16 @@ $twig_filters = array(
 
 	// array helpers
 	'join' =>		'twig_join_filter',
-	'reverse' =>		'array_reverse',
+	'split' =>		'twig_split_filter',
+	'first' =>		'twig_first_filter',
+	'kffset' =>		'twig_offset_filter',
+	'last' =>		'end',
+	'reverse' =>	'array_reverse',
 	'length' =>		'count',
 	'count' =>		'count',
 
 	// iteration and runtime
-	'default' =>		'twig_default_filter',
+	'default' =>	'twig_default_filter',
 	'keys' =>		'array_keys',
 	'items' =>		'twig_get_array_items_filter',
 
@@ -297,4 +301,16 @@ function twig_translate_string_filter($string) {
 
 function twig_inspect_filter($thing) {
 	return '<pre class="chyrp_inspect"><code>'.var_export($thing, true).'</code></pre>';
+}
+
+function twig_split_filter($string, $cut = " ") {
+	return explode($cut, $string);
+}
+
+function twig_first_filter($array) {
+	return $array[0];
+}
+
+function twig_offset_filter($array, $offset = 0) {
+	return $array[$offset];
 }

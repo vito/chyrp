@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+		<title>$site.name: {% block title %}$title{% endblock %}</title>
+		<link rel="stylesheet" href="style.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+		<script src="$site.url/includes/lib/jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="javascript.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id="header">
+			<div class="column">
+				<ul id="navigation">
+					<li class="first selected"><a href="#">Write</a></li>
+					<li class="second"><a href="#">Manage</a></li>
+					<li class="third"><a href="#">Settings</a></li>
+					<li class="fourth"><a href="#">Extend</a></li>
+				</ul>
+				<h1>Chyrp</h1>
+			</div>
+		</div>
+		<div id="welcome">
+			<div class="column">
+				<a href="$site.url" class="right">View Site &rsaquo;</a>
+				Hello, ${ visitor.full_name | split | first }. <a href="{% url "logout/" %}">Log Out &rsaquo;</a>
+			</div>
+		</div>
+		<ul class="column" id="sub-nav">
+{% block subnav %}{% endblock %}
+		</ul>
+		<div class="clear"></div>
+		<div class="column" id="content">
+{% block content %}{% endblock %}
+		</div>
+	</body>
+</html>

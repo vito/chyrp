@@ -1,0 +1,213 @@
+/* Reset */
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td { margin: 0; padding: 0; }
+table { border-collapse: collapse; border-spacing: 0; }
+fieldset,img { border: 0; }
+address,caption,cite,code,dfn,em,strong,th,var { font-style: normal; font-weight: normal; }
+li { list-style: none; }
+caption,th { text-align: left; }
+h1,h2,h3,h4,h5,h6 { font-size: 100%; font-weight: normal; }
+abbr,acronym { border: 0; font-variant: normal; }
+input,textarea,select { font-family: inherit; font-size: inherit; font-weight: inherit; }
+a { text-decoration: none; color: inherit;}
+/* End Reset */
+
+html {
+	font-size: 62.5%;
+}
+body {
+	font: 1.25em/1.5em normal "Verdana", Helvetica, Arial, sans-serif;
+	color: #626262;
+	background: #e8e8e8;
+}
+label {
+	display: block;
+	font-size: 1.1em;
+}
+label .sub {
+	font-size: .8em;
+	color: #999;
+}
+em {
+	font-style: italic;
+}
+strong {
+	font-weight: bold;
+}
+small, div.small {
+	display: block;
+	line-height: 1.3em;
+	font-size: 1em;
+	margin-left: 19em;
+	margin-bottom: 1em;
+}
+input.text, textarea {
+	font-size: 1.25em;
+	padding: 3px;
+	border: 1px solid #ddd;
+	background: #fff;
+}
+input.text, select {
+	margin-bottom: 1em;
+}
+input.code, code {
+	font-family: "Consolas", "Monaco", monospace;
+}
+a:link, a:visited {
+	text-decoration: none;
+	border-bottom: 1px solid #ddd;
+}
+a:visited {
+	border-bottom-style: dotted;
+}
+a:hover {
+	border-bottom-color: #aaa;
+}
+table tr.head {
+	background: #555;
+	color: #fff;
+	border-left: 2px solid #444;
+	border-top: 2px solid #444;
+	border-bottom: 2px solid #444;
+	border-right: 2px solid #444;
+}
+table tr.head th {
+	padding: .25em .5em;
+	border-right: 1px solid #444;
+	font-weight: bold;
+}
+table tr {
+	border-left: 2px solid #eee;
+	border-right: 2px solid #eee;
+}
+table tr.last {
+	border-bottom: 2px solid #eee;
+}
+table td {
+	padding: .25em .5em;
+	border-right: 1px solid #eee;
+	border-bottom: 1px solid #eee;
+	vertical-align: middle;
+}
+table td.main {
+	background: #f9f9f9;
+	font-weight: bold;
+}
+table td.center {
+	text-align: center;
+	vertical-align: middle;
+}
+table td a:link, table td a:visited {
+	border: none;
+}
+
+#header {
+	background: #3e3e3e url('images/header.gif') repeat-x;
+	padding: 3.3em;
+	color: #fff;
+}
+#header h1 {
+	font-size: 3em;
+	text-shadow: #000 0 1px 1px;
+}
+#header #navigation {
+	float: right;
+	margin-top: .25em;
+}
+#header #navigation li {
+	display: inline;
+}
+#header #navigation li a {
+	float: left;
+	margin-left: 2em;
+	opacity: .5;
+	text-shadow: #888 0 0 10px;
+	border-bottom: .25em solid #ddd;
+}
+#header #navigation li.selected a,
+#header #navigation li a:hover {
+	opacity: 1;
+}
+#header #navigation li.first a  { border-color: #ef4646; }
+#header #navigation li.second a { border-color: #e19a2c; }
+#header #navigation li.third a  { border-color: #16d907; }
+#header #navigation li.fourth a { border-color: #0096ff; }
+
+#welcome {
+	background: #dfdfdf url('images/welcome.gif') repeat-x;
+	padding: 1em .9em .8em;
+}
+
+#sub-nav {
+	margin-top: 1em;
+}
+#sub-nav li {
+	float: left;
+	padding: .4em .6em;
+	background: #dfdfdf;
+	border-top: .2em solid #e8e8e8;
+	color: #737373;
+}
+#sub-nav li.selected {
+	background: #fff;
+	border-top-color: #c7c7c7;
+}
+#sub-nav li.right {
+	background: transparent;
+	padding: 0;
+	font-size: .95em;
+	margin: .75em 0 0;
+	color: #777;
+}
+#sub-nav li.right a {
+	color: #444;
+}
+
+#content {
+	background: #fff;
+	width: 43.1em;
+	padding: 1em;
+}
+#content h1 {
+	font-size: 2em;
+	margin: .2em 0 1em;
+	color: #aaa;
+	font-weight: bold;
+}
+#content h2 {
+	font-size: 1.5em;
+	margin: 0 0 .25em;
+	color: #666;
+	font-weight: bold;
+}
+#content h3 {
+	font-weight: bold;
+	font-size: 1.25em;
+	margin-bottom: .5em;
+}
+#content h4 {
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+.column {
+	width: 45em;
+	margin: 0 auto;
+}
+
+/* General-purpose shenanigans */
+.wide {
+	width: 100%;
+}
+textarea.wide, input.text.wide {
+	width: 98.5%; /* Compensating for the 6px added from the padding */
+	_width: 100%; /* Hooray for IE6's randomized box model. */
+}
+.clear {
+	clear: both;
+}
+.left {
+	float: left !important;
+}
+.right {
+	float: right !important;
+}
