@@ -8,9 +8,6 @@
 	ini_set('error_reporting', E_ALL);
 	ini_set('display_errors', true);
 
-	# Input sanitizer
-	require INCLUDES_DIR."/input.php";
-
 	# YAML parser
 	require INCLUDES_DIR."/lib/spyc.php";
 
@@ -26,10 +23,10 @@
 	# Helpers
 	require INCLUDES_DIR."/helpers.php";
 
-	function error($title, $body) {
-		require INCLUDES_DIR."/error.php";
-		exit;
-	}
+	sanitize_input($_GET);
+	sanitize_input($_POST);
+	sanitize_input($_COOKIE);
+	sanitize_input($_REQUEST);
 
 	$url = "http://".$_SERVER['HTTP_HOST'].str_replace("/install.php", "", $_SERVER['REQUEST_URI']);
 	$index = (parse_url($url, PHP_URL_PATH)) ? "/".trim(parse_url($url, PHP_URL_PATH), "/")."/" : "/" ;
