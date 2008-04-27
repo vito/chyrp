@@ -519,6 +519,20 @@
 	}
 
 	/**
+	 * Function: decamelize
+	 * Decamelizes a string.
+	 *
+	 * Parameters:
+	 *     $string - The string to decamelize.
+	 *
+	 * See Also:
+	 * <camelize>
+	 */
+	function decamelize($string) {
+		return strtolower(preg_replace("/([a-z])([A-Z])/", "\\1_\\2", $string));
+	}
+
+	/**
 	 * Function: selected
 	 * If $val1 == $val2, outputs ' selected="selected"'
 	 */
