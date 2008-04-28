@@ -129,18 +129,6 @@
 		}
 
 		/**
-		 * Function: snippet_exists
-		 * Returns whether a snippet exists with the specified $name.
-		 *
-		 * Parameters:
-		 *     $name - The name of the snippet.
-		 */
-		public function snippet_exists($name) {
-			global $snippet;
-			return method_exists($snippet, $name);
-		}
-
-		/**
 		 * Function: file_exists
 		 * Returns whether the specified Twig file exists or not.
 		 *

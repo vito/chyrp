@@ -88,10 +88,6 @@
 			            $trigger->filter("markup_post_text", urldecode(stripslashes($_POST['content']))) ;
 			echo "<h1 class=\"preview-header\">".__("Preview")."</h1>\n<div class=\"preview-content\">".$content."</div>";
 			break;
-		case "snippet":
-			fallback($_POST['argument'], "");
-			$trigger->call($_POST['name'], $_POST['argument']);
-			break;
 		case "check_confirm":
 			if (!$visitor->group()->can("change_settings"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable extensions."));

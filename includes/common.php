@@ -219,11 +219,6 @@
 	# Load the translation engine
 	load_translator("chyrp", INCLUDES_DIR."/locale/".$config->locale.".mo");
 
-	# File: Snippets
-	# The current theme's Snippets.
-	require THEME_DIR."/snippets.php";
-	$snippet = new Snippet();
-
 	# Load the theme translator
 	if (file_exists(THEME_DIR."/locale/".$config->locale.".mo"))
 		load_translator("theme", THEME_DIR."/locale/".$config->locale.".mo");

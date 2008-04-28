@@ -1,4 +1,5 @@
 <?php
+	# TODO: Move this to Twig.
 	$get_tags = $sql->query("select `name`, `post_id`, count(`".$sql->prefix."posts`.`id`) as `count`
 	                         from `".$sql->prefix."tags`, `".$sql->prefix."posts`
 	                         where
@@ -38,8 +39,6 @@
 			echo '<a class="tag" href="'.$route->url("tag/".$url."/").'" style="font-size: '.$size.'%" title="'.$title.'">'.$key.'</a> ';
 		}
 
-	} elseif ($theme->snippet_exists("no_tags")) {
-		$trigger->call("no_tags");
 	} else {
 ?>
 <h2><?php echo __("No Tags", "tags"); ?></h2>
