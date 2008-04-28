@@ -902,7 +902,14 @@
 		global $theme;
 		header("HTTP/1.1 404 Not Found");
 		$theme->title = "404";
-		$theme->load("content/404");
+		if ($theme->file_exists("content/404"))
+			$theme->load("content/404");
+		else {
+?>
+		<h1><?php echo __("Not Found", "theme"); ?></h1>
+		<div class="post body"><?php echo __("Sorry, but you are looking for something that isn't here."); ?></div>
+<?php
+		}
 	}
 
 	/**

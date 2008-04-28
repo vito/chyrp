@@ -31,7 +31,10 @@
 
 			$post->date_shown = true;
 
-			$theme->load("content/view", array("post" => $post));
+			$file = ($theme->file_exists("content/view")) ?
+			        "content/view" :
+			        "content/index" ;
+			$theme->load($file, array("post" => $post, "posts" => array($post)));
 			break;
 		case "archive":
 			fallback($_GET['year']);

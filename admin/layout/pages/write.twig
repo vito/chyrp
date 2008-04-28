@@ -5,7 +5,7 @@
 {% block subnav %}
 			<li class="right">Bookmarklet: <a href="#">Chyrp!</a></li>
 			{% for feather in site.enabled_feathers %}
-			<li><a href="{% admin "write&feather="~feather %}">${ feather | capitalize }</a></li>
+			<li{% if GET.feather == feather %} class="selected"{% endif %}><a href="{% admin "write&feather="~feather %}">${ feather | capitalize }</a></li>
 			{% endfor %}
 {% endblock %}
 
@@ -13,20 +13,25 @@
 	<h1>Add Post</h1>
 	<form action="{% admin "write&feather="~feather %}" method="post" accept-charset="utf-8">
 		{% for field in featherTEMP.fields %}
-		{% if field.type == "text" or field.type == "file" %}
 		<p>
 			<label for="$field.attr">$field.label{% if field.optional %} <span class="sub">(optional)</span>{% endif %}</label>
+			{% if field.type == "text" or field.type == "file" %}
 			<input class="$field.type" type="$field.type" name="$field.attr" value="" id="$field.attr" />
-		</p>
-		{% endif %}
-		{% if field.type == "text_block" %}
-		<p>
-			<label for="$field.attr">$field.label{% if field.optional %} <span class="sub">(optional)</span>{% endif %}</label>
+			{% endif %}
+			{% if field.type == "text_block" %}
 			<textarea class="wide" rows="12{# fallback from $field.rows #}" name="$field.attr" id="$field.attr"></textarea>
+			{% endif %}
 		</p>
-		{% endif %}
 		{% endfor %}
 
-		<p><input type="submit" value="Continue &rarr;"></p>
+		<button type="submit" class="yay right" accesskey="s">
+			<img src="images/icons/success.png" />Publish
+		</button>
+		<button class="right">
+			<img src="images/icons/save.png" />Save
+		</button>
+		<button>
+			Preview
+		</button>
 	</form>
 {% endblock %}

@@ -1,4 +1,6 @@
-/* Reset */
+/* @override http://localhost/chyrp/admin/style.css */
+
+/* @group Reset */
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td { margin: 0; padding: 0; }
 table { border-collapse: collapse; border-spacing: 0; }
 fieldset,img { border: 0; }
@@ -9,8 +11,9 @@ h1,h2,h3,h4,h5,h6 { font-size: 100%; font-weight: normal; }
 abbr,acronym { border: 0; font-variant: normal; }
 input,textarea,select { font-family: inherit; font-size: inherit; font-weight: inherit; }
 a { text-decoration: none; color: inherit;}
-/* End Reset */
+/* @end */
 
+/* @group Core */
 html {
 	font-size: 62.5%;
 }
@@ -18,6 +21,7 @@ body {
 	font: 1.25em/1.5em normal "Verdana", Helvetica, Arial, sans-serif;
 	color: #626262;
 	background: #e8e8e8;
+	padding: 0 0 5em;
 }
 label {
 	display: block;
@@ -33,7 +37,7 @@ em {
 strong {
 	font-weight: bold;
 }
-small, div.small {
+small {
 	display: block;
 	line-height: 1.3em;
 	font-size: 1em;
@@ -62,6 +66,108 @@ a:visited {
 a:hover {
 	border-bottom-color: #aaa;
 }
+/* @end */
+
+/* @group Header */
+#header {
+	background: #3e3e3e url('images/header.gif') repeat-x;
+	padding: 3.3em;
+	color: #fff;
+}
+#header h1 {
+	font-size: 3em;
+	text-shadow: #000 0 1px 1px;
+}
+#header #navigation {
+	float: right;
+	margin-top: .25em;
+}
+#header #navigation li {
+	display: inline;
+}
+#header #navigation li a {
+	float: left;
+	margin-left: 2em;
+	opacity: .5;
+	text-shadow: #888 0 0 10px;
+	border-bottom: .25em solid #ddd;
+}
+#header #navigation li.selected a,
+#header #navigation li a:hover {
+	opacity: 1;
+}
+#header #navigation li.first a  { border-color: #ef4646; }
+#header #navigation li.second a { border-color: #e19a2c; }
+#header #navigation li.third a  { border-color: #16d907; }
+#header #navigation li.fourth a { border-color: #0096ff; }
+
+#welcome {
+	background: #dfdfdf url('images/welcome.gif') repeat-x;
+	padding: 1em .9em .8em;
+}
+/* @end */
+
+/* @group Sub-Navigation */
+#sub-nav {
+	margin-top: 1em;
+}
+#sub-nav li a {
+	float: left;
+	padding: .4em .75em;
+	background: #dfdfdf;
+	border-top: .2em solid #e8e8e8;
+	border-bottom: 0;
+	color: #737373;
+}
+#sub-nav li.selected a {
+	background: #fff;
+	border-top-color: #c7c7c7;
+}
+#sub-nav li.right {
+	margin: .75em 0 0;
+}
+#sub-nav li.right a {
+	float: none;
+	background: transparent;
+	padding: 0;
+	font-size: .95em;
+	color: #777;
+}
+#sub-nav li.right a {
+	color: #444;
+}
+/* @end */
+
+/* @group Content */
+#content {
+	background: #fff;
+	width: 43.1em;
+	padding: 1em;
+}
+#content h1 {
+	font-size: 2em;
+	margin: .2em 0 1em;
+	color: #aaa;
+	font-weight: bold;
+}
+#content h2 {
+	font-size: 1.5em;
+	margin: 0 0 .25em;
+	color: #666;
+	font-weight: bold;
+}
+#content h3 {
+	font-weight: bold;
+	font-size: 1.25em;
+	margin-bottom: .5em;
+}
+#content h4 {
+	font-weight: bold;
+	font-size: 1.2em;
+}
+/* @end */
+
+/* @group Tables */
 table tr.head {
 	background: #555;
 	color: #fff;
@@ -99,102 +205,57 @@ table td.center {
 table td a:link, table td a:visited {
 	border: none;
 }
+/* @end */
 
-#header {
-	background: #3e3e3e url('images/header.gif') repeat-x;
-	padding: 3.3em;
+/* @group Buttons */
+/* Inspiration from Chawlk. */
+button {
+	font-weight: bold;
+	font-size: 1.125em;
+	margin: .7em .5em 0 0;
+	color: #333;
+	padding: .5em .75em;
+	background: #f1f1f1;
+	border: 1px solid #ccc;
+	border-top: 0;
+	border-left: 0;
+	cursor: pointer;
+}
+button.right {
+	margin: .7em 0 0 .5em;
+}
+button:hover {
+	background-color: #e0ebfe;
+	border-color: #b3bccb;
+}
+button.boo {
+	background: #faebe4;
+	border-color: #d6bdb5;
+	color: #3e3634;
+}
+button.boo:hover {
+	background: #d51800;
 	color: #fff;
+	border-color: #9f1000;
 }
-#header h1 {
-	font-size: 3em;
-	text-shadow: #000 0 1px 1px;
+button.yay {
+	background: #ebfae4;
+	border-color: #bdd6b5;
+	color: #363e34;
 }
-#header #navigation {
-	float: right;
-	margin-top: .25em;
+button.yay:hover {
+	background: #189100;
+	color: #fff;
+	border-color: #105f00;
 }
-#header #navigation li {
-	display: inline;
+button img {
+	margin: 0 5px -3px -2px;
 }
-#header #navigation li a {
-	float: left;
-	margin-left: 2em;
-	opacity: .5;
-	text-shadow: #888 0 0 10px;
-	border-bottom: .25em solid #ddd;
-}
-#header #navigation li.selected a,
-#header #navigation li a:hover {
-	opacity: 1;
-}
-#header #navigation li.first a  { border-color: #ef4646; }
-#header #navigation li.second a { border-color: #e19a2c; }
-#header #navigation li.third a  { border-color: #16d907; }
-#header #navigation li.fourth a { border-color: #0096ff; }
+/* @end */
 
-#welcome {
-	background: #dfdfdf url('images/welcome.gif') repeat-x;
-	padding: 1em .9em .8em;
-}
 
-#sub-nav {
-	margin-top: 1em;
-}
-#sub-nav li {
-	float: left;
-	padding: .4em .6em;
-	background: #dfdfdf;
-	border-top: .2em solid #e8e8e8;
-	color: #737373;
-}
-#sub-nav li.selected {
-	background: #fff;
-	border-top-color: #c7c7c7;
-}
-#sub-nav li.right {
-	background: transparent;
-	padding: 0;
-	font-size: .95em;
-	margin: .75em 0 0;
-	color: #777;
-}
-#sub-nav li.right a {
-	color: #444;
-}
 
-#content {
-	background: #fff;
-	width: 43.1em;
-	padding: 1em;
-}
-#content h1 {
-	font-size: 2em;
-	margin: .2em 0 1em;
-	color: #aaa;
-	font-weight: bold;
-}
-#content h2 {
-	font-size: 1.5em;
-	margin: 0 0 .25em;
-	color: #666;
-	font-weight: bold;
-}
-#content h3 {
-	font-weight: bold;
-	font-size: 1.25em;
-	margin-bottom: .5em;
-}
-#content h4 {
-	font-weight: bold;
-	font-size: 1.2em;
-}
-
-.column {
-	width: 45em;
-	margin: 0 auto;
-}
-
-/* General-purpose shenanigans */
+/* @group Helpers */
 .wide {
 	width: 100%;
 }
@@ -211,3 +272,8 @@ textarea.wide, input.text.wide {
 .right {
 	float: right !important;
 }
+.column {
+	width: 45em;
+	margin: 0 auto;
+}
+/* @end */

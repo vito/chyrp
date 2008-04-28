@@ -163,7 +163,17 @@
 			         $_GET['theme'] :
 			         $config->theme ;
 
-			$stylesheets = $trigger->filter("stylesheets", '<link rel="stylesheet" href="'.$config->url.'/themes/'.$theme.'/stylesheets/screen.css" type="text/css" media="screen" charset="utf-8" />'."\n\t\t".'<link rel="stylesheet" href="'.$config->url.'/themes/'.$theme.'/stylesheets/print.css" type="text/css" media="print" charset="utf-8" />');
+			$stylesheets = "";
+			if (file_exists(THEME_DIR."/stylesheets/")) {
+				$count = 1;
+				$glob = glob(THEME_DIR."/stylesheets/*.css");
+				foreach($glob as $file) {
+					$file = basename($file);
+					$stylesheets.= '<link rel="stylesheet" href="'.$config->url.'/themes/'.$theme.'/stylesheets/'.$file.'" type="text/css" media="'.($file == "print.css" ? "print" : "screen").'" charset="utf-8" />'.(count($glob) == $count ? "" : "\n\t\t");
+					$count++;
+				}
+			} else
+				$stylesheets = '<link rel="stylesheet" href="'.$config->url.'/themes/'.$theme.'/style.css" type="text/css" media="screen" charset="utf-8" />';
 
 			return $stylesheets;
 		}

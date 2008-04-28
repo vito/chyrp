@@ -533,6 +533,7 @@
 
 		public function determine_context($action) {
 			$context = array();
+
 			$context["title"] = camelize($action, true);
 			$context["site"] = Config::current();
 			$context["visitor"] = Visitor::current();
@@ -543,14 +544,17 @@
 			$context["sql_debug"] = SQL::current()->debug;
 			$context["POST"] = $_POST;
 			$context["GET"] = $_GET;
+
 			switch($action) {
 				case "write":
 					global $feathers;
 					$context["feathers"] = $feathers;
 					$context["feather"] = fallback($_GET['feather'], Config::current()->enabled_feathers[0], true);
 					$context["featherTEMP"] = $feathers[$context["feather"]];
+					$context["GET"]["feather"] = $context["feather"];
 					break;
 			}
+
 			return $context;
 		}
 	}
