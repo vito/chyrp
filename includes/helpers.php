@@ -889,6 +889,7 @@
 		header("HTTP/1.1 404 Not Found");
 		$theme->title = "404";
 		$theme->load("content/404");
+		exit;
 	}
 
 	/**
