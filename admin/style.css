@@ -74,7 +74,7 @@ a:hover {
 /* @group Header */
 #header {
 	background: #3e3e3e url('images/header.gif') repeat-x;
-	padding: 3.3em;
+	padding: 3.3em 0;
 	color: #fff;
 }
 #header h1 {
@@ -106,7 +106,7 @@ a:hover {
 
 #welcome {
 	background: #dfdfdf url('images/welcome.gif') repeat-x;
-	padding: 1em .9em .8em;
+	padding: 1em 0 .8em;
 }
 /* @end */
 
@@ -144,7 +144,7 @@ a:hover {
 /* @group Content */
 #content {
 	background: #fff;
-	width: 43.1em;
+	margin: 0 5em;
 	padding: 1em;
 }
 #content h1 {
@@ -282,7 +282,6 @@ textarea.wide, input.text.wide {
 	float: right !important;
 }
 .column {
-	width: 45em;
-	margin: 0 auto;
+	margin: 0 5em;
 }
 /* @end */
