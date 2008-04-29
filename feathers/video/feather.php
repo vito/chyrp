@@ -1,6 +1,8 @@
 <?php
 	class Video extends Feather {
 		public function __construct() {
+			$this->setField(array("attr" => "video", "type" => "text_block", "rows" => 4, "label" => "Video"));
+			$this->setField(array("attr" => "caption", "type" => "text_block", "rows" => 4, "label" => "Caption", "optional" => true, "preview" => true, "bookmarklet" => "selection"));
 			$this->setFilter("caption", "markup_post_text");
 		}
 		static function submit() {

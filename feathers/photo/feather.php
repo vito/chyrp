@@ -1,6 +1,8 @@
 <?php
 	class Photo extends Feather {
 		public function __construct() {
+			$this->setField(array("attr" => "photo", "type" => "file", "label" => "Photo"));
+			$this->setField(array("attr" => "caption", "type" => "text_block", "label" => "Caption", "optional" => true, "preview" => true, "bookmarklet" => "selection"));
 			$this->setFilter("caption", "markup_post_text");
 			$this->respondTo("delete_post", "delete_file");
 			$this->respondTo("filter_post", "filter_post");

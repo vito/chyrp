@@ -1,6 +1,8 @@
 <?php
 	class Audio extends Feather {
 		public function __construct() {
+			$this->setField(array("attr" => "audio", "type" => "file", "label" => "MP3 File"));
+			$this->setField(array("attr" => "description", "type" => "text_block", "label" => "Description", "optional" => true, "preview" => true, "bookmarklet" => "selection"));
 			$this->setFilter("description", "markup_post_text");
 			$this->respondTo("delete_post", "delete_file");
 			$this->respondTo("javascript", "player_js");

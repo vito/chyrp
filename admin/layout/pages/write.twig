@@ -10,25 +10,33 @@
 {% endblock %}
 
 {% block content %}
-	<h1>Add Post</h1>
+	<h1>Add ${ feather | capitalize }</h1>
 	<form action="{% admin "write&feather="~feather %}" method="post" accept-charset="utf-8">
 		{% for field in featherTEMP.fields %}
 		<p>
-			<label for="$field.attr">$field.label{% if field.optional %} <span class="sub">(optional)</span>{% endif %}</label>
+			<label for="$field.attr">
+				$field.label
+				{% if field.optional %}<span class="sub">(optional)</span>{% endif %}
+				{% if field.help %}
+				<span class="sub">
+					<a href="{% admin "help&feather="~feather~"&field="~field.attr %}" target="_blank" class="emblem"><img src="images/icons/help.png" alt="help" /></a>
+				</span>
+				{% endif %}
+			</label>
 			{% if field.type == "text" or field.type == "file" %}
-			<input class="$field.type" type="$field.type" name="$field.attr" value="" id="$field.attr" />
+			<input class="$field.type{% for class in field.classes %} $class{% endfor %}" type="$field.type" name="$field.attr" value="" id="$field.attr" />
 			{% endif %}
 			{% if field.type == "text_block" %}
-			<textarea class="wide" rows="12{# fallback from $field.rows #}" name="$field.attr" id="$field.attr"></textarea>
+			<textarea class="wide{% for class in field.classes %} $class{% endfor %}" rows="{% if field.rows %}$field.rows{% endif %}{% if not field.rows %}12{% endif %}{# fallback from $field.rows #}" name="$field.attr" id="$field.attr"></textarea>
 			{% endif %}
 		</p>
 		{% endfor %}
 
 		<button type="submit" class="yay right" accesskey="s">
-			<img src="images/icons/success.png" />Publish
+			<img src="images/icons/success.png" alt="success" />Publish
 		</button>
 		<button class="right">
-			<img src="images/icons/save.png" />Save
+			<img src="images/icons/save.png" alt="save" />Save
 		</button>
 		<button>
 			Preview

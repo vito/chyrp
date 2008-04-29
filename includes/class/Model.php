@@ -6,7 +6,7 @@
 	 * The basis for the Models system.
 	 */
 	class Model {
-		public $table = "test";
+		public $table;
 
 		static function grab($model, $id, $options = array()) {
 			global $loaded_models;

@@ -36,6 +36,14 @@
 		 * Sets the feather's fields for creating/editing posts with that feather.
 		 */
 		protected function setField($options) {
+			fallback($options["classes"], array());
+
+			if (isset($options["class"]))
+				$options["classes"][] = $options["class"];
+
+			if (isset($options["preview"]) and $options["preview"])
+				$options["classes"][] = "preview_me";
+
 			$this->fields[$options["attr"]] = $options;
 		}
 	}

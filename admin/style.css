@@ -44,13 +44,16 @@ small {
 	margin-left: 19em;
 	margin-bottom: 1em;
 }
-input.text, textarea {
+input.text, input.file, textarea {
 	font-size: 1.25em;
 	padding: 3px;
 	border: 1px solid #ddd;
 	background: #fff;
 }
-input.text, select {
+input.file {
+	border: none;
+}
+input.text, input.file, select, textarea {
 	margin-bottom: 1em;
 }
 input.code, code {
@@ -256,6 +259,12 @@ button img {
 
 
 /* @group Helpers */
+a.emblem {
+	border: none;
+}
+a.emblem img {
+	margin-bottom: -2px;
+}
 .wide {
 	width: 100%;
 }

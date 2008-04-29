@@ -1,6 +1,8 @@
 <?php
 	class Text extends Feather {
 		public function __construct() {
+			$this->setField(array("attr" => "title", "type" => "text", "label" => "Title", "optional" => true, "bookmarklet" => "title"));
+			$this->setField(array("attr" => "body", "type" => "text_block", "label" => "Body", "preview" => true, "bookmarklet" => "selection"));
 			$this->setFilter("body", "markup_post_text");
 		}
 		static function submit() {

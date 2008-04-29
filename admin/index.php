@@ -18,5 +18,8 @@
 	}
 	$twig = new AdminTwig();
 
-	$twig->load($action);
+	if ($action == "help")
+		require FEATHERS_DIR."/".$_GET['feather']."/help.php";
+	else
+		$twig->load($action);
 ?>
