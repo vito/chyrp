@@ -280,6 +280,7 @@
 		 * Returns whether they're viewing a post or not.
 		 */
 		$viewing = ($action == "view");
+
 		if ($is_feed)
 			if ($trigger->exists($action."_feed")) # What about custom feeds?
 				$trigger->call($action."_feed");
