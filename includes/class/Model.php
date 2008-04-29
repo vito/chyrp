@@ -59,7 +59,7 @@
 				$order = "`created_at` desc, `id` desc";
 
 			$where = fallback($options["where"], ($model == "Post") ? $private.$enabled_feathers : null, true);
-			$from = strtolower($model)."s";
+			$from = fallback($options["from"], strtolower($model)."s", true);
 			$params = fallback($options["params"], array(), true);
 			$select = fallback($options["select"], "*", true);
 			$order = fallback($options["order"], $order, true);
