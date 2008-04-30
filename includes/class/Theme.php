@@ -222,9 +222,10 @@
 			$this->context = array_merge($context, $this->context);
 
 			$visitor = Visitor::current();
+			$config = Config::current();
 
 			$this->context["title"] = $this->title;
-			$this->context["site"] = Config::current();
+			$this->context["site"] = $config;
 			$this->context["feeds"] = $this->feeds();
 			$this->context["stylesheets"] = $this->stylesheets();
 			$this->context["javascripts"] = $this->javascripts();
@@ -232,6 +233,7 @@
 			$this->context["visitor"]->logged_in = logged_in();
 			$this->context["archive_list"] = $this->list_archives();
 			$this->context["page_list"] = $this->list_pages();
+			$this->context["theme"] = array("url" => $config->url."/themes/".$config->theme);
 			$this->context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);
 			$this->context["route"] = array("action" => $action, "ajax" => AJAX);
 			$this->context["hide_admin"] = isset($_COOKIE["chyrp_hide_admin"]);
