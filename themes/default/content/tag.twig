@@ -1,6 +1,6 @@
 {% extends "layouts/default.twig" %}
 {% block content %}
-		<h2>${ "Posts tagged with &#8220;" ~ ( tag.name | escape ) ~ "&#8221;" | translate }</h2>
+		<h2>${ "Posts tagged with &#8220;" | translate } ${ tag.name | escape } ${ "&#8221;" | translate }{# TODO: Turn this into a filter() once they accept arguments. #}</h2>
 {% for post in posts %}
 {% include "content/post.twig" %}
 {% endfor %}

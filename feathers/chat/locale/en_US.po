@@ -6,10 +6,10 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Chyrp v1.1.3\n"
+"Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-04-15 19:22-0500\n"
+"PO-Revision-Date: 2008-04-30 18:16-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -24,32 +24,20 @@ msgstr ""
 msgid "Post logs of IRC or other chat formats."
 msgstr ""
 
-#: feathers/chat/fields.php:9
-msgid "Title"
-msgstr ""
-
-#: feathers/chat/fields.php:9
-msgid "(optional)"
-msgstr ""
-
-#: feathers/chat/fields.php:13
-msgid "Dialogue"
-msgstr ""
-
-#: feathers/chat/fields.php:17
+#: feathers/chat/help.php:2
 msgid "To give yourself a special CSS class, append \" (me)\" to your username, like so:"
 msgstr ""
 
-#: feathers/chat/fields.php:22
+#: feathers/chat/help.php:7
 msgid "This only has to be done to the first occurrence of the username."
 msgstr ""
 
-#: feathers/chat/feather.php:12
-#: feathers/chat/feather.php:34
+#: feathers/chat/feather.php:14
+#: feathers/chat/feather.php:36
 msgid "Error"
 msgstr ""
 
-#: feathers/chat/feather.php:12
+#: feathers/chat/feather.php:14
 msgid "Dialogue can't be blank."
 msgstr ""
 
