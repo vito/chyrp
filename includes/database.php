@@ -50,8 +50,8 @@
 			# Add the setting
 			$this->yaml[$setting] = $value;
 
-			if (isset($this->yaml[0]) and $this->yaml[0] == "--")
-				unset($this->yaml[0]);
+			if (isset($this->yaml['<?php header("Status']))
+				unset($this->yaml['<?php header("Status']);
 
 			# Generate the new YAML settings
 			$contents.= Spyc::YAMLDump($this->yaml, false, 0);
