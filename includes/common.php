@@ -49,25 +49,25 @@
 	require_once INCLUDES_DIR."/lib/gettext/gettext.php";
 	require_once INCLUDES_DIR."/lib/gettext/streams.php";
 
-	# File: l10n
-	# Loads localization functions.
-	require_once INCLUDES_DIR."/lib/l10n.php";
-
 	# Load the configuration settings
 	$config->load(INCLUDES_DIR."/config.yaml.php");
 
 	# Constant: MODULES_DIR
 	# Absolute path to /modules
 	define('MODULES_DIR', MAIN_DIR."/modules");
+
 	# Constant: FEATHERS_DIR
 	# Absolute path to /feathers
 	define('FEATHERS_DIR', MAIN_DIR."/feathers");
+
 	# Constant: THEMES_DIR
 	# Absolute path to /themes
 	define('THEMES_DIR', MAIN_DIR."/themes");
+
 	# Constant: THEME_DIR
 	# Absolute path to /themes/(current theme)
 	define('THEME_DIR', MAIN_DIR."/themes/".$config->theme);
+
 	# Constant: THEME_URL
 	# URL to the current theme's folder
 	define('THEME_URL', $config->url."/themes/".$config->theme);

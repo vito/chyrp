@@ -27,6 +27,56 @@
 	}
 
 	/**
+	 * Function: load_translator
+	 * Loads a .mo file for gettext translation.
+	 *
+	 * Parameters:
+	 *     $domain - The name for this translation domain.
+	 *     $mofile - The .mo file to read from.
+	 */
+	function load_translator($domain, $mofile) {
+		global $l10n;
+
+		if (isset($l10n[$domain]))
+			return;
+
+		if (is_readable($mofile))
+			$input = new CachedFileReader($mofile);
+		else
+			return;
+
+		$l10n[$domain] = new gettext_reader($input);
+	}
+
+	/**
+	 * Function: __
+	 * Returns a translated string.
+	 *
+	 * Parameters:
+	 *     $text - The string to translate.
+	 *     $domain - The translation domain to read from.
+	 */
+	function __($text, $domain = "chyrp") {
+		global $l10n;
+		return (isset($l10n[$domain])) ? $l10n[$domain]->translate($text) : $text ;
+	}
+
+	/**
+	 * Function: _p
+	 * Returns a plural (or not) form of a translated string.
+	 *
+	 * Parameters:
+	 *     $single - Singular string.
+	 *     $plural - Pluralized string.
+	 *     $number - The number to judge by.
+	 *     $domain - The translation domain to read from.
+	 */
+	function _p($single, $plural, $number, $domain = "chyrp") {
+		global $l10n;
+		return (isset($l10n[$domain])) ? $l10n[$domain]->ngettext($single, $plural, $number) : (($number != 1) ? $plural : $single) ;
+	}
+
+	/**
 	 * Function: truncate
 	 * Truncates a string to the passed length, appending an ellipsis to the end.
 	 *
