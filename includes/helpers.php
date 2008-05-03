@@ -92,14 +92,17 @@
 
 	/**
 	 * Function: pluralize
-	 * Returns a pluralized string.
+	 * Returns a pluralized string. This is a port of Rails' pluralizer.
+	 *
+	 * Parameters:
+	 *     $string - The string to pluralize.
 	 */
 	function pluralize($string) {
 		global $pluralizations;
 		if (in_array($string, array_keys($pluralizations)))
 			return $pluralizations[$string];
 		else {
-			$uncountable = array("moose", "sheep", "fish", "series", "species", "rice", "money", "information", "equipment");
+			$uncountable = array("moose", "sheep", "fish", "series", "species", "rice", "money", "information", "equipment", "piss");
 			$replacements = array("/person/i" => "people",
 			                      "/man/i" => "men",
 			                      "/child/i" => "children",
@@ -120,20 +123,15 @@
 			                      "/([m|l])ouse$/i" => "\\1ice",
 			                      "/(quiz)$/i" => "\\1zes");
 
-			# Test strings; loop through $strings to test.
-			#$strings = "person man child sex move cow axis testis octopus virus alias status bus buffalo tomato dementium crisis er... hive colloquy ox piss matrix vertex index mouse louse quiz moose onomatopoeia goose sheep fish series species rice money information equipment";
-			#$strings = explode(" ", $strings);
-
-			$done = false;
+			$replaced = $string;
 			foreach ($replacements as $key => $val) {
-				if ($done) break;
-				if (in_array($string, $uncountable)) {
-					$replaced = $string;
+				if (in_array($string, $uncountable))
 					break;
-				}
 
 				$replaced = preg_replace($key, $val, $string);
-				$done = ($replaced != $string);
+
+				if ($replaced != $string)
+					break;
 			}
 
 			if ($replaced == $string and !in_array($string, $uncountable))
@@ -152,10 +150,52 @@
 	 */
 	function depluralize($string) {
 		global $pluralizations;
+
 		$copy = $pluralizations;
 		unset($copy["feathers"]);
 		$reversed = array_flip($copy);
-		return isset($reversed[$string]) ? $reversed[$string] : substr($string, 0, -1) ;
+
+		if (isset($reversed[$string]))
+			return $reversed[$string];
+		else {
+			$uncountable = array("moose", "sheep", "fish", "series", "species", "rice", "money", "information", "equipment", "piss");
+			$replacements = array("/people/i" => "person",
+			                      "/^men/i" => "man",
+			                      "/children/i" => "child",
+			                      "/kine/i" => "cow",
+			                      "/geese/i" => "goose",
+			                      "/(ax|test)es$/i" => "\\1is",
+			                      "/(octop|vir)ii$/i" => "\\1us",
+			                      "/(alias|status)es$/i" => "\\1",
+			                      "/(bu)ses$/i" => "\\1s",
+			                      "/(buffal|tomat)oes$/i" => "\\1o",
+			                      "/([ti])a$/i" => "\\1um",
+			                      "/ses$/i" => "sis",
+			                      "/(hive)s$/i" => "\\1",
+			                      "/([^aeiouy]|qu)ies$/i" => "\\1y",
+			                      "/^(ox)en$/i" => "\\1",
+			                      "/(vert|ind)ices$/i" => "\\1ex",
+			                      "/(matr)ices$/i" => "\\1ix",
+			                      "/(x|ch|ss|sh)es$/i" => "\\1",
+			                      "/([m|l])ice$/i" => "\\1ouse",
+			                      "/(quiz)zes$/i" => "\\1");
+
+			$replaced = $string;
+			foreach ($replacements as $key => $val) {
+				if (in_array($string, $uncountable))
+					break;
+
+				$replaced = preg_replace($key, $val, $string);
+
+				if ($replaced != $string)
+					break;
+			}
+
+			if ($replaced == $string and !in_array($string, $uncountable))
+				return substr($string, 0, -1);
+			else
+				return $replaced;
+		}
 	}
 
 	/**
