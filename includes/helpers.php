@@ -1,9 +1,11 @@
 <?php
-	/**FOOBAR
-	 * Integer: $time_start
-	 * Times Chyrp.
-	 */
+	# Integer: $time_start
+	# Times Chyrp.
 	$time_start = 0;
+
+	# Integer: $pluralizations
+	# Holds predefined pluralizations, typically provided by modules/feathers.
+	$pluralizations = array("feathers" => array());
 
 	/**
 	 * Function: error
@@ -74,6 +76,86 @@
 	function _p($single, $plural, $number, $domain = "chyrp") {
 		global $l10n;
 		return (isset($l10n[$domain])) ? $l10n[$domain]->ngettext($single, $plural, $number) : (($number != 1) ? $plural : $single) ;
+	}
+
+	/**
+	 * Function: redirect
+	 * Redirects to the given URL and exits immediately.
+	 */
+	function redirect($url) {
+		if ($url[0] == "/") # Handle URIs without domain
+			$url = Config::current()->url.$url;
+
+		header("Location: ".html_entity_decode($url));
+		exit;
+	}
+
+	/**
+	 * Function: pluralize
+	 * Returns a pluralized string.
+	 */
+	function pluralize($string) {
+		global $pluralizations;
+		if (in_array($string, array_keys($pluralizations)))
+			return $pluralizations[$string];
+		else {
+			$uncountable = array("moose", "sheep", "fish", "series", "species", "rice", "money", "information", "equipment");
+			$replacements = array("/person/i" => "people",
+			                      "/man/i" => "men",
+			                      "/child/i" => "children",
+			                      "/cow/i" => "kine",
+			                      "/goose/i" => "geese",
+			                      "/(ax|test)is$/i" => "\\1es",
+			                      "/(octop|vir)us$/i" => "\\1ii",
+			                      "/(alias|status)$/i" => "\\1es",
+			                      "/(bu)s$/i" => "\\1ses",
+			                      "/(buffal|tomat)o$/i" => "\\1oes",
+			                      "/([ti])um$/i" => "\\1a",
+			                      "/sis$/i" => "ses",
+			                      "/(hive)$/i" => "\\1s",
+			                      "/([^aeiouy]|qu)y$/i" => "\\1ies",
+			                      "/^(ox)$/i" => "\\1en",
+			                      "/(matr|vert|ind)(?:ix|ex)$/i" => "\\1ices",
+			                      "/(x|ch|ss|sh)$/i" => "\\1es",
+			                      "/([m|l])ouse$/i" => "\\1ice",
+			                      "/(quiz)$/i" => "\\1zes");
+
+			# Test strings; loop through $strings to test.
+			#$strings = "person man child sex move cow axis testis octopus virus alias status bus buffalo tomato dementium crisis er... hive colloquy ox piss matrix vertex index mouse louse quiz moose onomatopoeia goose sheep fish series species rice money information equipment";
+			#$strings = explode(" ", $strings);
+
+			$done = false;
+			foreach ($replacements as $key => $val) {
+				if ($done) break;
+				if (in_array($string, $uncountable)) {
+					$replaced = $string;
+					break;
+				}
+
+				$replaced = preg_replace($key, $val, $string);
+				$done = ($replaced != $string);
+			}
+
+			if ($replaced == $string and !in_array($string, $uncountable))
+				return $string."s";
+			else
+				return $replaced;
+		}
+	}
+
+	/**
+	 * Function: depluralize
+	 * Look in $pluralizations for a depluralization of $string.
+	 *
+	 * Parameters:
+	 *     $string - The string to depluralize.
+	 */
+	function depluralize($string) {
+		global $pluralizations;
+		$copy = $pluralizations;
+		unset($copy["feathers"]);
+		$reversed = array_flip($copy);
+		return isset($reversed[$string]) ? $reversed[$string] : substr($string, 0, -1) ;
 	}
 
 	/**

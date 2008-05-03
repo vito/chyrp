@@ -57,9 +57,9 @@
 		 * Views posts of a specific feather.
 		 */
 		public function feather() {
-			global $private, $enabled_feathers, $plural_feathers, $posts;
+			global $private, $enabled_feathers, $posts;
 			$posts = Post::find(array("where" => "`feather` = :feather and ".$private.$enabled_feathers,
-			                          "params" => array(":feather" => $plural_feathers[$_GET['action']])));
+			                          "params" => array(":feather" => depluralize($_GET['action']))));
 		}
 
 		/**
@@ -76,7 +76,7 @@
 		 * Views a post.
 		 */
 		public function view() {
-			global $action, $private, $enabled_feathers, $post, $plural_feathers;
+			global $action, $private, $enabled_feathers, $post;
 
 			$trigger = Trigger::current();
 			$config = Config::current();
@@ -98,13 +98,10 @@
 			preg_match_all("/\(([^\)]+)\)/", $config->post_url, $matches);
 			$params = array();
 			foreach ($matches[1] as $attr)
-				if (in_array($attr, $times))
-				{
+				if (in_array($attr, $times)) {
 					$where.= " and ".$attr."(`created_at`) = :created".$attr;
 					$params[':created'.$attr] = $_GET[$attr];
-				}
-				elseif ($attr == "author")
-				{
+				} elseif ($attr == "author") {
 					$where.= " and `user_id` = :attrauthor";
 					$params[':attrauthor'] = $sql->select("users",
 					                                      "id",
@@ -113,18 +110,13 @@
 					                                      array(
 					                                          ":login" => $_GET['author']
 					                                      ), 1)->fetchColumn();
-				}
-				elseif ($attr == "feathers")
-				{
+				} elseif ($attr == "feathers") {
 					$where.= " and `feather` = :feather";
-					$params[':feather'] = @$plural_feathers[$_GET['feathers']];
-				}
-				else
-				{
+					$params[':feather'] = depluralize($_GET['feathers']);
+				} else {
 					list($where, $params, $attr) = $trigger->filter('main_controller_view', array($where, $params, $attr), true);
 
-					if ($attr !== null)
-					{
+					if ($attr !== null) {
 						$where.= " and `".$attr."` = :attr".$attr;
 						$params[':attr'.$attr] = $_GET[$attr];
 					}
@@ -185,7 +177,7 @@
 				cookie_cutter("chyrp_hide_admin", null, 0);
 
 			$route = Route::current();
-			$route->redirect("/");
+			redirect("/");
 		}
 
 		/**
@@ -225,7 +217,7 @@
 			cookie_cutter("chyrp_password", md5($_POST['password1']));
 
 			$route = Route::current();
-			$route->redirect('/');
+			redirect('/');
 		}
 
 		/**
@@ -249,7 +241,7 @@
 			cookie_cutter("chyrp_password", md5($_POST['password']));
 
 			$route = Route::current();
-			$route->redirect('/');
+			redirect('/');
 		}
 
 		/**
@@ -264,7 +256,7 @@
 			cookie_cutter("chyrp_password", "", time() - 2592000);
 
 			$route = Route::current();
-			$route->redirect('/');
+			redirect('/');
 		}
 
 		/**
@@ -287,7 +279,7 @@
 			cookie_cutter("chyrp_password", $password);
 
 			$route = Route::current();
-			$route->redirect('/');
+			redirect('/');
 		}
 	}
 	$main = new MainController();

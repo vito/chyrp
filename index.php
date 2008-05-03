@@ -7,15 +7,14 @@
 		case "index": case "search": case "drafts": case "feather":
 			$context = array("posts" => $posts);
 
-			if ($action == "feather")
+			if ($action == "feather") {
 				$theme->title = ucfirst($_GET['action']);
-			elseif ($action == "search") {
+				$context["feather"] = $_GET['action'];
+			} elseif ($action == "search") {
 				$theme->title = fix(sprintf(__("Search results for \"%s\""), urldecode($_GET['query'])), "html");
 				$context["search"] = urldecode($_GET['query']);
-			} elseif ($action == "feather") {
+			} elseif ($action == "drafts")
 				$theme->title = __("Drafts");
-				$context["feather"] = $_GET['action'];
-			}
 
 			$theme->load(array("content/".$action, "content/index"), $context);
 

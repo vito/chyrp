@@ -4,7 +4,7 @@
 	if ($config->enable_trackbacking) {
 		$post = new Post($_GET['id']);
 		if (empty($_POST['title']) && empty($_POST['url']) && empty($_POST['blog_name'])) {
-			$route->redirect($post->url());
+			redirect($post->url());
 			exit;
 		}
 

@@ -76,20 +76,6 @@
 		}
 
 		/**
-		 * Function: redirect
-		 * Redirects to the given URL and exits immediately.
-		 */
-		public function redirect($url) {
-			if ($url[0] == '/') {
-				# handle URIs without domain
-				$config = Config::current();
-				$url = $config->url.$url;
-			}
-			header("Location: ".html_entity_decode($url));
-			exit;
-		}
-
-		/**
 		 * Function: key_regexp
 		 * Converts the values in $config->post_url to regular expressions.
 		 *
@@ -113,7 +99,7 @@
 		 * This meaty function determines what exactly to do with the URL.
 		 */
 		public function determine_action() {
-			global $plural_feathers, $request, $grab_page;
+			global $request, $grab_page, $pluralizations;
 			$config = Config::current();
 			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls) return;
 
@@ -186,7 +172,7 @@
 			}
 
 			# Viewing Feathers
-			if (in_array($arg[0], array_keys($plural_feathers)) and (empty($arg[1]) or $arg[1] == "feed" or $arg[1] == "page"))
+			if (in_array($arg[0], array_values($pluralizations["feathers"])) and (empty($arg[1]) or $arg[1] == "feed" or $arg[1] == "page"))
 				return $_GET['action'] = $arg[0];
 
 			# Custom pages added by Modules, Feathers, Themes, etc.

@@ -95,7 +95,7 @@
 				exit("{ comment_id: ".$_POST['id']." }");
 			$config = Config::current();
 			$route = Route::current();
-			$route->redirect("/admin/?action=manage&sub=comment&updated");
+			redirect("/admin/?action=manage&sub=comment&updated");
 		}
 
 		static function admin_delete_comment_real($action) {
@@ -105,7 +105,7 @@
 			Comment::delete($_POST['id']);
 			$config = Config::current();
 			$route = Route::current();
-			$route->redirect("/admin/?action=manage&sub=comment&deleted");
+			redirect("/admin/?action=manage&sub=comment&deleted");
 		}
 
 		static function admin_mark_spam($action) {
@@ -139,7 +139,7 @@
 			            ));
 			$config = Config::current();
 			$route = Route::current();
-			$route->redirect("/admin/?action=manage&sub=comment&approved");
+			redirect("/admin/?action=manage&sub=comment&approved");
 		}
 
 		static function admin_deny_comment($action) {
@@ -156,7 +156,7 @@
 
 			$config = Config::current();
 			$route = Route::current();
-			$route->redirect("/admin/?action=manage&sub=comment&denied");
+			redirect("/admin/?action=manage&sub=comment&denied");
 		}
 
 		static function admin_manage_spam($action) {
@@ -164,12 +164,12 @@
 			$visitor = Visitor::current();
 			$config = Config::current();
 			$route = Route::current();
-			if (empty($_POST['comments'])) $route->redirect("/admin/?action=manage&sub=spam&noneselected");
+			if (empty($_POST['comments'])) redirect("/admin/?action=manage&sub=spam&noneselected");
 			if (isset($_POST['delete'])) {
 				if (!$visitor->group()->can("delete_comment")) return;
 				foreach ($_POST['comments'] as $id => $value)
 					Comment::delete($id);
-				$route->redirect("/admin/?action=manage&sub=spam&deleted");
+				redirect("/admin/?action=manage&sub=spam&deleted");
 			}
 			if (isset($_POST['despam'])) {
 				if (!$visitor->group()->can("edit_comment")) return;
@@ -188,9 +188,9 @@
 				}
 				$defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
 				$defensio->report_false_positives(array("owner-url" => $config->url, "signatures" => implode(",", $signatures)));
-				$route->redirect("/admin/?action=manage&sub=spam&despammed");
+				redirect("/admin/?action=manage&sub=spam&despammed");
 			}
-			$route->redirect("/admin/?action=manage&sub=spam");
+			redirect("/admin/?action=manage&sub=spam");
 		}
 
 		static function admin_purge_spam($action) {
@@ -203,7 +203,7 @@
 			             where `status` = 'spam'");
 			$config = Config::current();
 			$route = Route::current();
-			$route->redirect("/admin/?action=manage&sub=spam&purged");
+			redirect("/admin/?action=manage&sub=spam&purged");
 		}
 
 		static function new_post_options() {
@@ -306,7 +306,7 @@
 				$defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
 				$check = $defensio->validate_key(array("owner-url" => $config->url));
 				if ($check["status"] == "fail")
-					$route->redirect("/admin/?action=settings&sub=".$_GET['sub']."&updated&invalid_defensio");
+					redirect("/admin/?action=settings&sub=".$_GET['sub']."&updated&invalid_defensio");
 				else
 					$config->set("defensio_api_key", $_POST['defensio_api_key']);
 			}

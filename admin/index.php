@@ -17,9 +17,6 @@
 		public function load($action) {
 			global $admin, $paginate;
 
-			if (!file_exists(MAIN_DIR."/admin/layout/pages/".$action.".twig"))
-				error(__("Template Missing"), sprintf(__("Couldn't load template:<br /><br />%s"),"pages/".$action.".twig"));
-
 			$admin->context["title"]      = camelize($action, true);
 			$admin->context["site"]       = Config::current();
 			$admin->context["visitor"]    = Visitor::current();
@@ -36,6 +33,9 @@
 				$admin->$action();
 
 			Trigger::current()->call("admin_".$action);
+
+			if (!file_exists(MAIN_DIR."/admin/layout/pages/".$action.".twig"))
+				error(__("Template Missing"), sprintf(__("Couldn't load template:<br /><br />%s"),"pages/".$action.".twig"));
 
 			return $this->twig->getTemplate("pages/".$action.".twig")->display($admin->context);
 		}

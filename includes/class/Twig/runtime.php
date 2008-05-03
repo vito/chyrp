@@ -305,7 +305,7 @@ else {
 }
 
 function twig_translate_string_filter($string) {
-	return __($string, (ADMIN ? "default" : "theme"));
+	return __($string, (ADMIN ? "chyrp" : "theme"));
 }
 
 function twig_inspect_filter($thing) {

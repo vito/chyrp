@@ -21,11 +21,10 @@
 			if ($config->send_pingbacks)
 				send_pingbacks($_POST['caption'], $post->id);
 
-			$route = Route::current();
 			if (isset($_POST['bookmarklet']))
-				$route->redirect($route->url("bookmarklet/done/"));
+				redirect($route->url("bookmarklet/done/"));
 			else
-				$route->redirect($post->url());
+				redirect($post->url());
 		}
 		static function update() {
 			$post = new Post($_POST['id']);

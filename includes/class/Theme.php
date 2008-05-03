@@ -196,7 +196,7 @@
 		 * Outputs the Feed references.
 		 */
 		public function feeds() {
-			global $request, $plural_feathers;
+			global $request, $pluralizations;
 
 			$config = Config::current();
 			$request = ($config->clean_urls) ? rtrim($request, "/") : htmlspecialchars($_SERVER['REQUEST_URI']) ;
@@ -208,7 +208,7 @@
 
 			$route = Route::current();
 			$feeds = '<link rel="alternate" type="application/atom+xml" title="'.$config->name.' Feed" href="'.$route->url("feed/").'" />'."\n";
-			foreach ($plural_feathers as $plural => $normal)
+			foreach ($pluralizations["feathers"] as $normal => $plural)
 				$feeds.= "\t\t".'<link rel="alternate" type="application/atom+xml" title="'.ucfirst($plural).' Feed" href="'.$route->url($plural."/feed/").'" />'."\n";
 			$feeds.= "\t\t".'<link rel="alternate" type="application/atom+xml" title="Current Page (if applicable)" href="'.$config->url.$request.$append.'" />';
 			return $feeds;

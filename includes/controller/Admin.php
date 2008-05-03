@@ -11,7 +11,7 @@
 		public $context = array();
 
 		/**
-		 * Function: write_post
+		 * Function: write
 		 * Post writing.
 		 */
 		public function write() {
@@ -39,12 +39,9 @@
 			global $feathers;
 			if (empty($_POST)) return;
 
-			$config = Config::current();
-			$visitor = Visitor::current();
-
-			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
-			if (!$visitor->group()->can("add_post"))
+			if (!Visitor::current()->group()->can("add_post"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
 			$feathers[$_POST['feather']]->submit();
@@ -55,12 +52,10 @@
 		 * Adds a page when the form is submitted. Shows an error if the user lacks permissions.
 		 */
 		public function add_page() {
-			$visitor = Visitor::current();
 			if (empty($_POST)) return;
-			$config = Config::current();
-			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
-			if (!$visitor->group()->can("add_page"))
+			if (!Visitor::current()->group()->can("add_page"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to create pages."));
 
 			$show_in_list = !empty($_POST['show_in_list']);
@@ -69,8 +64,7 @@
 
 			Page::add($_POST['title'], $_POST['body'], $_POST['parent_id'], $show_in_list, $clean, $url);
 
-			$route = Route::current();
-			$route->redirect($route->url("page/".$url."/"));
+			redirect($route->url("page/".$url."/"));
 		}
 
 		/**
@@ -78,12 +72,10 @@
 		 * Add a user when the form is submitted. Shows an error if the user lacks permissions.
 		 */
 		public function add_user() {
-			$visitor = Visitor::current();
 			if (empty($_POST)) return;
-			$config = Config::current();
-			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
-			if (!$visitor->group()->can("edit_user"))
+			if (!Visitor::current()->group()->can("edit_user"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to edit users."));
 
 			if (empty($_POST['login']))
@@ -109,8 +101,7 @@
 
 			User::add($_POST['login'], $_POST['password1'], $_POST['email'], $_POST['full_name'], $_POST['website'], $_POST['group_id']);
 
-			$route = Route::current();
-			$route->redirect("/admin/?action=manage&sub=user&added");
+			redirect("/admin/?action=manage&sub=user&added");
 		}
 
 		/**
@@ -119,17 +110,14 @@
 		 */
 		public function add_group() {
 			if (empty($_POST)) return;
-			$config = Config::current();
-			$visitor = Visitor::current();
-			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
-			if (!$visitor->group()->can("add_group"))
+			if (!Visitor::current()->group()->can("add_group"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to create groups."));
 
 			Group::add($_POST['name'], array_keys($_POST['permissions']));
 
-			$route = Route::current();
-			$route->redirect("/admin/?action=manage&sub=group&added");
+			redirect("/admin/?action=manage&sub=group&added");
 		}
 
 		/**
@@ -139,9 +127,7 @@
 		public function update_post() {
 			global $feathers;
 			if (empty($_POST)) return;
-			$config = Config::current();
-			$visitor = Visitor::current();
-			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
 			$post = new Post($_POST['id']);
 			if (!$post->editable())
@@ -150,10 +136,8 @@
 			$feather = Post::info("feather", $_POST['id']);
 			$feathers[$feather]->update();
 
-			if (!isset($_POST['ajax'])) {
-				$route = Route::current();
-				$route->redirect("/admin/?action=manage&sub=post&updated=".$_POST['id']);
-			}
+			if (!isset($_POST['ajax']))
+				redirect("/admin/?action=manage&sub=post&updated=".$_POST['id']);
 			else
 				exit((string) $_POST['id']);
 		}
@@ -164,11 +148,9 @@
 		 */
 		public function update_page() {
 			if (empty($_POST)) return;
-			$config = Config::current();
-			$visitor = Visitor::current();
-			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
-			if (!$visitor->group()->can("edit_page"))
+			if (!Visitor::current()->group()->can("edit_page"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to edit pages."));
 
 			$show_in_list = !empty($_POST['show_in_list']);
@@ -176,10 +158,8 @@
 			$page = new Page($_POST['id']);
 			$page->update($_POST['title'], $_POST['body'], $_POST['parent_id'], $show_in_list, $page->list_order, $_POST['slug']);
 
-			if (!isset($_POST['ajax'])) {
-				$route->redirect("/admin/?action=manage&sub=page&updated=".$_POST['id']);
-				$route = Route::current();
-			}
+			if (!isset($_POST['ajax']))
+				redirect("/admin/?action=manage&sub=page&updated=".$_POST['id']);
 		}
 
 		/**
@@ -189,10 +169,9 @@
 		public function update_user() {
 			if (empty($_POST)) return;
 
-			$config = Config::current();
 			$visitor = Visitor::current();
 
-			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
 			if (!$visitor->group()->can("edit_user"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to edit users."));
@@ -207,8 +186,7 @@
 			if ($_POST['id'] == $visitor->id)
 				cookie_cutter("chyrp_password", $password);
 
-			$route = Route::current();
-			$route->redirect("/admin/?action=manage&sub=user&updated");
+			redirect("/admin/?action=manage&sub=user&updated");
 		}
 
 		/**
@@ -216,13 +194,10 @@
 		 * Updates a group when the form is submitted. Shows an error if the user lacks permissions.
 		 */
 		public function update_group() {
-			$visitor = Visitor::current();
-			$route = Route::current();
 			if (empty($_POST)) return;
-			$config = Config::current();
-			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
-			if (!$visitor->group()->can("edit_group"))
+			if (!Visitor::current()->group()->can("edit_group"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to edit groups."));
 
 			$permissions = array_keys($_POST['permissions']);
@@ -230,10 +205,10 @@
 			$group = new Group($_POST['id']);
 
 			if ($group->no_results)
-				$route->redirect("/admin/?action=manage&sub=group");
+				redirect("/admin/?action=manage&sub=group");
 
 			$group->update($_POST['name'], $permissions);
-			$route->redirect("/admin/?action=manage&sub=group&updated");
+			redirect("/admin/?action=manage&sub=group&updated");
 		}
 
 		/**
@@ -241,12 +216,11 @@
 		 * Grabs the information for post editing in the Admin area. Shows an error if the user lacks permissions.
 		 */
 		public function edit() {
-			$visitor = Visitor::current();
 			/*
 				TODO Figure out why this and the below are different.
 			*/
 			$type = $_GET['sub'];
-			if (!$visitor->group()->can("edit_".$type))
+			if (!Visitor::current()->group()->can("edit_".$type))
 				error(__("Access Denied"), sprintf(__("You do not have sufficient privileges to edit %ss."), $type));
 			if (empty($_GET['id']))
 				error(__("No ID Specified"), sprintf(__("An ID is required to edit a %s."), $type));
@@ -267,8 +241,7 @@
 		 */
 		public function delete() {
 			$type = $_GET['sub'];
-			$visitor = Visitor::current();
-			if (!$visitor->group()->can("delete_".$type))
+			if (!Visitor::current()->group()->can("delete_".$type))
 				error(__("Access Denied"), sprintf(__("You do not have sufficient privileges to delete %ss."), $type));
 			if (empty($_GET['id']))
 				error(__("No ID Specified"), sprintf(__("An ID is required to delete a %s."), $type));
@@ -286,18 +259,16 @@
 		 */
 		public function delete_post_real() {
 			if (empty($_POST)) return;
-			$visitor = Visitor::current();
-			$config = Config::current();
-			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
+
 			$post = new Post($_POST['id']);
 			if (!$post->deletable())
 				error(__("Access Denied"), __("You do not have sufficient privileges to delete this post."));
 
 			Post::delete($_POST['id']);
 
-			$route = Route::current();
-			$route->redirect("/admin/?action=manage&sub=post&deleted");
+			redirect("/admin/?action=manage&sub=post&deleted");
 		}
 
 		/**
@@ -306,17 +277,14 @@
 		 */
 		public function delete_page_real() {
 			if (empty($_POST)) return;
-			$visitor = Visitor::current();
-			$config = Config::current();
-			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
-			if (!$visitor->group()->can("delete_page"))
+			if (!Visitor::current()->group()->can("delete_page"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to delete pages."));
 
 			Page::delete($_POST['id']);
 
-			$route = Route::current();
-			$route->redirect("/admin/?action=manage&sub=page&deleted");
+			redirect("/admin/?action=manage&sub=page&deleted");
 		}
 
 		/**
@@ -324,18 +292,15 @@
 		 * Deletes a user. Shows an error if the user lacks permissions.
 		 */
 		public function delete_user_real() {
-			$visitor = Visitor::current();
 			if (empty($_POST)) return;
-			$config = Config::current();
-			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
-			if (!$visitor->group()->can("delete_user"))
+			if (!Visitor::current()->group()->can("delete_user"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to delete users."));
 
 			User::delete($_POST['id']);
 
-			$route = Route::current();
-			$route->redirect("/admin/?action=manage&sub=user&deleted");
+			redirect("/admin/?action=manage&sub=user&deleted");
 		}
 
 		/**
@@ -343,12 +308,10 @@
 		 * Deletes a group. Shows an error if the user lacks permissions.
 		 */
 		public function delete_group_real() {
-			$visitor = Visitor::current();
 			if (empty($_POST)) return;
-			$config = Config::current();
-			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
-			if (!$visitor->group()->can("delete_group"))
+			if (!Visitor::current()->group()->can("delete_group"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to delete groups."));
 
 			$sql = SQL::current();
@@ -362,6 +325,7 @@
 				$user->update($user->login, $user->password, $user->full_name, $user->email, $user->website, $_POST['move_group']);
 			}
 
+			$config = Config::current();
 			if (!empty($_POST['default_group']))
 				$config->set("default_group", $_POST['default_group']);
 			if (!empty($_POST['guest_group']))
@@ -369,8 +333,7 @@
 
 			Group::delete($_POST['id']);
 
-			$route = Route::current();
-			$route->redirect("/admin/?action=manage&sub=group&deleted");
+			redirect("/admin/?action=manage&sub=group&deleted");
 		}
 
 		/**
@@ -378,8 +341,7 @@
 		 * Enables or disables a module or feather. Shows an error if the user lacks permissions.
 		 */
 		public function toggle() {
-			$visitor = Visitor::current();
-			if (!$visitor->group()->can("change_settings"))
+			if (!Visitor::current()->group()->can("change_settings"))
 				if (isset($_GET['module']))
 					error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable modules."));
 				else
@@ -404,7 +366,6 @@
 
 				require MAIN_DIR."/".$type."s/".$_GET[$type]."/".$type.".php";
 
-				$route = Route::current();
 				if ($info["uploader"])
 					if (!file_exists(MAIN_DIR."/upload"))
 						$info["notifications"][] = __("Please create the <code>/upload</code> directory at your Chyrp install's root and CHMOD it to 777.");
@@ -418,16 +379,15 @@
 				$config->set($enabled_array, $new);
 
 				if (!isset($_POST['ajax']))
-					$route->redirect("/admin/?action=extend&sub=".$type."s&enabled=".$_GET[$type]);
+					redirect("/admin/?action=extend&sub=".$type."s&enabled=".$_GET[$type]);
 				else {
-					$begin = '{ notifications: [';
-					$notifications = "";
-					for ($i = 0; $i < count($info["notifications"]); $i++) {
-						$notifications.= '"'.addslashes(__($info["notifications"][$i], $_GET[$type])).'"';
-						if ($i + 1 != count($info["notifications"])) $notifications.= ', ';
-					}
-					$end = '] }';
-					exit($begin.$notifications.$end);
+					foreach ($info["notifications"] as &$notification)
+						$notification = addslashes(__($notification, $_GET[$type]));
+
+					if (!empty($info["notifications"]))
+						$notifications = '"'.implode('", "', $info["notifications"]).'"';
+
+					exit('{ notifications: ['.$notifications.'] }');
 				}
 			} else {
 				$new = array();
@@ -441,10 +401,8 @@
 
 				$config->set($enabled_array, $new);
 
-				if (!isset($_POST['ajax'])) {
-					$route = Route::current();
-					$route->redirect("/admin/?action=extend&sub=".$type."s&disabled=".$_GET[$type]);
-				}
+				if (!isset($_POST['ajax']))
+					redirect("/admin/?action=extend&sub=".$type."s&disabled=".$_GET[$type]);
 				else
 					exit('{ notifications: [] }');
 			}
@@ -455,14 +413,13 @@
 		 * Changes Chyrp settings. Shows an error if the user lacks permissions.
 		 */
 		public function settings() {
-			$visitor = Visitor::current();
 			if (empty($_POST)) return;
-			$config = Config::current();
-			if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
-			if (!$visitor->group()->can("change_settings"))
+			if (!Visitor::current()->group()->can("change_settings"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
+			$config = Config::current();
 			switch($_GET['sub']) {
 				case "website":
 					$can_register = !empty($_POST['can_register']);
@@ -497,8 +454,7 @@
 					$trigger->call("change_settings", $_GET['sub']);
 					break;
 			}
-			$route = Route::current();
-			$route->redirect("/admin/?action=settings&sub=".$_GET['sub']."&updated");
+			redirect("/admin/?action=settings&sub=".$_GET['sub']."&updated");
 		}
 
 		/**
@@ -506,12 +462,9 @@
 		 * Changes the theme. Shows an error if the user lacks permissions.
 		 */
 		public function change_theme() {
-			$visitor = Visitor::current();
-			if (!$visitor->group()->can("change_settings") or empty($_GET['theme'])) return;
-			$config = Config::current();
-			$config->set("theme", $_GET['theme']);
-			$route = Route::current();
-			$route->redirect("/admin/?action=extend&sub=themes&changed");
+			if (!Visitor::current()->group()->can("change_settings") or empty($_GET['theme'])) return;
+			Config::current()->set("theme", $_GET['theme']);
+			redirect("/admin/?action=extend&sub=themes&changed");
 		}
 
 		/**
@@ -524,7 +477,7 @@
 				$page = new Page($id);
 				$page->update($page->title, $page->body, $page->parent_id, $page->show_in_list, $order, $page->url);
 			}
-			$route->redirect("/admin/?action=manage&sub=page&reordered");
+			redirect("/admin/?action=manage&sub=page&reordered");
 		}
 
 		public function determine_action() {
