@@ -228,8 +228,14 @@ button.right {
 	margin: .7em 0 0 .5em;
 }
 button:hover {
-	background-color: #e0ebfe;
-	border-color: #b3bccb;
+	background-color: #f7f7f7;
+	border-color: #d1d1d1;
+}
+button:active {
+	background-color: #d7d7d7;
+    border: 0;
+    border-left: 1px solid #b1b1b1;
+    border-top: 1px solid #b1b1b1;
 }
 button.boo {
 	background: #faebe4;
@@ -241,6 +247,12 @@ button.boo:hover {
 	color: #fff;
 	border-color: #9f1000;
 }
+button.boo:active {
+    background: #b30600;
+    border: 0;
+    border-left: 1px solid #7d0000;
+    border-top: 1px solid #7d0000;
+}
 button.yay {
 	background: #ebfae4;
 	border-color: #bdd6b5;
@@ -250,6 +262,12 @@ button.yay:hover {
 	background: #189100;
 	color: #fff;
 	border-color: #105f00;
+}
+button.yay:active {
+    background: #067000;
+    border: 0;
+    border-left: 1px solid #003d00;
+    border-top: 1px solid #003d00;
 }
 button img {
 	margin: 0 5px -3px -2px;

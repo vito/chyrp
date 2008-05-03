@@ -248,10 +248,10 @@
 		 * Loads a theme's file and extracts the passed array into the scope.
 		 */
 		public function load($file, $context = array()) {
-			global $action, $viewing;
+			global $action;
 
 			if (!file_exists($this->directory.$file.".twig"))
-				error(__("Theme Template Missing"), sprintf(__("Couldn't load theme template:<br /><br />%s"), $file.".twig"));
+				error(__("Template Missing"), sprintf(__("Couldn't load template:<br /><br />%s"), $file.".twig"));
 
 			$this->file = $file;
 			$this->prepare($context);

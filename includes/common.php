@@ -80,6 +80,7 @@
 	$sql->connect();
 
 	# File: Helpers
+	# Various functions used throughout Chyrp's code.
 	require_once INCLUDES_DIR."/helpers.php";
 
 	sanitize_input($_GET);
