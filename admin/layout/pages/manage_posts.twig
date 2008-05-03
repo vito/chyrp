@@ -1,0 +1,16 @@
+{% extends "layout.twig" %}
+{% block content %}
+	<h1>Manage Posts</h1>
+<table border="0" cellspacing="0" cellpadding="0" class="wide">
+	<tr class="head">
+		<th>Title</th>
+		<th>Excerpt</th>
+	</tr>
+{% for post in posts %}
+	<tr{% if loop.last %} class="last"{% endif %}>
+		<td>${ post.title | truncate }</td>
+		<td>${ post.excerpt | truncate }</td>
+	</tr>
+{% endfor %}
+</table>
+{% endblock %}

@@ -250,6 +250,11 @@
 		public function load($file, $context = array()) {
 			global $action;
 
+			if (is_array($file))
+				for ($i = 0; $i < count($file); $i++)
+					if (file_exists($this->directory.$file[$i].".twig") or ($i + 1) == count($file))
+						return $this->load($file[$i], $context);
+
 			if (!file_exists($this->directory.$file.".twig"))
 				error(__("Template Missing"), sprintf(__("Couldn't load template:<br /><br />%s"), $file.".twig"));
 

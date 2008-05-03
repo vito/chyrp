@@ -86,7 +86,7 @@
 	 *     $keep_words - Whether or not to keep words in-tact.
 	 *     $minimum - If the truncated string is less than this and $keep_words is true, it will act as if $keep_words is false.
 	 */
-	function truncate($text, $numb, $keep_words = true, $minimum = 10) {
+	function truncate($text, $numb = 50, $keep_words = true, $minimum = 10) {
 		$text = html_entity_decode($text, ENT_QUOTES);
 		$original = $text;
 		$numb -= 3;

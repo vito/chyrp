@@ -5,19 +5,19 @@
 
 	switch($action) {
 		case "index": case "search": case "drafts": case "feather":
-			$theme->title = ($action == "feather") ? ucfirst($_GET['action']) : "" ;
-			$theme->title = ($action == "search") ? fix(sprintf(__("Search results for \"%s\""), urldecode($_GET['query'])), "html") : $theme->title ;
-			$theme->title = ($action == "drafts") ? __("Drafts") : $theme->title ;
-
-			$file = ($theme->file_exists("content/".$action)) ?
-			        "content/".$action :
-			        "content/index" ;
 			$context = array("posts" => $posts);
-			if ($action == "search")
-				$context["search"] = urldecode($_GET['query']);
+
 			if ($action == "feather")
+				$theme->title = ucfirst($_GET['action']);
+			elseif ($action == "search") {
+				$theme->title = fix(sprintf(__("Search results for \"%s\""), urldecode($_GET['query'])), "html");
+				$context["search"] = urldecode($_GET['query']);
+			} elseif ($action == "feather") {
+				$theme->title = __("Drafts");
 				$context["feather"] = $_GET['action'];
-			$theme->load($file, $context);
+			}
+
+			$theme->load(array("content/".$action, "content/index"), $context);
 
 			break;
 		case "view": case "id":
@@ -31,10 +31,7 @@
 
 			$post->date_shown = true;
 
-			$file = ($theme->file_exists("content/view")) ?
-			        "content/view" :
-			        "content/index" ;
-			$theme->load($file, array("post" => $post, "posts" => array($post)));
+			$theme->load(array("content/view", "content/index"), array("post" => $post, "posts" => array($post)));
 			break;
 		case "archive":
 			fallback($_GET['year']);

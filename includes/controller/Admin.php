@@ -5,6 +5,21 @@
 	 */
 	class AdminController {
 		/**
+		 * Variable: $context
+		 * Contains the context for various admin pages, to be passed to the Twig templates.
+		 */
+		public $context = array();
+
+		/**
+		 * Function: manage_posts
+		 * Post management page.
+		 */
+		public function manage_posts() {
+			global $posts;
+			$this->context["posts"] = Post::find();
+		}
+
+		/**
 		 * Function: add_post
 		 * Adds a post when the form is submitted. Shows an error if the user lacks permissions.
 		 */
@@ -532,30 +547,28 @@
 		}
 
 		public function determine_context($action) {
-			$context = array();
-
-			$context["title"] = camelize($action, true);
-			$context["site"] = Config::current();
-			$context["visitor"] = Visitor::current();
-			$context["visitor"]->logged_in = logged_in();
-			$context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);
-			$context["route"] = array("action" => $action);
-			$context["hide_admin"] = isset($_COOKIE["chyrp_hide_admin"]);
-			$context["sql_debug"] = SQL::current()->debug;
-			$context["POST"] = $_POST;
-			$context["GET"] = $_GET;
+			$this->context["title"] = camelize($action, true);
+			$this->context["site"] = Config::current();
+			$this->context["visitor"] = Visitor::current();
+			$this->context["visitor"]->logged_in = logged_in();
+			$this->context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);
+			$this->context["route"] = array("action" => $action);
+			$this->context["hide_admin"] = isset($_COOKIE["chyrp_hide_admin"]);
+			$this->context["sql_debug"] = SQL::current()->debug;
+			$this->context["POST"] = $_POST;
+			$this->context["GET"] = $_GET;
 
 			switch($action) {
 				case "write":
 					global $feathers;
-					$context["feathers"] = $feathers;
-					$context["feather"] = fallback($_GET['feather'], Config::current()->enabled_feathers[0], true);
-					$context["featherTEMP"] = $feathers[$context["feather"]];
-					$context["GET"]["feather"] = $context["feather"];
+					$this->context["feathers"] = $feathers;
+					$this->context["feather"] = fallback($_GET['feather'], Config::current()->enabled_feathers[0], true);
+					$this->context["featherTEMP"] = $feathers[$this->context["feather"]];
+					$this->context["GET"]["feather"] = $this->context["feather"];
 					break;
 			}
 
-			return $context;
+			return $this->context;
 		}
 	}
 	$admin = new AdminController();

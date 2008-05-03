@@ -6,6 +6,5 @@
 
 	$theme->title = sprintf(__("Posts tagged with \"%s\"", "tags"), $tag->name);
 
-	$file = ($theme->file_exists("content/tag")) ? "content/tag" : "content/index" ;
-	$theme->load($file, array("posts" => $posts, "tag" => $tag));
+	$theme->load(array("content/twig", "content/index"), array("posts" => $posts, "tag" => $tag));
 ?>

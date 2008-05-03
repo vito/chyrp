@@ -38,6 +38,7 @@ $twig_filters = array(
 	'lstrip' =>		'ltrim',
 	'translate' =>	'twig_translate_string_filter',
 	'normalize' =>	'normalize',
+	'truncate' =>	'truncate',
 
 	// array helpers
 	'join' =>		'twig_join_filter',
@@ -300,7 +301,7 @@ function twig_translate_string_filter($string) {
 }
 
 function twig_inspect_filter($thing) {
-	return '<pre class="chyrp_inspect"><code>'.var_export($thing, true).'</code></pre>';
+	return '<pre class="chyrp_inspect"><code>'.htmlspecialchars(var_export($thing, true)).'</code></pre>';
 }
 
 function twig_split_filter($string, $cut = " ") {
