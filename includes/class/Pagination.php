@@ -90,7 +90,7 @@
 		 *     $clean_urls - Whether to link with dirty or clean URLs.
 		 */
 		public function next_page_url($var = "page", $clean_urls = true) {
-			global $viewing;
+			global $action;
 			$request = rtrim($_SERVER['REQUEST_URI'], "/");
 			$only_page = (count($_GET) == 2 and $_GET['action'] == "index" and isset($_GET[$var]));
 
@@ -112,7 +112,7 @@
 		 *     $clean_urls - Whether to link with dirty or clean URLs.
 		 */
 		public function prev_page_url($var = "page", $clean_urls = true) {
-			global $viewing;
+			global $action;
 			$request = rtrim($_SERVER['REQUEST_URI'], "/");
 			$only_page = (count($_GET) == 2 and $_GET['action'] == "index" and isset($_GET[$var]));
 

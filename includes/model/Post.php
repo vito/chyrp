@@ -202,6 +202,64 @@
 		}
 
 		/**
+		 * Function: any_editable
+		 * Checks if the <Visitor> can edit any posts.
+		 */
+		static function any_editable() {
+			$visitor = Visitor::current();
+
+			# Can they edit posts?
+			if ($visitor->group()->can("edit_post"))
+				return true;
+
+			# Can they edit drafts?
+			if ($visitor->group()->can("edit_draft") and
+			    Post::find(array("where" => "`status` = 'draft'")))
+				return true;
+
+			# Can they edit their own posts, and do they have any?
+			if ($visitor->group()->can("edit_own_post") and
+			    Post::find(array("where" => "`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
+				return true;
+
+			# Can they edit their own drafts, and do they have any?
+			if ($visitor->group()->can("edit_own_draft") and
+			    Post::find(array("where" => "`status` = 'draft' and `user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
+				return true;
+
+			return false;
+		}
+
+		/**
+		 * Function: any_deletable
+		 * Checks if the <Visitor> can delete any posts.
+		 */
+		static function any_deletable() {
+			$visitor = Visitor::current();
+
+			# Can they delete posts?
+			if ($visitor->group()->can("delete_post"))
+				return true;
+
+			# Can they delete drafts?
+			if ($visitor->group()->can("delete_draft") and
+			    Post::find(array("where" => "`status` = 'draft'")))
+				return true;
+
+			# Can they delete their own posts, and do they have any?
+			if ($visitor->group()->can("delete_own_post") and
+			    Post::find(array("where" => "`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
+				return true;
+
+			# Can they delete their own drafts, and do they have any?
+			if ($visitor->group()->can("delete_own_draft") and
+			    Post::find(array("where" => "`status` = 'draft' and `user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
+				return true;
+
+			return false;
+		}
+
+		/**
 		 * Function: find
 		 * Grab all posts that match the passed options.
 		 *

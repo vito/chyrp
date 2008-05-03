@@ -15,13 +15,29 @@
 		}
 
 		public function load($action) {
-			global $admin;
+			global $admin, $paginate;
 
 			if (!file_exists(MAIN_DIR."/admin/layout/pages/".$action.".twig"))
 				error(__("Template Missing"), sprintf(__("Couldn't load template:<br /><br />%s"),"pages/".$action.".twig"));
 
-			$template = $this->twig->getTemplate("pages/".$action.".twig");
-			return $template->display($admin->determine_context($action));
+			$admin->context["title"]      = camelize($action, true);
+			$admin->context["site"]       = Config::current();
+			$admin->context["visitor"]    = Visitor::current();
+			$admin->context["logged_in"]  = logged_in();
+			$admin->context["stats"]      = array("load" => timer_stop(), "queries" => SQL::current()->queries);
+			$admin->context["route"]      = array("action" => $action);
+			$admin->context["hide_admin"] = isset($_COOKIE["chyrp_hide_admin"]);
+			$admin->context["sql_debug"]  = SQL::current()->debug;
+			$admin->context["pagination"] = $paginate;
+			$admin->context["POST"]       = $_POST;
+			$admin->context["GET"]        = $_GET;
+
+			if (method_exists($admin, $action))
+				$admin->$action();
+
+			Trigger::current()->call("admin_".$action);
+
+			return $this->twig->getTemplate("pages/".$action.".twig")->display($admin->context);
 		}
 	}
 

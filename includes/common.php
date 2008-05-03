@@ -160,8 +160,7 @@
 	# File: Admin
 	# See Also:
 	#     <Admin Controller>
-	if (ADMIN)
-		require_once INCLUDES_DIR."/controller/Admin.php";
+	require_once INCLUDES_DIR."/controller/Admin.php";
 
 	timer_start();
 
@@ -227,12 +226,6 @@
 	$trigger->call("runtime");
 
 	if (!JAVASCRIPT and !XML_RPC) {
-		/**
-		 * Boolean: $is_feed
-		 * Whether they're viewing the feed or not.
-		 */
-		$is_feed = isset($_GET['feed']);
-
 		if (in_array($action, array_keys($plural_feathers)))
 			$action = "feather";
 
@@ -256,28 +249,17 @@
 		$enabled_feathers = " and `feather` in ('".implode("', '", $config->enabled_feathers)."')";
 
 		if (!empty($action) and (method_exists($main, $action) or (ADMIN and method_exists($admin, $action) or ADMIN and $trigger->exists("admin_".$action)) or $trigger->exists("route_".$action))) {
-			if ($is_feed)
+			if (isset($_GET['feed']))
 				$config->posts_per_page = $config->feed_items;
 
 			if (method_exists($main, $action))
 				$main->$action();
 
-			if (ADMIN and method_exists($admin, $action))
-				$admin->$action();
-
 			# Call any plugin route functions
 			$trigger->call("route_".$action);
-
-			if (ADMIN)
-				$trigger->call("admin_".$action);
 		}
 
-		/**
-		 * Boolean: $viewing
-		 * Returns whether they're viewing a post or not.
-		 */
-		$viewing = ($action == "view");
-		if ($is_feed)
+		if (isset($_GET['feed']))
 			if ($trigger->exists($action."_feed")) # What about custom feeds?
 				$trigger->call($action."_feed");
 			elseif (isset($posts)) # Are there already posts to show?

@@ -746,7 +746,7 @@ $(function(){
 		}
 
 		static function filter_post($post) {
-			global $paginate, $viewing;
+			global $paginate, $action;
 			$sql = SQL::current();
 			$config = Config::current();
 			$trigger = Trigger::current();
@@ -756,7 +756,7 @@ $(function(){
 			$post->last_comment = ($get_last_comment->rowCount() > 0) ? $get_last_comment->fetchColumn() : 0 ;
 			$post->commentable = Comment::user_can($post->id);
 
-			if ($viewing) {
+			if ($action == "view") {
 				$get_comments = $paginate->select("comments", # table
 				                                  "*", # fields
 				                                  "`post_id` = :post_id and (

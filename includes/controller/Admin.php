@@ -11,6 +11,18 @@
 		public $context = array();
 
 		/**
+		 * Function: write_post
+		 * Post writing.
+		 */
+		public function write() {
+			global $feathers;
+			$this->context["feathers"]       = $feathers;
+			$this->context["feather"]        = fallback($_GET['feather'], Config::current()->enabled_feathers[0], true);
+			$this->context["featherTEMP"]    = $feathers[$this->context["feather"]];
+			$this->context["GET"]["feather"] = $this->context["feather"];
+		}
+
+		/**
 		 * Function: manage_posts
 		 * Post management page.
 		 */
@@ -526,52 +538,9 @@
 			if ($visitor->group()->can("change_settings"))
 				return "settings";
 
-			# "Manage", if they can manage posts.
-			if ($visitor->group()->can("edit_post") or $visitor->group()->can("delete_post"))
+			# "Manage", if they can manage any posts.
+			if (Post::any_editable() or Post::any_deletable())
 				return "manage";
-
-			# "Manage", if they can manage drafts.
-			if (($visitor->group()->can("edit_draft") or $visitor->group()->can("delete_draft")) and
-			    Post::find(array("where" => "`status` = 'draft'")))
-				return "manage";
-
-			# "Manage", if they can manage their own posts and they have some.
-			if (($visitor->group()->can("edit_own_post") or $visitor->group()->can("delete_own_post")) and
-			    Post::find(array("where" => "`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
-				return "manage";
-
-			# "Manage", if they can manage their own drafts and they have some.
-			if (($visitor->group()->can("edit_own_draft") or $visitor->group()->can("delete_own_draft")) and
-			    Post::find(array("where" => "`status` = 'draft' and `user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
-				return "manage";
-		}
-
-		public function determine_context($action) {
-			global $paginate;
-
-			$this->context["title"] = camelize($action, true);
-			$this->context["site"] = Config::current();
-			$this->context["visitor"] = Visitor::current();
-			$this->context["visitor"]->logged_in = logged_in();
-			$this->context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);
-			$this->context["route"] = array("action" => $action);
-			$this->context["hide_admin"] = isset($_COOKIE["chyrp_hide_admin"]);
-			$this->context["sql_debug"] = SQL::current()->debug;
-			$this->context["pagination"] = $paginate;
-			$this->context["POST"] = $_POST;
-			$this->context["GET"] = $_GET;
-
-			switch($action) {
-				case "write":
-					global $feathers;
-					$this->context["feathers"] = $feathers;
-					$this->context["feather"] = fallback($_GET['feather'], Config::current()->enabled_feathers[0], true);
-					$this->context["featherTEMP"] = $feathers[$this->context["feather"]];
-					$this->context["GET"]["feather"] = $this->context["feather"];
-					break;
-			}
-
-			return $this->context;
 		}
 	}
 	$admin = new AdminController();

@@ -74,7 +74,6 @@
 
 			$post = new Post($grab_post->fetchColumn());
 
-			$viewing = false;
 			$date_shown = true;
 			$last = false;
 
