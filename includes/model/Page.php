@@ -254,7 +254,7 @@
 
 			fallback($text, __("Edit"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=page&amp;id='.$this->id.'" title="Edit" class="page_edit_link" id="page_edit_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=edit_page&amp;id='.$this->id.'" title="Edit" class="page_edit_link" id="page_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
 		/**
@@ -272,6 +272,6 @@
 
 			fallback($text, __("Delete"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=page&amp;id='.$this->id.'" title="Delete" class="page_delete_link" id="page_delete_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=delete_page&amp;id='.$this->id.'" title="Delete" class="page_delete_link" id="page_delete_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 	}

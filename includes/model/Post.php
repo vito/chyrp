@@ -209,6 +209,11 @@
 		 * An array of <Post>s from the result.
 		 */
 		static function find($options = array()) {
+			global $private, $enabled_feathers;
+
+			if (!isset($options["where"]))
+				$options["where"] = $private.$enabled_feathers;
+
 			$posts = parent::search(get_class(), $options);
 
 			foreach ($posts as $index => $post)
@@ -499,7 +504,7 @@
 
 			fallback($text, __("Edit"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=post&amp;id='.$this->id.'" title="Edit" class="post_edit_link" id="post_edit_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=edit_post&amp;id='.$this->id.'" title="Edit" class="post_edit_link" id="post_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
 		/**
@@ -516,7 +521,7 @@
 
 			fallback($text, __("Delete"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=post&amp;id='.$this->id.'" title="Delete" class="post_delete_link" id="post_delete_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=delete_post&amp;id='.$this->id.'" title="Delete" class="post_delete_link" id="post_delete_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
 		public function trackback_url() {

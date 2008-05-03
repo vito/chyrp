@@ -208,6 +208,11 @@ table td.center {
 table td a:link, table td a:visited {
 	border: none;
 }
+tr.draft, tr.draft td, tr.draft td.main {
+	background-color: #dff4ff;
+	border-color: #c2e1ef;
+	color: #336699;
+}
 /* @end */
 
 /* @group Buttons */

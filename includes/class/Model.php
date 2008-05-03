@@ -58,7 +58,7 @@
 			else
 				$order = "`created_at` desc, `id` desc";
 
-			$where = fallback($options["where"], ($model == "Post") ? $private.$enabled_feathers : null, true);
+			$where = fallback($options["where"], null, true);
 			$from = fallback($options["from"], strtolower($model)."s", true);
 			$params = fallback($options["params"], array(), true);
 			$select = fallback($options["select"], "*", true);
@@ -67,7 +67,9 @@
 			$per_page = fallback($options["per_page"], Config::current()->posts_per_page, true);
 			$page_var = fallback($options["page_var"], "page", true);
 
-			$grab = (!$pagination) ? SQL::current()->select($from, $select, $where, $order, $params) : $paginate->select($from, $select, $where, $order, $per_page, $page_var, $params) ;
+			$grab = (!$pagination) ?
+			         SQL::current()->select($from, $select, $where, $order, $params) :
+			         $paginate->select($from, $select, $where, $order, $per_page, $page_var, $params) ;
 
 			$shown_dates = array();
 			$results = array();

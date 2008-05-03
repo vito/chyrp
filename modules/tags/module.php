@@ -109,11 +109,11 @@
 			return $urls;
 		}
 
-		static function admin_manage_posts_column_header() {
+		static function manage_posts_column_header() {
 			echo "<th>".__("Tags", "tags")."</th>";
 		}
 
-		static function admin_manage_posts_column($id) {
+		static function manage_posts_column($id) {
 			$tags = get_post_tags($id);
 			echo "<td>";
 			echo implode(", ", $tags["linked"]);
@@ -213,6 +213,8 @@
 
 	function get_post_tags($post_id, $links = true, $order_by = "id", $order = "asc"){
 		$sql = SQL::current();
+		$route = Route::current();
+
 		$get_tags = $sql->query("select * from `".$sql->prefix."tags`
 		                         where `post_id` = :id
 		                         order by `".$order_by."` ".$order,
@@ -221,7 +223,6 @@
 		                        ));
 
 		$tags = array("linked" => array(), "unlinked" => array());
-		$route = Route::current();
 
 		while ($tag = $get_tags->fetchObject()) {
 			$tags["linked"][] = '<a href="'.$route->url("tag/".$tag->clean."/").'" rel="tag">'.$tag->name.'</a>';

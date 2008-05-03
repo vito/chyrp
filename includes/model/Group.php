@@ -186,7 +186,7 @@
 			if (!$visitor->group()->can("edit_group")) return;
 			fallback($text, __("Edit"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=group&amp;id='.$this->id.'" title="Edit" class="group_edit_link" id="group_edit_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=edit_group&amp;id='.$this->id.'" title="Edit" class="group_edit_link" id="group_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
 		/**
@@ -203,6 +203,6 @@
 			if (!$visitor->group()->can("delete_group")) return;
 			fallback($text, __("Delete"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=group&amp;id='.$this->id.'" title="Delete" class="group_delete_link" id="group_delete_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=delete_group&amp;id='.$this->id.'" title="Delete" class="group_delete_link" id="group_delete_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 	}

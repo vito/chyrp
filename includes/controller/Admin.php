@@ -16,7 +16,7 @@
 		 */
 		public function manage_posts() {
 			global $posts;
-			$this->context["posts"] = Post::find();
+			$this->context["posts"] = Post::find(array("where" => "", "per_page" => 25));
 		}
 
 		/**
@@ -547,6 +547,8 @@
 		}
 
 		public function determine_context($action) {
+			global $paginate;
+
 			$this->context["title"] = camelize($action, true);
 			$this->context["site"] = Config::current();
 			$this->context["visitor"] = Visitor::current();
@@ -555,6 +557,7 @@
 			$this->context["route"] = array("action" => $action);
 			$this->context["hide_admin"] = isset($_COOKIE["chyrp_hide_admin"]);
 			$this->context["sql_debug"] = SQL::current()->debug;
+			$this->context["pagination"] = $paginate;
 			$this->context["POST"] = $_POST;
 			$this->context["GET"] = $_GET;
 

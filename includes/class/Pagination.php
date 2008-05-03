@@ -95,10 +95,10 @@
 			$only_page = (count($_GET) == 2 and $_GET['action'] == "index" and isset($_GET[$var]));
 
 			$config = Config::current();
-			if (!$config->clean_urls or !$clean_urls)
+			if (!$config->clean_urls or !$clean_urls or ADMIN)
 				$mark = (strpos($request, "?") and !$only_page) ? "&" : "?" ;
 
-			return ($config->clean_urls and $clean_urls) ?
+			return ($config->clean_urls and $clean_urls and !ADMIN) ?
 			       preg_replace("/(\/".$var."\/([0-9]+)|$)/", "/".$var."/".($this->$var + 1), "http://".$_SERVER['HTTP_HOST'].$request, 1) :
 			       preg_replace("/([\?&]".$var."=([0-9]+)|$)/", $mark.$var."=".($this->$var + 1), "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 1) ;
 		}
@@ -117,10 +117,10 @@
 			$only_page = (count($_GET) == 2 and $_GET['action'] == "index" and isset($_GET[$var]));
 
 			$config = Config::current();
-			if (!$config->clean_urls or !$clean_urls)
+			if (!$config->clean_urls or !$clean_urls or ADMIN)
 				$mark = (strpos($request, "?") and !$only_page) ? "&" : "?" ;
 
-			return ($config->clean_urls and $clean_urls) ?
+			return ($config->clean_urls and $clean_urls and !ADMIN) ?
 			       preg_replace("/(\/".$var."\/([0-9]+)|$)/", "/".$var."/".($this->$var - 1), "http://".$_SERVER['HTTP_HOST'].$request, 1) :
 			       preg_replace("/([\?&]".$var."=([0-9]+)|$)/", $mark.$var."=".($this->$var - 1), "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 1) ;
 		}

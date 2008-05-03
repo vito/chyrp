@@ -179,7 +179,7 @@
 		public function edit_link($text = null, $before = null, $after = null) {
 			fallback($text, __("Edit"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=user&amp;id='.$this->id.'" title="Edit" class="user_edit_link" id="user_edit_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=edit_user&amp;id='.$this->id.'" title="Edit" class="user_edit_link" id="user_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
 		/**
@@ -194,6 +194,6 @@
 		public function delete_link($text = null, $before = null, $after = null) {
 			fallback($text, __("Delete"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=user&amp;id='.$this->id.'" title="Delete" class="user_delete_link" id="user_delete_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=delete_user&amp;id='.$this->id.'" title="Delete" class="user_delete_link" id="user_delete_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 	}

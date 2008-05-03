@@ -12,10 +12,10 @@
 		<div id="header">
 			<div class="column">
 				<ul id="navigation">
-					<li class="first selected"><a href="{% admin "write" %}">Write</a></li>
-					<li class="second"><a href="{% admin "manage_posts" %}">Manage</a></li>
-					<li class="third"><a href="{% admin "settings" %}">Settings</a></li>
-					<li class="fourth"><a href="{% admin "extend" %}">Extend</a></li>
+					<li class="first{% if route.action == "write" %} selected{% endif %}"><a href="{% admin "write" %}">Write</a></li>
+					<li class="second{% if route.action == "manage_posts" %} selected{% endif %}"><a href="{% admin "manage_posts" %}">Manage</a></li>
+					<li class="third{% if route.action == "settings" %} selected{% endif %}"><a href="{% admin "settings" %}">Settings</a></li>
+					<li class="fourth{% if route.action == "extend" %} selected{% endif %}"><a href="{% admin "extend" %}">Extend</a></li>
 				</ul>
 				<h1>$site.name</h1>
 			</div>

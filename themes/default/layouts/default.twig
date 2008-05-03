@@ -19,7 +19,7 @@
 				<li><a id="add_post" href="$site.url/admin/?action=write">${ "Write" | translate }</a></li>
 {% endif %}
 {% if visitor.can.add_page %}
-				<li><a id="add_page" href="$site.url/admin/?action=write&amp;sub=page">${ "Add Page" | translate }</a></li>
+				<li><a id="add_page" href="$site.url/admin/?action=write_page">${ "Add Page" | translate }</a></li>
 {% endif %}
 {% if visitor.can.view_draft %}
 				<li><a id="your_drafts" href="{% url "drafts/" %}">${ "Drafts" | translate }</a></li>

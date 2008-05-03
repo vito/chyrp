@@ -13,6 +13,7 @@
 $twig_filters = array(
 	// formatting filters
 	'date' =>			'twig_date_format_filter',
+	'strftime' =>		'twig_strftime_format_filter',
 	'numberformat' =>	'number_format',
 	'moneyformat' =>	'money_format',
 	'filesizeformat' =>	'twig_filesize_format_filter',
@@ -110,6 +111,8 @@ function twig_missing_filter($name)
 
 	if (Trigger::current()->exists($name))
 		return Trigger::current()->filter($name, $args, true);
+
+	return $args[0];
 }
 
 function twig_get_attribute($context, $obj, $item)
@@ -189,6 +192,11 @@ function twig_make_array($object)
 function twig_date_format_filter($timestamp, $format='F j, Y, G:i')
 {
 	return @date($format, @strtotime($timestamp));
+}
+
+function twig_strftime_format_filter($timestamp, $format='%x %X')
+{
+	return @strftime($format, @strtotime($timestamp));
 }
 
 function twig_urlencode_filter($string, $raw=false)
@@ -297,7 +305,7 @@ else {
 }
 
 function twig_translate_string_filter($string) {
-	return __($string, "theme");
+	return __($string, (ADMIN ? "default" : "theme"));
 }
 
 function twig_inspect_filter($thing) {

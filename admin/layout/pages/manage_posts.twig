@@ -1,16 +1,29 @@
 {% extends "layout.twig" %}
+
 {% block content %}
-	<h1>Manage Posts</h1>
-<table border="0" cellspacing="0" cellpadding="0" class="wide">
-	<tr class="head">
-		<th>Title</th>
-		<th>Excerpt</th>
-	</tr>
-{% for post in posts %}
-	<tr{% if loop.last %} class="last"{% endif %}>
-		<td>${ post.title | truncate }</td>
-		<td>${ post.excerpt | truncate }</td>
-	</tr>
-{% endfor %}
-</table>
+			<h1>${ "Manage Posts" | translate }</h1>
+			<h2>${ "Last 25 Posts" | translate }</h2>
+			<table border="0" cellspacing="0" cellpadding="0" class="wide">
+				<tr class="head">
+					<th>Title</th>
+					<th>Posted</th>
+					<th>Status</th>
+					<th>Author</th>
+					{% trigger "manage_posts_column_header" %}
+					<th colspan="2">Controls</th>
+				</tr>
+				{% for post in posts %}
+				<tr class="post $post.status{% if loop.last %} last{% endif %}">
+					<td class="main"><a href="$post.url">${ post.title | truncate }</a></td>
+					<td>${ post.created_at | strftime }</td>
+					<td>${ post.status | split | join | title }{# TODO: split "_", join " " #}</td>
+					<td>$post.user.login</td>
+					{% trigger "manage_posts_column" %}
+					<td>$post.edit_link</td>
+					<td>$post.delete_link</td>
+				</tr>
+				{% endfor %}
+			</table>
+			$pagination.next_link
+			$pagination.prev_link
 {% endblock %}
