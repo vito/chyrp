@@ -51,8 +51,10 @@
 		 * Post management page.
 		 */
 		public function manage_posts() {
-			global $posts;
 			$this->context["posts"] = Post::find(array("where" => false, "per_page" => 25));
+
+			if (!empty($_GET['updated']))
+				$this->context["updated"] = new Post($_GET['updated']);
 		}
 
 		/**
@@ -157,11 +159,10 @@
 			if (!$post->editable())
 				error(__("Access Denied"), __("You do not have sufficient privileges to edit posts."));
 
-			$feather = Post::info("feather", $_POST['id']);
-			$feathers[$feather]->update();
+			$feathers[$post->feather]->update();
 
 			if (!isset($_POST['ajax']))
-				redirect("/admin/?action=manage&sub=post&updated=".$_POST['id']);
+				redirect("/admin/?action=manage_posts&updated=".$_POST['id']);
 			else
 				exit((string) $_POST['id']);
 		}

@@ -212,6 +212,26 @@ tr.draft, tr.draft td, tr.draft td.main {
 }
 /* @end */
 
+/* @group Messages */
+p.message {
+	font-size: 1.1em;
+	padding: .6em;
+	margin-bottom: 1em;
+	background: #f1f1f1;
+	border: 1px solid #ccc;
+}
+p.message.yay {
+	background: #189100;
+	color: #fff;
+	border-color: #105f00;
+}
+p.message.boo {
+	background: #d51800;
+	color: #fff;
+	border-color: #9f1000;
+}
+/* @end */
+
 /* @group Buttons */
 /* Inspiration from Chawlk. */
 button {
