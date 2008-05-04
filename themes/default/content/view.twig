@@ -1,14 +1,14 @@
 {% extends "layouts/default.twig" %}
 {% block content %}
 {% include "content/post.twig" %}
-	{% if site.enabled_modules.comments %}
+{% if site.enabled_modules.comments %}
 				<br />
 				<h1 id="comments">${ "Comments" | translate }</h1>
-		{% if post.comment_count > 0 %}
+				{% if post.comment_count > 0 %}
 				<ol class="comments" id="comments_$post.id">
 					{% for comment in post.comments %}{% include "content/comment.twig" %}{% endfor %}
 				</ol>
-		{% endif %}
+				{% endif %}
 				<input type="hidden" name="last_comment" value="$post.last_comment" id="last_comment" />
 {#
 				<?php $paginate->next_link(__("Next &rarr;", "theme"), "right", "comments_page"); ?>
@@ -16,8 +16,8 @@
 #}
 				<br />
 				<br />
-		{% if post.commentable %}
+{% if post.commentable %}
 {% include "forms/comment/new.twig" %}
-		{% endif %}
-	{% endif %}
+{% endif %}
+{% endif %}
 {% endblock %}

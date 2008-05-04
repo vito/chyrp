@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-			<h1>Edit $post.title</h1>
+			<h1>Edit &#8220;$post.title&#8221;</h1>
 			<form action="{% admin "update_post" %}" method="post" accept-charset="utf-8">
 				{% for field in feather.fields %}
 				<p>
@@ -26,7 +26,7 @@
 					<input class="$field.type{% for class in field.classes %} $class{% endfor %}" type="$field.type" name="$field.attr" value="${ post[field.attr] | escape }" id="$field.attr" />
 					{% endif %}
 					{% if field.type == "text_block" %}
-					<textarea class="wide{% for class in field.classes %} $class{% endfor %}" rows="{% if field.rows %}$field.rows{% endif %}{% if not field.rows %}12{% endif %}{# fallback from $field.rows #}" name="$field.attr" id="$field.attr">${ post[field.attr] | escape }</textarea>
+					<textarea class="wide{% for class in field.classes %} $class{% endfor %}" rows="${ field.rows | fallback(12) }" name="$field.attr" id="$field.attr">${ post[field.attr] | escape }</textarea>
 					{% endif %}
 				</p>
 				{% endfor %}
@@ -46,30 +46,26 @@
 					<p>
 						<label for="status">${ "Status" | translate }</label>
 						<select name="status" id="status">
-							<option value="public">${ "Public" | translate }</option>
-							<option value="private">${ "Private" | translate }</option>
-							<option value="registered_only">${ "Registered Only" | translate }</option>
+							<option value="public"{% if post.status == "public" %} selected="selected"{% endif %}>${ "Public" | translate }</option>
+							<option value="private"{% if post.status == "private" %} selected="selected"{% endif %}>${ "Private" | translate }</option>
+							<option value="registered_only"{% if post.status == "registered_only" %} selected="selected"{% endif %}>${ "Registered Only" | translate }</option>
 						</select>
 					</p>
 					{% endif %}
 					<p>
 						<label for="pinned">${ "Pinned?" | translate }</label>
-						<input type="checkbox" name="pinned" id="pinned" /> <small>${ "(shows this post above all others)" | translate }</small>
+						<input type="checkbox" name="pinned" id="pinned"{% if post.pinned %} checked="checked"{% endif %}/> <small>${ "(shows this post above all others)" | translate }</small>
 					</p>
 					<p>
 						<label for="slug">${ "Slug" | translate }</label>
-						<input class="text" type="text" name="slug" value="" id="slug" />
-					</p>
-					<p>
-						<label for="trackbacks">${ "Trackbacks" | translate }<span class="sub"> ${ "(comma separated)" | translate }</span></label>
-						<input class="text" type="text" name="trackbacks" value="" id="trackbacks" />
+						<input class="text" type="text" name="slug" value="${ post.slug | escape }" id="slug" />
 					</p>
 					<p>
 						<label for="created_at">${ "Timestamp" | translate }</label>
-						<input class="text" type="text" name="created_at" value="${ now | date }" id="created_at" />
-						<input type="hidden" name="original_time" value="${ now | date }" />
+						<input class="text" type="text" name="created_at" value="${ post.created_at | date }" id="created_at" />
+						<input type="hidden" name="original_time" value="${ post.created_at | date }" />
 					</p>
-					{% trigger "edit_post_options" %}
+					${ "edit_post_options" | trigger(post.id) }
 					<div class="clear"></div>
 				</div>
 

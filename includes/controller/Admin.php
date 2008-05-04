@@ -39,7 +39,7 @@
 			if (empty($_GET['id']))
 				error(__("No ID Specified"), __("An ID is required to edit a post."));
 
-			$this->context["post"] = new Post($_GET['id']);
+			$this->context["post"] = new Post($_GET['id'], array("filter" => false));
 			$this->context["feather"] = $feathers[$this->context["post"]->feather];
 
 			if (!$this->context["post"]->editable())

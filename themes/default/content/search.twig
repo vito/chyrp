@@ -1,6 +1,6 @@
 {% extends "layouts/default.twig" %}
 {% block content %}
-		<h2>${ "Search results for &#8220;" | translate } ${ search | escape } ${ "&#8221;" | translate }{# TODO: Turn this into a filter() once they accept arguments. #}</h2>
+		<h2>${ "Search results for &#8220;%s&#8221;" | translate | format(search | escape) }</h2>
 {% for post in posts %}
 {% include "content/post.twig" %}
 {% endfor %}

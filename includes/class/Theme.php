@@ -26,7 +26,7 @@
 			                   THEMES_DIR."/".$_GET['theme']."/" :
 			                   THEME_DIR."/" ;
 
-			$this->twig = new Twig_Loader($this->directory, (is_writable(MAIN_DIR."/includes/twig_cache") ? MAIN_DIR."/includes/twig_cache" : null));
+			$this->twig = new Twig_Loader($this->directory, ((is_writable(MAIN_DIR."/includes/twig_cache") and !DEBUG) ? MAIN_DIR."/includes/twig_cache" : null));
 		}
 
 		/**

@@ -28,7 +28,7 @@
 					<input class="$field.type{% for class in field.classes %} $class{% endfor %}" type="$field.type" name="$field.attr" value="" id="$field.attr" />
 					{% endif %}
 					{% if field.type == "text_block" %}
-					<textarea class="wide{% for class in field.classes %} $class{% endfor %}" rows="{% if field.rows %}$field.rows{% endif %}{% if not field.rows %}12{% endif %}{# fallback from $field.rows #}" name="$field.attr" id="$field.attr"></textarea>
+					<textarea class="wide{% for class in field.classes %} $class{% endfor %}" rows="${ field.rows | fallback(12) }" name="$field.attr" id="$field.attr"></textarea>
 					{% endif %}
 				</p>
 				{% endfor %}

@@ -60,7 +60,8 @@ $twig_filters = array(
 	// debugging
 	'inspect' => 'twig_inspect_filter',
 
-	'trigger' =>	'twig_trigger_filter'
+	'trigger' =>	'twig_trigger_filter',
+	'fallback' =>	'twig_fallback_filter'
 );
 
 
@@ -341,4 +342,8 @@ function twig_trigger_filter($name) {
 	array_shift($args);
 
 	Trigger::current()->call($name, $args);
+}
+
+function twig_fallback_filter($try, $fallback) {
+	return fallback($try, $fallback, true);
 }
