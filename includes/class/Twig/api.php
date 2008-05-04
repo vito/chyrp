@@ -169,9 +169,9 @@ class Twig_Loader extends Twig_BaseLoader
 {
 	public $folder;
 
-	public function __construct($folder, $cache)
+	public function __construct($folder, $cache=NULL, $charset=NULL)
 	{
-		parent::__construct($cache);
+		parent::__construct($cache, $charset);
 		$this->folder = $folder;
 	}
 

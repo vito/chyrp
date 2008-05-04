@@ -22,13 +22,20 @@
 		                     '(feather)'  => '([^\/]+)',
 		                     '(feathers)' => '([^\/]+)');
 
+		public $urls = array('/\/id\/([0-9]+)\//'                => '?action=view&amp;id=$1',
+		                     '/\/page\/(([^\/]+)\/)+/'           => '?action=page&amp;url=$2',
+		                     '/\/search\//'                      => '?action=search',
+		                     '/\/search\/([^\/]+)\//'            => '?action=search&amp;query=$1',
+		                     '/\/archive\/([^\/]+)\/([^\/]+)\//' => '?action=archive&amp;year=$1&amp;month=$2',
+		                     '/\/bookmarklet\/([^\/]+)\//'       => '?action=bookmarklet&amp;status=$1',
+		                     '/\/theme_preview\/([^\/]+)\//'     => '?action=theme_preview&amp;theme=$1',
+		                     '/\/([^\/]+)\/feed\//'              => '?action=$1&amp;feed');
+
 		/**
 		 * Function: __construct
 		 * Filters the key => val code so that modules may extend it.
 		 */
-		private function __construct() {
-			$this->code = Trigger::current()->filter("route_code", $this->code, true);
-		}
+		private function __construct() {}
 
 		/**
 		 * Function: url
@@ -37,42 +44,34 @@
 		 * parse_urls trigger.
 		 *
 		 * Parameters:
-		 *     $clean_url - The clean URL.
+		 *     $url - The clean URL.
 		 *
 		 * Returns:
 		 *     Clean URL - if $config->clean_urls is set to *true*.
 		 *     Dirty URL - if $config->clean_urls is set to *false*.
 		 */
-		public function url($clean_url) {
+		public function url($url) {
 			$config = Config::current();
 			if ($config->clean_urls) { # If their post URL doesn't have a trailing slash, remove it from these as well.
-				if (substr($clean_url, 0, 5) == "page/") # Different URL for viewing a page
-					$clean_url = substr($clean_url, 5);
+				if (substr($url, 0, 5) == "page/") # Different URL for viewing a page
+					$url = substr($url, 5);
 
 				return (substr($config->post_url, -1) == "/" or $clean_url == "search/") ?
-				       $config->url."/".$clean_url :
-				       $config->url."/".rtrim($clean_url, "/") ;
+					$config->url."/".$url :
+					$config->url."/".rtrim($url, "/") ;
 			}
 
-			$clean_url = "/".$clean_url;
+			$urls = Trigger::current()->filter("parse_urls", $this->urls);
 
-			$urls = array(
-				"/\/id\/([0-9]+)\//" => "?action=view&amp;id=$1",
-				"/\/page\/(([^\/]+)\/)+/" => "?action=page&amp;url=$2",
-				"/\/search\//" => "?action=search",
-				"/\/search\/([^\/]+)\//" => "?action=search&amp;query=$1",
-				"/\/archive\/([^\/]+)\/([^\/]+)\//" => "?action=archive&amp;year=$1&amp;month=$2",
-				"/\/bookmarklet\/([^\/]+)\//" => "?action=bookmarklet&amp;status=$1",
-				"/\/theme_preview\/([^\/]+)\//" => "?action=theme_preview&amp;theme=$1",
-				"/\/([^\/]+)\/feed\//" => "?action=$1&amp;feed"
-			);
+			foreach (array_diff_assoc($urls, $this->urls) as $key => $value)
+				$urls[substr($key, 0, -1)."feed\//"] = $value."&amp;feed";
 
-			$trigger = Trigger::current();
-			$urls = $trigger->filter("parse_urls", $urls);
 			$urls["/\/(.*?)\/$/"] = "?action=$1";
-			$converted = preg_replace(array_keys($urls), array_values($urls), $clean_url);
 
-			return $config->url."/".$converted;
+			return $config->url.preg_replace(
+				array_keys($urls),
+				array_values($urls),
+				"/".$url, 1);
 		}
 
 		/**
