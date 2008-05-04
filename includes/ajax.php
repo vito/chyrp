@@ -48,31 +48,38 @@
 			fallback($_POST['offset'], 0);
 			fallback($_POST['context']);
 
-			$id = (isset($_POST['id'])) ? " and `id` = ".$sql->quote($_POST['id']) : "" ;
+			$id = (isset($_POST['id'])) ? "`id` = ".$sql->quote($_POST['id']) : null ;
 			$reason = (isset($_POST['reason'])) ? "_".$_POST['reason'] : "" ;
 
 			switch($_POST['context']) {
 				default:
-					$grab_post = $sql->query("select * from `".$sql->prefix."posts` where ".$private.$enabled_feathers.$id." order by `pinned` desc, `created_at` desc, `id` desc limit ".$_POST['offset'].", 1");
+					$post = Post::find(array("where" => array($private, $id), "offset" => $_POST['offset'],
+					                         "limit" => 1));
 					break;
 				case "drafts":
-					$grab_post = $sql->query("select * from `".$sql->prefix."posts` where `status` = 'draft'".$enabled_feathers.$id." order by `pinned` desc, `created_at` desc, `id` desc limit ".$_POST['offset'].", 1");
+					$post = Post::find(array("where" => array("`status` = 'draft'", $id),
+					                         "offset" => $_POST['offset'],
+					                         "limit" => 1));
 					break;
 				case "archive":
-					$grab_post = $sql->query("select * from `".$sql->prefix."posts` where `created_at` like '".$sql->quote($_POST['year']."-".$_POST['month'])."%' and ".$private.$enabled_feathers.$id." order by `pinned` desc, `created_at` desc, `id` desc limit ".$_POST['offset'].", 1");
+					$post = Post::find(array("where" => array("`created_at` like :created_at", $id),
+					                         "params" => array(":created_at" => "'".$_POST['year']."-".$_POST['month']."%'"),
+					                         "offset" => $_POST['offset'],
+					                         "limit" => 1));
 					break;
 				case "search":
-					$grab_post = $sql->query("select * from `".$sql->prefix."posts` where `xml` like '%".$sql->quote(urldecode($_POST['query']))."%' and ".$private.$enabled_feathers.$id." order by `pinned` desc, `created_at` desc, `id` desc limit ".$_POST['offset'].", 1");
+					$post = Post::find(array("where" => array("`xml` like :query", $id),
+					                         "params" => array(":query" => "'%".urldecode($_POST['query'])."%'"),
+					                         "offset" => $_POST['offset'],
+					                         "limit" => 1));
 					break;
 			}
 
-			if (!$grab_post->rowCount()) {
+			if ($post->no_results) {
 				header("HTTP/1.1 404 Not Found");
 				$trigger->call("not_found");
 				exit;
 			}
-
-			$post = new Post($grab_post->fetchColumn());
 
 			$date_shown = true;
 			$last = false;

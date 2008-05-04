@@ -6,8 +6,6 @@
 	 * The basis for the Models system.
 	 */
 	class Model {
-		public $table;
-
 		static function grab($model, $id, $options = array()) {
 			global $loaded_models;
 
@@ -51,21 +49,16 @@
 		}
 
 		static function search($model, $options = array()) {
-			global $paginate, $private, $enabled_feathers;
+			global $paginate;
 
-			if ($model == "Post")
-				$order = "`pinned` desc, `created_at` desc, `id` desc";
-			else
-				$order = "`created_at` desc, `id` desc";
-
-			$where = fallback($options["where"], null, true);
-			$from = fallback($options["from"], strtolower($model)."s", true);
-			$params = fallback($options["params"], array(), true);
-			$select = fallback($options["select"], "*", true);
-			$order = fallback($options["order"], $order, true);
+			$where      = fallback($options["where"], null, true);
+			$from       = fallback($options["from"], strtolower($model)."s", true);
+			$params     = fallback($options["params"], array(), true);
+			$select     = fallback($options["select"], "*", true);
+			$order      = fallback($options["order"], "`created_at` desc, `id` desc", true);
 			$pagination = fallback($options["pagination"], true, true);
-			$per_page = fallback($options["per_page"], Config::current()->posts_per_page, true);
-			$page_var = fallback($options["page_var"], "page", true);
+			$per_page   = fallback($options["per_page"], Config::current()->posts_per_page, true);
+			$page_var   = fallback($options["page_var"], "page", true);
 
 			$grab = (!$pagination) ?
 			         SQL::current()->select($from, $select, $where, $order, $params) :

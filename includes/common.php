@@ -183,7 +183,7 @@
 		require FEATHERS_DIR."/".$feather."/feather.php";
 
 		$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$feather."/info.yaml");
-		$pluralizations[$feather] = $pluralizations["feathers"][$feather] = fallback($info["plural"], $feather."s", true);
+		$pluralizations[$feather] = $pluralizations["feathers"][$feather] = fallback($info["plural"], pluralize($feather), true);
 	}
 
 	foreach ($config->enabled_modules as $module) {

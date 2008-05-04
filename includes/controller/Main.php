@@ -18,14 +18,14 @@
 		 * Grabs the posts for the Archive page when viewing a year or a month.
 		 */
 		public function archive() {
-			global $private, $enabled_feathers, $posts;
+			global $private, $posts;
 			if (!isset($_GET['month'])) return;
 
 			if (isset($_GET['day']))
-				$posts = Post::find(array("where" => "`created_at` like :date and ".$private.$enabled_feathers,
+				$posts = Post::find(array("where" => "`created_at` like :date and ".$private,
 				                          "params" => array(":date" => $_GET['year']."-".$_GET['month']."-".$_GET['day']."%")));
 			else
-				$posts = Post::find(array("where" => "`created_at` like :date and ".$private.$enabled_feathers,
+				$posts = Post::find(array("where" => "`created_at` like :date and ".$private,
 				                          "params" => array(":date" => $_GET['year']."-".$_GET['month']."%")));
 		}
 
@@ -34,9 +34,9 @@
 		 * Grabs the posts for a search query.
 		 */
 		public function search() {
-			global $private, $enabled_feathers, $posts;
+			global $private, $posts;
 			fallback($_GET['query'], "");
-			$posts = Post::find(array("where" => "`xml` like :query and ".$private.$enabled_feathers,
+			$posts = Post::find(array("where" => "`xml` like :query and ".$private,
 			                          "params" => array(":query" => '%'.urldecode($_GET['query']).'%')));
 		}
 
@@ -57,8 +57,8 @@
 		 * Views posts of a specific feather.
 		 */
 		public function feather() {
-			global $private, $enabled_feathers, $posts;
-			$posts = Post::find(array("where" => "`feather` = :feather and ".$private.$enabled_feathers,
+			global $private, $posts;
+			$posts = Post::find(array("where" => "`feather` = :feather and ".$private,
 			                          "params" => array(":feather" => depluralize($_GET['action']))));
 		}
 
@@ -76,33 +76,26 @@
 		 * Views a post.
 		 */
 		public function view() {
-			global $action, $private, $enabled_feathers, $post;
+			global $action, $private, $post;
 
 			$trigger = Trigger::current();
 			$config = Config::current();
 			$sql = SQL::current();
 			if (!$config->clean_urls)
-				return $grab_post = $sql->select("posts",
-				                                 "*",
-				                                 $private.$enabled_feathers." and
-				                                 `url` = :url",
-				                                 "id",
-				                                 array(
-				                                     ':url' => $_GET['url']
-				                                 ), 1);
+				return $post = Post::grab(null, array("where" => array($private, "`url` = :url"), "params" => array(":url" => $_GET['url'])));
 
 			# Check for a post...
-			$where = "";
+			$where = array($private);
 			$times = array("year", "month", "day", "hour", "minute", "second");
 
 			preg_match_all("/\(([^\)]+)\)/", $config->post_url, $matches);
 			$params = array();
 			foreach ($matches[1] as $attr)
 				if (in_array($attr, $times)) {
-					$where.= " and ".$attr."(`created_at`) = :created".$attr;
+					$where[] = $attr."(`created_at`) = :created".$attr;
 					$params[':created'.$attr] = $_GET[$attr];
 				} elseif ($attr == "author") {
-					$where.= " and `user_id` = :attrauthor";
+					$where[] = "`user_id` = :attrauthor";
 					$params[':attrauthor'] = $sql->select("users",
 					                                      "id",
 					                                      "`login` = :login",
@@ -111,26 +104,26 @@
 					                                          ":login" => $_GET['author']
 					                                      ), 1)->fetchColumn();
 				} elseif ($attr == "feathers") {
-					$where.= " and `feather` = :feather";
+					$where[] = "`feather` = :feather";
 					$params[':feather'] = depluralize($_GET['feathers']);
 				} else {
 					list($where, $params, $attr) = $trigger->filter('main_controller_view', array($where, $params, $attr), true);
 
 					if ($attr !== null) {
-						$where.= " and `".$attr."` = :attr".$attr;
+						$where[] = "`".$attr."` = :attr".$attr;
 						$params[':attr'.$attr] = $_GET[$attr];
 					}
 				}
 
-			$post = new Post(null, array("where" => $private.$enabled_feathers.$where, "params" => $params));
+			$post = new Post(null, array("where" => $where, "params" => $params));
 
 			if ($post->no_results) {
 				# Check for a page...
-				$url = fallback($_GET['url'], "", true);
+				fallback($_GET['url'], "");
 				$check_page = $sql->count("pages",
 				                          "`url` = :url",
 				                          array(
-				                              ':url' => $url
+				                              ':url' => $_GET['url']
 				                          ));
 				if ($check_page == 1)
 					return $action = $url;

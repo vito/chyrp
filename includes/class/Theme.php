@@ -44,7 +44,7 @@
 			$this->page_list.= '<ul class="'.$main_class.'">'."\n";
 
 			if ($home_link)
-				$this->page_list.= $this->tabs.'<li class="'.$list_class.($action == "index" ? " selected" : "").'"><a href="'.Config::current()->url.'">'.$home_text.'</a></li>'."\n";
+				$this->page_list.= $this->tabs.'<li class="'.$list_class.($action == "index" ? " selected" : "").'">'."\n".$this->tabs."\t".'<a href="'.Config::current()->url.'">'.$home_text.'</a>'."\n".$this->tabs.'</li>'."\n";
 
 			foreach (Page::find(array("where" => "`parent_id` = 0 and `show_in_list` = 1", "order" => "`list_order` asc", "pagination" => false)) as $page)
 				$this->recurse_pages($page, $main_class, $list_class, $show_order_fields);
@@ -67,7 +67,7 @@
 			global $pages, $action;
 
 			$selected = ($action == 'page' and $_GET['url'] == $page->url) ? ' selected' : '';
-			$this->page_list.= sprintf($this->tabs.'<li class="%s" id="page_list_%s"><a href="%s">%s</a>', $list_class.$selected, $page->id, $page->url(), $page->title);
+			$this->page_list.= sprintf($this->tabs.'<li class="%s" id="page_list_%s">'."\n".$this->tabs."\t".'<a href="%s">%s</a>', $list_class.$selected, $page->id, $page->url(), $page->title);
 
 			if ($show_order_fields)
 				$this->page_list.= ' <input type="text" size="2" name="list_order['.$page->id.']" value="'.$page->list_order.'" />';

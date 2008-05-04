@@ -121,11 +121,11 @@
 		}
 
 		static function route_tag() {
-			global $private, $enabled_feathers, $posts;
+			global $private, $posts;
 
 			$posts = Post::find(array("select" => "p.*",
 			                          "from" => array("posts AS p", "tags AS t"),
-			                          "where" => $private.$enabled_feathers." and `post_id` = `p`.`id` and `t`.`clean` = :clean",
+			                          "where" => array($private, "`post_id` = `p`.`id`", "`t`.`clean` = :clean"),
 			                          "params" => array(":clean" => $_GET['name'])));
 		}
 

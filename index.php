@@ -71,18 +71,8 @@
 					                              "month" => @date("F", $timestamp),
 					                              "url" => $route->url("archive/".when("Y/m/", $time->created_at)));
 
-					$get_posts = $sql->query("select * from `".$sql->prefix."posts`
-					                          where
-					                              `created_at` like :created_at and
-					                              ".$private.$enabled_feathers."
-					                          order by `created_at` desc, `id` desc",
-					                         array(
-					                             ":created_at" => when("Y-m", $time->created_at)."%"
-					                         ));
-
-					foreach ($get_posts->fetchAll() as $post) {
-						$archives[$timestamp]["posts"][] = new Post(null, array("read_from" => $post));
-					}
+					$archives[$timestamp]["posts"] = Post::find(array("where" => array($private, "`created_at` like :created_at"),
+					                                                    "params" => array(":created_at" => when("Y-m", $time->created_at)."%")));
 				}
 
 				$theme->load("content/archive", array("archives" => $archives));

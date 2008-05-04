@@ -267,10 +267,18 @@
 		 * An array of <Post>s from the result.
 		 */
 		static function find($options = array()) {
-			global $private, $enabled_feathers;
+			global $private;
 
+			$enabled_feathers = "`feather` in ('".implode("', '", Config::current()->enabled_feathers)."')";
 			if (!isset($options["where"]))
-				$options["where"] = $private.$enabled_feathers;
+				$options["where"] = array($private, $enabled_feathers);
+			else
+				if (is_array($options["where"]))
+					$options["where"][] = $enabled_feathers;
+				else
+					$options["where"] = array($options["where"], $enabled_feathers);
+
+			fallback($options["order"], "`pinned` desc, `created_at` desc, `id` desc");
 
 			$posts = parent::search(get_class(), $options);
 
@@ -449,31 +457,21 @@
 		 * Displays a link to the next post.
 		 */
 		public function next_link($text = "(name) &rarr;", $class = "next_page", $truncate = 30) {
-			global $private, $enabled_feathers, $temp_id;
+			global $private, $temp_id;
 			$post = (!isset($temp_id)) ? $this : new self($temp_id) ;
 			if (!isset($post->created_at)) return;
 
 			if (!isset($temp_id))
 				$temp_id = $this->id;
 
-			$sql = SQL::current();
-			$grab_next = $sql->select("posts",
-			                          "id",
-			                          $private.$enabled_feathers." and
-			                          `created_at` > :created_at",
-			                          "`created_at` asc",
-			                          array(
-			                              ":created_at" => $post->created_at
-			                          ),
-			                          1);
-			if (!$grab_next->rowCount()) return;
+			$next = new self(null, array("where" => array($private, "`created_at` > :created_at"),
+			                             "params" => array(":created_at" => $post->created_at)));
+			if ($next->no_results)
+				return;
 
-			$next = new self($grab_next->fetchColumn());
 			$text = str_replace("(name)", $next->title(), $text);
 
 			echo '<a href="'.htmlspecialchars($next->url(), 2, "utf-8").'" class="'.$class.'">'.truncate($text, $truncate).'</a>';
-
-			new self($post->id);
 		}
 
 		/**
@@ -481,31 +479,21 @@
 		 * Displays a link to the previous post.
 		 */
 		public function prev_link($text = "&larr; (name)", $class = "prev_page", $truncate = 30) {
-			global $private, $enabled_feathers, $temp_id;
+			global $private, $temp_id;
 			$post = (!isset($temp_id)) ? $this : new self($temp_id) ;
 			if (!isset($post->created_at)) return;
 
 			if (!isset($temp_id))
 				$temp_id = $this->id;
 
-			$sql = SQL::current();
-			$grab_prev = $sql->select("posts",
-			                          "id",
-			                          $private.$enabled_feathers." and
-			                          `created_at` < :created_at",
-			                          "`created_at` desc",
-			                          array(
-			                              ":created_at" => $post->created_at
-			                          ),
-			                          1);
-			if (!$grab_prev->rowCount()) return;
+			$prev = new self(null, array("where" => array($private, "`created_at` < :created_at"),
+			                             "params" => array(":created_at" => $post->created_at)));
+			if ($prev->no_results)
+				return;
 
-			$prev = new self($grab_prev->fetchColumn());
 			$text = str_replace("(name)", $prev->title(), $text);
 
 			echo '<a href="'.htmlspecialchars($prev->url(), 2, "utf-8").'" class="'.$class.'">'.truncate($text, $truncate).'</a>';
-
-			new self($post->id);
 		}
 
 		/**
