@@ -1,21 +1,21 @@
 {% extends "layout.twig" %}
 
-{% block title %}Edit: $post.title{% endblock %}
+{% block title %}${ "Edit &#8220;%s&#8221;" | translate | format(post.title | escape) }{% endblock %}
 
 {% block subnav %}
-			<li><a href="{% admin "manage_posts" %}">Posts</a></li>
-			<li><a href="{% admin "manage_pages" %}">Pages</a></li>
+			<li><a href="{% admin "manage_posts" %}">${ "Posts" | translate }</a></li>
+			<li><a href="{% admin "manage_pages" %}">${ "Pages" | translate }</a></li>
 			{% trigger "manage_nav" %}
 {% endblock %}
 
 {% block content %}
-			<h1>Edit &#8220;$post.title&#8221;</h1>
+			<h1>${ "Edit &#8220;%s&#8221;" | translate | format(post.title | escape) }</h1>
 			<form action="{% admin "update_post" %}" method="post" accept-charset="utf-8">
 				{% for field in feather.fields %}
 				<p>
 					<label for="$field.attr">
 						$field.label
-						{% if field.optional %}<span class="sub">(optional)</span>{% endif %}
+						{% if field.optional %}<span class="sub">${ "(optional)" | translate }</span>{% endif %}
 						{% if field.help %}
 						<span class="sub">
 							<a href="{% admin "help&feather="~feather~"&field="~field.attr %}" target="_blank" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
@@ -33,10 +33,10 @@
 
 				<br id="after_options" />
 				<button type="submit" class="yay right" accesskey="s">
-					<img src="images/icons/success.png" alt="success" />Save
+					<img src="images/icons/success.png" alt="success" />${ "Save" | translate }
 				</button>
 				<button>
-					Preview
+					${ "Preview" | translate }
 				</button>
 
 				<div class="clear" />

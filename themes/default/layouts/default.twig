@@ -62,8 +62,7 @@ $page_list
 					<li><a class="toggle_admin" href="{% url "toggle_admin/" %}">${ "Toggle Admin Bar" | translate }</a></li>
 {% endif %}
 					<li><a href="{% url "logout/" %}">${ "Log Out" | translate }</a></li>
-{% endif %}
-{% if not visitor.logged_in %}
+{% else %}
 					<li><a href="{% url "login/" %}">${ "Log In" | translate }</a></li>
 {% if site.can_register %}
 					<li><a href="{% url "register/" %}">${ "Register" | translate }</a></li>
