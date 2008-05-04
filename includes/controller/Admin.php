@@ -28,7 +28,7 @@
 		 */
 		public function manage_posts() {
 			global $posts;
-			$this->context["posts"] = Post::find(array("where" => "", "per_page" => 25));
+			$this->context["posts"] = Post::find(array("where" => false, "per_page" => 25));
 		}
 
 		/**

@@ -272,6 +272,8 @@
 			$enabled_feathers = "`feather` in ('".implode("', '", Config::current()->enabled_feathers)."')";
 			if (!isset($options["where"]))
 				$options["where"] = array($private, $enabled_feathers);
+			elseif ($options["where"] === false)
+				$options["where"] = $enabled_feathers;
 			else
 				if (is_array($options["where"]))
 					$options["where"][] = $enabled_feathers;
