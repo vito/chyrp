@@ -1,0 +1,35 @@
+{% extends "layout.twig" %}
+
+{% block title %}Add Page{% endblock %}
+
+{% block subnav %}
+			<li class="right">Bookmarklet: <a href="javascript:var%20d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f='$site.url/includes/bookmarklet.php',l=d.location,e=encodeURIComponent,p='?url='+e(l.href)+'&title='+e(d.title)+'&selection='+e(s),u=f+p;a=function(){if(!w.open(u,'t','toolbar=0,resizable=0,status=1,width=450,height=430'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0)">Chyrp!</a></li>
+			{% for feather in site.enabled_feathers %}
+			<li><a href="{% admin "write&feather="~feather %}">${ feather | capitalize }</a></li>
+			{% endfor %}
+			<li class="selected"><a href="{% admin "write_page" %}">Page</a></li>
+{% endblock %}
+
+{% block content %}
+			<h1>Add Page</h1>
+			<form action="{% admin "add_page" %}" method="post" accept-charset="utf-8">
+				<p>
+					<label for="title">Title</label>
+					<input class="text" type="text" name="title" value="" id="title" />
+				</p>
+				<p>
+					<label for="body">Body</label>
+					<textarea class="wide preview_me" rows="12" name="body" id="body"></textarea>
+				</p>
+
+				<button type="submit" class="yay right" accesskey="s">
+					<img src="images/icons/success.png" alt="success" />Publish
+				</button>
+				<button>
+					Preview
+				</button>
+
+				<input type="hidden" name="feather" value="${ feather | escape }" id="feather" />
+				<input type="hidden" name="hash" value="$site.secure_hashkey" id="feather" />
+			</form>
+{% endblock %}
