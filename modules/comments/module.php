@@ -220,8 +220,7 @@
 <?php
 		}
 
-		static function edit_post_options() {
-			global $post;
+		static function edit_post_options($post) {
 			fallback($post->comment_status, "open");
 ?>
 					<p>

@@ -751,7 +751,7 @@
 	 * Outputs the optional fields for creating a new post.
 	 */
 	function new_post_options() {
-			$visitor = Visitor::current();
+		$visitor = Visitor::current();
 		$config = Config::current();
 ?>
 <?php if ($visitor->group()->can("add_post")): ?>
@@ -791,8 +791,7 @@
 	 * Parameters:
 	 *     $post_id - The post ID to output the fields for.
 	 */
-	function edit_post_options($post_id) {
-		global $post;
+	function edit_post_options($post) {
 ?>
 		<p>
 			<label for="status"><?php echo __("Status"); ?></label>
@@ -817,7 +816,7 @@
 		</p>
 <?php
 		$trigger = Trigger::current();
-		$trigger->call("edit_post_options", $post_id);
+		$trigger->call("edit_post_options", $post);
 	}
 
 	/**

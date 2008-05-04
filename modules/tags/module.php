@@ -36,8 +36,8 @@
 <?php
 		}
 
-		static function edit_post_options($id) {
-			$tags = get_post_tags($id, false);
+		static function edit_post_options($post) {
+			$tags = get_post_tags($post->id, false);
 			$tags = implode(", ", $tags["unlinked"]);
 ?>
 					<p>

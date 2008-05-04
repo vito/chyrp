@@ -23,7 +23,7 @@
 <?php require $fields_file; ?>
 	<a id="more_options_link_<?php echo $post->id; ?>" href="javascript:void(0)" class="more_options_link"><?php echo __("More Options &raquo;"); ?></a>
 	<div id="more_options_<?php echo $post->id; ?>" class="more_options" style="display: none">
-		<?php edit_post_options($post->id); ?>
+		<?php edit_post_options($post); ?>
 		<br class="clear" />
 	</div>
 	<br />
