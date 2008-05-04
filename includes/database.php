@@ -4,6 +4,10 @@
 	 * Contains the database settings and functions for interacting with the SQL database.
 	 */
 	class SQL {
+		# Array: $debug
+		# Holds debug information for SQL queries.
+		public $debug = array();
+
 		/**
 		 * Function: __construct
 		 * The class constructor is private so there is only one connection.
@@ -89,7 +93,6 @@
 		 */
 		public function query($query, $params = array(), $throw_exceptions = false) {
 			$this->queries++;
-			fallback($this->debug, array());
 
 			try {
 				$q = $this->db->prepare($query);
@@ -102,7 +105,8 @@
 					while (strpos($target["file"], "database.php")) # Getting a traceback from this file is pretty
 						$target = $trace[$index++];                 # useless (mostly when using $sql->select() and such)
 
-					$this->debug[] = array("number" => $this->queries, "file" => str_replace(MAIN_DIR."/", "", $target["file"]), "line" => $target["line"], "string" => normalize(str_replace(array_keys($params), array_values($params), $query)));
+					$debug = $this->debug[count($this->debug)] = array("number" => $this->queries, "file" => str_replace(MAIN_DIR."/", "", $target["file"]), "line" => $target["line"], "query" => normalize(str_replace(array_keys($params), array_values($params), $query)));
+					error_log("\n\t".$debug["number"].". ".$debug["query"]."\n\n\tCalled from ".$debug["file"]." on line ".$target["line"].".");
 				}
 				if (!$result) throw PDOException();
 			} catch (PDOException $error) {
@@ -124,8 +128,7 @@
 		 * Function: count
 		 * Performs a counting query and returns the number of matching rows.
 		 */
-		public function count($tables, $conds, $params = array())
-		{
+		public function count($tables, $conds, $params = array()) {
 			if (is_array($conds))
 				$conds = implode(" and ", array_filter($conds));
 
@@ -136,8 +139,7 @@
 		 * Function: select
 		 * Performs a SELECT with given criteria and returns the query result object.
 		 */
-		public function select($tables, $fields, $conds, $order = null, $params = array(), $limit = null, $offset = null)
-		{
+		public function select($tables, $fields, $conds, $order = null, $params = array(), $limit = null, $offset = null) {
 			if (is_array($conds))
 				$conds = implode(" and ", array_filter($conds));
 
@@ -148,8 +150,7 @@
 		 * Function: insert
 		 * Performs an INSERT with given data.
 		 */
-		public function insert($table, $data, $params = array())
-		{
+		public function insert($table, $data, $params = array()) {
 			return $this->query(QueryBuilder::build_insert($table, $data), $params);
 		}
 
@@ -157,8 +158,7 @@
 		 * Function: update
 		 * Performs an UDATE with given criteria and data.
 		 */
-		public function update($table, $conds, $data, $params = array())
-		{
+		public function update($table, $conds, $data, $params = array()) {
 			if (is_array($conds))
 				$conds = implode(" and ", array_filter($conds));
 
@@ -169,8 +169,7 @@
 		 * Function: delete
 		 * Performs a DELETE with given criteria.
 		 */
-		public function delete($table, $conds, $params = array())
-		{
+		public function delete($table, $conds, $params = array()) {
 			if (is_array($conds))
 				$conds = implode(" and ", array_filter($conds));
 

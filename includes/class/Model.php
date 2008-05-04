@@ -14,8 +14,10 @@
 			if ($model_name == "visitor")
 				$model_name = "user";
 
-			$where = fallback($options["where"], "", true);
-			$params = isset($options["params"]) ? $options["params"] : array();
+			$where  = fallback($options["where"], "", true);
+			$params = fallback($options["params"], array(), true);
+			$order  = fallback($options["order"], "`id` desc", true);
+			$offset = fallback($options["offset"], null, true);
 			$read_from = (isset($options["read_from"])) ? $options["read_from"] : array() ;
 
 			$sql = SQL::current();
@@ -27,18 +29,20 @@
 				$read = $sql->select($model_name."s",
 				                     "*",
 				                     $where,
-				                     "id",
+				                     $order,
 				                     $params,
-				                     1)->fetch();
+				                     1,
+				                     $offset)->fetch();
 			else
 				$read = $sql->select($model_name."s",
 				                     "*",
 				                     "`id` = :id",
-				                     "id",
+				                     $order,
 				                     array(
 				                         ":id" => $id
 				                     ),
-				                     1)->fetch();
+				                     1,
+				                     $offset)->fetch();
 
 			if (!count($read) or !$read)
 				return $model->no_results = true;
@@ -56,12 +60,14 @@
 			$params     = fallback($options["params"], array(), true);
 			$select     = fallback($options["select"], "*", true);
 			$order      = fallback($options["order"], "`created_at` desc, `id` desc", true);
+			$offset     = fallback($options["offset"], null, true);
+			$limit      = fallback($options["limit"], null, true);
 			$pagination = fallback($options["pagination"], true, true);
 			$per_page   = fallback($options["per_page"], Config::current()->posts_per_page, true);
 			$page_var   = fallback($options["page_var"], "page", true);
 
 			$grab = (!$pagination) ?
-			         SQL::current()->select($from, $select, $where, $order, $params) :
+			         SQL::current()->select($from, $select, $where, $order, $params, $limit, $offset) :
 			         $paginate->select($from, $select, $where, $order, $per_page, $page_var, $params) ;
 
 			$shown_dates = array();
