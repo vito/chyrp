@@ -127,38 +127,44 @@ var Post = {
 $.fn.loader = function(remove) {
 	if (remove) {
 		$(this).next().remove()
-	} else {
-		var offset = $(this).offset()
-		var width = $(this).width()
-		var loading_top = ($(this).height() / 2) - 11
-		var loading_left = ($(this).width() / 2) - 63
-		$(this).after("<div class=\"load_overlay\"><img src=\"<?php echo $config->url; ?>/includes/close.png\" style=\"display: none\" class=\"close\" /><img src=\"<?php echo $config->url; ?>/includes/loading.gif\" style=\"display: none\" class=\"loading\" /></div>")
-		$(".load_overlay .loading").css({
-			position: "absolute",
-			top: loading_top+"px",
-			left: loading_left+"px",
-			display: "inline"
-		})
-		$(".load_overlay .close").css({
-			position: "absolute",
-			top: "3px",
-			right: "3px",
-			color: "#fff",
-			cursor: "pointer",
-			display: "inline"
-		}).click(function(){ $(this).parent().remove() })
-		$(".load_overlay").css({
-			position: "absolute",
-			top: offset.top,
-			left: offset.left,
-			zIndex: 100,
-			width: $(this).width(),
-			height: $(this).height(),
-			background: ($.browser.msie) ? "transparent" : "transparent url('<?php echo $config->url; ?>/includes/trans.png')",
-			textAlign: "center",
-			filter: ($.browser.msie) ? "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src='<?php echo $config->url; ?>/includes/trans.png');" : ""
-		})
+		return this
 	}
+
+	var offset = $(this).offset()
+	var width = $(this).width()
+	var loading_top = ($(this).height() / 2) - 11
+	var loading_left = ($(this).width() / 2) - 63
+
+	$(this).after("<div class=\"load_overlay\"><img src=\"<?php echo $config->url; ?>/includes/close.png\" style=\"display: none\" class=\"close\" /><img src=\"<?php echo $config->url; ?>/includes/loading.gif\" style=\"display: none\" class=\"loading\" /></div>")
+
+	$(".load_overlay .loading").css({
+		position: "absolute",
+		top: loading_top+"px",
+		left: loading_left+"px",
+		display: "inline"
+	})
+
+	$(".load_overlay .close").css({
+		position: "absolute",
+		top: "3px",
+		right: "3px",
+		color: "#fff",
+		cursor: "pointer",
+		display: "inline"
+	}).click(function(){ $(this).parent().remove() })
+
+	$(".load_overlay").css({
+		position: "absolute",
+		top: offset.top,
+		left: offset.left,
+		zIndex: 100,
+		width: $(this).width(),
+		height: $(this).height(),
+		background: ($.browser.msie) ? "transparent" : "transparent url('<?php echo $config->url; ?>/includes/trans.png')",
+		textAlign: "center",
+		filter: ($.browser.msie) ? "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src='<?php echo $config->url; ?>/includes/trans.png');" : ""
+	})
+
 	return this
 }
 

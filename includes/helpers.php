@@ -143,7 +143,7 @@
 
 	/**
 	 * Function: depluralize
-	 * Look in $pluralizations for a depluralization of $string.
+	 * Returns a depluralized string. This is the inverse of <pluralize>.
 	 *
 	 * Parameters:
 	 *     $string - The string to depluralize.
