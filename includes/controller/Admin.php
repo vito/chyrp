@@ -31,6 +31,22 @@
 		}
 
 		/**
+		 * Function: edit_post
+		 * Post editing.
+		 */
+		public function edit_post() {
+			global $post, $feathers;
+			if (empty($_GET['id']))
+				error(__("No ID Specified"), __("An ID is required to edit a post."));
+
+			$this->context["post"] = new Post($_GET['id']);
+			$this->context["feather"] = $feathers[$this->context["post"]->feather];
+
+			if (!$this->context["post"]->editable())
+				error(__("Access Denied"), __("You do not have sufficient privileges to edit this post."));
+		}
+
+		/**
 		 * Function: manage_posts
 		 * Post management page.
 		 */
@@ -217,48 +233,6 @@
 
 			$group->update($_POST['name'], $permissions);
 			redirect("/admin/?action=manage&sub=group&updated");
-		}
-
-		/**
-		 * Function: edit
-		 * Grabs the information for post editing in the Admin area. Shows an error if the user lacks permissions.
-		 */
-		public function edit() {
-			/*
-				TODO Figure out why this and the below are different.
-			*/
-			$type = $_GET['sub'];
-			if (!Visitor::current()->group()->can("edit_".$type))
-				error(__("Access Denied"), sprintf(__("You do not have sufficient privileges to edit %ss."), $type));
-			if (empty($_GET['id']))
-				error(__("No ID Specified"), sprintf(__("An ID is required to edit a %s."), $type));
-
-			if ($type == "post")
-				$post = new Post($_GET['id']);
-
-			if ($type == "page")
-				$page = new Page($_GET['id']);
-
-			if ($type == "group")
-				$group = new Group($_GET['id']);
-		}
-
-		/**
-		 * Function: delete
-		 * Grabs the information for post deleting in the Admin area. Shows an error if the user lacks permissions.
-		 */
-		public function delete() {
-			$type = $_GET['sub'];
-			if (!Visitor::current()->group()->can("delete_".$type))
-				error(__("Access Denied"), sprintf(__("You do not have sufficient privileges to delete %ss."), $type));
-			if (empty($_GET['id']))
-				error(__("No ID Specified"), sprintf(__("An ID is required to delete a %s."), $type));
-
-			if ($type == "post")
-				$post = new Post($_GET['id']);
-
-			if ($type == "page")
-				$page = new Page($_GET['id']);
 		}
 
 		/**

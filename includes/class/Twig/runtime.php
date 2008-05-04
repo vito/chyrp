@@ -45,7 +45,7 @@ $twig_filters = array(
 	'join' =>		'twig_join_filter',
 	'split' =>		'twig_split_filter',
 	'first' =>		'twig_first_filter',
-	'kffset' =>		'twig_offset_filter',
+	'offset' =>		'twig_offset_filter',
 	'last' =>		'end',
 	'reverse' =>	'array_reverse',
 	'length' =>		'count',
@@ -57,7 +57,9 @@ $twig_filters = array(
 	'items' =>		'twig_get_array_items_filter',
 
 	// debugging
-	'inspect' => 'twig_inspect_filter'
+	'inspect' => 'twig_inspect_filter',
+
+	'trigger' =>	'twig_trigger_filter'
 );
 
 
@@ -324,4 +326,11 @@ function twig_first_filter($array) {
 
 function twig_offset_filter($array, $offset = 0) {
 	return $array[$offset];
+}
+
+function twig_trigger_filter($name) {
+	$args = func_get_args();
+	array_shift($args);
+
+	Trigger::current()->call($name, $args);
 }

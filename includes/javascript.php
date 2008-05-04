@@ -115,7 +115,9 @@ var Post = {
 		$.post("<?php echo $config->url; ?>/includes/ajax.php", { action: "delete_post", id: id }, function(response){
 			$("#post_"+id+" .target, #post_"+id+".target").loader(true)
 			if (isError(response)) return
-			$("#post_"+id).animate({ height: "hide", opacity: "hide" }).remove()
+			$("#post_"+id).animate({ height: "hide", opacity: "hide" }, function(){
+				$(this).remove()
+			})
 			appendNextPost(1)
 		})
 <?php if ($_GET['action'] == "view"): ?>
