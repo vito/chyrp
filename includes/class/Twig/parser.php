@@ -430,6 +430,7 @@ class Twig_Parser
 		$token = $this->stream->next();
 		$lineno = $token->lineno;
 		if ($token->value == '.') {
+			$token = $this->stream->next();
 			if ($token->type == Twig_Token::NAME_TYPE ||
 			    $token->type == Twig_Token::NUMBER_TYPE)
 				$arg = new Twig_Constant($token->value, $lineno);
