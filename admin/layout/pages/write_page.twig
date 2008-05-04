@@ -22,6 +22,7 @@
 					<textarea class="wide preview_me" rows="12" name="body" id="body"></textarea>
 				</p>
 
+				<br id="after_options" />
 				<button type="submit" class="yay right" accesskey="s">
 					<img src="images/icons/success.png" alt="success" />Publish
 				</button>
@@ -29,7 +30,30 @@
 					Preview
 				</button>
 
-				<input type="hidden" name="feather" value="${ feather | escape }" id="feather" />
+				<div class="clear" />
+				<br class="js_disabled" />
+				<div id="more_options" class="more_options js_disabled">
+					<p>
+						<label for="pinned">${ "Show in pages list?" | translate }</label>
+						<input type="checkbox" name="show_in_list" id="show_in_list" tabindex="3" checked="checked" />&nbsp;
+					</p>
+					<p>
+						<label for="slug">${ "Slug" | translate }</label>
+						<input class="text" type="text" name="slug" value="" id="slug" />
+					</p>
+					<p>
+						<label for="parent_id">${ "Parent" | translate }</label>
+						<select name="parent_id" id="parent_id">
+							<option value="0">(none)</option>
+							{% for page in pages %}
+							<option value="$page.id">${ page.title | escape }</option>
+							{% endfor %}
+						</select>
+					</p>
+					{% trigger "new_page_options" %}
+					<div class="clear"></div>
+				</div>
+
 				<input type="hidden" name="hash" value="$site.secure_hashkey" id="feather" />
 			</form>
 {% endblock %}

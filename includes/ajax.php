@@ -48,30 +48,32 @@
 			fallback($_POST['offset'], 0);
 			fallback($_POST['context']);
 
-			$id = (isset($_POST['id'])) ? "`id` = ".$sql->quote($_POST['id']) : null ;
+			$id = (isset($_POST['id'])) ? "`id` = :id" : false ;
 			$reason = (isset($_POST['reason'])) ? "_".$_POST['reason'] : "" ;
 
 			switch($_POST['context']) {
 				default:
-					$post = Post::find(array("where" => array($private, $id), "offset" => $_POST['offset'],
-					                         "limit" => 1));
+					$post = new Post(null, array("where" => array($private, $id),
+					                             "offset" => $_POST['offset'],
+					                             "limit" => 1));
 					break;
 				case "drafts":
-					$post = Post::find(array("where" => array("`status` = 'draft'", $id),
-					                         "offset" => $_POST['offset'],
-					                         "limit" => 1));
+					$post = new Post(null, array("where" => array("`status` = 'draft'", $id),
+					                             "params" => array(":id" => $_POST['id']),
+					                             "offset" => $_POST['offset'],
+					                             "limit" => 1));
 					break;
 				case "archive":
-					$post = Post::find(array("where" => array("`created_at` like :created_at", $id),
-					                         "params" => array(":created_at" => "'".$_POST['year']."-".$_POST['month']."%'"),
-					                         "offset" => $_POST['offset'],
-					                         "limit" => 1));
+					$post = new Post(null, array("where" => array("`created_at` like :created_at", $id),
+					                             "params" => array(":created_at" => "'".$_POST['year']."-".$_POST['month']."%'", ":id" => $_POST['id']),
+					                             "offset" => $_POST['offset'],
+					                             "limit" => 1));
 					break;
 				case "search":
-					$post = Post::find(array("where" => array("`xml` like :query", $id),
-					                         "params" => array(":query" => "'%".urldecode($_POST['query'])."%'"),
-					                         "offset" => $_POST['offset'],
-					                         "limit" => 1));
+					$post = new Post(null, array("where" => array("`xml` like :query", $id),
+					                             "params" => array(":query" => "'%".urldecode($_POST['query'])."%'", ":id" => $_POST['id']),
+					                             "offset" => $_POST['offset'],
+					                             "limit" => 1));
 					break;
 			}
 

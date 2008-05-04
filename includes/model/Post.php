@@ -105,10 +105,12 @@
 			foreach ($trackbacks as $url)
 				trackback_send($id, $url);
 
-			$trigger = Trigger::current();
-			$trigger->call("add_post", array($id, $options));
+			$post = new self($id);
 
-			return new self($id);
+			$trigger = Trigger::current();
+			$trigger->call("add_post", array($post, $options));
+
+			return $post;
 		}
 
 		/**

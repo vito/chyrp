@@ -38,11 +38,8 @@ strong {
 	font-weight: bold;
 }
 small {
-	display: block;
-	line-height: 1.3em;
-	font-size: 1em;
-	margin-left: 19em;
-	margin-bottom: 1em;
+	font-size: .9em;
+	color: #999;
 }
 input.text, input.file, textarea {
 	font-size: 1.25em;
@@ -279,7 +276,32 @@ button img {
 }
 /* @end */
 
-
+/* @group Options */
+.more_options_link {
+	font-weight: bold;
+	color: #999;
+	border-bottom: 1px solid #ddd;
+	display: block;
+}
+.more_options_link:hover {
+	color: #666;
+	border-bottom-color: #aaa;
+}
+.more_options {
+	background: #f9f9f9;
+	padding: 2% 0 0 2%;
+}
+.more_options p {
+	width: 48%;
+	margin: 0 2% 0 0;
+	height: 5.5em;
+	float: left;
+}
+.more_options p input.text {
+	width: 96.5%;
+	margin: 0;
+}
+/* @end */
 
 /* @group Helpers */
 a.emblem {

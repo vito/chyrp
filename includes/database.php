@@ -111,6 +111,9 @@
 				if (XML_RPC or $throw_exceptions)
 					throw new Exception($message);
 
+				if (DEBUG)
+					$message.= "<br /><br />".$query;
+
 				error(__("Database Error"), $message);
 			}
 
@@ -124,7 +127,8 @@
 		public function count($tables, $conds, $params = array())
 		{
 			if (is_array($conds))
-				$conds = implode(" and ", $conds);
+				$conds = implode(" and ", array_filter($conds));
+
 			return $this->query(QueryBuilder::build_count($tables, $conds), $params)->fetchColumn();
 		}
 
@@ -135,7 +139,8 @@
 		public function select($tables, $fields, $conds, $order = null, $params = array(), $limit = null, $offset = null)
 		{
 			if (is_array($conds))
-				$conds = implode(" and ", $conds);
+				$conds = implode(" and ", array_filter($conds));
+
 			return $this->query(QueryBuilder::build_select($tables, $fields, $conds, $order, $limit, $offset), $params);
 		}
 
@@ -155,7 +160,8 @@
 		public function update($table, $conds, $data, $params = array())
 		{
 			if (is_array($conds))
-				$conds = implode(" and ", $conds);
+				$conds = implode(" and ", array_filter($conds));
+
 			return $this->query(QueryBuilder::build_update($table, $conds, $data), $params);
 		}
 
@@ -166,7 +172,8 @@
 		public function delete($table, $conds, $params = array())
 		{
 			if (is_array($conds))
-				$conds = implode(" and ", $conds);
+				$conds = implode(" and ", array_filter($conds));
+
 			return $this->query(QueryBuilder::build_delete($table, $conds), $params);
 		}
 

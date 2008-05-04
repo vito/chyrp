@@ -14,12 +14,20 @@
 		 * Function: write
 		 * Post writing.
 		 */
-		public function write() {
+		public function write_post() {
 			global $feathers;
 			$this->context["feathers"]       = $feathers;
 			$this->context["feather"]        = fallback($_GET['feather'], Config::current()->enabled_feathers[0], true);
 			$this->context["featherTEMP"]    = $feathers[$this->context["feather"]];
 			$this->context["GET"]["feather"] = $this->context["feather"];
+		}
+
+		/**
+		 * Function: write_page
+		 * Page creation.
+		 */
+		public function write_page() {
+			$this->context["pages"] = Page::find();
 		}
 
 		/**
@@ -62,9 +70,9 @@
 			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : sanitize($_POST['title']) ;
 			$url = Page::check_url($clean);
 
-			Page::add($_POST['title'], $_POST['body'], $_POST['parent_id'], $show_in_list, $clean, $url);
+			$page = Page::add($_POST['title'], $_POST['body'], $_POST['parent_id'], $show_in_list, $clean, $url);
 
-			redirect($route->url("page/".$url."/"));
+			redirect($page->url());
 		}
 
 		/**
@@ -483,17 +491,25 @@
 		public function determine_action() {
 			$visitor = Visitor::current();
 
-			# "Write", if they can add posts or drafts.
+			# "Write > Post", if they can add posts or drafts.
 			if ($visitor->group()->can("add_post") or $visitor->group()->can("add_draft"))
-				return "write";
+				return "write_post";
+
+			# "Write > Page", if they can add pages.
+			if ($visitor->group()->can("add_page"))
+				return "write_page";
+
+			# "Manage > Posts", if they can manage any posts.
+			if (Post::any_editable() or Post::any_deletable())
+				return "manage_posts";
+
+			# "Manage > Posts", if they can manage any posts.
+			if ($visitor->group()->can("add_page") or $visitor->group()->can("delete_page"))
+				return "manage_pages";
 
 			# "Settings", if they can configure the installation.
 			if ($visitor->group()->can("change_settings"))
 				return "settings";
-
-			# "Manage", if they can manage any posts.
-			if (Post::any_editable() or Post::any_deletable())
-				return "manage";
 		}
 	}
 	$admin = new AdminController();

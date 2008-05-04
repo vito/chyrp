@@ -26,6 +26,7 @@
 			$admin->context["hide_admin"] = isset($_COOKIE["chyrp_hide_admin"]);
 			$admin->context["sql_debug"]  = SQL::current()->debug;
 			$admin->context["pagination"] = $paginate;
+			$admin->context["now"]        = time() + Config::current()->time_offset;
 			$admin->context["POST"]       = $_POST;
 			$admin->context["GET"]        = $_GET;
 

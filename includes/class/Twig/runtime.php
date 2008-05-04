@@ -191,12 +191,14 @@ function twig_make_array($object)
 
 function twig_date_format_filter($timestamp, $format='F j, Y, G:i')
 {
-	return @date($format, @strtotime($timestamp));
+	$timestamp = (is_numeric($timestamp)) ? $timestamp : @strtotime($timestamp) ;
+	return @date($format, $timestamp);
 }
 
 function twig_strftime_format_filter($timestamp, $format='%x %X')
 {
-	return @strftime($format, @strtotime($timestamp));
+	$timestamp = (is_numeric($timestamp)) ? $timestamp : @strtotime($timestamp) ;
+	return @strftime($format, $timestamp);
 }
 
 function twig_urlencode_filter($string, $raw=false)
