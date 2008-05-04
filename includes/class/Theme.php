@@ -49,6 +49,8 @@
 			foreach (Page::find(array("where" => "`parent_id` = 0 and `show_in_list` = 1", "order" => "`list_order` asc", "pagination" => false)) as $page)
 				$this->recurse_pages($page, $main_class, $list_class, $show_order_fields);
 
+			$this->page_list = Trigger::current()->filter('list_pages', $this->page_list);
+
 			$this->page_list.= "</ul>\n";
 			return $this->page_list;
 		}
