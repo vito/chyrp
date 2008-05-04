@@ -36,8 +36,9 @@ $twig_filters = array(
 	'strip' =>		'trim',
 	'rstrip' =>		'rtrim',
 	'lstrip' =>		'ltrim',
-	'translate' =>	'twig_translate_string_filter',
-	'normalize' =>	'normalize',
+	'translate' =>		'twig_translate_string_filter',
+	'normalize' =>		'normalize',
+	'replace' =>		'twig_replace_filter',
 
 	// array helpers
 	'join' =>		'twig_join_filter',
@@ -237,6 +238,11 @@ function twig_is_odd_filter($value)
 	return $value % 2 == 1;
 }
 
+function twig_replace_filter($str, $search, $replace)
+{
+	return str_replace($search, $replace, $str);
+}
+
 
 // add multibyte extensions if possible
 if (function_exists('mb_get_info')) {
@@ -296,5 +302,7 @@ function twig_translate_string_filter($string) {
 }
 
 function twig_inspect_filter($thing) {
-	return '<pre class="chyrp_inspect"><code>'.var_export($thing, true).'</code></pre>';
+	return '<pre class="chyrp_inspect"><code>' .
+	       htmlspecialchars(var_export($thing, true)) .
+	       '</code></pre>';
 }

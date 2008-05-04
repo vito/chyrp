@@ -458,6 +458,7 @@ class Twig_Parser
 						Twig_Token::OPERATOR_TYPE, ',');
 					$args[] = $this->parseExpression();
 				}
+				$this->stream->expect(Twig_Token::OPERATOR_TYPE, ')');
 			}
 			$filters[] = array($token->value, $args);
 		}

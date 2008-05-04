@@ -652,7 +652,7 @@ class Twig_FilterExpression extends Twig_Expression
 			$postponed[] = $attrs;
 		}
 		$this->node->compile($compiler);
-		foreach ($postponed as $attributes) {
+		foreach (array_reverse($postponed) as $attributes) {
 			foreach ($attributes as $node) {
 				$compiler->raw(', ');
 				$node->compile($compiler);
