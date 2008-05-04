@@ -84,22 +84,23 @@ class Twig_Parser
 		$tests = array(array($expr, $body));
 		$else = NULL;
 
-		while (true) {
+		$end = false;
+		while (!$end)
 			switch ($this->stream->next()->value) {
 			case 'else':
 				$this->stream->expect(Twig_Token::BLOCK_END_TYPE);
 				$else = $this->subparse(array($this, 'decideIfEnd'));
-				continue;
+				break;
 			case 'elseif':
 				$expr = $this->parseExpression();
 				$this->stream->expect(Twig_Token::BLOCK_END_TYPE);
 				$body = $this->subparse(array($this, 'decideIfFork'));
 				$tests[] = array($expr, $body);
-				continue;
+				break;
+			case 'endif':
+				$end = true;
+				break;
 			}
-			$this->stream->next();
-			break;
-		}
 
 		$this->stream->expect(Twig_Token::BLOCK_END_TYPE);
 		return new Twig_IfCondition($tests, $else, $lineno);

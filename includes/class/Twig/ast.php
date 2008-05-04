@@ -206,7 +206,7 @@ class Twig_IfCondition extends Twig_Node
 		$compiler->addDebugInfo($this);
 		$idx = 0;
 		foreach ($this->tests as $test) {
-			$compiler->raw(($idx++ ? "}\n else " : '') . 'if (');
+			$compiler->raw(($idx++ ? "}\nelse" : '') . 'if (');
 			$test[0]->compile($compiler);
 			$compiler->raw(") {\n");
 			$test[1]->compile($compiler);
