@@ -17,6 +17,12 @@
 		public function load($action) {
 			global $admin, $paginate;
 
+			$trigger = Trigger::current();
+			$write    = $trigger->filter("write_pages", array());
+			$manage   = $trigger->filter("manage_pages", array());
+			$settings = $trigger->filter("settings_pages", array());
+			$extend   = $trigger->filter("extend_pages", array());
+
 			$admin->context["title"]      = camelize($action, true);
 			$admin->context["site"]       = Config::current();
 			$admin->context["visitor"]    = Visitor::current();
@@ -29,6 +35,21 @@
 			$admin->context["now"]        = time() + Config::current()->time_offset;
 			$admin->context["POST"]       = $_POST;
 			$admin->context["GET"]        = $_GET;
+
+			$admin->context["selected"]   = array("write"    => (in_array($action, $write) or match("/^write_/", $action)) ?
+			                                                     "selected" :
+			                                                     "deselected",
+			                                      "manage"   => (in_array($action, $manage) or match(array("/^manage_/", "/^edit_/", "/^delete_/"), $action)) ?
+			                                                    "selected" :
+			                                                    "deselected",
+			                                      "settings" => (in_array($action, $settings) or match("/_settings$/", $action)) ?
+			                                                    "selected" :
+			                                                    "deselected",
+			                                      "extend"   => (in_array($action, $extend) or match("/^extend_/", $action)) ?
+			                                                    "selected" :
+			                                                    "deselected");
+
+			$admin->context["selected"] = $trigger->filter("nav_selected", $admin->context["selected"]);
 
 			if (method_exists($admin, $action))
 				$admin->$action();

@@ -33,6 +33,9 @@ small {
 	font-size: .9em;
 	color: #999;
 }
+p {
+	margin: 0 0 1em;
+}
 a:link, a:visited {
 	text-decoration: none;
 	border-bottom: 1px solid #ddd;
@@ -173,6 +176,15 @@ input.file {
 input.text, input.file, select, textarea {
 	margin-bottom: 1em;
 }
+textarea {
+	font-size: 1em;
+	font-family: Helvetica Neue;
+}
+textarea.wide, input.text.wide {
+	padding: .5%;
+	width: 99%;
+	_width: 100%; /* Hooray for IE6's randomized box model. */
+}
 input.code, code {
 	font-family: "Consolas", "Monaco", monospace;
 }
@@ -248,7 +260,7 @@ p.message.boo {
 button {
 	font-weight: bold;
 	font-size: 1.125em;
-	margin: .7em .5em 0 0;
+	margin: 0 .5em 0 0;
 	color: #333;
 	padding: .5em .75em;
 	background: #f1f1f1;
@@ -258,7 +270,7 @@ button {
 	cursor: pointer;
 }
 button.right {
-	margin: .7em 0 0 .5em;
+	margin: 0 0 0 .5em;
 }
 button:hover {
 	background-color: #f7f7f7;
@@ -344,10 +356,6 @@ a.emblem img {
 .wide {
 	width: 100%;
 }
-textarea.wide, input.text.wide {
-	width: 98.5%; /* Compensating for the 6px added from the padding */
-	_width: 100%; /* Hooray for IE6's randomized box model. */
-}
 .clear {
 	clear: both;
 }
@@ -363,5 +371,8 @@ textarea.wide, input.text.wide {
 }
 .column {
 	margin: 0 5em;
+}
+br#after_options {
+	display: none;
 }
 /* @end */

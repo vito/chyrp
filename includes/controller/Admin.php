@@ -67,7 +67,7 @@
 		 * Destroys a post (the real deal).
 		 */
 		public function destroy_post() {
-			if ($_POST['destroy'] == "bollocks!")
+			if ($_POST['destroy'] == "bollocks")
 				redirect("/admin/?action=manage_posts");
 			if (empty($_POST['id']))
 				error(__("No ID Specified"), __("An ID is required to delete a post."));

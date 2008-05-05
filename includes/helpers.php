@@ -1154,3 +1154,22 @@
 			else
 				$value = get_magic_quotes_gpc() ? stripslashes($value) : $value ;
 	}
+
+	/**
+	 * Function: match
+	 * Try and match a string against an array of regular expressions.
+	 *
+	 * Parameters:
+	 *     $try - An array of regular expressions, or a single regular expression.
+	 *     $haystack - The string to test.
+	 */
+	function match($try, $haystack) {
+		if (is_string($try))
+			return preg_match($try, $haystack);
+
+		foreach ($try as $needle)
+			if (preg_match($needle, $haystack))
+				return true;
+
+		return false;
+	}

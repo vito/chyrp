@@ -3,7 +3,7 @@
 {% block title %}${ "Delete &#8220;%s&#8221;?" | translate | format(post.title | escape) }{% endblock %}
 
 {% block subnav %}
-			<li><a href="{% admin "manage_posts" %}">${ "Posts" | translate }</a></li>
+			<li class="selected"><a href="{% admin "manage_posts" %}">${ "Posts" | translate }</a></li>
 			<li><a href="{% admin "manage_pages" %}">${ "Pages" | translate }</a></li>
 			{% trigger "manage_nav" %}
 {% endblock %}
@@ -16,8 +16,8 @@
 					$post.excerpt
 				</blockquote>
 				<div class="center">
-					<button name="destroy" value="indubitably!" class="center boo">DESTROY!</button>
-					<button name="destroy" value="bollocks!" type="submit" class="yay">Cancel</button>
+					<button name="destroy" value="indubitably" class="center boo">DESTROY!</button>
+					<button name="destroy" value="bollocks" type="submit" class="yay">Cancel</button>
 				</div>
 				<input type="hidden" name="id" value="$post.id" id="id" />
 				<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />

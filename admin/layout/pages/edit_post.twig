@@ -3,13 +3,13 @@
 {% block title %}${ "Edit &#8220;%s&#8221;" | translate | format(post.title | escape) }{% endblock %}
 
 {% block subnav %}
-			<li><a href="{% admin "manage_posts" %}">${ "Posts" | translate }</a></li>
+			<li class="selected"><a href="{% admin "manage_posts" %}">${ "Posts" | translate }</a></li>
 			<li><a href="{% admin "manage_pages" %}">${ "Pages" | translate }</a></li>
 			{% trigger "manage_nav" %}
 {% endblock %}
 
 {% block content %}
-			<h1>${ "Edit &#8220;%s&#8221;" | translate | format(post.title | escape) }</h1>
+			<h1>${ "Editing &#8220;%s&#8221;" | translate | format(post.title | escape) }</h1>
 			<form action="{% admin "update_post" %}" method="post" accept-charset="utf-8">
 				{% for field in feather.fields %}
 				<p>
