@@ -5,6 +5,9 @@
 			{% if updated %}
 			<p class="message yay">${ "Post updated." | translate } ${ "<a href=\"%s\">View Post &rarr;</a>" | translate | format(updated.url) }</p>
 			{% endif %}
+			{% if deleted %}
+			<p class="message yay">${ "Post deleted." | translate }</p>
+			{% endif %}
 			<h2>${ "Last 25 Posts" | translate }</h2>
 			<table border="0" cellspacing="0" cellpadding="0" class="wide">
 				<tr class="head">

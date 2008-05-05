@@ -23,14 +23,6 @@ body {
 	background: #e8e8e8;
 	padding: 0 0 5em;
 }
-label {
-	display: block;
-	font-size: 1.1em;
-}
-label .sub {
-	font-size: .8em;
-	color: #999;
-}
 em {
 	font-style: italic;
 }
@@ -40,21 +32,6 @@ strong {
 small {
 	font-size: .9em;
 	color: #999;
-}
-input.text, input.file, textarea {
-	font-size: 1.25em;
-	padding: 3px;
-	border: 1px solid #ddd;
-	background: #fff;
-}
-input.file {
-	border: none;
-}
-input.text, input.file, select, textarea {
-	margin-bottom: 1em;
-}
-input.code, code {
-	font-family: "Consolas", "Monaco", monospace;
 }
 a:link, a:visited {
 	text-decoration: none;
@@ -164,6 +141,40 @@ a:hover {
 #content h4 {
 	font-weight: bold;
 	font-size: 1.2em;
+}
+/* @end */
+
+/* @group Forms */
+form.delete blockquote {
+	width: 75%;
+	margin: 0 auto;
+	font-style: italic;
+}
+form.delete blockquote h2 {
+	font-style: normal;
+}
+label {
+	display: block;
+	font-size: 1.1em;
+}
+label .sub {
+	font-size: .8em;
+	color: #999;
+}
+input.text, input.file, textarea {
+	font-size: 1.25em;
+	padding: 3px;
+	border: 1px solid #ddd;
+	background: #fff;
+}
+input.file {
+	border: none;
+}
+input.text, input.file, select, textarea {
+	margin-bottom: 1em;
+}
+input.code, code {
+	font-family: "Consolas", "Monaco", monospace;
 }
 /* @end */
 
@@ -345,6 +356,10 @@ textarea.wide, input.text.wide {
 }
 .right {
 	float: right !important;
+}
+.center {
+	margin: 0 auto;
+	text-align: center;
 }
 .column {
 	margin: 0 5em;

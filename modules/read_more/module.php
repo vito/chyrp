@@ -2,7 +2,7 @@
 	class ReadMore extends Module {
 		public function __construct() {
 			$this->addAlias("markup_post_text", "makesafe", 8);
-			if (isset($_GET['feed']))
+			if (isset($_GET['feed']) or ADMIN)
 				$this->addAlias("markup_post_text", "read_more");
 		}
 		static function makesafe($text) {
@@ -18,8 +18,9 @@
 			if (!isset($post->id) or !strstr($text, 'class="read_more"')) return $text;
 
 			fallback($string, __("Read More &raquo;", "theme"));
-			#$text = preg_replace("/(<p>)?(<a class=\"read_more\" href=\"([^\"]+)\">e51b2b9a58824dd068d8777ec6e97e4d<\/a>)(<\/p>|<br \/>)?/", "\\2", $text);
+			preg_match("/<a class=\"read_more\" href=\"[^\"]+\">e51b2b9a58824dd068d8777ec6e97e4d<\/a>\(\(\(more\)\)\)(<\/p>|<br \/>)/", $text, $ending_tag);
 			$split_read = explode("(((more)))", $text);
+			$split_read[0].= @$ending_tag[1];
 
 			if ($action == "view")
 				return preg_replace('/<a class="read_more" href="([^"]+)">e51b2b9a58824dd068d8777ec6e97e4d<\/a>/', "", implode("\n\n", $split_read));

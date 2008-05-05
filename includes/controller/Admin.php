@@ -23,41 +23,6 @@
 		}
 
 		/**
-		 * Function: write_page
-		 * Page creation.
-		 */
-		public function write_page() {
-			$this->context["pages"] = Page::find();
-		}
-
-		/**
-		 * Function: edit_post
-		 * Post editing.
-		 */
-		public function edit_post() {
-			global $post, $feathers;
-			if (empty($_GET['id']))
-				error(__("No ID Specified"), __("An ID is required to edit a post."));
-
-			$this->context["post"] = new Post($_GET['id'], array("filter" => false));
-			$this->context["feather"] = $feathers[$this->context["post"]->feather];
-
-			if (!$this->context["post"]->editable())
-				error(__("Access Denied"), __("You do not have sufficient privileges to edit this post."));
-		}
-
-		/**
-		 * Function: manage_posts
-		 * Post management page.
-		 */
-		public function manage_posts() {
-			$this->context["posts"] = Post::find(array("where" => false, "per_page" => 25));
-
-			if (!empty($_GET['updated']))
-				$this->context["updated"] = new Post($_GET['updated']);
-		}
-
-		/**
 		 * Function: add_post
 		 * Adds a post when the form is submitted. Shows an error if the user lacks permissions.
 		 */
@@ -71,6 +36,72 @@
 				error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
 			$feathers[$_POST['feather']]->submit();
+		}
+
+		/**
+		 * Function: edit_post
+		 * Post editing.
+		 */
+		public function edit_post() {
+			global $feathers;
+			if (empty($_GET['id']))
+				error(__("No ID Specified"), __("An ID is required to edit a post."));
+
+			$this->context["post"] = new Post($_GET['id'], array("filter" => false));
+			$this->context["feather"] = $feathers[$this->context["post"]->feather];
+
+			if (!$this->context["post"]->editable())
+				error(__("Access Denied"), __("You do not have sufficient privileges to edit this post."));
+		}
+
+		/**
+		 * Function: delete_post
+		 * Post deletion (confirm page).
+		 */
+		public function delete_post() {
+			$this->context["post"] = new Post($_GET['id']);
+		}
+
+		/**
+		 * Function: destroy_post
+		 * Destroys a post (the real deal).
+		 */
+		public function destroy_post() {
+			if ($_POST['destroy'] == "bollocks!")
+				redirect("/admin/?action=manage_posts");
+			if (empty($_POST['id']))
+				error(__("No ID Specified"), __("An ID is required to delete a post."));
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
+
+			$post = new Post($_POST['id']);
+			if (!$post->deletable())
+				error(__("Access Denied"), __("You do not have sufficient privileges to delete this post."));
+
+			Post::delete($_POST['id']);
+
+			redirect("/admin/?action=manage_posts&deleted=".$post->id);
+		}
+
+		/**
+		 * Function: manage_posts
+		 * Post management page.
+		 */
+		public function manage_posts() {
+			$this->context["posts"] = Post::find(array("where" => false, "per_page" => 25));
+
+			if (!empty($_GET['updated']))
+				$this->context["updated"] = new Post($_GET['updated']);
+			if (!empty($_GET['deleted']))
+				$this->context["deleted"] = true;
+		}
+
+		/**
+		 * Function: write_page
+		 * Page creation.
+		 */
+		public function write_page() {
+			$this->context["pages"] = Page::find();
 		}
 
 		/**
@@ -234,24 +265,6 @@
 
 			$group->update($_POST['name'], $permissions);
 			redirect("/admin/?action=manage&sub=group&updated");
-		}
-
-		/**
-		 * Function: delete_post_real
-		 * Deletes a post. Shows an error if the user lacks permissions.
-		 */
-		public function delete_post_real() {
-			if (empty($_POST)) return;
-			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
-
-			$post = new Post($_POST['id']);
-			if (!$post->deletable())
-				error(__("Access Denied"), __("You do not have sufficient privileges to delete this post."));
-
-			Post::delete($_POST['id']);
-
-			redirect("/admin/?action=manage&sub=post&deleted");
 		}
 
 		/**
