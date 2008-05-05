@@ -19,6 +19,7 @@
 			<label for="email">${ "E-Mail" | translate }</label>
 			<input type="text" name="email" value="" id="email" />
 		</p>
+{% trigger "user_register" %}
 
 		<p><input type="submit" value="${ "Register" | translate }"></p>
 	</form>
