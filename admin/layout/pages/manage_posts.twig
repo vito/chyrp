@@ -1,5 +1,7 @@
 {% extends "layout.twig" %}
 
+{% block title %}${ "Manage Posts" | translate }{% endblock %}
+
 {% block subnav %}
 			<li class="selected"><a href="{% admin "manage_posts" %}">${ "Posts" | translate }</a></li>
 			<li><a href="{% admin "manage_pages" %}">${ "Pages" | translate }</a></li>
@@ -17,12 +19,12 @@
 			<h2>${ "Last 25 Posts" | translate }</h2>
 			<table border="0" cellspacing="0" cellpadding="0" class="wide">
 				<tr class="head">
-					<th>Title</th>
-					<th>Posted</th>
-					<th>Status</th>
-					<th>Author</th>
+					<th>${ "Title" | translate }</th>
+					<th>${ "Posted" | translate }</th>
+					<th>${ "Status" | translate }</th>
+					<th>${ "Author" | translate }</th>
 					{% trigger "manage_posts_column_header" %}
-					<th colspan="2">Controls</th>
+					<th colspan="2">${ "Controls" | translate }</th>
 				</tr>
 				{% for post in posts %}
 				<tr id="post_$post.id" class="post target $post.status{% if loop.last %} last{% endif %}">
@@ -30,7 +32,7 @@
 					<td>${ post.created_at | strftime }</td>
 					<td>${ post.status | replace("_", " ") | title }</td>
 					<td>$post.user.login</td>
-					{% trigger "manage_posts_column" %}
+					${ "manage_posts_column" | trigger(post) }
 					<td>$post.edit_link</td>
 					<td>$post.delete_link</td>
 				</tr>

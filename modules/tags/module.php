@@ -113,8 +113,8 @@
 			echo "<th>".__("Tags", "tags")."</th>";
 		}
 
-		static function manage_posts_column($id) {
-			$tags = get_post_tags($id);
+		static function manage_posts_column($post) {
+			$tags = get_post_tags($post->id);
 			echo "<td>";
 			echo implode(", ", $tags["linked"]);
 			echo "</td>";

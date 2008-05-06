@@ -10,7 +10,7 @@ caption,th { text-align: left; }
 h1,h2,h3,h4,h5,h6 { font-size: 100%; font-weight: normal; }
 abbr,acronym { border: 0; font-variant: normal; }
 input,textarea,select { font-family: inherit; font-size: inherit; font-weight: inherit; }
-a { text-decoration: none; color: inherit;}
+a { text-decoration: none; color: inherit; }
 /* @end */
 
 /* @group Core */
@@ -38,13 +38,13 @@ p {
 }
 a:link, a:visited {
 	text-decoration: none;
-	border-bottom: 1px solid #ddd;
+	border-bottom: 1px solid rgba(255,255,255,.5);
 }
 a:visited {
 	border-bottom-style: dotted;
 }
 a:hover {
-	border-bottom-color: #aaa;
+	border-bottom-color: rgba(255,255,255,.75);
 }
 /* @end */
 
@@ -174,11 +174,10 @@ input.file {
 	border: none;
 }
 input.text, input.file, select, textarea {
-	margin-bottom: 1em;
+	margin-bottom: .25em;
 }
 textarea {
 	font-size: 1em;
-	font-family: Helvetica Neue;
 }
 textarea.wide, input.text.wide {
 	padding: .5%;
@@ -239,7 +238,7 @@ tr.draft, tr.draft td, tr.draft td.main {
 p.message {
 	font-size: 1.1em;
 	padding: .6em;
-	margin-bottom: 1em;
+	margin-bottom: 1.75em;
 	background: #f1f1f1;
 	border: 1px solid #ccc;
 }
