@@ -124,6 +124,20 @@
 		}
 
 		/**
+		 * Function: edit_page
+		 * Page editing.
+		 */
+		public function edit_page() {
+			if (empty($_GET['id']))
+				error(__("No ID Specified"), __("An ID is required to edit a page."));
+			if (!Visitor::current()->group()->can("edit_page"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to edit this page."));
+
+			$this->context["page"] = new Page($_GET['id']);
+			$this->context["pages"] = Page::find();
+		}
+
+		/**
 		 * Function: manage_pages
 		 * Page management page.
 		 */

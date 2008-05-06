@@ -76,7 +76,7 @@ $(function(){
 				$(this).fadeIn("fast")
 			})
 			return false
-		}).insertAfter("#publish, #save")
+		}).insertAfter("button:last")
 	}
 
 	// Checkbox toggling.

@@ -19,6 +19,7 @@
 		 */
 		public function __construct($page_id, $options = array()) {
 			parent::grab($this, $page_id, $options);
+			$this->slug = $this->url;
 		}
 
 		/**

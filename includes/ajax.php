@@ -94,7 +94,7 @@
 			$content = ($trigger->exists("preview_".$_POST['feather'])) ?
 			            $trigger->filter("preview_".$_POST['feather'], urldecode(stripslashes($_POST['content']))) :
 			            $trigger->filter("markup_post_text", urldecode(stripslashes($_POST['content']))) ;
-			echo "<h1 class=\"preview-header\">".__("Preview")."</h1>\n<div class=\"preview-content\">".$content."</div>";
+			echo "<h2 class=\"preview-header\">".__("Preview")."</h2>\n<div class=\"preview-content\">".$content."</div>";
 			break;
 		case "check_confirm":
 			if (!$visitor->group()->can("change_settings"))

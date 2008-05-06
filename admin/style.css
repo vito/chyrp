@@ -234,6 +234,17 @@ tr.draft, tr.draft td, tr.draft td.main {
 }
 /* @end */
 
+/* @group Preview */
+h1.preview-header {
+	margin: 0 0 .5em !important;
+}
+.preview-content {
+	margin: 0 0 2em;
+	padding-bottom: .75em;
+	border-bottom: 1px dotted #ddd;
+}
+/* @end */
+
 /* @group Messages */
 p.message {
 	font-size: 1.1em;
