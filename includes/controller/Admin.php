@@ -124,6 +124,19 @@
 		}
 
 		/**
+		 * Function: manage_pages
+		 * Page management page.
+		 */
+		public function manage_pages() {
+			$this->context["pages"] = Page::find(array("where" => false, "per_page" => 25));
+
+			if (!empty($_GET['updated']))
+				$this->context["updated"] = new Page($_GET['updated']);
+			if (!empty($_GET['deleted']))
+				$this->context["deleted"] = true;
+		}
+
+		/**
 		 * Function: add_user
 		 * Add a user when the form is submitted. Shows an error if the user lacks permissions.
 		 */

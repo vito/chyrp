@@ -160,7 +160,7 @@ label {
 	display: block;
 	font-size: 1.1em;
 }
-label .sub {
+label .sub, tr .sub {
 	font-size: .8em;
 	color: #999;
 }

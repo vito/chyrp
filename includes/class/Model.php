@@ -50,6 +50,9 @@
 			foreach ($read as $key => $val)
 				if (!is_int($key))
 					$model->$key = $loaded_models[$model_name][$read["id"]][$key] = $val;
+
+			if (isset($model->updated_at))
+				$model->updated = $model->updated_at != "0000-00-00 00:00:00";
 		}
 
 		static function search($model, $options = array()) {

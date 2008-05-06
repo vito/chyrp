@@ -88,7 +88,7 @@
 		public function update($title, $body, $parent_id, $show_in_list, $list_order, $url) {
 			if (!isset($this->id)) return;
 
-			if ($title != $this->title or $body != $this->body or $parent_id != $this->parent_id or $show_in_list != $this->show_in_list or $list_order != $this->list_order or $url != $this->url)
+			if ($title != $this->title or $body != $this->body)
 				$updated = datetime();
 			else
 				$updated = null;

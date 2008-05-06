@@ -1,0 +1,43 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Manage Pages" | translate }{% endblock %}
+
+{% block subnav %}
+			<li><a href="{% admin "manage_posts" %}">${ "Posts" | translate }</a></li>
+			<li class="selected"><a href="{% admin "manage_pages" %}">${ "Pages" | translate }</a></li>
+			{% trigger "manage_nav" %}
+{% endblock %}
+
+{% block content %}
+			<h1>${ "Manage Pages" | translate }</h1>
+			{% if updated %}
+			<p class="message yay">${ "Page updated." | translate } ${ "<a href=\"%s\">View Page &rarr;</a>" | translate | format(updated.url) }</p>
+			{% endif %}
+			{% if deleted %}
+			<p class="message yay">${ "Page deleted." | translate }</p>
+			{% endif %}
+			<h2>${ "Last 25 Pages" | translate }</h2>
+			<table border="0" cellspacing="0" cellpadding="0" class="wide">
+				<tr class="head">
+					<th>${ "Title" | translate }</th>
+					<th>${ "Created" | translate }</th>
+					<th>${ "Last Updated" | translate }</th>
+					<th>${ "Author" | translate }</th>
+					{% trigger "manage_pages_column_header" %}
+					<th colspan="2">${ "Controls" | translate }</th>
+				</tr>
+				{% for page in pages %}
+				<tr id="page_$page.id" class="page target{% if loop.last %} last{% endif %}">
+					<td class="main"><a href="$page.url">${ page.title | truncate }</a></td>
+					<td>${ page.created_at | strftime }</td>
+					<td>{% if page.updated %}${ page.updated_at | strftime }{% else %}<span class="sub">${ "never" | translate }</span>{% endif %}</td>
+					<td>$page.user.login</td>
+					${ "manage_pages_column" | trigger(page) }
+					<td>$page.edit_link</td>
+					<td>$page.delete_link</td>
+				</tr>
+				{% endfor %}
+			</table>
+			$pagination.next_link
+			$pagination.prev_link
+{% endblock %}
