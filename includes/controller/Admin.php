@@ -17,9 +17,8 @@
 		public function write_post() {
 			global $feathers;
 			$this->context["feathers"]       = $feathers;
-			$this->context["feather"]        = fallback($_GET['feather'], Config::current()->enabled_feathers[0], true);
-			$this->context["featherTEMP"]    = $feathers[$this->context["feather"]];
-			$this->context["GET"]["feather"] = $this->context["feather"];
+			$this->context["feather"]        = $feathers[fallback($_GET['feather'], Config::current()->enabled_feathers[0], true)];
+			$this->context["GET"]["feather"] = fallback($_GET['feather'], Config::current()->enabled_feathers[0], true);
 		}
 
 		/**

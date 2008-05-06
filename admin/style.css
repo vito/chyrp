@@ -374,4 +374,7 @@ a.emblem img {
 br#after_options {
 	display: none;
 }
+.js_enabled {
+	display: none;
+}
 /* @end */

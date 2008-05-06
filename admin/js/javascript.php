@@ -35,6 +35,7 @@ $(function(){
 
 	// Remove things that only exist for JS-disabled users.
 	$(".js_disabled").remove()
+	$(".js_enabled").css("display", "block")
 
 	// Automatic PNG fixing.
 	$("img[@src$=.png]").ifixpng()
