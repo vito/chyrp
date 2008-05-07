@@ -31,7 +31,9 @@
 			</div>
 		</div>
 		<ul class="column" id="sub-nav">
-{% block subnav %}{% endblock %}
+{% block subnav %}
+{% include "partials/" ~ (route.action | split("_") | first) ~ "_nav.twig" %}
+{% endblock %}
 		</ul>
 		<div class="clear"></div>
 		<div class="column" id="content">

@@ -2,12 +2,6 @@
 
 {% block title %}${ "Manage Pages" | translate }{% endblock %}
 
-{% block subnav %}
-			<li><a href="{% admin "manage_posts" %}">${ "Posts" | translate }</a></li>
-			<li class="selected"><a href="{% admin "manage_pages" %}">${ "Pages" | translate }</a></li>
-			{% trigger "manage_nav" %}
-{% endblock %}
-
 {% block content %}
 			<h1>${ "Manage Pages" | translate }</h1>
 			{% if updated %}

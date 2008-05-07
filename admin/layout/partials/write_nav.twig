@@ -1,0 +1,5 @@
+			<li class="right">${ "Bookmarklet: %s" | translate | format('<a href="' ~ bookmarklet ~ '">Chyrp!</a>') }</li>
+			{% for feather in site.enabled_feathers %}
+			<li${ GET.feather | selected(feather) }><a href="{% admin "write_post&feather="~feather %}">${ feather | capitalize }</a></li>
+			{% endfor %}
+			<li${ route.action | selected("write_page") }><a href="{% admin "write_page" %}">${ "Page" | translate }</a></li>

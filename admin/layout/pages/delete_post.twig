@@ -2,11 +2,7 @@
 
 {% block title %}${ "Delete &#8220;%s&#8221;?" | translate | format(post.title | escape) }{% endblock %}
 
-{% block subnav %}
-			<li class="selected"><a href="{% admin "manage_posts" %}">${ "Posts" | translate }</a></li>
-			<li><a href="{% admin "manage_pages" %}">${ "Pages" | translate }</a></li>
-			{% trigger "manage_nav" %}
-{% endblock %}
+{% block subnav %}{% include "partials/manage_nav.twig" %}{% endblock %}
 
 {% block content %}
 			<h1>${ "Are you sure you want to delete &#8220;%s&#8221;?" | translate | format(post.title | escape) }</h1>

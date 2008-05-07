@@ -54,6 +54,27 @@
 		}
 
 		/**
+		 * Function: update_post
+		 * Updates a post when the form is submitted. Shows an error if the user lacks permissions.
+		 */
+		public function update_post() {
+			global $feathers;
+			if (empty($_POST)) return;
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
+			$post = new Post($_POST['id']);
+			if (!$post->editable())
+				error(__("Access Denied"), __("You do not have sufficient privileges to edit posts."));
+
+			$feathers[$post->feather]->update();
+
+			if (!isset($_POST['ajax']))
+				redirect("/admin/?action=manage_posts&updated=".$_POST['id']);
+			else
+				exit((string) $_POST['id']);
+		}
+
+		/**
 		 * Function: delete_post
 		 * Post deletion (confirm page).
 		 */
@@ -138,6 +159,24 @@
 		}
 
 		/**
+		 * Function: update_page
+		 * Updates a page when the form is submitted. Shows an error if the user lacks permissions.
+		 */
+		public function update_page() {
+			if (empty($_POST)) return;
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
+			if (!Visitor::current()->group()->can("edit_page"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to edit pages."));
+
+			$page = new Page($_POST['id']);
+			$page->update($_POST['title'], $_POST['body'], $_POST['parent_id'], !empty($_POST['show_in_list']), $page->list_order, $_POST['slug']);
+
+			if (!isset($_POST['ajax']))
+				redirect("/admin/?action=manage_pages&updated=".$_POST['id']);
+		}
+
+		/**
 		 * Function: manage_pages
 		 * Page management page.
 		 */
@@ -201,47 +240,6 @@
 			Group::add($_POST['name'], array_keys($_POST['permissions']));
 
 			redirect("/admin/?action=manage&sub=group&added");
-		}
-
-		/**
-		 * Function: update_post
-		 * Updates a post when the form is submitted. Shows an error if the user lacks permissions.
-		 */
-		public function update_post() {
-			global $feathers;
-			if (empty($_POST)) return;
-			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
-			$post = new Post($_POST['id']);
-			if (!$post->editable())
-				error(__("Access Denied"), __("You do not have sufficient privileges to edit posts."));
-
-			$feathers[$post->feather]->update();
-
-			if (!isset($_POST['ajax']))
-				redirect("/admin/?action=manage_posts&updated=".$_POST['id']);
-			else
-				exit((string) $_POST['id']);
-		}
-
-		/**
-		 * Function: update_page
-		 * Updates a page when the form is submitted. Shows an error if the user lacks permissions.
-		 */
-		public function update_page() {
-			if (empty($_POST)) return;
-			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
-			if (!Visitor::current()->group()->can("edit_page"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to edit pages."));
-
-			$show_in_list = !empty($_POST['show_in_list']);
-
-			$page = new Page($_POST['id']);
-			$page->update($_POST['title'], $_POST['body'], $_POST['parent_id'], $show_in_list, $page->list_order, $_POST['slug']);
-
-			if (!isset($_POST['ajax']))
-				redirect("/admin/?action=manage&sub=page&updated=".$_POST['id']);
 		}
 
 		/**

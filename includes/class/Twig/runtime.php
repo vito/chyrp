@@ -61,7 +61,8 @@ $twig_filters = array(
 	'inspect' => 'twig_inspect_filter',
 
 	'trigger' =>	'twig_trigger_filter',
-	'fallback' =>	'twig_fallback_filter'
+	'fallback' =>	'twig_fallback_filter',
+	'selected' =>	'twig_selected_filter'
 );
 
 
@@ -346,4 +347,14 @@ function twig_trigger_filter($name) {
 
 function twig_fallback_filter($try, $fallback) {
 	return fallback($try, $fallback, true);
+}
+
+function twig_selected_filter($foo) {
+	$try = func_get_args();
+	array_shift($try);
+
+	$just_class = (end($try) === true);
+
+	if (in_array($foo, $try))
+		return ($just_class) ? "selected" : ' class="selected"' ;
 }
