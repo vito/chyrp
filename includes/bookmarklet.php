@@ -166,8 +166,28 @@
 ?>
 			<form action="<?php echo $config->url."/admin/?action=add_post"; ?>" id="<?php echo $the_feather; ?>_form" style="display: <?php echo $style; ?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 <?php
-		require FEATHERS_DIR."/".$the_feather."/fields.php";
+		foreach ($feathers[$the_feather]->fields as $field):
+			$optional = isset($field["optional"]) and $field["optional"];
+			$help = isset($field["help"]) and $field["help"];
 ?>
+				<p>
+					<label for="<?php echo $field["attr"]; ?>">
+						<?php echo $field["label"]; ?>
+						<?php if ($optional): ?><span class="sub"><?php echo __("(optional)"); ?></span><?php endif; ?>
+						<?php if ($help): ?>
+						<span class="sub">
+							<a href="<?php echo $config->url."/admin/?action=help&feather=".$the_feather."&field=".$field["attr"]; ?>" target="_blank" class="help emblem"><img src="<?php echo $config->url."/admin/images/icons/help.png"; ?>" alt="help" /></a>
+						</span>
+						<?php endif; ?>
+					</label>
+					<?php if ($field["type"] == "text" or $field["type"] == "file"): ?>
+					<input class="<?php echo $field["type"]; ?> <?php echo implode(" ", $field["classes"]); ?>" type="<?php echo $field["type"]; ?>" name="<?php echo $field["attr"]; ?>" id="<?php echo $field["attr"]; ?>" />
+					<?php endif; ?>
+					<?php if ($field["type"] == "text_block"): ?>
+					<textarea class="wide <?php echo implode(" ", $field["classes"]); ?>" rows="<?php echo fallback($field["rows"], 12, true); ?>" name="<?php echo $field["attr"]; ?>" id="<?php echo $field["attr"]; ?>"></textarea>
+					<?php endif; ?>
+				</p>
+<?php endforeach; ?>
 				<input type="hidden" name="feather" value="<?php echo $the_feather; ?>" id="feather" />
 				<input type="hidden" name="bookmarklet" value="true" id="bookmarklet" />
 				<input type="hidden" name="hash" value="<?php echo $config->secure_hashkey; ?>" id="hash" />

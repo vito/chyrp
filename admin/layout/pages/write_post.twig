@@ -11,10 +11,10 @@
 {% endblock %}
 
 {% block content %}
-			<h1>Add ${ GET.feather | capitalize }</h1>
+			<h1>Add ${ feather.name | capitalize }</h1>
 			<form id="write_form" action="{% admin "add_post" %}" method="post" accept-charset="utf-8">
 				{% include "partials/post_fields.twig" %}
-				<input type="hidden" name="feather" value="${ GET.feather | escape }" id="edit_feather" />
+				<input type="hidden" name="feather" value="${ feather.name | escape }" id="edit_feather" />
 				<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
 			</form>
 {% endblock %}

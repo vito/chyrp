@@ -21,6 +21,7 @@
 			if ($config->send_pingbacks)
 				send_pingbacks($_POST['caption'], $post->id);
 
+			$route = Route::current();
 			if (isset($_POST['bookmarklet']))
 				redirect($route->url("bookmarklet/done/"));
 			else

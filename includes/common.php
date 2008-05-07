@@ -217,6 +217,7 @@
 	foreach ($config->enabled_modules as $module) {
 		$camelized = camelize($module);
 		$modules[$module] = new $camelized();
+		$modules[$module]->name = $module;
 	}
 
 	$action = (isset($_GET['action'])) ? strip_tags($_GET['action']) : "index" ;
