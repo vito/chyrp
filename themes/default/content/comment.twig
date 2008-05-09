@@ -7,7 +7,7 @@
 			</blockquote>
 			<cite>
 				<strong>$comment.author_link</strong> ${ "on" | translate }
-				${ comment.created_at | date }
+				${ comment.created_at | date("F jS, 2008, \\a\\\t g:i A") }
 				{% if visitor.can.edit_comment %}
 				<em>|</em> $comment.edit_link
 				{% endif %}

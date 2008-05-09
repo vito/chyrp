@@ -54,7 +54,7 @@
 				</form>
 				<h1>${ "Pages" | translate }</h1>
 $page_list
-				<h1>${ "Welcome, " | translate } $visitor.login!</h1>
+				<h1>${ "Welcome, %s!" | translate | format(visitor.login | fallback("Guest" | translate)) }</h1>
 				<ul>
 {% if visitor.logged_in %}
 					<li><a href="{% url "controls/" %}">${ "User Controls" | translate }</a></li>

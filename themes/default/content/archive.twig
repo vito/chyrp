@@ -5,7 +5,7 @@
 	<h2><a href="$archive.url">$archive.month $archive.year</a></h2>
 	<ul>
 		{% for post in archive.posts %}
-		<li>${ post.created_at | date }: <a href="$post.url">${ post.title | normalize }</a></li>
+		<li>${ post.created_at | date("d") }: <a href="$post.url">${ post.title | normalize }</a></li>
 		{% endfor %}
 	</ul>
 	{% endfor %}
