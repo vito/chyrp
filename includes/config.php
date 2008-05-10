@@ -89,14 +89,6 @@
 			file_put_contents(INCLUDES_DIR."/config.yaml.php", $contents);
 		}
 
-		public function get_feathers() {
-			$feathers = array();
-			$sql = SQL::current();
-			foreach ($this->enabled_feathers as $key => $the_feather)
-				$feathers[] = $sql->quote($the_feather);
-			return $feathers;
-		}
-
 		/**
 		 * Function: current
 		 * Returns a singleton reference to the current configuration.

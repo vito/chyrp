@@ -110,12 +110,10 @@
 			break;
 		case "organize_pages":
 			foreach ($_POST['parent'] as $id => $parent)
-				$sql->query("update `".$sql->prefix."pages` set `parent_id` = ".$sql->quote($parent)." where `id` = ".$sql->quote($id));
+				$sql->update("pages", "`id` = :id", "`parent_id` = :parent", array(":id" => $id, ":parent" => $parent));
 
-			foreach ($_POST['sort_pages'] as $index => $page) {
-				$id = str_replace("page_list_", "", $page);
-				$sql->query("update `".$sql->prefix."pages` set `list_order` = ".$sql->quote($index)." where `id` = ".$sql->quote($id));
-			}
+			foreach ($_POST['sort_pages'] as $index => $page)
+				$sql->update("pages", "`id` = :id", "`list_order` = :index", array(":id" => str_replace("page_list_", "", $page), ":index" => $index));
 
 			break;
 	}

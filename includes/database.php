@@ -165,14 +165,6 @@
 		}
 
 		/**
-		 * Function: quote
-		 * Quotes the passed variable as needed for use in a query.
-		 */
-		public function quote($var) {
-			return $this->db->quote($var);
-		}
-
-		/**
 		 * Function: current
 		 * Returns a singleton reference to the current connection.
 		 */
