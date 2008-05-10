@@ -18,11 +18,14 @@
 			fallback($options["select"], "*");
 			fallback($options["where"], "");
 			fallback($options["params"], array());
-			fallback($options["order"], "`id` desc");
+			fallback($options["order"], "`".($model_name == "visitor" ? "users" : $model_name."s")."`.`id` desc");
 			fallback($options["offset"], null);
+			fallback($options["group"], array());
 			fallback($options["read_from"], array());
 
-			$options = Trigger::current()->filter($action."_".$model_name."_grab", $options);
+			$trigger = Trigger::current();
+			$options = $trigger->filter($action."_".$model_name."_grab", $options);
+			$options = $trigger->filter($model_name."_grab", $options);
 
 			$sql = SQL::current();
 			if ((!empty($options["read_from"])))
@@ -36,7 +39,8 @@
 				                     $options["order"],
 				                     $options["params"],
 				                     1,
-				                     $options["offset"])->fetch();
+				                     $options["offset"],
+				                     $options["group"])->fetch();
 			else
 				$read = $sql->select($options["from"],
 				                     $options["select"],
@@ -69,20 +73,24 @@
 			fallback($options["where"], null);
 			fallback($options["from"], strtolower($model)."s");
 			fallback($options["params"], array());
-			fallback($options["select"], "*");
-			fallback($options["order"], "`created_at` desc, `id` desc");
+			fallback($options["select"], strtolower($model)."s.*");
+			fallback($options["order"], "`".strtolower($model)."s`.`created_at` desc, `".strtolower($model)."s`.`id` desc");
 			fallback($options["offset"], null);
 			fallback($options["limit"], null);
+			fallback($options["group"], array());
 			fallback($options["pagination"], true);
 			fallback($options["per_page"], Config::current()->posts_per_page);
 			fallback($options["page_var"], "page");
 
-			$options = Trigger::current()->filter($action."_".$model_name."s_get", $options);
+			$trigger = Trigger::current();
+			$options = $trigger->filter($action."_".$model_name."s_get", $options);
+			$options = $trigger->filter($model_name."s_get", $options);
 
 			$grab = (!$options["pagination"]) ?
-			         SQL::current()->select($options["from"], $options["select"], $options["where"], $options["order"], $options["params"], $options["limit"], $options["offset"]) :
-			         $paginate->select($options["from"], $options["select"], $options["where"], $options["order"], $options["per_page"], $options["page_var"], $options["params"]) ;
+			         SQL::current()->select($options["from"], $options["select"], $options["where"], $options["order"], $options["params"], $options["limit"], $options["offset"], $options["group"]) :
+			         $paginate->select($options["from"], $options["select"], $options["where"], $options["order"], $options["per_page"], $options["page_var"], $options["params"], $options["group"]) ;
 
+			echo "<pre>".htmlspecialchars(print_r($grab->queryString, true))."</pre>";
 			$shown_dates = array();
 			$results = array();
 			foreach ($grab->fetchAll() as $result) {

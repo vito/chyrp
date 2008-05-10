@@ -14,7 +14,7 @@
 		 * See Also:
 		 * <SQL.select>
 		 */
-		public function select($tables, $fields, $conds, $order = null, $limit = 5, $var = "page", $params = array()) {
+		public function select($tables, $fields, $conds, $order = null, $limit = 5, $var = "page", $params = array(), $group = null) {
 			$sql = SQL::current();
 			$total_results = $sql->count($tables, $conds, $params);
 
@@ -22,7 +22,7 @@
 			$this->total_pages = ceil($total_results / $limit);
 			$this->offset = ($this->$var - 1) * $limit;
 
-			return $sql->select($tables, $fields, $conds, $order, $params, $limit, $this->offset);
+			return $sql->select($tables, $fields, $conds, $order, $params, $limit, $this->offset, $group);
 		}
 
 		/**

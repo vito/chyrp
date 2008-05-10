@@ -283,7 +283,8 @@
 				else
 					$options["where"] = array($options["where"], $enabled_feathers);
 
-			fallback($options["order"], "`pinned` desc, `created_at` desc, `id` desc");
+			$sql = SQL::current();
+			fallback($options["order"], "`".$sql->prefix."posts`.`pinned` desc, `".$sql->prefix."posts`.`created_at` desc, `".$sql->prefix."posts`.`id` desc");
 
 			$posts = parent::search(get_class(), $options);
 

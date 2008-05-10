@@ -750,7 +750,6 @@ $(function(){
 			$config = Config::current();
 			$trigger = Trigger::current();
 			$visitor = Visitor::current();
-			$post->comment_count = Comment::post_count($post->id);
 			$get_last_comment = $sql->query("select `id` from `".$sql->prefix."comments` where `post_id` = ".$sql->quote($post->id)." and (`status` != 'denied' or (`status` = 'denied' and (`author_ip` = '".ip2long($_SERVER['REMOTE_ADDR'])."' or `user_id` = ".$sql->quote($visitor->id)."))) and `status` != 'spam' order by `created_at` desc limit 1");
 			$post->last_comment = ($get_last_comment->rowCount() > 0) ? $get_last_comment->fetchColumn() : 0 ;
 			$post->commentable = Comment::user_can($post->id);
@@ -795,5 +794,20 @@ $(function(){
 					$post->comments[] = $comment;
 				}
 			}
+		}
+
+		static function posts_get($options) {
+			# ( `status` != 'denied' or ( `status` = 'denied' and ( `author_ip` = or `user_id` = 1 ) ) ) and `status` != 'spam')
+			$options["where"] = (array) $options["where"];
+			$options["from"] = (array) $options["from"];
+			$options["select"] = (array) $options["select"];
+			$options["from"][] = SQL::current()->prefix."comments";
+			$options["select"][] = "count(`comments`.`id`) as `comment_count`";
+			$options["where"][] = "`comments`.`post_id` = `posts`.`id`";
+			$options["where"][] = "`comments`.`status` != 'denied' or (`comments`.`status` = 'denied' and (`comments`.`author_ip` = :current_ip or `comments`.`user_id` = :user_id)) and `comments`.`status` != 'spam'";
+			$options["params"][":current_ip"] = ip2long($_SERVER['REMOTE_ADDR']);
+			$options["params"][":user_id"] = Visitor::current()->id;
+			$options["group"][] = "`comments`.`post_id`";
+			return $options;
 		}
 	}

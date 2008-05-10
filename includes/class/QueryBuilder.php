@@ -119,7 +119,7 @@
 			return "
 				SELECT COUNT(1) AS count
 				FROM ".self::build_from($tables)."
-				".($conds ? "WHERE ".self::build_where($conds) : "")."
+				".($conds ? "WHERE ".self::build_where($conds, $tables) : "")."
 			";
 		}
 
@@ -127,7 +127,7 @@
 		 * Function: build_select_header
 		 * Creates a SELECT fields header.
 		 */
-		public static function build_select_header($fields) {
+		public static function build_select_header($fields, $table = null) {
 			if (!is_array($fields))
 				$fields = array($fields);
 			$set = array();
@@ -135,9 +135,10 @@
 			foreach ($fields as $field) {
 				$field = explode(" ", $field);
 				$parts = explode(".", $field[0]);
-				foreach ($parts as & $part)
-					if ($part != '*')
-						$part = "`$part`";
+				foreach ($parts as & $part) {
+					if ($part != '*' and !strpos($part, "(") and !strpos($part, ")"))
+						$part = (!empty($table) ? "`$table`." : "")."`$part`";
+				}
 				$field[0] = implode(".", $parts);
 				array_push($set, implode(" ", $field));
 			}
@@ -149,19 +150,46 @@
 		 * Function: build_where
 		 * Creates a WHERE query.
 		 */
-		public static function build_where($conds) {
-			return (is_array($conds)) ? implode(" and ", array_filter($conds)) : $conds ;
+		public static function build_where($conds, $table = null) {
+			if (isset($table)) {
+				$conditions = array();
+				if (is_array($table))
+					$table = $table[0];
+				foreach ((array) $conds as $cond)
+					$conditions[] = preg_replace("/^`([^`]+)` /", "`$table`.`\\1` ", $cond);
+			} else
+				$conditions = (array) $conds;
+
+			return implode(" and ", array_filter($conditions));
+		}
+
+		/**
+		 * Function: build_group
+		 * Creates a GROUP BY argument.
+		 */
+		public static function build_group($by, $table = null) {
+			if (isset($table)) {
+				$groups = array();
+				if (is_array($table))
+					$table = $table[0];
+				foreach ((array) $by as $col)
+					$groups[] = preg_replace("/^`([^`]+)` /", "`$table`.`\\1` ", $col);
+			} else
+				$groups = (array) $by;
+
+			return implode(" and ", array_filter($groups));
 		}
 
 		/**
 		 * Function: build_select
 		 * Creates a full SELECT query.
 		 */
-		public static function build_select($tables, $fields, $conds, $order = null, $limit = null, $offset = null) {
+		public static function build_select($tables, $fields, $conds, $order = null, $limit = null, $offset = null, $group = null) {
 			return "
 				SELECT ".self::build_select_header($fields)."
 				FROM ".self::build_from($tables)."
-				".($conds ? "WHERE ".self::build_where($conds) : "")."
+				".($conds ? "WHERE ".self::build_where($conds, $tables) : "")."
+				".($group ? "GROUP BY ".self::build_group($group, $tables) : "")."
 				ORDER BY $order
 				".self::build_limits($offset, $limit)."
 			";
