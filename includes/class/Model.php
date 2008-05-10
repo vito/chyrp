@@ -7,42 +7,45 @@
 	 */
 	class Model {
 		static function grab($model, $id, $options = array()) {
-			global $loaded_models;
+			global $loaded_models, $action;
 
 			$model_name = strtolower(get_class($model));
 
 			if ($model_name == "visitor")
 				$model_name = "user";
 
-			$where  = fallback($options["where"], "", true);
-			$params = fallback($options["params"], array(), true);
-			$order  = fallback($options["order"], "`id` desc", true);
-			$offset = fallback($options["offset"], null, true);
-			$read_from = (isset($options["read_from"])) ? $options["read_from"] : array() ;
+			fallback($options["from"], ($model_name == "visitor" ? "users" : $model_name."s"));
+			fallback($options["select"], "*");
+			fallback($options["where"], "");
+			fallback($options["params"], array());
+			fallback($options["order"], "`id` desc");
+			fallback($options["offset"], null);
+			fallback($options["read_from"], array());
+
+			$options = Trigger::current()->filter($action."_".$model_name."_grab", $options);
 
 			$sql = SQL::current();
-			if ((!empty($read_from) && $read_from))
-				$read = $read_from;
+			if ((!empty($options["read_from"])))
+				$read = $options["read_from"];
 			elseif (isset($loaded_models[$model_name][$id]))
 				$read = $loaded_models[$model_name][$id];
 			elseif (!empty($where))
-				$read = $sql->select($model_name."s",
-				                     "*",
-				                     $where,
-				                     $order,
-				                     $params,
-				                     1,
-				                     $offset)->fetch();
+				$read = $sql->select($options["from"],
+				                     $options["select"],
+				                     $options["where"],
+				                     $options["order"],
+				                     $options["params"],
+				                     $options["limit"],
+				                     $options["offset"])->fetch();
 			else
-				$read = $sql->select($model_name."s",
-				                     "*",
+				$read = $sql->select($options["from"],
+				                     $options["select"],
 				                     "`id` = :id",
-				                     $order,
+				                     $options["order"],
 				                     array(
 				                         ":id" => $id
 				                     ),
-				                     1,
-				                     $offset)->fetch();
+				                     1)->fetch();
 
 			if (!count($read) or !$read)
 				return $model->no_results = true;
@@ -56,22 +59,29 @@
 		}
 
 		static function search($model, $options = array()) {
-			global $paginate;
+			global $paginate, $action;
 
-			$where      = fallback($options["where"], null, true);
-			$from       = fallback($options["from"], strtolower($model)."s", true);
-			$params     = fallback($options["params"], array(), true);
-			$select     = fallback($options["select"], "*", true);
-			$order      = fallback($options["order"], "`created_at` desc, `id` desc", true);
-			$offset     = fallback($options["offset"], null, true);
-			$limit      = fallback($options["limit"], null, true);
-			$pagination = fallback($options["pagination"], true, true);
-			$per_page   = fallback($options["per_page"], Config::current()->posts_per_page, true);
-			$page_var   = fallback($options["page_var"], "page", true);
+			$model_name = strtolower(get_class($model));
 
-			$grab = (!$pagination) ?
-			         SQL::current()->select($from, $select, $where, $order, $params, $limit, $offset) :
-			         $paginate->select($from, $select, $where, $order, $per_page, $page_var, $params) ;
+			if ($model_name == "visitor")
+				$model_name = "user";
+
+			fallback($options["where"], null);
+			fallback($options["from"], strtolower($model)."s");
+			fallback($options["params"], array());
+			fallback($options["select"], "*");
+			fallback($options["order"], "`created_at` desc, `id` desc");
+			fallback($options["offset"], null);
+			fallback($options["limit"], null);
+			fallback($options["pagination"], true);
+			fallback($options["per_page"], Config::current()->posts_per_page);
+			fallback($options["page_var"], "page");
+
+			$options = Trigger::current()->filter($action."_".$model_name."_search", $options);
+
+			$grab = (!$options["pagination"]) ?
+			         SQL::current()->select($options["from"], $options["select"], $options["where"], $options["order"], $options["params"], $options["limit"], $options["offset"]) :
+			         $paginate->select($options["from"], $options["select"], $options["where"], $options["order"], $options["per_page"], $options["page_var"], $options["params"]) ;
 
 			$shown_dates = array();
 			$results = array();

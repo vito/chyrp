@@ -5,7 +5,6 @@
 	 */
 	class User extends Model {
 		public $no_results = false;
-		public $group;
 		public $can = array();
 
 		/**
