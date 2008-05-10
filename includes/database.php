@@ -129,9 +129,6 @@
 		 * Performs a counting query and returns the number of matching rows.
 		 */
 		public function count($tables, $conds, $params = array()) {
-			if (is_array($conds))
-				$conds = implode(" and ", array_filter($conds));
-
 			return $this->query(QueryBuilder::build_count($tables, $conds), $params)->fetchColumn();
 		}
 
@@ -140,9 +137,6 @@
 		 * Performs a SELECT with given criteria and returns the query result object.
 		 */
 		public function select($tables, $fields, $conds, $order = null, $params = array(), $limit = null, $offset = null) {
-			if (is_array($conds))
-				$conds = implode(" and ", array_filter($conds));
-
 			return $this->query(QueryBuilder::build_select($tables, $fields, $conds, $order, $limit, $offset), $params);
 		}
 
@@ -159,9 +153,6 @@
 		 * Performs an UDATE with given criteria and data.
 		 */
 		public function update($table, $conds, $data, $params = array()) {
-			if (is_array($conds))
-				$conds = implode(" and ", array_filter($conds));
-
 			return $this->query(QueryBuilder::build_update($table, $conds, $data), $params);
 		}
 
@@ -170,9 +161,6 @@
 		 * Performs a DELETE with given criteria.
 		 */
 		public function delete($table, $conds, $params = array()) {
-			if (is_array($conds))
-				$conds = implode(" and ", array_filter($conds));
-
 			return $this->query(QueryBuilder::build_delete($table, $conds), $params);
 		}
 

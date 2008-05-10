@@ -61,7 +61,7 @@
 		static function search($model, $options = array()) {
 			global $paginate, $action;
 
-			$model_name = strtolower(get_class($model));
+			$model_name = strtolower($model);
 
 			if ($model_name == "visitor")
 				$model_name = "user";
@@ -77,7 +77,7 @@
 			fallback($options["per_page"], Config::current()->posts_per_page);
 			fallback($options["page_var"], "page");
 
-			$options = Trigger::current()->filter($action."_".$model_name."_search", $options);
+			$options = Trigger::current()->filter($action."_".$model_name."s_get", $options);
 
 			$grab = (!$options["pagination"]) ?
 			         SQL::current()->select($options["from"], $options["select"], $options["where"], $options["order"], $options["params"], $options["limit"], $options["offset"]) :

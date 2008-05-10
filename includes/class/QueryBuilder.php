@@ -61,7 +61,7 @@
 			return "
 				UPDATE `{$sql->prefix}$table`
 				SET ".self::build_update_values($data)."
-				".($conds ? "WHERE $conds" : "")."
+				".($conds ? "WHERE ".self::build_where($conds) : "")."
 			";
 		}
 
@@ -73,7 +73,7 @@
 			$sql = SQL::current();
 			return "
 				DELETE FROM `{$sql->prefix}$table`
-				".($conds ? "WHERE $conds" : "")."
+				".($conds ? "WHERE ".self::build_where($conds) : "")."
 			";
 		}
 
@@ -119,7 +119,7 @@
 			return "
 				SELECT COUNT(1) AS count
 				FROM ".self::build_from($tables)."
-				".($conds ? "WHERE $conds" : "")."
+				".($conds ? "WHERE ".self::build_where($conds) : "")."
 			";
 		}
 
@@ -146,6 +146,14 @@
 		}
 
 		/**
+		 * Function: build_where
+		 * Creates a WHERE query.
+		 */
+		public static function build_where($conds) {
+			return (is_array($conds)) ? implode(" and ", array_filter($conds)) : $conds ;
+		}
+
+		/**
 		 * Function: build_select
 		 * Creates a full SELECT query.
 		 */
@@ -153,7 +161,7 @@
 			return "
 				SELECT ".self::build_select_header($fields)."
 				FROM ".self::build_from($tables)."
-				".($conds ? "WHERE $conds" : "")."
+				".($conds ? "WHERE ".self::build_where($conds) : "")."
 				ORDER BY $order
 				".self::build_limits($offset, $limit)."
 			";
