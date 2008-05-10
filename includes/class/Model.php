@@ -15,7 +15,7 @@
 				$model_name = "user";
 
 			fallback($options["from"], ($model_name == "visitor" ? "users" : $model_name."s"));
-			fallback($options["select"], "*");
+			fallback($options["select"], $model_name."s.*");
 			fallback($options["where"], null);
 			fallback($options["params"], array());
 			fallback($options["order"], "`".($model_name == "visitor" ? "users" : $model_name."s")."`.`id` desc");
