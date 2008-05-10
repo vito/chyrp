@@ -236,7 +236,7 @@
 				                ":datetime" => datetime()
 				            ));
 
-			cookie_cutter("chyrp_user_id", $sql->db->lastInsertId());
+			cookie_cutter("chyrp_login", $_POST['login']);
 			cookie_cutter("chyrp_password", md5($_POST['password_1']));
 
 			$installed = true;

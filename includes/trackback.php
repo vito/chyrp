@@ -1,4 +1,5 @@
 <?php
+	define('TRACKBACK', true);
 	require_once "common.php";
 
 	if ($config->enable_trackbacking) {

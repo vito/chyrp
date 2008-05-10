@@ -788,7 +788,7 @@ $(function(){
 						$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
 
 					$comment->body = $trigger->filter("markup_comment_text", $comment->body);
-					$comment->is_author = (Post::info("user_id", $comment->post_id) == $comment->user_id);
+					$comment->is_author = ($post->user_id == $comment->user_id);
 
 					$post->comments[] = $comment;
 				}

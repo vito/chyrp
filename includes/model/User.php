@@ -38,7 +38,7 @@
 		 *     true - if a match is found.
 		 */
 		static function authenticate($login, $password) {
-			$check = new self(null, array("where" => "`login` = :login and `password` = :password",
+			$check = new self(null, array("where" => array("`login` = :login", "`password` = :password"),
 			                              "params" => array(":login" => $login, ":password" => $password)));
 			return !$check->no_results;
 		}

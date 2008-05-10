@@ -16,7 +16,7 @@
 		 */
 		public function select($tables, $fields, $conds, $order = null, $limit = 5, $var = "page", $params = array(), $group = null, $left_join = null) {
 			$sql = SQL::current();
-			$total_results = $sql->count($tables, $conds, $params);
+			$total_results = $sql->count($tables, $conds, $params, $left_join);
 
 			$this->$var = (isset($_GET[$var])) ? $_GET[$var] : 1 ;
 			$this->total_pages = ceil($total_results / $limit);

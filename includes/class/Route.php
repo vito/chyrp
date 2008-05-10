@@ -139,11 +139,12 @@
 
 			# Archive
 			if ($arg[0] == "archive") {
-				if (isset($arg[1]))
+				# Make sure they're numeric; there might be a /page/ in there.
+				if (isset($arg[1]) and is_numeric($arg[1]))
 					$_GET['year'] = $arg[1];
-				if (isset($arg[2]))
+				if (isset($arg[2]) and is_numeric($arg[2]))
 					$_GET['month'] = $arg[2];
-				if (isset($arg[3]))
+				if (isset($arg[3]) and is_numeric($arg[3]))
 					$_GET['day'] = $arg[3];
 
 				return $_GET['action'] = "archive";
@@ -194,6 +195,10 @@
 						return $_GET['action'] = $arg[0];
 					}
 				}
+
+			# Drafts
+			if ($arg[0] == "drafts")
+				return $_GET['action'] = $arg[0];
 
 			# Page viewing
 			$sql = SQL::current();

@@ -22,10 +22,10 @@
 			if (!isset($_GET['month'])) return;
 
 			if (isset($_GET['day']))
-				$posts = Post::find(array("where" => "`created_at` like :date and ".$private,
+				$posts = Post::find(array("where" => array("`created_at` like :date", $private),
 				                          "params" => array(":date" => $_GET['year']."-".$_GET['month']."-".$_GET['day']."%")));
 			else
-				$posts = Post::find(array("where" => "`created_at` like :date and ".$private,
+				$posts = Post::find(array("where" => array("`created_at` like :date", $private),
 				                          "params" => array(":date" => $_GET['year']."-".$_GET['month']."%")));
 		}
 
@@ -208,7 +208,7 @@
 
 			User::add($_POST['login'], $_POST['password1'], $_POST['email']);
 
-			cookie_cutter("chyrp_user_id", $sql->db->lastInsertId());
+			cookie_cutter("chyrp_login", $_POST['login']);
 			cookie_cutter("chyrp_password", md5($_POST['password1']));
 
 			$route = Route::current();
@@ -232,7 +232,7 @@
 			                          ':login' => $_POST['login']
 			                      ));
 
-			cookie_cutter("chyrp_user_id", $get_id->fetchColumn());
+			cookie_cutter("chyrp_login", $_POST['login']);
 			cookie_cutter("chyrp_password", md5($_POST['password']));
 
 			$route = Route::current();
@@ -247,7 +247,7 @@
 			if (!logged_in())
 				error(__("Error"), __("You aren't logged in."));
 
-			cookie_cutter("chyrp_user_id", "", time() - 2592000);
+			cookie_cutter("chyrp_login", "", time() - 2592000);
 			cookie_cutter("chyrp_password", "", time() - 2592000);
 
 			$route = Route::current();

@@ -11,9 +11,11 @@
 		 * Checks if a valid user is logged in.
 		 */
 		public function __construct() {
-			if (isset($_COOKIE['chyrp_user_id']) and isset($_COOKIE['chyrp_password']))
-				if (User::authenticate(User::info("login", $_COOKIE['chyrp_user_id']), $_COOKIE['chyrp_password']))
-					parent::__construct($_COOKIE['chyrp_user_id']);
+			if (isset($_COOKIE['chyrp_login']) and isset($_COOKIE['chyrp_password']))
+				parent::__construct(null, array("where"  => array("`login` = :login",
+				                                                  "`password` = :password"),
+				                                "params" => array(":login" => $_COOKIE['chyrp_login'],
+				                                                  ":password" => $_COOKIE['chyrp_password'])));
 		}
 
 		/**

@@ -17,8 +17,8 @@
 			fallback($options["select"], $model_name."s.*");
 			fallback($options["from"], ($model_name == "visitor" ? "users" : $model_name."s"));
 			fallback($options["left_join"], array());
-			fallback($options["where"], null);
-			fallback($options["params"], array());
+			fallback($options["where"], array("`id` = :id"));
+			fallback($options["params"], array(":id" => $id));
 			fallback($options["group"], array());
 			fallback($options["order"], "`".($model_name == "visitor" ? "users" : $model_name."s")."`.`id` desc");
 			fallback($options["offset"], null);
@@ -37,24 +37,12 @@
 				$read = $options["read_from"];
 			elseif (isset($loaded_models[$model_name][$id]))
 				$read = $loaded_models[$model_name][$id];
-			elseif (!empty($options["where"]))
+			else
 				$read = $sql->select($options["from"],
 				                     $options["select"],
 				                     $options["where"],
 				                     $options["order"],
 				                     $options["params"],
-				                     1,
-				                     $options["offset"],
-				                     $options["group"],
-				                     $options["left_join"])->fetch();
-			else
-				$read = $sql->select($options["from"],
-				                     $options["select"],
-				                     "`id` = :id",
-				                     $options["order"],
-				                     array(
-				                         ":id" => $id
-				                     ),
 				                     1,
 				                     $options["offset"],
 				                     $options["group"],

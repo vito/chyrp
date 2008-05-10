@@ -129,8 +129,8 @@
 		 * Function: count
 		 * Performs a counting query and returns the number of matching rows.
 		 */
-		public function count($tables, $conds, $params = array()) {
-			return $this->query(QueryBuilder::build_count($tables, $conds), $params)->fetchColumn();
+		public function count($tables, $conds, $params = array(), $left_join) {
+			return $this->query(QueryBuilder::build_count($tables, $conds, $left_join), $params)->fetchColumn();
 		}
 
 		/**

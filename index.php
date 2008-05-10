@@ -20,7 +20,10 @@
 
 			break;
 		case "view": case "id":
-			if ($action == "view")
+			if ($action == "id")
+				redirect($post->url());
+
+			if (!isset($post))
 				fallback($post, new Post(null, array("where" => "`url` = :url", "params" => array(":url" => $_GET['url']))));
 
 			if (!$post->theme_exists())
