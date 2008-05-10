@@ -29,13 +29,13 @@
 				$read = $options["read_from"];
 			elseif (isset($loaded_models[$model_name][$id]))
 				$read = $loaded_models[$model_name][$id];
-			elseif (!empty($where))
+			elseif (!empty($options["where"]))
 				$read = $sql->select($options["from"],
 				                     $options["select"],
 				                     $options["where"],
 				                     $options["order"],
 				                     $options["params"],
-				                     $options["limit"],
+				                     1,
 				                     $options["offset"])->fetch();
 			else
 				$read = $sql->select($options["from"],

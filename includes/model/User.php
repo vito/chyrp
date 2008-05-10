@@ -20,8 +20,10 @@
 		 */
 		public function __construct($user_id, $options = array()) {
 			parent::grab($this, $user_id, $options);
-			foreach ($this->group()->permissions as $permission)
-				$this->can[$permission] = true;
+
+			if (!$this->no_results)
+				foreach ($this->group()->permissions as $permission)
+					$this->can[$permission] = true;
 		}
 
 		/**
@@ -36,8 +38,9 @@
 		 *     true - if a match is found.
 		 */
 		static function authenticate($login, $password) {
-			return new self(null, array("where" => "`login` = :login and `password` = :password",
-			                            "params" => array(":login" => $login, ":password" => $password)));
+			$check = new self(null, array("where" => "`login` = :login and `password` = :password",
+			                              "params" => array(":login" => $login, ":password" => $password)));
+			return !$check->no_results;
 		}
 
 		/**
