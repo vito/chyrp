@@ -78,6 +78,7 @@
 			fallback($options["offset"], null);
 			fallback($options["limit"], null);
 			fallback($options["group"], array());
+			fallback($options["left_join"], null);
 			fallback($options["pagination"], true);
 			fallback($options["per_page"], Config::current()->posts_per_page);
 			fallback($options["page_var"], "page");
@@ -87,10 +88,9 @@
 			$options = $trigger->filter($model_name."s_get", $options);
 
 			$grab = (!$options["pagination"]) ?
-			         SQL::current()->select($options["from"], $options["select"], $options["where"], $options["order"], $options["params"], $options["limit"], $options["offset"], $options["group"]) :
-			         $paginate->select($options["from"], $options["select"], $options["where"], $options["order"], $options["per_page"], $options["page_var"], $options["params"], $options["group"]) ;
+			         SQL::current()->select($options["from"], $options["select"], $options["where"], $options["order"], $options["params"], $options["limit"], $options["offset"], $options["group"], $options["left_join"]) :
+			         $paginate->select($options["from"], $options["select"], $options["where"], $options["order"], $options["per_page"], $options["page_var"], $options["params"], $options["group"], $options["left_join"]) ;
 
-			echo "<pre>".htmlspecialchars(print_r($grab->queryString, true))."</pre>";
 			$shown_dates = array();
 			$results = array();
 			foreach ($grab->fetchAll() as $result) {

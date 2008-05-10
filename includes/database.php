@@ -136,8 +136,8 @@
 		 * Function: select
 		 * Performs a SELECT with given criteria and returns the query result object.
 		 */
-		public function select($tables, $fields, $conds, $order = null, $params = array(), $limit = null, $offset = null, $group = null) {
-			return $this->query(QueryBuilder::build_select($tables, $fields, $conds, $order, $limit, $offset, $group), $params);
+		public function select($tables, $fields, $conds, $order = null, $params = array(), $limit = null, $offset = null, $group = null, $left_join = null) {
+			return $this->query(QueryBuilder::build_select($tables, $fields, $conds, $order, $limit, $offset, $group, $left_join), $params);
 		}
 
 		/**

@@ -177,17 +177,18 @@
 			} else
 				$groups = (array) $by;
 
-			return implode(" and ", array_filter($groups));
+			return implode(", ", array_filter($groups));
 		}
 
 		/**
 		 * Function: build_select
 		 * Creates a full SELECT query.
 		 */
-		public static function build_select($tables, $fields, $conds, $order = null, $limit = null, $offset = null, $group = null) {
+		public static function build_select($tables, $fields, $conds, $order = null, $limit = null, $offset = null, $group = null, $left_join = null) {
 			return "
 				SELECT ".self::build_select_header($fields)."
 				FROM ".self::build_from($tables)."
+				".($left_join ? "LEFT JOIN `".$left_join["table"]."` ON ".$left_join["on"]." AND ".self::build_where($left_join["where"], $left_join["table"]) : "")."
 				".($conds ? "WHERE ".self::build_where($conds, $tables) : "")."
 				".($group ? "GROUP BY ".self::build_group($group, $tables) : "")."
 				ORDER BY $order
