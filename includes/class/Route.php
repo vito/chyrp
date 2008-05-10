@@ -110,6 +110,8 @@
 			$request = preg_replace("/".$safe_path."/", "", $_SERVER['REQUEST_URI'], 1);
 			$arg = explode("/", trim($request, "/"));
 
+			if (empty($arg[0])) return; # If they're just at /, don't bother with all this.
+
 			# Viewing a post by its ID
 			if ($arg[0] == "id") {
 				$_GET['id'] = $arg[1];

@@ -43,11 +43,14 @@
 
 			$this->page_list.= '<ul class="'.$main_class.'">'."\n";
 
+			$this->pages = Page::find(array("where" => "`show_in_list` = 1", "order" => "`list_order` asc", "pagination" => false));
+
 			if ($home_link)
 				$this->page_list.= $this->tabs.'<li class="'.$list_class.($action == "index" ? " selected" : "").'">'."\n".$this->tabs."\t".'<a href="'.Config::current()->url.'">'.$home_text.'</a>'."\n".$this->tabs.'</li>'."\n";
 
-			foreach (Page::find(array("where" => "`parent_id` = 0 and `show_in_list` = 1", "order" => "`list_order` asc", "pagination" => false)) as $page)
-				$this->recurse_pages($page, $main_class, $list_class, $show_order_fields);
+			foreach ($this->pages as $page)
+				if ($page->parent_id == 0)
+					$this->recurse_pages($page, $main_class, $list_class, $show_order_fields);
 
 			$this->page_list = Trigger::current()->filter('list_pages', $this->page_list);
 
@@ -75,7 +78,11 @@
 				$this->page_list.= ' <input type="text" size="2" name="list_order['.$page->id.']" value="'.$page->list_order.'" />';
 
 			$count = 1;
-			$children = Page::find(array("where" => "`parent_id` = :parent and `show_in_list` = 1", "params" => array(":parent" => $page->id), "order" => "`list_order` asc", "pagination" => false));
+			$children = array();
+			foreach ($this->pages as $child)
+				if ($child->parent_id == $page->id)
+					$children[] = $child;
+
 			foreach ($children as $child) {
 				for ($i = 0; $i < $count; $i++)
 					$this->tabs.= "\t";

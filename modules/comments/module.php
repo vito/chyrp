@@ -799,15 +799,17 @@ $(function(){
 			$options["select"][]  = "COUNT(`comments`.`id`) as `comment_count`";
 			$options["select"][]  = "MAX(`comments`.`id`) as `latest_comment`";
 
-			$options["left_join"] = array("table" => SQL::current()->prefix."comments",
-			                              "on" => "`comments`.`post_id` = `posts`.`id`",
-			                              "where" => array("`comments`.`status` != 'denied' or (
-			                                                    `comments`.`status` = 'denied' and (
-			                                                        `comments`.`author_ip` = :current_ip or
-			                                                        `comments`.`user_id` = :user_id
-			                                                    )
-			                                                )",
-			                                               "`comments`.`status` != 'spam'"));
+			$options["left_join"][] = array("table" => SQL::current()->prefix."comments",
+			                                "on" => "`comments`.`post_id` = `posts`.`id`",
+			                                "where" => array("`comments`.`status` != 'denied' or (
+			                                                      `comments`.`status` = 'denied' and (
+			                                                          `comments`.`author_ip` = :current_ip or (
+			                                                              `comments`.`user_id` != '' and
+			                                                              `comments`.`user_id` = :user_id
+			                                                          )
+			                                                      )
+			                                                  )",
+			                                                 "`comments`.`status` != 'spam'"));
 
 			$options["params"][":current_ip"] = ip2long($_SERVER['REMOTE_ADDR']);
 			$options["params"][":user_id"]    = Visitor::current()->id;

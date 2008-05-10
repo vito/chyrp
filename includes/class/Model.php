@@ -14,14 +14,14 @@
 			if ($model_name == "visitor")
 				$model_name = "user";
 
-			fallback($options["from"], ($model_name == "visitor" ? "users" : $model_name."s"));
 			fallback($options["select"], $model_name."s.*");
+			fallback($options["from"], ($model_name == "visitor" ? "users" : $model_name."s"));
+			fallback($options["left_join"], array());
 			fallback($options["where"], null);
 			fallback($options["params"], array());
+			fallback($options["group"], array());
 			fallback($options["order"], "`".($model_name == "visitor" ? "users" : $model_name."s")."`.`id` desc");
 			fallback($options["offset"], null);
-			fallback($options["group"], array());
-			fallback($options["left_join"], array());
 			fallback($options["read_from"], array());
 
 			$options["where"] = (array) $options["where"];
@@ -79,15 +79,15 @@
 			if ($model_name == "visitor")
 				$model_name = "user";
 
-			fallback($options["where"], null);
-			fallback($options["from"], strtolower($model)."s");
-			fallback($options["params"], array());
 			fallback($options["select"], strtolower($model)."s.*");
+			fallback($options["from"], strtolower($model)."s");
+			fallback($options["left_join"], array());
+			fallback($options["where"], null);
+			fallback($options["params"], array());
+			fallback($options["group"], array());
 			fallback($options["order"], "`".strtolower($model)."s`.`created_at` DESC, `".strtolower($model)."s`.`id` DESC");
 			fallback($options["offset"], null);
 			fallback($options["limit"], null);
-			fallback($options["group"], array());
-			fallback($options["left_join"], array());
 			fallback($options["pagination"], true);
 			fallback($options["per_page"], Config::current()->posts_per_page);
 			fallback($options["page_var"], "page");

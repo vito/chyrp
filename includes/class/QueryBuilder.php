@@ -188,14 +188,18 @@
 		 * Creates a full SELECT query.
 		 */
 		public static function build_select($tables, $fields, $conds, $order = null, $limit = null, $offset = null, $group = null, $left_join = null) {
-			return "
+			$query = "
 				SELECT ".self::build_select_header($fields)."
-				FROM ".self::build_from($tables)."
-				".($left_join ? "LEFT JOIN `".$left_join["table"]."` ON ".$left_join["on"]." AND ".self::build_where($left_join["where"], $left_join["table"]) : "")."
+				FROM ".self::build_from($tables);
+			if (isset($left_join))
+				foreach ($left_join as $join)
+					$query.= "\n\t\t\t\tLEFT JOIN `".$join["table"]."` ON ".$join["on"].(isset($join["where"]) ? " AND ".self::build_where($join["where"], $join["table"]) : "");
+			$query.= "
 				".($conds ? "WHERE ".self::build_where($conds, $tables) : "")."
 				".($group ? "GROUP BY ".self::build_group($group, $tables) : "")."
 				ORDER BY $order
 				".self::build_limits($offset, $limit)."
 			";
+			return $query;
 		}
 	}
