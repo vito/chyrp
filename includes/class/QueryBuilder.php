@@ -155,8 +155,11 @@
 				$conditions = array();
 				if (is_array($table))
 					$table = $table[0];
-				foreach ((array) $conds as $cond)
-					$conditions[] = preg_replace("/^`([^`]+)` /", "`$table`.`\\1` ", $cond);
+				foreach ((array) $conds as $cond) {
+					$cond = preg_replace("/^`([^`\.]+)` /", "`$table`.`\\1` ", $cond);      # where `foo` = 'bar', etc.
+					$cond = preg_replace("/\(`([^`\.]+)`\)/", "(`$table`.`\\1`)", $cond); # year(`foo`), etc.
+					$conditions[] = $cond;
+				}
 			} else
 				$conditions = (array) $conds;
 
