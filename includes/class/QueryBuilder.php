@@ -122,7 +122,7 @@
 				FROM ".self::build_from($tables);
 			if (isset($left_join))
 				foreach ($left_join as $join)
-					$query.= "\n\t\t\t\tLEFT JOIN `".$join["table"]."` ON ".$join["on"].(isset($join["where"]) ? " AND ".self::build_where($join["where"], $join["table"]) : "");
+					$query.= "\n\t\t\t\tLEFT JOIN `".SQL::current()->prefix.$join["table"]."` ON ".$join["on"].(isset($join["where"]) ? " AND ".self::build_where($join["where"], $join["table"]) : "");
 			$query.= "\n\t\t\t\t".($conds ? "WHERE ".self::build_where($conds, $tables) : "");
 			return $query;
 		}
@@ -131,7 +131,7 @@
 		 * Function: build_select_header
 		 * Creates a SELECT fields header.
 		 */
-		public static function build_select_header($fields, $table = null) {
+		public static function build_select_header($fields) {
 			if (!is_array($fields))
 				$fields = array($fields);
 			$set = array();
@@ -139,9 +139,10 @@
 			foreach ($fields as $field) {
 				$field = explode(" ", $field);
 				$parts = explode(".", $field[0]);
+				$parts[0] = SQL::current()->prefix.$parts[0];
 				foreach ($parts as & $part) {
 					if ($part != '*' and !strpos($part, "(") and !strpos($part, ")"))
-						$part = (!empty($table) ? "`$table`." : "")."`$part`";
+						$part = "`$part`";
 				}
 				$field[0] = implode(".", $parts);
 				array_push($set, implode(" ", $field));
@@ -160,8 +161,8 @@
 				if (is_array($table))
 					$table = $table[0];
 				foreach ((array) $conds as $cond) {
-					$cond = preg_replace("/^`([^`\.]+)` /", "`$table`.`\\1` ", $cond);      # where `foo` = 'bar', etc.
-					$cond = preg_replace("/\(`([^`\.]+)`\)/", "(`$table`.`\\1`)", $cond); # year(`foo`), etc.
+					$cond = preg_replace("/^`([^`\.]+)` /", "`".SQL::current()->prefix.$table."`.`\\1` ", $cond);      # where `foo` = 'bar', etc.
+					$cond = preg_replace("/\(`([^`\.]+)`\)/", "(`".SQL::current()->prefix.$table."`.`\\1`)", $cond); # year(`foo`), etc.
 					$conditions[] = $cond;
 				}
 			} else
@@ -180,11 +181,22 @@
 				if (is_array($table))
 					$table = $table[0];
 				foreach ((array) $by as $col)
-					$groups[] = preg_replace("/^`([^`]+)` /", "`$table`.`\\1` ", $col);
+					$groups[] = preg_replace("/^`([^`]+)` /", "`".SQL::current()->prefix.$table."`.`\\1` ", $col);
 			} else
 				$groups = (array) $by;
 
 			return implode(", ", array_filter($groups));
+		}
+
+		/**
+		 * Function: build_order
+		 * Adds table prefixes to ORDER BY statements.
+		 */
+		public static function build_order($order) {
+			if (match("/`".preg_quote(SQL::current()->prefix)."/", $order))
+				return $order;
+
+			return preg_replace("/`([^`]+)`\.`([^`]+)`/", "`".SQL::current()->prefix."\\1`.`\\2` ", $order);
 		}
 
 		/**
@@ -197,11 +209,11 @@
 				FROM ".self::build_from($tables);
 			if (isset($left_join))
 				foreach ($left_join as $join)
-					$query.= "\n\t\t\t\tLEFT JOIN `".$join["table"]."` ON ".$join["on"].(isset($join["where"]) ? " AND ".self::build_where($join["where"], $join["table"]) : "");
+					$query.= "\n\t\t\t\tLEFT JOIN `".SQL::current()->prefix.$join["table"]."` ON ".$join["on"].(isset($join["where"]) ? " AND ".self::build_where($join["where"], $join["table"]) : "");
 			$query.= "
 				".($conds ? "WHERE ".self::build_where($conds, $tables) : "")."
 				".($group ? "GROUP BY ".self::build_group($group, $tables) : "")."
-				ORDER BY $order
+				ORDER BY ".self::build_order($order)."
 				".self::build_limits($offset, $limit)."
 			";
 			return $query;
