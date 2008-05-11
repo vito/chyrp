@@ -37,9 +37,11 @@ $(function(){
 	$(".js_disabled").remove()
 	$(".js_enabled").css("display", "block")
 
-	// Automatic PNG fixing.
+	// Automated PNG fixing.
+	$.ifixpng("<?php echo $config->url; ?>/admin/images/icons/pixel.gif")
 	$("img[@src$=.png]").ifixpng()
 
+	// Add the "Bookmarklet" with JS to the write nav since only JS-enabled users can use it.
 	$(document.createElement("li")).addClass("bookmarklet right").html("<?php echo sprintf(__("Bookmarklet: %s"), '<a href=\"javascript:var%20d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f=\''.$config->url.'/includes/bookmarklet.php\',l=d.location,e=encodeURIComponent,p=\'?url=\'+e(l.href)+\'&title=\'+e(d.title)+\'&selection=\'+e(s),u=f+p;a=function(){if(!w.open(u,\'t\',\'toolbar=0,resizable=0,status=1,width=450,height=430\'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0)\">Chyrp!</a>'); ?>").prependTo(".write-nav")
 
 <?php if ($_GET['action'] == "edit" or $_GET['action'] == "write"): ?>
