@@ -169,17 +169,6 @@
 		}
 
 		/**
-		 * Function: build_order
-		 * Adds table prefixes to ORDER BY statements.
-		 */
-		public static function build_order($order) {
-			if (match("/`".preg_quote(SQL::current()->prefix)."/", $order))
-				return $order;
-
-			return preg_replace("/`([^`]+)`\.`([^`]+)`/", "`".SQL::current()->prefix."\\1`.`\\2` ", $order);
-		}
-
-		/**
 		 * Function: build_select
 		 * Creates a full SELECT query.
 		 */
