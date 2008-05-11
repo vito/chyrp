@@ -1083,6 +1083,7 @@
 		<div class="post body"><?php echo __("Sorry, but you are looking for something that isn't here."); ?></div>
 <?php
 		}
+		exit;
 	}
 
 	/**

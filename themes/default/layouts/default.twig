@@ -74,7 +74,7 @@ $page_list
 				<h1>${ "Tags" | translate }</h1>
 				<ul id="tags_list">
 {% for tag in tags %}
-					<li><a href="{% url "tag/" ~ tag.url ~ "/" %}">$tag.name</a></li>
+					<li><a href="{% url "tag/" ~ tag.url ~ "/" %}">$tag.name</a> <span class="sub">($tag.popularity)</span></li>
 {% endfor %}
 					<li><a href="{% url "tags/" %}">${ "All &rarr;" | translate }</a></li>
 				</ul>

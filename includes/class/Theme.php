@@ -241,10 +241,8 @@
 			$this->context["archive_list"] = $this->list_archives();
 			$this->context["page_list"] = $this->list_pages();
 			$this->context["theme"] = array("url" => $config->url."/themes/".$config->theme);
-			$this->context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);
 			$this->context["route"] = array("action" => $action, "ajax" => AJAX);
 			$this->context["hide_admin"] = isset($_COOKIE["chyrp_hide_admin"]);
-			$this->context["sql_debug"] = SQL::current()->debug;
 			$this->context["pagination"] = $paginate;
 			$this->context["POST"] = $_POST;
 			$this->context["GET"] = $_GET;
@@ -252,6 +250,9 @@
 			$trigger = Trigger::current();
 			$this->context = $trigger->filter("twig_global_context", $this->context);
 			$this->context = $trigger->filter(str_replace("/", "_", $this->file), $this->context);
+
+			$this->context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);
+			$this->context["sql_debug"] = SQL::current()->debug;
 		}
 
 		/**

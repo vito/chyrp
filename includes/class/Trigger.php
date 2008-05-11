@@ -1,10 +1,5 @@
 <?php
 	/**
-	 * Class: Trigger
-	 * Controls and keeps track of all of the Triggers and events.
-	 */
-
-	/**
 	 * Function: cmp
 	 * Sorts actions by priority when used with usort.
 	 */
@@ -13,6 +8,10 @@
 		return ($a["priority"] < $b["priority"]) ? -1 : 1 ;
 	}
 
+	/**
+	 * Class: Trigger
+	 * Controls and keeps track of all of the Triggers and events.
+	 */
 	class Trigger {
 		private $called = array();
 		public $priorities = array();

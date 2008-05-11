@@ -2,15 +2,16 @@
 	class Tags extends Module {
 		function __construct() {
 			$this->addAlias('metaWeblog_newPost_preQuery', 'metaWeblog_editPost_preQuery');
+			$this->addAlias("post_grab", "posts_get");
 		}
 
 		static function __install() {
 			$sql = SQL::current();
 			$sql->query("create table if not exists `".$sql->prefix."tags` (
 			              `id` int(11) not null auto_increment,
-			              `name` varchar(250) not null,
-			              `post_id` int(11) not null,
+			              `tags` varchar(250) not null,
 			              `clean` varchar(250) not null,
+			              `post_id` int(11) not null,
 			              primary key (`id`)
 			             ) default charset=utf8");
 			$route = Route::current();
@@ -18,11 +19,9 @@
 		}
 
 		static function __uninstall($confirm) {
-			if ($confirm) {
-				$sql = SQL::current();
-				error_log("$confirm is true");
-				#$sql->query("drop table `".$sql->prefix."tags`");
-			}
+			if ($confirm)
+				SQL::current()->query("drop table `".$sql->prefix."tags`");
+
 			$route = Route::current();
 			$route->remove("tag/(name)/");
 		}
@@ -31,77 +30,62 @@
 ?>
 					<p>
 						<label for="tags"><?php echo __("Tags", "tags"); ?><span class="sub"> <?php echo __("(comma separated)", "tags"); ?></span></label>
-						<input class="text" type="text" name="option[tags]" value="" id="tags" />
+						<input class="text" type="text" name="tags" value="" id="tags" />
 					</p>
 <?php
 		}
 
 		static function edit_post_options($post) {
-			$tags = get_post_tags($post->id, false);
-			$tags = implode(", ", $tags["unlinked"]);
 ?>
 					<p>
 						<label for="tags"><?php echo __("Tags", "tags"); ?><span class="sub"> <?php echo __("(comma separated)", "tags"); ?></span></label>
-						<input class="text" type="text" name="option[tags]" value="<?php echo fix($tags, "html"); ?>" id="tags" />
+						<input class="text" type="text" name="tags" value="<?php echo implode(", ", self::unlinked_tags($post->tags)) ?>" id="tags" />
 					</p>
 <?php
 		}
 
-		static function add_post($post, $options) {
-			if (!isset($options["tags"])) return;
-
-			$tags = explode(",", $options["tags"]); // Split at the comma
-			$tags = array_map('trim', $tags); // Remove whitespace
-			$tags = array_map('strip_tags', $tags); // Remove HTML
+		static function add_post($post) {
+			$tags = explode(",", $_POST['tags']); // Split at the comma
+			$tags = array_map("trim", $tags); // Remove whitespace
+			$tags = array_map("strip_tags", $tags); // Remove HTML
 			$tags = array_unique($tags); // Remove duplicates
 			$tags = array_diff($tags, array("")); // Remove empties
+			$tags_cleaned = array_map("sanitize", $tags);
+
+			$tags_string = "{{".implode("}} {{", $tags)."}}";
+			$tags_cleaned_string = "{{".implode("}} {{", $tags_cleaned)."}}";
+
 			$sql = SQL::current();
-			foreach ($tags as $tag) {
-				$sql->query("insert into `".$sql->prefix."tags`
-				             (`name`, `post_id`, `clean`)
-				             values
-				             (:name, :post_id, :clean)",
-				            array(
-				                ":name" => $tag,
-				                ":post_id" => $post->id,
-				                ":clean" => sanitize($tag)
-				            ));
-			}
+			$sql->insert("tags", array("tags" => ":tags", "clean" => ":clean", "post_id" => ":post_id"), array(
+			                 ":tags"    => $tags_string,
+			                 ":clean"   => $tags_cleaned_string,
+			                 ":post_id" => $post->id
+			             ));
 		}
 
-		static function update_post($post, $options) {
+		static function update_post($post) {
 			$sql = SQL::current();
-			$sql->query("delete from `".$sql->prefix."tags`
-			             where `post_id` = :id",
-			            array(
-			                ":id" => $post->id
-			            ));
+			$sql->delete("tags", "`post_id` = :post_id", array(":post_id" => $post->id));
 
-			$tags = explode(",", $options["tags"]); // Split at the comma
+			$tags = explode(",", $_POST['tags']); // Split at the comma
 			$tags = array_map('trim', $tags); // Remove whitespace
 			$tags = array_map('strip_tags', $tags); // Remove HTML
 			$tags = array_unique($tags); // Remove duplicates
 			$tags = array_diff($tags, array("")); // Remove empties
-			foreach ($tags as $tag) {
-				$sql->query("insert into `".$sql->prefix."tags`
-				             (`name`, `post_id`, `clean`)
-				             values
-				             (:name, :post_id, :clean)",
-				            array(
-				                ":name" => $tag,
-				                ":post_id" => $post->id,
-				                ":clean" => sanitize($tag)
-				            ));
-			}
+			$tags_cleaned = array_map("sanitize", $tags);
+
+			$tags_string = "{{".implode("}} {{", $tags)."}}";
+			$tags_cleaned_string = "{{".implode("}} {{", $tags_cleaned)."}}";
+
+			$sql->insert("tags", array("tags" => ":tags", "clean" => ":clean", "post_id" => ":post_id"), array(
+			                 ":tags"    => $tags_string,
+			                 ":clean"   => $tags_cleaned_string,
+			                 ":post_id" => $post->id
+			             ));
 		}
 
 		static function delete_post($post) {
-			$sql = SQL::current();
-			$sql->query("delete from `".$sql->prefix."tags`
-			             where `post_id` = :id",
-			            array(
-			                ":id" => $post->id
-			            ));
+			SQL::current()->delete("tags", "`post_id` = :post_id", array(":id" => $post->id));
 		}
 
 		static function parse_urls($urls) {
@@ -114,52 +98,50 @@
 		}
 
 		static function manage_posts_column($post) {
-			$tags = get_post_tags($post->id);
 			echo "<td>";
-			echo implode(", ", $tags["linked"]);
+			echo implode(", ", $post->tags["linked"]);
 			echo "</td>";
 		}
 
 		static function route_tag() {
 			global $private, $posts;
 
-			$posts = Post::find(array("select" => "p.*",
-			                          "from" => array("posts AS p", "tags AS t"),
-			                          "where" => array($private, "`post_id` = `p`.`id`", "`t`.`clean` = :clean"),
-			                          "params" => array(":clean" => $_GET['name'])));
+			$posts = array();
+			foreach (SQL::current()->select("tags", "*", "`clean` LIKE :tag", "`id`", array(":tag" => "%{{".$_GET['name']."}}%"))->fetchAll() as $tag)
+				$posts[] = new Post($tag["post_id"]);
 		}
 
 		static function import_wordpress_post($data, $id) {
 			if (isset($data["CATEGORY"])) {
-				$sql = SQL::current();
-				foreach ($data["CATEGORY"] as $tag) {
-					if (!isset($tag["attr"]["DOMAIN"]) or $tag["attr"]["DOMAIN"] != "tag") continue;
+				$tags    = "";
+				$cleaned = "";
+				foreach ($data["CATEGORY"] as $tag)
+					if (isset($tag["attr"]["DOMAIN"]) and $tag["attr"]["DOMAIN"] == "tag" and !empty($tag["data"])) {
+						$tags.=    "{{".strip_tags(trim($tag["data"]))."}} ";
+						$cleaned.= "{{".sanitize(strip_tags(trim($tag["data"])))."}} ";
+					}
 
-					$sql->query("insert into `".$sql->prefix."tags`
-					             (`name`, `post_id`, `clean`)
-					             values
-					             (:name, :post_id, :clean)",
-					            array(
-					                ":name" => $tag["data"],
-					                ":post_id" => $id,
-					                ":clean" => sanitize($tag["data"])
-					            ));
-				}
+				$sql = SQL::current();
+				$sql->insert("tags", array("tags" => ":tags", "clean" => ":clean", "post_id" => ":post_id"), array(
+				                 ":tags"    => trim($tags),
+				                 ":clean"   => trim($cleaned),
+				                 ":post_id" => $id
+				             ));
 			}
 		}
 
 		static function metaWeblog_getPost($post, $struct) {
-			$struct['mt_tags'] = $post->tags;
+			$struct['mt_tags'] = self::unlinked_tags($post->tags);
 			return array($post, $struct);
 		}
 
 		static function metaWeblog_editPost_preQuery($struct, $post = null) {
 			if (isset($struct['mt_tags']))
-				$_POST['option']['tags'] = $struct['mt_tags'];
+				$_POST['tags'] = $struct['mt_tags'];
 			else if (isset($post->tags))
-				$_POST['option']['tags'] = $post->tags;
+				$_POST['tags'] = $post->tags;
 			else
-				$_POST['option']['tags'] = '';
+				$_POST['tags'] = '';
 		}
 
 		static function twig_global_context($context) {
@@ -167,67 +149,121 @@
 			return $context;
 		}
 
+		static function posts_get($options) {
+			$sql = SQL::current();
+
+			$options["select"][] = $sql->prefix."tags.tags";
+			$options["select"][] = $sql->prefix."tags.clean as `clean_tags`";
+
+			$options["left_join"][] = array("table" => $sql->prefix."tags",
+			                                "on"    => "`".$sql->prefix."tags`.`post_id` = `posts`.`id`");
+
+			$options["params"][":current_ip"] = ip2long($_SERVER['REMOTE_ADDR']);
+			$options["params"][":user_id"]    = Visitor::current()->id;
+
+			$options["group"][] = "`posts`.`id`";
+
+			return $options;
+		}
+
+		static function linked_tags($tags, $cleaned_tags) {
+			if (empty($tags) or empty($cleaned_tags))
+				return array();
+
+			$tags = explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", $tags));
+			$cleaned_tags = explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", $cleaned_tags));
+
+			$tags = array_combine($cleaned_tags, $tags);
+
+			$linked = array();
+			foreach ($tags as $clean => $tag)
+				$linked[] = '<a href="'.Route::current()->url("tag/".$clean."/").'" rel="tag">'.$tag.'</a>';
+
+			return $linked;
+		}
+
+		static function unlinked_tags($tags) {
+			if (empty($tags))
+				return array();
+
+			return explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", $tags));
+		}
+
 		static function filter_post($post) {
-			$post->tags = get_post_tags($post->id);
+			$post->tags = array("unlinked" => self::unlinked_tags($post->tags),
+			                    "linked"   => self::linked_tags($post->tags, $post->clean_tags));
 		}
 	}
-	$tags = new Tags();
 
-	$tags_limit_reached = false;
-	function list_tags($limit = 10, $order_by = "id", $order = "asc") {
-		global $tags_limit_reached;
+	function sort_tags_name_asc($a, $b) {
+		return strcmp($a["name"], $b["name"]);
+	}
+	function sort_tags_name_desc($a, $b) {
+		return strcmp($b["name"], $a["name"]);
+	}
+	function sort_tags_popularity_asc($a, $b) {
+		return $a["popularity"] > $b["popularity"];
+	}
+	function sort_tags_popularity_desc($a, $b) {
+		return $a["popularity"] < $b["popularity"];
+	}
 
+	function list_tags($limit = 10, $order_by = "popularity", $order = "desc") {
 		$sql = SQL::current();
-		$order_by = (("count" != $order_by) ? $sql->prefix."tags`.`" : "").$order_by;
-
-		$get_tags = $sql->query("select
-		                             `name`, `".$sql->prefix."tags`.`clean` as `clean`,
-		                             `".$sql->prefix."tags`.`post_id` as `target_id`,
-		                             `".$sql->prefix."posts`.`id` as `post_id`,
-		                             `".$sql->prefix."tags`.`id` as `tag_id`,
-		                             count(`".$sql->prefix."tags`.`id`) as `count`
-		                         from `".$sql->prefix."tags`, `".$sql->prefix."posts`
-		                         where
-		                             `".$sql->prefix."tags`.`post_id` = `".$sql->prefix."posts`.`id` and
-		                             `status` = 'public'
-		                         group by `name`
-		                         order by `".$order_by."` ".$order);
-
 		$tags = array();
-		$count = 0;
-		while ($tag = $get_tags->fetchObject()) {
-			if ($count < $limit) {
-				$tags[$tag->tag_id]["id"] = $tag->tag_id;
-				$tags[$tag->tag_id]["name"] = $tag->name;
-				$tags[$tag->tag_id]["count"] = $tag->count;
-				$tags[$tag->tag_id]["post_id"] = $tag->target_id;
-				$tags[$tag->tag_id]["url"] = $tag->clean;
-			}
-			$count++;
+		$clean = array();
+		foreach($sql->query("select * from `".$sql->prefix."tags`")->fetchAll() as $tag) {
+			$tags[] = $tag["tags"];
+			$clean[] = $tag["clean"];
 		}
-		if ($count > $limit)
-			$tags_limit_reached = true;
 
-		return $tags;
+		# array("{{foo}} {{bar}}", "{{foo}}") to "{{foo}} {{bar}} {{foo}}" to array("foo", "bar", "foo") to array("foo" => 2, "bar" => 1)
+		$tags = array_count_values(explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $tags))));
+		$clean = array_count_values(explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $clean))));
+		$tag2clean = array_combine(array_keys($tags), array_keys($clean));
+
+		foreach ($tags as $name => $popularity)
+			$tags[$name] = array("name" => $name, "popularity" => $popularity, "url" => $tag2clean[$name]);
+
+		usort($tags, "sort_tags_".$order_by."_".$order);
+
+		$count = 0;
+		$return = array();
+		foreach ($tags as $tag)
+			if ($count++ < $limit)
+				$return[] = $tag;
+
+		return $return;
 	}
 
-	function get_post_tags($post_id, $links = true, $order_by = "id", $order = "asc"){
-		$sql = SQL::current();
-		$route = Route::current();
-
-		$get_tags = $sql->query("select * from `".$sql->prefix."tags`
-		                         where `post_id` = :id
-		                         order by `".$order_by."` ".$order,
-		                        array(
-		                            ":id" => $post_id
-		                        ));
-
-		$tags = array("linked" => array(), "unlinked" => array());
-
-		while ($tag = $get_tags->fetchObject()) {
-			$tags["linked"][] = '<a href="'.$route->url("tag/".$tag->clean."/").'" rel="tag">'.$tag->name.'</a>';
-			$tags["unlinked"][] = $tag->name;
+	function clean2tag($clean_tag) {
+		$tags = array();
+		$clean = array();
+		foreach(SQL::current()->query("select * from `".$sql->prefix."tags`")->fetchAll() as $tag) {
+			$tags[] = $tag["tags"];
+			$clean[] = $tag["clean"];
 		}
 
-		return $tags;
+		# array("{{foo}} {{bar}}", "{{foo}}") to "{{foo}} {{bar}} {{foo}}" to array("foo", "bar", "foo") to array("foo" => 2, "bar" => 1)
+		$tags = array_count_values(explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $tags))));
+		$clean = array_count_values(explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $clean))));
+		$clean2tag = array_combine(array_keys($clean), array_keys($tags));
+
+		return $clean2tag[$clean_tag];
+	}
+
+	function tag2clean($unclean_tag) {
+		$tags = array();
+		$clean = array();
+		foreach(SQL::current()->query("select * from `".$sql->prefix."tags`")->fetchAll() as $tag) {
+			$tags[] = $tag["tags"];
+			$clean[] = $tag["clean"];
+		}
+
+		# array("{{foo}} {{bar}}", "{{foo}}") to "{{foo}} {{bar}} {{foo}}" to array("foo", "bar", "foo") to array("foo" => 2, "bar" => 1)
+		$tags = array_count_values(explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $tags))));
+		$clean = array_count_values(explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $clean))));
+		$tag2clean = array_combine(array_keys($tags), array_keys($clean));
+
+		return $tag2clean[$unclean_tag];
 	}
