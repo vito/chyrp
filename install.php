@@ -18,7 +18,6 @@
 	# Translation stuff
 	require INCLUDES_DIR."/lib/gettext/gettext.php";
 	require INCLUDES_DIR."/lib/gettext/streams.php";
-	require INCLUDES_DIR."/lib/l10n.php";
 
 	# Helpers
 	require INCLUDES_DIR."/helpers.php";
