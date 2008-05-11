@@ -147,6 +147,86 @@ a:hover {
 }
 /* @end */
 
+/* @group Extend */
+.enable,
+.disable {
+	width: 49%;
+}
+.enable h2,
+.disable h2 {
+	font-weight: normal !important;
+	font-size: 1.1em !important;
+}
+.enable h2 .sub,
+.disable h2 .sub {
+	font-size: .8em;
+	color: #bcbcbc;
+}
+.enable ul,
+.disable ul {
+	padding: 1em 1em .5em;
+}
+.enable ul li,
+.disable ul li {
+	padding: .1em .25em .1em .7em;
+	margin: 0 0 .5em;
+	list-style: disc inside;
+	cursor: move;
+}
+.enable ul li img,
+.disable ul li img {
+	float: right !important;
+	margin: -16px 0;
+}
+.enable ul li .sub,
+.disable ul li .sub {
+	font-size: .9em;
+}
+.enable h2 {
+	color: #4f8f62 !important;
+}
+.enable ul {
+	background: #dbffe6;
+	border: 1px solid #dbffe6;
+}
+.enable ul li {
+	background: #e6ffee;
+	color: #386345;
+}
+.enable ul.hover {
+	border: 1px solid #b3d1bb;
+}
+.enable ul li a {
+	color: #386345;
+}
+.enable ul li .sub {
+	color: #74a683;
+}
+.disable h2 {
+	color: #ff7070 !important;
+}
+.disable ul {
+	background: #ffdbdb;
+	border: 1px solid #ffdbdb;
+}
+.disable h2 .sub {
+	color: #bcbcbc;
+}
+.disable ul li {
+	background: #ffe6e6;
+	color: #653b3d;
+}
+.disable ul.hover {
+	border: 1px solid #cfb2b2;
+}
+.disable ul li a {
+	color: #7b4d4d;
+}
+.disable ul li .sub {
+	color: #a97f7f;
+}
+/* @end */
+
 /* @group Forms */
 form.delete blockquote {
 	width: 75%;
@@ -190,7 +270,7 @@ input.code, code {
 /* @end */
 
 /* @group Tables */
-table tr.head {
+table thead tr {
 	background: #555;
 	color: #fff;
 	border-left: 2px solid #444;
@@ -198,10 +278,17 @@ table tr.head {
 	border-bottom: 2px solid #444;
 	border-right: 2px solid #444;
 }
-table tr.head th {
+table thead tr th {
 	padding: .25em .5em;
 	border-right: 1px solid #444;
 	font-weight: bold;
+}
+table thead tr th.header {
+	cursor: pointer;
+}
+table thead tr th.headerSortDown,
+table thead tr th.headerSortUp {
+	background: #444;
 }
 table tr {
 	border-left: 2px solid #eee;

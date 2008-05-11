@@ -1,6 +1,6 @@
 <?php
 	define('JAVASCRIPT', true);
-	require_once "../../includes/common.php";
+	require_once "common.php";
 	error_reporting(0);
 	header("Content-Type: application/x-javascript");
 	header("Cache-Control: no-cache, must-revalidate");
@@ -93,6 +93,39 @@ $(function(){
 	})
 	if ($("#toggler").size())
 		document.getElementById("toggle").checked = all_checked
+
+	// Extension enabling/disabling (drag'n'drop)
+	$(".disable ul li, .enable ul li").draggable()
+	$(".enable ul, .disable ul").droppable({
+		accept: "ul.extend li",
+		activeClass: "active",
+		hoverClass: "hover",
+		drop: function(ev, ui) {
+			var classes = $(this).parent().attr("class").split(" ")
+			var box = $(this)
+			var confirmed = false
+			var action = classes[0]
+			var type = classes[1]
+			var extension = $(ui.draggable).attr("class")
+
+			$.post("<?php echo $config->url; ?>/includes/ajax.php", { action: "check_confirm", check: extension, type: type }, function(data){
+				if (data != "" && action == "disable")
+					var confirmed = (confirm(data)) ? 1 : 0
+
+				$.ajax({ type: "post", dataType: "json", url: "<?php echo $config->url; ?>/admin/?action=toggle&"+type+"="+extension, data: { confirm: confirmed, ajax: "true" }, beforeSend: function(){
+					box.loader()
+				}, success: function(json){
+					box.loader(true)
+					$(json.notifications).each(function(){
+						if (this == "") return
+						alert(this)
+					})
+				} })
+			})
+
+			$(ui.draggable).css({ left: 0, right: 0, top: 0, bottom: 0 }).appendTo(this)
+		}
+	})
 })
 
 var Post = {
@@ -114,9 +147,9 @@ $.fn.loader = function(remove) {
 	}
 
 	var offset = $(this).offset()
-	var width = $(this).width()
-	var loading_top = ($(this).height() / 2) - 11
-	var loading_left = ($(this).width() / 2) - 63
+	var width = $(this).outerWidth()
+	var loading_top = ($(this).outerHeight() / 2) - 11
+	var loading_left = ($(this).outerWidth() / 2) - 63
 
 	$(this).after("<div class=\"load_overlay\"><img src=\"<?php echo $config->url; ?>/includes/close.png\" style=\"display: none\" class=\"close\" /><img src=\"<?php echo $config->url; ?>/includes/loading.gif\" style=\"display: none\" class=\"loading\" /></div>")
 
@@ -141,8 +174,8 @@ $.fn.loader = function(remove) {
 		top: offset.top,
 		left: offset.left,
 		zIndex: 100,
-		width: $(this).width(),
-		height: $(this).height(),
+		width: $(this).outerWidth(),
+		height: $(this).outerHeight(),
 		background: ($.browser.msie) ? "transparent" : "transparent url('<?php echo $config->url; ?>/includes/trans.png')",
 		textAlign: "center",
 		filter: ($.browser.msie) ? "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src='<?php echo $config->url; ?>/includes/trans.png');" : ""

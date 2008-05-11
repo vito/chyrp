@@ -5,10 +5,12 @@
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 		<title>$site.name: {% block title %}$title{% endblock %}</title>
 		<link rel="stylesheet" href="style.css" type="text/css" media="screen" title="no title" charset="utf-8" />
-		<script src="$site.url/includes/lib/jquery.js" type="text/javascript" charset="utf-8"></script>
-		<script src="js/ifixpng.js" type="text/javascript" charset="utf-8"></script>
-		<script src="js/interface.js" type="text/javascript" charset="utf-8"></script>
-		<script src="js/javascript.php?action=$route.action&amp;page=$pagination.page" type="text/javascript" charset="utf-8"></script>
+		<script src="$site.url/includes/lib/gz.php?file=jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="$site.url/includes/lib/gz.php?file=jquery.dimensions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="$site.url/includes/lib/gz.php?file=jquery.ui.js" type="text/javascript" charset="utf-8"></script>
+		<script src="$site.url/includes/lib/gz.php?file=ifixpng.js" type="text/javascript" charset="utf-8"></script>
+		<script src="$site.url/includes/lib/gz.php?file=interface.js" type="text/javascript" charset="utf-8"></script>
+		<script src="$site.url/includes/admin.js.php?action=$route.action&amp;page=$pagination.page" type="text/javascript" charset="utf-8"></script>
 	</head>
 	<body>
 		<div id="header">
@@ -17,8 +19,8 @@
 {% block navigation %}
 					<li class="first $selected.write"><a href="{% admin "write_post" %}">Write</a></li>
 					<li class="second $selected.manage"><a href="{% admin "manage_posts" %}">Manage</a></li>
-					<li class="third $selected.settings"><a href="{% admin "settings" %}">Settings</a></li>
-					<li class="fourth $selected.extend"><a href="{% admin "extend" %}">Extend</a></li>
+					<li class="third $selected.settings"><a href="{% admin "general_settings" %}">Settings</a></li>
+					<li class="fourth $selected.extend"><a href="{% admin "extend_modules" %}">Extend</a></li>
 {% endblock %}
 				</ul>
 				<h1>$site.name</h1>

@@ -190,6 +190,30 @@
 		}
 
 		/**
+		 * Function: extend_modules
+		 * Module enabling/disabling.
+		 */
+		public function extend_modules() {
+			$config = Config::current();
+			if ($open = opendir(MODULES_DIR)) {
+				while (($folder = readdir($open)) !== false) {
+					if (!file_exists(MODULES_DIR."/".$folder."/module.php") or !file_exists(MODULES_DIR."/".$folder."/info.yaml")) continue;
+
+					if (file_exists(MODULES_DIR."/".$folder."/locale/".$config->locale.".mo"))
+						load_translator($folder, MODULES_DIR."/".$folder."/locale/".$config->locale.".mo");
+
+					$info = Spyc::YAMLLoad(MODULES_DIR."/".$folder."/info.yaml");
+
+					$category = (module_enabled($folder)) ? "enabled_modules" : "disabled_modules" ;
+					$this->context[$category][$folder] = array("name" => $info["name"],
+					                                           "url" => $info["url"],
+					                                           "description" => $info["description"],
+					                                           "author" => $info["author"]);
+				}
+			}
+		}
+
+		/**
 		 * Function: add_user
 		 * Add a user when the form is submitted. Shows an error if the user lacks permissions.
 		 */
@@ -384,6 +408,9 @@
 				fallback($info["uploader"], false);
 				fallback($info["notifications"], array());
 
+				foreach ($info["notifications"] as &$notification)
+					$notification = addslashes(__($notification, $_GET[$type]));
+
 				require MAIN_DIR."/".$type."s/".$_GET[$type]."/".$type.".php";
 
 				if ($info["uploader"])
@@ -399,19 +426,11 @@
 				$config->set($enabled_array, $new);
 
 				if (!isset($_POST['ajax']))
-					redirect("/admin/?action=extend&sub=".$type."s&enabled=".$_GET[$type]);
-				else {
-					foreach ($info["notifications"] as &$notification)
-						$notification = addslashes(__($notification, $_GET[$type]));
-
-					if (!empty($info["notifications"]))
-						$notifications = '"'.implode('", "', $info["notifications"]).'"';
-
-					exit('{ notifications: ['.$notifications.'] }');
-				}
+					redirect("/admin/?action=extend_".$type."s&enabled=".$_GET[$type]);
+				else
+					exit('{ notifications: ['.(!empty($info["notifications"]) ? '"'.implode('", "', $info["notifications"]).'"' : "").'] }');
 			} else {
 				$new = array();
-
 				foreach ($config->$enabled_array as $ext)
 					if ($ext != $_GET[$type]) $new[] = $ext;
 
@@ -422,7 +441,7 @@
 				$config->set($enabled_array, $new);
 
 				if (!isset($_POST['ajax']))
-					redirect("/admin/?action=extend&sub=".$type."s&disabled=".$_GET[$type]);
+					redirect("/admin/?action=extend_".$type."s&disabled=".$_GET[$type]);
 				else
 					exit('{ notifications: [] }');
 			}

@@ -1,0 +1,32 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Modules" | translate }{% endblock %}
+
+{% block content %}
+			<h1>${ "Modules" | translate }</h1>
+			<div class="enable module left">
+				<h2>Enabled <span class="sub">(drag)</span></h2>
+				<ul class="extend">
+{% for safename, module in enabled_modules | items %}
+					<li class="$safename">
+						<img src="images/icons/info.png" class="info right" />
+						<a href="$module.url">$module.name</a> by <a href="$module.author.url">$module.author.name</a>
+					</li>
+{% endfor %}
+				</ul>
+			</div>
+			<div class="disable module right">
+				<h2>Disabled <span class="sub">(drag)</span></h2>
+				<ul class="extend">
+{% for safename, module in disabled_modules | items %}
+					<li class="$safename">
+						<img src="images/icons/info.png" class="info right" />
+						<a href="$module.url">$module.name</a> by <a href="$module.author.url">$module.author.name</a>
+					</li>
+{% endfor %}
+				</ul>
+			</div>
+			<div class="clear"></div>
+			<br />
+			<button class="right">Get More Modules &rsaquo;</button>
+{% endblock %}

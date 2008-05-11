@@ -33,7 +33,11 @@
 	if (!defined('TRACKBACK'))  define('TRACKBACK', false);
 
 	# Use GZip compression if available.
-	ob_start(extension_loaded('zlib') ? "ob_gzhandler" : "");
+	if (extension_loaded("zlib")) {
+		ob_start("ob_gzhandler");
+		header("Content-Encoding: gzip");
+	} else
+		ob_start();
 
 	if (!JAVASCRIPT and !XML_RPC)
 		header("Content-type: text/html; charset=UTF-8");

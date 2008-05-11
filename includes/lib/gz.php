@@ -1,5 +1,6 @@
 <?php
-	if ($_GET['file'] != "jquery.js" and $_GET['file'] != "forms.js")
+	$valid_files = "jquery.js forms.js jquery.ui.js jquery.dimensions.js ifixpng.js interface.js";
+	if (!in_array($_GET['file'], explode(" ", $valid_files)))
 		exit("gtfo.");
 
 	if (extension_loaded('zlib')) {
@@ -11,7 +12,10 @@
 	header("Content-Type: application/x-javascript");
 	header("Last-Modified: ".@date("r", filemtime($_GET['file'])));
 
-	readfile($_GET['file']);
+	if (file_exists($_GET['file']))
+		readfile($_GET['file']);
+	else
+		echo "alert('File not found: ".addslashes($_GET['file'])."')";
 
 	ob_end_flush();
 ?>
