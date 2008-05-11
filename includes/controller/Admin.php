@@ -204,6 +204,9 @@
 
 					$info = Spyc::YAMLLoad(MODULES_DIR."/".$folder."/info.yaml");
 
+					$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
+					$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
+
 					$category = (module_enabled($folder)) ? "enabled_modules" : "disabled_modules" ;
 					$this->context[$category][$folder] = array("name" => $info["name"],
 					                                           "url" => $info["url"],
@@ -378,73 +381,6 @@
 			Group::delete($_POST['id']);
 
 			redirect("/admin/?action=manage&sub=group&deleted");
-		}
-
-		/**
-		 * Function: toggle
-		 * Enables or disables a module or feather. Shows an error if the user lacks permissions.
-		 */
-		public function toggle() {
-			if (!Visitor::current()->group()->can("change_settings"))
-				if (isset($_GET['module']))
-					error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable modules."));
-				else
-					error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable feathers."));
-
-			$type = (isset($_GET['module'])) ? "module" : "feather" ;
-			$enabled_check = $type."_enabled";
-			$enabled_array = "enabled_".$type."s";
-			$folder = ($type == "module") ? MODULES_DIR : FEATHERS_DIR ;
-
-			$config = Config::current();
-			if (!$enabled_check($_GET[$type])) {
-				$new = $config->$enabled_array;
-				$new[] = $_GET[$type];
-
-				if (file_exists($folder."/".$_GET[$type]."/locale/".$config->locale.".mo"))
-					load_translator($_GET[$type], $folder."/".$_GET[$type]."/locale/".$config->locale.".mo");
-
-				$info = Spyc::YAMLLoad(MODULES_DIR."/".$_GET[$type]."/info.yaml");
-				fallback($info["uploader"], false);
-				fallback($info["notifications"], array());
-
-				foreach ($info["notifications"] as &$notification)
-					$notification = addslashes(__($notification, $_GET[$type]));
-
-				require MAIN_DIR."/".$type."s/".$_GET[$type]."/".$type.".php";
-
-				if ($info["uploader"])
-					if (!file_exists(MAIN_DIR."/upload"))
-						$info["notifications"][] = __("Please create the <code>/upload</code> directory at your Chyrp install's root and CHMOD it to 777.");
-					elseif (!is_writable(MAIN_DIR."/upload"))
-						$info["notifications"][] = __("Please CHMOD <code>/upload</code> to 777.");
-
-				$class_name = camelize($_GET[$type]);
-				if (method_exists($class_name, "__install"))
-					call_user_func(array($class_name, "__install"));
-
-				$config->set($enabled_array, $new);
-
-				if (!isset($_POST['ajax']))
-					redirect("/admin/?action=extend_".$type."s&enabled=".$_GET[$type]);
-				else
-					exit('{ notifications: ['.(!empty($info["notifications"]) ? '"'.implode('", "', $info["notifications"]).'"' : "").'] }');
-			} else {
-				$new = array();
-				foreach ($config->$enabled_array as $ext)
-					if ($ext != $_GET[$type]) $new[] = $ext;
-
-				$class_name = camelize($_GET[$type]);
-				if (method_exists($class_name, "__uninstall"))
-					call_user_func(array($class_name, "__uninstall"), ($_POST['confirm'] == "1"));
-
-				$config->set($enabled_array, $new);
-
-				if (!isset($_POST['ajax']))
-					redirect("/admin/?action=extend_".$type."s&disabled=".$_GET[$type]);
-				else
-					exit('{ notifications: [] }');
-			}
 		}
 
 		/**

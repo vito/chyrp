@@ -128,7 +128,25 @@ $(function(){
 			})
 
 			$(ui.draggable).css({ left: 0, right: 0, top: 0, bottom: 0 }).appendTo(this)
+
+			$("ul.extend").each(function(){
+				if ($(".enable ul.extend").height() > $(this).height())
+					$(this).height($(".enable ul.extend").height())
+				if ($(".disable ul.extend").height() > $(this).height())
+					$(this).height($(".disable ul.extend").height())
+			})
 		}
+	})
+	$("ul.extend li .description").css("display", "none")
+	$(".info_link").click(function(){
+		$(this).parent().find(".description").effect("blind", { mode: "toggle" })
+		return false
+	})
+	$("ul.extend").each(function(){
+		if ($(".enable ul.extend").height() > $(this).height())
+			$(this).height($(".enable ul.extend").height())
+		if ($(".disable ul.extend").height() > $(this).height())
+			$(this).height($(".disable ul.extend").height())
 	})
 })
 

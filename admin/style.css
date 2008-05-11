@@ -172,15 +172,26 @@ a:hover {
 	margin: 0 0 .5em;
 	list-style: disc inside;
 	cursor: move;
+	position: relative;
 }
 .enable ul li img,
 .disable ul li img {
-	float: right !important;
-	margin: -16px 0;
+	position: absolute;
+	top: 4px;
+	right: 4px;
+	cursor: pointer;
 }
 .enable ul li .sub,
 .disable ul li .sub {
 	font-size: .9em;
+}
+ul.extend .expand {
+	margin: 0 -.25em 0 -.7em;
+}
+.enable .description,
+.disable .description {
+	padding: .5em;
+	background: rgba(255,255,255,.75);
 }
 .enable h2 {
 	color: #4f8f62 !important;

@@ -2,13 +2,13 @@ name: Paging
 url: http://chyrp.net/
 version: 1.0
 description: |
-  Lets you split entries into multiple pages at &lt;!--page--&gt; tags. Plays nicely with MarkDown/Textile external references!
+  Lets you split entries into multiple pages at <code><!--page--></code> tags. Plays nicely with MarkDown/Textile external references!
   
   <strong>Note</strong>: You will need to place this code in the theme file for your posts.
-  <pre>
+  <textarea class="wide" rows="3">
       {% if post.next_page %}<a class="right" href="$post.next_page_url">Next &rarr;</a>{% endif %}
       {% if post.prev_page %}<a class="left" href="$post.prev_page_url">&larr; Previous</a>{% endif %}
-  </pre>
+  </textarea>
 author:
   name: Alex Suraci
   url: http://i.am.toogeneric.com/

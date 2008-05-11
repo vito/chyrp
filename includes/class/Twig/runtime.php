@@ -41,6 +41,7 @@ $twig_filters = array(
 	'normalize' =>		'normalize',
 	'truncate' =>	'truncate',
 	'replace' =>		'twig_replace_filter',
+	'linebreaks' =>	'nl2br',
 
 	// array helpers
 	'join' =>		'twig_join_filter',

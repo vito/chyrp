@@ -9,8 +9,13 @@
 				<ul class="extend">
 {% for safename, module in enabled_modules | items %}
 					<li class="$safename">
-						<img src="images/icons/info.png" class="info right" />
+						<a class="$safename info_link" href="{% admin "module_info&module="~safename %}"><img src="images/icons/info.png" class="info right" /></a>
 						<a href="$module.url">$module.name</a> by <a href="$module.author.url">$module.author.name</a>
+						<div class="expand">
+							<div class="description">
+								${ module.description | linebreaks }
+							</div>
+						</div>
 					</li>
 {% endfor %}
 				</ul>
@@ -20,8 +25,13 @@
 				<ul class="extend">
 {% for safename, module in disabled_modules | items %}
 					<li class="$safename">
-						<img src="images/icons/info.png" class="info right" />
+						<a class="$safename info_link" href="{% admin "module_info&module="~safename %}"><img src="images/icons/info.png" class="info right" /></a>
 						<a href="$module.url">$module.name</a> by <a href="$module.author.url">$module.author.name</a>
+						<div class="expand">
+							<div class="description">
+								${ module.description | linebreaks }
+							</div>
+						</div>
 					</li>
 {% endfor %}
 				</ul>
