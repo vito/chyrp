@@ -207,6 +207,8 @@
 					$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
 					$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
 
+					$info["author"]["link"] = (!empty($info["author"]["url"])) ? '<a href="'.$info["author"]["url"].'">'.$info["author"]["name"].'</a>' : $info["author"]["name"] ;
+
 					$category = (module_enabled($folder)) ? "enabled_modules" : "disabled_modules" ;
 					$this->context[$category][$folder] = array("name" => $info["name"],
 					                                           "url" => $info["url"],
@@ -214,6 +216,93 @@
 					                                           "author" => $info["author"]);
 				}
 			}
+
+			if (isset($_GET['enabled'])) {
+				if (file_exists($folder."/".$_GET['enabled']."/locale/".$config->locale.".mo"))
+					load_translator($_GET['enabled'], $folder."/".$_GET['enabled']."/locale/".$config->locale.".mo");
+
+				$info = Spyc::YAMLLoad($folder."/".$_GET['enabled']."/info.yaml");
+				fallback($info["uploader"], false);
+				fallback($info["notifications"], array());
+
+				foreach ($info["notifications"] as &$notification)
+					$notification = addslashes(__($notification, $_GET['enabled']));
+
+				if ($info["uploader"])
+					if (!file_exists(MAIN_DIR."/upload"))
+						$info["notifications"][] = __("Please create the <code>/upload</code> directory at your Chyrp install's root and CHMOD it to 777.");
+					elseif (!is_writable(MAIN_DIR."/upload"))
+						$info["notifications"][] = __("Please CHMOD <code>/upload</code> to 777.");
+			}
+		}
+
+		/**
+		 * Function: enable
+		 * Enables a module or feather.
+		 */
+		public function enable() {
+			$config  = Config::current();
+			$visitor = Visitor::current();
+
+			$type = (isset($_GET['module'])) ? "module" : "feather" ;
+
+			if (!$visitor->group()->can("change_settings"))
+				if ($type == "module")
+					error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable modules."));
+				else
+					error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable feathers."));
+
+			if (($type == "module" and module_enabled($_GET[$type])) or
+			    ($type == "feather" and feather_enabled($_GET[$type])))
+				redirect("/admin/?action=extend_modules");
+
+			$enabled_array = ($type == "module") ? "enabled_modules" : "enabled_feathers" ;
+			$folder        = ($type == "module") ? MODULES_DIR : FEATHERS_DIR ;
+
+			require $folder."/".$_GET[$type]."/".$type.".php";
+
+			$class_name = camelize($_GET[$type]);
+			if (method_exists($class_name, "__install"))
+				call_user_func(array($class_name, "__install"));
+
+			$new = $config->$enabled_array;
+			array_push($new, $_GET[$type]);
+			$config->set($enabled_array, $new);
+
+			redirect("/admin/?action=extend_modules&enabled=".$_GET[$type]);
+		}
+
+		/**
+		 * Function: disable
+		 * Disables a module or feather.
+		 */
+		public function disable() {
+			$config  = Config::current();
+			$visitor = Visitor::current();
+
+			$type = (isset($_GET['module'])) ? "module" : "feather" ;
+
+			if (!$visitor->group()->can("change_settings"))
+				if ($type == "module")
+					error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable modules."));
+				else
+					error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable feathers."));
+
+			if (($type == "module" and !module_enabled($_GET[$type])) or
+			    ($type == "feather" and !feather_enabled($_GET[$type])))
+				redirect("/admin/?action=extend_modules");
+
+			$enabled_array = ($type == "module") ? "enabled_modules" : "enabled_feathers" ;
+			$folder        = ($type == "module") ? MODULES_DIR : FEATHERS_DIR ;
+
+			$class_name = camelize($_GET[$type]);
+			if (method_exists($class_name, "__uninstall"))
+				call_user_func(array($class_name, "__uninstall"), false);
+
+			$config->set(($type == "module" ? "enabled_modules" : "enabled_feathers"),
+			             array_diff($config->$enabled_array, array($_GET[$type])));
+
+			redirect("/admin/?action=extend_modules&enabled=".$_GET[$type]);
 		}
 
 		/**

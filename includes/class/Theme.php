@@ -255,6 +255,14 @@
 			$this->context = $trigger->filter("twig_global_context", $this->context);
 			$this->context = $trigger->filter(str_replace("/", "_", $this->file), $this->context);
 
+			$this->context["enabled_modules"] = array();
+			foreach (Config::current()->enabled_modules as $module)
+				$this->context["enabled_modules"][$module] = true;
+
+			$this->context["enabled_feathers"] = array();
+			foreach (Config::current()->enabled_feathers as $feather)
+				$this->context["enabled_feathers"][$feather] = true;
+
 			$this->context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);
 			$this->context["sql_debug"] = SQL::current()->debug;
 		}

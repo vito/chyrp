@@ -5,32 +5,34 @@
 {% block content %}
 			<h1>${ "Modules" | translate }</h1>
 			<div class="enable module left">
-				<h2>Enabled <span class="sub">(drag)</span></h2>
+				<h2>${ "Enabled" | translate }</h2>
 				<ul class="extend">
 {% for safename, module in enabled_modules | items %}
 					<li class="$safename">
 						<a class="$safename info_link" href="{% admin "module_info&module="~safename %}"><img src="images/icons/info.png" class="info right" /></a>
-						<a href="$module.url">$module.name</a> by <a href="$module.author.url">$module.author.name</a>
+						<a href="$module.url">$module.name</a> <span class="sub">by $module.author.link</span>
 						<div class="expand">
 							<div class="description">
-								${ module.description | linebreaks }
+								$module.description
 							</div>
+							<a class="enable_button js_disabled" href="{% admin "disable&module="~safename %}">Disable</a>
 						</div>
 					</li>
 {% endfor %}
 				</ul>
 			</div>
 			<div class="disable module right">
-				<h2>Disabled <span class="sub">(drag)</span></h2>
+				<h2>${ "Disabled" | translate }</h2>
 				<ul class="extend">
 {% for safename, module in disabled_modules | items %}
 					<li class="$safename">
 						<a class="$safename info_link" href="{% admin "module_info&module="~safename %}"><img src="images/icons/info.png" class="info right" /></a>
-						<a href="$module.url">$module.name</a> by <a href="$module.author.url">$module.author.name</a>
+						<a href="$module.url">$module.name</a> <span class="sub">by $module.author.link</span>
 						<div class="expand">
 							<div class="description">
-								${ module.description | linebreaks }
+								$module.description
 							</div>
+							<a class="disable_button js_disabled" href="{% admin "enable&module="~safename %}">Enable</a>
 						</div>
 					</li>
 {% endfor %}

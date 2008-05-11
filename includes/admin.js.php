@@ -97,9 +97,8 @@ $(function(){
 		document.getElementById("toggle").checked = all_checked
 
 	// Extension enabling/disabling (drag'n'drop)
-	$(".disable ul li, .enable ul li").draggable({
-		zIndex: 100
-	})
+	$(".enable h2, .disable h2").append(" <span class=\"sub\"><?php echo __("(drag)"); ?></span>")
+	$(".disable ul li, .enable ul li").draggable({ zIndex: 100 })
 	$(".enable ul, .disable ul").droppable({
 		accept: ".enable ul.extend li",
 		activeClass: "active",
@@ -137,6 +136,7 @@ $(function(){
 			})
 		}
 	})
+	$("ul.extend li").css("cursor", "move")
 	$("ul.extend li .description").css("display", "none")
 	$(".info_link").click(function(){
 		$(this).parent().find(".description").effect("blind", { mode: "toggle" })

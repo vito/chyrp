@@ -32,11 +32,6 @@
 					$this->$setting = array();
 				elseif (!is_int($setting)) # Don't load the "---"
 					$this->$setting = (is_string($value)) ? stripslashes($value) : $value ;
-
-			foreach ($this->enabled_modules as $index => $module) {
-				unset($this->enabled_modules[$index]);
-				$this->enabled_modules[$module] = $module;
-			}
 		}
 
 		/**

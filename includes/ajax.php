@@ -119,20 +119,18 @@
 		case "enable_module": case "enable_feather":
 			$type = ($_POST['action'] == "enable_module") ? "module" : "feather" ;
 
-			if (($type == "module" and module_enabled($_POST['extension'])) or ($type == "feather" and feather_enabled($_POST['extension'])))
-				exit("{ notifications: [] }");
-
 			if (!$visitor->group()->can("change_settings"))
 				if ($type == "module")
 					exit("{ notifications: ['".__("You do not have sufficient privileges to enable/disable modules.")."'] }");
 				else
 					exit("{ notifications: ['".__("You do not have sufficient privileges to enable/disable feathers.")."'] }");
 
+			if (($type == "module" and module_enabled($_POST['extension'])) or
+			    ($type == "feather" and feather_enabled($_POST['extension'])))
+				exit("{ notifications: [] }");
+
 			$enabled_array = ($type == "module") ? "enabled_modules" : "enabled_feathers" ;
 			$folder        = ($type == "module") ? MODULES_DIR : FEATHERS_DIR ;
-
-			$new = $config->$enabled_array;
-			$new[] = $_POST["extension"];
 
 			if (file_exists($folder."/".$_POST["extension"]."/locale/".$config->locale.".mo"))
 				load_translator($_POST["extension"], $folder."/".$_POST["extension"]."/locale/".$config->locale.".mo");
@@ -156,7 +154,8 @@
 			if (method_exists($class_name, "__install"))
 				call_user_func(array($class_name, "__install"));
 
-			$config->set($enabled_array, $new);
+			array_push($config->$enabled_array, $_GET[$type]);
+			$config->set($enabled_array, $config->$enabled_array);
 
 			exit('{ notifications: ['.(!empty($info["notifications"]) ? '"'.implode('", "', $info["notifications"]).'"' : "").'] }');
 
@@ -170,21 +169,16 @@
 				else
 					exit("{ notifications: ['".__("You do not have sufficient privileges to enable/disable feathers.")."'] }");
 
-			if (($type == "module" and !module_enabled($_POST['extension'])) or ($type == "feather" and !feather_enabled($_POST['extension'])))
+			if (($type == "module" and !module_enabled($_POST['extension'])) or
+			    ($type == "feather" and !feather_enabled($_POST['extension'])))
 				exit("{ notifications: [] }");
-
-			$enabled_array = ($type == "module") ? "enabled_modules" : "enabled_feathers" ;
-
-			$new = array();
-			foreach ($config->$enabled_array as $ext)
-				if ($ext != $_POST["extension"])
-					$new[] = $ext;
 
 			$class_name = camelize($_POST["extension"]);
 			if (method_exists($class_name, "__uninstall"))
 				call_user_func(array($class_name, "__uninstall"), ($_POST['confirm'] == "1"));
 
-			$config->set($enabled_array, $new);
+			$config->set(($type == "module" ? "enabled_modules" : "enabled_feathers"),
+			             array_diff($config->$enabled_array, array($_POST['extension'])));
 
 			exit('{ notifications: [] }');
 

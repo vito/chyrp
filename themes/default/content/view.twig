@@ -1,7 +1,7 @@
 {% extends "layouts/default.twig" %}
 {% block content %}
 {% include "content/post.twig" %}
-{% if site.enabled_modules.comments %}
+{% if enabled_modules.comments %}
 				<br />
 				<h1 id="comments">${ "Comments" | translate }</h1>
 				{% if post.comment_count > 0 %}

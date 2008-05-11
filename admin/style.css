@@ -171,7 +171,6 @@ a:hover {
 	padding: .1em .25em .1em .7em;
 	margin: 0 0 .5em;
 	list-style: disc inside;
-	cursor: move;
 	position: relative;
 }
 .enable ul li img,
@@ -179,19 +178,19 @@ a:hover {
 	position: absolute;
 	top: 4px;
 	right: 4px;
-	cursor: pointer;
 }
 .enable ul li .sub,
 .disable ul li .sub {
 	font-size: .9em;
 }
+.enable ul li .enable_button,
+.disable ul li .disable_button {
+	display: block;
+	padding: .25em .5em;
+	text-align: right;
+}
 ul.extend .expand {
 	margin: 0 -.25em 0 -.7em;
-}
-.enable .description,
-.disable .description {
-	padding: .5em;
-	background: rgba(255,255,255,.75);
 }
 .enable h2 {
 	color: #4f8f62 !important;
@@ -207,11 +206,28 @@ ul.extend .expand {
 .enable ul.hover {
 	border: 1px solid #b3d1bb;
 }
-.enable ul li a {
+.enable ul li a,
+.enable ul li .sub a:hover {
+	border: none;
 	color: #386345;
 }
-.enable ul li .sub {
+.enable ul li .sub,
+.enable ul li .sub a {
 	color: #74a683;
+}
+.enable ul li .description {
+	padding: .5em;
+	background: #F7FFF9;
+}
+.enable ul li .enable_button {
+	color: #189100;
+}
+.enable ul li .enable_button:hover {
+	background: #189100;
+	color: #fff;
+}
+.enable ul li .enable_button:active {
+    background: #067000;
 }
 .disable h2 {
 	color: #ff7070 !important;
@@ -230,11 +246,28 @@ ul.extend .expand {
 .disable ul.hover {
 	border: 1px solid #cfb2b2;
 }
-.disable ul li a {
+.disable ul li a,
+.disable ul li .sub a:hover {
+	border: none;
 	color: #7b4d4d;
 }
-.disable ul li .sub {
+.disable ul li .sub,
+.disable ul li .sub a {
 	color: #a97f7f;
+}
+.disable ul li .description {
+	padding: .5em;
+	background: #FFF1F1;
+}
+.disable ul li .disable_button {
+	color: #d51800;
+}
+.disable ul li .disable_button:hover {
+	background: #d51800;
+	color: #fff;
+}
+.disable ul li .disable_button:active {
+    background: #b30600;
 }
 /* @end */
 
@@ -275,8 +308,9 @@ textarea.wide, input.text.wide {
 	width: 99%;
 	_width: 100%; /* Hooray for IE6's randomized box model. */
 }
-input.code, code {
+input.code, textarea.code, code {
 	font-family: "Consolas", "Monaco", monospace;
+	font-size: 9px;
 }
 /* @end */
 

@@ -1,7 +1,7 @@
 name: Read More
 url: http://chyrp.net/
 version: 1.0
-description: Lets you split entries at &lt;!--more--&gt;. Plays nicely with MarkDown/Textile external references!
+description: Split entries at <code><!--more--></code>.
 author:
   name: Alex Suraci
   url: http://i.am.toogeneric.com/
