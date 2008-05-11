@@ -97,9 +97,11 @@ $(function(){
 		document.getElementById("toggle").checked = all_checked
 
 	// Extension enabling/disabling (drag'n'drop)
-	$(".disable ul li, .enable ul li").draggable()
+	$(".disable ul li, .enable ul li").draggable({
+		zIndex: 100
+	})
 	$(".enable ul, .disable ul").droppable({
-		accept: "ul.extend li",
+		accept: ".enable ul.extend li",
 		activeClass: "active",
 		hoverClass: "hover",
 		drop: function(ev, ui) {
@@ -114,7 +116,7 @@ $(function(){
 				if (data != "" && action == "disable")
 					var confirmed = (confirm(data)) ? 1 : 0
 
-				$.ajax({ type: "post", dataType: "json", url: "<?php echo $config->url; ?>/admin/?action=toggle&"+type+"="+extension, data: { confirm: confirmed, ajax: "true" }, beforeSend: function(){
+				$.ajax({ type: "post", dataType: "json", url: "<?php echo $config->url; ?>/includes/ajax.php", data: { action: action + "_" + type, extension: extension, confirm: confirmed }, beforeSend: function(){
 					box.loader()
 				}, success: function(json){
 					box.loader(true)
