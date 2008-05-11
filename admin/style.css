@@ -399,7 +399,9 @@ p.message.boo {
 
 /* @group Buttons */
 /* Inspiration from Chawlk. */
-button {
+button,
+a.button {
+	font-family: "Verdana", Helvetica, Arial, sans-serif;
 	font-weight: bold;
 	font-size: 1.125em;
 	margin: 0 .5em 0 0;
@@ -411,52 +413,65 @@ button {
 	border-left: 0;
 	cursor: pointer;
 }
-button.right {
+a.button {
+	padding: .6em 1em .5em .9em;
+}
+button.right,
+a.button.right {
 	margin: 0 0 0 .5em;
 }
-button:hover {
+button:hover,
+a.button:hover {
 	background-color: #f7f7f7;
 	border-color: #d1d1d1;
 }
-button:active {
+button:active,
+a.button:active {
 	background-color: #d7d7d7;
     border: 0;
     border-left: 1px solid #b1b1b1;
     border-top: 1px solid #b1b1b1;
 }
-button.boo {
+button.boo,
+a.button.boo {
 	background: #faebe4;
 	border-color: #d6bdb5;
 	color: #3e3634;
 }
-button.boo:hover {
+button.boo:hover,
+a.button.boo:hover {
 	background: #d51800;
 	color: #fff;
 	border-color: #9f1000;
 }
-button.boo:active {
+button.boo:active,
+a.button.boo:active {
     background: #b30600;
     border: 0;
     border-left: 1px solid #7d0000;
     border-top: 1px solid #7d0000;
 }
-button.yay {
+button.yay,
+a.button.yay {
 	background: #ebfae4;
 	border-color: #bdd6b5;
 	color: #363e34;
 }
-button.yay:hover {
+button.yay:hover,
+a.button.yay:hover {
 	background: #189100;
 	color: #fff;
 	border-color: #105f00;
 }
-button.yay:active {
+button.yay:active,
+a.button.yay:active {
     background: #067000;
     border: 0;
     border-left: 1px solid #003d00;
     border-top: 1px solid #003d00;
 }
-button img {
+button img,
+a.button img {
 	margin: 0 5px -3px -2px;
 }
 /* @end */
