@@ -195,6 +195,9 @@
 		 */
 		public function extend_modules() {
 			$config = Config::current();
+
+			$this->context["enabled_modules"] = $this->context["disabled_modules"] = array();
+
 			if ($open = opendir(MODULES_DIR)) {
 				while (($folder = readdir($open)) !== false) {
 					if (!file_exists(MODULES_DIR."/".$folder."/module.php") or !file_exists(MODULES_DIR."/".$folder."/info.yaml")) continue;
@@ -218,10 +221,60 @@
 			}
 
 			if (isset($_GET['enabled'])) {
-				if (file_exists($folder."/".$_GET['enabled']."/locale/".$config->locale.".mo"))
-					load_translator($_GET['enabled'], $folder."/".$_GET['enabled']."/locale/".$config->locale.".mo");
+				if (file_exists(MODULES_DIR."/".$_GET['enabled']."/locale/".$config->locale.".mo"))
+					load_translator($_GET['enabled'], MODULES_DIR."/".$_GET['enabled']."/locale/".$config->locale.".mo");
 
-				$info = Spyc::YAMLLoad($folder."/".$_GET['enabled']."/info.yaml");
+				$info = Spyc::YAMLLoad(MODULES_DIR."/".$_GET['enabled']."/info.yaml");
+				fallback($info["uploader"], false);
+				fallback($info["notifications"], array());
+
+				foreach ($info["notifications"] as &$notification)
+					$notification = addslashes(__($notification, $_GET['enabled']));
+
+				if ($info["uploader"])
+					if (!file_exists(MAIN_DIR."/upload"))
+						$info["notifications"][] = __("Please create the <code>/upload</code> directory at your Chyrp install's root and CHMOD it to 777.");
+					elseif (!is_writable(MAIN_DIR."/upload"))
+						$info["notifications"][] = __("Please CHMOD <code>/upload</code> to 777.");
+			}
+		}
+
+		/**
+		 * Function: extend_feathers
+		 * Feather enabling/disabling.
+		 */
+		public function extend_feathers() {
+			$config = Config::current();
+
+			$this->context["enabled_feathers"] = $this->context["disabled_feathers"] = array();
+
+			if ($open = opendir(FEATHERS_DIR)) {
+				while (($folder = readdir($open)) !== false) {
+					if (!file_exists(FEATHERS_DIR."/".$folder."/feather.php") or !file_exists(FEATHERS_DIR."/".$folder."/info.yaml")) continue;
+
+					if (file_exists(FEATHERS_DIR."/".$folder."/locale/".$config->locale.".mo"))
+						load_translator($folder, FEATHERS_DIR."/".$folder."/locale/".$config->locale.".mo");
+
+					$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$folder."/info.yaml");
+
+					$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
+					$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
+
+					$info["author"]["link"] = (!empty($info["author"]["url"])) ? '<a href="'.$info["author"]["url"].'">'.$info["author"]["name"].'</a>' : $info["author"]["name"] ;
+
+					$category = (feather_enabled($folder)) ? "enabled_feathers" : "disabled_feathers" ;
+					$this->context[$category][$folder] = array("name" => $info["name"],
+					                                           "url" => $info["url"],
+					                                           "description" => $info["description"],
+					                                           "author" => $info["author"]);
+				}
+			}
+
+			if (isset($_GET['enabled'])) {
+				if (file_exists(FEATHERS_DIR."/".$_GET['enabled']."/locale/".$config->locale.".mo"))
+					load_translator($_GET['enabled'], FEATHERS_DIR."/".$_GET['enabled']."/locale/".$config->locale.".mo");
+
+				$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$_GET['enabled']."/info.yaml");
 				fallback($info["uploader"], false);
 				fallback($info["notifications"], array());
 
@@ -269,7 +322,7 @@
 			array_push($new, $_GET[$type]);
 			$config->set($enabled_array, $new);
 
-			redirect("/admin/?action=extend_modules&enabled=".$_GET[$type]);
+			redirect("/admin/?action=extend_".$type."s&enabled=".$_GET[$type]);
 		}
 
 		/**
@@ -302,7 +355,7 @@
 			$config->set(($type == "module" ? "enabled_modules" : "enabled_feathers"),
 			             array_diff($config->$enabled_array, array($_GET[$type])));
 
-			redirect("/admin/?action=extend_modules&enabled=".$_GET[$type]);
+			redirect("/admin/?action=extend_".$type."s&enabled=".$_GET[$type]);
 		}
 
 		/**

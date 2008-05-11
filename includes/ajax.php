@@ -154,8 +154,9 @@
 			if (method_exists($class_name, "__install"))
 				call_user_func(array($class_name, "__install"));
 
-			array_push($config->$enabled_array, $_GET[$type]);
-			$config->set($enabled_array, $config->$enabled_array);
+			$new = $config->$enabled_array;
+			array_push($new, $_POST["extension"]);
+			$config->set($enabled_array, $new);
 
 			exit('{ notifications: ['.(!empty($info["notifications"]) ? '"'.implode('", "', $info["notifications"]).'"' : "").'] }');
 
@@ -177,7 +178,8 @@
 			if (method_exists($class_name, "__uninstall"))
 				call_user_func(array($class_name, "__uninstall"), ($_POST['confirm'] == "1"));
 
-			$config->set(($type == "module" ? "enabled_modules" : "enabled_feathers"),
+			$enabled_array = ($type == "module") ? "enabled_modules" : "enabled_feathers" ;
+			$config->set($enabled_array,
 			             array_diff($config->$enabled_array, array($_POST['extension'])));
 
 			exit('{ notifications: [] }');

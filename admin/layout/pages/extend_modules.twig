@@ -9,7 +9,7 @@
 				<ul class="extend">
 {% for safename, module in enabled_modules | items %}
 					<li class="$safename">
-						<a class="$safename info_link" href="{% admin "module_info&module="~safename %}"><img src="images/icons/info.png" class="info right" /></a>
+						<a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
 						<a href="$module.url">$module.name</a> <span class="sub">by $module.author.link</span>
 						<div class="expand">
 							<div class="description">
@@ -26,7 +26,7 @@
 				<ul class="extend">
 {% for safename, module in disabled_modules | items %}
 					<li class="$safename">
-						<a class="$safename info_link" href="{% admin "module_info&module="~safename %}"><img src="images/icons/info.png" class="info right" /></a>
+						<a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
 						<a href="$module.url">$module.name</a> <span class="sub">by $module.author.link</span>
 						<div class="expand">
 							<div class="description">
