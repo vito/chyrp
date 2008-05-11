@@ -102,7 +102,7 @@
 					$url = "http://".$url;
 
 			$sql = SQL::current();
-			$sql->query("insert into `".$sql->prefix."comments`
+			$sql->query("insert into `__comments`
 			             (`body`, `author`, `author_url`, `author_email`, `author_ip`,
 			              `author_agent`, `status`, `signature`, `created_at`, `post_id`, `user_id`)
 			             values
@@ -151,7 +151,7 @@
 		}
 		public function update($author, $author_email, $author_url, $body, $status, $timestamp) {
 			$sql = SQL::current();
-			$sql->query("update `".$sql->prefix."comments`
+			$sql->query("update `__comments`
 			             set
 			                 `author` = :author,
 			                 `author_email` = :author_email,
@@ -178,7 +178,7 @@
 				$trigger->call("delete_comment", new self($comment_id));
 
 			$sql = SQL::current();
-			$sql->query("delete from `".$sql->prefix."comments`
+			$sql->query("delete from `__comments`
 			             where `id` = :id",
 			            array(
 			                ":id" => $comment_id
@@ -197,7 +197,7 @@
 		}
 		static function user_count($user_id) {
 			$sql = SQL::current();
-			$count = $sql->query("select count(`id`) from `".$sql->prefix."comments`
+			$count = $sql->query("select count(`id`) from `__comments`
 			                      where `user_id` = :user_id",
 			                     array(
 			                         ":user_id" => $user_id
@@ -206,7 +206,7 @@
 		}
 		static function post_count($post_id) {
 			$sql = SQL::current();
-			$count = $sql->query("select count(`id`) from `".$sql->prefix."comments`
+			$count = $sql->query("select count(`id`) from `__comments`
 			                      where `post_id` = :post_id and (
 	                                  `status` != 'denied' or (
                                           `status` = 'denied' and (

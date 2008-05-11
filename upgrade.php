@@ -55,24 +55,24 @@
 
 	function to_1030() {
 		$sql = SQL::current();
-		$sql->query("rename table `".$sql->prefix."tweets` to `".$sql->prefix."posts`");
-		$sql->query("alter table `".$sql->prefix."groups`
+		$sql->query("rename table `__tweets` to `__posts`");
+		$sql->query("alter table `__groups`
 		             change `add_tweet` `add_post` tinyint(1) not null default '0'");
-		$sql->query("alter table `".$sql->prefix."groups`
+		$sql->query("alter table `__groups`
 		             change `edit_tweet` `edit_post` tinyint(1) not null default '0'");
-		$sql->query("alter table `".$sql->prefix."groups`
+		$sql->query("alter table `__groups`
 		             change `delete_tweet` `delete_post` tinyint(1) not null default '0'");
 		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v1.0.3")."</p>\n";
 	}
 	function to_1040() {
 		$sql = SQL::current();
-		$sql->query("alter table `".$sql->prefix."pages`
+		$sql->query("alter table `__pages`
 		             add `parent_id` int(11) not null default '0' after `user_id`");
 		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v1.0.4a")."</p>\n";
 	}
 	function to_1100() {
 		$sql = SQL::current();
-		$sql->query("alter table `".$sql->prefix."pages`
+		$sql->query("alter table `__pages`
 		             add `list_order` int(11) not null default '0' after `show_in_list`");
 
 		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v1.1")."</p>\n";

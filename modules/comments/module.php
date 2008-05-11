@@ -16,7 +16,7 @@
 		static function __install() {
 			$visitor = Visitor::current();
 			$sql = SQL::current();
-			$sql->query("create table if not exists `".$sql->prefix."comments` (
+			$sql->query("create table if not exists `__comments` (
 			                 `id` int(11) not null auto_increment,
 			                 `body` longtext not null,
 			                 `author` varchar(250) not null default '',
@@ -48,7 +48,7 @@
 
 			if ($confirm) {
 				$sql = SQL::current();
-				$sql->query("drop table `".$sql->prefix."comments`");
+				$sql->query("drop table `__comments`");
 			}
 
 			$config = Config::current();
@@ -114,7 +114,7 @@
 
 			$comment = new Comment($_GET['id']);
 			$sql = SQL::current();
-			$sql->query("update `".$sql->prefix."comments`
+			$sql->query("update `__comments`
 			             set `status` = 'spam'
 			             where `id` = :id",
 			            array(
@@ -132,7 +132,7 @@
 			if (!$visitor->group()->can("edit_comment")) return;
 
 			$sql = SQL::current();
-			$sql->query("update `".$sql->prefix."comments`
+			$sql->query("update `__comments`
 			             set `status` = 'approved'
 			             where `id` = :id",
 			            array(
@@ -148,7 +148,7 @@
 			if (!$visitor->group()->can("edit_comment")) return;
 
 			$sql = SQL::current();
-			$sql->query("update `".$sql->prefix."comments`
+			$sql->query("update `__comments`
 			             set `status` = 'denied'
 			             where `id` = :id",
 			            array(
@@ -179,7 +179,7 @@
 				$signatures = array();
 				foreach ($_POST['comments'] as $id => $value) {
 					$comment = new Comment($id);
-					$sql->query("update `".$sql->prefix."comments`
+					$sql->query("update `__comments`
 					             set `status` = 'approved'
 					             where `id` = :id",
 					            array(
@@ -200,7 +200,7 @@
 			if (!$visitor->group()->can("delete_comment")) return;
 
 			$sql = SQL::current();
-			$sql->query("delete from `".$sql->prefix."comments`
+			$sql->query("delete from `__comments`
 			             where `status` = 'spam'");
 			$config = Config::current();
 			$route = Route::current();
@@ -240,7 +240,7 @@
 			global $comment, $url, $title, $excerpt, $blog_name;
 
 			$sql = SQL::current();
-			$dupe = $sql->query("select `id` from `".$sql->prefix."comments`
+			$dupe = $sql->query("select `id` from `__comments`
 			                     where
 			                         `post_id` = :post_id and
 			                         `author_url` = :url",
@@ -265,7 +265,7 @@
 			global $comment;
 
 			$sql = SQL::current();
-			$dupe = $sql->query("select `id` from `".$sql->prefix."comments`
+			$dupe = $sql->query("select `id` from `__comments`
 			                     where
 			                         `post_id` = :id and
 			                         `author_url` = :url",
@@ -286,7 +286,7 @@
 
 		static function delete_post($post) {
 			$sql = SQL::current();
-			$sql->query("delete from `".$sql->prefix."comments`
+			$sql->query("delete from `__comments`
 			             where `post_id` = :id",
 			            array(
 			                ":id" => $post->id
@@ -506,7 +506,7 @@ $(function(){
 			$visitor = Visitor::current();
 			switch($_POST['action']) {
 				case "reload_comments":
-					$last_comment = $sql->query("select `id` from `".$sql->prefix."comments`
+					$last_comment = $sql->query("select `id` from `__comments`
 					                             where
 					                                 `post_id` = :post_id and (
 					                                     `status` != 'denied' or (
@@ -525,7 +525,7 @@ $(function(){
 					                                ":user_id" => $visitor->id
 					                            ))->fetchColumn();
 					if ($last_comment > $_POST['last_comment']) {
-						$new_comments = $sql->query("select `id` from `".$sql->prefix."comments`
+						$new_comments = $sql->query("select `id` from `__comments`
 						                             where
 						                                 `post_id` = :post_id and
 						                                 `id` > :last_comment and (
@@ -687,7 +687,7 @@ $(function(){
 
 			$sql = SQL::current();
 			$visitor = Visitor::current();
-			$get_comments = $sql->query("select * from `".$sql->prefix."comments`
+			$get_comments = $sql->query("select * from `__comments`
 			                             where
 			                                 `post_id` = :post_id and (
 			                                     `status` != 'denied' or (
@@ -707,7 +707,7 @@ $(function(){
 			                                ":user_id" => $visitor->id
 			                            ));
 
-			$latest_timestamp = $sql->query("select `created_at` from `".$sql->prefix."comments`
+			$latest_timestamp = $sql->query("select `created_at` from `__comments`
 			                                 where
 			                                     `post_id` = :post_id and (
 			                                         `status` != 'denied' or (
@@ -796,25 +796,25 @@ $(function(){
 		}
 
 		static function posts_get($options) {
-			$options["select"][]  = "COUNT(`comments`.`id`) as `comment_count`";
-			$options["select"][]  = "MAX(`comments`.`id`) as `latest_comment`";
+			$options["select"][]  = "COUNT(`__comments`.`id`) as `comment_count`";
+			$options["select"][]  = "MAX(`__comments`.`id`) as `latest_comment`";
 
-			$options["left_join"][] = array("table" => SQL::current()->prefix."comments",
-			                                "on" => "`comments`.`post_id` = `posts`.`id`",
-			                                "where" => array("`comments`.`status` != 'denied' or (
-			                                                      `comments`.`status` = 'denied' and (
-			                                                          `comments`.`author_ip` = :current_ip or (
-			                                                              `comments`.`user_id` != '' and
-			                                                              `comments`.`user_id` = :user_id
+			$options["left_join"][] = array("table" => "comments",
+			                                "where" => array("`__comments`.`post_id` = `__posts`.`id` and
+			                                                  `__comments`.`status` != 'denied' or (
+			                                                      `__comments`.`status` = 'denied' and (
+			                                                          `__comments`.`author_ip` = :current_ip or (
+			                                                              `__comments`.`user_id` != '' and
+			                                                              `__comments`.`user_id` = :user_id
 			                                                          )
 			                                                      )
 			                                                  )",
-			                                                 "`comments`.`status` != 'spam'"));
+			                                                 "`__comments`.`status` != 'spam'"));
 
 			$options["params"][":current_ip"] = ip2long($_SERVER['REMOTE_ADDR']);
 			$options["params"][":user_id"]    = Visitor::current()->id;
 
-			$options["group"][] = "`posts`.`id`";
+			$options["group"][] = "`__posts`.`id`";
 
 			return $options;
 		}

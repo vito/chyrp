@@ -82,7 +82,7 @@
 			$config = Config::current();
 			$sql = SQL::current();
 			if (!$config->clean_urls)
-				return $post = Post::grab(null, array("where" => array($private, "`url` = :url"), "params" => array(":url" => $_GET['url'])));
+				return $post = new Post(null, array("where" => array($private, "`url` = :url"), "params" => array(":url" => $_GET['url'])));
 
 			# Check for a post...
 			$where = array($private);
@@ -188,7 +188,7 @@
 				error(__("Error"), __("Please enter a username for your account."));
 
 			$sql = SQL::current();
-			$check_user = $sql->query("select count(`id`) from `".$sql->prefix."users`
+			$check_user = $sql->query("select count(`id`) from `__users`
 			                           where `login` = :login",
 			                          array(
 			                              ':login' => $_POST['login']
@@ -226,7 +226,7 @@
 				error(__("Error"), __("You're already logged in."));
 
 			$sql = SQL::current();
-			$get_id = $sql->query("select `id` from `".$sql->prefix."users`
+			$get_id = $sql->query("select `id` from `__users`
 			                       where `login` = :login",
 			                      array(
 			                          ':login' => $_POST['login']

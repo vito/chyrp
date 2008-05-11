@@ -28,7 +28,7 @@
 		<div id="welcome">
 			<div class="column">
 				<a href="$site.url" class="right">View Site &rsaquo;</a>
-				Hello, ${ visitor.full_name | split | first }. <a href="{% url "logout/" %}">Log Out &rsaquo;</a>
+				Hello, ${ visitor.full_name | split | first | fallback(visitor.login) }. <a href="{% url "logout/" %}">Log Out &rsaquo;</a>
 			</div>
 		</div>
 		<ul class="column" id="sub-nav">

@@ -53,7 +53,7 @@
 			$fields = array("`name`" => ":name", "`permissions`" => ":permissions");
 			$params = array(":name" => $name, ":permissions" => Spyc::YAMLDump($permissions));
 
-			$sql->query("insert into `".$sql->prefix."groups`
+			$sql->query("insert into `__groups`
 			             (".implode(",", array_keys($fields)).")
 			             values
 			             (".implode(",", array_values($fields)).")",
@@ -80,7 +80,7 @@
 			$fields = array("`name`" => ":name", "`permissions`" => ":permissions");
 			$params = array(":name" => $name, ":permissions" => Spyc::YAMLDump($permissions), ":id" => $this->id);
 
-			$sql->query("update `".$sql->prefix."groups` set `name` = :name, `permissions` = :permissions where `id` = :id", $params);
+			$sql->query("update `__groups` set `name` = :name, `permissions` = :permissions where `id` = :id", $params);
 
 			$trigger = Trigger::current();
 			$trigger->call("update_group", array($this, $name, $permissions));
@@ -134,7 +134,7 @@
 		static function add_permission($name) {
 			$sql = SQL::current();
 
-			$check = $sql->query("select `name` from `".$sql->prefix."permissions` where `name` = '".$name."'")->fetchColumn();
+			$check = $sql->query("select `name` from `__permissions` where `name` = '".$name."'")->fetchColumn();
 
 			if ($check == $name)
 				return; # Permission already exists.
@@ -151,7 +151,7 @@
 		 */
 		static function remove_permission($name) {
 			$sql = SQL::current();
-			$sql->query("delete from `".$sql->prefix."permissions` where `name` = '".$name."'");
+			$sql->query("delete from `__permissions` where `name` = '".$name."'");
 		}
 
 		/**
@@ -163,7 +163,7 @@
 		 */
 		static function count_users($group_id) {
 			$sql = SQL::current();
-			$get_count = $sql->query("select count(`id`) from `".$sql->prefix."users`
+			$get_count = $sql->query("select count(`id`) from `__users`
 			                          where `group_id` = :id",
 			                         array(
 			                             ":id" => $group_id

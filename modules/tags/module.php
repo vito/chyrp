@@ -7,7 +7,7 @@
 
 		static function __install() {
 			$sql = SQL::current();
-			$sql->query("create table if not exists `".$sql->prefix."tags` (
+			$sql->query("create table if not exists `__tags` (
 			              `id` int(11) not null auto_increment,
 			              `tags` varchar(250) not null,
 			              `clean` varchar(250) not null,
@@ -20,7 +20,7 @@
 
 		static function __uninstall($confirm) {
 			if ($confirm)
-				SQL::current()->query("drop table `".$sql->prefix."tags`");
+				SQL::current()->query("drop table `__tags`");
 
 			$route = Route::current();
 			$route->remove("tag/(name)/");
@@ -152,11 +152,11 @@
 		static function posts_get($options) {
 			$sql = SQL::current();
 
-			$options["select"][] = $sql->prefix."tags.tags";
-			$options["select"][] = $sql->prefix."tags.clean as `clean_tags`";
+			$options["select"][] = "`tags`.`tags`";
+			$options["select"][] = "`tags`.`clean` as `clean_tags`";
 
-			$options["left_join"][] = array("table" => $sql->prefix."tags",
-			                                "on"    => "`".$sql->prefix."tags`.`post_id` = `posts`.`id`");
+			$options["left_join"][] = array("table" => "__tags",
+			                                "where" => "`tags`.`post_id` = `posts`.`id`");
 
 			$options["params"][":current_ip"] = ip2long($_SERVER['REMOTE_ADDR']);
 			$options["params"][":user_id"]    = Visitor::current()->id;
@@ -212,7 +212,7 @@
 		$sql = SQL::current();
 		$tags = array();
 		$clean = array();
-		foreach($sql->query("select * from `".$sql->prefix."tags`")->fetchAll() as $tag) {
+		foreach($sql->query("select * from `__tags`")->fetchAll() as $tag) {
 			$tags[] = $tag["tags"];
 			$clean[] = $tag["clean"];
 		}
@@ -239,7 +239,7 @@
 	function clean2tag($clean_tag) {
 		$tags = array();
 		$clean = array();
-		foreach(SQL::current()->query("select * from `".$sql->prefix."tags`")->fetchAll() as $tag) {
+		foreach(SQL::current()->query("select * from `__tags`")->fetchAll() as $tag) {
 			$tags[] = $tag["tags"];
 			$clean[] = $tag["clean"];
 		}
@@ -255,7 +255,7 @@
 	function tag2clean($unclean_tag) {
 		$tags = array();
 		$clean = array();
-		foreach(SQL::current()->query("select * from `".$sql->prefix."tags`")->fetchAll() as $tag) {
+		foreach(SQL::current()->query("select * from `__tags`")->fetchAll() as $tag) {
 			$tags[] = $tag["tags"];
 			$clean[] = $tag["clean"];
 		}

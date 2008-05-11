@@ -155,7 +155,7 @@
 				error(__("Access Denied"), __("You do not have sufficient privileges to edit this page."));
 
 			$this->context["page"] = new Page($_GET['id']);
-			$this->context["pages"] = Page::find();
+			$this->context["pages"] = Page::find(array("where" => "`id` != :id", "params" => array(":id" => $_GET['id'])));
 		}
 
 		/**
@@ -181,7 +181,7 @@
 		 * Page management page.
 		 */
 		public function manage_pages() {
-			$this->context["pages"] = Page::find(array("where" => false, "per_page" => 25));
+			$this->context["pages"] = Page::find(array("per_page" => 25));
 
 			if (!empty($_GET['updated']))
 				$this->context["updated"] = new Page($_GET['updated']);
@@ -373,7 +373,7 @@
 				error(__("Error"), __("Please enter a username for your account."));
 
 			$sql = SQL::current();
-			$check_user = $sql->query("select count(`id`) from `".$sql->prefix."users`
+			$check_user = $sql->query("select count(`id`) from `__users`
 			                           where `login` = :login",
 			                          array(
 			                              ':login' => $_POST['login']
@@ -504,7 +504,7 @@
 				error(__("Access Denied"), __("You do not have sufficient privileges to delete groups."));
 
 			$sql = SQL::current();
-			$get_users = $sql->query("select * from `".$sql->prefix."users`
+			$get_users = $sql->query("select * from `__users`
 			                          where `group_id` = :id",
 			                         array(
 			                             ":id" => $_POST['id']

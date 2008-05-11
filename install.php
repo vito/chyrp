@@ -38,7 +38,7 @@
 		$sql->load(INCLUDES_DIR."/database.yaml.php");
 		$config->load(INCLUDES_DIR."/config.yaml.php");
 
-		if ($sql->connect(true) and !empty($config->url) and $sql->query("select count(`id`) from `".$sql->prefix."users`")->fetchColumn())
+		if ($sql->connect(true) and !empty($config->url) and $sql->query("select count(`id`) from `__users`")->fetchColumn())
 			error(__("Already Installed"), __("Chyrp is already correctly installed and configured."));
 	}
 	else {
@@ -87,7 +87,7 @@
 			$sql->connect();
 
 			# Posts table
-			$sql->query("create table if not exists `".$sql->prefix."posts` (
+			$sql->query("create table if not exists `__posts` (
 			                 `id` int(11) not null auto_increment,
 			                 `xml` longtext not null,
 			                 `feather` varchar(32) not null default '',
@@ -101,8 +101,11 @@
 			                 primary key (`id`)
 			             ) default charset=utf8");
 
+			$sql->query("INSERT INTO `__posts` (`id`, `xml`, `feather`, `clean`, `url`, `pinned`, `status`, `user_id`, `created_at`, `updated_at`) VALUES
+(1, '<post><title>Filler</title><body>Hello there! This is a filler post, until that obscure Twig segfault is figgered out. If I forget to remove this and you just installed the 2.0 release, well, feel free to laugh.</body></post>', 'text', 'filler', 'filler', 0, 'public', 1, '2008-05-11 15:58:19', '0000-00-00 00:00:00')");
+
 			# Pages table
-			$sql->query("create table if not exists `".$sql->prefix."pages` (
+			$sql->query("create table if not exists `__pages` (
 			                 `id` int(11) not null auto_increment,
 			                 `title` varchar(250) not null default '',
 			                 `body` longtext not null,
@@ -118,7 +121,7 @@
 			             ) default charset=utf8");
 
 			# Users table
-			$sql->query("create table if not exists `".$sql->prefix."users` (
+			$sql->query("create table if not exists `__users` (
 			                 `id` int(11) not null auto_increment,
 			                 `login` varchar(64) not null default '',
 			                 `password` varchar(32) not null default '',
@@ -132,7 +135,7 @@
 			             ) default charset=utf8");
 
 			# Groups table
-			$sql->query("create table if not exists `".$sql->prefix."groups` (
+			$sql->query("create table if not exists `__groups` (
 			                 `id` int(11) not null auto_increment,
 			                 `name` varchar(100) not null default '',
 		                     `permissions` longtext not null,
@@ -141,7 +144,7 @@
 			             ) default charset=utf8");
 
 			# Permissions table
-			$sql->query("create table if not exists `".$sql->prefix."permissions` (
+			$sql->query("create table if not exists `__permissions` (
 			                 `id` int(11) not null auto_increment,
 			                 `name` varchar(100) not null default '',
 			                 primary key (`id`),
@@ -172,7 +175,7 @@
 			                     "delete_group");
 
 			foreach ($permissions as $permission)
-				$sql->query("insert into `".$sql->prefix."permissions` set `name` = '".$permission."'");
+				$sql->query("insert into `__permissions` set `name` = '".$permission."'");
 
 			$groups = array(
 				"admin" => Spyc::YAMLDump($permissions),
@@ -184,7 +187,7 @@
 
 			# Insert the default groups (see above)
 			foreach($groups as $name => $permission)
-				$sql->query("insert into `".$sql->prefix."groups` set
+				$sql->query("insert into `__groups` set
 			                 `name` = '".ucfirst($name)."',
 			                 `permissions` = '".$permission."'");
 
@@ -219,8 +222,8 @@
 
 			$config->load(INCLUDES_DIR."/config.yaml.php");
 
-			if (!$sql->query("select `id` from `".$sql->prefix."users` where `login` = :login", array(":login" => $_POST['login']))->rowCount())
-				$sql->query("insert into `".$sql->prefix."users` set
+			if (!$sql->query("select `id` from `__users` where `login` = :login", array(":login" => $_POST['login']))->rowCount())
+				$sql->query("insert into `__users` set
 				                 `login` = :login,
 				                 `password` = :password,
 				                 `email` = :email,

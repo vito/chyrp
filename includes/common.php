@@ -261,13 +261,13 @@
 		 * String: $private
 		 * SQL "where" text for which posts the current user can view.
 		 */
-		$private = "`status` in ('".implode("', '", $statuses)."')";
+		$private = "`__posts`.`status` in ('".implode("', '", $statuses)."')";
 
 		/**
 		 * String: $enabled_feathers
 		 * SQL "where" text for each of the feathers. Prevents posts of a disabled Feather from showing.
 		 */
-		$enabled_feathers = " and `feather` in ('".implode("', '", $config->enabled_feathers)."')";
+		$enabled_feathers = " and `__posts`.`feather` in ('".implode("', '", $config->enabled_feathers)."')";
 
 		if (isset($_GET['feed']))
 			$config->posts_per_page = $config->feed_items;

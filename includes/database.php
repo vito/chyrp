@@ -95,6 +95,8 @@
 			$this->queries++;
 
 			try {
+				$query = str_replace("__", $this->prefix, $query);
+
 				$q = $this->db->prepare($query);
 				$result = $q->execute($params);
 				$q->setFetchMode(PDO::FETCH_ASSOC);

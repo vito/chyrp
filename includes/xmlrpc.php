@@ -79,7 +79,7 @@
 			}
 
 			$sql = SQL::current();
-			$check = $sql->query("select `id` from `".$sql->prefix."posts`
+			$check = $sql->query("select `id` from `__posts`
 			                      where ".$where."
 			                      limit 1",
 			                     $params);
@@ -456,7 +456,7 @@
 
 			$sql = SQL::current();
 			$result = $sql->query("SELECT *
-			                       FROM `{$sql->prefix}posts`
+			                       FROM `__posts`
 			                       WHERE
 			                       `feather` = ? AND
 			                       `status` IN ( {$statuses} )

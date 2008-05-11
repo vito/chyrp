@@ -6,21 +6,20 @@
 	 * The basis for the Models system.
 	 */
 	class Model {
-		static function grab($model, $id, $options = array()) {
+		protected static function grab($model, $id, $options = array()) {
 			global $loaded_models, $action;
-
 			$model_name = strtolower(get_class($model));
 
 			if ($model_name == "visitor")
 				$model_name = "user";
 
-			fallback($options["select"], $model_name."s.*");
+			fallback($options["select"], "__".$model_name."s.*");
 			fallback($options["from"], ($model_name == "visitor" ? "users" : $model_name."s"));
 			fallback($options["left_join"], array());
-			fallback($options["where"], array("`id` = :id"));
+			fallback($options["where"], array("`__".$model_name."s`.`id` = :id"));
 			fallback($options["params"], array(":id" => $id));
 			fallback($options["group"], array());
-			fallback($options["order"], "`".($model_name == "visitor" ? "users" : $model_name."s")."`.`id` desc");
+			fallback($options["order"], "`__".($model_name == "visitor" ? "users" : $model_name."s")."`.`id` desc");
 			fallback($options["offset"], null);
 			fallback($options["read_from"], array());
 
@@ -59,7 +58,7 @@
 				$model->updated = $model->updated_at != "0000-00-00 00:00:00";
 		}
 
-		static function search($model, $options = array()) {
+		protected static function search($model, $options = array()) {
 			global $paginate, $action;
 
 			$model_name = strtolower($model);
@@ -67,13 +66,13 @@
 			if ($model_name == "visitor")
 				$model_name = "user";
 
-			fallback($options["select"], strtolower($model)."s.*");
+			fallback($options["select"], "__".strtolower($model)."s.*");
 			fallback($options["from"], strtolower($model)."s");
 			fallback($options["left_join"], array());
 			fallback($options["where"], null);
 			fallback($options["params"], array());
 			fallback($options["group"], array());
-			fallback($options["order"], "`".strtolower($model)."s`.`created_at` DESC, `".strtolower($model)."s`.`id` DESC");
+			fallback($options["order"], "`__".strtolower($model)."s`.`created_at` DESC, `__".strtolower($model)."s`.`id` DESC");
 			fallback($options["offset"], null);
 			fallback($options["limit"], null);
 			fallback($options["pagination"], true);
@@ -117,7 +116,7 @@
 		 *     $model - The model name.
 		 *     $id - The object to delete.
 		 */
-		static function destroy($model, $id) {
+		protected static function destroy($model, $id) {
 			$class = $model;
 			$model = strtolower($model);
 			if (Trigger::current()->exists("delete_".$model))

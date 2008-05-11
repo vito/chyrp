@@ -206,7 +206,7 @@
 			$count = count($arg) - 1;
 			for ($i = 0; $i <= $count; $i++) {
 				$result = $sql->query("select `id`
-				                       from `{$sql->prefix}pages`
+				                       from `__pages`
 				                       where
 				                       `url` = :url and
 				                       `parent_id` = :parent

@@ -78,7 +78,7 @@
 		static function add($login, $password, $email, $full_name = '', $website = '', $group_id = null) {
 			$config = Config::current();
 			$sql = SQL::current();
-			$sql->query("insert into `".$sql->prefix."users`
+			$sql->query("insert into `__users`
 			             (`login`, `password`, `email`, `full_name`, `website`, `group_id`, `joined_at`)
 			             values
 			             (:login, :password, :email, :full_name, :website, :group_id, :joined_at)",
@@ -117,7 +117,7 @@
 		 */
 		public function update($login, $password, $full_name, $email, $website, $group_id) {
 			$sql = SQL::current();
-			$sql->query("update `".$sql->prefix."users`
+			$sql->query("update `__users`
 			             set
 			                 `login` = :login,
 			                 `password` = :password,

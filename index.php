@@ -47,7 +47,7 @@
 					                                   distinct year(`created_at`) as `year`,
 					                                   month(`created_at`) as `month`,
 					                                   `created_at`, count(`id`) as `posts`
-					                               from `".$sql->prefix."posts`
+					                               from `__posts`
 					                               where
 					                                   year(`created_at`) = :year and
 					                                   ".$private.$enabled_feathers."
@@ -61,7 +61,7 @@
 					                                   distinct year(`created_at`) as `year`,
 					                                   month(`created_at`) as `month`,
 					                                   `created_at`, count(`id`) as `posts`
-					                               from `".$sql->prefix."posts`
+					                               from `__posts`
 					                               where ".$private.$enabled_feathers."
 					                               group by year(`created_at`), month(`created_at`)
 					                               order by `created_at` desc, `id` desc");

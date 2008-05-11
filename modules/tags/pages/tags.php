@@ -1,9 +1,9 @@
 <?php
 	# TODO: Move this to Twig.
-	$get_tags = $sql->query("select `name`, `post_id`, count(`".$sql->prefix."posts`.`id`) as `count`
-	                         from `".$sql->prefix."tags`, `".$sql->prefix."posts`
+	$get_tags = $sql->query("select `name`, `post_id`, count(`__posts`.`id`) as `count`
+	                         from `__tags`, `__posts`
 	                         where
-	                             `post_id` = `".$sql->prefix."posts`.`id` and
+	                             `post_id` = `__posts`.`id` and
 	                             ".$private.$enabled_feathers."
 	                         group by `name`
 	                         order by rand() asc");
@@ -15,7 +15,7 @@
 	if ($get_tags->rowCount() > 0) {
 		$tags = array();
 		$clean = array();
-		foreach(SQL::current()->query("select * from `".$sql->prefix."tags`")->fetchAll() as $tag) {
+		foreach(SQL::current()->query("select * from `__tags`")->fetchAll() as $tag) {
 			$tags[] = $tag["tags"];
 			$clean[] = $tag["clean"];
 		}

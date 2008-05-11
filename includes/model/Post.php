@@ -272,7 +272,7 @@
 		static function find($options = array()) {
 			global $private;
 
-			$enabled_feathers = "`feather` in ('".implode("', '", Config::current()->enabled_feathers)."')";
+			$enabled_feathers = "`__posts`.`feather` in ('".implode("', '", Config::current()->enabled_feathers)."')";
 			if (!isset($options["where"]))
 				$options["where"] = array($private, $enabled_feathers);
 			elseif ($options["where"] === false)
@@ -284,7 +284,7 @@
 					$options["where"] = array($options["where"], $enabled_feathers);
 
 			$sql = SQL::current();
-			fallback($options["order"], "`".$sql->prefix."posts`.`pinned` desc, `".$sql->prefix."posts`.`created_at` desc, `".$sql->prefix."posts`.`id` desc");
+			fallback($options["order"], "`__posts`.`pinned` desc, `__posts`.`created_at` desc, `__posts`.`id` desc");
 
 			$posts = parent::search(get_class(), $options);
 
@@ -326,7 +326,7 @@
 		static function exists($post_id) {
 			$sql = SQL::current();
 			$result = $sql->query("select count(`id`)
-			                       from `{$sql->prefix}posts`
+			                       from `__posts`
 			                       where `id` = :id limit 1",
 			                       array(
 			                          ':id' => $post_id
