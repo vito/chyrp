@@ -239,8 +239,11 @@
 		# Holds the current user and their group.
 		$visitor = Visitor::current();
 
-		if (!$visitor->group()->can("view_site") and $action != "process_login" and $action != "login" and $action != "logout")
-			error(__("Access Denied"), __("You are not allowed to view this site."));
+		if (!$visitor->group()->can("view_site") and !in_array($action, array("process_login", "login", "logout", "process_registration", "register")))
+			if ($trigger->exists("can_not_view_site"))
+				$trigger->call("can_not_view_site");
+			else
+				error(__("Access Denied"), __("You are not allowed to view this site."));
 
 		$trigger->call("runtime");
 
