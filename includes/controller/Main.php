@@ -49,7 +49,7 @@
 			if (!Visitor::current()->group()->can("view_draft"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to view drafts."));
 
-			$posts = Post::find(array("where" => "`status` = 'draft'"));
+			$posts = Post::find(array("where" => "`posts`.`status` = 'draft'"));
 		}
 
 		/**
