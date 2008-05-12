@@ -22,10 +22,10 @@
 			if (!isset($_GET['month'])) return;
 
 			if (isset($_GET['day']))
-				$posts = Post::find(array("where" => array("`created_at` like :date", $private),
+				$posts = Post::find(array("where" => array("`posts`.`created_at` like :date", $private),
 				                          "params" => array(":date" => $_GET['year']."-".$_GET['month']."-".$_GET['day']."%")));
 			else
-				$posts = Post::find(array("where" => array("`created_at` like :date", $private),
+				$posts = Post::find(array("where" => array("`posts`.`created_at` like :date", $private),
 				                          "params" => array(":date" => $_GET['year']."-".$_GET['month']."%")));
 		}
 

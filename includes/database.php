@@ -119,7 +119,7 @@
 					throw new Exception($message);
 
 				if (DEBUG)
-					$message.= "\n\n".$query;
+					$message.= "\n\n".$query."\n\n<pre>".$error->getTraceAsString()."</pre>";
 
 				error(__("Database Error"), $message);
 			}
