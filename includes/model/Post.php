@@ -324,18 +324,7 @@
 		 *     true - if a post with that ID is in the database.
 		 */
 		static function exists($post_id) {
-			$sql = SQL::current();
-			$result = $sql->query("select count(`id`)
-			                       from `__posts`
-			                       where `id` = :id limit 1",
-			                       array(
-			                          ':id' => $post_id
-			                       ));
-
-			$count = $result->fetchColumn();
-			$result->closeCursor();
-
-			return ($count == 1);
+			return SQL::current()->count("posts", "`id` = :id", array(":id" => $post_id));
 		}
 
 		/**

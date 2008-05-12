@@ -47,22 +47,13 @@
 		 *     <update>
 		 */
 		static function add($name, $permissions) {
-			$query = "";
-
 			$sql = SQL::current();
-			$fields = array("`name`" => ":name", "`permissions`" => ":permissions");
-			$params = array(":name" => $name, ":permissions" => Spyc::YAMLDump($permissions));
-
-			$sql->query("insert into `__groups`
-			             (".implode(",", array_keys($fields)).")
-			             values
-			             (".implode(",", array_values($fields)).")",
-			            $params);
+			$sql->insert("groups", array("`name`" => ":name", "`permissions`" => ":permissions"),
+			                       array(":name"  => $name,   ":permissions"  => Spyc::YAMLDump($permissions)));
 
 			$id = $sql->db->lastInsertId();
-			$trigger = Trigger::current();
-			$trigger->call("add_group", array($id, $name, $permissions));
-			return $id;
+			Trigger::current()->call("add_group", array($id, $name, $permissions));
+			return new self($id);
 		}
 
 		/**
@@ -76,14 +67,11 @@
 		 */
 		public function update($name, $permissions) {
 			$sql = SQL::current();
+			$sql->update("groups", "`id` = :id",
+			             array("`name`" => ":name", "`permissions`" => ":permissions"),
+			             array(":name" => $name, ":permissions" => Spyc::YAMLDump($permissions), ":id" => $this->id));
 
-			$fields = array("`name`" => ":name", "`permissions`" => ":permissions");
-			$params = array(":name" => $name, ":permissions" => Spyc::YAMLDump($permissions), ":id" => $this->id);
-
-			$sql->query("update `__groups` set `name` = :name, `permissions` = :permissions where `id` = :id", $params);
-
-			$trigger = Trigger::current();
-			$trigger->call("update_group", array($this, $name, $permissions));
+			Trigger::current()->call("update_group", array($this, $name, $permissions));
 		}
 
 		/**
@@ -134,9 +122,7 @@
 		static function add_permission($name) {
 			$sql = SQL::current();
 
-			$check = $sql->query("select `name` from `__permissions` where `name` = '".$name."'")->fetchColumn();
-
-			if ($check == $name)
+			if ($sql->count("permissions", "`name` = :name", array(":name" => $name)))
 				return; # Permission already exists.
 
 			$sql->insert("permissions", array("name" => ":name"), array(":name" => $name));
@@ -150,8 +136,7 @@
 		 *     $name - The permission name to remove.
 		 */
 		static function remove_permission($name) {
-			$sql = SQL::current();
-			$sql->query("delete from `__permissions` where `name` = '".$name."'");
+			SQL::current()->delete("permissions", "`name` = :name", array(":name" => $name));
 		}
 
 		/**
@@ -162,14 +147,7 @@
 		 *     $group_id - The group ID.
 		 */
 		static function count_users($group_id) {
-			$sql = SQL::current();
-			$get_count = $sql->query("select count(`id`) from `__users`
-			                          where `group_id` = :id",
-			                         array(
-			                             ":id" => $group_id
-			                         ));
-			$count = $get_count->fetchColumn();
-			return $count;
+			return SQL::current()->count("users", "`group_id` = :group_id", array(":group_id" => $group_id));
 		}
 
 		/**

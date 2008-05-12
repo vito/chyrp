@@ -132,7 +132,7 @@
 				$field = explode(" ", $field);
 				$parts = explode(".", $field[0]);
 				foreach ($parts as $index => &$part) {
-					if ($part != '*' and !strpos($part, "(") and !strpos($part, ")"))
+					if ($part != '*' and !strpos($part, "(") and !strpos($part, ")") and strtoupper($part) != $part)
 						$part = "`$part`";
 				}
 				$field[0] = implode(".", $parts);
@@ -182,7 +182,7 @@
 			$query.= "
 				".($conds ? "WHERE ".self::build_where($conds) : "")."
 				".($group ? "GROUP BY ".self::build_group($group) : "")."
-				ORDER BY ".$order."
+				".($order ? "ORDER BY ".$order : "")."
 				".self::build_limits($offset, $limit)."
 			";
 			return $query;

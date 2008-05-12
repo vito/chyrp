@@ -152,16 +152,16 @@
 		static function posts_get($options) {
 			$sql = SQL::current();
 
-			$options["select"][] = "`tags`.`tags`";
-			$options["select"][] = "`tags`.`clean` as `clean_tags`";
+			$options["select"][] = "__tags.tags";
+			$options["select"][] = "__tags.clean AS `clean_tags`";
 
-			$options["left_join"][] = array("table" => "__tags",
-			                                "where" => "`tags`.`post_id` = `posts`.`id`");
+			$options["left_join"][] = array("table" => "tags",
+			                                "where" => "`__tags`.`post_id` = `__posts`.`id`");
 
 			$options["params"][":current_ip"] = ip2long($_SERVER['REMOTE_ADDR']);
 			$options["params"][":user_id"]    = Visitor::current()->id;
 
-			$options["group"][] = "`posts`.`id`";
+			$options["group"][] = "`__posts`.`id`";
 
 			return $options;
 		}

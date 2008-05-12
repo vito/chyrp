@@ -187,14 +187,12 @@
 			if (empty($_POST['login']))
 				error(__("Error"), __("Please enter a username for your account."));
 
-			$sql = SQL::current();
-			$check_user = $sql->query("select count(`id`) from `__users`
-			                           where `login` = :login",
-			                          array(
-			                              ':login' => $_POST['login']
-			                          ));
-			if ($check_user->fetchColumn())
+
+			$check_user = User::find(array("where" => "`login` = :login",
+			                               "params" => array(":login" => $_POST['login'])));
+			if (count($check_user))
 				error(__("Error"), __("That username is already in use."));
+
 			if (empty($_POST['password1']) or empty($_POST['password2']))
 				error(__("Error"), __("Password cannot be blank."));
 			if (empty($_POST['email']))
@@ -225,18 +223,10 @@
 			if (logged_in())
 				error(__("Error"), __("You're already logged in."));
 
-			$sql = SQL::current();
-			$get_id = $sql->query("select `id` from `__users`
-			                       where `login` = :login",
-			                      array(
-			                          ':login' => $_POST['login']
-			                      ));
-
 			cookie_cutter("chyrp_login", $_POST['login']);
 			cookie_cutter("chyrp_password", md5($_POST['password']));
 
-			$route = Route::current();
-			redirect('/');
+			redirect("/");
 		}
 
 		/**
@@ -250,8 +240,7 @@
 			cookie_cutter("chyrp_login", "", time() - 2592000);
 			cookie_cutter("chyrp_password", "", time() - 2592000);
 
-			$route = Route::current();
-			redirect('/');
+			redirect("/");
 		}
 
 		/**
@@ -273,8 +262,7 @@
 
 			cookie_cutter("chyrp_password", $password);
 
-			$route = Route::current();
-			redirect('/');
+			redirect("/");
 		}
 	}
 	$main = new MainController();

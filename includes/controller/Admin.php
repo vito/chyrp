@@ -372,13 +372,9 @@
 			if (empty($_POST['login']))
 				error(__("Error"), __("Please enter a username for your account."));
 
-			$sql = SQL::current();
-			$check_user = $sql->query("select count(`id`) from `__users`
-			                           where `login` = :login",
-			                          array(
-			                              ':login' => $_POST['login']
-			                          ));
-			if ($check_user->fetchColumn())
+			$check_user = User::find(array("where" => "`login` = :login",
+			                               "params" => array(":login" => $_POST['login'])));
+			if (count($check_user))
 				error(__("Error"), __("That username is already in use."));
 
 			if (empty($_POST['password1']) or empty($_POST['password2']))
@@ -503,16 +499,10 @@
 			if (!Visitor::current()->group()->can("delete_group"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to delete groups."));
 
-			$sql = SQL::current();
-			$get_users = $sql->query("select * from `__users`
-			                          where `group_id` = :id",
-			                         array(
-			                             ":id" => $_POST['id']
-			                         ));
-			foreach ($get_users->fetchAll() as $user) {
-				$user = new User($user["id"], array("read_from" => $user));
+			$users = User::find(array("where" => "`group_id` = :group_id",
+			                          "params" => array(":group_id" => $_POST['id'])));
+			foreach ($users as $user)
 				$user->update($user->login, $user->password, $user->full_name, $user->email, $user->website, $_POST['move_group']);
-			}
 
 			$config = Config::current();
 			if (!empty($_POST['default_group']))

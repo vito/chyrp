@@ -123,7 +123,14 @@
 		 */
 		public function list_archives($limit = 0, $order_by = "created_at", $order = "desc") {
 			$sql = SQL::current();
-			$get_dates = $sql->query("select distinct year(`created_at`) as `year`, month(`created_at`) as `month`, `created_at`, count(`id`) as `posts` from `__posts` where `status` = 'public' group by year(`created_at`), month(`created_at`) order by `".$order_by."` ".$order.((0 != $limit) ? (" limit ".$limit) : ""));
+			$get_dates = $sql->select("posts",
+			                          "DISTINCT YEAR(`created_at`) AS `year`, MONTH(`created_at`) AS `month`, `created_at`, COUNT(`id`) AS `posts`",
+			                          "`status` = 'public'",
+			                          "`__posts`.`{$order_by}` ".strtoupper($order),
+			                          array(),
+			                          ($limit == 0) ? null : $limit,
+			                          null,
+			                          "YEAR(`created_at`), MONTH(`created_at`)");
 			$archives = array();
 			$count = 0;
 			$route = Route::current();

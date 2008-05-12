@@ -78,14 +78,7 @@
 				$params = array();
 			}
 
-			$sql = SQL::current();
-			$check = $sql->query("select `id` from `__posts`
-			                      where ".$where."
-			                      limit 1",
-			                     $params);
-			$id = $check->fetchColumn();
-
-
+			$id = SQL::current()->select("posts", "`id`", $where, null, $params)->fetchColumn();
 			if (!Post::exists($id))
 				return new IXR_Error(33, __("I can't find a post from that URL."));
 
@@ -455,18 +448,12 @@
 				throw new Exception(__(XML_RPC_FEATHER.' feather is not enabled.'));
 
 			$sql = SQL::current();
-			$result = $sql->query("SELECT *
-			                       FROM `__posts`
-			                       WHERE
-			                       `feather` = ? AND
-			                       `status` IN ( {$statuses} )
-			                       ORDER BY
-			                       `pinned` DESC,
-			                       `created_at` DESC,
-			                       `id` DESC
-			                       LIMIT {$limit}",
-			                        array(XML_RPC_FEATHER));
-			return $result->fetchAll();
+			return $sql->select("posts",
+			                    "*",
+			                    array("`feather` = :feather", "`status` IN (:statuses)"),
+			                    "`pinned` DESC, `created_at` DESC, `id` DESC",
+			                    array(":feather" => XML_RPC_FEATHER, ":statuses" => $statuses),
+			                    1)->fetchAll();
 		}
 
 		/**

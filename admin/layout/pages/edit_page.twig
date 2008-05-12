@@ -6,7 +6,7 @@
 
 {% block content %}
 			<h1>${ "Editing &#8220;%s&#8221;" | translate | format(page.title | escape) }</h1>
-			<form id="edit_form" action="{% admin "update_page" %}" method="post" accept-charset="utf-8">
+			<form id="edit_form" action="{% admin "update_page" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 				{% include "partials/page_fields.twig" %}
 				<input type="hidden" name="id" value="$page.id" id="id" />
 				<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />

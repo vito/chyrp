@@ -78,23 +78,27 @@
 		static function add($login, $password, $email, $full_name = '', $website = '', $group_id = null) {
 			$config = Config::current();
 			$sql = SQL::current();
-			$sql->query("insert into `__users`
-			             (`login`, `password`, `email`, `full_name`, `website`, `group_id`, `joined_at`)
-			             values
-			             (:login, :password, :email, :full_name, :website, :group_id, :joined_at)",
-			            array(
-			                ":login" => strip_tags($login),
-			                ":password" => md5($password),
-			                ":email" => strip_tags($email),
-			                ":full_name" => strip_tags($full_name),
-			                ":website" => strip_tags($website),
-			                ":group_id" => ($group_id) ? intval($group_id) : $config->default_group,
-			                ":joined_at" => datetime()
+			$sql->insert("users",
+			             array(
+			                 "`login`" => ":login",
+			                 "`password`" => ":password",
+			                 "`email`" => ":email",
+			                 "`full_name`" => ":full_name",
+			                 "`website`" => ":website",
+			                 "`group_id`" => ":group_id",
+			                 "`joined_at`" => ":joined_at"),
+			             array(
+			                 ":login" => strip_tags($login),
+			                 ":password" => md5($password),
+			                 ":email" => strip_tags($email),
+			                 ":full_name" => strip_tags($full_name),
+			                 ":website" => strip_tags($website),
+			                 ":group_id" => ($group_id) ? intval($group_id) : $config->default_group,
+			                 ":joined_at" => datetime()
 			            ));
-			$id = $sql->db->lastInsertId();
-			$trigger = Trigger::current();
-			$trigger->call("add_user", $id);
 
+			$id = $sql->db->lastInsertId();
+			Trigger::current()->call("add_user", $id);
 			return new self($id);
 		}
 
@@ -117,26 +121,26 @@
 		 */
 		public function update($login, $password, $full_name, $email, $website, $group_id) {
 			$sql = SQL::current();
-			$sql->query("update `__users`
-			             set
-			                 `login` = :login,
-			                 `password` = :password,
-			                 `full_name` = :full_name,
-			                 `email` = :email,
-			                 `website` = :website,
-			                 `group_id` = :group_id
-			             where `id` = :id",
-			            array(
-			                ":login" => $login,
-			                ":password" => $password,
-			                ":full_name" => $full_name,
-			                ":email" => $email,
-			                ":website" => $website,
-			                ":group_id" => $group_id,
-			                ":id" => $this->id
+			$sql->update("users",
+			             "`id` = :id",
+			             array(
+			                 "`login`" => ":login",
+			                 "`password`" => ":password",
+			                 "`email`" => ":email",
+			                 "`full_name`" => ":full_name",
+			                 "`website`" => ":website",
+			                 "`group_id`" => ":group_id"),
+			             array(
+			                 ":login" => strip_tags($login),
+			                 ":password" => $password,
+			                 ":email" => strip_tags($email),
+			                 ":full_name" => strip_tags($full_name),
+			                 ":website" => strip_tags($website),
+			                 ":group_id" => $group_id,
+			                 ":id" => $this->id
 			            ));
-			$trigger = Trigger::current();
-			$trigger->call("update_user", array($this->id, $login, $password, $full_name, $email, $website, $group_id));
+
+			Trigger::current()->call("update_user", array($this->id, $login, $password, $full_name, $email, $website, $group_id));
 		}
 
 		/**

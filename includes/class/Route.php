@@ -205,18 +205,10 @@
 			$parent_id = 0;
 			$count = count($arg) - 1;
 			for ($i = 0; $i <= $count; $i++) {
-				$result = $sql->query("select `id`
-				                       from `__pages`
-				                       where
-				                       `url` = :url and
-				                       `parent_id` = :parent
-				                       limit 1",
-				                       array(
-				                           ':url' => $arg[$i],
-				                           ':parent' => $parent_id
-				                       ));
-				$parent_id = $result->fetchColumn();
-
+				$parent_id = $sql->select("pages", "`id`", array("`url` = :url", "`parent_id` = :parent"), "`__pages`.`id` DESC", array(
+				                               ':url' => $arg[$i],
+				                               ':parent' => $parent_id
+				                         ), 1)->fetchColumn();
 				if (!$parent_id)
 					break;
 				else if ($i == $count) {
