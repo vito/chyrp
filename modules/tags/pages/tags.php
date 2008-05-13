@@ -1,21 +1,12 @@
 <?php
-	# TODO: Move this to Twig.
-	$get_tags = $sql->query("select `name`, `post_id`, count(`__posts`.`id`) as `count`
-	                         from `__tags`, `__posts`
-	                         where
-	                             `post_id` = `__posts`.`id` and
-	                             ".$private.$enabled_feathers."
-	                         group by `name`
-	                         order by rand() asc");
-
 	$theme->title = __("Tags", "tags");
 
 	$trigger->call("tags_top");
 
-	if ($get_tags->rowCount() > 0) {
+	if ($sql->query("SELECT COUNT(1) FROM `__tags`")->fetchColumn() > 0) {
 		$tags = array();
 		$clean = array();
-		foreach(SQL::current()->query("select * from `__tags`")->fetchAll() as $tag) {
+		foreach($sql->query("SELECT * FROM `__tags`")->fetchAll() as $tag) {
 			$tags[] = $tag["tags"];
 			$clean[] = $tag["clean"];
 		}
@@ -34,17 +25,15 @@
 
 		$step = 75 / $spread;
 
-		foreach ($tags as $tag => $count) {
-			$size = 100 + (($count - $min_qty) * $step);
-			$title = sprintf(_p("%s post tagged with &quot;%s&quot;", "%s posts tagged with &quot;%s&quot;", $count), $count, $tag);
+		$context = array();
+		foreach ($tags as $tag => $count)
+			$context[] = array("size" => (100 + (($count - $min_qty) * $step)),
+			                   "popularity" => $count,
+			                   "name" => $tag,
+			                   "title" => sprintf(_p("%s post tagged with &quot;%s&quot;", "%s posts tagged with &quot;%s&quot;", $count), $count, $tag),
+			                   "clean" => $tag2clean[$tag],
+			                   "url" => $route->url("tag/".$tag2clean[$tag]."/"));
 
-			echo '<a class="tag" href="'.$route->url("tag/".$tag2clean[$tag]."/").'" style="font-size: '.$size.'%" title="'.$title.'">'.$tag.'</a> ';
-		}
-
-	} else {
-?>
-<h2><?php echo __("No Tags", "tags"); ?></h2>
-<?php echo __("There aren't any tags yet. Such a shame.", "tags"); ?>
-<?php
+		$theme->load("content/tags", array("tag_cloud" => $context));
 	}
 ?>
