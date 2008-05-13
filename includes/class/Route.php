@@ -205,7 +205,7 @@
 			$parent_id = 0;
 			$count = count($arg) - 1;
 			for ($i = 0; $i <= $count; $i++) {
-				$parent_id = $sql->select("pages", "`id`", array("`url` = :url", "`parent_id` = :parent"), "`__pages`.`id` DESC", array(
+				$parent_id = $sql->select("pages", "id", array("`url` = :url", "`parent_id` = :parent"), "`__pages`.`id` DESC", array(
 				                               ':url' => $arg[$i],
 				                               ':parent' => $parent_id
 				                         ), 1)->fetchColumn();
