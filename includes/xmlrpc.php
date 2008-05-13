@@ -169,14 +169,14 @@
 		public function metaWeblog_newMediaObject($args) {
 			$this->auth($args[1], $args[2]);
 
-			$file = unique_filename(trim($args[3]['name'], '/'));
-			$path = MAIN_DIR.'/upload/'.$file;
+			$config = Config::current();
+			$file = unique_filename(trim($args[3]['name'], '/')));
+			$path = MAIN_DIR.$config->uploads_path.$file;
 
 			if (file_put_contents($path, $args[3]['bits']) === false)
 				return new IXR_Error(500, __('Failed to write file.'));
 
-			$config = Config::current();
-			$url = $config->url.'/upload/'.urlencode($file);
+			$url = $config->url.$config->uploads_path.str_replace('+', '%20', urlencode($file));
 
 			$trigger = Trigger::current();
 			list($url, $path) = $trigger->filter('metaWeblog_newMediaObject', array($url, $path), true);
@@ -230,7 +230,7 @@
 			if (trim($body) == '')
 				return new IXR_Error(500, __("Body can't be blank."));
 
-			$clean = sanitize(fallback($args[3]['mt_basename'], $args[3]['title'], true));
+			$clean = sanitize(fallback($args[3]['mt_basename'], $args[3]['title']));
 			$url = Post::check_url($clean);
 
 			$_POST['created_at'] = fallback($this->convertFromDateCreated($args[3]), datetime(), true);
@@ -473,9 +473,14 @@
 		 */
 		private function auth($login, $password, $do = 'add') {
 			global $user;
-			$user = User::authenticate($login, md5($password));
+			$user = new User(null, array("where" => array("`login` = :login", "`password` = :password"),
+			                             "params" => array(":login" => $login, ":password" => md5($password))));
+
 			if (!$user->group()->can($do.'_post'))
-				throw new Exception(__(sprintf("You don't have permission to %s posts.", $do)));
+				if (in_array($do, array('edit', 'delete') and $user->group()->can($do.'_own_post')))
+					return;
+				else
+					throw new Exception(__(sprintf("You don't have permission to %s this post.", $do)));
 		}
 
 		static public function error_handler($errno, $errstr, $errfile, $errline) {

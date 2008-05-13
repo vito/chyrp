@@ -51,7 +51,7 @@
 	<body>
 		<div class="window">
 <?php
-	$current_version = 113;
+	$current_version = 2000;
 
 	function to_1030() {
 		$sql = SQL::current();
@@ -83,6 +83,8 @@
 		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v1.1.3")."</p>\n";
 	}
 	function to_2000() {
+		$config = Config::current();
+		$config->set("uploads_path", "/uploads/");
 		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v2.0")."</p>\n";
 	}
 

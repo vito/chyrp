@@ -58,7 +58,7 @@
 		static function delete_file($post) {
 			if ($post->feather != "audio") return;
 
-			unlink(MAIN_DIR."/upload/".$post->filename);
+			unlink(MAIN_DIR.Config::current()->uploads_path.$post->filename);
 		}
 		static function filter_post($post) {
 			if ($post->feather != "audio") return;
@@ -99,9 +99,9 @@ var ap_clearID = setInterval( ap_registerPlayers, 100 );
 			$post = new Post($id);
 			if ($post->feather != "audio") return;
 
-			$length = filesize(MAIN_DIR."/upload/".$post->filename);
 			$config = Config::current();
-			echo '			<enclosure url="'.$config->url.'/upload/'.$post->filename.'" type="audio/mpeg" length="'.$length.'" />'."\n";
+			$length = filesize(MAIN_DIR.$config->uploads_path.$post->filename);
+			echo '			<enclosure url="'.$config->url.$config->uploads_path.$post->filename.'" type="audio/mpeg" length="'.$length.'" />'."\n";
 		}
 	}
 	function flash_player_for($filename, $params = array()) {
@@ -115,7 +115,7 @@ var ap_clearID = setInterval( ap_registerPlayers, 100 );
 		$player = '<script src="'.$config->url.'/feathers/audio/lib/audio-player.js" type="text/javascript" charset="utf-8"></script>'."\n";
 		$player.= '<object type="application/x-shockwave-flash" data="'.$config->url.'/feathers/audio/lib/player.swf" id="audio_player_'.$post->id.'" height="24" width="290">'."\n\t";
 		$player.= '<param name="movie" value="'.$config->url.'/feathers/audio/lib/player.swf" />'."\n\t";
-		$player.= '<param name="FlashVars" value="playerID='.$post->id.'&amp;soundFile='.$config->url.'/upload/'.$filename.$vars.'" />'."\n\t";
+		$player.= '<param name="FlashVars" value="playerID='.$post->id.'&amp;soundFile='.$config->url.$config->uploads_path.$filename.$vars.'" />'."\n\t";
 		$player.= '<param name="quality" value="high" />'."\n\t";
 		$player.= '<param name="menu" value="false" />'."\n\t";
 		$player.= '<param name="wmode" value="transparent" />'."\n";

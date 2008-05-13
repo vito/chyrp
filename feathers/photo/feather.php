@@ -58,7 +58,7 @@
 		}
 		static function delete_file($post) {
 			if ($post->feather != "photo") return;
-			unlink(MAIN_DIR."/upload/".$post->filename);
+			unlink(MAIN_DIR.Config::current()->uploads_path.$post->filename);
 		}
 		static function filter_post($post) {
 			if ($post->feather != "photo") return;
@@ -69,5 +69,5 @@
 	function image_tag_for($filename, $max_width = null, $max_height = null, $more_args = "q=100") {
 		$ext = pathinfo($filename, PATHINFO_EXTENSION);
 		$config = Config::current();
-		return '<a href="'.$config->url.'/upload/'.$filename.'"><img src="'.$config->url.'/feathers/photo/lib/phpThumb.php?src='.$config->url.'/upload/'.strtolower(urlencode($filename)).'&amp;w='.$max_width.'&amp;h='.$max_height.'&amp;f='.$ext.'&amp;'.$more_args.'" alt="'.$filename.'" /></a>';
+		return '<a href="'.$config->url.$config->uploads_path.$filename.'"><img src="'.$config->url.'/feathers/photo/lib/phpThumb.php?src='.$config->url.$config->uploads_path.strtolower(urlencode($filename)).'&amp;w='.$max_width.'&amp;h='.$max_height.'&amp;f='.$ext.'&amp;'.$more_args.'" alt="'.$filename.'" /></a>';
 	}
