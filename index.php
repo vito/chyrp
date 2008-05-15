@@ -74,7 +74,7 @@
 					                              "month" => @date("F", $timestamp),
 					                              "url" => $route->url("archive/".when("Y/m/", $time->created_at)));
 
-					$archives[$timestamp]["posts"] = Post::find(array("where" => array($private, "`posts`.`created_at` like :created_at"),
+					$archives[$timestamp]["posts"] = Post::find(array("where" => array($private, "`__posts`.`created_at` like :created_at"),
 					                                                    "params" => array(":created_at" => when("Y-m", $time->created_at)."%")));
 				}
 

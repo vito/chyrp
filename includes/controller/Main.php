@@ -22,10 +22,10 @@
 			if (!isset($_GET['month'])) return;
 
 			if (isset($_GET['day']))
-				$posts = Post::find(array("where" => array("`posts`.`created_at` like :date", $private),
+				$posts = Post::find(array("where" => array("`__posts`.`created_at` like :date", $private),
 				                          "params" => array(":date" => $_GET['year']."-".$_GET['month']."-".$_GET['day']."%")));
 			else
-				$posts = Post::find(array("where" => array("`posts`.`created_at` like :date", $private),
+				$posts = Post::find(array("where" => array("`__posts`.`created_at` like :date", $private),
 				                          "params" => array(":date" => $_GET['year']."-".$_GET['month']."%")));
 		}
 
@@ -49,7 +49,7 @@
 			if (!Visitor::current()->group()->can("view_draft"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to view drafts."));
 
-			$posts = Post::find(array("where" => "`posts`.`status` = 'draft'"));
+			$posts = Post::find(array("where" => "`__posts`.`status` = 'draft'"));
 		}
 
 		/**
