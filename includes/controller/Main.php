@@ -78,11 +78,14 @@
 		public function view() {
 			global $action, $private, $post;
 
+			# Make sure we don't try and grab things from SQL by the encoded URL
+			$get = array_map("urldecode", $_GET);
+
 			$trigger = Trigger::current();
 			$config = Config::current();
 			$sql = SQL::current();
 			if (!$config->clean_urls)
-				return $post = new Post(null, array("where" => array($private, "`url` = :url"), "params" => array(":url" => $_GET['url'])));
+				return $post = new Post(null, array("where" => array($private, "`url` = :url"), "params" => array(":url" => $get['url'])));
 
 			# Check for a post...
 			$where = array($private);
@@ -93,7 +96,7 @@
 			foreach ($matches[1] as $attr)
 				if (in_array($attr, $times)) {
 					$where[] = $attr."(`created_at`) = :created".$attr;
-					$params[':created'.$attr] = $_GET[$attr];
+					$params[':created'.$attr] = $get[$attr];
 				} elseif ($attr == "author") {
 					$where[] = "`user_id` = :attrauthor";
 					$params[':attrauthor'] = $sql->select("users",
@@ -101,17 +104,17 @@
 					                                      "`login` = :login",
 					                                      "id",
 					                                      array(
-					                                          ":login" => $_GET['author']
+					                                          ":login" => $get['author']
 					                                      ), 1)->fetchColumn();
 				} elseif ($attr == "feathers") {
 					$where[] = "`feather` = :feather";
-					$params[':feather'] = depluralize($_GET['feathers']);
+					$params[':feather'] = depluralize($get['feathers']);
 				} else {
 					list($where, $params, $attr) = $trigger->filter('main_controller_view', array($where, $params, $attr), true);
 
 					if ($attr !== null) {
 						$where[] = "`".$attr."` = :attr".$attr;
-						$params[':attr'.$attr] = $_GET[$attr];
+						$params[':attr'.$attr] = $get[$attr];
 					}
 				}
 
@@ -119,17 +122,17 @@
 
 			if ($post->no_results) {
 				# Check for a page...
-				fallback($_GET['url'], "");
+				fallback($get['url'], "");
 				$check_page = $sql->count("pages",
 				                          "`url` = :url",
 				                          array(
-				                              ':url' => $_GET['url']
+				                              ':url' => $get['url']
 				                          ));
 				if ($check_page == 1)
 					return $action = $url;
 			}
 
-			return (!$post->no_results) ? $action = "view" : $action = $_GET['url'] ;
+			return (!$post->no_results) ? $action = "view" : $action = $get['url'] ;
 		}
 
 		/**
