@@ -1,0 +1,46 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Manage Users" | translate }{% endblock %}
+
+{% block content %}
+			<h1>${ "Manage Users" | translate }</h1>
+			{% if updated %}
+			<p class="message yay">${ "User updated." | translate }</p>
+			{% endif %}
+			{% if deleted %}
+			<p class="message yay">${ "User deleted." | translate }</p>
+			{% endif %}
+			<h2>${ "Last 25 Users" | translate }</h2>
+			<table border="0" cellspacing="0" cellpadding="0" class="wide">
+				<thead>
+					<tr class="head">
+						<th>${ "Name" | translate }</th>
+						<th>${ "Joined" | translate }</th>
+						<th>${ "E-Mail" | translate }</th>
+						<th>${ "Website" | translate }</th>
+						{% trigger "manage_users_column_header" %}
+						<th colspan="2">${ "Controls" | translate }</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for user in users %}
+					<tr id="user_$user.id" class="user target{% if loop.last %} last{% endif %}">
+						<td class="main">
+							{% if not user.full_name == "" %}
+							<a href="mailto:$user.email">$user.full_name</a> ($user.login)
+							{% else %}
+							<a href="mailto:$user.email">$user.login</a>
+							{% endif %}
+						</td>
+						<td>${ user.joined_at | strftime }</td>
+						<td>{% if not user.website == "" %}<a href="$user.website">$user.website</a>{% endif %}</td>
+						${ "manage_users_column" | trigger(user) }
+						<td>$user.edit_link</td>
+						<td>$user.delete_link</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+			$pagination.next_link
+			$pagination.prev_link
+{% endblock %}

@@ -16,10 +16,10 @@
 		<div class="controls" id="admin_bar"{% if hide_admin %} style="display: none"{% endif %}>
 			<ul>
 {% if visitor.can.add_post %}
-				<li><a id="add_post" href="$site.url/admin/?action=write">${ "Write" | translate }</a></li>
+				<li><a id="add_post" href="{% admin "write_post" %}">${ "Write" | translate }</a></li>
 {% endif %}
 {% if visitor.can.add_page %}
-				<li><a id="add_page" href="$site.url/admin/?action=write_page">${ "Add Page" | translate }</a></li>
+				<li><a id="add_page" href="{% admin "write_page" %}">${ "Add Page" | translate }</a></li>
 {% endif %}
 {% if visitor.can.view_draft %}
 				<li><a id="your_drafts" href="{% url "drafts/" %}">${ "Drafts" | translate }</a></li>
@@ -82,7 +82,7 @@ $page_list
 				<h1>${ "Archives" | translate }</h1>
 				<ul>
 {% for archive in archive_list %}
-					<li><a href="$archive.url">$archive.month $archive.year</a></li>
+					<li><a href="$archive.url">${ archive.when | date("F Y") }</a> <span class="sub">($archive.count)</span></li>
 {% endfor %}
 				</ul>
 				<h1>${ "Stats" | translate }</h1>

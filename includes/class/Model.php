@@ -19,7 +19,7 @@
 			fallback($options["where"], array("`__".$model_name."s`.`id` = :id"));
 			fallback($options["params"], array(":id" => $id));
 			fallback($options["group"], array());
-			fallback($options["order"], "`__".($model_name == "visitor" ? "users" : $model_name."s")."`.`id` desc");
+			fallback($options["order"], "`__".$model_name."s`.`id` desc");
 			fallback($options["offset"], null);
 			fallback($options["read_from"], array());
 
@@ -72,7 +72,7 @@
 			fallback($options["where"], null);
 			fallback($options["params"], array());
 			fallback($options["group"], array());
-			fallback($options["order"], "`__".strtolower($model)."s`.`created_at` DESC, `__".strtolower($model)."s`.`id` DESC");
+			fallback($options["order"], "`__".strtolower($model)."s`.`id` DESC");
 			fallback($options["offset"], null);
 			fallback($options["limit"], null);
 			fallback($options["pagination"], true);

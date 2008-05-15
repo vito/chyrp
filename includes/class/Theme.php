@@ -123,24 +123,23 @@
 		 */
 		public function list_archives($limit = 0, $order_by = "created_at", $order = "desc") {
 			$sql = SQL::current();
-			$get_dates = $sql->select("posts",
-			                          "DISTINCT YEAR(`created_at`) AS `year`, MONTH(`created_at`) AS `month`, `created_at`, COUNT(`id`) AS `posts`",
-			                          "`status` = 'public'",
-			                          "`__posts`.`{$order_by}` ".strtoupper($order),
-			                          array(),
-			                          ($limit == 0) ? null : $limit,
-			                          null,
-			                          "YEAR(`created_at`), MONTH(`created_at`)");
+			$dates = $sql->select("posts",
+			                       "DISTINCT YEAR(`created_at`) AS `year`, MONTH(`created_at`) AS `month`, `created_at`, COUNT(`id`) AS `posts`",
+			                       "`status` = 'public'",
+			                       "`__posts`.`{$order_by}` ".strtoupper($order),
+			                       array(),
+			                       ($limit == 0) ? null : $limit,
+			                       null,
+			                       "YEAR(`created_at`), MONTH(`created_at`)");
+
 			$archives = array();
-			$count = 0;
-			$route = Route::current();
-			while ($the_post = $get_dates->fetchObject()) {
-				$archives[$count]["month"] = when("F", $the_post->created_at);
-				$archives[$count]["year"] = when("Y", $the_post->created_at);
-				$archives[$count]["url"] = $route->url("archive/".when("Y/m/", $the_post->created_at));
-				$archives[$count]["count"] = $the_post->posts;
-				$count++;
-			}
+			while ($date = $dates->fetchObject())
+				$archives[] = array("month" => $date->month,
+				                    "year"  => $date->year,
+				                    "when"  => $date->created_at,
+				                    "url"   => Route::current()->url("archive/".when("Y/m/", $date->created_at)),
+				                    "count" => $date->posts);
+
 			return $archives;
 		}
 

@@ -202,14 +202,12 @@
 
 			# Page viewing
 			$sql = SQL::current();
-			$parent_id = 0;
 			$count = count($arg) - 1;
+			$parent = new Page();
 			for ($i = 0; $i <= $count; $i++) {
-				$parent_id = $sql->select("pages", "`id`", array("`url` = :url", "`parent_id` = :parent"), "`__pages`.`id` DESC", array(
-				                               ':url' => $arg[$i],
-				                               ':parent' => $parent_id
-				                         ), 1)->fetchColumn();
-				if (!$parent_id)
+				$parent = new Page(null, array("where" => array("`url` = :url", "`parent_id` = :parent_id"),
+				                               "params" => array(":url" => $arg[$i], ":parent_id" => $parent->id)));
+				if (!$parent->id)
 					break;
 				else if ($i == $count) {
 					$_GET['url'] = $arg[$i];

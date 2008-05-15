@@ -7,6 +7,7 @@
 	 */
 	class Post extends Model {
 		public $no_results = false;
+		public $id = 0;
 
 		/**
 		 * Function: __construct
@@ -23,7 +24,7 @@
 		public function __construct($post_id = null, $options = array()) {
 			if (!isset($post_id) and empty($options)) return;
 			parent::grab($this, $post_id, $options);
-			$this->slug = $this->url;
+			$this->slug =& $this->url;
 			$this->parse(!isset($options["filter"]) or $options["filter"]);
 		}
 

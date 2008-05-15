@@ -5,6 +5,7 @@
 	 */
 	class Page extends Model {
 		public $no_results = false;
+		public $id = 0;
 
 		/**
 		 * Function: __construct
@@ -17,9 +18,10 @@
 		 *         params: Parameters to use for the "where" option.
 		 *         read_from: An associative array of values to load into the <Page> class.
 		 */
-		public function __construct($page_id, $options = array()) {
+		public function __construct($page_id = null, $options = array()) {
+			if (!isset($page_id) and empty($options)) return;
 			parent::grab($this, $page_id, $options);
-			$this->slug = $this->url;
+			$this->slug =& $this->url;
 		}
 
 		/**
@@ -219,8 +221,7 @@
 				$page = $page->parent();
 			}
 
-			$route = Route::current();
-			return $route->url('page/'.implode('/', array_reverse($url)));
+			return Route::current()->url("page/".implode('/', array_reverse($url)));
 		}
 
 		/**

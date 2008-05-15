@@ -185,8 +185,18 @@
 
 			if (!empty($_GET['updated']))
 				$this->context["updated"] = new Page($_GET['updated']);
-			if (!empty($_GET['deleted']))
-				$this->context["deleted"] = true;
+
+			$this->context["deleted"] = !empty($_GET['deleted']);
+		}
+
+		/**
+		 * Function: manage_users
+		 * Post management user.
+		 */
+		public function manage_users() {
+			$this->context["users"] = User::find(array("per_page" => 25));
+			$this->context["updated"] = !empty($_GET['updated']);
+			$this->context["deleted"] = !empty($_GET['deleted']);
 		}
 
 		/**
