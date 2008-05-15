@@ -341,13 +341,17 @@
 	 *     $string - The string to sanitize.
 	 *     $anal - If set to *true*, will remove all non-alphanumeric characters.
 	 */
-	function sanitize($string, $anal = false) {
+	function sanitize($string, $force_lowercase = true, $anal = false) {
 		$strip = array("~", "`", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "=", "+", "[", "{", "]", "}", "\\", "|", ";", ":", "\"", "'", "&#8216;", "&#8217;", "&#8220;", "&#8221;", "&#8211;", "&#8212;", "—", "–", ",", "<", ".", ">", "/", "?");
 		$clean = trim(str_replace($strip, "", strip_tags($string)));
 		$clean = remove_accents($clean);
 		$clean = preg_replace('/\s+/', "-", $clean);
 		$clean = ($anal) ? preg_replace("/[^a-zA-Z0-9]/", "", $clean) : $clean ;
-		return (function_exists('mb_strtolower')) ? mb_strtolower($clean, 'UTF-8') : strtolower($clean) ;
+		return ($force_lowercase) ?
+			(function_exists('mb_strtolower')) ?
+				mb_strtolower($clean, 'UTF-8') :
+				strtolower($clean) :
+			$clean;
 	}
 
 	/**
@@ -865,7 +869,7 @@
 
 	/**
 	 * Function: unique_filename
-	 * Makes a given filename unique for the /upload/ directory.
+	 * Makes a given filename unique for the uploads directory.
 	 *
 	 * Parameters:
 	 *     $name - The name to check.
@@ -874,41 +878,30 @@
 	 *     $name - A unique version of the given $name.
 	 */
 	function unique_filename($name) {
-		$double_exts = array(".tar.gz");
-		$original = $name;
-		$double = "";
-		if (file_exists(MAIN_DIR."/upload/".$name)) {
-			foreach ($double_exts as $dub)
-				if (strpos($original, $dub)) {
-					$double = $dub;
-					$name = str_replace($dub, "", $original);
-				}
+		$double_exts = array(".tar.gz", ".tar.bz");
 
-			if (empty($double)) {
-				$split_dots = explode(".", $name);
-				$filename = $split_dots[0];
-				array_shift($split_dots);
-				$ext = implode(".", $split_dots);
-				$name = $filename.random(3).".".$ext;
-			} else
-				$name = $name.random(3).$double;
+		if (file_exists(MAIN_DIR.Config::current()->uploads_path.$name)) {
+			# Handle "double" extensions
+			foreach ($double_exts as $ext)
+				if (stripos($name, $ext) == strlen($name) - strlen($ext))
+					return unique_filename(substr($name, 0, -strlen($ext))."-".random(3).$ext);
 
-			if (!file_exists(MAIN_DIR."/upload/".$name))
-				return $name;
-		} else {
+			# Handle "single" extensions
+			$name = explode(".", $name);
+			$ext = ".".array_pop($name);
+			return unique_filename(implode(".", $name)."-".random(3).$ext);
+		} else
 			return $name;
-		}
-		return unique_filename($clean);
 	}
 
 	/**
 	 * Function: upload
-	 * Moves an uploaded file to the /upload/ directory.
+	 * Moves an uploaded file to the uploads directory.
 	 *
 	 * Parameters:
 	 *     $file - The $_FILES value.
 	 *     $extension - An array of valid extensions (case-insensitive).
-	 *     $path - A sub-folder in /upload/ (optional).
+	 *     $path - A sub-folder in the uploads directory (optional).
 	 *
 	 * Returns:
 	 *     $filename - The resulting filename from the upload.
@@ -934,11 +927,11 @@
 
 		array_pop($file_split);
 		$file_clean = implode(".", $file_split);
-		$file_clean = sanitize($file_clean).".".$file_ext;
+		$file_clean = sanitize($file_clean, false).".".$file_ext;
 		$filename = unique_filename($file_clean);
 
-		if (!@move_uploaded_file($file['tmp_name'], MAIN_DIR."/upload/".$path.$filename))
-			error(__("Error"), __("Couldn't upload file. CHMOD <code>/upload</code> to 777 and try again. If this problem persists, it's probably timing out; in which case, you must contact your system administrator to increase the maximum POST and upload sizes."));
+		if (!@move_uploaded_file($file['tmp_name'], MAIN_DIR.Config::current()->uploads_path.$path.$filename))
+			error(__("Error"), __("Couldn't upload file. CHMOD <code>".MAIN_DIR.Config::current()->uploads_path."</code> to 777 and try again. If this problem persists, it's probably timing out; in which case, you must contact your system administrator to increase the maximum POST and upload sizes."));
 
 		return $filename;
 	}
