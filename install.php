@@ -101,9 +101,6 @@
 			                 primary key (`id`)
 			             ) default charset=utf8");
 
-			$sql->query("INSERT INTO `__posts` (`id`, `xml`, `feather`, `clean`, `url`, `pinned`, `status`, `user_id`, `created_at`, `updated_at`) VALUES
-(1, '<post><title>Filler</title><body>Hello there! This is a filler post, until that obscure Twig segfault is figgered out. If I forget to remove this and you just installed the 2.0 release, well, feel free to laugh.</body></post>', 'text', 'filler', 'filler', 0, 'public', 1, '2008-05-11 15:58:19', '0000-00-00 00:00:00')");
-
 			# Pages table
 			$sql->query("create table if not exists `__pages` (
 			                 `id` int(11) not null auto_increment,
