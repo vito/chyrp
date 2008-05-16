@@ -79,12 +79,14 @@ $page_list
 					<li><a href="{% url "tags/" %}">${ "All &rarr;" | translate }</a></li>
 				</ul>
 {% endif %}
+{% if archive_list %}
 				<h1>${ "Archives" | translate }</h1>
 				<ul>
 {% for archive in archive_list %}
 					<li><a href="$archive.url">${ archive.when | date("F Y") }</a> <span class="sub">($archive.count)</span></li>
 {% endfor %}
 				</ul>
+{% endif %}
 				<h1>${ "Stats" | translate }</h1>
 				<ul>
 					<li>${ "Queries:" | translate } $stats.queries</li>

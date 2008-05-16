@@ -85,7 +85,7 @@
 		}
 
 		static function delete_post($post) {
-			SQL::current()->delete("tags", "`post_id` = :post_id", array(":id" => $post->id));
+			SQL::current()->delete("tags", "`post_id` = :post_id", array(":post_id" => $post->id));
 		}
 
 		static function parse_urls($urls) {
@@ -216,6 +216,9 @@
 			$tags[] = $tag["tags"];
 			$clean[] = $tag["clean"];
 		}
+
+		if (!count($tags))
+			return array();
 
 		# array("{{foo}} {{bar}}", "{{foo}}") to "{{foo}} {{bar}} {{foo}}" to array("foo", "bar", "foo") to array("foo" => 2, "bar" => 1)
 		$tags = array_count_values(explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $tags))));

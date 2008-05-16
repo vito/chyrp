@@ -140,14 +140,11 @@
 		}
 
 		/**
-		 * Function: user_count
-		 * Returns the amount of users in a given group.
-		 *
-		 * Parameters:
-		 *     $group_id - The group ID.
+		 * Function: size
+		 * Returns the amount of users in the.
 		 */
-		static function count_users($group_id) {
-			return SQL::current()->count("users", "`group_id` = :group_id", array(":group_id" => $group_id));
+		public function size() {
+			return (isset($this->size)) ? $this->size : $this->size = SQL::current()->count("users", "`group_id` = :group_id", array(":group_id" => $this->id)) ;
 		}
 
 		/**

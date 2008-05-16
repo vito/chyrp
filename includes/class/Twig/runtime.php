@@ -38,6 +38,7 @@ $twig_filters = array(
 	'rstrip' =>		'rtrim',
 	'lstrip' =>		'ltrim',
 	'translate' =>		'twig_translate_string_filter',
+	'translate_plural' =>	'twig_translate_plural_string_filter',
 	'normalize' =>		'normalize',
 	'truncate' =>	'truncate',
 	'replace' =>		'twig_replace_filter',
@@ -319,6 +320,10 @@ else {
 
 function twig_translate_string_filter($string, $domain = "theme") {
 	return __($string, (ADMIN ? "chyrp" : $domain));
+}
+
+function twig_translate_plural_string_filter($single, $plural, $number, $domain = "theme") {
+	return _p($single, $plural, $number, (ADMIN ? "chyrp" : $domain));
 }
 
 function twig_inspect_filter($thing) {

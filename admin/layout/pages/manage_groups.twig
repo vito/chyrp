@@ -1,0 +1,28 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Manage Groups" | translate }{% endblock %}
+
+{% block content %}
+			<h1>${ "Manage Groups" | translate }</h1>
+			{% if updated %}
+			<p class="message yay">${ "Group updated." | translate }</p>
+			{% endif %}
+			{% if deleted %}
+			<p class="message yay">${ "Group deleted." | translate }</p>
+			{% endif %}
+			{% for group in groups %}
+			<div class="box">
+				<h1>
+					<span class="right">
+						$group.edit_link
+						$group.delete_link
+					</span>
+					{% if group.id == site.guest_group %}
+					${ "&#8220;%s&#8221; is the default group for guests." | translate | format(group.name) }
+					{% else %}
+					${ "&#8220;%s&#8221; has %s member." | translate_plural("&#8220;%s&#8221; has %s members.", group.size) | format(group.name, group.size) }
+					{% endif %}
+				</h1>
+			</div>
+			{% endfor %}
+{% endblock %}

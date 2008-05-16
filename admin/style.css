@@ -503,7 +503,17 @@ a.button img {
 }
 /* @end */
 
-/* @group Helpers */
+/* @group Helpers & General */
+.box {
+	background: #f5f5f5;
+	border: 1px solid #ddd;
+	padding: 1em;
+	margin: 0 0 1em;
+}
+.box h1 {
+	font-size: 1.25em !important;
+	margin: 0 !important;
+}
 a.emblem {
 	border: none;
 }

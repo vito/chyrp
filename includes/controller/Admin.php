@@ -200,6 +200,16 @@
 		}
 
 		/**
+		 * Function: manage_users
+		 * Post management user.
+		 */
+		public function manage_groups() {
+			$this->context["groups"] = Group::find(array("per_page" => 25));
+			$this->context["updated"] = !empty($_GET['updated']);
+			$this->context["deleted"] = !empty($_GET['deleted']);
+		}
+
+		/**
 		 * Function: extend_modules
 		 * Module enabling/disabling.
 		 */
