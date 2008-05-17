@@ -1,7 +1,12 @@
 {% extends "layouts/default.twig" %}
 {% block content %}
+{% if posts %}
 		<h2>${ "Posts tagged with &#8220;%s&#8221;" | translate | format(tag | escape) }</h2>
+{% endif %}
 {% for post in posts %}
 {% include "content/post.twig" %}
+{% else %}
+					<h2>${ "No Posts" | translate }</h2>
+					<p>${ "There don't be any posts tagged as &#8220;%s&#8221;." | translate | format(tag | escape) }</p>
 {% endfor %}
 {% endblock %}
