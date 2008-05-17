@@ -40,7 +40,7 @@ class Twig_Lexer
 	const REGEX_NAME = '/[A-Za-z_][A-Za-z0-9_]*/A';
 	const REGEX_NUMBER = '/[0-9]+(?:\.[0-9])?/A';
 	const REGEX_STRING = '/(?:"([^"\\\\]*(?:\\\\.[^"\\\\]*)*)"|\'([^\'\\\\]*(?:\\\\.[^\'\\\\]*)*)\')/Asm';
-	const REGEX_OPERATOR = '/<=?|>=?|==|[(){}.,%*\/+~|-]|\[|\]/A';
+	const REGEX_OPERATOR = '/<=?|>=?|[!=]=|[(){}.,%*\/+~|-]|\[|\]/A';
 
 	public function __construct($code, $filename=NULL)
 	{
