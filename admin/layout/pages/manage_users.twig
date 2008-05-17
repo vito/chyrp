@@ -26,7 +26,7 @@
 					<tr id="user_$user.id" class="user target{% if loop.last %} last{% endif %}">
 						<td class="main">
 							{% if user.full_name != "" %}
-							<a href="mailto:$user.email">$user.full_name</a> ($user.login)
+							<a href="mailto:$user.email">$user.full_name</a> <span class="sub">($user.login)</span>
 							{% else %}
 							<a href="mailto:$user.email">$user.login</a>
 							{% endif %}
@@ -34,8 +34,8 @@
 						<td>${ user.joined_at | strftime }</td>
 						<td>{% if user.website != "" %}<a href="$user.website">$user.website</a>{% endif %}</td>
 						${ "manage_users_column" | trigger(user) }
-						<td>$user.edit_link</td>
-						<td>$user.delete_link</td>
+						<td class="controls">${ user.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit') }</td>
+						<td class="controls">${ user.delete_link('<img src="images/icons/delete.png" alt="delete" /> delete') }</td>
 					</tr>
 				{% endfor %}
 				</tbody>

@@ -282,12 +282,16 @@ form.delete blockquote.noitalic {
 	font-style: normal;
 }
 form.split label {
-	width: 48%;
+	width: 44%;
 	float: left;
 	text-align: right;
-	padding-right: 2%;
+	margin-right: 1%;
 	font-weight: bold;
 	padding: 4px 5px 5px;
+	color: #999;
+}
+form.split select {
+	margin: 3px 0 0;
 }
 label {
 	display: block;
@@ -347,31 +351,43 @@ table thead tr th.headerSortDown,
 table thead tr th.headerSortUp {
 	background: #444;
 }
-table tr {
+table tbody tr {
 	border-left: 2px solid #eee;
 	border-right: 2px solid #eee;
 }
-table tr.last {
+table tbody tr.last {
 	border-bottom: 2px solid #eee;
 }
-table td {
+table tbody tr td {
 	padding: .25em .5em;
 	border-right: 1px solid #eee;
 	border-bottom: 1px solid #eee;
 	vertical-align: middle;
 }
-table td.main {
+table tbody tr td.main {
 	background: #f9f9f9;
 	font-weight: bold;
 }
-table td.center {
+table tbody tr td.center {
 	text-align: center;
 	vertical-align: middle;
 }
-table td a:link, table td a:visited {
+table tbody tr td.controls {
+	text-align: center;
+	font-size: .95em;
+	color: #888;
+}
+table tbody tr td.controls img {
+	margin-bottom: -3px;
+	margin-right: 1px;
+}
+table tbody tr td a:link,
+table tbody tr td a:visited {
 	border: none;
 }
-tr.draft, tr.draft td, tr.draft td.main {
+tr.draft,
+tr.draft td,
+tr.draft td.main {
 	background-color: #dff4ff;
 	border-color: #c2e1ef;
 	color: #336699;
@@ -536,6 +552,34 @@ hr {
 .box h1 .sub {
 	font-weight: normal;
 	font-size: .75em;
+}
+.box h1 span.right {
+	font-size: .75em;
+	color: #666;
+}
+.box h1 span.right a {
+	margin-left: 1em;
+}
+.box h1 span.right a img {
+	margin-bottom: -3px;
+}
+.edit_link:hover {
+	color: #333;
+}
+.delete_link {
+	color: #b30600;
+	margin: 0 -.4em 0 0;
+}
+.delete_link:after {
+	content: "!";
+	opacity: 0;
+}
+.delete_link:hover {
+	color: #f00;
+}
+.delete_link:hover:after {
+	color: #f00;
+	opacity: 1;
 }
 a.emblem {
 	border: none;

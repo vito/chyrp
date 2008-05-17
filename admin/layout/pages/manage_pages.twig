@@ -30,8 +30,8 @@
 						<td>{% if page.updated %}${ page.updated_at | strftime }{% else %}<span class="sub">${ "never" | translate }</span>{% endif %}</td>
 						<td>$page.user.login</td>
 						${ "manage_pages_column" | trigger(page) }
-						<td>$page.edit_link</td>
-						<td>$page.delete_link</td>
+						<td class="controls">${ page.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit') }</td>
+						<td class="controls">${ page.delete_link('<img src="images/icons/delete.png" alt="delete" /> delete') }</td>
 					</tr>
 				{% endfor %}
 				</tbody>

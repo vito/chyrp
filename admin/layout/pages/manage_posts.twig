@@ -30,8 +30,8 @@
 						<td>${ post.status | replace("_", " ") | title }</td>
 						<td>$post.user.login</td>
 						${ "manage_posts_column" | trigger(post) }
-						<td>$post.edit_link</td>
-						<td>$post.delete_link</td>
+						<td class="controls">${ post.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit') }</td>
+						<td class="controls">${ post.delete_link('<img src="images/icons/delete.png" alt="delete" /> delete') }</td>
 					</tr>
 				{% endfor %}
 				</tbody>

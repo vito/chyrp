@@ -17,8 +17,8 @@
 			<div class="box">
 				<h1>
 					<span class="right">
-						${ group.edit_link('<img src="images/icons/edit.png" alt="edit" />') }
-						${ group.edit_link('<img src="images/icons/delete.png" alt="dekete" />') }
+						${ group.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit') }
+						${ group.delete_link('<img src="images/icons/delete.png" alt="delete" /> delete') }
 					</span>
 					{% if group.id == site.guest_group %}
 					${ "&#8220;%s&#8221; is the group for guests." | translate | format(group.name) }

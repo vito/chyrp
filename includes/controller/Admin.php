@@ -217,6 +217,109 @@
 		}
 
 		/**
+		 * Function: add_user
+		 * Add a user when the form is submitted. Shows an error if the user lacks permissions.
+		 */
+		public function add_user() {
+			if (empty($_POST)) return;
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
+			if (!Visitor::current()->group()->can("edit_user"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to edit users."));
+
+			if (empty($_POST['login']))
+				error(__("Error"), __("Please enter a username for your account."));
+
+			$check_user = User::find(array("where" => "`login` = :login",
+			                               "params" => array(":login" => $_POST['login'])));
+			if (count($check_user))
+				error(__("Error"), __("That username is already in use."));
+
+			if (empty($_POST['password1']) or empty($_POST['password2']))
+				error(__("Error"), __("Password cannot be blank."));
+			if (empty($_POST['email']))
+				error(__("Error"), __("E-mail address cannot be blank."));
+			if ($_POST['password1'] != $_POST['password2'])
+				error(__("Error"), __("Passwords do not match."));
+			if (!eregi("^[[:alnum:]][a-z0-9_.-\+]*@[a-z0-9.-]+\.[a-z]{2,6}$",$_POST['email']))
+				error(__("Error"), __("Unsupported e-mail address."));
+
+			User::add($_POST['login'], $_POST['password1'], $_POST['email'], $_POST['full_name'], $_POST['website'], $_POST['group_id']);
+
+			redirect("/admin/?action=manage&sub=user&added");
+		}
+
+		/**
+		 * Function: edit_user
+		 * User editing.
+		 */
+		public function edit_user() {
+			if (empty($_GET['id']))
+				error(__("No ID Specified"), __("An ID is required to edit a user."));
+			if (!Visitor::current()->group()->can("edit_user"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to edit this user."));
+
+			$this->context["user"] = new User($_GET['id']);
+			$this->context["groups"] = Group::find(array("pagination" => false,
+			                                             "order" => "`id` asc",
+			                                             "where" => "`id` != :guest_id",
+			                                             "params" => array(":guest_id" => Config::current()->guest_group)));
+		}
+
+		/**
+		 * Function: update_user
+		 * Updates a user when the form is submitted.
+		 */
+		public function update_user() {
+			if (empty($_POST['id']))
+				error(__("No ID Specified"), __("An ID is required to edit a user."));
+
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
+
+			$visitor = Visitor::current();
+
+			if (!$visitor->group()->can("edit_user"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to edit users."));
+
+			$user = new User($_POST['id']);
+			$password = (!empty($_POST['new_password1']) and $_POST['new_password1'] == $_POST['new_password2']) ?
+			            md5($_POST['new_password1']) :
+			            $user->password ;
+
+			$user->update($_POST['login'], $password, $_POST['full_name'], $_POST['email'], $_POST['website'], $_POST['group']);
+
+			if ($_POST['id'] == $visitor->id)
+				cookie_cutter("chyrp_password", $password);
+
+			redirect("/admin/?action=manage_users&updated");
+		}
+
+		/**
+		 * Function: delete_user
+		 * User deletion.
+		 */
+		public function delete_user() {
+			$this->context["user"] = new User($_GET['id']);
+		}
+
+		/**
+		 * Function: destroy_user
+		 * Destroys a user.
+		 */
+		public function destroy_user() {
+			if (empty($_POST)) return;
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
+			if (!Visitor::current()->group()->can("delete_user"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to delete users."));
+
+			User::delete($_POST['id']);
+
+			redirect("/admin/?action=manage&sub=user&deleted");
+		}
+
+		/**
 		 * Function: manage_users
 		 * User managing.
 		 */
@@ -494,98 +597,6 @@
 			             array_diff($config->$enabled_array, array($_GET[$type])));
 
 			redirect("/admin/?action=extend_".$type."s&enabled=".$_GET[$type]);
-		}
-
-		/**
-		 * Function: add_user
-		 * Add a user when the form is submitted. Shows an error if the user lacks permissions.
-		 */
-		public function add_user() {
-			if (empty($_POST)) return;
-			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
-			if (!Visitor::current()->group()->can("edit_user"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to edit users."));
-
-			if (empty($_POST['login']))
-				error(__("Error"), __("Please enter a username for your account."));
-
-			$check_user = User::find(array("where" => "`login` = :login",
-			                               "params" => array(":login" => $_POST['login'])));
-			if (count($check_user))
-				error(__("Error"), __("That username is already in use."));
-
-			if (empty($_POST['password1']) or empty($_POST['password2']))
-				error(__("Error"), __("Password cannot be blank."));
-			if (empty($_POST['email']))
-				error(__("Error"), __("E-mail address cannot be blank."));
-			if ($_POST['password1'] != $_POST['password2'])
-				error(__("Error"), __("Passwords do not match."));
-			if (!eregi("^[[:alnum:]][a-z0-9_.-\+]*@[a-z0-9.-]+\.[a-z]{2,6}$",$_POST['email']))
-				error(__("Error"), __("Unsupported e-mail address."));
-
-			User::add($_POST['login'], $_POST['password1'], $_POST['email'], $_POST['full_name'], $_POST['website'], $_POST['group_id']);
-
-			redirect("/admin/?action=manage&sub=user&added");
-		}
-
-		/**
-		 * Function: update_user
-		 * Updates a user when the form is submitted. Shows an error if the user lacks permissions.
-		 */
-		public function update_user() {
-			if (empty($_POST)) return;
-
-			$visitor = Visitor::current();
-
-			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
-			if (!$visitor->group()->can("edit_user"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to edit users."));
-
-			$user = new User($_POST['id']);
-			$password = (!empty($_POST['new_password1']) and $_POST['new_password1'] == $_POST['new_password2']) ?
-									md5($_POST['new_password1']) :
-									$user->password ;
-
-			$user->update($_POST['login'], $password, $_POST['full_name'], $_POST['email'], $_POST['website'], $_POST['group']);
-
-			if ($_POST['id'] == $visitor->id)
-				cookie_cutter("chyrp_password", $password);
-
-			redirect("/admin/?action=manage&sub=user&updated");
-		}
-
-		/**
-		 * Function: delete_page_real
-		 * Deletes a page. Shows an error if the user lacks permissions.
-		 */
-		public function delete_page_real() {
-			if (empty($_POST)) return;
-			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
-			if (!Visitor::current()->group()->can("delete_page"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to delete pages."));
-
-			Page::delete($_POST['id']);
-
-			redirect("/admin/?action=manage&sub=page&deleted");
-		}
-
-		/**
-		 * Function: delete_user_real
-		 * Deletes a user. Shows an error if the user lacks permissions.
-		 */
-		public function delete_user_real() {
-			if (empty($_POST)) return;
-			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
-			if (!Visitor::current()->group()->can("delete_user"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to delete users."));
-
-			User::delete($_POST['id']);
-
-			redirect("/admin/?action=manage&sub=user&deleted");
 		}
 
 		/**
