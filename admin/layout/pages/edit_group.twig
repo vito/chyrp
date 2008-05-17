@@ -20,7 +20,7 @@
 				{% for permission in permissions %}
 				<p>
 					<label for="permission_$permission.name">${ permission.name | camelize(true) }</label>
-					<input class="checkbox" type="checkbox" name="permissions[$permission.name]" id="permission_$permission.name"{% if group.has[permission.name] %} checked="checked"{% endif %} />
+					<input class="checkbox" type="checkbox" name="permissions[$permission.name]" id="permission_$permission.name"{% if group.can(permission.name) %} checked="checked"{% endif %} />
 				</p>
 				{% endfor %}
 				<br />

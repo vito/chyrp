@@ -25,12 +25,6 @@
 				return false;
 
 			$this->permissions = Spyc::YAMLLoad($this->permissions);
-
-			# Makes it a bit easier for Twig, since we can't call functions.
-			# This is an alternative to $this->can("foo"); use this like
-			# $this->has["foo"], or $group.has.foo in Twig.
-			foreach ($this->permissions as $permission)
-				$this->has[$permission] = true;
 		}
 
 		/**
