@@ -105,7 +105,7 @@
 
 		/**
 		 * Function: manage_posts
-		 * Post management page.
+		 * Post managing.
 		 */
 		public function manage_posts() {
 			$this->context["posts"] = Post::find(array("where" => false, "per_page" => 25));
@@ -178,7 +178,7 @@
 
 		/**
 		 * Function: manage_pages
-		 * Page management page.
+		 * Page managing.
 		 */
 		public function manage_pages() {
 			$this->context["pages"] = Page::find(array("per_page" => 25));
@@ -191,7 +191,7 @@
 
 		/**
 		 * Function: manage_users
-		 * Post management user.
+		 * User managing.
 		 */
 		public function manage_users() {
 			$this->context["users"] = User::find(array("per_page" => 25));
@@ -200,11 +200,42 @@
 		}
 
 		/**
-		 * Function: manage_users
-		 * Post management user.
+		 * Function: edit_group
+		 * Group editing.
+		 */
+		public function edit_group() {
+			$this->context["group"] = new Group($_GET['id']);
+			$this->context["permissions"] = SQL::current()->query("select * from `__permissions`")->fetchAll();
+		}
+
+		/**
+		 * Function: update_group
+		 * Updates a group when the form is submitted. Shows an error if the user lacks permissions.
+		 */
+		public function update_group() {
+			if (empty($_POST)) return;
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
+			if (!Visitor::current()->group()->can("edit_group"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to edit groups."));
+
+			$permissions = array_keys($_POST['permissions']);
+
+			$group = new Group($_POST['id']);
+
+			if ($group->no_results)
+				redirect("/admin/?action=manage_groups");
+
+			$group->update($_POST['name'], $permissions);
+			redirect("/admin/?action=manage_groups&updated");
+		}
+
+		/**
+		 * Function: manage_groups
+		 * Group managing.
 		 */
 		public function manage_groups() {
-			$this->context["groups"] = Group::find(array("per_page" => 25));
+			$this->context["groups"] = Group::find(array("per_page" => 25, "order" => "`id` asc"));
 			$this->context["updated"] = !empty($_GET['updated']);
 			$this->context["deleted"] = !empty($_GET['deleted']);
 		}
@@ -452,28 +483,6 @@
 				cookie_cutter("chyrp_password", $password);
 
 			redirect("/admin/?action=manage&sub=user&updated");
-		}
-
-		/**
-		 * Function: update_group
-		 * Updates a group when the form is submitted. Shows an error if the user lacks permissions.
-		 */
-		public function update_group() {
-			if (empty($_POST)) return;
-			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
-			if (!Visitor::current()->group()->can("edit_group"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to edit groups."));
-
-			$permissions = array_keys($_POST['permissions']);
-
-			$group = new Group($_POST['id']);
-
-			if ($group->no_results)
-				redirect("/admin/?action=manage&sub=group");
-
-			$group->update($_POST['name'], $permissions);
-			redirect("/admin/?action=manage&sub=group&updated");
 		}
 
 		/**

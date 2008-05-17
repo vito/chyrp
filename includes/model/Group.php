@@ -5,6 +5,7 @@
 	 */
 	class Group extends Model {
 		public $no_results = false;
+		public $has = array();
 
 		/**
 		 * Function: __construct
@@ -20,6 +21,12 @@
 		public function __construct($group_id = null, $options = array()) {
 			parent::grab($this, $group_id, $options);
 			$this->permissions = Spyc::YAMLLoad($this->permissions);
+
+			# Makes it a bit easier for Twig, since we can't call functions.
+			# This is an alternative to $this->can("foo"); use this like
+			# $this->has["foo"], or $group.has.foo in Twig.
+			foreach ($this->permissions as $permission)
+				$this->has[$permission] = true;
 		}
 
 		/**
@@ -68,7 +75,7 @@
 		public function update($name, $permissions) {
 			$sql = SQL::current();
 			$sql->update("groups", "`id` = :id",
-			             array("`name`" => ":name", "`permissions`" => ":permissions"),
+			             array("name" => ":name", "permissions" => ":permissions"),
 			             array(":name" => $name, ":permissions" => Spyc::YAMLDump($permissions), ":id" => $this->id));
 
 			Trigger::current()->call("update_group", array($this, $name, $permissions));

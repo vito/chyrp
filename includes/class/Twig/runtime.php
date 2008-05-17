@@ -43,6 +43,7 @@ $twig_filters = array(
 	'truncate' =>	'truncate',
 	'replace' =>		'twig_replace_filter',
 	'linebreaks' =>	'nl2br',
+	'camelize' =>	'camelize',
 
 	// array helpers
 	'join' =>		'twig_join_filter',

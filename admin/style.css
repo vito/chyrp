@@ -280,6 +280,14 @@ form.delete blockquote {
 form.delete blockquote h2 {
 	font-style: normal;
 }
+form.split label {
+	width: 48%;
+	float: left;
+	text-align: right;
+	padding-right: 2%;
+	font-weight: bold;
+	padding: 4px 5px 5px;
+}
 label {
 	display: block;
 	font-size: 1.1em;
@@ -299,6 +307,9 @@ input.file {
 }
 input.text, input.file, select, textarea {
 	margin-bottom: .25em;
+}
+input.checkbox {
+	margin: 6px 5px 0;
 }
 textarea {
 	font-size: 1em;
