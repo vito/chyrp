@@ -635,10 +635,40 @@ class Twig_GetAttrExpression extends Twig_Expression
 
 	public function compile($compiler)
 	{
-		$compiler->raw('twig_get_attribute($context, ');
+		$compiler->raw('twig_get_attribute(');
 		$this->node->compile($compiler);
 		$compiler->raw(', ');
 		$this->attr->compile($compiler);
+		$compiler->raw(')');
+	}
+}
+
+
+class Twig_MethodCallExpression extends Twig_Expression
+{
+	public $node;
+	public $method;
+	public $arguments;
+
+	public function __construct($node, $method, $arguments, $lineno)
+	{
+		parent::__construct($lineno);
+		$this->node = $node;
+		$this->method = $method;
+		$this->arguments = $arguments;
+	}
+
+	public function compile($compiler)
+	{
+		$compiler->raw('call_user_func(array(');
+		$this->node->compile($compiler);
+		$compiler->raw(', ');
+		$this->method->compile($compiler);
+		$compiler->raw(')');
+		foreach ($this->arguments as $argument) {
+			$compiler->raw(', ');
+			$argument->compile($compiler);
+		}
 		$compiler->raw(')');
 	}
 }
