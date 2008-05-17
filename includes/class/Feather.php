@@ -28,7 +28,7 @@
 		 * Allows a Feather to respond to a Trigger as a Module would.
 		 */
 		protected function respondTo($name, $function, $priority = 10) {
-			Trigger::current()->priorities[$name][] = array("priority" => $priority, "function" => array(get_class($this), $function));
+			Trigger::current()->priorities[$name][] = array("priority" => $priority, "function" => array($this, $function));
 		}
 
 		/**

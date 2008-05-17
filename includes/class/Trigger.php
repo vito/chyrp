@@ -50,7 +50,7 @@
 					continue;
 
 				if (is_callable(array($camelized, $name)))
-					$caller(array($camelized, $name), $arg);
+					$caller(array($modules[$module], $name), $arg);
 			}
 		}
 
@@ -69,6 +69,7 @@
 		 *     $arg, filtered through any/all actions for the trigger $name.
 		 */
 		public function filter($name, $arg = "", $array = false) {
+			global $modules;
 			$caller = (is_array($arg) and $array) ? "call_user_func_array" : "call_user_func" ;
 
 			if (isset($this->priorities[$name])) { # Predefined priorities?
@@ -86,9 +87,8 @@
 				if (in_array(array($camelized, $name), $this->called))
 					continue;
 
-				if (is_callable(array($camelized, $name))) {
-					$this->modified_text[$name] = $caller(array($camelized, $name), $this->modified($name, $arg));
-				}
+				if (is_callable(array($camelized, $name)))
+					$this->modified_text[$name] = $caller(array($modules[$module], $name), $this->modified($name, $arg));
 			}
 
 			$final = $this->modified($name, $arg);
