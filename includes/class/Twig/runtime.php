@@ -108,7 +108,7 @@ function twig_missing_filter($name)
 		return Trigger::current()->filter($name, $args, true);
 }
 
-function twig_get_attribute($context, $obj, $item)
+function twig_get_attribute($obj, $item)
 {
 	if (is_array($obj) && isset($obj[$item]))
 		return $obj[$item];

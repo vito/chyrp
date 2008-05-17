@@ -427,14 +427,26 @@ class Twig_Parser
 			else
 				throw new Twig_SyntaxError('expected name or number',
 							   $lineno);
-
 		}
 		else {
 			$arg = $this->parseExpression();
 			$this->stream->expect(Twig_Token::OPERATOR_TYPE, ']');
 		}
-		return new Twig_GetAttrExpression($node, $arg, $lineno,
-						  $this->stream->current->lineno);
+
+		if (!$this->stream->test(Twig_Token::OPERATOR_TYPE, '('))
+			return new Twig_GetAttrExpression($node, $arg, $lineno);
+
+		/* sounds like something wants to call a member with some
+		   arguments.  Let's parse the parameters */
+		$this->stream->next();
+		$arguments = array();
+		while (!$this->stream->test(Twig_Token::OPERATOR_TYPE, ')')) {
+			if (count($arguments))
+				$this->stream->expect(Twig_Token::OPERATOR_TYPE, ',');
+			$arguments[] = $this->parseExpression();
+		}
+		$this->stream->expect(Twig_Token::OPERATOR_TYPE, ')');
+		return new Twig_MethodCallExpression($node, $arg, $arguments, $lineno);
 	}
 
 	public function parseFilterExpression($node)
