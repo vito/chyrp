@@ -31,7 +31,7 @@
 							<br class="clear" />
 					{% if not route.ajax or POST.action == "view_post" %}
 						</div>
-						{% if not route.action == "view" and not loop.last %}
+						{% if route.action != "view" and not loop.last %}
 						<br />
 						{% endif %}
 					</div>

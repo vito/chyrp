@@ -277,7 +277,8 @@ form.delete blockquote {
 	margin: 0 auto;
 	font-style: italic;
 }
-form.delete blockquote h2 {
+form.delete blockquote h2,
+form.delete blockquote.noitalic {
 	font-style: normal;
 }
 form.split label {
@@ -515,6 +516,13 @@ a.button img {
 /* @end */
 
 /* @group Helpers & General */
+hr {
+	border: 0;
+	border-top: 1px solid #ddd;
+}
+#content ul li {
+	list-style: square;
+}
 .box {
 	background: #f5f5f5;
 	border: 1px solid #ddd;
@@ -524,6 +532,10 @@ a.button img {
 .box h1 {
 	font-size: 1.25em !important;
 	margin: 0 !important;
+}
+.box h1 .sub {
+	font-weight: normal;
+	font-size: .75em;
 }
 a.emblem {
 	border: none;

@@ -10,6 +10,9 @@
 			{% if deleted %}
 			<p class="message yay">${ "Group deleted." | translate }</p>
 			{% endif %}
+			{% if added %}
+			<p class="message yay">${ "Group added." | translate }</p>
+			{% endif %}
 			{% for group in groups %}
 			<div class="box">
 				<h1>
@@ -21,6 +24,9 @@
 					${ "&#8220;%s&#8221; is the default group for guests." | translate | format(group.name) }
 					{% else %}
 					${ "&#8220;%s&#8221; has %s member." | translate_plural("&#8220;%s&#8221; has %s members.", group.size) | format(group.name, group.size) }
+					{% endif %}
+					{% if group.id == site.default_group %}
+					<span class="sub">${ "(default group)" | translate }</span>
 					{% endif %}
 				</h1>
 			</div>

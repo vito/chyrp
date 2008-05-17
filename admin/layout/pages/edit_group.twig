@@ -7,7 +7,6 @@
 {% block content %}
 			<h1>${ "Editing Group &#8220;%s&#8221;" | translate | format(group.name | escape) }</h1>
 			<form id="group_edit" class="split" action="{% admin "update_group" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
-				<h2>Name</h2>
 				<p>
 					<label for="name">${ "Name" | translate }</label>
 					<input class="text" type="text" name="name" value="${ group.name | escape }" id="name" />
@@ -17,6 +16,7 @@
 				<p id="toggler">
 
 				</p>
+				<hr />
 				{% for permission in permissions %}
 				<p>
 					<label for="permission_$permission.name">${ permission.name | camelize(true) }</label>

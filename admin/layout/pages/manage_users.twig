@@ -25,14 +25,14 @@
 				{% for user in users %}
 					<tr id="user_$user.id" class="user target{% if loop.last %} last{% endif %}">
 						<td class="main">
-							{% if not user.full_name == "" %}
+							{% if user.full_name != "" %}
 							<a href="mailto:$user.email">$user.full_name</a> ($user.login)
 							{% else %}
 							<a href="mailto:$user.email">$user.login</a>
 							{% endif %}
 						</td>
 						<td>${ user.joined_at | strftime }</td>
-						<td>{% if not user.website == "" %}<a href="$user.website">$user.website</a>{% endif %}</td>
+						<td>{% if user.website != "" %}<a href="$user.website">$user.website</a>{% endif %}</td>
 						${ "manage_users_column" | trigger(user) }
 						<td>$user.edit_link</td>
 						<td>$user.delete_link</td>

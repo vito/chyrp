@@ -20,6 +20,10 @@
 		 */
 		public function __construct($group_id = null, $options = array()) {
 			parent::grab($this, $group_id, $options);
+
+			if ($this->no_results)
+				return false;
+
 			$this->permissions = Spyc::YAMLLoad($this->permissions);
 
 			# Makes it a bit easier for Twig, since we can't call functions.
@@ -55,7 +59,7 @@
 		 */
 		static function add($name, $permissions) {
 			$sql = SQL::current();
-			$sql->insert("groups", array("`name`" => ":name", "`permissions`" => ":permissions"),
+			$sql->insert("groups", array("name" => ":name", "permissions" => ":permissions"),
 			                       array(":name"  => $name,   ":permissions"  => Spyc::YAMLDump($permissions)));
 
 			$id = $sql->db->lastInsertId();
@@ -152,6 +156,16 @@
 		 */
 		public function size() {
 			return (isset($this->size)) ? $this->size : $this->size = SQL::current()->count("users", "`group_id` = :group_id", array(":group_id" => $this->id)) ;
+		}
+
+		/**
+		 * Function: members
+		 * Returns all the members of the group.
+		 */
+		public function members() {
+			return User::find(array("where" => "`group_id` = :group_id",
+			                        "pagination" => false,
+			                        "params" => array(":group_id" => $this->id)));
 		}
 
 		/**

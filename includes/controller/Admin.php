@@ -112,8 +112,8 @@
 
 			if (!empty($_GET['updated']))
 				$this->context["updated"] = new Post($_GET['updated']);
-			if (!empty($_GET['deleted']))
-				$this->context["deleted"] = true;
+
+			$this->context["deleted"] = isset($_GET['deleted']);
 		}
 
 		/**
@@ -186,7 +186,7 @@
 			if (!empty($_GET['updated']))
 				$this->context["updated"] = new Page($_GET['updated']);
 
-			$this->context["deleted"] = !empty($_GET['deleted']);
+			$this->context["deleted"] = isset($_GET['deleted']);
 		}
 
 		/**
@@ -195,8 +195,26 @@
 		 */
 		public function manage_users() {
 			$this->context["users"] = User::find(array("per_page" => 25));
-			$this->context["updated"] = !empty($_GET['updated']);
-			$this->context["deleted"] = !empty($_GET['deleted']);
+			$this->context["updated"] = isset($_GET['updated']);
+			$this->context["deleted"] = isset($_GET['deleted']);
+		}
+
+		/**
+		 * Function: add_group
+		 * Adds a group when the form is submitted. Shows an error if the user lacks permissions.
+		 */
+		public function add_group() {
+			$this->context["permissions"] = SQL::current()->query("select * from `__permissions`")->fetchAll();
+
+			if (empty($_POST)) return;
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
+			if (!Visitor::current()->group()->can("add_group"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to create groups."));
+
+			Group::add($_POST['name'], array_keys($_POST['permissions']));
+
+			redirect("/admin/?action=manage_groups&added");
 		}
 
 		/**
@@ -224,10 +242,48 @@
 			$group = new Group($_POST['id']);
 
 			if ($group->no_results)
-				redirect("/admin/?action=manage_groups");
+				redirect("/admin/?action=manage_groups ");
 
 			$group->update($_POST['name'], $permissions);
 			redirect("/admin/?action=manage_groups&updated");
+		}
+
+		/**
+		 * Function: delete_group
+		 * Group deleting.
+		 */
+		public function delete_group() {
+			$this->context["group"] = new Group($_GET['id']);
+			$this->context["groups"] = Group::find(array("where" => "`id` != :group_id",
+			                                             "order" => "`id` asc",
+			                                             "pagination" => false,
+			                                             "params" => array(":group_id" => $_GET['id'])));
+		}
+
+		/**
+		 * Function: destroy_group
+		 * Deletes a group. Shows an error if the user lacks permissions.
+		 */
+		public function destroy_group() {
+			if (empty($_POST)) return;
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
+			if (!Visitor::current()->group()->can("delete_group"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to delete groups."));
+
+			$group = new Group($_POST['id']);
+			foreach ($group->members() as $user)
+				$user->update($user->login, $user->password, $user->full_name, $user->email, $user->website, $_POST['move_group']);
+
+			$config = Config::current();
+			if (!empty($_POST['default_group']))
+				$config->set("default_group", $_POST['default_group']);
+			if (!empty($_POST['guest_group']))
+				$config->set("guest_group", $_POST['guest_group']);
+
+			Group::delete($_POST['id']);
+
+			redirect("/admin/?action=manage_groups&deleted");
 		}
 
 		/**
@@ -236,8 +292,9 @@
 		 */
 		public function manage_groups() {
 			$this->context["groups"] = Group::find(array("per_page" => 25, "order" => "`id` asc"));
-			$this->context["updated"] = !empty($_GET['updated']);
-			$this->context["deleted"] = !empty($_GET['deleted']);
+			$this->context["updated"] = isset($_GET['updated']);
+			$this->context["deleted"] = isset($_GET['deleted']);
+			$this->context["added"]   = isset($_GET['added']);
 		}
 
 		/**
@@ -443,22 +500,6 @@
 		}
 
 		/**
-		 * Function: add_group
-		 * Adds a group when the form is submitted. Shows an error if the user lacks permissions.
-		 */
-		public function add_group() {
-			if (empty($_POST)) return;
-			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
-			if (!Visitor::current()->group()->can("add_group"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to create groups."));
-
-			Group::add($_POST['name'], array_keys($_POST['permissions']));
-
-			redirect("/admin/?action=manage&sub=group&added");
-		}
-
-		/**
 		 * Function: update_user
 		 * Updates a user when the form is submitted. Shows an error if the user lacks permissions.
 		 */
@@ -515,33 +556,6 @@
 			User::delete($_POST['id']);
 
 			redirect("/admin/?action=manage&sub=user&deleted");
-		}
-
-		/**
-		 * Function: delete_group_real
-		 * Deletes a group. Shows an error if the user lacks permissions.
-		 */
-		public function delete_group_real() {
-			if (empty($_POST)) return;
-			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
-			if (!Visitor::current()->group()->can("delete_group"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to delete groups."));
-
-			$users = User::find(array("where" => "`group_id` = :group_id",
-			                          "params" => array(":group_id" => $_POST['id'])));
-			foreach ($users as $user)
-				$user->update($user->login, $user->password, $user->full_name, $user->email, $user->website, $_POST['move_group']);
-
-			$config = Config::current();
-			if (!empty($_POST['default_group']))
-				$config->set("default_group", $_POST['default_group']);
-			if (!empty($_POST['guest_group']))
-				$config->set("guest_group", $_POST['guest_group']);
-
-			Group::delete($_POST['id']);
-
-			redirect("/admin/?action=manage&sub=group&deleted");
 		}
 
 		/**
