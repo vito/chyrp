@@ -133,7 +133,7 @@
 		static function delete($id) {
 			parent::destroy(get_class(), $id);
 
-			while ($child = $sql->select("pages", "id", "`parent_id` = :id", "id", array(":id" => $page_id))->fetchObject())
+			while ($child = SQL::current()->select("pages", "id", "`parent_id` = :id", "id", array(":id" => $page_id))->fetchObject())
 				parent::destroy(get_class(), $child->id);
 		}
 

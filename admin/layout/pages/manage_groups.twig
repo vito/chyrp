@@ -21,12 +21,11 @@
 						${ group.edit_link('<img src="images/icons/delete.png" alt="dekete" />') }
 					</span>
 					{% if group.id == site.guest_group %}
-					${ "&#8220;%s&#8221; is the default group for guests." | translate | format(group.name) }
+					${ "&#8220;%s&#8221; is the group for guests." | translate | format(group.name) }
+					{% elseif group.id == site.default_group %}
+					${ "&#8220;%s&#8221; is the default group and has %s member." | translate_plural("&#8220;%s&#8221; is the default group and has %s members.", group.size) | format(group.name, group.size) }
 					{% else %}
 					${ "&#8220;%s&#8221; has %s member." | translate_plural("&#8220;%s&#8221; has %s members.", group.size) | format(group.name, group.size) }
-					{% endif %}
-					{% if group.id == site.default_group %}
-					<span class="sub">${ "(default group)" | translate }</span>
 					{% endif %}
 				</h1>
 			</div>

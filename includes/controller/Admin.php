@@ -100,7 +100,7 @@
 
 			Post::delete($_POST['id']);
 
-			redirect("/admin/?action=manage_posts&deleted=".$post->id);
+			redirect("/admin/?action=manage_posts&deleted=".$_POST['id']);
 		}
 
 		/**
@@ -177,6 +177,33 @@
 		}
 
 		/**
+		 * Function: delete_page
+		 * Page deletion (confirm page).
+		 */
+		public function delete_page() {
+			$this->context["page"] = new Page($_GET['id']);
+		}
+
+		/**
+		 * Function: destroy_page
+		 * Destroys a page.
+		 */
+		public function destroy_page() {
+			if ($_POST['destroy'] == "bollocks")
+				redirect("/admin/?action=manage_pages");
+			if (empty($_POST['id']))
+				error(__("No ID Specified"), __("An ID is required to delete a post."));
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
+			if (!Visitor::current()->group()->can("delete_page"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to delete pages."));
+
+			Page::delete($_POST['id']);
+
+			redirect("/admin/?action=manage_pages&deleted=".$_POST['id']);
+		}
+
+		/**
 		 * Function: manage_pages
 		 * Page managing.
 		 */
@@ -250,7 +277,7 @@
 
 		/**
 		 * Function: delete_group
-		 * Group deleting.
+		 * Group deletion (confirm page).
 		 */
 		public function delete_group() {
 			$this->context["group"] = new Group($_GET['id']);
@@ -262,10 +289,13 @@
 
 		/**
 		 * Function: destroy_group
-		 * Deletes a group. Shows an error if the user lacks permissions.
+		 * Destroys a group.
 		 */
 		public function destroy_group() {
-			if (empty($_POST)) return;
+			if (!isset($_POST['id']))
+				error(__("No ID Specified"), __("An ID is required to delete a post."));
+			if ($_POST['destroy'] == "bollocks")
+				redirect("/admin/?action=manage_pages");
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
 			if (!Visitor::current()->group()->can("delete_group"))
