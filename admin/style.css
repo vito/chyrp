@@ -568,6 +568,8 @@ hr {
 }
 .delete_link {
 	color: #b30600;
+}
+table tbody td .delete_link {
 	margin: 0 -.4em 0 0;
 }
 .delete_link:after {

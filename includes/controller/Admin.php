@@ -221,7 +221,16 @@
 		 * Add a user when the form is submitted. Shows an error if the user lacks permissions.
 		 */
 		public function add_user() {
+			$config = Config::current();
+
+			$this->context["default_group"] = new Group($config->default_group);
+			$this->context["groups"] = Group::find(array("pagination" => "false",
+			                                             "where" => array("`id` != :guest_id", "`id` != :default_id"),
+			                                             "params" => array(":guest_id" => $config->guest_group, "default_id" => $config->default_group),
+			                                             "order" => "`id` desc"));
+
 			if (empty($_POST)) return;
+
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
 			if (!Visitor::current()->group()->can("edit_user"))
@@ -230,9 +239,9 @@
 			if (empty($_POST['login']))
 				error(__("Error"), __("Please enter a username for your account."));
 
-			$check_user = User::find(array("where" => "`login` = :login",
-			                               "params" => array(":login" => $_POST['login'])));
-			if (count($check_user))
+			$check = new User(null, array("where" => "`login` = :login",
+			                              "params" => array(":login" => $_POST['login'])));
+			if (!$check->no_results)
 				error(__("Error"), __("That username is already in use."));
 
 			if (empty($_POST['password1']) or empty($_POST['password2']))
@@ -244,9 +253,9 @@
 			if (!eregi("^[[:alnum:]][a-z0-9_.-\+]*@[a-z0-9.-]+\.[a-z]{2,6}$",$_POST['email']))
 				error(__("Error"), __("Unsupported e-mail address."));
 
-			User::add($_POST['login'], $_POST['password1'], $_POST['email'], $_POST['full_name'], $_POST['website'], $_POST['group_id']);
+			User::add($_POST['login'], $_POST['password1'], $_POST['email'], $_POST['full_name'], $_POST['website'], $_POST['group']);
 
-			redirect("/admin/?action=manage&sub=user&added");
+			redirect("/admin/?action=manage_users&added");
 		}
 
 		/**
@@ -309,6 +318,8 @@
 		 */
 		public function destroy_user() {
 			if (empty($_POST)) return;
+			if ($_POST['destroy'] == "bollocks")
+				redirect("/admin/?action=manage_users");
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
 			if (!Visitor::current()->group()->can("delete_user"))
@@ -316,7 +327,7 @@
 
 			User::delete($_POST['id']);
 
-			redirect("/admin/?action=manage&sub=user&deleted");
+			redirect("/admin/?action=manage_users&deleted");
 		}
 
 		/**
@@ -327,6 +338,7 @@
 			$this->context["users"] = User::find(array("per_page" => 25));
 			$this->context["updated"] = isset($_GET['updated']);
 			$this->context["deleted"] = isset($_GET['deleted']);
+			$this->context["added"]   = isset($_GET['added']);
 		}
 
 		/**

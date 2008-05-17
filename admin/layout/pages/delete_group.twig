@@ -20,7 +20,7 @@
 					<div class="center">
 						<select name="move_group" id="move_group" class="big2">
 							{% for group in groups %}
-							<option value="$group.id"${ group.id | selected(site.default_group) }>$group.name</option>
+							<option value="$group.id"${ group.id | option_selected(site.default_group) }>$group.name</option>
 							{% endfor %}
 						</select>
 					</div>
@@ -31,7 +31,7 @@
 					<div class="center">
 						<select name="default_group" id="default_group" class="big2">
 							{% for group in groups %}
-							<option value="$group.id"${ group.id | selected(site.default_group) }>$group.name</option>
+							<option value="$group.id"${ group.id | option_selected(site.default_group) }>$group.name</option>
 							{% endfor %}
 						</select>
 					</div>
@@ -42,7 +42,7 @@
 					<div class="center">
 						<select name="guest_group" id="guest_group" class="big2">
 							{% for group in groups %}
-							<option value="$group.id"${ group.id | selected(site.default_group) }>$group.name</option>
+							<option value="$group.id"${ group.id | option_selected(site.default_group) }>$group.name</option>
 							{% endfor %}
 						</select>
 					</div>

@@ -65,7 +65,8 @@ $twig_filters = array(
 
 	'trigger' =>	'twig_trigger_filter',
 	'fallback' =>	'twig_fallback_filter',
-	'selected' =>	'twig_selected_filter'
+	'selected' =>	'twig_selected_filter',
+	'option_selected' =>	'twig_option_selected_filter'
 );
 
 
@@ -364,4 +365,12 @@ function twig_selected_filter($foo) {
 
 	if (in_array($foo, $try))
 		return ($just_class) ? "selected" : ' class="selected"' ;
+}
+
+function twig_option_selected_filter($foo) {
+	$try = func_get_args();
+	array_shift($try);
+
+	if (in_array($foo, $try))
+		return ' selected="selected"';
 }

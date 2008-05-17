@@ -10,6 +10,9 @@
 			{% if deleted %}
 			<p class="message yay">${ "User deleted." | translate }</p>
 			{% endif %}
+			{% if added %}
+			<p class="message yay">${ "User added." | translate }</p>
+			{% endif %}
 			<h2>${ "Last 25 Users" | translate }</h2>
 			<table border="0" cellspacing="0" cellpadding="0" class="wide">
 				<thead>

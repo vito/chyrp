@@ -30,7 +30,7 @@
 					<label for="group">${ "Group" | translate }</label>
 					<select name="group" id="group">
 						{% for group in groups %}
-						<option value="$group.id"${ group.id | selected(user.group_id) }>$group.name</option>
+						<option value="$group.id"${ group.id | option_selected(user.group_id) }>$group.name</option>
 						{% endfor %}
 					</select>
 				</p>
