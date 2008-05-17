@@ -22,14 +22,14 @@
 		                     '(feather)'  => '([^\/]+)',
 		                     '(feathers)' => '([^\/]+)');
 
-		public $urls = array('/\/id\/([0-9]+)\//'                => '?action=view&amp;id=$1',
-		                     '/\/page\/(([^\/]+)\/)+/'           => '?action=page&amp;url=$2',
-		                     '/\/search\//'                      => '?action=search',
-		                     '/\/search\/([^\/]+)\//'            => '?action=search&amp;query=$1',
-		                     '/\/archive\/([^\/]+)\/([^\/]+)\//' => '?action=archive&amp;year=$1&amp;month=$2',
-		                     '/\/bookmarklet\/([^\/]+)\//'       => '?action=bookmarklet&amp;status=$1',
-		                     '/\/theme_preview\/([^\/]+)\//'     => '?action=theme_preview&amp;theme=$1',
-		                     '/\/([^\/]+)\/feed\//'              => '?action=$1&amp;feed');
+		public $urls = array('/\/id\/([0-9]+)\//'                => '/?action=view&amp;id=$1',
+		                     '/\/page\/(([^\/]+)\/)+/'           => '/?action=page&amp;url=$2',
+		                     '/\/search\//'                      => '/?action=search',
+		                     '/\/search\/([^\/]+)\//'            => '/?action=search&amp;query=$1',
+		                     '/\/archive\/([^\/]+)\/([^\/]+)\//' => '/?action=archive&amp;year=$1&amp;month=$2',
+		                     '/\/bookmarklet\/([^\/]+)\//'       => '/?action=bookmarklet&amp;status=$1',
+		                     '/\/theme_preview\/([^\/]+)\//'     => '/?action=theme_preview&amp;theme=$1',
+		                     '/\/([^\/]+)\/feed\//'              => '/?action=$1&amp;feed');
 
 		/**
 		 * Function: __construct
@@ -64,9 +64,9 @@
 			$urls = Trigger::current()->filter("parse_urls", $this->urls);
 
 			foreach (array_diff_assoc($urls, $this->urls) as $key => $value)
-				$urls[substr($key, 0, -1)."feed\//"] = $value."&amp;feed";
+				$urls[substr($key, 0, -1)."feed\//"] = "/".$value."&amp;feed";
 
-			$urls["/\/(.*?)\/$/"] = "?action=$1";
+			$urls["/\/(.*?)\/$/"] = "/?action=$1";
 
 			return $config->url.preg_replace(
 				array_keys($urls),
