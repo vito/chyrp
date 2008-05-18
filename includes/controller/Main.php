@@ -45,11 +45,13 @@
 		 * Grabs the posts for viewing the Drafts lists. Shows an error if the user lacks permissions.
 		 */
 		public function drafts() {
-			global $posts;
-			if (!Visitor::current()->group()->can("view_draft"))
+			$visitor = Visitor::current();
+			if (!$visitor->group()->can("view_draft"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to view drafts."));
 
-			$posts = Post::find(array("where" => "`__posts`.`status` = 'draft'"));
+			global $posts;
+			$posts = Post::find(array("where" => array("`__posts`.`status` = 'draft'", "`__posts`.`user_id` = :current_user"),
+			                          "params" => array(":current_user" => $visitor->id)));
 		}
 
 		/**
@@ -95,10 +97,10 @@
 			$params = array();
 			foreach ($matches[1] as $attr)
 				if (in_array($attr, $times)) {
-					$where[] = $attr."(`created_at`) = :created".$attr;
-					$params[':created'.$attr] = $get[$attr];
+					$where[] = strtoupper($attr)."(`__posts`.`created_at`) = :created_".$attr;
+					$params[':created_'.$attr] = $get[$attr];
 				} elseif ($attr == "author") {
-					$where[] = "`user_id` = :attrauthor";
+					$where[] = "`__posts`.`user_id` = :attrauthor";
 					$params[':attrauthor'] = $sql->select("users",
 					                                      "id",
 					                                      "`login` = :login",
@@ -107,13 +109,13 @@
 					                                          ":login" => $get['author']
 					                                      ), 1)->fetchColumn();
 				} elseif ($attr == "feathers") {
-					$where[] = "`feather` = :feather";
+					$where[] = "`__posts`.`feather` = :feather";
 					$params[':feather'] = depluralize($get['feathers']);
 				} else {
 					list($where, $params, $attr) = $trigger->filter('main_controller_view', array($where, $params, $attr), true);
 
 					if ($attr !== null) {
-						$where[] = "`".$attr."` = :attr".$attr;
+						$where[] = "`__posts`.`".$attr."` = :attr".$attr;
 						$params[':attr'.$attr] = $get[$attr];
 					}
 				}

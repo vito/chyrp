@@ -218,17 +218,17 @@
 
 			# Can they edit drafts?
 			if ($visitor->group()->can("edit_draft") and
-			    Post::find(array("where" => "`status` = 'draft'")))
+			    Post::find(array("where" => "`__posts`.`status` = 'draft'")))
 				return true;
 
 			# Can they edit their own posts, and do they have any?
 			if ($visitor->group()->can("edit_own_post") and
-			    Post::find(array("where" => "`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
+			    Post::find(array("where" => "`__posts`.`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
 				return true;
 
 			# Can they edit their own drafts, and do they have any?
 			if ($visitor->group()->can("edit_own_draft") and
-			    Post::find(array("where" => "`status` = 'draft' and `user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
+			    Post::find(array("where" => "`__posts`.`status` = 'draft' and `__posts`.`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
 				return true;
 
 			return false;
@@ -247,17 +247,17 @@
 
 			# Can they delete drafts?
 			if ($visitor->group()->can("delete_draft") and
-			    Post::find(array("where" => "`status` = 'draft'")))
+			    Post::find(array("where" => "`__posts`.`status` = 'draft'")))
 				return true;
 
 			# Can they delete their own posts, and do they have any?
 			if ($visitor->group()->can("delete_own_post") and
-			    Post::find(array("where" => "`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
+			    Post::find(array("where" => "`__posts`.`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
 				return true;
 
 			# Can they delete their own drafts, and do they have any?
 			if ($visitor->group()->can("delete_own_draft") and
-			    Post::find(array("where" => "`status` = 'draft' and `user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
+			    Post::find(array("where" => "`__posts`.`status` = 'draft' and `__posts`.`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
 				return true;
 
 			return false;

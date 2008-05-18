@@ -45,6 +45,8 @@
 		}
 
 		static function add_post($post) {
+			if (empty($_POST['tags'])) return;
+
 			$tags = explode(",", $_POST['tags']); // Split at the comma
 			$tags = array_map("trim", $tags); // Remove whitespace
 			$tags = array_map("strip_tags", $tags); // Remove HTML

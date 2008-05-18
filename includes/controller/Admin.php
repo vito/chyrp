@@ -119,7 +119,7 @@
 		 */
 		public function manage_posts() {
 			if (!Post::any_editable() and !Post::any_deletable())
-				error(__("Access Denied"), __("You do not have sufficient privileges to manage posts."));
+				error(__("Access Denied"), __("You do not have sufficient privileges to manage any posts."));
 
 			$this->context["posts"] = Post::find(array("where" => false, "per_page" => 25));
 

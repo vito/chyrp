@@ -12,17 +12,20 @@
 {% trigger "head" %}
 	</head>
 	<body>
-{% if visitor.group.can("add_post") or visitor.group.can("add_page") or visitor.group.can("view_draft") or visitor.group.can("change_settings") %}
+{% if visitor.group.can("add_post") or visitor.group.can("add_draft") or visitor.group.can("add_page") or visitor.group.can("view_draft") or visitor.group.can("change_settings") %}
 		<div class="controls" id="admin_bar"{% if hide_admin %} style="display: none"{% endif %}>
 			<ul>
 {% if visitor.group.can("add_post") %}
 				<li><a id="add_post" href="{% admin "write_post" %}">${ "Write" | translate }</a></li>
 {% endif %}
+{% if visitor.group.can("add_draft") %}
+				<li><a id="add_draft" href="{% admin "write_post" %}">${ "Write Draft" | translate }</a></li>
+{% endif %}
 {% if visitor.group.can("add_page") %}
 				<li><a id="add_page" href="{% admin "write_page" %}">${ "Add Page" | translate }</a></li>
 {% endif %}
 {% if visitor.group.can("view_draft") %}
-				<li><a id="your_drafts" href="{% url "drafts/" %}">${ "Drafts" | translate }</a></li>
+				<li><a id="your_drafts" href="{% url "drafts/" %}">${ "Your Drafts" | translate }</a></li>
 {% endif %}
 {% if visitor.group.can("change_settings") %}
 				<li><a id="site_settings" href="$site.url/admin/">${ "Admin" | translate }</a></li>

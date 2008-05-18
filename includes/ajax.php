@@ -58,19 +58,19 @@
 					                             "limit" => 1));
 					break;
 				case "drafts":
-					$post = new Post(null, array("where" => array("`status` = 'draft'", $id),
+					$post = new Post(null, array("where" => array("`__posts`.`status` = 'draft'", $id),
 					                             "params" => array(":id" => $_POST['id']),
 					                             "offset" => $_POST['offset'],
 					                             "limit" => 1));
 					break;
 				case "archive":
-					$post = new Post(null, array("where" => array("`created_at` like :created_at", $id),
+					$post = new Post(null, array("where" => array("`__posts`.`created_at` like :created_at", $id),
 					                             "params" => array(":created_at" => "'".$_POST['year']."-".$_POST['month']."%'", ":id" => $_POST['id']),
 					                             "offset" => $_POST['offset'],
 					                             "limit" => 1));
 					break;
 				case "search":
-					$post = new Post(null, array("where" => array("`xml` like :query", $id),
+					$post = new Post(null, array("where" => array("`__posts`.`xml` like :query", $id),
 					                             "params" => array(":query" => "'%".urldecode($_POST['query'])."%'", ":id" => $_POST['id']),
 					                             "offset" => $_POST['offset'],
 					                             "limit" => 1));

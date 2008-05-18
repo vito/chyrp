@@ -43,15 +43,9 @@
 			}
 
 			$config = Config::current();
-			foreach ($config->enabled_modules as $module) {
-				$camelized = camelize($module);
-
-				if (in_array(array($camelized, $name), $this->called))
-					continue;
-
-				if (is_callable(array($camelized, $name)))
+			foreach ($config->enabled_modules as $module)
+				if (!in_array(array($modules[$module], $name), $this->called) and is_callable(array($modules[$module], $name)))
 					$caller(array($modules[$module], $name), $arg);
-			}
 		}
 
 		/**
@@ -81,15 +75,9 @@
 			}
 
 			$config = Config::current();
-			foreach ($config->enabled_modules as $module) {
-				$camelized = camelize($module);
-
-				if (in_array(array($camelized, $name), $this->called))
-					continue;
-
-				if (is_callable(array($camelized, $name)))
+			foreach ($config->enabled_modules as $module)
+				if (!in_array(array($modules[$module], $name), $this->called) and is_callable(array($modules[$module], $name)))
 					$this->modified_text[$name] = $caller(array($modules[$module], $name), $this->modified($name, $arg));
-			}
 
 			$final = $this->modified($name, $arg);
 
