@@ -17,8 +17,7 @@
 			<ul>
 {% if visitor.group.can("add_post") %}
 				<li><a id="add_post" href="{% admin "write_post" %}">${ "Write" | translate }</a></li>
-{% endif %}
-{% if visitor.group.can("add_draft") %}
+{% elseif visitor.group.can("add_draft") %}
 				<li><a id="add_draft" href="{% admin "write_post" %}">${ "Write Draft" | translate }</a></li>
 {% endif %}
 {% if visitor.group.can("add_page") %}

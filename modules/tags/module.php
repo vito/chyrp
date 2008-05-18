@@ -192,6 +192,9 @@
 		}
 
 		static function filter_post($post) {
+			if (!isset($post->tags))
+				return $post->tags = array("unlinked" => array(), "linked" => array());
+
 			$post->tags = array("unlinked" => self::unlinked_tags($post->tags),
 			                    "linked"   => self::linked_tags($post->tags, $post->clean_tags));
 		}
