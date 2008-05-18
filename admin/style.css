@@ -170,7 +170,7 @@ a:hover {
 .disable ul li {
 	padding: .1em .25em .1em .7em;
 	margin: 0 0 .5em;
-	list-style: disc inside;
+	list-style: disc inside !important;
 	position: relative;
 }
 .enable ul li img,
