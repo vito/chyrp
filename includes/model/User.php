@@ -20,10 +20,6 @@
 		 */
 		public function __construct($user_id, $options = array()) {
 			parent::grab($this, $user_id, $options);
-
-			if (!$this->no_results)
-				foreach ($this->group()->permissions as $permission)
-					$this->can[$permission] = true;
 		}
 
 		/**

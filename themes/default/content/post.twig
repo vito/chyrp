@@ -21,10 +21,10 @@
 								{% if site.enable_trackbacking %}
 								<em>|</em> <a href="$post.trackback_url">${ "Trackback" | translate }</a>
 								{% endif %}
-								{% if visitor.can.edit_post %}
+								{% if visitor.group.can("edit_post") %}
 								<em>|</em> $post.edit_link
 								{% endif %}
-								{% if visitor.can.delete_post %}
+								{% if visitor.group.can("delete_post") %}
 								<em>|</em> $post.delete_link
 								{% endif %}
 							</span>

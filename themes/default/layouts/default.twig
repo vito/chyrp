@@ -12,19 +12,19 @@
 {% trigger "head" %}
 	</head>
 	<body>
-{% if visitor.can.add_post or visitor.can.add_page or visitor.can.view_draft or visitor.can.change_settings %}
+{% if visitor.group.can("add_post") or visitor.group.can("add_page") or visitor.group.can("view_draft") or visitor.group.can("change_settings") %}
 		<div class="controls" id="admin_bar"{% if hide_admin %} style="display: none"{% endif %}>
 			<ul>
-{% if visitor.can.add_post %}
+{% if visitor.group.can("add_post") %}
 				<li><a id="add_post" href="{% admin "write_post" %}">${ "Write" | translate }</a></li>
 {% endif %}
-{% if visitor.can.add_page %}
+{% if visitor.group.can("add_page") %}
 				<li><a id="add_page" href="{% admin "write_page" %}">${ "Add Page" | translate }</a></li>
 {% endif %}
-{% if visitor.can.view_draft %}
+{% if visitor.group.can("view_draft") %}
 				<li><a id="your_drafts" href="{% url "drafts/" %}">${ "Drafts" | translate }</a></li>
 {% endif %}
-{% if visitor.can.change_settings %}
+{% if visitor.group.can("change_settings") %}
 				<li><a id="site_settings" href="$site.url/admin/">${ "Admin" | translate }</a></li>
 {% endif %}
 				<li class="close"><a class="toggle_admin" href="{% url "toggle_admin/" %}">${ "Close" | translate }</a></li>
@@ -58,7 +58,7 @@ $page_list
 				<ul>
 {% if visitor.logged_in %}
 					<li><a href="{% url "controls/" %}">${ "User Controls" | translate }</a></li>
-{% if visitor.can.add_post or visitor.can.add_page or visitor.can.view_draft or visitor.can.change_settings %}
+{% if visitor.group.can("add_post") or visitor.group.can("add_page") or visitor.group.can("view_draft") or visitor.group.can("change_settings") %}
 					<li><a class="toggle_admin" href="{% url "toggle_admin/" %}">${ "Toggle Admin Bar" | translate }</a></li>
 {% endif %}
 					<li><a href="{% url "logout/" %}">${ "Log Out" | translate }</a></li>

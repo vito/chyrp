@@ -21,9 +21,11 @@
 				<br id="after_options" />
 				<br class="js_enabled" />
 {% if route.action == "write_post" %}
+                {% if visitor.group.can("add_post") %}
 				<button type="submit" class="yay right" accesskey="s" id="publish">
 					<img src="images/icons/success.png" alt="success" />${ "Publish" | translate }
 				</button>
+				{% endif %}
 				<button type="submit" name="draft" value="true" class="right" accesskey="s">
 					<img src="images/icons/save.png" alt="success" />${ "Save" | translate }
 				</button>
@@ -36,7 +38,7 @@
 				<div class="clear" />
 				<br class="js_disabled" />
 				<div id="more_options" class="more_options js_disabled">
-					{% if visitor.can.add_post %}
+					{% if visitor.group.can("add_post") %}
 					<p>
 						<label for="status">${ "Status" | translate }</label>
 						<select name="status" id="status">
