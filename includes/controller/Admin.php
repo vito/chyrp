@@ -15,6 +15,9 @@
 		 * Post writing.
 		 */
 		public function write_post() {
+			if (!Visitor::current()->group()->can("add_post"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
+
 			global $feathers;
 			$this->context["feathers"]       = $feathers;
 			$this->context["feather"]        = $feathers[fallback($_GET['feather'], Config::current()->enabled_feathers[0], true)];
@@ -26,14 +29,15 @@
 		 * Adds a post when the form is submitted. Shows an error if the user lacks permissions.
 		 */
 		public function add_post() {
-			global $feathers;
+			if (!Visitor::current()->group()->can("add_post"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
+
 			if (empty($_POST)) return;
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
-			if (!Visitor::current()->group()->can("add_post"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
+			global $feathers;
 			$feathers[$_POST['feather']]->submit();
 		}
 
@@ -42,15 +46,16 @@
 		 * Post editing.
 		 */
 		public function edit_post() {
-			global $feathers;
 			if (empty($_GET['id']))
 				error(__("No ID Specified"), __("An ID is required to edit a post."));
 
 			$this->context["post"] = new Post($_GET['id'], array("filter" => false));
-			$this->context["feather"] = $feathers[$this->context["post"]->feather];
 
 			if (!$this->context["post"]->editable())
 				error(__("Access Denied"), __("You do not have sufficient privileges to edit this post."));
+
+			global $feathers;
+			$this->context["feather"] = $feathers[$this->context["post"]->feather];
 		}
 
 		/**
@@ -58,14 +63,16 @@
 		 * Updates a post when the form is submitted. Shows an error if the user lacks permissions.
 		 */
 		public function update_post() {
-			global $feathers;
 			if (empty($_POST)) return;
+
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
+
 			$post = new Post($_POST['id']);
 			if (!$post->editable())
-				error(__("Access Denied"), __("You do not have sufficient privileges to edit posts."));
+				error(__("Access Denied"), __("You do not have sufficient privileges to edit this post."));
 
+			global $feathers;
 			$feathers[$post->feather]->update();
 
 			if (!isset($_POST['ajax']))
@@ -80,6 +87,9 @@
 		 */
 		public function delete_post() {
 			$this->context["post"] = new Post($_GET['id']);
+
+			if (!$this->context["post"]->deletable())
+				error(__("Access Denied"), __("You do not have sufficient privileges to delete this post."));
 		}
 
 		/**
@@ -89,8 +99,10 @@
 		public function destroy_post() {
 			if ($_POST['destroy'] == "bollocks")
 				redirect("/admin/?action=manage_posts");
+
 			if (empty($_POST['id']))
 				error(__("No ID Specified"), __("An ID is required to delete a post."));
+
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
 
@@ -108,6 +120,9 @@
 		 * Post managing.
 		 */
 		public function manage_posts() {
+			if (!Post::any_editable() and !Post::any_deletable())
+				error(__("Access Denied"), __("You do not have sufficient privileges to manage posts."));
+
 			$this->context["posts"] = Post::find(array("where" => false, "per_page" => 25));
 
 			if (!empty($_GET['updated']))
@@ -121,6 +136,9 @@
 		 * Page creation.
 		 */
 		public function write_page() {
+			if (!Visitor::current()->group()->can("add_page"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to create pages."));
+
 			$this->context["pages"] = Page::find();
 		}
 
@@ -129,11 +147,13 @@
 		 * Adds a page when the form is submitted. Shows an error if the user lacks permissions.
 		 */
 		public function add_page() {
-			if (empty($_POST)) return;
-			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
 			if (!Visitor::current()->group()->can("add_page"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to create pages."));
+
+			if (empty($_POST)) return;
+
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
 
 			$show_in_list = !empty($_POST['show_in_list']);
 			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : sanitize($_POST['title']) ;
@@ -149,10 +169,11 @@
 		 * Page editing.
 		 */
 		public function edit_page() {
-			if (empty($_GET['id']))
-				error(__("No ID Specified"), __("An ID is required to edit a page."));
 			if (!Visitor::current()->group()->can("edit_page"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to edit this page."));
+
+			if (empty($_GET['id']))
+				error(__("No ID Specified"), __("An ID is required to edit a page."));
 
 			$this->context["page"] = new Page($_GET['id']);
 			$this->context["pages"] = Page::find(array("where" => "`id` != :id", "params" => array(":id" => $_GET['id'])));
@@ -163,11 +184,13 @@
 		 * Updates a page when the form is submitted. Shows an error if the user lacks permissions.
 		 */
 		public function update_page() {
-			if (empty($_POST)) return;
-			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
 			if (!Visitor::current()->group()->can("edit_page"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to edit pages."));
+
+			if (empty($_POST)) return;
+
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
 
 			$page = new Page($_POST['id']);
 			$page->update($_POST['title'], $_POST['body'], $_POST['parent_id'], !empty($_POST['show_in_list']), $page->list_order, $_POST['slug']);
@@ -181,6 +204,9 @@
 		 * Page deletion (confirm page).
 		 */
 		public function delete_page() {
+			if (!Visitor::current()->group()->can("delete_page"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to delete pages."));
+
 			$this->context["page"] = new Page($_GET['id']);
 		}
 
@@ -189,14 +215,17 @@
 		 * Destroys a page.
 		 */
 		public function destroy_page() {
-			if ($_POST['destroy'] == "bollocks")
-				redirect("/admin/?action=manage_pages");
-			if (empty($_POST['id']))
-				error(__("No ID Specified"), __("An ID is required to delete a post."));
-			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
 			if (!Visitor::current()->group()->can("delete_page"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to delete pages."));
+
+			if ($_POST['destroy'] == "bollocks")
+				redirect("/admin/?action=manage_pages");
+
+			if (empty($_POST['id']))
+				error(__("No ID Specified"), __("An ID is required to delete a post."));
+
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
 
 			Page::delete($_POST['id']);
 
@@ -208,6 +237,10 @@
 		 * Page managing.
 		 */
 		public function manage_pages() {
+		    $visitor = Visitor::current();
+			if (!$visitor->group()->can("edit_page") and !$visitor->group()->can("delete_page") and !$visitor->group()->can("add_page"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to manage pages."));
+
 			$this->context["pages"] = Page::find(array("per_page" => 25));
 
 			if (!empty($_GET['updated']))
@@ -221,6 +254,9 @@
 		 * Add a user when the form is submitted. Shows an error if the user lacks permissions.
 		 */
 		public function add_user() {
+			if (!Visitor::current()->group()->can("edit_user"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to edit users."));
+
 			$config = Config::current();
 
 			$this->context["default_group"] = new Group($config->default_group);
@@ -233,8 +269,6 @@
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
-			if (!Visitor::current()->group()->can("edit_user"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to edit users."));
 
 			if (empty($_POST['login']))
 				error(__("Error"), __("Please enter a username for your account."));
@@ -263,10 +297,11 @@
 		 * User editing.
 		 */
 		public function edit_user() {
-			if (empty($_GET['id']))
-				error(__("No ID Specified"), __("An ID is required to edit a user."));
 			if (!Visitor::current()->group()->can("edit_user"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to edit this user."));
+
+			if (empty($_GET['id']))
+				error(__("No ID Specified"), __("An ID is required to edit a user."));
 
 			$this->context["user"] = new User($_GET['id']);
 			$this->context["groups"] = Group::find(array("pagination" => false,
@@ -309,6 +344,9 @@
 		 * User deletion.
 		 */
 		public function delete_user() {
+			if (!Visitor::current()->group()->can("delete_user"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to delete users."));
+
 			$this->context["user"] = new User($_GET['id']);
 		}
 
@@ -317,13 +355,16 @@
 		 * Destroys a user.
 		 */
 		public function destroy_user() {
-			if (empty($_POST)) return;
-			if ($_POST['destroy'] == "bollocks")
-				redirect("/admin/?action=manage_users");
-			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
 			if (!Visitor::current()->group()->can("delete_user"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to delete users."));
+
+			if (empty($_POST)) return;
+
+			if ($_POST['destroy'] == "bollocks")
+				redirect("/admin/?action=manage_users");
+
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
 
 			User::delete($_POST['id']);
 
@@ -335,6 +376,10 @@
 		 * User managing.
 		 */
 		public function manage_users() {
+		    $visitor = Visitor::current();
+			if (!$visitor->group()->can("edit_user") and !$visitor->group()->can("delete_user") and !$visitor->group()->can("add_user"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to manage users."));
+
 			$this->context["users"] = User::find(array("per_page" => 25));
 			$this->context["updated"] = isset($_GET['updated']);
 			$this->context["deleted"] = isset($_GET['deleted']);
@@ -346,13 +391,15 @@
 		 * Adds a group when the form is submitted. Shows an error if the user lacks permissions.
 		 */
 		public function add_group() {
+			if (!Visitor::current()->group()->can("add_group"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to create groups."));
+
 			$this->context["permissions"] = SQL::current()->query("select * from `__permissions`")->fetchAll();
 
 			if (empty($_POST)) return;
+
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
-			if (!Visitor::current()->group()->can("add_group"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to create groups."));
 
 			Group::add($_POST['name'], array_keys($_POST['permissions']));
 
@@ -364,6 +411,9 @@
 		 * Group editing.
 		 */
 		public function edit_group() {
+			if (!Visitor::current()->group()->can("edit_group"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to edit groups."));
+
 			$this->context["group"] = new Group($_GET['id']);
 			$this->context["permissions"] = SQL::current()->query("select * from `__permissions`")->fetchAll();
 		}
@@ -373,11 +423,13 @@
 		 * Updates a group when the form is submitted. Shows an error if the user lacks permissions.
 		 */
 		public function update_group() {
-			if (empty($_POST)) return;
-			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
 			if (!Visitor::current()->group()->can("edit_group"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to edit groups."));
+
+			if (empty($_POST)) return;
+
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
 
 			$permissions = array_keys($_POST['permissions']);
 
@@ -395,6 +447,9 @@
 		 * Group deletion (confirm page).
 		 */
 		public function delete_group() {
+			if (!Visitor::current()->group()->can("delete_group"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to delete groups."));
+
 			$this->context["group"] = new Group($_GET['id']);
 			$this->context["groups"] = Group::find(array("where" => "`id` != :group_id",
 			                                             "order" => "`id` asc",
@@ -407,14 +462,17 @@
 		 * Destroys a group.
 		 */
 		public function destroy_group() {
-			if (!isset($_POST['id']))
-				error(__("No ID Specified"), __("An ID is required to delete a post."));
-			if ($_POST['destroy'] == "bollocks")
-				redirect("/admin/?action=manage_pages");
-			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
 			if (!Visitor::current()->group()->can("delete_group"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to delete groups."));
+
+			if (!isset($_POST['id']))
+				error(__("No ID Specified"), __("An ID is required to delete a group."));
+
+			if ($_POST['destroy'] == "bollocks")
+				redirect("/admin/?action=manage_pages");
+
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
 
 			$group = new Group($_POST['id']);
 			foreach ($group->members() as $user)
@@ -436,6 +494,10 @@
 		 * Group managing.
 		 */
 		public function manage_groups() {
+		    $visitor = Visitor::current();
+			if (!$visitor->group()->can("edit_group") and !$visitor->group()->can("delete_group") and !$visitor->group()->can("add_group"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to manage groups."));
+
 			$this->context["groups"] = Group::find(array("per_page" => 25, "order" => "`id` asc"));
 			$this->context["updated"] = isset($_GET['updated']);
 			$this->context["deleted"] = isset($_GET['deleted']);
@@ -622,11 +684,13 @@
 		 * Changes Chyrp settings. Shows an error if the user lacks permissions.
 		 */
 		public function settings() {
-			if (empty($_POST)) return;
-			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
 			if (!Visitor::current()->group()->can("change_settings"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+
+			if (empty($_POST)) return;
+
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
 
 			$config = Config::current();
 			switch($_GET['sub']) {
@@ -681,7 +745,6 @@
 		 * Reorders pages.
 		 */
 		public function reorder_pages() {
-			global $route;
 			foreach ($_POST['list_order'] as $id => $order) {
 				$page = new Page($id);
 				$page->update($page->title, $page->body, $page->parent_id, $page->show_in_list, $order, $page->url);
