@@ -254,7 +254,7 @@
 			$config = Config::current();
 
 			$this->context["default_group"] = new Group($config->default_group);
-			$this->context["groups"] = Group::find(array("pagination" => "false",
+			$this->context["groups"] = Group::find(array("pagination" => false,
 			                                             "where" => array("`id` != :guest_id", "`id` != :default_id"),
 			                                             "params" => array(":guest_id" => $config->guest_group, "default_id" => $config->default_group),
 			                                             "order" => "`id` desc"));
@@ -694,13 +694,12 @@
 			if (!Visitor::current()->group()->can("change_settings"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
-
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
 
 			$config = Config::current();
-			switch($_GET['sub']) {
-				case "website":
+			switch($_POST['page']) {
+				case "general":
 					$can_register = !empty($_POST['can_register']);
 					$time_offset = $_POST['time_offset'] * 3600;
 
@@ -730,10 +729,29 @@
 					break;
 				default:
 					$trigger = Trigger::current();
-					$trigger->call("change_settings", $_GET['sub']);
+					$trigger->call("change_settings", $_POST['page']);
 					break;
 			}
-			redirect("/admin/?action=settings&sub=".$_GET['sub']."&updated");
+			redirect("/admin/?action=".$_POST['page']."_settings&updated");
+		}
+
+		/**
+		 * Function: general_settings
+		 * General Settings page.
+		 */
+		public function general_settings() {
+			$config = Config::current();
+			$this->context["groups"] = Group::find(array("pagination" => false, "order" => "`id` desc"));
+			$this->context["locales"] = array();
+
+			if ($open = opendir(INCLUDES_DIR."/locale/")) {
+			     while (($folder = readdir($open)) !== false) {
+					$split = explode(".", $folder);
+					if (end($split) == "mo")
+						$this->context["locales"][] = array("code" => $split[0], "name" => lang_code($split[0]));
+				}
+				closedir($open);
+			}
 		}
 
 		/**

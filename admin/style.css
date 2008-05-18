@@ -298,16 +298,19 @@ form.delete blockquote.noitalic {
 	font-style: normal;
 }
 form.split label {
-	width: 44%;
+	width: 41%;
 	float: left;
 	text-align: right;
-	margin-right: 1%;
 	font-weight: bold;
-	padding: 4px 5px 5px;
+	padding: 4px 2% 5px;
 	color: #999;
 }
 form.split select {
 	margin: 3px 0 0;
+}
+form.split small {
+	display: block;
+	margin-left: 45%;
 }
 label {
 	display: block;
@@ -330,7 +333,11 @@ input.text, input.file, select, textarea {
 	margin-bottom: .25em;
 }
 input.checkbox {
-	margin: 6px 5px 0;
+	margin: 6px 5px 0 0;
+}
+span.checkbox {
+	position: relative;
+	top: -3px;
 }
 textarea {
 	font-size: 1em;

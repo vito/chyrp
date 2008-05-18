@@ -33,7 +33,11 @@
 		</div>
 		<ul class="column" id="sub-nav">
 {% block subnav %}
+{% if (route.action | split("_") | last) == "settings" %}
+{% include "partials/settings_nav.twig" %}
+{% else %}
 {% include "partials/" ~ (route.action | split("_") | first) ~ "_nav.twig" %}
+{% endif %}
 {% endblock %}
 		</ul>
 		<div class="clear"></div>
