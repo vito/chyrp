@@ -87,6 +87,22 @@ a:hover {
 }
 /* @end */
 
+/* @group Footer */
+.footer {
+	width: 375px;
+	margin: 2.5em auto !important;
+	font-size: 1.25em;
+}
+.footer img {
+	float: left;
+	margin: -.5em 2em 0 0;
+}
+.footer .sub {
+	color: #acacac;
+	font-size: .7em;
+}
+/* @end */
+
 /* @group Sub-Navigation */
 #sub-nav {
 	margin-top: 1em;
@@ -389,7 +405,7 @@ tr.draft,
 tr.draft td,
 tr.draft td.main {
 	background-color: #dff4ff;
-	border-color: #c2e1ef;
+	border-color: #c2e1ef !important;
 	color: #336699;
 }
 /* @end */

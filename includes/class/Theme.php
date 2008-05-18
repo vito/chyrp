@@ -241,32 +241,34 @@
 			$visitor = Visitor::current();
 			$config = Config::current();
 
-			$this->context["title"] = $this->title;
-			$this->context["site"] = $config;
-			$this->context["feeds"] = $this->feeds();
-			$this->context["stylesheets"] = $this->stylesheets();
-			$this->context["javascripts"] = $this->javascripts();
-			$this->context["visitor"] = $visitor;
-			$this->context["visitor"]->logged_in = logged_in();
+			$this->context["title"]        = $this->title;
+			$this->context["site"]         = $config;
+			$this->context["feeds"]        = $this->feeds();
+			$this->context["stylesheets"]  = $this->stylesheets();
+			$this->context["javascripts"]  = $this->javascripts();
+			$this->context["visitor"]      = $visitor;
 			$this->context["archive_list"] = $this->list_archives();
-			$this->context["page_list"] = $this->list_pages();
-			$this->context["theme"] = array("url" => $config->url."/themes/".$config->theme);
-			$this->context["route"] = array("action" => $action, "ajax" => AJAX);
-			$this->context["hide_admin"] = isset($_COOKIE["chyrp_hide_admin"]);
-			$this->context["pagination"] = $paginate;
-			$this->context["POST"] = $_POST;
-			$this->context["GET"] = $_GET;
+			$this->context["page_list"]    = $this->list_pages();
+			$this->context["theme"]        = array("url" => $config->url."/themes/".$config->theme);
+			$this->context["route"]        = array("action" => $action, "ajax" => AJAX);
+			$this->context["hide_admin"]   = isset($_COOKIE["chyrp_hide_admin"]);
+			$this->context["pagination"]   = $paginate;
+			$this->context["version"]      = CHYRP_VERSION;
+			$this->context["POST"]         = $_POST;
+			$this->context["GET"]          = $_GET;
+
+			$this->context["visitor"]->logged_in = logged_in();
 
 			$trigger = Trigger::current();
 			$this->context = $trigger->filter("twig_global_context", $this->context);
 			$this->context = $trigger->filter(str_replace("/", "_", $this->file), $this->context);
 
 			$this->context["enabled_modules"] = array();
-			foreach (Config::current()->enabled_modules as $module)
+			foreach ($config->enabled_modules as $module)
 				$this->context["enabled_modules"][$module] = true;
 
 			$this->context["enabled_feathers"] = array();
-			foreach (Config::current()->enabled_feathers as $feather)
+			foreach ($config->enabled_feathers as $feather)
 				$this->context["enabled_feathers"][$feather] = true;
 
 			$this->context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);

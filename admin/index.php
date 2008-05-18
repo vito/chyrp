@@ -33,6 +33,7 @@
 			$admin->context["sql_debug"]  = SQL::current()->debug;
 			$admin->context["pagination"] = $paginate;
 			$admin->context["now"]        = time() + Config::current()->time_offset;
+			$admin->context["version"]    = CHYRP_VERSION;
 			$admin->context["POST"]       = $_POST;
 			$admin->context["GET"]        = $_GET;
 
