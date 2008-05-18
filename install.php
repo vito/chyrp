@@ -150,6 +150,7 @@
 
 			$permissions = array("view_site",
 			                     "change_settings",
+			                     "toggle_extensions",
 			                     "add_post",
 			                     "add_draft",
 			                     "edit_post",

@@ -447,6 +447,9 @@
 		 * Module enabling/disabling.
 		 */
 		public function extend_modules() {
+			if (!Visitor::current()->group()->can("toggle_extensions"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable modules."));
+
 			$config = Config::current();
 
 			$this->context["enabled_modules"] = $this->context["disabled_modules"] = array();
@@ -497,6 +500,9 @@
 		 * Feather enabling/disabling.
 		 */
 		public function extend_feathers() {
+			if (!Visitor::current()->group()->can("toggle_extensions"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable feathers."));
+
 			$config = Config::current();
 
 			$this->context["enabled_feathers"] = $this->context["disabled_feathers"] = array();
@@ -552,7 +558,7 @@
 
 			$type = (isset($_GET['module'])) ? "module" : "feather" ;
 
-			if (!$visitor->group()->can("change_settings"))
+			if (!$visitor->group()->can("toggle_extensions"))
 				if ($type == "module")
 					error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable modules."));
 				else
@@ -588,7 +594,7 @@
 
 			$type = (isset($_GET['module'])) ? "module" : "feather" ;
 
-			if (!$visitor->group()->can("change_settings"))
+			if (!$visitor->group()->can("toggle_extensions"))
 				if ($type == "module")
 					error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable modules."));
 				else
