@@ -700,31 +700,24 @@
 			$config = Config::current();
 			switch($_POST['page']) {
 				case "general":
-					$can_register = !empty($_POST['can_register']);
-					$time_offset = $_POST['time_offset'] * 3600;
-
 					$config->set("name", $_POST['name']);
 					$config->set("description", $_POST['description']);
 					$config->set("url", $_POST['url']);
 					$config->set("email", $_POST['email']);
-					$config->set("can_register", $can_register);
+					$config->set("can_register", !empty($_POST['can_register']));
 					$config->set("default_group", $_POST['default_group']);
 					$config->set("guest_group", $_POST['guest_group']);
-					$config->set("time_offset", $time_offset);
+					$config->set("time_offset", ($_POST['time_offset'] * 3600));
 					$config->set("posts_per_page", $_POST['posts_per_page']);
 					$config->set("locale", $_POST['locale']);
 					break;
 				case "syndication":
-					$enable_trackbacking = !empty($_POST['enable_trackbacking']);
-					$send_pingbacks = !empty($_POST['send_pingbacks']);
-
 					$config->set("feed_items", $_POST['feed_items']);
-					$config->set("enable_trackbacking", $enable_trackbacking);
-					$config->set("send_pingbacks", $send_pingbacks);
+					$config->set("enable_trackbacking", !empty($_POST['enable_trackbacking']));
+					$config->set("send_pingbacks", !empty($_POST['send_pingbacks']));
 					break;
-				case "routes":
-					$clean_urls = !empty($_POST['clean_urls']);
-					$config->set("clean_urls", $clean_urls);
+				case "route":
+					$config->set("clean_urls", !empty($_POST['clean_urls']));
 					$config->set("post_url", $_POST['post_url']);
 					break;
 				default:
@@ -732,6 +725,7 @@
 					$trigger->call("change_settings", $_POST['page']);
 					break;
 			}
+
 			redirect("/admin/?action=".$_POST['page']."_settings&updated");
 		}
 

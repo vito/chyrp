@@ -4,7 +4,7 @@
 
 {% block content %}
 			<h1>${ "Site Configuration" | translate }</h1>
-			<form id="general_setting" class="split" action="{% admin "settings" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+			<form id="general_settings" class="split" action="{% admin "settings" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 				<p>
 					<label for="name">${ "Site Name" | translate }</label>
 					<input class="text" type="text" name="name" value="${ site.name | escape }" id="name" />
@@ -60,13 +60,11 @@
 					<label for="posts_per_page">${ "Posts Per Page" | translate }</label>
 					<input class="text nowidth" type="text" name="posts_per_page" value="${ site.posts_per_page | escape }" size="2" id="posts_per_page" />
 				</p>
-				<br />
-				<p>
-					<label for="done"></label>
-					<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Update" | translate }</button>
-				</p>
 
-				<input type="hidden" name="page" value="general" id="id" />
-				<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+				<p class="buttons">
+					<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Update" | translate }</button>
+					<input type="hidden" name="page" value="general" id="id" />
+					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+				</p>
 			</form>
 {% endblock %}

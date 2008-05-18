@@ -56,7 +56,7 @@
 				if (substr($url, 0, 5) == "page/") # Different URL for viewing a page
 					$url = substr($url, 5);
 
-				return (substr($config->post_url, -1) == "/" or $clean_url == "search/") ?
+				return (substr($config->post_url, -1) == "/" or $url == "search/") ?
 					$config->url."/".$url :
 					$config->url."/".rtrim($url, "/") ;
 			}
@@ -153,7 +153,7 @@
 			# Searching
 			if ($arg[0] == "search") {
 				if (isset($arg[1]) and strpos($request, "?action=search&query="))
-					$this->redirect(str_replace("?action=search&query=", "", $request));
+					redirect(str_replace("?action=search&query=", "", $request));
 
 				if (isset($arg[1]))
 					$_GET['query'] = $arg[1];
@@ -216,17 +216,14 @@
 			}
 
 			# Post viewing
-			$post_url = $this->key_regexp($config->post_url);
+			$post_url = $this->key_regexp(rtrim($config->post_url, "/"));
 			preg_match_all("/([^\/]+)(\/|$)/", $config->post_url, $parameters);
-			if (preg_match("/".$post_url."/", $request, $matches)) {
+			if (preg_match("/".$post_url."/", rtrim($request, "/"), $matches)) {
 				array_shift($matches);
 
-				foreach ($parameters[1] as $index => $parameter) {
-					if (substr($parameters[1][$index], 0, 1) != "(") continue;
-
-					$no_parentheses = rtrim(ltrim($parameter, "("), ")");
-					$_GET[$no_parentheses] = urldecode($arg[$index]);
-				}
+				foreach ($parameters[1] as $index => $parameter)
+					if ($parameters[1][$index][0] == "(")
+						$_GET[rtrim(ltrim($parameter, "("), ")")] = urldecode($arg[$index]);
 
 				return $_GET['action'] = "view";
 			}

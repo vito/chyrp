@@ -29,7 +29,7 @@
 		static function new_post_options() {
 ?>
 					<p>
-						<label for="tags"><?php echo __("Tags", "tags"); ?><span class="sub"> <?php echo __("(comma separated)", "tags"); ?></span></label>
+						<label for="tags"><?php echo __("Tags", "tags"); ?> <span class="sub"><?php echo __("(comma separated)", "tags"); ?></span></label>
 						<input class="text" type="text" name="tags" value="" id="tags" />
 					</p>
 <?php
@@ -38,7 +38,7 @@
 		static function edit_post_options($post) {
 ?>
 					<p>
-						<label for="tags"><?php echo __("Tags", "tags"); ?><span class="sub"> <?php echo __("(comma separated)", "tags"); ?></span></label>
+						<label for="tags"><?php echo __("Tags", "tags"); ?> <span class="sub"><?php echo __("(comma separated)", "tags"); ?></span></label>
 						<input class="text" type="text" name="tags" value="<?php echo implode(", ", self::unlinked_tags($post->tags)) ?>" id="tags" />
 					</p>
 <?php

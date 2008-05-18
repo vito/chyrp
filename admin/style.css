@@ -29,14 +29,16 @@ em {
 strong {
 	font-weight: bold;
 }
-small {
+small,
+.small {
 	font-size: .9em;
 	color: #999;
 }
 p {
 	margin: 0 0 1em;
 }
-a:link, a:visited {
+a:link,
+a:visited {
 	text-decoration: none;
 	border-bottom: 1px solid rgba(255,255,255,.5);
 }
@@ -308,19 +310,29 @@ form.split label {
 form.split select {
 	margin: 3px 0 0;
 }
-form.split small {
+form.split small,
+form.split .small {
 	display: block;
 	margin-left: 45%;
+}
+form.split button {
+	margin-left: 45%;
+}
+form .buttons {
+	margin-top: 1em;
 }
 label {
 	display: block;
 	font-size: 1.1em;
 }
-label .sub, tr .sub {
+label .sub,
+tr .sub {
 	font-size: .8em;
 	color: #999;
 }
-input.text, input.file, textarea {
+input.text,
+input.file,
+textarea {
 	font-size: 1.25em;
 	padding: 3px;
 	border: 1px solid #ddd;
@@ -329,7 +341,10 @@ input.text, input.file, textarea {
 input.file {
 	border: none;
 }
-input.text, input.file, select, textarea {
+input.text,
+input.file,
+select,
+textarea {
 	margin-bottom: .25em;
 }
 input.checkbox {
@@ -342,14 +357,16 @@ span.checkbox {
 textarea {
 	font-size: 1em;
 }
-textarea.wide, input.text.wide {
+textarea.wide,
+input.text.wide {
 	padding: .5%;
 	width: 99%;
 	_width: 100%; /* Hooray for IE6's randomized box model. */
 }
-input.code, textarea.code, code {
+input.code,
+textarea.code,
+code {
 	font-family: "Consolas", "Monaco", monospace;
-	font-size: 9px;
 }
 /* @end */
 
