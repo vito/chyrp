@@ -683,6 +683,10 @@
 			redirect("/admin/?action=manage&sub=page&reordered");
 		}
 
+		/**
+		 * Function: determine_action
+		 * Determines through simple logic which page should be shown as the default when browsing to /admin/.
+		 */
 		public function determine_action() {
 			$visitor = Visitor::current();
 
@@ -698,9 +702,17 @@
 			if (Post::any_editable() or Post::any_deletable())
 				return "manage_posts";
 
-			# "Manage > Posts", if they can manage any posts.
-			if ($visitor->group()->can("add_page") or $visitor->group()->can("delete_page"))
+			# "Manage > Pages", if they can manage pages.
+			if ($visitor->group()->can("edit_page") or $visitor->group()->can("delete_page"))
 				return "manage_pages";
+
+			# "Manage > Users", if they can manage users.
+			if ($visitor->group()->can("edit_user") or $visitor->group()->can("delete_user"))
+				return "manage_users";
+
+			# "Manage > Groups", if they can manage groups.
+			if ($visitor->group()->can("edit_group") or $visitor->group()->can("delete_group"))
+				return "manage_groups";
 
 			# "Settings", if they can configure the installation.
 			if ($visitor->group()->can("change_settings"))
