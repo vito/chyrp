@@ -704,17 +704,19 @@
 					$config->set("description", $_POST['description']);
 					$config->set("url", $_POST['url']);
 					$config->set("email", $_POST['email']);
-					$config->set("can_register", !empty($_POST['can_register']));
-					$config->set("default_group", $_POST['default_group']);
-					$config->set("guest_group", $_POST['guest_group']);
 					$config->set("time_offset", ($_POST['time_offset'] * 3600));
-					$config->set("posts_per_page", $_POST['posts_per_page']);
 					$config->set("locale", $_POST['locale']);
 					break;
-				case "syndication":
+				case "content":
 					$config->set("feed_items", $_POST['feed_items']);
 					$config->set("enable_trackbacking", !empty($_POST['enable_trackbacking']));
 					$config->set("send_pingbacks", !empty($_POST['send_pingbacks']));
+					$config->set("posts_per_page", $_POST['posts_per_page']);
+					break;
+				case "user":
+					$config->set("can_register", !empty($_POST['can_register']));
+					$config->set("default_group", $_POST['default_group']);
+					$config->set("guest_group", $_POST['guest_group']);
 					break;
 				case "route":
 					$config->set("clean_urls", !empty($_POST['clean_urls']));
@@ -734,8 +736,6 @@
 		 * General Settings page.
 		 */
 		public function general_settings() {
-			$config = Config::current();
-			$this->context["groups"] = Group::find(array("pagination" => false, "order" => "`id` desc"));
 			$this->context["locales"] = array();
 
 			if ($open = opendir(INCLUDES_DIR."/locale/")) {
@@ -746,6 +746,14 @@
 				}
 				closedir($open);
 			}
+		}
+
+		/**
+		 * Function: user_settings
+		 * User Settings page.
+		 */
+		public function user_settings() {
+			$this->context["groups"] = Group::find(array("pagination" => false, "order" => "`id` desc"));
 		}
 
 		/**
