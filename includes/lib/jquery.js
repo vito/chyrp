@@ -1,13 +1,13 @@
 (function(){
 /*
- * jQuery 1.2.4 - New Wave Javascript
+ * jQuery 1.2.5 - New Wave Javascript
  *
  * Copyright (c) 2008 John Resig (jquery.com)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
  *
- * $Date: 2008-05-16 18:37:11 +0000 (Fri, 16 May 2008) $
- * $Rev: 5623 $
+ * $Date: 2008-05-20 23:14:54 -0400 (Tue, 20 May 2008) $
+ * $Rev: 5651 $
  */
 
 // Map over jQuery in case of overwrite
@@ -84,7 +84,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	// The current version of jQuery being used
-	jquery: "1.2.4",
+	jquery: "1.2.5",
 
 	// The number of elements contained in the matched element set
 	size: function() {
