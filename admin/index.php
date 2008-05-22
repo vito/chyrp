@@ -15,7 +15,7 @@
 		}
 
 		public function load($action) {
-			global $admin, $paginate;
+			global $admin, $paginate, $theme;
 
 			$trigger = Trigger::current();
 			$write    = $trigger->filter("write_pages", array());
@@ -31,6 +31,7 @@
 			$admin->context["route"]      = array("action" => $action);
 			$admin->context["hide_admin"] = isset($_COOKIE["chyrp_hide_admin"]);
 			$admin->context["sql_debug"]  = SQL::current()->debug;
+			$admin->context["archives"]   = $theme->list_archives();
 			$admin->context["pagination"] = $paginate;
 			$admin->context["now"]        = time() + Config::current()->time_offset;
 			$admin->context["now_server"] = time();

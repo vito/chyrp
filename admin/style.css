@@ -289,6 +289,18 @@ ul.extend .expand {
 }
 /* @end */
 
+/* @group Theme Changing */
+.theme.box {
+	text-align: center;
+}
+.theme_link {
+	font-weight: bold;
+	text-align: center;
+}
+.theme_link span {
+	display: block;
+}
+
 /* @group Forms */
 form.delete blockquote {
 	width: 75%;
@@ -484,6 +496,9 @@ a.button {
 a.button {
 	padding: .6em 1em .5em .9em;
 }
+button.inline {
+	padding: 4px 4px 3px;
+}
 button.right,
 a.button.right {
 	margin: 0 0 0 .5em;
@@ -628,6 +643,15 @@ a.emblem {
 }
 a.emblem img {
 	margin-bottom: -2px;
+}
+.pad {
+	padding: .75em;
+}
+.margin-right {
+	margin-right: 1em;
+}
+.margin-left {
+	margin-left: 1em;
 }
 .wide {
 	width: 100%;

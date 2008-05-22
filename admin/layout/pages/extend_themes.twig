@@ -1,0 +1,48 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Themes" | translate }{% endblock %}
+
+{% block content %}
+			<h1>${ "Themes" | translate }</h1>
+			{% if changed %}
+			<p class="message yay">${ "Theme changed." | translate }</p>
+			{% endif %}
+			<h2>Current Theme</h2>
+			<div class="current_theme">
+				<h3>
+					<a href="${ current_theme.info.url | escape }">${ current_theme.info.name | escape }</a>
+					<span class="sub">
+						v${ current_theme.info.version | escape }
+						by $current_theme.info.author.link
+					</span>
+				</h3>
+				<img src="$current_theme.screenshot" alt="${ ('"' ~ current_theme.info.name ~ '"') | escape } screenshot" class="current_theme_screenshot" width="256" />
+				{% if current_theme.info.description %}
+				<div class="current_theme_description">
+					${ current_theme.info.description | strip_tags("<code><pre><a><strong><em>") | linebreaks }
+				</div>
+				{% endif %}
+				<br />
+				${ "This theme's files are located at <code>%s</code>" | translate | format("/themes/"~current_theme.name) }
+			</div>
+			<br />
+			<br />
+			<h2>Available Themes</h2>
+			${ "Click on a theme's screenshot to use it for your site." | translate }
+			<br />
+			<br />
+			{% for theme in themes %}
+			<div class="theme box left">
+				<a href="{% admin "change_theme&theme=" ~ theme.name %}" class="theme_link">
+					<span>${ theme.info.name | escape }</span>
+					<img src="$theme.screenshot" alt="${ ('"' ~ theme.info.name ~ '"') | escape } screenshot" class="theme_screenshot" width="256" />
+				</a>
+				<br />
+				<br />
+				<a class="button center" href="{% url "theme_preview/" ~ theme.name ~ "/" %}">Preview</a>
+			</div>
+			{% endfor %}
+			<div class="clear"></div>
+			<br />
+			<a class="button right" href="http://chyrp.net/extend/browse/themes">Get More Themes &rsaquo;</a>
+{% endblock %}

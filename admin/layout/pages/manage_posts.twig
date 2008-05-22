@@ -10,6 +10,26 @@
 			{% if deleted %}
 			<p class="message yay">${ "Post deleted." | translate }</p>
 			{% endif %}
+			<h2>${ "Need more detail?" | translate }</h2>
+			<form class="detail" action="index.php" method="get" accept-charset="utf-8">
+				<input type="hidden" name="action" value="manage_posts" />
+				<div class="left pad margin-right">
+					<h3>${ "Search&hellip;" | translate }</h3>
+					<input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" /> <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
+				</div>
+				<div class="left pad">
+					<h3>${ "Browse by month:" | translate }</h3>
+					<select name="month">
+						<option value="">----------</option>
+						{% for archive in archives %}
+						<option value="$archive.year-$archive.month"${ GET.month | selected(archive.url) }>${ archive.when | date("F Y") } ($archive.count)</option>
+						{% endfor %}
+					</select>
+					<button type="submit" class="inline">${ "Show &rarr;" | translate }</button>
+				</div>
+				<br class="clear" />
+			</form>
+			<br />
 			<h2>${ "Last 25 Posts" | translate }</h2>
 			<table border="0" cellspacing="0" cellpadding="0" class="wide">
 				<thead>
