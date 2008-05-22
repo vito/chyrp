@@ -104,6 +104,13 @@
 			$info = Spyc::YAMLLoad($dir."/".$_POST['check']."/info.yaml");
 			fallback($info["confirm"], "");
 
+			if ($_POST['type'] == "module")
+				if (!module_enabled($_POST['check']))
+					exit;
+			else
+				if (!feather_enabled($_POST['check']))
+					exit;
+
 			if (!empty($info["confirm"]))
 				echo __($info["confirm"], $_POST['check']);
 
