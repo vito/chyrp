@@ -535,7 +535,9 @@
 					$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
 					$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
 
-					$info["author"]["link"] = (!empty($info["author"]["url"])) ? '<a href="'.$info["author"]["url"].'">'.$info["author"]["name"].'</a>' : $info["author"]["name"] ;
+					$info["author"]["link"] = (!empty($info["author"]["url"])) ?
+					                              '<a href="'.htmlspecialchars($info["author"]["url"]).'">'.htmlspecialchars($info["author"]["name"]).'</a>' :
+					                              $info["author"]["name"] ;
 
 					$category = (module_enabled($folder)) ? "enabled_modules" : "disabled_modules" ;
 					$this->context[$category][$folder] = array("name" => $info["name"],
@@ -588,7 +590,9 @@
 					$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
 					$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
 
-					$info["author"]["link"] = (!empty($info["author"]["url"])) ? '<a href="'.$info["author"]["url"].'">'.$info["author"]["name"].'</a>' : $info["author"]["name"] ;
+					$info["author"]["link"] = (!empty($info["author"]["url"])) ?
+					                              '<a href="'.htmlspecialchars($info["author"]["url"]).'">'.htmlspecialchars($info["author"]["name"]).'</a>' :
+					                              $info["author"]["name"] ;
 
 					$category = (feather_enabled($folder)) ? "enabled_feathers" : "disabled_feathers" ;
 					$this->context[$category][$folder] = array("name" => $info["name"],
@@ -614,6 +618,53 @@
 						$info["notifications"][] = __("Please create the <code>/upload</code> directory at your Chyrp install's root and CHMOD it to 777.");
 					elseif (!is_writable(MAIN_DIR."/upload"))
 						$info["notifications"][] = __("Please CHMOD <code>/upload</code> to 777.");
+			}
+		}
+
+		/**
+		 * Function: extend_themes
+		 * Theme switching/previewing.
+		 */
+		public function extend_themes() {
+			$config = Config::current();
+
+			$this->context["themes"] = array();
+			$this->context["changed"] = isset($_GET['changed']);
+			$this->context["current_theme"] = array("name" => $config->theme,
+			                                        "screenshot" => (file_exists(THEMES_DIR."/".$config->theme."/screenshot.png") ?
+			                                                            $config->url."/themes/".$config->theme."/screenshot.png" :
+			                                                            $config->url."/admin/images/noscreenshot.png"),
+					                                "info" => Spyc::YAMLLoad(THEMES_DIR."/".$config->theme."/info.yaml"));
+
+			$current_info =& $this->context["current_theme"]["info"];
+			$current_info["author"]["link"] = (!empty($this->context["current_theme"]["info"]["author"]["url"])) ?
+			                                      '<a href="'.htmlspecialchars($current_info["author"]["url"]).'">'.htmlspecialchars($current_info["author"]["name"]).'</a>' :
+			                                      $current_info["author"]["name"] ;
+			$current_info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $current_info["description"]);
+			$current_info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $current_info["description"]);
+
+			if ($open = opendir(THEMES_DIR)) {
+			     while (($folder = readdir($open)) !== false) {
+					if ($folder == $config->theme or !file_exists(THEMES_DIR."/".$folder."/info.yaml"))
+						continue;
+
+					if (file_exists(THEMES_DIR."/".$folder."/locale/".$config->locale.".mo"))
+						load_translator($folder, THEMES_DIR."/".$folder."/locale/".$config->locale.".mo");
+
+					$info = Spyc::YAMLLoad(THEMES_DIR."/".$folder."/info.yaml");
+					$info["author"]["link"] = (!empty($info["author"]["url"])) ?
+					                              '<a href="'.$info["author"]["url"].'">'.$info["author"]["name"].'</a>' :
+					                              $info["author"]["name"] ;
+					$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
+					$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
+
+					$this->context["themes"][] = array("name" => $folder,
+					                                   "screenshot" => (file_exists(THEMES_DIR."/".$folder."/screenshot.png") ?
+					                                                       $config->url."/themes/".$folder."/screenshot.png" :
+					                                                       $config->url."/admin/images/noscreenshot.png"),
+					                                   "info" => $info);
+				}
+				closedir($open);
 			}
 		}
 
@@ -761,9 +812,14 @@
 		 * Changes the theme. Shows an error if the user lacks permissions.
 		 */
 		public function change_theme() {
-			if (!Visitor::current()->group()->can("change_settings") or empty($_GET['theme'])) return;
+			if (!Visitor::current()->group()->can("change_settings"))
+				error(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+			if (empty($_GET['theme']))
+				error(__("No Theme Specified"), __("You did not specify a theme to switch to."));
+
 			Config::current()->set("theme", $_GET['theme']);
-			redirect("/admin/?action=extend&sub=themes&changed");
+
+			redirect("/admin/?action=extend_themes&changed");
 		}
 
 		/**
