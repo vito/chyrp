@@ -44,6 +44,7 @@ $twig_filters = array(
 	'replace' =>          'twig_replace_filter',
 	'linebreaks' =>       'nl2br',
 	'camelize' =>         'camelize',
+	'strip_tags' =>       'strip_tags',
 
 	// array helpers
 	'join' =>             'twig_join_filter',
