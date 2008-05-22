@@ -30,7 +30,6 @@
 			$admin->context["stats"]      = array("load" => timer_stop(), "queries" => SQL::current()->queries);
 			$admin->context["route"]      = array("action" => $action);
 			$admin->context["hide_admin"] = isset($_COOKIE["chyrp_hide_admin"]);
-			$admin->context["sql_debug"]  = SQL::current()->debug;
 			$admin->context["archives"]   = $theme->list_archives();
 			$admin->context["pagination"] = $paginate;
 			$admin->context["now"]        = time() + Config::current()->time_offset;
@@ -60,6 +59,8 @@
 				$admin->$action();
 
 			Trigger::current()->call("admin_".$action);
+
+			$admin->context["sql_debug"]  = SQL::current()->debug;
 
 			if (!file_exists(MAIN_DIR."/admin/layout/pages/".$action.".twig"))
 				error(__("Template Missing"), sprintf(__("Couldn't load template:<br /><br />%s"),"pages/".$action.".twig"));

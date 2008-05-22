@@ -10,6 +10,15 @@
 			{% if deleted %}
 			<p class="message yay">${ "Page deleted." | translate }</p>
 			{% endif %}
+			<h2>${ "Need more detail?" | translate }</h2>
+			<form class="detail" action="index.php" method="get" accept-charset="utf-8">
+				<input type="hidden" name="action" value="manage_pages" />
+				<div class="pad">
+					<h3>${ "Search&hellip;" | translate }</h3>
+					<input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" /> <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
+				</div>
+			</form>
+			<br />
 			<h2>${ "Last 25 Pages" | translate }</h2>
 			<table border="0" cellspacing="0" cellpadding="0" class="wide">
 				<thead>

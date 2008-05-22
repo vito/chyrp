@@ -653,6 +653,9 @@ a.emblem img {
 .margin-left {
 	margin-left: 1em;
 }
+.detail .button.right {
+	margin-top: 2.25em;
+}
 .wide {
 	width: 100%;
 }

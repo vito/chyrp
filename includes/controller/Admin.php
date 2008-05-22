@@ -121,7 +121,25 @@
 			if (!Post::any_editable() and !Post::any_deletable())
 				error(__("Access Denied"), __("You do not have sufficient privileges to manage any posts."));
 
-			$this->context["posts"] = Post::find(array("where" => false, "per_page" => 25));
+			$params = array();
+			$where = array();
+
+			if (!empty($_GET['query'])) {
+				$where[] = "`__posts`.`xml` LIKE :query";
+				$params[":query"] = "%".$_GET['query']."%";
+			}
+
+			if (!empty($_GET['month'])) {
+				$where[] = "`__posts`.`created_at` LIKE :when";
+				$params[":when"] = $_GET['month']."-%";
+			}
+
+			if (!empty($_GET['status'])) {
+				$where[] = "`__posts`.`status` = :status";
+				$params[":status"] = $_GET['status'];
+			}
+
+			$this->context["posts"] = Post::find(array("where" => $where, "params" => $params, "per_page" => 25));
 
 			if (!empty($_GET['updated']))
 				$this->context["updated"] = new Post($_GET['updated']);
@@ -235,7 +253,15 @@
 			if (!$visitor->group()->can("edit_page") and !$visitor->group()->can("delete_page"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to manage pages."));
 
-			$this->context["pages"] = Page::find(array("per_page" => 25));
+			$params = array();
+			$where = array();
+
+			if (!empty($_GET['query'])) {
+				$where[] = "`__pages`.`title` LIKE :query OR `__pages`.`body` LIKE :query";
+				$params[":query"] = "%".$_GET['query']."%";
+			}
+
+			$this->context["pages"] = Page::find(array("where" => $where, "params" => $params, "per_page" => 25));
 
 			if (!empty($_GET['updated']))
 				$this->context["updated"] = new Page($_GET['updated']);
@@ -382,7 +408,16 @@
 			if (!$visitor->group()->can("edit_user") and !$visitor->group()->can("delete_user") and !$visitor->group()->can("add_user"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to manage users."));
 
-			$this->context["users"] = User::find(array("per_page" => 25));
+			$params = array();
+			$where = array();
+
+			if (!empty($_GET['query'])) {
+				$where[] = "`__users`.`login` LIKE :query OR `__users`.`full_name` LIKE :query OR `__users`.`email` LIKE :query OR `__users`.`website` LIKE :query";
+				$params[":query"] = "%".$_GET['query']."%";
+			}
+
+			$this->context["users"] = User::find(array("where" => $where, "params" => $params, "per_page" => 25));
+
 			$this->context["updated"] = isset($_GET['updated']);
 			$this->context["deleted"] = isset($_GET['deleted']);
 			$this->context["added"]   = isset($_GET['added']);
@@ -505,7 +540,12 @@
 			if (!$visitor->group()->can("edit_group") and !$visitor->group()->can("delete_group") and !$visitor->group()->can("add_group"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to manage groups."));
 
-			$this->context["groups"] = Group::find(array("per_page" => 25, "order" => "`id` asc"));
+			if (!empty($_GET['search'])) {
+				$user = new User(null, array("where" => "`login` = :search", "params" => array(":search" => $_GET['search'])));
+				$this->context["groups"] = array($user->group());
+			} else
+				$this->context["groups"] = Group::find(array("per_page" => 25, "order" => "`id` asc"));
+
 			$this->context["updated"] = isset($_GET['updated']);
 			$this->context["deleted"] = isset($_GET['deleted']);
 			$this->context["added"]   = isset($_GET['added']);

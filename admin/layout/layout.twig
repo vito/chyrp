@@ -10,6 +10,11 @@
 		<script src="$site.url/includes/lib/gz.php?file=jquery.ui.js" type="text/javascript" charset="utf-8"></script>
 		<script src="$site.url/includes/lib/gz.php?file=ifixpng.js" type="text/javascript" charset="utf-8"></script>
 		<script src="$site.url/includes/admin.js.php?action=$route.action&amp;page=$pagination.page" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+{% for query in sql_debug %}
+			console.log('${ query.number }. $query.file[$query.line]: ${ query.query | quotes }')
+{% endfor %}
+		</script>
 	</head>
 	<body>
 		<div id="header">
