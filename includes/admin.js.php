@@ -44,7 +44,7 @@ $(function(){
 	// Add the "Bookmarklet" with JS to the write nav since only JS-enabled users can use it.
 	$(document.createElement("li")).addClass("bookmarklet right").html("<?php echo sprintf(__("Bookmarklet: %s"), '<a href=\"javascript:var%20d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f=\''.$config->url.'/includes/bookmarklet.php\',l=d.location,e=encodeURIComponent,p=\'?url=\'+e(l.href)+\'&title=\'+e(d.title)+\'&selection=\'+e(s),u=f+p;a=function(){if(!w.open(u,\'t\',\'toolbar=0,resizable=0,status=1,width=450,height=430\'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0)\">Chyrp!</a>'); ?>").prependTo(".write-nav")
 
-<?php if ($_GET['action'] == "edit" or $_GET['action'] == "write"): ?>
+<?php if (match("/(edit|write)_/", $_GET['action'])): ?>
 	// Auto-expand text fields.
 	$("input.text").keyup(function(){
 		if ($(this).val().length > 10 && ($(this).parent().width() - $(this).width()) < 10)
@@ -109,7 +109,7 @@ $(function(){
 			var confirmed = false
 			var action = classes[0]
 			var type = classes[1]
-			var extension = $(ui.draggable).attr("class")
+			var extension = $(ui.draggable).attr("class").split(" ")[0]
 
 			$.post("<?php echo $config->url; ?>/includes/ajax.php", { action: "check_confirm", check: extension, type: type }, function(data){
 				if (data != "" && action == "disable")
@@ -134,6 +134,7 @@ $(function(){
 					$(this).height($(".enable ul.extend").height())
 				if ($(".disable ul.extend").height() > $(this).height())
 					$(this).height($(".disable ul.extend").height())
+				draw()
 			})
 		}
 	})
@@ -149,6 +150,147 @@ $(function(){
 		if ($(".disable ul.extend").height() > $(this).height())
 			$(this).height($(".disable ul.extend").height())
 	})
+<?php if ($_GET['action'] == "extend_modules"): ?>
+
+	function remove_from_array(value, array) {
+		for (i = 0; i < array.length; i++)
+			if (array[i] == value)
+				array.splice(i, 1)
+		return array
+	}
+	function draw() {
+		if (!$(".extend li.conflict").size() && !($.browser.safari || $.browser.opera || ($.browser.mozilla && $.browser.version >= 1.9)))
+			return
+
+		$("#canvas").remove()
+
+		$(".extend li, .header, .header .view, .main-nav, .sub-nav, .footer, h1, h3, .legend").css({
+			position: "relative",
+			zIndex: 2
+		})
+		$(".header .view").css({
+			zIndex: 3
+		})
+
+		$(document.createElement("canvas")).attr("id", "canvas").prependTo("body")
+		$("#canvas").css({
+			position: "absolute",
+			top: 0,
+			bottom: 0,
+			zIndex: 1,
+			margin: "0 auto"
+		}).attr({ width: ($("#content.column").width() + 150), height: $(document).height() })
+
+		var canvas = document.getElementById("canvas").getContext("2d")
+		var displayed = []
+
+		$(".extend li.conflict").each(function(){
+			var classes = $(this).attr("class").split(" ")
+			classes.shift() // Remove the module's safename class
+
+			// Remove any classes we don't want
+			$(["conflict", "depends"]).each(function(){
+				remove_from_array(this, classes);
+			})
+
+			for (i = 0; i < classes.length; i++) {
+				var conflict = classes[i].replace("conflict_", "module_")
+
+				if (displayed[$(this).attr("id")+" :: "+conflict])
+					continue;
+
+				canvas.strokeStyle = "#d12f19"
+				canvas.fillStyle = "#fbe3e4"
+				canvas.lineWidth = 3
+
+				var this_status = $(this).parent().parent().attr("class").split(" ")[0] + "d"
+				var conflict_status = $("#"+conflict).parent().parent().attr("class").split(" ")[0] + "d"
+
+				if (conflict_status != this_status) {
+					var line_from_x = $("#"+conflict).offset().left
+					var line_from_y = $("#"+conflict).offset().top + 12
+					var line_to_x   = $(this).offset().left + $(this).outerWidth()
+					var line_to_y   = $(this).offset().top + 12
+
+					// Line
+					canvas.moveTo(line_from_x, line_from_y)
+					canvas.lineTo(line_to_x, line_to_y)
+					canvas.stroke()
+
+					// Beginning circle
+					canvas.beginPath()
+					canvas.arc(line_from_x, line_from_y, 5, 1.35, -1.35, false)
+					canvas.fill()
+					canvas.stroke()
+
+					// Ending circle
+					canvas.beginPath()
+					canvas.arc(line_to_x, line_to_y, 5, -1.75, 1.75, false)
+					canvas.fill()
+					canvas.stroke()
+				} else if (conflict_status == "disabled") {
+					var line_from_x = $("#"+conflict).offset().left
+					var line_from_y = $("#"+conflict).offset().top + 12
+					var line_to_x   = $(this).offset().left
+					var line_to_y   = $(this).offset().top + 12
+					var median = line_from_y + ((line_to_y - line_from_y) / 2)
+					var curve = line_from_x - 25
+
+					// Line
+					canvas.beginPath();
+					canvas.moveTo(line_from_x, line_from_y)
+					canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y);
+					canvas.stroke();
+
+					// Beginning circle
+					canvas.beginPath()
+					canvas.arc(line_from_x, line_from_y, 5, 1.35, -1.35, false)
+					canvas.fill()
+					canvas.stroke()
+
+					// Ending circle
+					canvas.beginPath()
+					canvas.arc(line_to_x, line_to_y, 5, 1.35, -1.35, false)
+					canvas.fill()
+					canvas.stroke()
+				} else if (conflict_status == "enabled") {
+					var line_from_x = $("#"+conflict).offset().left + $("#"+conflict).outerWidth()
+					var line_from_y = $("#"+conflict).offset().top + 12
+					var line_to_x   = $(this).offset().left + $(this).outerWidth()
+					var line_to_y   = $(this).offset().top + 12
+					var median = line_from_y + ((line_to_y - line_from_y) / 2)
+					var curve = line_from_x + 25
+
+					// Line
+					canvas.beginPath();
+					canvas.moveTo(line_from_x, line_from_y)
+					canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y);
+					canvas.stroke();
+
+					// Beginning circle
+					canvas.beginPath()
+					canvas.arc(line_from_x, line_from_y, 5, -1.75, 1.75, false)
+					canvas.fill()
+					canvas.stroke()
+
+					// Ending circle
+					canvas.beginPath()
+					canvas.arc(line_to_x, line_to_y, 5, -1.75, 1.75, false)
+					canvas.fill()
+					canvas.stroke()
+				}
+
+				displayed[conflict+" :: "+$(this).attr("id")] = true
+			}
+		})
+	}
+
+	draw()
+
+	$(window).resize(function(){
+		draw()
+	})
+<?php endif; ?>
 })
 
 var Post = {

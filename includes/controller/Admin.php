@@ -563,6 +563,8 @@
 
 			$this->context["enabled_modules"] = $this->context["disabled_modules"] = array();
 
+			$issues = array();
+			$dependencies = array();
 			if ($open = opendir(MODULES_DIR)) {
 				while (($folder = readdir($open)) !== false) {
 					if (!file_exists(MODULES_DIR."/".$folder."/module.php") or !file_exists(MODULES_DIR."/".$folder."/info.yaml")) continue;
@@ -571,6 +573,20 @@
 						load_translator($folder, MODULES_DIR."/".$folder."/locale/".$config->locale.".mo");
 
 					$info = Spyc::YAMLLoad(MODULES_DIR."/".$folder."/info.yaml");
+
+					$info["conflicts_true"] = array();
+
+					if (!empty($info["conflicts"]))
+						foreach ($info["conflicts"] as $conflict)
+							if (file_exists(MODULES_DIR."/".$conflict."/module.php")) {
+								$issues[$conflict] = $issues[$folder] = true;
+								$info["conflicts_true"][] = $conflict;
+							}
+
+					if (!empty($info["depends"]))
+						foreach ($info["depends"] as $dependency)
+							if (!module_enabled($dependency))
+								$dependencies[$folder] = true;
 
 					$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
 					$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
@@ -583,7 +599,12 @@
 					$this->context[$category][$folder] = array("name" => $info["name"],
 					                                           "url" => $info["url"],
 					                                           "description" => $info["description"],
-					                                           "author" => $info["author"]);
+					                                           "author" => $info["author"],
+					                                           "conflict" => isset($issues[$folder]),
+					                                           "conflicts" => $info["conflicts_true"],
+					                                           "depends" => isset($dependencies[$folder]),
+					                                           "conflicts_class" => (isset($issues[$folder])) ? " conflict conflict_".join(" conflict_", $info["conflicts_true"]) : "",
+					                                           "depends_class" => (isset($dependencies[$folder])) ? " depends" : "");
 				}
 			}
 

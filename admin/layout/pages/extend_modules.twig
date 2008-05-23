@@ -8,7 +8,7 @@
 				<h2>${ "Enabled" | translate }</h2>
 				<ul class="extend">
 {% for safename, module in enabled_modules | items %}
-					<li class="$safename">
+					<li class="${ safename ~ module.conflicts_class ~ module.depends_class }" id="module_$safename">
 						<a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
 						<a href="$module.url">$module.name</a> <span class="sub">by $module.author.link</span>
 						<div class="expand">
@@ -25,7 +25,7 @@
 				<h2>${ "Disabled" | translate }</h2>
 				<ul class="extend">
 {% for safename, module in disabled_modules | items %}
-					<li class="$safename">
+					<li class="${ safename ~ module.conflicts_class ~ module.depends_class }" id="module_$safename">
 						<a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
 						<a href="$module.url">$module.name</a> <span class="sub">by $module.author.link</span>
 						<div class="expand">
