@@ -129,16 +129,24 @@
 		static function info($column, $comment_id = null) {
 			return SQL::current()->select("comments", $column, "`id` = :id", "`id` desc", array(":id" => $comment_id))->fetchColumn();
 		}
+		public function editable() {
+			$visitor = Visitor::current();
+			return ($visitor->group()->can("edit_comment") or ($visitor->group()->can("edit_own_comment") and $visitor->id == $this->user_id));
+		}
+		public function deletable() {
+			$visitor = Visitor::current();
+			return ($visitor->group()->can("delete_comment") or ($visitor->group()->can("delete_own_comment") and $visitor->id == $this->user_id));
+		}
 		public function edit_link($text = null, $before = null, $after = null){
 			$visitor = Visitor::current();
-			if (!$visitor->group()->can("edit_comment")) return;
+			if (!$this->editable()) return;
 			fallback($text, __("Edit"));
 			$config = Config::current();
 			echo $before.'<a href="'.$config->url.'/admin/?action=edit_comment&amp;id='.$this->id.'" title="Edit" class="comment_edit_link edit_link" id="comment_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 		public function delete_link($text = null, $before = null, $after = null){
 			$visitor = Visitor::current();
-			if (!$visitor->group()->can("delete_comment")) return;
+			if (!$this->deletable()) return;
 			fallback($text, __("Delete"));
 			$config = Config::current();
 			echo $before.'<a href="'.$config->url.'/admin/?action=delete_comment&amp;id='.$this->id.'" title="Delete" class="comment_delete_link delete_link" id="comment_delete_'.$this->id.'">'.$text.'</a>'.$after;

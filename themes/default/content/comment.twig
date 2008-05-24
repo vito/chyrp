@@ -8,11 +8,11 @@
 			<cite>
 				<strong>$comment.author_link</strong> ${ "on" | translate }
 				${ comment.created_at | date("F jS, 2008, \\a\\\t g:i A") }
-				{% if visitor.group.can("edit_comment") %}
+				{% if comment.editable %}
 				<em>|</em> $comment.edit_link
 				{% endif %}
 
-				{% if visitor.group.can("delete_comment") %}
+				{% if comment.deletable %}
 				<em>|</em> $comment.delete_link
 				{% endif %}
 			</cite>

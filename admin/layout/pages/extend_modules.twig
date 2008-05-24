@@ -10,12 +10,12 @@
 {% for safename, module in enabled_modules | items %}
 					<li class="${ safename ~ module.conflicts_class ~ module.depends_class }" id="module_$safename">
 						<a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
-						<a href="$module.url">$module.name</a> <span class="sub">by $module.author.link</span>
+						${ '<a href="%s">%s</a> <span class="sub">by %s</span>' | translate | format(module.url, module.name, module.author.link) }
 						<div class="expand">
 							<div class="description">
 								$module.description
 							</div>
-							<a class="enable_button js_disabled" href="{% admin "disable&module="~safename %}">Disable</a>
+							<a class="enable_button js_disabled" href="{% admin "disable&module="~safename %}">${ "Disable" | translate }</a>
 						</div>
 					</li>
 {% endfor %}
@@ -27,12 +27,12 @@
 {% for safename, module in disabled_modules | items %}
 					<li class="${ safename ~ module.conflicts_class ~ module.depends_class }" id="module_$safename">
 						<a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
-						<a href="$module.url">$module.name</a> <span class="sub">by $module.author.link</span>
+						${ '<a href="%s">%s</a> <span class="sub">by %s</span>' | translate | format(module.url, module.name, module.author.link) }
 						<div class="expand">
 							<div class="description">
 								$module.description
 							</div>
-							<a class="disable_button js_disabled" href="{% admin "enable&module="~safename %}">Enable</a>
+							<a class="disable_button js_disabled" href="{% admin "enable&module="~safename %}">${ "Enable" | translate }</a>
 						</div>
 					</li>
 {% endfor %}
@@ -40,5 +40,5 @@
 			</div>
 			<div class="clear"></div>
 			<br />
-			<a class="button right" href="http://chyrp.net/extend/browse/modules">Get More Modules &rsaquo;</a>
+			<a class="button right" href="http://chyrp.net/extend/browse/modules">${ "Get More Modules &rsaquo;" | translate }</a>
 {% endblock %}

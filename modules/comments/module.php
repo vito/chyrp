@@ -39,7 +39,9 @@
 			Group::add_permission("add_comment");
 			Group::add_permission("add_comment_private");
 			Group::add_permission("edit_comment");
+			Group::add_permission("edit_own_comment");
 			Group::add_permission("delete_comment");
+			Group::add_permission("delete_own_comment");
 			Group::add_permission("code_in_comments");
 		}
 
@@ -82,37 +84,42 @@
 		}
 
 		static function admin_update_comment($action) {
-			$visitor = Visitor::current();
-			if (!$visitor->group()->can("edit_comment") or empty($_POST)) return;
-			$timestamp = when("Y-m-d H:i:s", $_POST['created_at']);
 			$comment = new Comment($_POST['id']);
+			if (!$comment->editable() or empty($_POST))
+				return;
+
+			$timestamp = when("Y-m-d H:i:s", $_POST['created_at']);
 			$comment->update($_POST['author'],
 			                 $_POST['author_email'],
 			                 $_POST['author_url'],
 			                 $_POST['body'],
 			                 $_POST['status'],
 			                 $timestamp);
+
 			if (isset($_POST['ajax']))
 				exit("{ comment_id: ".$_POST['id']." }");
-			$config = Config::current();
-			$route = Route::current();
+
 			redirect("/admin/?action=manage&sub=comment&updated");
 		}
 
 		static function admin_delete_comment_real($action) {
-			global $comment;
-			$visitor = Visitor::current();
-			if (!$visitor->group()->can("delete_comment") or empty($_POST)) return;
+			$comment = new Comment($_POST['id']);
+			if (!$comment->deletable() or empty($_POST))
+				return;
+
 			Comment::delete($_POST['id']);
-			$config = Config::current();
-			$route = Route::current();
+
+			if (isset($_POST['ajax']))
+				exit;
+
 			redirect("/admin/?action=manage&sub=comment&deleted");
 		}
 
 		static function admin_mark_spam($action) {
-			if (!Visitor::current()->group()->can("edit_comment")) return;
-
 			$comment = new Comment($_GET['id']);
+			if (!$comment->editable())
+				return;
+
 			$sql = SQL::current();
 			$sql->query("update `__comments`
 			             set `status` = 'spam'
@@ -121,15 +128,16 @@
 			                ":id" => $_GET['id']
 			            ));
 
-			$config = Config::current();
 			$defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
 			$defensio->report_false_negatives(array("owner-url" => Config::current()->url, "signatures" => $comment->signature));
-			Route::current()->redirect("/admin/?action=manage&sub=comment&spammed");
+
+			redirect("/admin/?action=manage&sub=comment&spammed");
 		}
 
 		static function admin_approve_comment($action) {
-			$visitor = Visitor::current();
-			if (!$visitor->group()->can("edit_comment")) return;
+			$comment = new Comment($_GET['id']);
+			if (!$comment->editable())
+				return;
 
 			$sql = SQL::current();
 			$sql->query("update `__comments`
@@ -138,14 +146,14 @@
 			            array(
 			                ":id" => $_GET['id']
 			            ));
-			$config = Config::current();
-			$route = Route::current();
+
 			redirect("/admin/?action=manage&sub=comment&approved");
 		}
 
 		static function admin_deny_comment($action) {
-			$visitor = Visitor::current();
-			if (!$visitor->group()->can("edit_comment")) return;
+			$comment = new Comment($_GET['id']);
+			if (!$comment->editable())
+				return;
 
 			$sql = SQL::current();
 			$sql->query("update `__comments`
@@ -155,8 +163,6 @@
 			                ":id" => $_GET['id']
 			            ));
 
-			$config = Config::current();
-			$route = Route::current();
 			redirect("/admin/?action=manage&sub=comment&denied");
 		}
 
@@ -164,31 +170,42 @@
 			global $comment;
 			$visitor = Visitor::current();
 			$config = Config::current();
-			$route = Route::current();
-			if (empty($_POST['comments'])) redirect("/admin/?action=manage&sub=spam&noneselected");
+
+			if (empty($_POST['comments']))
+				redirect("/admin/?action=manage&sub=spam&noneselected");
+
 			if (isset($_POST['delete'])) {
-				if (!$visitor->group()->can("delete_comment")) return;
-				foreach ($_POST['comments'] as $id => $value)
+				foreach ($_POST['comments'] as $id => $value) {
+					$comment = new Comment($id);
+					if (!$comment->deletable())
+						continue;
+
 					Comment::delete($id);
+				}
 				redirect("/admin/?action=manage&sub=spam&deleted");
 			}
-			if (isset($_POST['despam'])) {
-				if (!$visitor->group()->can("edit_comment")) return;
 
+			if (isset($_POST['despam'])) {
 				$sql = SQL::current();
 				$signatures = array();
 				foreach ($_POST['comments'] as $id => $value) {
 					$comment = new Comment($id);
+					if (!$comment->editable())
+						continue;
+
 					$sql->query("update `__comments`
 					             set `status` = 'approved'
 					             where `id` = :id",
 					            array(
 					                ":id" => $id
 					            ));
+
 					$signatures[] = $comment->signature;
 				}
+
 				$defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
 				$defensio->report_false_positives(array("owner-url" => $config->url, "signatures" => implode(",", $signatures)));
+
 				redirect("/admin/?action=manage&sub=spam&despammed");
 			}
 			redirect("/admin/?action=manage&sub=spam");
@@ -202,8 +219,7 @@
 			$sql = SQL::current();
 			$sql->query("delete from `__comments`
 			             where `status` = 'spam'");
-			$config = Config::current();
-			$route = Route::current();
+
 			redirect("/admin/?action=manage&sub=spam&purged");
 		}
 
@@ -567,16 +583,16 @@ $(function(){
 					$theme->load("content/comment", array("comment" => $comment));
 					break;
 				case "delete_comment":
-					if (!$visitor->group()->can("delete_comment") or !isset($_POST['id']))
+					$comment = new Comment($_POST['id']);
+					if (!$comment->deletable())
 						break;
 
 					Comment::delete($_POST['id']);
 					break;
 				case "edit_comment":
-					if (!$visitor->group()->can("edit_comment") or !isset($_POST['comment_id']))
-						break;
-
 					$comment = new Comment($_POST['comment_id']);
+					if (!$comment->editable())
+						break;
 ?>
 <form id="comment_edit_<?php echo $comment->id; ?>" class="inline comment" action="<?php echo $config->url."/admin/?action=update_comment"; ?>" method="post" accept-charset="utf-8">
 	<p>
