@@ -282,11 +282,12 @@
 		if (isset($_GET['feed']))
 			$config->posts_per_page = $config->feed_items;
 
-		if (method_exists($main, $action))
+		if (!ADMIN and method_exists($main, $action))
 			$main->$action();
 
 		# Call any plugin route functions
-		$trigger->call("route_".$action);
+		if (!ADMIN)
+			$trigger->call("route_".$action);
 
 		if (isset($_GET['feed']))
 			if ($trigger->exists($action."_feed")) # What about custom feeds?

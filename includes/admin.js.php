@@ -18,6 +18,7 @@ $(function(){
 			alert(response.replace(/HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW/, ""))
 	})
 
+<?php if (match(array("/edit_/", "/write_/"), $action)): ?>
 	// Fancify the "More Options" links.
 	$(document.createElement("a")).attr({
 		id: "more_options_link",
@@ -36,6 +37,7 @@ $(function(){
 		}
 		$("#more_options").slideToggle()
 	})
+<?php endif; ?>
 
 	// Remove things that only exist for JS-disabled users.
 	$(".js_disabled").remove()

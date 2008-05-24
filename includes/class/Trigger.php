@@ -56,20 +56,24 @@
 		 *
 		 * Parameters:
 		 *     $name - The name of the trigger.
-		 *     $arg - Arguments to pass to the actions.
-		 *     $array - If $arg is an array, should it be passed as multiple arguments?
+		 *     $target - Arguments to pass to the actions.
+		 *     $arguments - Argument(s) to pass to the filter function.
 		 *
 		 * Returns:
-		 *     $arg, filtered through any/all actions for the trigger $name.
+		 *     $target, filtered through any/all actions for the trigger $name.
 		 */
-		public function filter($name, $arg = "", $array = false) {
+		public function filter($name, $target = "", $arguments = null) {
 			global $modules;
-			$caller = (is_array($arg) and $array) ? "call_user_func_array" : "call_user_func" ;
 
 			if (isset($this->priorities[$name])) { # Predefined priorities?
 				usort($this->priorities[$name], "cmp");
 				foreach ($this->priorities[$name] as $action) {
-					$this->modified_text[$name] = $caller($action["function"], $this->modified($name, $arg));
+					if (!empty($arguments)) {
+						$params = array_merge(array($this->modified($name, $target)), (array) $arguments);
+						$this->modified_text[$name] = call_user_func_array($action["function"], $params);
+					} else
+						$this->modified_text[$name] = call_user_func($action["function"], $this->modified($name, $target));
+
 					$this->called[] = $action["function"];
 				}
 			}
@@ -77,9 +81,13 @@
 			$config = Config::current();
 			foreach ($config->enabled_modules as $module)
 				if (!in_array(array($modules[$module], $name), $this->called) and is_callable(array($modules[$module], $name)))
-					$this->modified_text[$name] = $caller(array($modules[$module], $name), $this->modified($name, $arg));
+					if (!empty($arguments)) {
+						$params = array_merge(array($this->modified($name, $target)), (array) $arguments);
+						$this->modified_text[$name] = call_user_func_array(array($modules[$module], $name), $params);
+					} else
+						$this->modified_text[$name] = call_user_func(array($modules[$module], $name), $this->modified($name, $target));
 
-			$final = $this->modified($name, $arg);
+			$final = $this->modified($name, $target);
 
 			$this->modified_text[$name] = null;
 
@@ -90,8 +98,8 @@
 		 * Function: modified
 		 * A little helper function for <filter>.
 		 */
-		function modified($name, $arg) {
-			return (!isset($this->modified_text[$name])) ? $arg : $this->modified_text[$name] ;
+		function modified($name, $target) {
+			return (!isset($this->modified_text[$name])) ? $target : $this->modified_text[$name] ;
 		}
 
 		/**

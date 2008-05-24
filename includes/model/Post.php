@@ -282,11 +282,10 @@
 				$options["where"] = array($private, $enabled_feathers);
 			elseif ($options["where"] === false)
 				$options["where"] = $enabled_feathers;
+			elseif (is_array($options["where"]))
+				$options["where"][] = $enabled_feathers;
 			else
-				if (is_array($options["where"]))
-					$options["where"][] = $enabled_feathers;
-				else
-					$options["where"] = array($options["where"], $enabled_feathers);
+				$options["where"] = array($options["where"], $enabled_feathers);
 
 			$sql = SQL::current();
 			fallback($options["order"], "`__posts`.`pinned` desc, `__posts`.`created_at` desc, `__posts`.`id` desc");

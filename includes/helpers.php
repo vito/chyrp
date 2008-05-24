@@ -261,7 +261,6 @@
 	 *     $time - The string to convert to time (typically a datetime).
 	 */
 	function when($formatting, $time, $strftime = false) {
-		# STFU, php5.
 		if ($strftime)
 			return @strftime($formatting, @strtotime($time));
 		else

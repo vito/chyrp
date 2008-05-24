@@ -292,13 +292,13 @@
 					if ($test == "author") {
 						$user = new User(null, array("where" => "`login` = :login", "params" => array(":login" => $equals)));
 						$test = "user_id";
-						$equals = $user->id;
+						$equals = ($user->no_results) ? 0 : $user->id ;
 					}
 					$where[] = "`__pages`.`".$test."` = :".$test;
 					$params[":".$test] = $equals;
 				}
 
-				$where[] = "`__pages`.`title` LIKE :query OR `__pages`.`body` LIKE :query";
+				$where[] = "(`__pages`.`title` LIKE :query OR `__pages`.`body` LIKE :query)";
 				$params[":query"] = "%".$search."%";
 			}
 
@@ -471,7 +471,7 @@
 					$params[":".$test] = $equals;
 				}
 
-				$where[] = "`__users`.`login` LIKE :query OR `__users`.`full_name` LIKE :query OR `__users`.`email` LIKE :query OR `__users`.`website` LIKE :query";
+				$where[] = "(`__users`.`login` LIKE :query OR `__users`.`full_name` LIKE :query OR `__users`.`email` LIKE :query OR `__users`.`website` LIKE :query)";
 				$params[":query"] = "%".$_GET['query']."%";
 			}
 
@@ -608,6 +608,96 @@
 			$this->context["updated"] = isset($_GET['updated']);
 			$this->context["deleted"] = isset($_GET['deleted']);
 			$this->context["added"]   = isset($_GET['added']);
+		}
+
+		/**
+		 * Function: export
+		 * Export posts, pages, groups, users, etc.
+		 */
+		public function export() {
+			$config = Config::current();
+			$trigger = Trigger::current();
+			$route = Route::current();
+			$exports = array();
+
+			if (isset($_POST['posts'])) {
+				$posts = Post::find(array("where" => false, "pagination" => false));
+
+				$latest_timestamp = 0;
+				foreach ($posts as $post)
+					if (@strtotime($post->created_at) > $latest_timestamp)
+						$latest_timestamp = @strtotime($post->created_at);
+
+				$posts_atom = '<?xml version="1.0" encoding="utf-8"?>'."\r";
+				$posts_atom.= '<feed xmlns="http://www.w3.org/2005/Atom">'."\r";
+				$posts_atom.= '	<title>'.htmlspecialchars($config->name, ENT_NOQUOTES, "utf-8").'</title>'."\r";
+				$posts_atom.= '	<subtitle>'.htmlspecialchars($config->description, ENT_NOQUOTES, "utf-8").'</subtitle>'."\r";
+				$posts_atom.= '	<id>'.$config->url.'</id>'."\r";
+				$posts_atom.= '	<updated>'.@date("c", $latest_timestamp).'</updated>'."\r";
+				$posts_atom.= '	<link href="'.$config->url.'" rel="self" type="application/atom+xml" />'."\r";
+				$posts_atom.= '	<generator uri="http://chyrp.net/" version="'.CHYRP_VERSION.'">Chyrp</generator>'."\r";
+
+				foreach ($posts as $post) {
+					$title = htmlspecialchars($post->title(), ENT_NOQUOTES, "utf-8");
+					fallback($title, ucfirst($post->feather)." Post #".$post->id);
+
+					$author_uri = User::info("website", $post->user_id);
+
+					$updated = (substr($post->updated_at, 0, 4) == "0000") ? $post->created_at : $post->updated_at ;
+
+					$tagged = substr(strstr($route->url("id/".$post->id."/"), "//"), 2);
+					$tagged = str_replace("#", "/", $tagged);
+					$tagged = preg_replace("/(".preg_quote(parse_url($post->url(), PHP_URL_HOST)).")/", "\\1,".when("Y-m-d", $updated).":", $tagged, 1);
+
+					$split = explode("\n", $post->xml);
+					array_shift($split);
+					$post->xml = implode("\n", $split);
+
+					$posts_atom.= '	<entry xml:base="'.htmlspecialchars($post->url(), ENT_QUOTES, "utf-8").'">'."\r";
+					$posts_atom.= '		<title type="html">'.$title.'</title>'."\r";
+					$posts_atom.= '		<id>tag:'.$tagged.'</id>'."\r";
+					$posts_atom.= '		<updated>'.when("c", $updated).'</updated>'."\r";
+					$posts_atom.= '		<published>'.when("c", $post->created_at).'</published>'."\r";
+					$posts_atom.= '		<link href="'.htmlspecialchars($trigger->filter("feed_url", html_entity_decode($post->url())), ENT_NOQUOTES, "utf-8").'" />'."\r";
+					$posts_atom.= '		<author>'."\r";
+					$posts_atom.= '			<name>'.htmlspecialchars(fallback($post->user()->full_name, $post->user()->login, true), ENT_NOQUOTES, "utf-8").'</name>'."\r";
+
+					if (!empty($author_uri))
+						$posts_atom.= '			<uri>'.$author_uri.'</uri>'."\r";
+
+					$posts_atom.= '		</author>'."\r";
+					$posts_atom.= '		<chyrp>'."\r";
+
+					foreach (array("xml", "user_id", "feather", "clean", "url", "pinned", "status") as $attr)
+						$posts_atom.= '			<'.$attr.'>'.$post->$attr.'</'.$attr.'>'."\r";
+
+					$posts_atom.= '		</chyrp>'."\r";
+
+					$posts_atom = $trigger->filter("posts_export", $posts_atom, $post);
+
+					$posts_atom.= '	</entry>'."\r";
+
+				}
+
+				$posts_atom.= '</feed>'."\r";
+				$exports["posts.atom"] = $posts_atom;
+			}
+
+			require INCLUDES_DIR."/lib/zip.php";
+
+			$zip = new ZipFile();
+			foreach ($exports as $filename => $content)
+				$zip->addFile($content, $filename);
+
+			$zip_contents = $zip->file();
+
+			header("Content-type: application/octet-stream");
+			header("Content-Disposition: attachment; filename=\"".sanitize(camelize($config->name), false)."_Export_".@date("Y-m-d", time() + $config->time_offset).".zip\"");
+			header("Content-length: ".strlen($zip_contents)."\n\n");
+
+			echo $zip_contents;
+
+			exit;
 		}
 
 		/**
