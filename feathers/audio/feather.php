@@ -2,6 +2,7 @@
 	class Audio extends Feather {
 		public function __construct() {
 			$this->setField(array("attr" => "audio", "type" => "file", "label" => "MP3 File"));
+			$this->setField(array("attr" => "from_url", "type" => "text", "label" => "From URL?", "optional" => true));
 			$this->setField(array("attr" => "description", "type" => "text_block", "label" => "Description", "optional" => true, "preview" => true, "bookmarklet" => "selection"));
 			$this->setFilter("description", "markup_post_text");
 			$this->respondTo("delete_post", "delete_file");
@@ -13,7 +14,13 @@
 			$filename = "";
 			if (isset($_FILES['audio']) and $_FILES['audio']['error'] == 0)
 				$filename = upload($_FILES['audio'], "mp3");
-			else
+			elseif (!empty($_POST['from_url'])) {
+				$file = tempnam(sys_get_temp_dir(), "chyrp");
+				file_put_contents($file, get_remote($_POST['from_url']));
+				$fake_file = array("name" => basename(parse_url($_POST['from_url'], PHP_URL_PATH)),
+				                   "tmp_name" => $file);
+				$filename = upload($fake_file, "mp3", "", true);
+			} else
 				error(__("Error"), __("Couldn't upload audio file."));
 
 			$values = array("filename" => $filename, "description" => $_POST['description']);

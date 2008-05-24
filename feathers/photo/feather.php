@@ -2,6 +2,7 @@
 	class Photo extends Feather {
 		public function __construct() {
 			$this->setField(array("attr" => "photo", "type" => "file", "label" => "Photo"));
+			$this->setField(array("attr" => "from_url", "type" => "text", "label" => "From URL?", "optional" => true));
 			$this->setField(array("attr" => "caption", "type" => "text_block", "label" => "Caption", "optional" => true, "preview" => true, "bookmarklet" => "selection"));
 			$this->setFilter("caption", "markup_post_text");
 			$this->respondTo("delete_post", "delete_file");
@@ -9,11 +10,16 @@
 		}
 		static function submit() {
 			$filename = "";
-			if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0) {
+			if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0)
 				$filename = upload($_FILES['photo'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp"));
-			} else {
+			elseif (!empty($_POST['from_url'])) {
+				$file = tempnam(sys_get_temp_dir(), "chyrp");
+				file_put_contents($file, get_remote($_POST['from_url']));
+				$fake_file = array("name" => basename(parse_url($_POST['from_url'], PHP_URL_PATH)),
+				                   "tmp_name" => $file);
+				$filename = upload($fake_file, array("jpg", "jpeg", "png", "gif", "tiff", "bmp"), "", true);
+			} else
 				error(__("Error"), __("Couldn't upload photo."));
-			}
 
 			$values = array("filename" => $filename, "caption" => $_POST['caption']);
 			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : "" ;

@@ -208,7 +208,7 @@
 							$info = pathinfo($the_post["PHOTO-URL"][0]["data"]);
 							$filename = $info['basename'];
 
-							$open = fopen(MAIN_DIR."/upload/".$filename, "w");
+							$open = fopen(MAIN_DIR."/uploads/".$filename, "w");
 							fwrite($open, $image);
 							fclose($open);
 

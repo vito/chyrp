@@ -833,32 +833,35 @@
 	 * Returns:
 	 *     $filename - The resulting filename from the upload.
 	 */
-	function upload($file, $extension = null, $path = "") {
+	function upload($file, $extension = null, $path = "", $put = false) {
 		$file_split = explode(".", $file['name']);
 		$file_ext = end($file_split);
 
 		if (is_array($extension)) {
 			if (!in_array(strtolower($file_ext), $extension)) {
-		    $list = "";
+				$list = "";
 				for ($i = 0; $i < count($extension); $i++) {
-		      $comma = "";
+					$comma = "";
 					if (($i + 1) != count($extension)) $comma = ", ";
 					if (($i + 2) == count($extension)) $comma = ", and ";
 					$list.= "*.".$extension[$i].$comma;
 				}
 				error(__("Error"), sprintf(__("Only %s files are supported."), $list));
 			}
-		} elseif (isset($extension) and $file_ext != $extension and $file_ext != strtoupper($extension)) {
+		} elseif (isset($extension) and $file_ext != $extension and $file_ext != strtoupper($extension))
 			error(__("Error"), sprintf(__("Only %s files are supported."), "*.".$extension));
-		}
 
 		array_pop($file_split);
 		$file_clean = implode(".", $file_split);
 		$file_clean = sanitize($file_clean, false).".".$file_ext;
 		$filename = unique_filename($file_clean);
 
-		if (!@move_uploaded_file($file['tmp_name'], MAIN_DIR.Config::current()->uploads_path.$path.$filename))
-			error(__("Error"), __("Couldn't upload file. CHMOD <code>".MAIN_DIR.Config::current()->uploads_path."</code> to 777 and try again. If this problem persists, it's probably timing out; in which case, you must contact your system administrator to increase the maximum POST and upload sizes."));
+		$message = __("Couldn't upload file. CHMOD <code>".MAIN_DIR.Config::current()->uploads_path."</code> to 777 and try again. If this problem persists, it's probably timing out; in which case, you must contact your system administrator to increase the maximum POST and upload sizes.");
+		if ($put) {
+			if (!@copy($file['tmp_name'], MAIN_DIR.Config::current()->uploads_path.$path.$filename))
+				error(__("Error"), $message);
+		} elseif (!@move_uploaded_file($file['tmp_name'], MAIN_DIR.Config::current()->uploads_path.$path.$filename))
+			error(__("Error"), $message);
 
 		return $filename;
 	}
@@ -915,13 +918,7 @@
 		extract(parse_url($url), EXTR_SKIP);
 
 		if (ini_get("allow_url_fopen")) {
-			$connect = @fopen($url, "r");
-			if (!$connect) return false;
-
-			$content = "";
-			while($remote_read = fread($connect, 4096))
-				$content .= $remote_read;
-			fclose($connect);
+			$content = file_get_contents($url);
 		} elseif (function_exists("curl_init")) {
 			$handle = curl_init();
 			curl_setopt($handle, CURLOPT_URL, $url);
