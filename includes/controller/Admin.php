@@ -125,18 +125,36 @@
 			$where = array();
 
 			if (!empty($_GET['query'])) {
+				$search = "";
+				$matches = array();
+
+				$queries = explode(" ", $_GET['query']);
+				foreach ($queries as $query)
+					if (!strpos($query, ":"))
+						$search.= $query;
+					else
+						$matches[] = $query;
+
+				foreach ($matches as $match) {
+					$match = explode(":", $match);
+					$test = $match[0];
+					$equals = $match[1];
+					if ($test == "author") {
+						$user = new User(null, array("where" => "`login` = :login", "params" => array(":login" => $equals)));
+						$test = "user_id";
+						$equals = $user->id;
+					}
+					$where[] = "`__posts`.`".$test."` = :".$test;
+					$params[":".$test] = $equals;
+				}
+
 				$where[] = "`__posts`.`xml` LIKE :query";
-				$params[":query"] = "%".$_GET['query']."%";
+				$params[":query"] = "%".$search."%";
 			}
 
 			if (!empty($_GET['month'])) {
 				$where[] = "`__posts`.`created_at` LIKE :when";
 				$params[":when"] = $_GET['month']."-%";
-			}
-
-			if (!empty($_GET['status'])) {
-				$where[] = "`__posts`.`status` = :status";
-				$params[":status"] = $_GET['status'];
 			}
 
 			$this->context["posts"] = Post::find(array("where" => $where, "params" => $params, "per_page" => 25));
@@ -257,8 +275,31 @@
 			$where = array();
 
 			if (!empty($_GET['query'])) {
+				$search = "";
+				$matches = array();
+
+				$queries = explode(" ", $_GET['query']);
+				foreach ($queries as $query)
+					if (!strpos($query, ":"))
+						$search.= $query;
+					else
+						$matches[] = $query;
+
+				foreach ($matches as $match) {
+					$match = explode(":", $match);
+					$test = $match[0];
+					$equals = $match[1];
+					if ($test == "author") {
+						$user = new User(null, array("where" => "`login` = :login", "params" => array(":login" => $equals)));
+						$test = "user_id";
+						$equals = $user->id;
+					}
+					$where[] = "`__pages`.`".$test."` = :".$test;
+					$params[":".$test] = $equals;
+				}
+
 				$where[] = "`__pages`.`title` LIKE :query OR `__pages`.`body` LIKE :query";
-				$params[":query"] = "%".$_GET['query']."%";
+				$params[":query"] = "%".$search."%";
 			}
 
 			$this->context["pages"] = Page::find(array("where" => $where, "params" => $params, "per_page" => 25));
@@ -412,6 +453,24 @@
 			$where = array();
 
 			if (!empty($_GET['query'])) {
+				$search = "";
+				$matches = array();
+
+				$queries = explode(" ", $_GET['query']);
+				foreach ($queries as $query)
+					if (!strpos($query, ":"))
+						$search.= $query;
+					else
+						$matches[] = $query;
+
+				foreach ($matches as $match) {
+					$match = explode(":", $match);
+					$test = $match[0];
+					$equals = $match[1];
+					$where[] = "`__pages`.`".$test."` = :".$test;
+					$params[":".$test] = $equals;
+				}
+
 				$where[] = "`__users`.`login` LIKE :query OR `__users`.`full_name` LIKE :query OR `__users`.`email` LIKE :query OR `__users`.`website` LIKE :query";
 				$params[":query"] = "%".$_GET['query']."%";
 			}

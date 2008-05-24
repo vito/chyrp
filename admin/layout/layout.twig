@@ -31,7 +31,7 @@
 				Hello, ${ visitor.full_name | split | first | fallback(visitor.login) }. <a href="{% url "logout/" %}">Log Out &rsaquo;</a>
 			</div>
 		</div>
-		<ul class="column" id="sub-nav">
+		<ul class="column ${ route.action }_nav" id="sub-nav">
 {% block subnav %}
 {% if (route.action | split("_") | last) == "settings" %}
 {% include "partials/settings_nav.twig" %}

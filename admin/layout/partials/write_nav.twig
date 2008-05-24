@@ -1,4 +1,3 @@
-			<li class="right">${ "Bookmarklet: %s" | translate | format('<a href="' ~ bookmarklet ~ '">Chyrp!</a>') }</li>
 			{% for feather in site.enabled_feathers %}
 			<li${ GET.feather | selected(feather) }><a href="{% admin "write_post&feather="~feather %}">{% if site.enabled_feathers | length == 1 %}Post{% else %}${ feather | capitalize }{% endif %}</a></li>
 			{% endfor %}

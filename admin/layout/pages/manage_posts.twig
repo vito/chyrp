@@ -17,24 +17,13 @@
 					<h3>${ "Search&hellip;" | translate }</h3>
 					<input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" /> <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
 				</div>
-				<div class="left pad margin-right">
+				<div class="left pad">
 					<h3>${ "Browse by month:" | translate }</h3>
 					<select name="month">
 						<option value="">----------</option>
 						{% for archive in archives %}
 						<option value="${ archive.when | date("Y-m") }"${ GET.month | option_selected(archive.when | date("Y-m")) }>${ archive.when | date("F Y") } ($archive.count)</option>
 						{% endfor %}
-					</select>
-					<button type="submit" class="inline">${ "Show &rarr;" | translate }</button>
-				</div>
-				<div class="left pad">
-					<h3>${ "Browse by status:" | translate }</h3>
-					<select name="status">
-						<option value="">----------</option>
-						<option value="public">${ "Published" | translate }</option>
-						<option value="draft">${ "Draft" | translate }</option>
-						<option value="private">${ "Private" | translate }</option>
-						<option value="registered_only">${ "Registered Only" | translate }</option>
 					</select>
 					<button type="submit" class="inline">${ "Show &rarr;" | translate }</button>
 				</div>
