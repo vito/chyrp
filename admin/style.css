@@ -90,16 +90,16 @@ a:hover {
 /* @end */
 
 /* @group Footer */
-.footer {
+#footer {
 	width: 375px;
 	margin: 2.5em auto !important;
 	font-size: 1.25em;
 }
-.footer img {
+#footer img {
 	float: left;
 	margin: -.5em 2em 0 0;
 }
-.footer .sub {
+#footer .sub {
 	color: #acacac;
 	font-size: .7em;
 }
@@ -290,16 +290,47 @@ ul.extend .expand {
 /* @end */
 
 /* @group Theme Changing */
-.theme.box {
+.theme {
 	text-align: center;
+	margin-right: 15px !important;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border: 0 !important;
+	padding-bottom: 20px !important;
 }
-.theme_link {
+.theme .link {
 	font-weight: bold;
 	text-align: center;
 }
-.theme_link span {
+.theme .link span {
 	display: block;
 }
+.theme.current {
+	background: #EBFAE4;
+	color: #65845e;
+}
+.theme.current small,
+.theme.current small a {
+	color: #789f72;
+}
+.theme.current a.button {
+	background: #189100;
+	color: #FFF;
+	border: 0;
+}
+.theme img.screenshot {
+	padding: 5px;
+	background: #FFF;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+}
+.theme a:hover img.screenshot {
+	background: #CCC;
+}
+.theme small {
+	font-weight: normal;
+}
+/* @end */
 
 /* @group Forms */
 form.delete blockquote {

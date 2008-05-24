@@ -706,7 +706,7 @@
 
 			if ($open = opendir(THEMES_DIR)) {
 			     while (($folder = readdir($open)) !== false) {
-					if ($folder == $config->theme or !file_exists(THEMES_DIR."/".$folder."/info.yaml"))
+					if (!file_exists(THEMES_DIR."/".$folder."/info.yaml"))
 						continue;
 
 					if (file_exists(THEMES_DIR."/".$folder."/locale/".$config->locale.".mo"))

@@ -164,11 +164,12 @@ $(function(){
 
 		$("#canvas").remove()
 
-		$(".extend li, .header, .header .view, .main-nav, .sub-nav, .footer, h1, h3, .legend").css({
+		$("#header, #welcome, #sub-nav, #content a.button, .extend li, #footer, h1, h2").css({
 			position: "relative",
 			zIndex: 2
 		})
-		$(".header .view").css({
+		$("#header ul li a").css({
+			position: "relative",
 			zIndex: 3
 		})
 
