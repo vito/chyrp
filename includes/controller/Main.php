@@ -169,12 +169,11 @@
 		 * Toggles the Admin control panel (if available).
 		 */
 		public function toggle_admin() {
-			if (!isset($_COOKIE['chyrp_hide_admin']))
-				cookie_cutter("chyrp_hide_admin", "true");
+			if (!isset($_SESSION['chyrp_hide_admin']))
+				$_SESSION['chyrp_hide_admin'] = true;
 			else
-				cookie_cutter("chyrp_hide_admin", null, 0);
+				unset($_SESSION['chyrp_hide_admin']);
 
-			$route = Route::current();
 			redirect("/");
 		}
 
@@ -211,8 +210,8 @@
 
 			User::add($_POST['login'], $_POST['password1'], $_POST['email']);
 
-			cookie_cutter("chyrp_login", $_POST['login']);
-			cookie_cutter("chyrp_password", md5($_POST['password1']));
+			$_SESSION['chyrp_login'] = $_POST['login'];
+			$_SESSION['chyrp_password'] = md5($_POST['password1']);
 
 			$route = Route::current();
 			redirect('/');
@@ -228,8 +227,8 @@
 			if (logged_in())
 				error(__("Error"), __("You're already logged in."));
 
-			cookie_cutter("chyrp_login", $_POST['login']);
-			cookie_cutter("chyrp_password", md5($_POST['password']));
+			$_SESSION['chyrp_login'] = $_POST['login'];
+			$_SESSION['chyrp_password'] = md5($_POST['password']);
 
 			redirect("/");
 		}
@@ -242,8 +241,7 @@
 			if (!logged_in())
 				error(__("Error"), __("You aren't logged in."));
 
-			cookie_cutter("chyrp_login", "", time() - 2592000);
-			cookie_cutter("chyrp_password", "", time() - 2592000);
+			session_destroy();
 
 			redirect("/");
 		}
@@ -265,7 +263,7 @@
 
 			$visitor->update($visitor->login, $password, $_POST['full_name'], $_POST['email'], $_POST['website'], $visitor->group()->id);
 
-			cookie_cutter("chyrp_password", $password);
+			$_SESSION['chyrp_password'] = $password;
 
 			redirect("/");
 		}

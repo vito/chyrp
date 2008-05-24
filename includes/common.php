@@ -71,6 +71,13 @@
 	# Load the configuration settings
 	$config->load(INCLUDES_DIR."/config.yaml.php");
 
+	session_name(camelize($config->name));
+	session_start();
+
+	# Make the session last forever.
+	if (isset($_COOKIE[session_name()]))
+		setcookie(session_name(), $_COOKIE[session_name()], time() + (60 * 60 * 24 * 30));
+
 	# Constant: MODULES_DIR
 	# Absolute path to /modules
 	define('MODULES_DIR', MAIN_DIR."/modules");

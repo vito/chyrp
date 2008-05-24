@@ -237,8 +237,8 @@
 				                ":datetime" => datetime()
 				            ));
 
-			cookie_cutter("chyrp_login", $_POST['login']);
-			cookie_cutter("chyrp_password", md5($_POST['password_1']));
+			$_SESSION['chyrp_login'] = $_POST['login'];
+			$_SESSION['chyrp_password'] = md5($_POST['password_1']);
 
 			$installed = true;
 		}

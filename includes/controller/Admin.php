@@ -402,7 +402,7 @@
 			$user->update($_POST['login'], $password, $_POST['full_name'], $_POST['email'], $_POST['website'], $_POST['group']);
 
 			if ($_POST['id'] == $visitor->id)
-				cookie_cutter("chyrp_password", $password);
+				$_SESSION['chyrp_password'] = $password;
 
 			redirect("/admin/?action=manage_users&updated");
 		}

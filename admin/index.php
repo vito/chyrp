@@ -29,7 +29,7 @@
 			$admin->context["logged_in"]  = logged_in();
 			$admin->context["stats"]      = array("load" => timer_stop(), "queries" => SQL::current()->queries);
 			$admin->context["route"]      = array("action" => $action);
-			$admin->context["hide_admin"] = isset($_COOKIE["chyrp_hide_admin"]);
+			$admin->context["hide_admin"] = isset($_SESSION["chyrp_hide_admin"]);
 			$admin->context["archives"]   = $theme->list_archives();
 			$admin->context["pagination"] = $paginate;
 			$admin->context["now"]        = time() + Config::current()->time_offset;

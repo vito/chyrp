@@ -251,7 +251,7 @@
 			$this->context["page_list"]    = $this->list_pages();
 			$this->context["theme"]        = array("url" => $config->url."/themes/".$config->theme);
 			$this->context["route"]        = array("action" => $action, "ajax" => AJAX);
-			$this->context["hide_admin"]   = isset($_COOKIE["chyrp_hide_admin"]);
+			$this->context["hide_admin"]   = isset($_SESSION["chyrp_hide_admin"]);
 			$this->context["pagination"]   = $paginate;
 			$this->context["version"]      = CHYRP_VERSION;
 			$this->context["POST"]         = $_POST;
