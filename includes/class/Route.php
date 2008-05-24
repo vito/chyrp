@@ -196,8 +196,8 @@
 					}
 				}
 
-			# Drafts
-			if ($arg[0] == "drafts")
+			# Default pages
+			if (in_array($arg[0], array("drafts", "login", "process_login", "process_registration", "update_self", "register", "logout", "lost_password")))
 				return $_GET['action'] = $arg[0];
 
 			# Page viewing

@@ -121,6 +121,24 @@
 			$theme->load("forms/user/controls");
 
 			break;
+		case "lost_password":
+			$sent = false;
+			$invalid_user = false;
+			if (isset($_POST['login'])) {
+				$user = new User(null, array("where" => "`login` = :login", "params" => array(":login" => $_POST['login'])));
+				if ($user->no_results)
+					$invalid_user = true;
+				else {
+					$new_password = random(16);
+					$user->update($user->login, md5($new_password), $user->full_name, $user->email, $user->website, $user->group_id);
+					$sent = @mail($user->email, __("Lost Password Request"), sprintf(__("%s,\n\nWe have received a request for a new password for your account at %s.\n\nPlease log in with the following password, and feel free to change it once you've successfully logged in:\n\t%s"), $user->login, $config->name, $new_password));
+				}
+			}
+
+			$theme->title = __("Lost Password");
+			$theme->load("forms/user/lost_password", array("sent" => $sent, "invalid_user" => $invalid_user));
+
+			break;
 		case "feed":
 			if (!isset($posts)) exit;
 

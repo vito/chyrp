@@ -24,6 +24,10 @@
 		public function __construct($post_id = null, $options = array()) {
 			if (!isset($post_id) and empty($options)) return;
 			parent::grab($this, $post_id, $options);
+
+			if ($this->no_results)
+				return;
+
 			$this->slug =& $this->url;
 			$this->parse(!isset($options["filter"]) or $options["filter"]);
 		}
