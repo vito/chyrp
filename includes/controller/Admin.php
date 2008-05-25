@@ -621,19 +621,45 @@
 			$exports = array();
 
 			if (isset($_POST['posts'])) {
-				$posts = Post::find(array("where" => false, "pagination" => false));
+				if (!empty($_POST['filter_posts'])) {
+					$search = "";
+					$matches = array();
+
+					$queries = explode(" ", $_POST['filter_posts']);
+					foreach ($queries as $query)
+						if (!strpos($query, ":"))
+							$search.= $query;
+						else
+							$matches[] = $query;
+
+					foreach ($matches as $match) {
+						$match = explode(":", $match);
+						$test = $match[0];
+						$equals = $match[1];
+						$where[] = "`__posts`.`".$test."` = :".$test;
+						$params[":".$test] = $equals;
+					}
+				} else
+					list($where, $params) = array(false, array());
+
+				$posts = Post::find(array("where" => $where, "params" => $params, "pagination" => false));
 
 				$latest_timestamp = 0;
 				foreach ($posts as $post)
 					if (@strtotime($post->created_at) > $latest_timestamp)
 						$latest_timestamp = @strtotime($post->created_at);
 
+				$id = substr(strstr($config->url, "//"), 2);
+				$id = str_replace("#", "/", $id);
+				$id = preg_replace("/(".preg_quote(parse_url($config->url, PHP_URL_HOST)).")/", "\\1,".@date("Y", $latest_timestamp).":", $id, 1);
+
 				$posts_atom = '<?xml version="1.0" encoding="utf-8"?>'."\r";
 				$posts_atom.= '<feed xmlns="http://www.w3.org/2005/Atom">'."\r";
-				$posts_atom.= '	<title>'.htmlspecialchars($config->name, ENT_NOQUOTES, "utf-8").'</title>'."\r";
+				$posts_atom.= '	<title>'.htmlspecialchars($config->name, ENT_NOQUOTES, "utf-8").' Posts</title>'."\r";
 				$posts_atom.= '	<subtitle>'.htmlspecialchars($config->description, ENT_NOQUOTES, "utf-8").'</subtitle>'."\r";
-				$posts_atom.= '	<id>'.$config->url.'</id>'."\r";
+				$posts_atom.= '	<id>tag:'.parse_url($config->url, PHP_URL_HOST).','.@date("Y", $latest_timestamp).':Chyrp</id>'."\r";
 				$posts_atom.= '	<updated>'.@date("c", $latest_timestamp).'</updated>'."\r";
+				$posts_atom.= '	<link href="'.$config->url.'" rel="self" type="application/atom+xml" />'."\r";
 				$posts_atom.= '	<link href="'.$config->url.'" rel="self" type="application/atom+xml" />'."\r";
 				$posts_atom.= '	<generator uri="http://chyrp.net/" version="'.CHYRP_VERSION.'">Chyrp</generator>'."\r";
 
@@ -668,7 +694,7 @@
 					$posts_atom.= '		</author>'."\r";
 					$posts_atom.= '		<chyrp>'."\r";
 
-					foreach (array("xml", "user_id", "feather", "clean", "url", "pinned", "status") as $attr)
+					foreach (array("xml", "feather", "clean", "url", "pinned", "status", "user_id") as $attr)
 						$posts_atom.= '			<'.$attr.'>'.$post->$attr.'</'.$attr.'>'."\r";
 
 					$posts_atom.= '		</chyrp>'."\r";
@@ -678,10 +704,93 @@
 					$posts_atom.= '	</entry>'."\r";
 
 				}
-
 				$posts_atom.= '</feed>'."\r";
+
 				$exports["posts.atom"] = $posts_atom;
 			}
+
+			if (isset($_POST['pages'])) {
+				if (!empty($_POST['filter_pages'])) {
+					$search = "";
+					$matches = array();
+
+					$queries = explode(" ", $_POST['filter_pages']);
+					foreach ($queries as $query)
+						if (!strpos($query, ":"))
+							$search.= $query;
+						else
+							$matches[] = $query;
+
+					foreach ($matches as $match) {
+						$match = explode(":", $match);
+						$test = $match[0];
+						$equals = $match[1];
+						$where[] = "`__pages`.`".$test."` = :".$test;
+						$params[":".$test] = $equals;
+					}
+				} else
+					list($where, $params) = array(null, array());
+
+				$pages = Page::find(array("where" => $where, "params" => $params, "pagination" => false));
+
+				$latest_timestamp = 0;
+				foreach ($pages as $page)
+					if (@strtotime($page->created_at) > $latest_timestamp)
+						$latest_timestamp = @strtotime($page->created_at);
+
+				$pages_atom = '<?xml version="1.0" encoding="utf-8"?>'."\r";
+				$pages_atom.= '<feed xmlns="http://www.w3.org/2005/Atom">'."\r";
+				$pages_atom.= '	<title>'.htmlspecialchars($config->name, ENT_NOQUOTES, "utf-8").' Pages</title>'."\r";
+				$pages_atom.= '	<subtitle>'.htmlspecialchars($config->description, ENT_NOQUOTES, "utf-8").'</subtitle>'."\r";
+				$pages_atom.= '	<id>tag:'.parse_url($config->url, PHP_URL_HOST).','.@date("Y", $latest_timestamp).':Chyrp</id>'."\r";
+				$pages_atom.= '	<updated>'.@date("c", $latest_timestamp).'</updated>'."\r";
+				$pages_atom.= '	<link href="'.$config->url.'" rel="self" type="application/atom+xml" />'."\r";
+				$pages_atom.= '	<link href="'.$config->url.'" rel="self" type="application/atom+xml" />'."\r";
+				$pages_atom.= '	<generator uri="http://chyrp.net/" version="'.CHYRP_VERSION.'">Chyrp</generator>'."\r";
+
+				foreach ($pages as $page) {
+					$author_uri = User::info("website", $post->user_id);
+
+					$updated = (substr($post->updated_at, 0, 4) == "0000") ? $post->created_at : $post->updated_at ;
+
+					$tagged = substr(strstr($page->url(), "//"), 2);
+					$tagged = str_replace("#", "/", $tagged);
+					$tagged = preg_replace("/(".preg_quote(parse_url($page->url(), PHP_URL_HOST)).")/", "\\1,".when("Y-m-d", $updated).":", $tagged, 1);
+
+					$split = explode("\n", $post->xml);
+					array_shift($split);
+					$post->xml = implode("\n", $split);
+
+					$pages_atom.= '	<entry xml:base="'.htmlspecialchars($page->url(), ENT_QUOTES, "utf-8").'">'."\r";
+					$pages_atom.= '		<title type="html">'.$page->title.'</title>'."\r";
+					$pages_atom.= '		<id>tag:'.$tagged.'</id>'."\r";
+					$pages_atom.= '		<updated>'.when("c", $updated).'</updated>'."\r";
+					$pages_atom.= '		<published>'.when("c", $page->created_at).'</published>'."\r";
+					$pages_atom.= '		<link href="'.htmlspecialchars($trigger->filter("feed_url", html_entity_decode($page->url())), ENT_NOQUOTES, "utf-8").'" />'."\r";
+					$pages_atom.= '		<author>'."\r";
+					$pages_atom.= '			<name>'.htmlspecialchars(fallback($page->user()->full_name, $page->user()->login, true), ENT_NOQUOTES, "utf-8").'</name>'."\r";
+
+					if (!empty($author_uri))
+						$posts_atom.= '			<uri>'.$author_uri.'</uri>'."\r";
+
+					$pages_atom.= '		</author>'."\r";
+					$pages_atom.= '		<chyrp>'."\r";
+
+					foreach (array("show_in_list", "list_order", "clean", "url", "user_id", "parent_id") as $attr)
+						$pages_atom.= '			<'.$attr.'>'.$page->$attr.'</'.$attr.'>'."\r";
+
+					$pages_atom.= '		</chyrp>'."\r";
+
+					$pages_atom = $trigger->filter("pages_export", $pages_atom, $post);
+
+					$pages_atom.= '	</entry>'."\r";
+				}
+				$pages_atom.= '</feed>'."\r";
+
+				$exports["pages.atom"] = $pages_atom;
+			}
+
+			$exports = $trigger->filter("export", $exports);
 
 			require INCLUDES_DIR."/lib/zip.php";
 
