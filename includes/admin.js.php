@@ -52,9 +52,11 @@ $(function(){
 
 <?php if (match("/(edit|write)_/", $_GET['action'])): ?>
 	// Auto-expand text fields & auto-grow textareas.
-	$("input.text").Autoexpand()
+	$("input.text").each(function(){
+		$(this).css("min-width", $(this).width()).Autoexpand()
+	})
 	$("textarea").each(function(){
-		$(this).css("min-height", $(this).outerHeight()).autogrow()
+		$(this).css("min-height", $(this).height()).autogrow()
 	})
 
 <?php endif; ?>
