@@ -4,8 +4,6 @@
 	if (!$visitor->group()->can("add_post"))
 		error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
-	$sql->query("TRUNCATE TABLE `chyrp_posts`");
-	$sql->query("TRUNCATE TABLE `chyrp_pages`");
 	$errors = array();
 	if (!empty($_POST)) {
 		switch($_POST['step']) {
@@ -27,6 +25,7 @@
 
 							$trigger->call("import_chyrp_post", array($entry, $post));
 						}
+						$step = "2";
 					} else
 						$errors[] = __("Posts file does not seem to be a valid Chyrp export file.");
 				}
@@ -51,6 +50,8 @@
 					} else
 						$errors[] = __("Pages file does not seem to be a valid Chyrp export file.");
 				}
+
+				$trigger->call("chyrp_import", array(&$errors, &$step));
 
 				break;
 		}
@@ -145,6 +146,7 @@
 				<input type="file" name="pages_file" value="" id="pages_file" />
 				<br />
 				<br />
+				<?php $trigger->call("chyrp_import_fields"); ?>
 				<input type="hidden" name="step" value="1" id="step" />
 				<p class="center"><input type="submit" value="<?php echo __("Import &rarr;"); ?>" /></p>
 				<input type="hidden" name="hash" value="<?php echo $config->secure_hashkey; ?>" id="hash" />
