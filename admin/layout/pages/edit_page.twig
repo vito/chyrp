@@ -5,7 +5,7 @@
 {% block subnav %}{% include "partials/manage_nav.twig" %}{% endblock %}
 
 {% block content %}
-			<h1>${ "Editing &#8220;%s&#8221;" | translate | format(page.title | escape) }</h1>
+			<h1>${ "Editing &#8220;%s&#8221;" | translate | format(page.title) }</h1>
 			<form id="edit_form" action="{% admin "update_page" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 				{% include "partials/page_fields.twig" %}
 				<input type="hidden" name="id" value="$page.id" id="id" />

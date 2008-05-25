@@ -269,11 +269,16 @@
 
 	/**
 	 * Function: datetime
-	 * Returns a standard datetime string based on their time offset, usually for MySQL inserts.
+	 * Returns a standard datetime string based on either the passed timestamp or their time offset, usually for MySQL inserts.
+	 *
+	 * Parameters:
+	 *     $when - An optional timestamp.
 	 */
-	function datetime() {
-		$config = Config::current();
-		return @date("Y-m-d H:i:s", (time() + $config->time_offset));
+	function datetime($when = null) {
+		# If $when is not set (common behaviour), set it to a formatted version of the current time.
+		# It is formatted so that strtotime doesn't freak out.
+		fallback($when, @date("c", (time() + Config::current()->time_offset)));
+		return @date("Y-m-d H:i:s", @strtotime($when));
 	}
 
 	/**

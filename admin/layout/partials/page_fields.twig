@@ -7,15 +7,15 @@
 					<textarea class="wide preview_me" rows="12" name="body" id="body">${ page.body | escape }</textarea>
 				</p>
 
-				<br id="after_options" />
-				<br class="js_enabled" />
-				<button type="submit" class="yay right" accesskey="s">
-					{% if route.action == "write_page" %}
-					<img src="images/icons/success.png" alt="success" />${ "Publish" | translate }
-					{% else %}
-					<img src="images/icons/success.png" alt="success" />${ "Save" | translate }
-					{% endif %}
-				</button>
+				<div class="buttons">
+					<button type="submit" class="yay right" accesskey="s">
+						{% if route.action == "write_page" %}
+						<img src="images/icons/success.png" alt="success" />${ "Publish" | translate }
+						{% else %}
+						<img src="images/icons/success.png" alt="success" />${ "Save" | translate }
+						{% endif %}
+					</button>
+				</div>
 
 				<div class="clear" />
 				<br class="js_disabled" />

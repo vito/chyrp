@@ -58,6 +58,7 @@
 			$timestamp = (!empty($_POST['created_at']) and (!isset($_POST['original_time']) or $_POST['created_at'] != $_POST['original_time'])) ?
 			             when("Y-m-d H:i:s", $_POST['created_at']) :
 			             datetime() ;
+			$updated = (!empty($_POST['updated_at'])) ? $_POST['updated_at'] : 0 ;
 			$trackbacks = (!empty($_POST['trackbacks'])) ? $_POST['trackbacks'] : "" ;
 			$options = (isset($_POST['option'])) ? $_POST['option'] : array() ;
 
@@ -77,6 +78,7 @@
 			                 "clean" => ":clean",
 			                 "url" => ":url",
 			                 "created_at" => ":created_at",
+			                 "updated_at" => ":updated_at"
 			             ),
 			             array(
 			                 ":xml" => $xml->asXML(),
@@ -86,7 +88,8 @@
 			                 ":status" => $status,
 			                 ":clean" => $clean,
 			                 ":url" => $url,
-			                 ":created_at" => $timestamp
+			                 ":created_at" => $timestamp,
+			                 ":updated_at" => $updated,
 			             ));
 			$id = $sql->db->lastInsertId();
 

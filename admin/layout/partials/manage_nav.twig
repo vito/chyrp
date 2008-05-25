@@ -3,5 +3,4 @@
 			<li${ route.action | selected("manage_users", "edit_user", "delete_user") }><a href="{% admin "manage_users" %}">${ "Users" | translate }</a></li>
 			<li${ route.action | selected("manage_groups", "edit_group", "delete_group") }><a href="{% admin "manage_groups" %}">${ "Groups" | translate }</a></li>
 			{% trigger "manage_nav" %}
-			<li${ route.action | selected("manage_import") }><a href="{% admin "manage_import" %}">${ "Import" | translate }</a></li>
 			<li${ route.action | selected("manage_export") }><a href="{% admin "manage_export" %}">${ "Export" | translate }</a></li>

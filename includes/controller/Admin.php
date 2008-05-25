@@ -191,7 +191,7 @@
 			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : sanitize($_POST['title']) ;
 			$url = Page::check_url($clean);
 
-			$page = Page::add($_POST['title'], $_POST['body'], $_POST['parent_id'], $show_in_list, $clean, $url);
+			$page = Page::add($_POST['title'], $_POST['body'], $_POST['parent_id'], $show_in_list, 0, $clean, $url);
 
 			redirect($page->url());
 		}
@@ -642,7 +642,7 @@
 				} else
 					list($where, $params) = array(false, array());
 
-				$posts = Post::find(array("where" => $where, "params" => $params, "pagination" => false));
+				$posts = Post::find(array("where" => $where, "params" => $params, "order" => "`__posts`.`id` asc", "pagination" => false));
 
 				$latest_timestamp = 0;
 				foreach ($posts as $post)
@@ -694,7 +694,7 @@
 					$posts_atom.= '		</author>'."\r";
 					$posts_atom.= '		<chyrp>'."\r";
 
-					foreach (array("xml", "feather", "clean", "url", "pinned", "status", "user_id") as $attr)
+					foreach (array("xml", "feather", "clean", "url", "pinned", "status", "user_id", "created_at", "updated_at") as $attr)
 						$posts_atom.= '			<'.$attr.'>'.$post->$attr.'</'.$attr.'>'."\r";
 
 					$posts_atom.= '		</chyrp>'."\r";
@@ -731,7 +731,7 @@
 				} else
 					list($where, $params) = array(null, array());
 
-				$pages = Page::find(array("where" => $where, "params" => $params, "pagination" => false));
+				$pages = Page::find(array("where" => $where, "params" => $params, "order" => "`__pages`.`id` asc", "pagination" => false));
 
 				$latest_timestamp = 0;
 				foreach ($pages as $page)
@@ -751,7 +751,7 @@
 				foreach ($pages as $page) {
 					$author_uri = User::info("website", $post->user_id);
 
-					$updated = (substr($post->updated_at, 0, 4) == "0000") ? $post->created_at : $post->updated_at ;
+					$updated = (substr($page->updated_at, 0, 4) == "0000") ? $page->created_at : $page->updated_at ;
 
 					$tagged = substr(strstr($page->url(), "//"), 2);
 					$tagged = str_replace("#", "/", $tagged);
@@ -762,7 +762,7 @@
 					$post->xml = implode("\n", $split);
 
 					$pages_atom.= '	<entry xml:base="'.htmlspecialchars($page->url(), ENT_QUOTES, "utf-8").'">'."\r";
-					$pages_atom.= '		<title type="html">'.$page->title.'</title>'."\r";
+					$pages_atom.= '		<title type="html">'.htmlspecialchars($page->title, ENT_NOQUOTES, "utf-8").'</title>'."\r";
 					$pages_atom.= '		<id>tag:'.$tagged.'</id>'."\r";
 					$pages_atom.= '		<updated>'.when("c", $updated).'</updated>'."\r";
 					$pages_atom.= '		<published>'.when("c", $page->created_at).'</published>'."\r";
@@ -774,9 +774,10 @@
 						$posts_atom.= '			<uri>'.$author_uri.'</uri>'."\r";
 
 					$pages_atom.= '		</author>'."\r";
+					$pages_atom.= '		<content type="html">'.htmlspecialchars($page->body, ENT_NOQUOTES, "utf-8").'</content>'."\r";
 					$pages_atom.= '		<chyrp>'."\r";
 
-					foreach (array("show_in_list", "list_order", "clean", "url", "user_id", "parent_id") as $attr)
+					foreach (array("show_in_list", "list_order", "clean", "url", "user_id", "parent_id", "created_at", "updated_at") as $attr)
 						$pages_atom.= '			<'.$attr.'>'.$page->$attr.'</'.$attr.'>'."\r";
 
 					$pages_atom.= '		</chyrp>'."\r";

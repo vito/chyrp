@@ -44,7 +44,7 @@
 		 * See Also:
 		 *     <update>
 		 */
-		static function add($title, $body, $parent_id, $show_in_list, $clean, $url) {
+		static function add($title, $body, $parent_id, $show_in_list, $list_order = 0, $clean, $url) {
 			$sql = SQL::current();
 			$visitor = Visitor::current();
 			$sql->insert("pages",
@@ -54,6 +54,7 @@
 			                 "user_id" => ":user_id",
 			                 "parent_id" => ":parent_id",
 			                 "show_in_list" => ":show_in_list",
+			                 "list_order" => ":list_order",
 			                 "clean" => ":clean",
 			                 "url" => ":url",
 			                 "created_at" => ":created_at"
@@ -64,6 +65,7 @@
 			                 ":user_id" => $visitor->id,
 			                 ":parent_id" => $parent_id,
 			                 ":show_in_list" => $show_in_list,
+			                 ":list_order" => $list_order,
 			                 ":clean" => $clean,
 			                 ":url" => $url,
 			                 ":created_at" => datetime()
