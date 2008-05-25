@@ -120,8 +120,12 @@ function twig_missing_filter($name)
 	$args = func_get_args();
 	array_shift($args);
 
-	if (Trigger::current()->exists($name))
-		return Trigger::current()->filter($name, $args, true);
+	$text = $args[0];
+	array_shift($args);
+
+	$trigger = Trigger::current();
+	if ($trigger->exists($name))
+		return $trigger->filter($name, $text, $args);
 
 	return $args[0];
 }

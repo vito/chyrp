@@ -71,12 +71,18 @@
 	# Load the configuration settings
 	$config->load(INCLUDES_DIR."/config.yaml.php");
 
-	session_name(camelize($config->name));
+	session_name(sanitize(camelize($config->name), false, true));
 	session_start();
 
-	# Make the session last forever.
-	if (isset($_COOKIE[session_name()]))
-		setcookie(session_name(), $_COOKIE[session_name()], time() + (60 * 60 * 24 * 30));
+	# Keep track of the session's forced expiry date.
+	if (!isset($_COOKIE[session_name()."_ExpireDate"])) {
+		cookie_cutter(session_name()."_ExpireDate", time() + (60 * 60 * 24 * 30));
+		redirect(self_url());
+	}
+
+	# Make the session last forever (recycles every 30 days).
+	if ((int) $_COOKIE[session_name()."_ExpireDate"] - time() <= 0)
+		cookie_cutter(session_name(), $_COOKIE[session_name()], time() + (60 * 60 * 24 * 30));
 
 	# Constant: MODULES_DIR
 	# Absolute path to /modules

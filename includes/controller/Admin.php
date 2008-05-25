@@ -692,7 +692,7 @@
 			$zip_contents = $zip->file();
 
 			header("Content-type: application/octet-stream");
-			header("Content-Disposition: attachment; filename=\"".sanitize(camelize($config->name), false)."_Export_".@date("Y-m-d", time() + $config->time_offset).".zip\"");
+			header("Content-Disposition: attachment; filename=\"".sanitize(camelize($config->name), false, true)."_Export_".@date("Y-m-d", time() + $config->time_offset).".zip\"");
 			header("Content-length: ".strlen($zip_contents)."\n\n");
 
 			echo $zip_contents;

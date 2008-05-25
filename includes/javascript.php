@@ -13,7 +13,7 @@ $(function(){
 	$(document).ajaxComplete(function(imconfused, request){
 		var response = request.responseText
 		if (isError(response))
-			alert(response.replace(/HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW/, ""))
+			alert(response.replace(/HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW/m, ""))
 	})
 
 	$(".toggle_admin").click(function(){
@@ -248,7 +248,7 @@ function appendNextPost(minus) {
 }
 
 function isError(text) {
-	return /HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW/.test(text);
+	return /HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW/m.test(text);
 }
 
 <?php $trigger->call("javascript"); ?>

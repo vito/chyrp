@@ -15,7 +15,7 @@ $(function(){
 	$(document).ajaxComplete(function(imconfused, request){
 		var response = request.responseText
 		if (isError(response))
-			alert(response.replace(/HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW/, ""))
+			alert(response.replace(/HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW/m, ""))
 	})
 
 <?php if (match(array("/edit_/", "/write_/"), $action)): ?>
@@ -376,7 +376,7 @@ var Cookie = {
 
 // Used to check if AJAX responses are errors.
 function isError(text) {
-	return /HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW/.test(text);
+	return /HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW/m.test(text);
 }
 
 <?php $trigger->call("admin_javascript"); ?>
