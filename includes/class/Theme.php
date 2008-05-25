@@ -202,9 +202,7 @@
 			$trigger = Trigger::current();
 
 			$javascripts = $trigger->filter("scripts", '<script src="'.$config->url.'/includes/lib/gz.php?file=jquery.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".
-			                                           '<script src="'.$config->url.'/includes/lib/gz.php?file=jquery.dimensions.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".
-			                                           '<script src="'.$config->url.'/includes/lib/gz.php?file=jquery.ui.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".
-			                                           '<script src="'.$config->url.'/includes/lib/gz.php?file=forms.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".
+			                                           '<script src="'.$config->url.'/includes/lib/gz.php?file=plugins.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".
 			                                           '<script src="'.$config->url.'/includes/javascript.php?action='.$action.$args.'" type="text/javascript" charset="utf-8"></script>');
 
 			return $javascripts;

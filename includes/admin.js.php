@@ -51,12 +51,10 @@ $(function(){
 	$(document.createElement("li")).addClass("bookmarklet right").html("<?php echo sprintf(__("Bookmarklet: %s"), '<a href=\"javascript:var%20d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f=\''.$config->url.'/includes/bookmarklet.php\',l=d.location,e=encodeURIComponent,p=\'?url=\'+e(l.href)+\'&title=\'+e(d.title)+\'&selection=\'+e(s),u=f+p;a=function(){if(!w.open(u,\'t\',\'toolbar=0,resizable=0,status=1,width=450,height=430\'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0)\">Chyrp!</a>'); ?>").prependTo(".write_post_nav")
 
 <?php if (match("/(edit|write)_/", $_GET['action'])): ?>
-	// Auto-expand text fields.
-	$("input.text").keyup(function(){
-		if ($(this).val().length > 10 && ($(this).parent().width() - $(this).width()) < 10)
-			return;
-
-		$(this).attr("size", $(this).val().length)
+	// Auto-expand text fields & auto-grow textareas.
+	$("input.text").Autoexpand()
+	$("textarea").each(function(){
+		$(this).css("min-height", $(this).outerHeight()).autogrow()
 	})
 
 <?php endif; ?>

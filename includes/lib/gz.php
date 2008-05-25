@@ -1,5 +1,5 @@
 <?php
-	$valid_files = "jquery.js forms.js jquery.ui.js jquery.dimensions.js ifixpng.js";
+	$valid_files = "jquery.js plugins.js";
 	if (!in_array($_GET['file'], explode(" ", $valid_files)))
 		exit("gtfo.");
 
