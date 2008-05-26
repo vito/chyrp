@@ -13,15 +13,16 @@
 
 					if ($posts and $posts->generator == "Chyrp") {
 						foreach ($posts->entry as $entry) {
-							$_POST['feather'] = $entry->chyrp->feather;
-							$_POST['status']  = $entry->chyrp->status;
-							$_POST['pinned']  = (bool) (int) $entry->chyrp->pinned;
-							$_POST['created_at'] = $entry->chyrp->created_at;
-							$_POST['updated_at'] = $entry->chyrp->updated_at;
+							$chyrp = $entry->children("http://chyrp.net/export/1.0/");
 
-							$data = Post::xml2arr($entry->chyrp->xml->post);
+							$_POST['feather'] = $chyrp->feather;
+							$_POST['status']  = $chyrp->status;
+							$_POST['pinned']  = (bool) (int) $chyrp->pinned;
+							$_POST['created_at'] = $chyrp->created_at;
+							$_POST['updated_at'] = $chyrp->updated_at;
 
-							$post = Post::add($data, $entry->chyrp->clean, Post::check_url($entry->chyrp->url));
+							$data = Post::xml2arr($entry->content->post);
+							$post = Post::add($data, $chyrp->clean, Post::check_url($chyrp->url));
 
 							$trigger->call("import_chyrp_post", array($entry, $post));
 						}
@@ -35,13 +36,15 @@
 
 					if ($pages and $pages->generator == "Chyrp") {
 						foreach ($pages->entry as $entry) {
+							$chyrp = $entry->children("http://chyrp.net/export/1.0/");
+
 							$page = Page::add($entry->title,
 							                  $entry->content,
-							                  $entry->chyrp->parent_id,
-							                  (bool) (int) $entry->chyrp->show_in_list,
-							                  $entry->chyrp->list_order,
-							                  $entry->chyrp->clean,
-							                  Page::check_url($entry->chyrp->url));
+							                  $chyrp->parent_id,
+							                  (bool) (int) $chyrp->show_in_list,
+							                  $chyrp->list_order,
+							                  $chyrp->clean,
+							                  Page::check_url($chyrp->url));
 
 							$trigger->call("import_chyrp_page", array($entry, $page));
 						}

@@ -654,7 +654,7 @@
 				$id = preg_replace("/(".preg_quote(parse_url($config->url, PHP_URL_HOST)).")/", "\\1,".@date("Y", $latest_timestamp).":", $id, 1);
 
 				$posts_atom = '<?xml version="1.0" encoding="utf-8"?>'."\r";
-				$posts_atom.= '<feed xmlns="http://www.w3.org/2005/Atom">'."\r";
+				$posts_atom.= '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:ch="http://chyrp.net/export/1.0/">'."\r";
 				$posts_atom.= '	<title>'.htmlspecialchars($config->name, ENT_NOQUOTES, "utf-8").' Posts</title>'."\r";
 				$posts_atom.= '	<subtitle>'.htmlspecialchars($config->description, ENT_NOQUOTES, "utf-8").'</subtitle>'."\r";
 				$posts_atom.= '	<id>tag:'.parse_url($config->url, PHP_URL_HOST).','.@date("Y", $latest_timestamp).':Chyrp</id>'."\r";
@@ -692,12 +692,12 @@
 						$posts_atom.= '			<uri>'.$author_uri.'</uri>'."\r";
 
 					$posts_atom.= '		</author>'."\r";
-					$posts_atom.= '		<chyrp>'."\r";
+					$posts_atom.= '		<content>'."\r";
+					$posts_atom.= '			'.$post->xml;
+					$posts_atom.= '		</content>'."\r";
 
-					foreach (array("xml", "feather", "clean", "url", "pinned", "status", "user_id", "created_at", "updated_at") as $attr)
-						$posts_atom.= '			<'.$attr.'>'.$post->$attr.'</'.$attr.'>'."\r";
-
-					$posts_atom.= '		</chyrp>'."\r";
+					foreach (array("feather", "clean", "url", "pinned", "status", "user_id", "created_at", "updated_at") as $attr)
+						$posts_atom.= '		<ch:'.$attr.'>'.$post->$attr.'</ch:'.$attr.'>'."\r";
 
 					$posts_atom = $trigger->filter("posts_export", $posts_atom, $post);
 
@@ -739,7 +739,7 @@
 						$latest_timestamp = @strtotime($page->created_at);
 
 				$pages_atom = '<?xml version="1.0" encoding="utf-8"?>'."\r";
-				$pages_atom.= '<feed xmlns="http://www.w3.org/2005/Atom">'."\r";
+				$pages_atom.= '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:ch="http://chyrp.net/export/1.0/">'."\r";
 				$pages_atom.= '	<title>'.htmlspecialchars($config->name, ENT_NOQUOTES, "utf-8").' Pages</title>'."\r";
 				$pages_atom.= '	<subtitle>'.htmlspecialchars($config->description, ENT_NOQUOTES, "utf-8").'</subtitle>'."\r";
 				$pages_atom.= '	<id>tag:'.parse_url($config->url, PHP_URL_HOST).','.@date("Y", $latest_timestamp).':Chyrp</id>'."\r";
@@ -775,12 +775,10 @@
 
 					$pages_atom.= '		</author>'."\r";
 					$pages_atom.= '		<content type="html">'.htmlspecialchars($page->body, ENT_NOQUOTES, "utf-8").'</content>'."\r";
-					$pages_atom.= '		<chyrp>'."\r";
 
 					foreach (array("show_in_list", "list_order", "clean", "url", "user_id", "parent_id", "created_at", "updated_at") as $attr)
-						$pages_atom.= '			<'.$attr.'>'.$page->$attr.'</'.$attr.'>'."\r";
+						$pages_atom.= '		<ch:'.$attr.'>'.$page->$attr.'</ch:'.$attr.'>'."\r";
 
-					$pages_atom.= '		</chyrp>'."\r";
 
 					$pages_atom = $trigger->filter("pages_export", $pages_atom, $post);
 
