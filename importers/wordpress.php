@@ -7,121 +7,58 @@
 	if (!$visitor->group()->can("add_post"))
 		error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
-	class XMLParser { # Via http://php.net/xml, slightly modified.
-		var $parser;
-		var $filePath;
-		var $document;
-		var $currTag;
-		var $tagStack;
-
-		function XMLParser($xml) {
-			$this->parser = xml_parser_create();
-			$this->xml = $xml;
-			$this->document = array();
-			$this->currTag =& $this->document;
-			$this->tagStack = array();
-		}
-
-		function parse() {
-			xml_set_object($this->parser, $this);
-			xml_set_character_data_handler($this->parser, 'dataHandler');
-			xml_set_element_handler($this->parser, 'startHandler', 'endHandler');
-
-			xml_parse($this->parser, $this->xml);
-
-			xml_parser_free($this->parser);
-
-			return true;
-		}
-
-		function startHandler($parser, $name, $attribs) {
-			if(!isset($this->currTag[$name]))
-				$this->currTag[$name] = array();
-
-			$newTag = array();
-			if(!empty($attribs))
-				$newTag['attr'] = $attribs;
-			array_push($this->currTag[$name], $newTag);
-
-			$t =& $this->currTag[$name];
-			$this->currTag =& $t[count($t)-1];
-			array_push($this->tagStack, $name);
-		}
-
-		function dataHandler($parser, $data) {
-			$data = trim($data);
-			$data = (empty($data)) ? "\n" : $data ;
-
-			if(!empty($data)) {
-				if(isset($this->currTag['data']))
-					$this->currTag['data'] .= $data;
-				else
-					$this->currTag['data'] = $data;
-			}
-		}
-
-		function endHandler($parser, $name) {
-			$this->currTag =& $this->document;
-			array_pop($this->tagStack);
-
-			for($i = 0; $i < count($this->tagStack); $i++) {
-				$t =& $this->currTag[$this->tagStack[$i]];
-				$this->currTag =& $t[count($t)-1];
-			}
-		}
-	}
-
-	function fallback($index, $fallback = "") {
-		echo (isset($_POST[$index])) ? $_POST[$index] : $fallback ;
-	}
-
 	$errors = array();
 	if (!empty($_POST)) {
 		switch($_POST['step']) {
 			case "1":
-				$xml = file_get_contents($_FILES['xml_file']['tmp_name']);
-				$xml = preg_replace("/<wp:comment_content><!\[CDATA\[(.*?)\]\]><\/wp:comment_content>/s", "<wp:comment_content>\\1</wp:comment_content>", $xml);
-				$xml = preg_replace("/<wp:comment_content>(.*?)<\/wp:comment_content>/s", "<wp:comment_content><![CDATA[\\1]]></wp:comment_content>", $xml);
-				$xml = preg_replace("/<wp:meta_value><!\[CDATA\[(.*?)\]\]><\/wp:meta_value>/s", "<wp:meta_value>\\1</wp:meta_value>", $xml);
-				$xml = preg_replace("/<wp:meta_value>(.*?)<\/wp:meta_value>/s", "<wp:meta_value><![CDATA[\\1]]></wp:meta_value>", $xml);
+				$xml = simplexml_load_file($_FILES['xml_file']['tmp_name'], "SimpleXMLElement", LIBXML_NOCDATA);
 
-				if (!strpos($xml, "xmlns:wp=\"http://wordpress.org/export/")) {
-					$errors[] = __("File does not seem to be a valid WordPress exported file.");
-				} else {
-					$parser = new XMLParser($xml);
-					$parser->parse();
+				if ($xml and strpos($xml->channel->generator, "wordpress.org")) {
+					foreach ($xml->channel->item as $item) {
+						$wordpress = $item->children("http://wordpress.org/export/1.0/");
+						$content   = $item->children("http://purl.org/rss/1.0/modules/content/");
+						if ($wordpress->status == "attachment" or $item->title == "zz_placeholder")
+							continue;
 
-					$items = $parser->document["RSS"][0]["CHANNEL"][0]["ITEM"];
-					foreach ($items as $the_post) {
-						if ($the_post["TITLE"][0]["data"] == "zz_placeholder") continue;
-						if ($the_post["WP:POST_TYPE"][0]["data"] == "post") {
-							$status_translate = array('publish' => "public", 'draft' => "draft", 'private' => "private", 'static' => "public", 'object' => "public", 'attachment' => "public", 'inherit' => "public", 'future' => "draft", 'pending' => "draft");
+						if (!empty($_POST['media_url']) and preg_match_all("/".preg_quote($_POST['media_url'], "/")."([^ \t\"]+)/", $content->encoded, $media))
+							foreach ($media[0] as $matched_url) {
+								$file = tempnam(sys_get_temp_dir(), "chyrp");
+								file_put_contents($file, get_remote($matched_url));
+								$fake_file = array("name" => basename(parse_url($matched_url, PHP_URL_PATH)),
+								                   "tmp_name" => $file);
+								$filename = upload($fake_file, null, "", true);
+								$content->encoded = str_replace($matched_url, $config->url.$config->uploads_path.$filename, $content->encoded);
+							}
 
-							$values = array("title" => $the_post["TITLE"][0]["data"], "body" => $the_post["CONTENT:ENCODED"][0]["data"]);
-							$status = str_replace(array_keys($status_translate), array_values($status_translate), $the_post["WP:STATUS"][0]["data"]);
-							$clean = (isset($the_post["WP:POST_NAME"][0]["data"])) ? $the_post["WP:POST_NAME"][0]["data"] : sanitize($the_post["TITLE"][0]["data"]) ;
-							$url = Post::check_url($clean);
-							$timestamp = ($the_post["WP:POST_DATE"][0]["data"] == "0000-00-00 00:00:00") ? datetime() : $the_post["WP:POST_DATE"][0]["data"] ;
+						$clean = (isset($wordpress->post_name)) ? $wordpress->post_name : sanitize($item->title) ;
 
-							# Damn it feels good to be a gangsta...
-							$_POST['status'] = $status;
-							$_POST['pinned'] = false;
-							$_POST['created_at'] = $timestamp;
-							$id = Post::add($values, $clean, $url);
+						if ($wordpress->post_type == "post") {
+							$status_translate = array("publish"    => "public",
+							                          "draft"      => "draft",
+							                          "private"    => "private",
+							                          "static"     => "public",
+							                          "object"     => "public",
+							                          "inherit"    => "public",
+							                          "future"     => "draft",
+							                          "pending"    => "draft");
 
-							$trigger->call("import_wordpress_post", array($the_post, $id));
-						} elseif ($the_post["WP:POST_TYPE"][0]["data"] == "page") {
-							$clean = (isset($the_post["WP:POST_NAME"][0]["data"])) ? $the_post["WP:POST_NAME"][0]["data"] : sanitize($the_post["TITLE"][0]["data"]) ;
-							$url = $page->check_url($clean);
+							$_POST['status']  = str_replace(array_keys($status_translate), array_values($status_translate), $wordpress->status);
+							$_POST['pinned']  = false;
+							$_POST['created_at'] = ($wordpress->post_date == "0000-00-00 00:00:00") ? datetime() : $wordpress->post_date ;
 
-							$id = $page->add($the_post["TITLE"][0]["data"], $the_post["CONTENT:ENCODED"][0]["data"], 0, true, $clean, $url);
+							$data = $values = array("title" => $item->title, "body" => $content->encoded);
+							$post = Post::add($data, $clean, Post::check_url($clean));
 
-							$trigger->call("import_wordpress_page", array($the_post, $id));
+							$trigger->call("import_wordpress_post", array($item, $post));
+						} elseif ($wordpress->post_type == "page") {
+							$page = Page::add($item->title, $content->encoded, 0, true, 0, $clean, Page::check_url($clean));
+							$trigger->call("import_wordpress_page", array($item, $post));
 						}
 					}
-
 					$step = "2";
-				}
+				} else
+					$errors[] = __("File does not seem to be a valid WordPress export file.");
+
 				break;
 		}
 	}
@@ -161,7 +98,7 @@
 				border-bottom: 1px dotted #ddd;
 				margin-bottom: 2px;
 			}
-			input[type="password"], input[type="text"], textarea {
+			input.text, textarea {
 				margin-bottom: 1em;
 				font-size: 1.25em;
 				width: 242px;
@@ -171,10 +108,18 @@
 			select {
 				margin-bottom: 1em;
 			}
-			.sub {
+			.sub, small {
 				font-size: .8em;
 				color: #777;
 				font-weight: normal;
+			}
+			small {
+				margin-top: -1em;
+				float: left;
+				line-height: 1.2em;
+			}
+			code {
+				font-size: 1.2em;
 			}
 			.center {
 				text-align: center;
@@ -185,7 +130,7 @@
 				cursor: pointer;
 				border-bottom: 1px solid #FBC2C4;
 				color: #D12F19;
-				background: #FBE3E4 url('../admin/icons/failure.png') no-repeat 7px center;
+				background: #FBE3E4 url('../admin/images/icons/failure.png') no-repeat 7px center;
 			}
 			.done {
 				font-size: 1.25em;
@@ -209,6 +154,13 @@
 			<form action="wordpress.php" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 				<label for="xml_file"><?php echo __("eXtended .XML File"); ?></label>
 				<input type="file" name="xml_file" value="" id="xml_file" />
+				<br />
+				<br />
+				<label for="media_url"><?php echo __("What URL is used for attached/embedded media?"); ?> <span class="sub"><?php echo __("(optional)"); ?></span></label>
+				<input class="text" type="text" name="media_url" value="" id="media_url" />
+				<small>
+					<?php echo __("Usually something like <code>http://example.com/wp-content/uploads/</code>"); ?>
+				</small>
 				<br />
 				<br />
 				<input type="hidden" name="step" value="1" id="step" />

@@ -9,7 +9,7 @@
 		switch($_POST['step']) {
 			case "1":
 				if (isset($_FILES['posts_file']) and $_FILES['posts_file']['error'] == 0) {
-					$posts = simplexml_load_string(file_get_contents($_FILES['posts_file']['tmp_name']));
+					$posts = simplexml_load_file($_FILES['posts_file']['tmp_name']);
 
 					if ($posts and $posts->generator == "Chyrp") {
 						foreach ($posts->entry as $entry) {
