@@ -4,6 +4,8 @@
 	if (!$visitor->group()->can("add_post"))
 		error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
+	$sql->query("TRUNCATE TABLE `chyrp_posts`");
+	$sql->query("TRUNCATE TABLE `chyrp_pages`");
 	$errors = array();
 	if (!empty($_POST)) {
 		switch($_POST['step']) {
@@ -37,10 +39,10 @@
 					if ($pages and $pages->generator == "Chyrp") {
 						foreach ($pages->entry as $entry) {
 							$chyrp = $entry->children("http://chyrp.net/export/1.0/");
-
+							$attr  = $entry->attributes("http://chyrp.net/export/1.0/");
 							$page = Page::add($entry->title,
 							                  $entry->content,
-							                  $chyrp->parent_id,
+							                  $attr->parent_id,
 							                  (bool) (int) $chyrp->show_in_list,
 							                  $chyrp->list_order,
 							                  $chyrp->clean,

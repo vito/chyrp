@@ -285,8 +285,9 @@
 	 * Function: fix
 	 * Returns a HTML-sanitized version of a string.
 	 */
-	function fix($string) {
-		return htmlspecialchars($string, ENT_QUOTES);
+	function fix($string, $quotes = true) {
+		$quotes = ($quotes) ? ENT_QUOTES : ENT_NOQUOTES ;
+		return htmlspecialchars($string, $quotes, "utf-8");
 	}
 
 	/**

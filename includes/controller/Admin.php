@@ -654,9 +654,9 @@
 				$id = preg_replace("/(".preg_quote(parse_url($config->url, PHP_URL_HOST)).")/", "\\1,".@date("Y", $latest_timestamp).":", $id, 1);
 
 				$posts_atom = '<?xml version="1.0" encoding="utf-8"?>'."\r";
-				$posts_atom.= '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:ch="http://chyrp.net/export/1.0/">'."\r";
-				$posts_atom.= '	<title>'.htmlspecialchars($config->name, ENT_NOQUOTES, "utf-8").' Posts</title>'."\r";
-				$posts_atom.= '	<subtitle>'.htmlspecialchars($config->description, ENT_NOQUOTES, "utf-8").'</subtitle>'."\r";
+				$posts_atom.= '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:chyrp="http://chyrp.net/export/1.0/">'."\r";
+				$posts_atom.= '	<title>'.fix($config->name, false).' Posts</title>'."\r";
+				$posts_atom.= '	<subtitle>'.fix($config->description, false).'</subtitle>'."\r";
 				$posts_atom.= '	<id>tag:'.parse_url($config->url, PHP_URL_HOST).','.@date("Y", $latest_timestamp).':Chyrp</id>'."\r";
 				$posts_atom.= '	<updated>'.@date("c", $latest_timestamp).'</updated>'."\r";
 				$posts_atom.= '	<link href="'.$config->url.'" rel="self" type="application/atom+xml" />'."\r";
@@ -664,10 +664,8 @@
 				$posts_atom.= '	<generator uri="http://chyrp.net/" version="'.CHYRP_VERSION.'">Chyrp</generator>'."\r";
 
 				foreach ($posts as $post) {
-					$title = htmlspecialchars($post->title(), ENT_NOQUOTES, "utf-8");
+					$title = fix($post->title(), false);
 					fallback($title, ucfirst($post->feather)." Post #".$post->id);
-
-					$author_uri = User::info("website", $post->user_id);
 
 					$updated = (substr($post->updated_at, 0, 4) == "0000") ? $post->created_at : $post->updated_at ;
 
@@ -679,25 +677,26 @@
 					array_shift($split);
 					$post->xml = implode("\n", $split);
 
-					$posts_atom.= '	<entry xml:base="'.htmlspecialchars($post->url(), ENT_QUOTES, "utf-8").'">'."\r";
+					$posts_atom.= '	<entry xml:base="'.fix($post->url()).'">'."\r";
 					$posts_atom.= '		<title type="html">'.$title.'</title>'."\r";
 					$posts_atom.= '		<id>tag:'.$tagged.'</id>'."\r";
 					$posts_atom.= '		<updated>'.when("c", $updated).'</updated>'."\r";
 					$posts_atom.= '		<published>'.when("c", $post->created_at).'</published>'."\r";
-					$posts_atom.= '		<link href="'.htmlspecialchars($trigger->filter("feed_url", html_entity_decode($post->url())), ENT_NOQUOTES, "utf-8").'" />'."\r";
-					$posts_atom.= '		<author>'."\r";
-					$posts_atom.= '			<name>'.htmlspecialchars(fallback($post->user()->full_name, $post->user()->login, true), ENT_NOQUOTES, "utf-8").'</name>'."\r";
+					$posts_atom.= '		<link href="'.fix($trigger->filter("feed_url", html_entity_decode($post->url())), false).'" />'."\r";
+					$posts_atom.= '		<author chyrp:user_id="'.$post->user_id.'">'."\r";
+					$posts_atom.= '			<name>'.fix(fallback($post->user()->full_name, $post->user()->login, true), false).'</name>'."\r";
 
-					if (!empty($author_uri))
-						$posts_atom.= '			<uri>'.$author_uri.'</uri>'."\r";
+					if (!empty($post->user()->website))
+						$posts_atom.= '			<uri>'.fix($post->user()->website, false).'</uri>'."\r";
 
-					$posts_atom.= '		</author>'."\r";
+					$posts_atom.= '			<chyrp:login>'.$post->user()->login.'</chyrp:login>'."\r";
+					$posts_atom.= '		</author >'."\r";
 					$posts_atom.= '		<content>'."\r";
 					$posts_atom.= '			'.$post->xml;
 					$posts_atom.= '		</content>'."\r";
 
-					foreach (array("feather", "clean", "url", "pinned", "status", "user_id", "created_at", "updated_at") as $attr)
-						$posts_atom.= '		<ch:'.$attr.'>'.$post->$attr.'</ch:'.$attr.'>'."\r";
+					foreach (array("feather", "clean", "url", "pinned", "status", "created_at", "updated_at") as $attr)
+						$posts_atom.= '		<chyrp:'.$attr.'>'.fix($post->$attr, false).'</chyrp:'.$attr.'>'."\r";
 
 					$posts_atom = $trigger->filter("posts_export", $posts_atom, $post);
 
@@ -739,7 +738,7 @@
 						$latest_timestamp = @strtotime($page->created_at);
 
 				$pages_atom = '<?xml version="1.0" encoding="utf-8"?>'."\r";
-				$pages_atom.= '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:ch="http://chyrp.net/export/1.0/">'."\r";
+				$pages_atom.= '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:chyrp="http://chyrp.net/export/1.0/">'."\r";
 				$pages_atom.= '	<title>'.htmlspecialchars($config->name, ENT_NOQUOTES, "utf-8").' Pages</title>'."\r";
 				$pages_atom.= '	<subtitle>'.htmlspecialchars($config->description, ENT_NOQUOTES, "utf-8").'</subtitle>'."\r";
 				$pages_atom.= '	<id>tag:'.parse_url($config->url, PHP_URL_HOST).','.@date("Y", $latest_timestamp).':Chyrp</id>'."\r";
@@ -749,35 +748,30 @@
 				$pages_atom.= '	<generator uri="http://chyrp.net/" version="'.CHYRP_VERSION.'">Chyrp</generator>'."\r";
 
 				foreach ($pages as $page) {
-					$author_uri = User::info("website", $post->user_id);
-
 					$updated = (substr($page->updated_at, 0, 4) == "0000") ? $page->created_at : $page->updated_at ;
 
 					$tagged = substr(strstr($page->url(), "//"), 2);
 					$tagged = str_replace("#", "/", $tagged);
 					$tagged = preg_replace("/(".preg_quote(parse_url($page->url(), PHP_URL_HOST)).")/", "\\1,".when("Y-m-d", $updated).":", $tagged, 1);
 
-					$split = explode("\n", $post->xml);
-					array_shift($split);
-					$post->xml = implode("\n", $split);
-
-					$pages_atom.= '	<entry xml:base="'.htmlspecialchars($page->url(), ENT_QUOTES, "utf-8").'">'."\r";
-					$pages_atom.= '		<title type="html">'.htmlspecialchars($page->title, ENT_NOQUOTES, "utf-8").'</title>'."\r";
+					$pages_atom.= '	<entry xml:base="'.fix($page->url()).'" chyrp:parent_id="'.$page->parent_id.'">'."\r";
+					$pages_atom.= '		<title type="html">'.fix($page->title, false).'</title>'."\r";
 					$pages_atom.= '		<id>tag:'.$tagged.'</id>'."\r";
 					$pages_atom.= '		<updated>'.when("c", $updated).'</updated>'."\r";
 					$pages_atom.= '		<published>'.when("c", $page->created_at).'</published>'."\r";
-					$pages_atom.= '		<link href="'.htmlspecialchars($trigger->filter("feed_url", html_entity_decode($page->url())), ENT_NOQUOTES, "utf-8").'" />'."\r";
-					$pages_atom.= '		<author>'."\r";
-					$pages_atom.= '			<name>'.htmlspecialchars(fallback($page->user()->full_name, $page->user()->login, true), ENT_NOQUOTES, "utf-8").'</name>'."\r";
+					$pages_atom.= '		<link href="'.fix($trigger->filter("feed_url", html_entity_decode($page->url())), false).'" />'."\r";
+					$pages_atom.= '		<author chyrp:user_id="'.fix($page->user_id).'">'."\r";
+					$pages_atom.= '			<name>'.fix(fallback($page->user()->full_name, $page->user()->login, true), false).'</name>'."\r";
 
-					if (!empty($author_uri))
-						$posts_atom.= '			<uri>'.$author_uri.'</uri>'."\r";
+					if (!empty($page->user()->website))
+						$pages_atom.= '			<uri>'.fix($page->user()->website, false).'</uri>'."\r";
 
+					$pages_atom.= '			<chyrp:login>'.fix($post->user()->login, false).'</chyrp:login>'."\r";
 					$pages_atom.= '		</author>'."\r";
-					$pages_atom.= '		<content type="html">'.htmlspecialchars($page->body, ENT_NOQUOTES, "utf-8").'</content>'."\r";
+					$pages_atom.= '		<content type="html">'.fix($page->body, false).'</content>'."\r";
 
-					foreach (array("show_in_list", "list_order", "clean", "url", "user_id", "parent_id", "created_at", "updated_at") as $attr)
-						$pages_atom.= '		<ch:'.$attr.'>'.$page->$attr.'</ch:'.$attr.'>'."\r";
+					foreach (array("show_in_list", "list_order", "clean", "url", "created_at", "updated_at") as $attr)
+						$pages_atom.= '		<chyrp:'.$attr.'>'.fix($page->$attr, false).'</chyrp:'.$attr.'>'."\r";
 
 
 					$pages_atom = $trigger->filter("pages_export", $pages_atom, $post);
