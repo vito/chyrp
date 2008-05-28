@@ -81,7 +81,7 @@ class Twig_Module extends Twig_Node
 			$compiler->raw(" extends __TwigTemplate_$parent {\n");
 		}
 		else {
-			$compiler->raw(" {\npublic function render(&\$context) {\n");
+			$compiler->raw(" {\npublic function render(\$context) {\n");
 			$this->body->compile($compiler);
 			$compiler->raw("}\n");
 		}
@@ -497,14 +497,15 @@ class Twig_CompareExpression extends Twig_Expression
 		$i = 0;
 		foreach ($this->ops as $op) {
 			if ($i)
-				$compiler->raw(') && ($tmp' . $i);
+				$compiler->raw(' && ($tmp' . $i);
 			list($op, $node) = $op;
 			$compiler->raw(' ' . $op . ' ');
 			$compiler->raw('($tmp' . ++$i . ' = ');
 			$node->compile($compiler);
 			$compiler->raw(')');
 		}
-		#$compiler->raw(')');
+		if ($i > 1)
+			$compiler->raw(')');
 	}
 }
 

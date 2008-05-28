@@ -32,6 +32,13 @@ function twig_compile($node, $fp=null)
 
 class Twig_Compiler
 {
+	private $last_lineno;
+
+	public function __construct()
+	{
+		$this->last_lineno = NULL;
+	}
+
 	public function format()
 	{
 		$arguments = func_get_args();
@@ -79,7 +86,10 @@ class Twig_Compiler
 
 	public function addDebugInfo($node)
 	{
-		$this->raw("/* LINE:$node->lineno */\n");
+		if ($node->lineno != $this->last_lineno) {
+			$this->last_lineno = $node->lineno;
+			$this->raw("/* LINE:$node->lineno */\n");
+		}
 	}
 }
 
@@ -90,6 +100,7 @@ class Twig_FileCompiler extends Twig_Compiler
 
 	public function __construct($fp)
 	{
+		parent::__construct();
 		$this->fp = $fp;
 	}
 
@@ -106,6 +117,7 @@ class Twig_StringCompiler extends Twig_Compiler
 
 	public function __construct()
 	{
+		parent::__construct();
 		$this->source = '';
 	}
 
