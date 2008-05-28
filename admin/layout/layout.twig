@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+		<title>$site.name: {% block title %}$title{% endblock %}</title>
+		<link rel="stylesheet" href="style.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+		<script src="$site.url/includes/lib/gz.php?file=jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="$site.url/includes/lib/gz.php?file=plugins.js" type="text/javascript" charset="utf-8"></script>
+		<script src="$site.url/includes/admin.js.php?action=$route.action&amp;page=$pagination.page" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div id="header">
+			<div class="column">
+				<ul id="navigation">
+{% block navigation %}
+					<li class="first $selected.write"><a href="{% admin "write_post" %}">Write</a></li>
+					<li class="second $selected.manage"><a href="{% admin "manage_posts" %}">Manage</a></li>
+					<li class="third $selected.settings"><a href="{% admin "general_settings" %}">Settings</a></li>
+					<li class="fourth $selected.extend"><a href="{% admin "extend_modules" %}">Extend</a></li>
+{% endblock %}
+				</ul>
+				<h1>$site.name</h1>
+			</div>
+		</div>
+		<div id="welcome">
+			<div class="column">
+				<a href="$site.url" class="right">View Site &rsaquo;</a>
+				Hello, ${ visitor.full_name | split | first | fallback(visitor.login) }. <a href="{% url "logout/" %}">Log Out &rsaquo;</a>
+			</div>
+		</div>
+		<ul class="column ${ route.action }_nav" id="sub-nav">
+{% block subnav %}
+{% if (route.action | split("_") | last) == "settings" %}
+{% include "partials/settings_nav.twig" %}
+{% else %}
+{% include "partials/" ~ (route.action | split("_") | first) ~ "_nav.twig" %}
+{% endif %}
+{% endblock %}
+		</ul>
+		<div class="clear"></div>
+		<div class="column" id="content">
+{% block content %}{% endblock %}
+			<div class="clear"></div>
+		</div>
+		<div class="column" id="footer">
+			<img src="images/chyrp.gif" alt="Logo" />
+			Chyrp loves you.<br />
+			<span class="sub">
+				v$version &copy; 2008 Alex Suraci
+			</span>
+		</div>
+		<script type="text/javascript">
+{% for query in sql_debug %}
+			console.log('${ query.number }. $query.file[$query.line]: ${ query.query | quotes }')
+{% endfor %}
+		</script>
+	</body>
+</html>

@@ -5,8 +5,8 @@
 	<title><?php echo htmlspecialchars($config->name, ENT_NOQUOTES, "utf-8"); ?></title>
 	<subtitle><?php echo htmlspecialchars($config->description, ENT_NOQUOTES, "utf-8"); ?></subtitle>
 	<id><?php echo self_url() ?></id>
-	<updated><?php echo when("c", $latest_timestamp); ?></updated>
-	<link href="<?php echo self_url() ?>" rel="self" />
+	<updated><?php echo @date("c", $latest_timestamp); ?></updated>
+	<link href="<?php echo self_url() ?>" rel="self" type="application/atom+xml" />
 	<generator uri="http://chyrp.net/" version="<?php echo CHYRP_VERSION; ?>">Chyrp</generator>
 <?php
 	foreach ($posts as $post) {
@@ -20,11 +20,10 @@
 		$tagged = substr(strstr($route->url("id/".$post->id."/"), "//"), 2);
 		$tagged = str_replace("#", "/", $tagged);
 		$tagged = preg_replace("/(".preg_quote(parse_url($post->url(), PHP_URL_HOST)).")/", "\\1,".when("Y-m-d", $updated).":", $tagged, 1);
-		$tagged = "tag:".$tagged;
 ?>
 	<entry xml:base="<?php echo htmlspecialchars($post->url(), ENT_QUOTES, "utf-8"); ?>">
 		<title type="html"><?php echo $title; ?></title>
-		<id><?php echo $tagged; ?></id>
+		<id>tag:<?php echo $tagged; ?></id>
 		<updated><?php echo when("c", $updated); ?></updated>
 		<published><?php echo when("c", $post->created_at); ?></published>
 		<link href="<?php echo htmlspecialchars($trigger->filter("feed_url", html_entity_decode($post->url())), ENT_NOQUOTES, "utf-8"); ?>" />

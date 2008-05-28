@@ -42,7 +42,8 @@ class Twig_Parser
 
 			# Twig specific extensions
 			'trigger' =>	array($this, 'parseTrigger'),
-			'url' =>	array($this, 'parseURL')
+			'url' =>	array($this, 'parseURL'),
+			'admin' =>	array($this, 'parseAdminURL')
 		);
 	}
 
@@ -175,6 +176,13 @@ class Twig_Parser
 		$expr = $this->parseExpression();
 		$this->stream->expect(Twig_Token::BLOCK_END_TYPE);
 		return new Twig_URL($expr, $token->lineno);
+	}
+
+	public function parseAdminURL($token)
+	{
+		$expr = $this->parseExpression();
+		$this->stream->expect(Twig_Token::BLOCK_END_TYPE);
+		return new Twig_AdminURL($expr, $token->lineno);
 	}
 
 	public function parseExpression()

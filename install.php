@@ -18,7 +18,6 @@
 	# Translation stuff
 	require INCLUDES_DIR."/lib/gettext/gettext.php";
 	require INCLUDES_DIR."/lib/gettext/streams.php";
-	require INCLUDES_DIR."/lib/l10n.php";
 
 	# Helpers
 	require INCLUDES_DIR."/helpers.php";
@@ -39,11 +38,11 @@
 		$sql->load(INCLUDES_DIR."/database.yaml.php");
 		$config->load(INCLUDES_DIR."/config.yaml.php");
 
-		if ($sql->connect(true) and !empty($config->url) and $sql->query("select count(`id`) from `".$sql->prefix."users`")->fetchColumn())
+		if ($sql->connect(true) and !empty($config->url) and $sql->query("select count(`id`) from `__users`")->fetchColumn())
 			error(__("Already Installed"), __("Chyrp is already correctly installed and configured."));
 	}
 	else {
-		if (!is_writable(BASE_DIR))
+		if (!is_writable(BASE_DIR) and (!file_exists(BASE_DIR."/.htaccess") or !preg_match("/".preg_quote($htaccess, "/")."/", file_get_contents(BASE_DIR."/.htaccess"))))
 			$errors[] = sprintf(__("STOP! Before you go any further, you must create a .htaccess file in Chyrp's install directory and put this in it:\n<pre>%s</pre>."), htmlspecialchars($htaccess));
 
 		if (!is_writable(INCLUDES_DIR))
@@ -88,7 +87,7 @@
 			$sql->connect();
 
 			# Posts table
-			$sql->query("create table if not exists `".$sql->prefix."posts` (
+			$sql->query("create table if not exists `__posts` (
 			                 `id` int(11) not null auto_increment,
 			                 `xml` longtext not null,
 			                 `feather` varchar(32) not null default '',
@@ -103,7 +102,7 @@
 			             ) default charset=utf8");
 
 			# Pages table
-			$sql->query("create table if not exists `".$sql->prefix."pages` (
+			$sql->query("create table if not exists `__pages` (
 			                 `id` int(11) not null auto_increment,
 			                 `title` varchar(250) not null default '',
 			                 `body` longtext not null,
@@ -119,7 +118,7 @@
 			             ) default charset=utf8");
 
 			# Users table
-			$sql->query("create table if not exists `".$sql->prefix."users` (
+			$sql->query("create table if not exists `__users` (
 			                 `id` int(11) not null auto_increment,
 			                 `login` varchar(64) not null default '',
 			                 `password` varchar(32) not null default '',
@@ -133,7 +132,7 @@
 			             ) default charset=utf8");
 
 			# Groups table
-			$sql->query("create table if not exists `".$sql->prefix."groups` (
+			$sql->query("create table if not exists `__groups` (
 			                 `id` int(11) not null auto_increment,
 			                 `name` varchar(100) not null default '',
 		                     `permissions` longtext not null,
@@ -142,7 +141,7 @@
 			             ) default charset=utf8");
 
 			# Permissions table
-			$sql->query("create table if not exists `".$sql->prefix."permissions` (
+			$sql->query("create table if not exists `__permissions` (
 			                 `id` int(11) not null auto_increment,
 			                 `name` varchar(100) not null default '',
 			                 primary key (`id`),
@@ -151,6 +150,7 @@
 
 			$permissions = array("view_site",
 			                     "change_settings",
+			                     "toggle_extensions",
 			                     "add_post",
 			                     "add_draft",
 			                     "edit_post",
@@ -173,7 +173,7 @@
 			                     "delete_group");
 
 			foreach ($permissions as $permission)
-				$sql->query("insert into `".$sql->prefix."permissions` set `name` = '".$permission."'");
+				$sql->query("insert into `__permissions` set `name` = '".$permission."'");
 
 			$groups = array(
 				"admin" => Spyc::YAMLDump($permissions),
@@ -185,7 +185,7 @@
 
 			# Insert the default groups (see above)
 			foreach($groups as $name => $permission)
-				$sql->query("insert into `".$sql->prefix."groups` set
+				$sql->query("insert into `__groups` set
 			                 `name` = '".ucfirst($name)."',
 			                 `permissions` = '".$permission."'");
 
@@ -214,14 +214,15 @@
 			$config->set("enable_trackbacking", true);
 			$config->set("send_pingbacks", false);
 			$config->set("secure_hashkey", md5(random(32, true)));
+			$config->set("uploads_path", "/uploads/");
 			$config->set("enabled_modules", array());
 			$config->set("enabled_feathers", array("text"));
 			$config->set("routes", array());
 
 			$config->load(INCLUDES_DIR."/config.yaml.php");
 
-			if (!$sql->query("select `id` from `".$sql->prefix."users` where `login` = :login", array(":login" => $_POST['login']))->rowCount())
-				$sql->query("insert into `".$sql->prefix."users` set
+			if (!$sql->query("select `id` from `__users` where `login` = :login", array(":login" => $_POST['login']))->rowCount())
+				$sql->query("insert into `__users` set
 				                 `login` = :login,
 				                 `password` = :password,
 				                 `email` = :email,
@@ -236,8 +237,8 @@
 				                ":datetime" => datetime()
 				            ));
 
-			cookie_cutter("chyrp_user_id", $sql->db->lastInsertId());
-			cookie_cutter("chyrp_password", md5($_POST['password_1']));
+			$_SESSION['chyrp_login'] = $_POST['login'];
+			$_SESSION['chyrp_password'] = md5($_POST['password_1']);
 
 			$installed = true;
 		}

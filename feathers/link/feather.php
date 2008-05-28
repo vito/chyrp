@@ -1,6 +1,9 @@
 <?php
 	class Link extends Feather {
 		public function __construct() {
+			$this->setField(array("attr" => "source", "type" => "text", "label" => "URL", "bookmarklet" => "url"));
+			$this->setField(array("attr" => "name", "type" => "text", "label" => "Name", "bookmarklet" => "title"));
+			$this->setField(array("attr" => "description", "type" => "text_block", "label" => "Description", "optional" => true, "preview" => true, "bookmarklet" => "selection"));
 			$this->setFilter("description", "markup_post_text");
 			$this->respondTo("feed_url", "set_feed_url");
 		}
@@ -9,7 +12,7 @@
 				error(__("Error"), __("URL can't be empty."));
 
 			$values = array("name" => $_POST['name'], "source" => $_POST['source'], "description" => $_POST['description']);
-			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : "" ;
+			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : sanitize($_POST['name']) ;
 			$url = Post::check_url($clean);
 
 			$post = Post::add($values, $clean, $url);
@@ -23,9 +26,9 @@
 
 			$route = Route::current();
 			if (isset($_POST['bookmarklet']))
-				$route->redirect($route->url("bookmarklet/done/"));
+				redirect($route->url("bookmarklet/done/"));
 			else
-				$route->redirect($post->url());
+				redirect($post->url());
 		}
 		static function update() {
 			$post = new Post($_POST['id']);

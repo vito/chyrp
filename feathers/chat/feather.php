@@ -1,6 +1,8 @@
 <?php
 	class Chat extends Feather {
 		public function __construct() {
+			$this->setField(array("attr" => "title", "type" => "text", "label" => "Title", "optional" => true));
+			$this->setField(array("attr" => "dialogue", "type" => "text_block", "label" => "Dialogue", "preview" => true, "help" => true, "bookmarklet" => "selection"));
 			$this->customFilter("dialogue", "format_dialogue");
 			$this->setFilter("dialogue", "markup_post_text");
 			$this->respondTo("preview_chat", "format_dialogue");
@@ -23,9 +25,9 @@
 
 			$route = Route::current();
 			if (isset($_POST['bookmarklet']))
-				$route->redirect($route->url("bookmarklet/done/"));
+				redirect($route->url("bookmarklet/done/"));
 			else
-				$route->redirect($post->url());
+				redirect($post->url());
 		}
 		static function update() {
 			$post = new Post($_POST['id']);

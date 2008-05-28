@@ -5,6 +5,7 @@
 	 */
 	class Page extends Model {
 		public $no_results = false;
+		public $id = 0;
 
 		/**
 		 * Function: __construct
@@ -17,8 +18,10 @@
 		 *         params: Parameters to use for the "where" option.
 		 *         read_from: An associative array of values to load into the <Page> class.
 		 */
-		public function __construct($page_id, $options = array()) {
+		public function __construct($page_id = null, $options = array()) {
+			if (!isset($page_id) and empty($options)) return;
 			parent::grab($this, $page_id, $options);
+			$this->slug =& $this->url;
 		}
 
 		/**
@@ -41,7 +44,7 @@
 		 * See Also:
 		 *     <update>
 		 */
-		static function add($title, $body, $parent_id, $show_in_list, $clean, $url) {
+		static function add($title, $body, $parent_id, $show_in_list, $list_order = 0, $clean, $url) {
 			$sql = SQL::current();
 			$visitor = Visitor::current();
 			$sql->insert("pages",
@@ -51,6 +54,7 @@
 			                 "user_id" => ":user_id",
 			                 "parent_id" => ":parent_id",
 			                 "show_in_list" => ":show_in_list",
+			                 "list_order" => ":list_order",
 			                 "clean" => ":clean",
 			                 "url" => ":url",
 			                 "created_at" => ":created_at"
@@ -61,6 +65,7 @@
 			                 ":user_id" => $visitor->id,
 			                 ":parent_id" => $parent_id,
 			                 ":show_in_list" => $show_in_list,
+			                 ":list_order" => $list_order,
 			                 ":clean" => $clean,
 			                 ":url" => $url,
 			                 ":created_at" => datetime()
@@ -88,7 +93,7 @@
 		public function update($title, $body, $parent_id, $show_in_list, $list_order, $url) {
 			if (!isset($this->id)) return;
 
-			if ($title != $this->title or $body != $this->body or $parent_id != $this->parent_id or $show_in_list != $this->show_in_list or $list_order != $this->list_order or $url != $this->url)
+			if ($title != $this->title or $body != $this->body)
 				$updated = datetime();
 			else
 				$updated = null;
@@ -130,7 +135,7 @@
 		static function delete($id) {
 			parent::destroy(get_class(), $id);
 
-			while ($child = $sql->select("pages", "id", "`parent_id` = :id", "id", array(":id" => $page_id))->fetchObject())
+			while ($child = SQL::current()->select("pages", "id", "`parent_id` = :id", "id", array(":id" => $page_id))->fetchObject())
 				parent::destroy(get_class(), $child->id);
 		}
 
@@ -218,8 +223,7 @@
 				$page = $page->parent();
 			}
 
-			$route = Route::current();
-			return $route->url('page/'.implode('/', array_reverse($url)));
+			return Route::current()->url("page/".implode('/', array_reverse($url)));
 		}
 
 		/**
@@ -254,7 +258,7 @@
 
 			fallback($text, __("Edit"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=page&amp;id='.$this->id.'" title="Edit" class="page_edit_link" id="page_edit_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=edit_page&amp;id='.$this->id.'" title="Edit" class="page_edit_link edit_link" id="page_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
 		/**
@@ -272,6 +276,6 @@
 
 			fallback($text, __("Delete"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=page&amp;id='.$this->id.'" title="Delete" class="page_delete_link" id="page_delete_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=delete_page&amp;id='.$this->id.'" title="Delete" class="page_delete_link delete_link" id="page_delete_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 	}

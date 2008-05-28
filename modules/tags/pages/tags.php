@@ -1,50 +1,39 @@
 <?php
-	$get_tags = $sql->query("select `name`, `post_id`, count(`".$sql->prefix."posts`.`id`) as `count`
-	                         from `".$sql->prefix."tags`, `".$sql->prefix."posts`
-	                         where
-	                             `post_id` = `".$sql->prefix."posts`.`id` and
-	                             ".$private.$enabled_feathers."
-	                         group by `name`
-	                         order by rand() asc");
-
 	$theme->title = __("Tags", "tags");
-	$theme->load("layout/header");
 
 	$trigger->call("tags_top");
 
-	if ($get_tags->rowCount() > 0) {
+	if ($sql->query("SELECT COUNT(1) FROM `__tags`")->fetchColumn() > 0) {
 		$tags = array();
-		while ($tag = mysql_fetch_object($get_tags))
-			$tags[$tag->name] = $tag->count;
+		$clean = array();
+		foreach($sql->query("SELECT * FROM `__tags`")->fetchAll() as $tag) {
+			$tags[] = $tag["tags"];
+			$clean[] = $tag["clean"];
+		}
+
+		# array("{{foo}} {{bar}}", "{{foo}}") to "{{foo}} {{bar}} {{foo}}" to array("foo", "bar", "foo") to array("foo" => 2, "bar" => 1)
+		$tags = array_count_values(explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $tags))));
+		$clean = array_count_values(explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $clean))));
+		$tag2clean = array_combine(array_keys($tags), array_keys($clean));
 
 		$max_qty = max(array_values($tags));
 		$min_qty = min(array_values($tags));
 
 		$spread = $max_qty - $min_qty;
-		if (0 == $spread) {
+		if ($spread == 0)
 			$spread = 1;
-		}
 
 		$step = 75 / $spread;
 
-		foreach ($tags as $key => $value) {
-			$size = 100 + (($value - $min_qty) * $step);
-			$title = sprintf(_p("%s post tagged with &quot;%s&quot;", "%s posts tagged with &quot;%s&quot;", $value), $value, $key);
-			$url = $sql->query("select `clean` from `".$sql->prefix."tags`
-			                    where `name` = :name",
-			                   array(
-			                       ":name" => $key
-			                   ))->fetchColumn();
-			echo '<a class="tag" href="'.$route->url("tag/".$url."/").'" style="font-size: '.$size.'%" title="'.$title.'">'.$key.'</a> ';
-		}
+		$context = array();
+		foreach ($tags as $tag => $count)
+			$context[] = array("size" => (100 + (($count - $min_qty) * $step)),
+			                   "popularity" => $count,
+			                   "name" => $tag,
+			                   "title" => sprintf(_p("%s post tagged with &quot;%s&quot;", "%s posts tagged with &quot;%s&quot;", $count), $count, $tag),
+			                   "clean" => $tag2clean[$tag],
+			                   "url" => $route->url("tag/".$tag2clean[$tag]."/"));
 
-	} elseif ($theme->snippet_exists("no_tags")) {
-		$trigger->call("no_tags");
-	} else {
-?>
-<h2><?php echo __("No Tags", "tags"); ?></h2>
-<?php echo __("There aren't any tags yet. Such a shame.", "tags"); ?>
-<?php
+		$theme->load("content/tags", array("tag_cloud" => $context));
 	}
-	$theme->load("layout/footer");
 ?>

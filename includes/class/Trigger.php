@@ -1,10 +1,5 @@
 <?php
 	/**
-	 * Class: Trigger
-	 * Controls and keeps track of all of the Triggers and events.
-	 */
-
-	/**
 	 * Function: cmp
 	 * Sorts actions by priority when used with usort.
 	 */
@@ -13,6 +8,10 @@
 		return ($a["priority"] < $b["priority"]) ? -1 : 1 ;
 	}
 
+	/**
+	 * Class: Trigger
+	 * Controls and keeps track of all of the Triggers and events.
+	 */
 	class Trigger {
 		private $called = array();
 		public $priorities = array();
@@ -24,7 +23,6 @@
 		 * Function: call
 		 * Calls a trigger, passing the $arg to any actions for it.
 		 * If $arg is an array, the actions are called with call_user_func_array.
-		 * This function also calls any theme Snippets that have $name as their function name.
 		 *
 		 * Parameters:
 		 *     $name - The name of the trigger.
@@ -32,7 +30,7 @@
 		 *     $array - If $arg is an array, should it be passed as multiple values or a single array?
 		 */
 		public function call($name, $arg = null, $array = true) {
-			global $snippet, $modules;
+			global $modules;
 			$caller = (is_array($arg) and $array) ? "call_user_func_array" : "call_user_func" ;
 
 			if (isset($this->priorities[$name])) { # Predefined priorities?
@@ -45,18 +43,9 @@
 			}
 
 			$config = Config::current();
-			foreach ($config->enabled_modules as $module) {
-				$camelized = camelize($module);
-
-				if (in_array(array($camelized, $name), $this->called))
-					continue;
-
-				if (is_callable(array($camelized, $name)))
-					$caller(array($camelized, $name), $arg);
-			}
-
-			if (method_exists($snippet, $name))
-				$caller(array($snippet, $name), $arg);
+			foreach ($config->enabled_modules as $module)
+				if (!in_array(array($modules[$module], $name), $this->called) and is_callable(array($modules[$module], $name)))
+					$caller(array($modules[$module], $name), $arg);
 		}
 
 		/**
@@ -67,40 +56,38 @@
 		 *
 		 * Parameters:
 		 *     $name - The name of the trigger.
-		 *     $arg - Arguments to pass to the actions.
-		 *     $array - If $arg is an array, should it be passed as multiple arguments?
+		 *     $target - Arguments to pass to the actions.
+		 *     $arguments - Argument(s) to pass to the filter function.
 		 *
 		 * Returns:
-		 *     $arg, filtered through any/all actions for the trigger $name.
+		 *     $target, filtered through any/all actions for the trigger $name.
 		 */
-		public function filter($name, $arg = "", $array = false) {
-			global $snippet;
-			$caller = (is_array($arg) and $array) ? "call_user_func_array" : "call_user_func" ;
+		public function filter($name, $target = "", $arguments = null) {
+			global $modules;
 
 			if (isset($this->priorities[$name])) { # Predefined priorities?
 				usort($this->priorities[$name], "cmp");
 				foreach ($this->priorities[$name] as $action) {
-					$this->modified_text[$name] = $caller($action["function"], $this->modified($name, $arg));
+					if (!empty($arguments)) {
+						$params = array_merge(array($this->modified($name, $target)), (array) $arguments);
+						$this->modified_text[$name] = call_user_func_array($action["function"], $params);
+					} else
+						$this->modified_text[$name] = call_user_func($action["function"], $this->modified($name, $target));
+
 					$this->called[] = $action["function"];
 				}
 			}
 
 			$config = Config::current();
-			foreach ($config->enabled_modules as $module) {
-				$camelized = camelize($module);
+			foreach ($config->enabled_modules as $module)
+				if (!in_array(array($modules[$module], $name), $this->called) and is_callable(array($modules[$module], $name)))
+					if (!empty($arguments)) {
+						$params = array_merge(array($this->modified($name, $target)), (array) $arguments);
+						$this->modified_text[$name] = call_user_func_array(array($modules[$module], $name), $params);
+					} else
+						$this->modified_text[$name] = call_user_func(array($modules[$module], $name), $this->modified($name, $target));
 
-				if (in_array(array($camelized, $name), $this->called))
-					continue;
-
-				if (is_callable(array($camelized, $name))) {
-					$this->modified_text[$name] = $caller(array($camelized, $name), $this->modified($name, $arg));
-				}
-			}
-
-			if (method_exists($snippet, $name))
-				$this->modified_text[$name] = $caller(array($snippet, $name), $this->modified($name, $arg));
-
-			$final = $this->modified($name, $arg);
+			$final = $this->modified($name, $target);
 
 			$this->modified_text[$name] = null;
 
@@ -111,8 +98,8 @@
 		 * Function: modified
 		 * A little helper function for <filter>.
 		 */
-		function modified($name, $arg) {
-			return (!isset($this->modified_text[$name])) ? $arg : $this->modified_text[$name] ;
+		function modified($name, $target) {
+			return (!isset($this->modified_text[$name])) ? $target : $this->modified_text[$name] ;
 		}
 
 		/**
@@ -144,14 +131,10 @@
 		 *     true - if there are actions for the trigger.
 		 */
 		public function exists($name) {
-			global $snippet;
 			$config = Config::current();
 			foreach ($config->enabled_modules as $module)
 				if (is_callable(array(camelize($module), $name)))
 					return true;
-
-			if (method_exists($snippet, $name))
-				return true;
 
 			if (isset($this->priorities[$name]))
 				return true;
@@ -163,9 +146,7 @@
 		 */
 		public static function & current() {
 			static $instance = null;
-			if (empty($instance))
-				$instance = new self();
-			return $instance;
+			return $instance = (empty($instance)) ? new self() : $instance ;
 		}
 	}
 	$trigger = Trigger::current();

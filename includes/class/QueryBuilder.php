@@ -45,7 +45,7 @@
 		public static function build_insert($table, $data) {
 			$sql = SQL::current();
 			return "
-				INSERT INTO `{$sql->prefix}$table`
+				INSERT INTO `__$table`
 				".self::build_insert_header($data)."
 				VALUES
 				".self::build_insert_values($data)."
@@ -59,9 +59,9 @@
 		public static function build_update($table, $conds, $data) {
 			$sql = SQL::current();
 			return "
-				UPDATE `{$sql->prefix}$table`
+				UPDATE `__$table`
 				SET ".self::build_update_values($data)."
-				".($conds ? "WHERE $conds" : "")."
+				".($conds ? "WHERE ".self::build_where($conds) : "")."
 			";
 		}
 
@@ -72,8 +72,8 @@
 		public static function build_delete($table, $conds) {
 			$sql = SQL::current();
 			return "
-				DELETE FROM `{$sql->prefix}$table`
-				".($conds ? "WHERE $conds" : "")."
+				DELETE FROM `__$table`
+				".($conds ? "WHERE ".self::build_where($conds) : "")."
 			";
 		}
 
@@ -92,35 +92,31 @@
 		/**
 		 * Function: build_from
 		 * Creates a FROM header for select queries.
-		 * Table names are automatically prefixed.
 		 */
 		public static function build_from($tables) {
 			if (!is_array($tables))
 				$tables = array($tables);
-			$set = array();
-			$sql = SQL::current();
-			foreach ($tables as $table) {
-				$table = explode(" ", $table);
-				$parts = explode(".", $table[0]);
-				$parts[0] = $sql->prefix.$parts[0];
-				foreach ($parts as & $part)
-					$part = "`$part`";
-				$table[0] = implode(".", $parts);
-				array_push($set, implode(" ", $table));
-			}
-			return implode(", ", $set);
+
+			foreach ($tables as &$table)
+				$table = "`__".$table."`";
+
+			return implode(", ", $tables);
 		}
 
 		/**
 		 * Function: build_count
 		 * Creates a SELECT COUNT(1) query.
 		 */
-		public static function build_count($tables, $conds) {
-			return "
+		public static function build_count($tables, $conds, $left_join = null) {
+			# Left Joins are included in here to prevent PDO from freaking about when $param count doesn't match :param count.
+			$query = "
 				SELECT COUNT(1) AS count
-				FROM ".self::build_from($tables)."
-				".($conds ? "WHERE $conds" : "")."
-			";
+				FROM ".self::build_from($tables);
+			if (isset($left_join))
+				foreach ($left_join as $join)
+					$query.= "\n\t\t\t\tLEFT JOIN `__".$join["table"]."` ON ".self::build_where($join["where"]);
+			$query.= "\n\t\t\t\t".($conds ? "WHERE ".self::build_where($conds) : "");
+			return $query;
 		}
 
 		/**
@@ -135,9 +131,10 @@
 			foreach ($fields as $field) {
 				$field = explode(" ", $field);
 				$parts = explode(".", $field[0]);
-				foreach ($parts as & $part)
-					if ($part != '*')
+				foreach ($parts as $index => &$part) {
+					if ($part != '*' and !strpos($part, "(") and !strpos($part, ")") and strtoupper($part) != $part)
 						$part = "`$part`";
+				}
 				$field[0] = implode(".", $parts);
 				array_push($set, implode(" ", $field));
 			}
@@ -146,16 +143,48 @@
 		}
 
 		/**
+		 * Function: build_where
+		 * Creates a WHERE query.
+		 */
+		public static function build_where($conds) {
+			$conditions = (array) $conds;
+			return implode(" and ", array_filter($conditions));
+		}
+
+		/**
+		 * Function: build_group
+		 * Creates a GROUP BY argument.
+		 */
+		public static function build_group($by, $table = null) {
+			if (isset($table)) {
+				$groups = array();
+				if (is_array($table))
+					$table = $table[0];
+				foreach ((array) $by as $col)
+					$groups[] = preg_replace("/^`([^`]+)` /", "`__".$table."`.`\\1` ", $col);
+			} else
+				$groups = (array) $by;
+
+			return implode(", ", array_filter($groups));
+		}
+
+		/**
 		 * Function: build_select
 		 * Creates a full SELECT query.
 		 */
-		public static function build_select($tables, $fields, $conds, $order = null, $limit = null, $offset = null) {
-			return "
+		public static function build_select($tables, $fields, $conds, $order = null, $limit = null, $offset = null, $group = null, $left_join = null) {
+			$query = "
 				SELECT ".self::build_select_header($fields)."
-				FROM ".self::build_from($tables)."
-				".($conds ? "WHERE $conds" : "")."
-				ORDER BY $order
+				FROM ".self::build_from($tables);
+			if (isset($left_join))
+				foreach ($left_join as $join)
+					$query.= "\n\t\t\t\tLEFT JOIN `__".$join["table"]."` ON ".self::build_where($join["where"]);
+			$query.= "
+				".($conds ? "WHERE ".self::build_where($conds) : "")."
+				".($group ? "GROUP BY ".self::build_group($group) : "")."
+				".($order ? "ORDER BY ".$order : "")."
 				".self::build_limits($offset, $limit)."
 			";
+			return $query;
 		}
 	}

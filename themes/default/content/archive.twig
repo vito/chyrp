@@ -1,16 +1,17 @@
 {% extends "layouts/default.twig" %}
 {% block content %}
-{% if archives %}
+{% if archives %} {# List? (For all/yearly archives) #}
 	{% for archive in archives %}
 	<h2><a href="$archive.url">$archive.month $archive.year</a></h2>
 	<ul>
 		{% for post in archive.posts %}
-		<li>${ post.created_at | date }: <a href="$post.url">${ post.title | normalize }</a></li>
+		<li>${ post.created_at | date("d") }: <a href="$post.url">${ post.title | normalize }</a></li>
 		{% endfor %}
 	</ul>
 	{% endfor %}
 {% endif %}
-{% if posts %}
+
+{% if posts %} {# Posts? (For daily/monthly archives) #}
 {% if archive.depth == "day" %}
 	<h2>${ "Archive of" | translate } $archive.month $archive.day, $archive.year</h2>
 {% endif %}
@@ -20,5 +21,10 @@
 	{% for post in posts %}
 	{% include "content/post.twig" %}
 	{% endfor %}
+{% endif %}
+
+{% if not archives and not posts %} {# No results #}
+					<h2>${ "No Posts" | translate }</h2>
+					<p>${ "There don't seem to be any posts in the timeframe you specified." | translate }</p>
 {% endif %}
 {% endblock %}

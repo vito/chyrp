@@ -208,7 +208,7 @@
 							$info = pathinfo($the_post["PHOTO-URL"][0]["data"]);
 							$filename = $info['basename'];
 
-							$open = fopen(MAIN_DIR."/upload/".$filename, "w");
+							$open = fopen(MAIN_DIR."/uploads/".$filename, "w");
 							fwrite($open, $image);
 							fclose($open);
 
@@ -330,8 +330,8 @@
 ?>
 			<h1><?php echo __("Import Tumblr"); ?></h1>
 			<form action="tumblr.php" method="post" accept-charset="utf-8" enctype="multipart/form-data">
-				<p>Audio tumbles cannot be imported.</p>
-				<label for="xml_file"><?php echo __("Tumblr URL"); ?><span class="sub"> (no trailing slash)</span></label>
+				<p><?php echo __("Audio tumbles cannot be imported."); ?></p>
+				<label for="xml_file"><?php echo __("Tumblr URL"); ?> <span class="sub"><?php echo __("(no trailing slash)"); ?></span></label>
 				<input type="text" name="url" value="" id="url" />
 				<br />
 				<input type="hidden" name="step" value="1" id="step" />

@@ -1,0 +1,61 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Manage Posts" | translate }{% endblock %}
+
+{% block content %}
+			<h1>${ "Manage Posts" | translate }</h1>
+			{% if updated %}
+			<p class="message yay">${ "Post updated." | translate } ${ "<a href=\"%s\">View Post &rarr;</a>" | translate | format(updated.url) }</p>
+			{% endif %}
+			{% if deleted %}
+			<p class="message yay">${ "Post deleted." | translate }</p>
+			{% endif %}
+			<h2>${ "Need more detail?" | translate }</h2>
+			<form class="detail" action="index.php" method="get" accept-charset="utf-8">
+				<input type="hidden" name="action" value="manage_posts" />
+				<div class="left pad margin-right">
+					<h3>${ "Search&hellip;" | translate }</h3>
+					<input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" /> <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
+				</div>
+				<div class="left pad">
+					<h3>${ "Browse by month:" | translate }</h3>
+					<select name="month">
+						<option value="">----------</option>
+						{% for archive in archives %}
+						<option value="${ archive.when | date("Y-m") }"${ GET.month | option_selected(archive.when | date("Y-m")) }>${ archive.when | date("F Y") } ($archive.count)</option>
+						{% endfor %}
+					</select>
+					<button type="submit" class="inline">${ "Show &rarr;" | translate }</button>
+				</div>
+				<br class="clear" />
+			</form>
+			<br />
+			<h2>${ "Last 25 Posts" | translate }</h2>
+			<table border="0" cellspacing="0" cellpadding="0" class="wide">
+				<thead>
+					<tr class="head">
+						<th>${ "Title" | translate }</th>
+						<th>${ "Posted" | translate }</th>
+						<th>${ "Status" | translate }</th>
+						<th>${ "Author" | translate }</th>
+						{% trigger "manage_posts_column_header" %}
+						<th colspan="2">${ "Controls" | translate }</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for post in posts %}
+					<tr id="post_$post.id" class="post target $post.status{% if loop.last %} last{% endif %}">
+						<td class="main"><a href="$post.url">${ post.title | truncate }</a></td>
+						<td>${ post.created_at | strftime }</td>
+						<td>${ post.status | replace("_", " ") | title }</td>
+						<td>$post.user.login</td>
+						${ "manage_posts_column" | trigger(post) }
+						<td class="controls">${ post.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit') }</td>
+						<td class="controls">${ post.delete_link('<img src="images/icons/delete.png" alt="delete" /> delete') }</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+			$pagination.next_link
+			$pagination.prev_link
+{% endblock %}

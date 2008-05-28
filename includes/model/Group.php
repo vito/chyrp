@@ -5,6 +5,7 @@
 	 */
 	class Group extends Model {
 		public $no_results = false;
+		public $has = array();
 
 		/**
 		 * Function: __construct
@@ -19,6 +20,10 @@
 		 */
 		public function __construct($group_id = null, $options = array()) {
 			parent::grab($this, $group_id, $options);
+
+			if ($this->no_results)
+				return false;
+
 			$this->permissions = Spyc::YAMLLoad($this->permissions);
 		}
 
@@ -47,22 +52,13 @@
 		 *     <update>
 		 */
 		static function add($name, $permissions) {
-			$query = "";
-
 			$sql = SQL::current();
-			$fields = array("`name`" => ":name", "`permissions`" => ":permissions");
-			$params = array(":name" => $name, ":permissions" => Spyc::YAMLDump($permissions));
-
-			$sql->query("insert into `".$sql->prefix."groups`
-			             (".implode(",", array_keys($fields)).")
-			             values
-			             (".implode(",", array_values($fields)).")",
-			            $params);
+			$sql->insert("groups", array("name" => ":name", "permissions" => ":permissions"),
+			                       array(":name"  => $name,   ":permissions"  => Spyc::YAMLDump($permissions)));
 
 			$id = $sql->db->lastInsertId();
-			$trigger = Trigger::current();
-			$trigger->call("add_group", array($id, $name, $permissions));
-			return $id;
+			Trigger::current()->call("add_group", array($id, $name, $permissions));
+			return new self($id);
 		}
 
 		/**
@@ -76,14 +72,11 @@
 		 */
 		public function update($name, $permissions) {
 			$sql = SQL::current();
+			$sql->update("groups", "`id` = :id",
+			             array("name" => ":name", "permissions" => ":permissions"),
+			             array(":name" => $name, ":permissions" => Spyc::YAMLDump($permissions), ":id" => $this->id));
 
-			$fields = array("`name`" => ":name", "`permissions`" => ":permissions");
-			$params = array(":name" => $name, ":permissions" => Spyc::YAMLDump($permissions), ":id" => $this->id);
-
-			$sql->query("update `".$sql->prefix."groups` set `name` = :name, `permissions` = :permissions where `id` = :id", $params);
-
-			$trigger = Trigger::current();
-			$trigger->call("update_group", array($this, $name, $permissions));
+			Trigger::current()->call("update_group", array($this, $name, $permissions));
 		}
 
 		/**
@@ -134,9 +127,7 @@
 		static function add_permission($name) {
 			$sql = SQL::current();
 
-			$check = $sql->query("select `name` from `".$sql->prefix."permissions` where `name` = '".$name."'")->fetchColumn();
-
-			if ($check == $name)
+			if ($sql->count("permissions", "`name` = :name", array(":name" => $name)))
 				return; # Permission already exists.
 
 			$sql->insert("permissions", array("name" => ":name"), array(":name" => $name));
@@ -150,26 +141,25 @@
 		 *     $name - The permission name to remove.
 		 */
 		static function remove_permission($name) {
-			$sql = SQL::current();
-			$sql->query("delete from `".$sql->prefix."permissions` where `name` = '".$name."'");
+			SQL::current()->delete("permissions", "`name` = :name", array(":name" => $name));
 		}
 
 		/**
-		 * Function: user_count
-		 * Returns the amount of users in a given group.
-		 *
-		 * Parameters:
-		 *     $group_id - The group ID.
+		 * Function: size
+		 * Returns the amount of users in the.
 		 */
-		static function count_users($group_id) {
-			$sql = SQL::current();
-			$get_count = $sql->query("select count(`id`) from `".$sql->prefix."users`
-			                          where `group_id` = :id",
-			                         array(
-			                             ":id" => $group_id
-			                         ));
-			$count = $get_count->fetchColumn();
-			return $count;
+		public function size() {
+			return (isset($this->size)) ? $this->size : $this->size = SQL::current()->count("users", "`group_id` = :group_id", array(":group_id" => $this->id)) ;
+		}
+
+		/**
+		 * Function: members
+		 * Returns all the members of the group.
+		 */
+		public function members() {
+			return User::find(array("where" => "`group_id` = :group_id",
+			                        "pagination" => false,
+			                        "params" => array(":group_id" => $this->id)));
 		}
 
 		/**
@@ -186,7 +176,7 @@
 			if (!$visitor->group()->can("edit_group")) return;
 			fallback($text, __("Edit"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=group&amp;id='.$this->id.'" title="Edit" class="group_edit_link" id="group_edit_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=edit_group&amp;id='.$this->id.'" title="Edit" class="group_edit_link edit_link" id="group_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
 		/**
@@ -203,6 +193,6 @@
 			if (!$visitor->group()->can("delete_group")) return;
 			fallback($text, __("Delete"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=group&amp;id='.$this->id.'" title="Delete" class="group_delete_link" id="group_delete_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=delete_group&amp;id='.$this->id.'" title="Delete" class="group_delete_link delete_link" id="group_delete_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 	}

@@ -1,6 +1,8 @@
 <?php
 	class Quote extends Feather {
 		public function __construct() {
+			$this->setField(array("attr" => "quote", "type" => "text_block", "rows" => 5, "label" => "Quote", "bookmarklet" => "selection"));
+			$this->setField(array("attr" => "source", "type" => "text_block", "rows" => 5, "label" => "Source", "optional" => true, "preview" => true, "bookmarklet" => "linked_title"));
 			$this->setFilter("quote", "markup_post_text");
 			$this->setFilter("source", "markup_post_text");
 		}
@@ -23,9 +25,9 @@
 
 			$route = Route::current();
 			if (isset($_POST['bookmarklet']))
-				$route->redirect($route->url("bookmarklet/done/"));
+				redirect($route->url("bookmarklet/done/"));
 			else
-				$route->redirect($post->url());
+				redirect($post->url());
 		}
 		static function update() {
 			$post = new Post($_POST['id']);

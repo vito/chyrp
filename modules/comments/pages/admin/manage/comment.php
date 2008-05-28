@@ -38,17 +38,18 @@
 					<h2><?php echo __("Last 25 Comments", "comments"); ?></h2>
 <?php
 	if (!empty($_GET['status']) and !empty($_GET['query'])) {
-		$status =  ($_GET['status'] == "all") ? "`status` != 'spam'" : "`status` = ".$sql->quote($_GET['status']) ;
+		$status =  ($_GET['status'] == "all") ? "`status` != 'spam'" : "`status` = :status" ;
 		$get_comments = $paginate->select("comments",
 		                                  "*",
 		                                  "`body` like :query and ".$status,
 		                                  "`created_at` desc",
 		                                  25, "page",
 		                                  array(
-		                                      ":query" => "%".$_GET['query']."%"
+		                                      ":query" => "%".$_GET['query']."%",
+		                                      ":status" => $_GET['status']
 		                                  ));
 	} elseif (!empty($_GET['status'])) {
-		$status =  ($_GET['status'] == "all") ? "`status` != 'spam'" : "`status` = ".$sql->quote($_GET['status']) ;
+		$status =  ($_GET['status'] == "all") ? "`status` != 'spam'" : "`status` = :status" ;
 		$get_comments = $paginate->select("comments",
 		                                  "*",
 		                                  $status,
@@ -62,7 +63,8 @@
 		                                  "`created_at` desc",
 		                                  25, "page",
 		                                  array(
-		                                      ":query" => "%".$_GET['query']."%"
+		                                      ":query" => "%".$_GET['query']."%",
+		                                      ":status" => $_GET['status']
 		                                  ));
 	} else {
 		$get_comments = $paginate->select("comments",

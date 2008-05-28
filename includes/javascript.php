@@ -13,7 +13,7 @@ $(function(){
 	$(document).ajaxComplete(function(imconfused, request){
 		var response = request.responseText
 		if (isError(response))
-			alert(response.replace(/HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW/, ""))
+			alert(response.replace(/HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW/m, ""))
 	})
 
 	$(".toggle_admin").click(function(){
@@ -115,7 +115,9 @@ var Post = {
 		$.post("<?php echo $config->url; ?>/includes/ajax.php", { action: "delete_post", id: id }, function(response){
 			$("#post_"+id+" .target, #post_"+id+".target").loader(true)
 			if (isError(response)) return
-			$("#post_"+id).animate({ height: "hide", opacity: "hide" }).remove()
+			$("#post_"+id).animate({ height: "hide", opacity: "hide" }, function(){
+				$(this).remove()
+			})
 			appendNextPost(1)
 		})
 <?php if ($_GET['action'] == "view"): ?>
@@ -127,38 +129,44 @@ var Post = {
 $.fn.loader = function(remove) {
 	if (remove) {
 		$(this).next().remove()
-	} else {
-		var offset = $(this).offset()
-		var width = $(this).width()
-		var loading_top = ($(this).height() / 2) - 11
-		var loading_left = ($(this).width() / 2) - 63
-		$(this).after("<div class=\"load_overlay\"><img src=\"<?php echo $config->url; ?>/includes/close.png\" style=\"display: none\" class=\"close\" /><img src=\"<?php echo $config->url; ?>/includes/loading.gif\" style=\"display: none\" class=\"loading\" /></div>")
-		$(".load_overlay .loading").css({
-			position: "absolute",
-			top: loading_top+"px",
-			left: loading_left+"px",
-			display: "inline"
-		})
-		$(".load_overlay .close").css({
-			position: "absolute",
-			top: "3px",
-			right: "3px",
-			color: "#fff",
-			cursor: "pointer",
-			display: "inline"
-		}).click(function(){ $(this).parent().remove() })
-		$(".load_overlay").css({
-			position: "absolute",
-			top: offset.top,
-			left: offset.left,
-			zIndex: 100,
-			width: $(this).width(),
-			height: $(this).height(),
-			background: ($.browser.msie) ? "transparent" : "transparent url('<?php echo $config->url; ?>/includes/trans.png')",
-			textAlign: "center",
-			filter: ($.browser.msie) ? "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src='<?php echo $config->url; ?>/includes/trans.png');" : ""
-		})
+		return this
 	}
+
+	var offset = $(this).offset()
+	var width = $(this).width()
+	var loading_top = ($(this).height() / 2) - 11
+	var loading_left = ($(this).width() / 2) - 63
+
+	$(this).after("<div class=\"load_overlay\"><img src=\"<?php echo $config->url; ?>/includes/close.png\" style=\"display: none\" class=\"close\" /><img src=\"<?php echo $config->url; ?>/includes/loading.gif\" style=\"display: none\" class=\"loading\" /></div>")
+
+	$(".load_overlay .loading").css({
+		position: "absolute",
+		top: loading_top+"px",
+		left: loading_left+"px",
+		display: "inline"
+	})
+
+	$(".load_overlay .close").css({
+		position: "absolute",
+		top: "3px",
+		right: "3px",
+		color: "#fff",
+		cursor: "pointer",
+		display: "inline"
+	}).click(function(){ $(this).parent().remove() })
+
+	$(".load_overlay").css({
+		position: "absolute",
+		top: offset.top,
+		left: offset.left,
+		zIndex: 100,
+		width: $(this).width(),
+		height: $(this).height(),
+		background: ($.browser.msie) ? "transparent" : "transparent url('<?php echo $config->url; ?>/includes/trans.png')",
+		textAlign: "center",
+		filter: ($.browser.msie) ? "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src='<?php echo $config->url; ?>/includes/trans.png');" : ""
+	})
+
 	return this
 }
 
@@ -240,7 +248,7 @@ function appendNextPost(minus) {
 }
 
 function isError(text) {
-	return /HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW/.test(text);
+	return /HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW/m.test(text);
 }
 
 <?php $trigger->call("javascript"); ?>

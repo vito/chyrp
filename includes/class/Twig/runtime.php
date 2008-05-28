@@ -12,47 +12,63 @@
 
 $twig_filters = array(
 	// formatting filters
-	'date' =>		'twig_date_format_filter',
-	'numberformat' =>	'number_format',
-	'moneyformat' =>	'money_format',
-	'filesizeformat' =>	'twig_filesize_format_filter',
-	'format' =>		'sprintf',
+	'date' =>              'twig_date_format_filter',
+	'strftime' =>          'twig_strftime_format_filter',
+	'numberformat' =>      'number_format',
+	'moneyformat' =>       'money_format',
+	'filesizeformat' =>    'twig_filesize_format_filter',
+	'format' =>            'sprintf',
 
 	// numbers
-	'even' =>		'twig_is_even_filter',
-	'odd' =>		'twig_is_odd_filter',
+	'even' =>              'twig_is_even_filter',
+	'odd' =>               'twig_is_odd_filter',
 
 	// escaping and encoding
-	'escape' =>		'htmlspecialchars',
-	'e' =>			'htmlspecialchars',
-	'urlencode' =>		'twig_urlencode_filter',
-	'quotes' =>		'addslashes',
+	'escape' =>           'htmlspecialchars',
+	'e' =>                'htmlspecialchars',
+	'urlencode' =>        'twig_urlencode_filter',
+	'quotes' =>           'addslashes',
 
 	// string filters
-	'title' =>		'twig_title_string_filter',
-	'capitalize' =>		'twig_capitalize_string_filter',
-	'upper' =>		'strtoupper',
-	'lower' =>		'strtolower',
-	'strip' =>		'trim',
-	'rstrip' =>		'rtrim',
-	'lstrip' =>		'ltrim',
-	'translate' =>		'twig_translate_string_filter',
-	'normalize' =>		'normalize',
-	'replace' =>		'twig_replace_filter',
+	'title' =>            'twig_title_string_filter',
+	'capitalize' =>       'twig_capitalize_string_filter',
+	'upper' =>            'strtoupper',
+	'lower' =>            'strtolower',
+	'strip' =>            'trim',
+	'rstrip' =>           'rtrim',
+	'lstrip' =>           'ltrim',
+	'translate' =>        'twig_translate_string_filter',
+	'translate_plural' => 'twig_translate_plural_string_filter',
+	'normalize' =>        'normalize',
+	'truncate' =>         'truncate',
+	'replace' =>          'twig_replace_filter',
+	'linebreaks' =>       'nl2br',
+	'camelize' =>         'camelize',
+	'strip_tags' =>       'strip_tags',
 
 	// array helpers
-	'join' =>		'twig_join_filter',
-	'reverse' =>		'array_reverse',
-	'length' =>		'count',
-	'count' =>		'count',
+	'join' =>             'twig_join_filter',
+	'split' =>            'twig_split_filter',
+	'first' =>            'twig_first_filter',
+	'offset' =>           'twig_offset_filter',
+	'last' =>             'twig_last_filter',
+	'reverse' =>          'array_reverse',
+	'length' =>           'count',
+	'count' =>            'count',
 
 	// iteration and runtime
-	'default' =>		'twig_default_filter',
-	'keys' =>		'array_keys',
-	'items' =>		'twig_get_array_items_filter',
+	'default' =>          'twig_default_filter',
+	'keys' =>             'array_keys',
+	'items' =>            'twig_get_array_items_filter',
 
 	// debugging
-	'inspect' => 'twig_inspect_filter'
+	'inspect' =>          'twig_inspect_filter',
+
+	'trigger' =>          'twig_trigger_filter',
+	'fallback' =>         'twig_fallback_filter',
+	'selected' =>         'twig_selected_filter',
+	'checked' =>          'twig_checked_filter',
+	'option_selected' =>  'twig_option_selected_filter'
 );
 
 
@@ -104,8 +120,14 @@ function twig_missing_filter($name)
 	$args = func_get_args();
 	array_shift($args);
 
-	if (Trigger::current()->exists($name))
-		return Trigger::current()->filter($name, $args, true);
+	$text = $args[0];
+	array_shift($args);
+
+	$trigger = Trigger::current();
+	if ($trigger->exists($name))
+		return $trigger->filter($name, $text, $args);
+
+	return $args[0];
 }
 
 function twig_get_attribute($obj, $item)
@@ -184,7 +206,14 @@ function twig_make_array($object)
 
 function twig_date_format_filter($timestamp, $format='F j, Y, G:i')
 {
-	return @date($format, @strtotime($timestamp));
+	$timestamp = (is_numeric($timestamp)) ? $timestamp : @strtotime($timestamp) ;
+	return @date($format, $timestamp);
+}
+
+function twig_strftime_format_filter($timestamp, $format='%x %X')
+{
+	$timestamp = (is_numeric($timestamp)) ? $timestamp : @strtotime($timestamp) ;
+	return @strftime($format, $timestamp);
 }
 
 function twig_urlencode_filter($string, $raw=false)
@@ -297,12 +326,66 @@ else {
 	}
 }
 
-function twig_translate_string_filter($string) {
-	return __($string, "theme");
+function twig_translate_string_filter($string, $domain = "theme") {
+	return __($string, (ADMIN ? "chyrp" : $domain));
+}
+
+function twig_translate_plural_string_filter($single, $plural, $number, $domain = "theme") {
+	return _p($single, $plural, $number, (ADMIN ? "chyrp" : $domain));
 }
 
 function twig_inspect_filter($thing) {
 	return '<pre class="chyrp_inspect"><code>' .
 	       htmlspecialchars(var_export($thing, true)) .
 	       '</code></pre>';
+}
+
+function twig_split_filter($string, $cut = " ") {
+	return explode($cut, $string);
+}
+
+function twig_first_filter($array) {
+	return $array[0];
+}
+
+function twig_last_filter($array) {
+	return $array[count($array) - 1];
+}
+
+function twig_offset_filter($array, $offset = 0) {
+	return $array[$offset];
+}
+
+function twig_trigger_filter($name) {
+	$args = func_get_args();
+	array_shift($args);
+
+	Trigger::current()->call($name, $args);
+}
+
+function twig_fallback_filter($try, $fallback) {
+	return fallback($try, $fallback, true);
+}
+
+function twig_selected_filter($foo) {
+	$try = func_get_args();
+	array_shift($try);
+
+	$just_class = (end($try) === true);
+
+	if (in_array($foo, $try))
+		return ($just_class) ? "selected" : ' class="selected"' ;
+}
+
+function twig_checked_filter($foo) {
+	if ($foo)
+		return ' checked="checked"';
+}
+
+function twig_option_selected_filter($foo) {
+	$try = func_get_args();
+	array_shift($try);
+
+	if (in_array($foo, $try))
+		return ' selected="selected"';
 }

@@ -1,0 +1,44 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Modules" | translate }{% endblock %}
+
+{% block content %}
+			<h1>${ "Modules" | translate }</h1>
+			<div class="enable module left">
+				<h2>${ "Enabled" | translate }</h2>
+				<ul class="extend">
+{% for safename, module in enabled_modules | items %}
+					<li class="${ safename ~ module.conflicts_class ~ module.depends_class }" id="module_$safename">
+						<a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
+						${ '<a href="%s">%s</a> <span class="sub">by %s</span>' | translate | format(module.url, module.name, module.author.link) }
+						<div class="expand">
+							<div class="description">
+								$module.description
+							</div>
+							<a class="enable_button js_disabled" href="{% admin "disable&module="~safename %}">${ "Disable" | translate }</a>
+						</div>
+					</li>
+{% endfor %}
+				</ul>
+			</div>
+			<div class="disable module right">
+				<h2>${ "Disabled" | translate }</h2>
+				<ul class="extend">
+{% for safename, module in disabled_modules | items %}
+					<li class="${ safename ~ module.conflicts_class ~ module.depends_class }" id="module_$safename">
+						<a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
+						${ '<a href="%s">%s</a> <span class="sub">by %s</span>' | translate | format(module.url, module.name, module.author.link) }
+						<div class="expand">
+							<div class="description">
+								$module.description
+							</div>
+							<a class="disable_button js_disabled" href="{% admin "enable&module="~safename %}">${ "Enable" | translate }</a>
+						</div>
+					</li>
+{% endfor %}
+				</ul>
+			</div>
+			<div class="clear"></div>
+			<br />
+			<a class="button right" href="http://chyrp.net/extend/browse/modules">${ "Get More Modules &rsaquo;" | translate }</a>
+{% endblock %}

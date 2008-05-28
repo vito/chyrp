@@ -17,7 +17,7 @@ Find.find(basedir) do |path|
     end
   else
     filename = File.basename(path)
-    if filename =~ /\.php/ and not exclude_files.include?(filename)
+    if filename =~ /\.(php|twig)/ and not exclude_files.include?(filename)
       cleaned = path.sub("./", "")
       contents = File.read(path)
       if contents =~ /sprintf\(__\("(.*?)"(, ".*?")?\), (.*?)\)/
@@ -33,7 +33,7 @@ Find.find(basedir) do |path|
                 output << 'msgstr "'+msgstr+'"'+"\n\n"
               else
                 unless lines.include?(cleaned+":"+counter.to_s)
-                  output = output.gsub("#, php-format\nmsgid \""+$1+"\"\nmsgstr \""+msgstr+"\"\n\n", 
+                  output = output.gsub("#, php-format\nmsgid \""+$1+"\"\nmsgstr \""+msgstr+"\"\n\n",
                                        "#: "+cleaned+":"+counter.to_s+"\n#, php-format\nmsgid \""+$1+"\"\nmsgstr \""+msgstr+"\"\n\n")
                 end
               end
@@ -59,7 +59,7 @@ Find.find(basedir) do |path|
                 output << 'msgstr[1] "'+msgstr+'s"'+"\n\n"
               else
                 unless lines.include?(cleaned+":"+counter.to_s)
-                  output = output.gsub("#, php-format\nmsgid \""+$1+"\"\nmsgid_plural \""+$2+"\"\nmsgstr[0] \""+msgstr+"\"\nmsgstr[1] \""+msgstr+"x\"\n\n", 
+                  output = output.gsub("#, php-format\nmsgid \""+$1+"\"\nmsgid_plural \""+$2+"\"\nmsgstr[0] \""+msgstr+"\"\nmsgstr[1] \""+msgstr+"x\"\n\n",
                                        "#: "+cleaned+":"+counter.to_s+"\n#, php-format\nmsgid \""+$1+"\"\nmsgid_plural \""+$2+"\"\nmsgstr[0] \""+msgstr+"\"\nmsgstr[1] \""+msgstr+"s\"\n\n")
                 end
               end
@@ -82,7 +82,30 @@ Find.find(basedir) do |path|
                 output << 'msgstr "'+msgstr+'"'+"\n\n"
               else
                 unless lines.include?(cleaned+":"+counter.to_s)
-                  output = output.gsub("msgid \""+$1+"\"\nmsgstr \"\"\n\n", 
+                  output = output.gsub("msgid \""+$1+"\"\nmsgstr \"\"\n\n",
+                                       "#: "+cleaned+":"+counter.to_s+"\nmsgid \""+$1+"\"\nmsgstr \""+msgstr+"\"\n\n")
+                end
+              end
+              strings << $1
+              lines << cleaned+":"+counter.to_s
+            end
+            counter = counter + 1
+          end
+        end
+      end
+      if contents =~ /\$\{ "(.*?)" \| translate \}/
+        counter = 1
+        File.open(path, "r") do |infile|
+          while (line = infile.gets)
+            line.gsub!("\\\"", "{QUOTE}")
+            line.gsub(/\$\{ "(.*?)" \| translate \}/) do
+              unless strings.include?($1)
+                output << '#: '+cleaned+':'+counter.to_s+"\n"
+                output << 'msgid "'+$1+'"'+"\n"
+                output << 'msgstr "'+msgstr+'"'+"\n\n"
+              else
+                unless lines.include?(cleaned+":"+counter.to_s)
+                  output = output.gsub("msgid \""+$1+"\"\nmsgstr \"\"\n\n",
                                        "#: "+cleaned+":"+counter.to_s+"\nmsgid \""+$1+"\"\nmsgstr \""+msgstr+"\"\n\n")
                 end
               end
@@ -101,7 +124,7 @@ Find.find(basedir) do |path|
       info.each do |key, val|
         counter = counter + 1
         next unless keys.include?(key)
-        
+
         if val.class == String
           val.gsub!("\"", "{QUOTE}")
           unless strings.include?(val)
@@ -110,7 +133,7 @@ Find.find(basedir) do |path|
             output << 'msgstr "'+msgstr+'"'+"\n\n"
           else
             unless lines.include?(cleaned+":"+counter.to_s)
-              output = output.gsub("msgid \""+val+"\"\nmsgstr \"\"\n\n", 
+              output = output.gsub("msgid \""+val+"\"\nmsgstr \"\"\n\n",
                                    "#: "+cleaned+":"+counter.to_s+"\nmsgid \""+val+"\"\nmsgstr \""+msgstr+"\"\n\n")
             end
           end
@@ -124,7 +147,7 @@ Find.find(basedir) do |path|
               output << 'msgstr "'+msgstr+'"'+"\n\n"
             else
               unless lines.include?(cleaned+":"+counter.to_s)
-                output = output.gsub("msgid \""+val+"\"\nmsgstr \"\"\n\n", 
+                output = output.gsub("msgid \""+val+"\"\nmsgstr \"\"\n\n",
                                      "#: "+cleaned+":"+counter.to_s+"\nmsgid \""+val+"\"\nmsgstr \""+msgstr+"\"\n\n")
               end
             end

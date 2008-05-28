@@ -1,154 +1,77 @@
 <?php
 	define('ADMIN', true);
+
 	require_once "../includes/common.php";
 
-	# Should the Manage tab be shown?
-	$show_manage_tab = false;
-	$manage_pages = array("post", "page", "user", "group");
-	$manage_pages = $trigger->filter("show_admin_manage_tab", $manage_pages);
-	foreach($manage_pages as $type)
-		if ($visitor->group()->can("edit_".$type) or $visitor->group()->can("delete_".$type)) {
-			if (!isset($can_manage))
-				$can_manage = $type;
-			$show_manage_tab = true;
-		}
+	$action = fallback($_GET['action'], $admin->determine_action(), true);
 
-	$allowed = ($visitor->group()->can("add_post") or $visitor->group()->can("add_page") or $visitor->group()->can("change_settings") or $show_manage_tab);
-
-	if (!$allowed)
-		error(__("Access Denied"), __("You are not allowed to view this area."));
-
-	$action = (isset($_GET['action'])) ? strip_tags($_GET['action']) : "write" ;
-	$sub = (isset($_GET['sub'])) ? strip_tags($_GET['sub']) : null ;
-
-	# I know I could just do __(ucfirst($whatever)) with these, but
-	# doing it this way lets my gettext scanner live a little easier.
-	$actions = array("write" => __("Write"),
-	                 "settings" => __("Settings"),
-	                 "manage" => __("Manage"),
-	                 "extend" => __("Extend"),
-	                 "edit" => __("Edit"),
-	                 "delete" => __("Delete"));
-	$subs = array("website" => __("Website"),
-	              "syndication" => __("Syndication"),
-	              "routes" => __("Routes"),
-	              "post" => __("Posts"),
-	              "page" => __("Pages"),
-	              "user" => __("Users"),
-	              "group" => __("Groups"),
-	              "modules" => __("Modules"),
-	              "feathers" => __("Feathers"),
-	              "themes" => __("Themes"));
-	$actions = $trigger->filter("admin_page_titles", $actions);
-	$subs = $trigger->filter("admin_sub_page_titles", $subs);
-
-	if (!isset($_GET['action']) and !isset($_GET['sub']))
-		if (!$visitor->group()->can("add_post") and !$visitor->group()->can("add_page"))
-			if ($visitor->group()->can("change_settings"))
-				$route->redirect(url("settings", null, true));
-			elseif ($show_manage_tab)
-				if ($visitor->group()->can("edit_post") or $visitor->group()->can("delete_post"))
-					$route->redirect("/admin/?action=manage");
-				else
-					$route->redirect("/admin/?action=manage&sub=".$can_manage);
-		elseif ($visitor->group()->can("add_page"))
-			$route->redirect(url("write", "page", true));
-
-	if ($action == "manage" and !isset($_GET['sub']) and $show_manage_tab)
-		if (!$visitor->group()->can("edit_post") and !$visitor->group()->can("delete_post"))
-			$route->redirect("/admin/?action=manage&sub=".$can_manage);
-
-	function url($action, $sub = null, $return = false) {
-		$config = Config::current();
-		$url = $config->url."/admin/?action=".$action;
-		if (!is_null($sub)) $url.= "&amp;sub=".$sub;
-		if ($return) return $url;
-		echo $url;
-	}
-	function admin_selected($the_action, $the_sub = null, $return = false) {
-		global $action, $sub;
-		if ((!is_null($the_sub) and ($sub == $the_sub)) or (is_null($the_sub)) and ($action == $the_action))
-			if ($return)
-				return ' class="selected"';
+	class AdminTwig {
+		public function __construct() {
+			global $action;
+			if (!DEBUG)
+				$this->twig = new Twig_Loader(MAIN_DIR."/admin/layout/", (is_writable(MAIN_DIR."/admin/layout/cache") ? MAIN_DIR."/admin/layout/cache" : null));
 			else
-				echo ' class="selected"';
-	}
-	$action_up = str_replace(array_keys($actions), array_values($actions), $action);
-	$sub_title = (isset($sub)) ? ": ".ucfirst(str_replace(array_keys($subs), array_values($subs), $sub)) : "" ;
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-		<title><?php echo $config->name.": ".$action_up.$sub_title; ?></title>
-		<link rel="stylesheet" href="<?php echo (file_exists(THEME_DIR.'/stylesheets/admin.css')) ? $config->url.'/themes/'.$config->theme.'/stylesheets/admin.css' : 'style.css'; ?>" type="text/css" media="screen" charset="utf-8" />
-		<script src="<?php echo $config->url; ?>/includes/lib/jquery.js" type="text/javascript" charset="utf-8"></script>
-		<script src="<?php echo $config->url; ?>/admin/js/ifixpng.js" type="text/javascript" charset="utf-8"></script>
-		<script src="<?php echo $config->url; ?>/admin/js/interface.js" type="text/javascript" charset="utf-8"></script>
-		<script src="<?php echo $config->url; ?>/admin/js/javascript.php?action=<?php echo $action; ?>&amp;sub=<?php echo $sub; ?>" type="text/javascript" charset="utf-8"></script>
-<?php $trigger->call("admin_head"); ?>
-	</head>
-	<body>
-		<div class="header">
-			<a class="view" href="<?php echo $config->url; ?>"><?php echo __("View Site &raquo;"); ?></a>
-			<h1><?php echo $config->name; ?></h1>
-		</div>
-		<div class="main-nav">
-			<ul>
-<?php if ($visitor->group()->can("add_post") or $visitor->group()->can("add_page")): ?>
-				<li<?php admin_selected('write'); ?>><a href="<?php url('write'); ?>"><?php echo __("Write"); ?></a></li>
-<?php endif; ?>
-<?php if ($show_manage_tab): ?>
-				<li<?php admin_selected('manage'); ?><?php admin_selected('edit'); ?><?php admin_selected('delete'); ?>><a href="<?php url('manage'); ?>"><?php echo __("Manage"); ?></a></li>
-<?php endif; ?>
-<?php if ($visitor->group()->can("change_settings")): ?>
-				<li<?php admin_selected('settings'); ?>><a href="<?php url('settings'); ?>"><?php echo __("Settings"); ?></a></li>
-<?php endif; ?>
-<?php if ($visitor->group()->can("change_settings")): ?>
-				<li<?php admin_selected('extend'); ?>><a href="<?php url('extend'); ?>"><?php echo __("Extend"); ?></a></li>
-<?php endif; ?>
-<?php $trigger->call("admin_nav"); ?>
-			</ul>
-		</div>
-<?php
-	if (file_exists("pages/".$action.".php")) {
-		require "pages/".$action.".php";
-	} else {
-		$page_exists = false;
-
-		foreach ($config->enabled_modules as $module) {
-			if (file_exists(MODULES_DIR."/".$module."/pages/admin/".$action.".php")) {
-				require MODULES_DIR."/".$module."/pages/admin/".$action.".php";
-				$page_exists = true;
-			}
+				$this->twig = new Twig_Loader(MAIN_DIR."/admin/layout/", null);
 		}
 
-		foreach ($config->enabled_feathers as $feather) {
-			if (file_exists(FEATHERS_DIR."/".$feather."/pages/admin/".$action.".php")) {
-				require FEATHERS_DIR."/".$feather."/pages/admin/".$action.".php";
-				$page_exists = true;
-			}
-		}
+		public function load($action) {
+			global $admin, $paginate, $theme;
 
-		if (file_exists(THEME_DIR."/pages/admin/".$action.".php")) {
-			require THEME_DIR."/pages/admin/".$action.".php";
-			$page_exists = true;
-		}
+			$trigger = Trigger::current();
+			$write    = $trigger->filter("write_pages", array());
+			$manage   = $trigger->filter("manage_pages", array());
+			$settings = $trigger->filter("settings_pages", array());
+			$extend   = $trigger->filter("extend_pages", array());
 
-		if (!$page_exists) {
-?>
-		<br />
-		<div class="content">
-			<h1><?php echo __("Not Found"); ?></h1>
-			<?php echo __("Requested page does not exist."); ?>
-		</div>
-<?php
+			$admin->context["title"]      = camelize($action, true);
+			$admin->context["site"]       = Config::current();
+			$admin->context["visitor"]    = Visitor::current();
+			$admin->context["logged_in"]  = logged_in();
+			$admin->context["stats"]      = array("load" => timer_stop(), "queries" => SQL::current()->queries);
+			$admin->context["route"]      = array("action" => $action);
+			$admin->context["hide_admin"] = isset($_SESSION["chyrp_hide_admin"]);
+			$admin->context["archives"]   = $theme->list_archives();
+			$admin->context["pagination"] = $paginate;
+			$admin->context["now"]        = time() + Config::current()->time_offset;
+			$admin->context["now_server"] = time();
+			$admin->context["version"]    = CHYRP_VERSION;
+			$admin->context["POST"]       = $_POST;
+			$admin->context["GET"]        = $_GET;
+
+			$admin->context["selected"]   = array("write"    => (in_array($action, $write) or match("/^write_/", $action)) ?
+			                                                     "selected" :
+			                                                     "deselected",
+			                                      "manage"   => (in_array($action, $manage) or match(array("/^manage_/", "/^edit_/", "/^delete_/"), $action)) ?
+			                                                    "selected" :
+			                                                    "deselected",
+			                                      "settings" => (in_array($action, $settings) or match("/_settings$/", $action)) ?
+			                                                    "selected" :
+			                                                    "deselected",
+			                                      "extend"   => (in_array($action, $extend) or match("/^extend_/", $action)) ?
+			                                                    "selected" :
+			                                                    "deselected");
+
+			$admin->context["selected"] = $trigger->filter("nav_selected", $admin->context["selected"]);
+
+			$admin->context["bookmarklet"] = "javascript:var%20d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f='".$admin->context["site"]->url."/includes/bookmarklet.php',l=d.location,e=encodeURIComponent,p='?url='+e(l.href)+'&title='+e(d.title)+'&selection='+e(s),u=f+p;a=function(){if(!w.open(u,'t','toolbar=0,resizable=0,status=1,width=450,height=430'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0)";
+
+			if (method_exists($admin, $action))
+				$admin->$action();
+
+			Trigger::current()->call("admin_".$action);
+
+			$admin->context["sql_debug"]  = SQL::current()->debug;
+
+			if (!file_exists(MAIN_DIR."/admin/layout/pages/".$action.".twig"))
+				error(__("Template Missing"), sprintf(__("Couldn't load template:<br /><br />%s"),"pages/".$action.".twig"));
+
+			return $this->twig->getTemplate("pages/".$action.".twig")->display($admin->context);
 		}
 	}
-?>
-		<div class="footer">
-			Chyrp v<?php echo CHYRP_VERSION; ?> &copy; Alex Suraci, 2007
-		</div>
-	</body>
-</html>
+
+	$twig = new AdminTwig();
+
+	if ($action == "help")
+		require FEATHERS_DIR."/".$_GET['feather']."/help.php";
+	else
+		$twig->load($action);

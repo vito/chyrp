@@ -3,10 +3,11 @@
 
 	class Textile extends Module {
 		public function __construct() {
+			$this->textile = new Textile2();
 			$this->setPriority("markup_post_text", 9);
+			$this->addAlias("markup_page_text", "markup_post_text");
 		}
-		static function markup_post_text($text) {
-			$textile = new Textile2();
-			return $textile->TextileThis($text);
+		public function markup_post_text($text) {
+			return $this->textile->TextileThis($text);
 		}
 	}

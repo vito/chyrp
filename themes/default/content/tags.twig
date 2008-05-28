@@ -1,0 +1,10 @@
+{% extends "layouts/default.twig" %}
+{% block content %}
+		{% for tag in tag_cloud %}
+		{% if loop.first %}<h2>${ "Tag Maelstrom" | translate }</h2><br />{% endif %}
+		<a class="tag" href="$tag.url" style="font-size: $tag.size%" title="$tag.title">$tag.name</a>
+		{% else %}
+		<h2>${ "No Tags" | translate }</h2><br />
+		${ "There aren't any tags yet. Such a shame." | translate }
+		{% endfor %}
+{% endblock %}

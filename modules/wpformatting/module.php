@@ -92,7 +92,7 @@
 		return $pee;
 	}
 
-	class WPTexturize extends Module {
+	class WPFormatting extends Module {
 		public function __construct() {
 			$this->setPriority("markup_post_text", 9);
 		}

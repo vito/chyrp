@@ -17,14 +17,14 @@ Find.find(basedir) do |path|
     if filename =~ /\.php/ and not exclude_files.include?(filename)
       cleaned = path.sub("./", "")
       contents = File.read(path)
-      if contents =~ /\$trigger->call\("[^"]+"(.*?)\)/
+      if contents =~ /(\$trigger|Twigger::current\(\))->call\("[^"]+"(.*?)\)/
         counter = 1
         File.open(path, "r") do |infile|
           while (line = infile.gets)
-            line.gsub(/\$trigger->call\("([^"]+)"(, (.+))?\)/) do
-              args = $3 || ""
-              output << $1 + ":\n\t" + args + "\n"
-              triggers << $1
+            line.gsub(/(\$trigger|Twigger::current\(\))->call\("([^"]+)"(, (.+))?\)/) do
+              args = $4 || ""
+              output << $2 + ":\n\t" + args + "\n"
+              triggers << $2
             end
           end
         end

@@ -1,0 +1,62 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Manage Users" | translate }{% endblock %}
+
+{% block content %}
+			<h1>${ "Manage Users" | translate }</h1>
+			{% if updated %}
+			<p class="message yay">${ "User updated." | translate }</p>
+			{% endif %}
+			{% if deleted %}
+			<p class="message yay">${ "User deleted." | translate }</p>
+			{% endif %}
+			{% if added %}
+			<p class="message yay">${ "User added." | translate }</p>
+			{% endif %}
+			<h2>${ "Need more detail?" | translate }</h2>
+			<form class="detail" action="index.php" method="get" accept-charset="utf-8">
+				<input type="hidden" name="action" value="manage_users" />
+				{% if visitor.group.can("edit_user") %}
+				<a href="{% admin "new_user" %}" class="button yay right">
+					<img src="images/icons/add.png" alt="add" /> ${ "New User" | translate }
+				</a>
+				{% endif %}
+				<div class="pad">
+					<h3>${ "Search&hellip;" | translate }</h3>
+					<input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" /> <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
+				</div>
+			</form>
+			<br />
+			<h2>${ "Last 25 Users" | translate }</h2>
+			<table border="0" cellspacing="0" cellpadding="0" class="wide">
+				<thead>
+					<tr class="head">
+						<th>${ "Name" | translate }</th>
+						<th>${ "Joined" | translate }</th>
+						<th>${ "Website" | translate }</th>
+						{% trigger "manage_users_column_header" %}
+						<th colspan="2">${ "Controls" | translate }</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for user in users %}
+					<tr id="user_$user.id" class="user target{% if loop.last %} last{% endif %}">
+						<td class="main">
+							{% if user.full_name != "" %}
+							<a href="mailto:$user.email">$user.full_name</a> <span class="sub">($user.login)</span>
+							{% else %}
+							<a href="mailto:$user.email">$user.login</a>
+							{% endif %}
+						</td>
+						<td>${ user.joined_at | strftime }</td>
+						<td>{% if user.website != "" %}<a href="$user.website">$user.website</a>{% endif %}</td>
+						${ "manage_users_column" | trigger(user) }
+						<td class="controls">${ user.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit') }</td>
+						<td class="controls">${ user.delete_link('<img src="images/icons/delete.png" alt="delete" /> delete') }</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+			$pagination.next_link
+			$pagination.prev_link
+{% endblock %}

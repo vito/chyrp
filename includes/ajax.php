@@ -23,7 +23,7 @@
 <?php require $fields_file; ?>
 	<a id="more_options_link_<?php echo $post->id; ?>" href="javascript:void(0)" class="more_options_link"><?php echo __("More Options &raquo;"); ?></a>
 	<div id="more_options_<?php echo $post->id; ?>" class="more_options" style="display: none">
-		<?php edit_post_options($post->id); ?>
+		<?php edit_post_options($post); ?>
 		<br class="clear" />
 	</div>
 	<br />
@@ -48,33 +48,41 @@
 			fallback($_POST['offset'], 0);
 			fallback($_POST['context']);
 
-			$id = (isset($_POST['id'])) ? " and `id` = ".$sql->quote($_POST['id']) : "" ;
+			$id = (isset($_POST['id'])) ? "`id` = :id" : false ;
 			$reason = (isset($_POST['reason'])) ? "_".$_POST['reason'] : "" ;
 
 			switch($_POST['context']) {
 				default:
-					$grab_post = $sql->query("select * from `".$sql->prefix."posts` where ".$private.$enabled_feathers.$id." order by `pinned` desc, `created_at` desc, `id` desc limit ".$_POST['offset'].", 1");
+					$post = new Post(null, array("where" => array($private, $id),
+					                             "offset" => $_POST['offset'],
+					                             "limit" => 1));
 					break;
 				case "drafts":
-					$grab_post = $sql->query("select * from `".$sql->prefix."posts` where `status` = 'draft'".$enabled_feathers.$id." order by `pinned` desc, `created_at` desc, `id` desc limit ".$_POST['offset'].", 1");
+					$post = new Post(null, array("where" => array("`__posts`.`status` = 'draft'", $id),
+					                             "params" => array(":id" => $_POST['id']),
+					                             "offset" => $_POST['offset'],
+					                             "limit" => 1));
 					break;
 				case "archive":
-					$grab_post = $sql->query("select * from `".$sql->prefix."posts` where `created_at` like '".$sql->quote($_POST['year']."-".$_POST['month'])."%' and ".$private.$enabled_feathers.$id." order by `pinned` desc, `created_at` desc, `id` desc limit ".$_POST['offset'].", 1");
+					$post = new Post(null, array("where" => array("`__posts`.`created_at` like :created_at", $id),
+					                             "params" => array(":created_at" => "'".$_POST['year']."-".$_POST['month']."%'", ":id" => $_POST['id']),
+					                             "offset" => $_POST['offset'],
+					                             "limit" => 1));
 					break;
 				case "search":
-					$grab_post = $sql->query("select * from `".$sql->prefix."posts` where `xml` like '%".$sql->quote(urldecode($_POST['query']))."%' and ".$private.$enabled_feathers.$id." order by `pinned` desc, `created_at` desc, `id` desc limit ".$_POST['offset'].", 1");
+					$post = new Post(null, array("where" => array("`__posts`.`xml` like :query", $id),
+					                             "params" => array(":query" => "'%".urldecode($_POST['query'])."%'", ":id" => $_POST['id']),
+					                             "offset" => $_POST['offset'],
+					                             "limit" => 1));
 					break;
 			}
 
-			if (!$grab_post->rowCount()) {
+			if ($post->no_results) {
 				header("HTTP/1.1 404 Not Found");
 				$trigger->call("not_found");
 				exit;
 			}
 
-			$post = new Post($grab_post->fetchColumn());
-
-			$viewing = false;
 			$date_shown = true;
 			$last = false;
 
@@ -86,11 +94,7 @@
 			$content = ($trigger->exists("preview_".$_POST['feather'])) ?
 			            $trigger->filter("preview_".$_POST['feather'], urldecode(stripslashes($_POST['content']))) :
 			            $trigger->filter("markup_post_text", urldecode(stripslashes($_POST['content']))) ;
-			echo "<h1 class=\"preview-header\">".__("Preview")."</h1>\n<div class=\"preview-content\">".$content."</div>";
-			break;
-		case "snippet":
-			fallback($_POST['argument'], "");
-			$trigger->call($_POST['name'], $_POST['argument']);
+			echo "<h2 class=\"preview-header\">".__("Preview")."</h2>\n<div class=\"preview-content\">".$content."</div>";
 			break;
 		case "check_confirm":
 			if (!$visitor->group()->can("change_settings"))
@@ -100,18 +104,92 @@
 			$info = Spyc::YAMLLoad($dir."/".$_POST['check']."/info.yaml");
 			fallback($info["confirm"], "");
 
+			if ($_POST['type'] == "module")
+				if (!module_enabled($_POST['check']))
+					exit;
+			else
+				if (!feather_enabled($_POST['check']))
+					exit;
+
 			if (!empty($info["confirm"]))
 				echo __($info["confirm"], $_POST['check']);
 
 			break;
 		case "organize_pages":
 			foreach ($_POST['parent'] as $id => $parent)
-				$sql->query("update `".$sql->prefix."pages` set `parent_id` = ".$sql->quote($parent)." where `id` = ".$sql->quote($id));
+				$sql->update("pages", "`id` = :id", "`parent_id` = :parent", array(":id" => $id, ":parent" => $parent));
 
-			foreach ($_POST['sort_pages'] as $index => $page) {
-				$id = str_replace("page_list_", "", $page);
-				$sql->query("update `".$sql->prefix."pages` set `list_order` = ".$sql->quote($index)." where `id` = ".$sql->quote($id));
-			}
+			foreach ($_POST['sort_pages'] as $index => $page)
+				$sql->update("pages", "`id` = :id", "`list_order` = :index", array(":id" => str_replace("page_list_", "", $page), ":index" => $index));
+
+			break;
+		case "enable_module": case "enable_feather":
+			$type = ($_POST['action'] == "enable_module") ? "module" : "feather" ;
+
+			if (!$visitor->group()->can("change_settings"))
+				if ($type == "module")
+					exit("{ notifications: ['".__("You do not have sufficient privileges to enable/disable modules.")."'] }");
+				else
+					exit("{ notifications: ['".__("You do not have sufficient privileges to enable/disable feathers.")."'] }");
+
+			if (($type == "module" and module_enabled($_POST['extension'])) or
+			    ($type == "feather" and feather_enabled($_POST['extension'])))
+				exit("{ notifications: [] }");
+
+			$enabled_array = ($type == "module") ? "enabled_modules" : "enabled_feathers" ;
+			$folder        = ($type == "module") ? MODULES_DIR : FEATHERS_DIR ;
+
+			if (file_exists($folder."/".$_POST["extension"]."/locale/".$config->locale.".mo"))
+				load_translator($_POST["extension"], $folder."/".$_POST["extension"]."/locale/".$config->locale.".mo");
+
+			$info = Spyc::YAMLLoad($folder."/".$_POST["extension"]."/info.yaml");
+			fallback($info["uploader"], false);
+			fallback($info["notifications"], array());
+
+			foreach ($info["notifications"] as &$notification)
+				$notification = addslashes(__($notification, $_POST["extension"]));
+
+			require $folder."/".$_POST["extension"]."/".$type.".php";
+
+			if ($info["uploader"])
+				if (!file_exists(MAIN_DIR."/upload"))
+					$info["notifications"][] = __("Please create the <code>/upload</code> directory at your Chyrp install's root and CHMOD it to 777.");
+				elseif (!is_writable(MAIN_DIR."/upload"))
+					$info["notifications"][] = __("Please CHMOD <code>/upload</code> to 777.");
+
+			$class_name = camelize($_POST["extension"]);
+			if (method_exists($class_name, "__install"))
+				call_user_func(array($class_name, "__install"));
+
+			$new = $config->$enabled_array;
+			array_push($new, $_POST["extension"]);
+			$config->set($enabled_array, $new);
+
+			exit('{ notifications: ['.(!empty($info["notifications"]) ? '"'.implode('", "', $info["notifications"]).'"' : "").'] }');
+
+			break;
+		case "disable_module": case "disable_feather":
+			$type = ($_POST['action'] == "disable_module") ? "module" : "feather" ;
+
+			if (!$visitor->group()->can("change_settings"))
+				if ($type == "module")
+					exit("{ notifications: ['".__("You do not have sufficient privileges to enable/disable modules.")."'] }");
+				else
+					exit("{ notifications: ['".__("You do not have sufficient privileges to enable/disable feathers.")."'] }");
+
+			if (($type == "module" and !module_enabled($_POST['extension'])) or
+			    ($type == "feather" and !feather_enabled($_POST['extension'])))
+				exit("{ notifications: [] }");
+
+			$class_name = camelize($_POST["extension"]);
+			if (method_exists($class_name, "__uninstall"))
+				call_user_func(array($class_name, "__uninstall"), ($_POST['confirm'] == "1"));
+
+			$enabled_array = ($type == "module") ? "enabled_modules" : "enabled_feathers" ;
+			$config->set($enabled_array,
+			             array_diff($config->$enabled_array, array($_POST['extension'])));
+
+			exit('{ notifications: [] }');
 
 			break;
 	}

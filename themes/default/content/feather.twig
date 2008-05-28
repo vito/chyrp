@@ -1,7 +1,12 @@
 {% extends "layouts/default.twig" %}
 {% block content %}
-	<h2>${ feather | capitalize }</h2>
+{% if posts %}
+					<h2>${ feather | capitalize }</h2>
+{% endif %}
 {% for post in posts %}
 {% include "content/post.twig" %}
+{% else %}
+					<h2>${ "No Posts" | translate }</h2>
+					<p>${ "There don't seem to be any posts as the Feather you specified." | translate }</p>
 {% endfor %}
 {% endblock %}

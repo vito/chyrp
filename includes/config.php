@@ -32,11 +32,6 @@
 					$this->$setting = array();
 				elseif (!is_int($setting)) # Don't load the "---"
 					$this->$setting = (is_string($value)) ? stripslashes($value) : $value ;
-
-			foreach ($this->enabled_modules as $index => $module) {
-				unset($this->enabled_modules[$index]);
-				$this->enabled_modules[$module] = $module;
-			}
 		}
 
 		/**
@@ -57,8 +52,8 @@
 			# Add the setting
 			$this->yaml[$setting] = $value;
 
-			if (isset($this->yaml[0]) and $this->yaml[0] == "--")
-				unset($this->yaml[0]);
+			if (isset($this->yaml['<?php header("Status']))
+				unset($this->yaml['<?php header("Status']);
 
 			# Generate the new YAML settings
 			$contents.= Spyc::YAMLDump($this->yaml, 2, 60);
@@ -89,23 +84,13 @@
 			file_put_contents(INCLUDES_DIR."/config.yaml.php", $contents);
 		}
 
-		public function get_feathers() {
-			$feathers = array();
-			$sql = SQL::current();
-			foreach ($this->enabled_feathers as $key => $the_feather)
-				$feathers[] = $sql->quote($the_feather);
-			return $feathers;
-		}
-
 		/**
 		 * Function: current
 		 * Returns a singleton reference to the current configuration.
 		 */
 		public static function & current() {
 			static $instance = null;
-			if (empty($instance))
-				$instance = new self();
-			return $instance;
+			return $instance = (empty($instance)) ? new self() : $instance ;
 		}
 	}
 	$config = Config::current();

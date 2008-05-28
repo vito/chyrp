@@ -5,7 +5,6 @@
 	 */
 	class User extends Model {
 		public $no_results = false;
-		public $group;
 		public $can = array();
 
 		/**
@@ -21,8 +20,6 @@
 		 */
 		public function __construct($user_id, $options = array()) {
 			parent::grab($this, $user_id, $options);
-			foreach ($this->group()->permissions as $permission)
-				$this->can[$permission] = true;
 		}
 
 		/**
@@ -37,8 +34,9 @@
 		 *     true - if a match is found.
 		 */
 		static function authenticate($login, $password) {
-			return new self(null, array("where" => "`login` = :login and `password` = :password",
-			                            "params" => array(":login" => $login, ":password" => $password)));
+			$check = new self(null, array("where" => array("`login` = :login", "`password` = :password"),
+			                              "params" => array(":login" => $login, ":password" => $password)));
+			return !$check->no_results;
 		}
 
 		/**
@@ -76,23 +74,27 @@
 		static function add($login, $password, $email, $full_name = '', $website = '', $group_id = null) {
 			$config = Config::current();
 			$sql = SQL::current();
-			$sql->query("insert into `".$sql->prefix."users`
-			             (`login`, `password`, `email`, `full_name`, `website`, `group_id`, `joined_at`)
-			             values
-			             (:login, :password, :email, :full_name, :website, :group_id, :joined_at)",
-			            array(
-			                ":login" => strip_tags($login),
-			                ":password" => md5($password),
-			                ":email" => strip_tags($email),
-			                ":full_name" => strip_tags($full_name),
-			                ":website" => strip_tags($website),
-			                ":group_id" => ($group_id) ? intval($group_id) : $config->default_group,
-			                ":joined_at" => datetime()
+			$sql->insert("users",
+			             array(
+			                 "login" => ":login",
+			                 "password" => ":password",
+			                 "email" => ":email",
+			                 "full_name" => ":full_name",
+			                 "website" => ":website",
+			                 "group_id" => ":group_id",
+			                 "joined_at" => ":joined_at"),
+			             array(
+			                 ":login" => strip_tags($login),
+			                 ":password" => md5($password),
+			                 ":email" => strip_tags($email),
+			                 ":full_name" => strip_tags($full_name),
+			                 ":website" => strip_tags($website),
+			                 ":group_id" => ($group_id) ? intval($group_id) : $config->default_group,
+			                 ":joined_at" => datetime()
 			            ));
-			$id = $sql->db->lastInsertId();
-			$trigger = Trigger::current();
-			$trigger->call("add_user", $id);
 
+			$id = $sql->db->lastInsertId();
+			Trigger::current()->call("add_user", $id);
 			return new self($id);
 		}
 
@@ -115,26 +117,26 @@
 		 */
 		public function update($login, $password, $full_name, $email, $website, $group_id) {
 			$sql = SQL::current();
-			$sql->query("update `".$sql->prefix."users`
-			             set
-			                 `login` = :login,
-			                 `password` = :password,
-			                 `full_name` = :full_name,
-			                 `email` = :email,
-			                 `website` = :website,
-			                 `group_id` = :group_id
-			             where `id` = :id",
-			            array(
-			                ":login" => $login,
-			                ":password" => $password,
-			                ":full_name" => $full_name,
-			                ":email" => $email,
-			                ":website" => $website,
-			                ":group_id" => $group_id,
-			                ":id" => $this->id
+			$sql->update("users",
+			             "`id` = :id",
+			             array(
+			                 "login" => ":login",
+			                 "password" => ":password",
+			                 "email" => ":email",
+			                 "full_name" => ":full_name",
+			                 "website" => ":website",
+			                 "group_id" => ":group_id"),
+			             array(
+			                 ":login" => strip_tags($login),
+			                 ":password" => $password,
+			                 ":email" => strip_tags($email),
+			                 ":full_name" => strip_tags($full_name),
+			                 ":website" => strip_tags($website),
+			                 ":group_id" => $group_id,
+			                 ":id" => $this->id
 			            ));
-			$trigger = Trigger::current();
-			$trigger->call("update_user", array($this->id, $login, $password, $full_name, $email, $website, $group_id));
+
+			Trigger::current()->call("update_user", array($this->id, $login, $password, $full_name, $email, $website, $group_id));
 		}
 
 		/**
@@ -179,7 +181,7 @@
 		public function edit_link($text = null, $before = null, $after = null) {
 			fallback($text, __("Edit"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=user&amp;id='.$this->id.'" title="Edit" class="user_edit_link" id="user_edit_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=edit_user&amp;id='.$this->id.'" title="Edit" class="user_edit_link edit_link" id="user_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
 		/**
@@ -194,6 +196,6 @@
 		public function delete_link($text = null, $before = null, $after = null) {
 			fallback($text, __("Delete"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=user&amp;id='.$this->id.'" title="Delete" class="user_delete_link" id="user_delete_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=delete_user&amp;id='.$this->id.'" title="Delete" class="user_delete_link delete_link" id="user_delete_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 	}

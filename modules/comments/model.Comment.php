@@ -69,13 +69,13 @@
 					$id = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, $check_comment["signature"], datetime(), $post_id, $visitor->id);
 					if (isset($_POST['ajax']))
 						exit("{ comment_id: ".$id." }");
-					$route->redirect($post->url()."#comment_".$id);
+					redirect($post->url()."#comment_".$id);
 				}
 			} else {
 				$id = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, $check_comment["signature"], datetime(), $post_id, $visitor->id);
 				if (isset($_POST['ajax']))
 					exit("{ comment_id: ".$id." }");
-				$route->redirect($post->url()."#comment_".$id);
+				redirect($post->url()."#comment_".$id);
 			}
 		}
 
@@ -102,7 +102,7 @@
 					$url = "http://".$url;
 
 			$sql = SQL::current();
-			$sql->query("insert into `".$sql->prefix."comments`
+			$sql->query("insert into `__comments`
 			             (`body`, `author`, `author_url`, `author_email`, `author_ip`,
 			              `author_agent`, `status`, `signature`, `created_at`, `post_id`, `user_id`)
 			             values
@@ -129,19 +129,27 @@
 		static function info($column, $comment_id = null) {
 			return SQL::current()->select("comments", $column, "`id` = :id", "`id` desc", array(":id" => $comment_id))->fetchColumn();
 		}
+		public function editable() {
+			$visitor = Visitor::current();
+			return ($visitor->group()->can("edit_comment") or ($visitor->group()->can("edit_own_comment") and $visitor->id == $this->user_id));
+		}
+		public function deletable() {
+			$visitor = Visitor::current();
+			return ($visitor->group()->can("delete_comment") or ($visitor->group()->can("delete_own_comment") and $visitor->id == $this->user_id));
+		}
 		public function edit_link($text = null, $before = null, $after = null){
 			$visitor = Visitor::current();
-			if (!$visitor->group()->can("edit_comment")) return;
+			if (!$this->editable()) return;
 			fallback($text, __("Edit"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=comment&amp;id='.$this->id.'" title="Edit" class="comment_edit_link" id="comment_edit_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=edit_comment&amp;id='.$this->id.'" title="Edit" class="comment_edit_link edit_link" id="comment_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 		public function delete_link($text = null, $before = null, $after = null){
 			$visitor = Visitor::current();
-			if (!$visitor->group()->can("delete_comment")) return;
+			if (!$this->deletable()) return;
 			fallback($text, __("Delete"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=comment&amp;id='.$this->id.'" title="Delete" class="comment_delete_link" id="comment_delete_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=delete_comment&amp;id='.$this->id.'" title="Delete" class="comment_delete_link delete_link" id="comment_delete_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 		public function author_link() {
 			if ($this->author_url != "") # If a URL is set
@@ -151,7 +159,7 @@
 		}
 		public function update($author, $author_email, $author_url, $body, $status, $timestamp) {
 			$sql = SQL::current();
-			$sql->query("update `".$sql->prefix."comments`
+			$sql->query("update `__comments`
 			             set
 			                 `author` = :author,
 			                 `author_email` = :author_email,
@@ -178,7 +186,7 @@
 				$trigger->call("delete_comment", new self($comment_id));
 
 			$sql = SQL::current();
-			$sql->query("delete from `".$sql->prefix."comments`
+			$sql->query("delete from `__comments`
 			             where `id` = :id",
 			            array(
 			                ":id" => $comment_id
@@ -197,7 +205,7 @@
 		}
 		static function user_count($user_id) {
 			$sql = SQL::current();
-			$count = $sql->query("select count(`id`) from `".$sql->prefix."comments`
+			$count = $sql->query("select count(`id`) from `__comments`
 			                      where `user_id` = :user_id",
 			                     array(
 			                         ":user_id" => $user_id
@@ -206,7 +214,7 @@
 		}
 		static function post_count($post_id) {
 			$sql = SQL::current();
-			$count = $sql->query("select count(`id`) from `".$sql->prefix."comments`
+			$count = $sql->query("select count(`id`) from `__comments`
 			                      where `post_id` = :post_id and (
 	                                  `status` != 'denied' or (
                                           `status` = 'denied' and (

@@ -73,7 +73,7 @@
 		<div class="window">
 			<h1><?php echo $title; ?></h1>
 			<p>
-				<?php echo $body; ?>
+				<?php echo nl2br($body); ?>
 			</p>
 		</div>
 		<div class="footer">Chyrp &copy; 2007 Alex Suraci</div>

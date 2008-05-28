@@ -10,24 +10,24 @@
 			return str_replace("<!--page-->", "(((page)))", $text);
 		}
 		static function split($text) {
-			global $post, $viewing;
+			global $post, $action;
 			if (!isset($post->id) or !strpos($text, "(((page)))")) return $text;
 
 			$text = preg_replace("/(<p>)?(\(\(\(page\)\)\))(<\/p>|<br \/>)?/", "\\2", $text);
 			$split_pages = explode("(((page)))", $text);
 
-			if ($viewing)
+			if ($action == "view")
 				$post->page = (isset($_GET['page'])) ? $_GET['page'] : 1 ;
 
-			$offset = ($viewing) ? $post->page - 1 : 0 ;
-			$post->total_pages = ($viewing) ? count($split_pages) : 0 ;
-			$post->next_page = ($viewing) ? ($post->page != $post->total_pages and $post->total_pages != 1 and $post->total_pages != 0) : false ;
-			$post->prev_page = ($viewing) ? ($post->page > 1) : false ;
+			$offset = ($action == "view") ? $post->page - 1 : 0 ;
+			$post->total_pages = ($action == "view") ? count($split_pages) : 0 ;
+			$post->next_page = ($action == "view") ? ($post->page != $post->total_pages and $post->total_pages != 1 and $post->total_pages != 0) : false ;
+			$post->prev_page = ($action == "view") ? ($post->page > 1) : false ;
 
 			if (!isset($split_pages[$offset]))
 				return $split_pages[count($split_pages) - 1];
 
-			if ($viewing) {
+			if ($action == "view") {
 				$post->next_page_url = next_page_url();
 				$post->prev_page_url = prev_page_url();
 			}
@@ -42,7 +42,7 @@
 	}
 
 	function prev_page_url() {
-		global $post, $viewing;
+		global $post, $action;
 		$request = rtrim($_SERVER['REQUEST_URI'], "/");
 
 		$config = Config::current();
@@ -54,7 +54,7 @@
 		       preg_replace("/([\?&]page=([0-9]+)|$)/", $mark."page=".($post->page - 1), "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 1) ;
 	}
 	function next_page_url() {
-		global $post, $viewing;
+		global $post, $action;
 		$request = rtrim($_SERVER['REQUEST_URI'], "/");
 		$config = Config::current();
 		$slash = (substr($config->post_url, -1) == "/") ? "/" : "" ;

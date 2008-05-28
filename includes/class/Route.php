@@ -22,14 +22,14 @@
 		                     '(feather)'  => '([^\/]+)',
 		                     '(feathers)' => '([^\/]+)');
 
-		public $urls = array('/\/id\/([0-9]+)\//'                => '?action=view&amp;id=$1',
-		                     '/\/page\/(([^\/]+)\/)+/'           => '?action=page&amp;url=$2',
-		                     '/\/search\//'                      => '?action=search',
-		                     '/\/search\/([^\/]+)\//'            => '?action=search&amp;query=$1',
-		                     '/\/archive\/([^\/]+)\/([^\/]+)\//' => '?action=archive&amp;year=$1&amp;month=$2',
-		                     '/\/bookmarklet\/([^\/]+)\//'       => '?action=bookmarklet&amp;status=$1',
-		                     '/\/theme_preview\/([^\/]+)\//'     => '?action=theme_preview&amp;theme=$1',
-		                     '/\/([^\/]+)\/feed\//'              => '?action=$1&amp;feed');
+		public $urls = array('/\/id\/([0-9]+)\//'                => '/?action=view&amp;id=$1',
+		                     '/\/page\/(([^\/]+)\/)+/'           => '/?action=page&amp;url=$2',
+		                     '/\/search\//'                      => '/?action=search',
+		                     '/\/search\/([^\/]+)\//'            => '/?action=search&amp;query=$1',
+		                     '/\/archive\/([^\/]+)\/([^\/]+)\//' => '/?action=archive&amp;year=$1&amp;month=$2',
+		                     '/\/bookmarklet\/([^\/]+)\//'       => '/?action=bookmarklet&amp;status=$1',
+		                     '/\/theme_preview\/([^\/]+)\//'     => '/?action=theme_preview&amp;theme=$1',
+		                     '/\/([^\/]+)\/feed\//'              => '/?action=$1&amp;feed');
 
 		/**
 		 * Function: __construct
@@ -56,7 +56,7 @@
 				if (substr($url, 0, 5) == "page/") # Different URL for viewing a page
 					$url = substr($url, 5);
 
-				return (substr($config->post_url, -1) == "/" or $clean_url == "search/") ?
+				return (substr($config->post_url, -1) == "/" or $url == "search/") ?
 					$config->url."/".$url :
 					$config->url."/".rtrim($url, "/") ;
 			}
@@ -64,28 +64,14 @@
 			$urls = Trigger::current()->filter("parse_urls", $this->urls);
 
 			foreach (array_diff_assoc($urls, $this->urls) as $key => $value)
-				$urls[substr($key, 0, -1)."feed\//"] = $value."&amp;feed";
+				$urls[substr($key, 0, -1)."feed\//"] = "/".$value."&amp;feed";
 
-			$urls["/\/(.*?)\/$/"] = "?action=$1";
+			$urls["/\/(.*?)\/$/"] = "/?action=$1";
 
 			return $config->url.preg_replace(
 				array_keys($urls),
 				array_values($urls),
 				"/".$url, 1);
-		}
-
-		/**
-		 * Function: redirect
-		 * Redirects to the given URL and exits immediately.
-		 */
-		public function redirect($url) {
-			if ($url[0] == '/') {
-				# handle URIs without domain
-				$config = Config::current();
-				$url = $config->url.$url;
-			}
-			header("Location: ".html_entity_decode($url));
-			exit;
 		}
 
 		/**
@@ -112,7 +98,7 @@
 		 * This meaty function determines what exactly to do with the URL.
 		 */
 		public function determine_action() {
-			global $plural_feathers, $request, $grab_page;
+			global $request, $grab_page, $pluralizations;
 			$config = Config::current();
 			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls) return;
 
@@ -123,6 +109,8 @@
 			$safe_path = str_replace("/", "\\/", $parse["path"]);
 			$request = preg_replace("/".$safe_path."/", "", $_SERVER['REQUEST_URI'], 1);
 			$arg = explode("/", trim($request, "/"));
+
+			if (empty($arg[0])) return; # If they're just at /, don't bother with all this.
 
 			# Viewing a post by its ID
 			if ($arg[0] == "id") {
@@ -151,11 +139,12 @@
 
 			# Archive
 			if ($arg[0] == "archive") {
-				if (isset($arg[1]))
+				# Make sure they're numeric; there might be a /page/ in there.
+				if (isset($arg[1]) and is_numeric($arg[1]))
 					$_GET['year'] = $arg[1];
-				if (isset($arg[2]))
+				if (isset($arg[2]) and is_numeric($arg[2]))
 					$_GET['month'] = $arg[2];
-				if (isset($arg[3]))
+				if (isset($arg[3]) and is_numeric($arg[3]))
 					$_GET['day'] = $arg[3];
 
 				return $_GET['action'] = "archive";
@@ -164,7 +153,7 @@
 			# Searching
 			if ($arg[0] == "search") {
 				if (isset($arg[1]) and strpos($request, "?action=search&query="))
-					$this->redirect(str_replace("?action=search&query=", "", $request));
+					redirect(str_replace("?action=search&query=", "", $request));
 
 				if (isset($arg[1]))
 					$_GET['query'] = $arg[1];
@@ -185,7 +174,7 @@
 			}
 
 			# Viewing Feathers
-			if (in_array($arg[0], array_keys($plural_feathers)) and (empty($arg[1]) or $arg[1] == "feed" or $arg[1] == "page"))
+			if (in_array($arg[0], array_values($pluralizations["feathers"])) and (empty($arg[1]) or $arg[1] == "feed" or $arg[1] == "page"))
 				return $_GET['action'] = $arg[0];
 
 			# Custom pages added by Modules, Feathers, Themes, etc.
@@ -207,24 +196,18 @@
 					}
 				}
 
+			# Default pages
+			if (in_array($arg[0], array("drafts", "login", "process_login", "process_registration", "update_self", "register", "logout", "lost_password")))
+				return $_GET['action'] = $arg[0];
+
 			# Page viewing
 			$sql = SQL::current();
-			$parent_id = 0;
 			$count = count($arg) - 1;
+			$parent = new Page();
 			for ($i = 0; $i <= $count; $i++) {
-				$result = $sql->query("select `id`
-				                       from `{$sql->prefix}pages`
-				                       where
-				                       `url` = :url and
-				                       `parent_id` = :parent
-				                       limit 1",
-				                       array(
-				                           ':url' => $arg[$i],
-				                           ':parent' => $parent_id
-				                       ));
-				$parent_id = $result->fetchColumn();
-
-				if (!$parent_id)
+				$parent = new Page(null, array("where" => array("`url` = :url", "`parent_id` = :parent_id"),
+				                               "params" => array(":url" => $arg[$i], ":parent_id" => $parent->id)));
+				if (!$parent->id)
 					break;
 				else if ($i == $count) {
 					$_GET['url'] = $arg[$i];
@@ -233,17 +216,14 @@
 			}
 
 			# Post viewing
-			$post_url = $this->key_regexp($config->post_url);
+			$post_url = $this->key_regexp(rtrim($config->post_url, "/"));
 			preg_match_all("/([^\/]+)(\/|$)/", $config->post_url, $parameters);
-			if (preg_match("/".$post_url."/", $request, $matches)) {
+			if (preg_match("/".$post_url."/", rtrim($request, "/"), $matches)) {
 				array_shift($matches);
 
-				foreach ($parameters[1] as $index => $parameter) {
-					if (substr($parameters[1][$index], 0, 1) != "(") continue;
-
-					$no_parentheses = rtrim(ltrim($parameter, "("), ")");
-					$_GET[$no_parentheses] = urldecode($arg[$index]);
-				}
+				foreach ($parameters[1] as $index => $parameter)
+					if ($parameters[1][$index][0] == "(")
+						$_GET[rtrim(ltrim($parameter, "("), ")")] = urldecode($arg[$index]);
 
 				return $_GET['action'] = "view";
 			}
@@ -297,9 +277,7 @@
 		 */
 		public static function & current() {
 			static $instance = null;
-			if (empty($instance))
-				$instance = new self();
-			return $instance;
+			return $instance = (empty($instance)) ? new self() : $instance ;
 		}
 	}
 	$route = Route::current();

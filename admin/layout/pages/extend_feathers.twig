@@ -1,0 +1,44 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Feathers" | translate }{% endblock %}
+
+{% block content %}
+			<h1>${ "Feathers" | translate }</h1>
+			<div class="enable feather left">
+				<h2>${ "Enabled" | translate }</h2>
+				<ul class="extend">
+{% for safename, feather in enabled_feathers | items %}
+					<li class="$safename">
+						<a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
+						<a href="$feather.url">$feather.name</a> <span class="sub">by $feather.author.link</span>
+						<div class="expand">
+							<div class="description">
+								$feather.description
+							</div>
+							<a class="enable_button js_disabled" href="{% admin "disable&feather="~safename %}">Disable</a>
+						</div>
+					</li>
+{% endfor %}
+				</ul>
+			</div>
+			<div class="disable feather right">
+				<h2>${ "Disabled" | translate }</h2>
+				<ul class="extend">
+{% for safename, feather in disabled_feathers | items %}
+					<li class="$safename">
+						<a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
+						<a href="$feather.url">$feather.name</a> <span class="sub">by $feather.author.link</span>
+						<div class="expand">
+							<div class="description">
+								$feather.description
+							</div>
+							<a class="disable_button js_disabled" href="{% admin "enable&feather="~safename %}">Enable</a>
+						</div>
+					</li>
+{% endfor %}
+				</ul>
+			</div>
+			<div class="clear"></div>
+			<br />
+			<a class="button right" href="http://chyrp.net/extend/browse/feathers">Get More Feathers &rsaquo;</a>
+{% endblock %}

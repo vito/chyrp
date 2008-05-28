@@ -1,9 +1,11 @@
 <?php
-	/**
-	 * Integer: $time_start
-	 * Times Chyrp.
-	 */
+	# Integer: $time_start
+	# Times Chyrp.
 	$time_start = 0;
+
+	# Integer: $pluralizations
+	# Holds predefined pluralizations, typically provided by modules/feathers.
+	$pluralizations = array("feathers" => array());
 
 	/**
 	 * Function: error
@@ -27,6 +29,178 @@
 	}
 
 	/**
+	 * Function: load_translator
+	 * Loads a .mo file for gettext translation.
+	 *
+	 * Parameters:
+	 *     $domain - The name for this translation domain.
+	 *     $mofile - The .mo file to read from.
+	 */
+	function load_translator($domain, $mofile) {
+		global $l10n;
+
+		if (isset($l10n[$domain]))
+			return;
+
+		if (is_readable($mofile))
+			$input = new CachedFileReader($mofile);
+		else
+			return;
+
+		$l10n[$domain] = new gettext_reader($input);
+	}
+
+	/**
+	 * Function: __
+	 * Returns a translated string.
+	 *
+	 * Parameters:
+	 *     $text - The string to translate.
+	 *     $domain - The translation domain to read from.
+	 */
+	function __($text, $domain = "chyrp") {
+		global $l10n;
+		return (isset($l10n[$domain])) ? $l10n[$domain]->translate($text) : $text ;
+	}
+
+	/**
+	 * Function: _p
+	 * Returns a plural (or not) form of a translated string.
+	 *
+	 * Parameters:
+	 *     $single - Singular string.
+	 *     $plural - Pluralized string.
+	 *     $number - The number to judge by.
+	 *     $domain - The translation domain to read from.
+	 */
+	function _p($single, $plural, $number, $domain = "chyrp") {
+		global $l10n;
+		return (isset($l10n[$domain])) ? $l10n[$domain]->ngettext($single, $plural, $number) : (($number != 1) ? $plural : $single) ;
+	}
+
+	/**
+	 * Function: redirect
+	 * Redirects to the given URL and exits immediately.
+	 */
+	function redirect($url) {
+		if ($url[0] == "/") # Handle URIs without domain
+			$url = Config::current()->url.$url;
+
+		header("Location: ".html_entity_decode($url));
+		exit;
+	}
+
+	/**
+	 * Function: pluralize
+	 * Returns a pluralized string. This is a port of Rails' pluralizer.
+	 *
+	 * Parameters:
+	 *     $string - The string to pluralize.
+	 */
+	function pluralize($string) {
+		global $pluralizations;
+		if (in_array($string, array_keys($pluralizations)))
+			return $pluralizations[$string];
+		else {
+			$uncountable = array("moose", "sheep", "fish", "series", "species", "rice", "money", "information", "equipment", "piss");
+			$replacements = array("/person/i" => "people",
+			                      "/man/i" => "men",
+			                      "/child/i" => "children",
+			                      "/cow/i" => "kine",
+			                      "/goose/i" => "geese",
+			                      "/(penis)$/i" => "\\1es",
+			                      "/(ax|test)is$/i" => "\\1es",
+			                      "/(octop|vir)us$/i" => "\\1ii",
+			                      "/(alias|status)$/i" => "\\1es",
+			                      "/(bu)s$/i" => "\\1ses",
+			                      "/(buffal|tomat)o$/i" => "\\1oes",
+			                      "/([ti])um$/i" => "\\1a",
+			                      "/sis$/i" => "ses",
+			                      "/(hive)$/i" => "\\1s",
+			                      "/([^aeiouy]|qu)y$/i" => "\\1ies",
+			                      "/^(ox)$/i" => "\\1en",
+			                      "/(matr|vert|ind)(?:ix|ex)$/i" => "\\1ices",
+			                      "/(x|ch|ss|sh)$/i" => "\\1es",
+			                      "/([m|l])ouse$/i" => "\\1ice",
+			                      "/(quiz)$/i" => "\\1zes");
+
+			$replaced = $string;
+			foreach ($replacements as $key => $val) {
+				if (in_array($string, $uncountable))
+					break;
+
+				$replaced = preg_replace($key, $val, $string);
+
+				if ($replaced != $string)
+					break;
+			}
+
+			if ($replaced == $string and !in_array($string, $uncountable))
+				return $string."s";
+			else
+				return $replaced;
+		}
+	}
+
+	/**
+	 * Function: depluralize
+	 * Returns a depluralized string. This is the inverse of <pluralize>.
+	 *
+	 * Parameters:
+	 *     $string - The string to depluralize.
+	 */
+	function depluralize($string) {
+		global $pluralizations;
+
+		$copy = $pluralizations;
+		unset($copy["feathers"]);
+		$reversed = array_flip($copy);
+
+		if (isset($reversed[$string]))
+			return $reversed[$string];
+		else {
+			$uncountable = array("moose", "sheep", "fish", "series", "species", "rice", "money", "information", "equipment", "piss");
+			$replacements = array("/people/i" => "person",
+			                      "/^men/i" => "man",
+			                      "/children/i" => "child",
+			                      "/kine/i" => "cow",
+			                      "/geese/i" => "goose",
+			                      "/(penis)es$/i" => "\\1",
+			                      "/(ax|test)es$/i" => "\\1is",
+			                      "/(octop|vir)ii$/i" => "\\1us",
+			                      "/(alias|status)es$/i" => "\\1",
+			                      "/(bu)ses$/i" => "\\1s",
+			                      "/(buffal|tomat)oes$/i" => "\\1o",
+			                      "/([ti])a$/i" => "\\1um",
+			                      "/ses$/i" => "sis",
+			                      "/(hive)s$/i" => "\\1",
+			                      "/([^aeiouy]|qu)ies$/i" => "\\1y",
+			                      "/^(ox)en$/i" => "\\1",
+			                      "/(vert|ind)ices$/i" => "\\1ex",
+			                      "/(matr)ices$/i" => "\\1ix",
+			                      "/(x|ch|ss|sh)es$/i" => "\\1",
+			                      "/([m|l])ice$/i" => "\\1ouse",
+			                      "/(quiz)zes$/i" => "\\1");
+
+			$replaced = $string;
+			foreach ($replacements as $key => $val) {
+				if (in_array($string, $uncountable))
+					break;
+
+				$replaced = preg_replace($key, $val, $string);
+
+				if ($replaced != $string)
+					break;
+			}
+
+			if ($replaced == $string and !in_array($string, $uncountable))
+				return substr($string, 0, -1);
+			else
+				return $replaced;
+		}
+	}
+
+	/**
 	 * Function: truncate
 	 * Truncates a string to the passed length, appending an ellipsis to the end.
 	 *
@@ -36,7 +210,7 @@
 	 *     $keep_words - Whether or not to keep words in-tact.
 	 *     $minimum - If the truncated string is less than this and $keep_words is true, it will act as if $keep_words is false.
 	 */
-	function truncate($text, $numb, $keep_words = true, $minimum = 10) {
+	function truncate($text, $numb = 50, $keep_words = true, $minimum = 10) {
 		$text = html_entity_decode($text, ENT_QUOTES);
 		$original = $text;
 		$numb -= 3;
@@ -87,7 +261,6 @@
 	 *     $time - The string to convert to time (typically a datetime).
 	 */
 	function when($formatting, $time, $strftime = false) {
-		# STFU, php5.
 		if ($strftime)
 			return @strftime($formatting, @strtotime($time));
 		else
@@ -96,19 +269,25 @@
 
 	/**
 	 * Function: datetime
-	 * Returns a standard datetime string based on their time offset, usually for MySQL inserts.
+	 * Returns a standard datetime string based on either the passed timestamp or their time offset, usually for MySQL inserts.
+	 *
+	 * Parameters:
+	 *     $when - An optional timestamp.
 	 */
-	function datetime() {
-		$config = Config::current();
-		return @date("Y-m-d H:i:s", (time() + $config->time_offset));
+	function datetime($when = null) {
+		# If $when is not set (common behaviour), set it to a formatted version of the current time.
+		# It is formatted so that strtotime doesn't freak out.
+		fallback($when, @date("c", (time() + Config::current()->time_offset)));
+		return @date("Y-m-d H:i:s", @strtotime($when));
 	}
 
 	/**
 	 * Function: fix
 	 * Returns a HTML-sanitized version of a string.
 	 */
-	function fix($string) {
-		return htmlspecialchars($string, ENT_QUOTES);
+	function fix($string, $quotes = true) {
+		$quotes = ($quotes) ? ENT_QUOTES : ENT_NOQUOTES ;
+		return htmlspecialchars($string, $quotes, "utf-8");
 	}
 
 	/**
@@ -167,13 +346,17 @@
 	 *     $string - The string to sanitize.
 	 *     $anal - If set to *true*, will remove all non-alphanumeric characters.
 	 */
-	function sanitize($string, $anal = false) {
+	function sanitize($string, $force_lowercase = true, $anal = false) {
 		$strip = array("~", "`", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "=", "+", "[", "{", "]", "}", "\\", "|", ";", ":", "\"", "'", "&#8216;", "&#8217;", "&#8220;", "&#8221;", "&#8211;", "&#8212;", "—", "–", ",", "<", ".", ">", "/", "?");
 		$clean = trim(str_replace($strip, "", strip_tags($string)));
 		$clean = remove_accents($clean);
 		$clean = preg_replace('/\s+/', "-", $clean);
 		$clean = ($anal) ? preg_replace("/[^a-zA-Z0-9]/", "", $clean) : $clean ;
-		return (function_exists('mb_strtolower')) ? mb_strtolower($clean, 'UTF-8') : strtolower($clean) ;
+		return ($force_lowercase) ?
+			(function_exists('mb_strtolower')) ?
+				mb_strtolower($clean, 'UTF-8') :
+				strtolower($clean) :
+			$clean;
 	}
 
 	/**
@@ -519,6 +702,20 @@
 	}
 
 	/**
+	 * Function: decamelize
+	 * Decamelizes a string.
+	 *
+	 * Parameters:
+	 *     $string - The string to decamelize.
+	 *
+	 * See Also:
+	 * <camelize>
+	 */
+	function decamelize($string) {
+		return strtolower(preg_replace("/([a-z])([A-Z])/", "\\1_\\2", $string));
+	}
+
+	/**
 	 * Function: selected
 	 * If $val1 == $val2, outputs ' selected="selected"'
 	 */
@@ -556,80 +753,6 @@
 	function feather_enabled($name) {
 		$config = Config::current();
 		return in_array($name, $config->enabled_feathers);
-	}
-
-	/**
-	 * Function: new_post_options
-	 * Outputs the optional fields for creating a new post.
-	 */
-	function new_post_options() {
-			$visitor = Visitor::current();
-		$config = Config::current();
-?>
-<?php if ($visitor->group()->can("add_post")): ?>
-				<p>
-					<label for="status"><?php echo __("Status"); ?></label>
-					<select name="status" id="status">
-						<option value="public"><?php echo __("Public"); ?></option>
-						<option value="private"><?php echo __("Private"); ?></option>
-						<option value="registered_only"><?php echo __("Registered Only"); ?></option>
-					</select>
-				</p>
-<?php endif; ?>
-				<p>
-					<label for="pinned"><?php echo __("Pinned?"); ?></label>
-					<input type="checkbox" name="pinned" id="pinned" />&nbsp;<span class="sub"> <?php echo __("(shows this post above all others)"); ?></span>
-				</p>
-				<p>
-					<label for="slug"><?php echo __("Slug"); ?></label>
-					<input class="text" type="text" name="slug" value="" id="slug" />
-				</p>
-				<p>
-					<label for="trackbacks"><?php echo __("Trackbacks"); ?><span class="sub"> <?php echo __("(comma separated)"); ?></span></label>
-					<input class="text" type="text" name="trackbacks" value="" id="trackbacks" />
-				</p>
-				<p>
-					<label for="created_at"><?php echo __("Timestamp"); ?></label>
-					<input class="text" type="text" name="created_at" value="<?php echo @date("F jS, Y H:i:s", (time() + $config->time_offset)); ?>" id="created_at" />
-					<input type="hidden" name="original_time" value="<?php echo @date("F jS, Y H:i:s", (time() + $config->time_offset)); ?>" />
-				</p>
-<?php
-	}
-
-	/**
-	 * Function: edit_post_options
-	 * Outputs the optional fields for editing the given post.
-	 *
-	 * Parameters:
-	 *     $post_id - The post ID to output the fields for.
-	 */
-	function edit_post_options($post_id) {
-		global $post;
-?>
-		<p>
-			<label for="status"><?php echo __("Status"); ?></label>
-			<select name="status" id="status">
-				<option value="draft"<?php selected("draft", $post->status); ?>><?php echo __("Draft"); ?></option>
-				<option value="public"<?php selected("public", $post->status); ?>><?php echo __("Public"); ?></option>
-				<option value="private"<?php selected("private", $post->status); ?>><?php echo __("Private"); ?></option>
-				<option value="registered_only"<?php selected("registered_only", $post->status); ?>><?php echo __("Registered Only"); ?></option>
-			</select>
-		</p>
-		<p>
-			<label for="pinned"><?php echo __("Pinned?"); ?></label>
-			<input type="checkbox" name="pinned" id="pinned"<?php checked($post->pinned); ?> />&nbsp;<span class="sub"> <?php echo __("(shows this post above all others)"); ?></span>
-		</p>
-		<p>
-			<label for="slug"><?php echo __("Slug"); ?></label>
-			<input class="text" type="text" name="slug" value="<?php echo fix($post->url, "html"); ?>" id="slug" />
-		</p>
-		<p>
-			<label for="created_at"><?php echo __("Timestamp"); ?></label>
-			<input class="text" type="text" name="created_at" value="<?php echo when("F jS, Y H:i:s", $post->created_at); ?>" id="created_at" />
-		</p>
-<?php
-		$trigger = Trigger::current();
-		$trigger->call("edit_post_options", $post_id);
 	}
 
 	/**
@@ -678,7 +801,7 @@
 
 	/**
 	 * Function: unique_filename
-	 * Makes a given filename unique for the /upload/ directory.
+	 * Makes a given filename unique for the uploads directory.
 	 *
 	 * Parameters:
 	 *     $name - The name to check.
@@ -687,71 +810,63 @@
 	 *     $name - A unique version of the given $name.
 	 */
 	function unique_filename($name) {
-		$double_exts = array(".tar.gz");
-		$original = $name;
-		$double = "";
-		if (file_exists(MAIN_DIR."/upload/".$name)) {
-			foreach ($double_exts as $dub)
-				if (strpos($original, $dub)) {
-					$double = $dub;
-					$name = str_replace($dub, "", $original);
-				}
+		$double_exts = array(".tar.gz", ".tar.bz");
 
-			if (empty($double)) {
-				$split_dots = explode(".", $name);
-				$filename = $split_dots[0];
-				array_shift($split_dots);
-				$ext = implode(".", $split_dots);
-				$name = $filename.random(3).".".$ext;
-			} else
-				$name = $name.random(3).$double;
+		if (file_exists(MAIN_DIR.Config::current()->uploads_path.$name)) {
+			# Handle "double" extensions
+			foreach ($double_exts as $ext)
+				if (stripos($name, $ext) == strlen($name) - strlen($ext))
+					return unique_filename(substr($name, 0, -strlen($ext))."-".random(3).$ext);
 
-			if (!file_exists(MAIN_DIR."/upload/".$name))
-				return $name;
-		} else {
+			# Handle "single" extensions
+			$name = explode(".", $name);
+			$ext = ".".array_pop($name);
+			return unique_filename(implode(".", $name)."-".random(3).$ext);
+		} else
 			return $name;
-		}
-		return unique_filename($clean);
 	}
 
 	/**
 	 * Function: upload
-	 * Moves an uploaded file to the /upload/ directory.
+	 * Moves an uploaded file to the uploads directory.
 	 *
 	 * Parameters:
 	 *     $file - The $_FILES value.
 	 *     $extension - An array of valid extensions (case-insensitive).
-	 *     $path - A sub-folder in /upload/ (optional).
+	 *     $path - A sub-folder in the uploads directory (optional).
 	 *
 	 * Returns:
 	 *     $filename - The resulting filename from the upload.
 	 */
-	function upload($file, $extension = null, $path = "") {
+	function upload($file, $extension = null, $path = "", $put = false) {
 		$file_split = explode(".", $file['name']);
 		$file_ext = end($file_split);
 
 		if (is_array($extension)) {
 			if (!in_array(strtolower($file_ext), $extension)) {
-		    $list = "";
+				$list = "";
 				for ($i = 0; $i < count($extension); $i++) {
-		      $comma = "";
+					$comma = "";
 					if (($i + 1) != count($extension)) $comma = ", ";
 					if (($i + 2) == count($extension)) $comma = ", and ";
 					$list.= "*.".$extension[$i].$comma;
 				}
 				error(__("Error"), sprintf(__("Only %s files are supported."), $list));
 			}
-		} elseif (isset($extension) and $file_ext != $extension and $file_ext != strtoupper($extension)) {
+		} elseif (isset($extension) and $file_ext != $extension and $file_ext != strtoupper($extension))
 			error(__("Error"), sprintf(__("Only %s files are supported."), "*.".$extension));
-		}
 
 		array_pop($file_split);
 		$file_clean = implode(".", $file_split);
-		$file_clean = sanitize($file_clean).".".$file_ext;
+		$file_clean = sanitize($file_clean, false).".".$file_ext;
 		$filename = unique_filename($file_clean);
 
-		if (!@move_uploaded_file($file['tmp_name'], MAIN_DIR."/upload/".$path.$filename))
-			error(__("Error"), __("Couldn't upload file. CHMOD <code>/upload</code> to 777 and try again. If this problem persists, it's probably timing out; in which case, you must contact your system administrator to increase the maximum POST and upload sizes."));
+		$message = __("Couldn't upload file. CHMOD <code>".MAIN_DIR.Config::current()->uploads_path."</code> to 777 and try again. If this problem persists, it's probably timing out; in which case, you must contact your system administrator to increase the maximum POST and upload sizes.");
+		if ($put) {
+			if (!@copy($file['tmp_name'], MAIN_DIR.Config::current()->uploads_path.$path.$filename))
+				error(__("Error"), $message);
+		} elseif (!@move_uploaded_file($file['tmp_name'], MAIN_DIR.Config::current()->uploads_path.$path.$filename))
+			error(__("Error"), $message);
 
 		return $filename;
 	}
@@ -808,13 +923,7 @@
 		extract(parse_url($url), EXTR_SKIP);
 
 		if (ini_get("allow_url_fopen")) {
-			$connect = @fopen($url, "r");
-			if (!$connect) return false;
-
-			$content = "";
-			while($remote_read = fread($connect, 4096))
-				$content .= $remote_read;
-			fclose($connect);
+			$content = file_get_contents($url);
 		} elseif (function_exists("curl_init")) {
 			$handle = curl_init();
 			curl_setopt($handle, CURLOPT_URL, $url);
@@ -888,7 +997,14 @@
 		global $theme;
 		header("HTTP/1.1 404 Not Found");
 		$theme->title = "404";
-		$theme->load("content/404");
+		if ($theme->file_exists("content/404"))
+			$theme->load("content/404");
+		else {
+?>
+		<h1><?php echo __("Not Found", "theme"); ?></h1>
+		<div class="post body"><?php echo __("Sorry, but you are looking for something that isn't here."); ?></div>
+<?php
+		}
 		exit;
 	}
 
@@ -960,4 +1076,23 @@
 				sanitize_input($value);
 			else
 				$value = get_magic_quotes_gpc() ? stripslashes($value) : $value ;
+	}
+
+	/**
+	 * Function: match
+	 * Try and match a string against an array of regular expressions.
+	 *
+	 * Parameters:
+	 *     $try - An array of regular expressions, or a single regular expression.
+	 *     $haystack - The string to test.
+	 */
+	function match($try, $haystack) {
+		if (is_string($try))
+			return preg_match($try, $haystack);
+
+		foreach ($try as $needle)
+			if (preg_match($needle, $haystack))
+				return true;
+
+		return false;
 	}

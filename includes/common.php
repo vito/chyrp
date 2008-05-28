@@ -17,27 +17,46 @@
 	# Constant: CHYRP_VERSION
 	# Chyrp's version number.
 	define('CHYRP_VERSION', "2.0");
+
+	# Constant: DEBUG
+	# Should Chyrp use debugging processes?
 	define('DEBUG', true);
+
+	# Make sure E_STRICT is on so Chyrp remains errorless.
 	error_reporting(E_ALL | E_STRICT);
+
+	# Fallback all these definitions.
 	if (!defined('JAVASCRIPT')) define('JAVASCRIPT', false);
-	if (!defined('ADMIN')) define('ADMIN', false);
-	if (!defined('AJAX')) define('AJAX', false);
-	if (!defined('XML_RPC')) define('XML_RPC', false);
-	if (extension_loaded('zlib')) ob_start("ob_gzhandler"); else ob_start();
-	if (!JAVASCRIPT and !XML_RPC) header("Content-type: text/html; charset=UTF-8");
+	if (!defined('ADMIN'))      define('ADMIN', false);
+	if (!defined('AJAX'))       define('AJAX', false);
+	if (!defined('XML_RPC'))    define('XML_RPC', false);
+	if (!defined('TRACKBACK'))  define('TRACKBACK', false);
+
+	# Use GZip compression if available.
+	if (extension_loaded("zlib")) {
+		ob_start("ob_gzhandler");
+		header("Content-Encoding: gzip");
+	} else
+		ob_start();
+
+	if (!JAVASCRIPT and !XML_RPC)
+		header("Content-type: text/html; charset=UTF-8");
 
 	# Constant: MAIN_DIR
 	# Absolute path to the Chyrp root
-	define('MAIN_DIR', pathinfo(dirname(__FILE__), PATHINFO_DIRNAME)); # Path for /
+	define('MAIN_DIR', pathinfo(dirname(__FILE__), PATHINFO_DIRNAME));
+
 	# Constant: INCLUDES_DIR
 	# Absolute path to /includes
-	define('INCLUDES_DIR', MAIN_DIR."/includes"); # Path for /includes/
+	define('INCLUDES_DIR', MAIN_DIR."/includes");
+
+	# File: Helpers
+	# Various functions used throughout Chyrp's code.
+	require_once INCLUDES_DIR."/helpers.php";
 
 	# Not installed?
-	if (!file_exists(INCLUDES_DIR."/config.yaml.php") or !file_exists(INCLUDES_DIR."/database.yaml.php")) {
-		header("Location: install.php");
-		exit;
-	}
+	if (!file_exists(INCLUDES_DIR."/config.yaml.php") or !file_exists(INCLUDES_DIR."/database.yaml.php"))
+		redirect("install.php");
 
 	require_once INCLUDES_DIR."/class/QueryBuilder.php"; # SQL query builder
 	require_once INCLUDES_DIR."/lib/spyc.php"; # YAML parser
@@ -49,38 +68,48 @@
 	require_once INCLUDES_DIR."/lib/gettext/gettext.php";
 	require_once INCLUDES_DIR."/lib/gettext/streams.php";
 
-	# File: l10n
-	# Loads localization functions.
-	require_once INCLUDES_DIR."/lib/l10n.php";
-
 	# Load the configuration settings
 	$config->load(INCLUDES_DIR."/config.yaml.php");
+
+	session_name(sanitize(camelize($config->name), false, true));
+	session_start();
+
+	# Keep track of the session's forced expiry date.
+	if (!isset($_COOKIE[session_name()."_ExpireDate"])) {
+		cookie_cutter(session_name()."_ExpireDate", time() + (60 * 60 * 24 * 30));
+		redirect(self_url());
+	}
+
+	# Make the session last forever (recycles every 30 days).
+	if ((int) $_COOKIE[session_name()."_ExpireDate"] - time() <= 0)
+		cookie_cutter(session_name(), $_COOKIE[session_name()], time() + (60 * 60 * 24 * 30));
 
 	# Constant: MODULES_DIR
 	# Absolute path to /modules
 	define('MODULES_DIR', MAIN_DIR."/modules");
+
 	# Constant: FEATHERS_DIR
 	# Absolute path to /feathers
 	define('FEATHERS_DIR', MAIN_DIR."/feathers");
+
 	# Constant: THEMES_DIR
 	# Absolute path to /themes
 	define('THEMES_DIR', MAIN_DIR."/themes");
+
 	# Constant: THEME_DIR
 	# Absolute path to /themes/(current theme)
 	define('THEME_DIR', MAIN_DIR."/themes/".$config->theme);
+
 	# Constant: THEME_URL
 	# URL to the current theme's folder
 	define('THEME_URL', $config->url."/themes/".$config->theme);
 
 	header("X-Pingback: ".$config->url."/includes/xmlrpc.php");
 
-	if (!ADMIN and !JAVASCRIPT and !XML_RPC and strpos($_SERVER['REQUEST_URI'], "?"))
+	if (!ADMIN and !JAVASCRIPT and !XML_RPC and !TRACKBACK and strpos($_SERVER['REQUEST_URI'], "?"))
 		$config->clean_urls = false;
 
 	$sql->connect();
-
-	# File: Helpers
-	require_once INCLUDES_DIR."/helpers.php";
 
 	sanitize_input($_GET);
 	sanitize_input($_POST);
@@ -159,19 +188,12 @@
 	# File: Admin
 	# See Also:
 	#     <Admin Controller>
-	if (ADMIN)
-		require_once INCLUDES_DIR."/controller/Admin.php";
+	require_once INCLUDES_DIR."/controller/Admin.php";
 
 	timer_start();
 
 	set_locale($config->locale);
 
-	/**
-	 * Array: $feathers
-	 * Contains all of the enabled Feather's Classes.
-	 */
-	$feathers = array();
-	$plural_feathers = array();
 	foreach ($config->enabled_feathers as $feather) {
 		if (file_exists(FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo"))
 			load_translator($feather, FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo");
@@ -179,10 +201,9 @@
 		require FEATHERS_DIR."/".$feather."/feather.php";
 
 		$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$feather."/info.yaml");
-		$plural_feathers[(isset($info["plural"]) ? fallback($info["plural"], null, true) : $feather."s")] = $feather;
+		$pluralizations[$feather] = $pluralizations["feathers"][$feather] = fallback($info["plural"], pluralize($feather), true);
 	}
 
-	$modules = array();
 	foreach ($config->enabled_modules as $module) {
 		if (file_exists(MODULES_DIR."/".$module."/locale/".$config->locale.".mo"))
 			load_translator($module, MODULES_DIR."/".$module."/locale/".$config->locale.".mo");
@@ -190,59 +211,60 @@
 		require MODULES_DIR."/".$module."/module.php";
 	}
 
+	# Load the /clean/urls into their correct $_GET values.
 	$route->determine_action();
 
+	# These are down here so that the modules are
+	# initialized after the $_GET values are filled.
+	/**
+	 * Array: $feathers
+	 * Contains all of the enabled Feather's Classes.
+	 */
+	$feathers = array();
 	foreach ($config->enabled_feathers as $feather) {
 		$camelized = camelize($feather);
 		$feathers[$feather] = new $camelized;
+		$feathers[$feather]->name = $feather;
 	}
 
+	/**
+	 * Array: $modules
+	 * Contains all of the enabled Module's Classes.
+	 */
+	$modules = array();
 	foreach ($config->enabled_modules as $module) {
 		$camelized = camelize($module);
 		$modules[$module] = new $camelized();
+		$modules[$module]->name = $module;
 	}
 
 	$action = (isset($_GET['action'])) ? strip_tags($_GET['action']) : "index" ;
 
-	if (XML_RPC)
-		$action = "XML-RPC";
-	else {
-		# Variable: $visitor
-		# Holds the current user and their group.
-		$visitor = Visitor::current();
-
-		if (!$visitor->group()->can("view_site") and $action != "process_login" and $action != "login" and $action != "logout")
-			error(__("Access Denied"), __("You are not allowed to view this site."));
-	}
-
 	# Load the translation engine
 	load_translator("chyrp", INCLUDES_DIR."/locale/".$config->locale.".mo");
-
-	# File: Snippets
-	# The current theme's Snippets.
-	require THEME_DIR."/snippets.php";
-	$snippet = new Snippet();
 
 	# Load the theme translator
 	if (file_exists(THEME_DIR."/locale/".$config->locale.".mo"))
 		load_translator("theme", THEME_DIR."/locale/".$config->locale.".mo");
 
-	$trigger->call("runtime");
-
 	if (!JAVASCRIPT and !XML_RPC) {
-		/**
-		 * Boolean: $is_feed
-		 * Whether they're viewing the feed or not.
-		 */
-		$is_feed = isset($_GET['feed']);
+		# Variable: $visitor
+		# Holds the current user and their group.
+		$visitor = Visitor::current();
 
-		if (in_array($action, array_keys($plural_feathers)))
+		if (!$visitor->group()->can("view_site") and !in_array($action, array("process_login", "login", "logout", "process_registration", "register")))
+			if ($trigger->exists("can_not_view_site"))
+				$trigger->call("can_not_view_site");
+			else
+				error(__("Access Denied"), __("You are not allowed to view this site."));
+
+		$trigger->call("runtime");
+
+		if (in_array($action, array_values($pluralizations["feathers"])))
 			$action = "feather";
 
-		/**
-		 * String: $private
-		 * SQL "where" text for which posts the current user can view.
-		 */
+		# Array: $statuses
+		# An array of post statuses that <Visitor> can view.
 		$statuses = array("public");
 		if (logged_in())
 			$statuses[] = "registered_only";
@@ -250,42 +272,34 @@
 			$statuses[] = "private";
 		if ($action == "view" and $visitor->group()->can("view_draft"))
 			$statuses[] = "draft";
-		$private = "`status` in ('".implode("', '", $statuses)."')";
+
+		/**
+		 * String: $private
+		 * SQL "where" text for which posts the current user can view.
+		 */
+		$private = "`__posts`.`status` in ('".implode("', '", $statuses)."')";
 
 		/**
 		 * String: $enabled_feathers
 		 * SQL "where" text for each of the feathers. Prevents posts of a disabled Feather from showing.
 		 */
-		$enabled_feathers = " and `feather` in ('".implode("', '", $config->enabled_feathers)."')";
+		$enabled_feathers = " and `__posts`.`feather` in ('".implode("', '", $config->enabled_feathers)."')";
 
-		if (!empty($action) and (method_exists($main, $action) or (ADMIN and method_exists($admin, $action) or ADMIN and $trigger->exists("admin_".$action)) or $trigger->exists("route_".$action))) {
-			if ($is_feed)
-				$config->posts_per_page = $config->feed_items;
+		if (isset($_GET['feed']))
+			$config->posts_per_page = $config->feed_items;
 
-			if (method_exists($main, $action))
-				$main->$action();
+		if (!ADMIN and method_exists($main, $action))
+			$main->$action();
 
-			if (ADMIN and method_exists($admin, $action))
-				$admin->$action();
-
-			# Call any plugin route functions
+		# Call any plugin route functions
+		if (!ADMIN)
 			$trigger->call("route_".$action);
 
-			if (ADMIN)
-				$trigger->call("admin_".$action);
-		}
-
-		/**
-		 * Boolean: $viewing
-		 * Returns whether they're viewing a post or not.
-		 */
-		$viewing = ($action == "view");
-
-		if ($is_feed)
+		if (isset($_GET['feed']))
 			if ($trigger->exists($action."_feed")) # What about custom feeds?
 				$trigger->call($action."_feed");
 			elseif (isset($posts)) # Are there already posts to show?
 				$action = "feed";
 			else
-				$route->redirect($route->url("feed/")); # Really? Nothing? Too bad. MAIN FEED 4 U.
+				redirect($route->url("feed/")); # Really? Nothing? Too bad. MAIN FEED 4 U.
 	}

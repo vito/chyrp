@@ -1,0 +1,46 @@
+				<p>
+					<label for="title">${ "Title" | translate }</label>
+					<input class="text" type="text" name="title" value="${ page.title | escape }" id="title" />
+				</p>
+				<p>
+					<label for="body">${ "Body" | translate }</label>
+					<textarea class="wide preview_me" rows="12" name="body" id="body">${ page.body | escape }</textarea>
+				</p>
+
+				<div class="buttons">
+					<button type="submit" class="yay right" accesskey="s">
+						{% if route.action == "write_page" %}
+						<img src="images/icons/success.png" alt="success" />${ "Publish" | translate }
+						{% else %}
+						<img src="images/icons/success.png" alt="success" />${ "Save" | translate }
+						{% endif %}
+					</button>
+				</div>
+
+				<div class="clear" />
+				<br class="js_disabled" />
+				<div id="more_options" class="more_options js_disabled">
+					<p>
+						<label for="pinned">${ "Show in pages list?" | translate }</label>
+						<input type="checkbox" name="show_in_list" id="show_in_list" tabindex="3"{% if page.show_in_list or route.action == "write_page" %} checked="checked"{% endif %} />&nbsp;
+					</p>
+					<p>
+						<label for="slug">${ "Slug" | translate }</label>
+						<input class="text" type="text" name="slug" value="${ page.slug | escape }" id="slug" />
+					</p>
+					<p>
+						<label for="parent_id">${ "Parent" | translate }</label>
+						<select name="parent_id" id="parent_id">
+							<option value="0">----------</option>
+							{% for page in pages %}
+							<option value="$page.id">${ page.title | escape }</option>
+							{% endfor %}
+						</select>
+					</p>
+{% if route.action == "write_page" %}
+					{% trigger "new_page_options" %}
+{% else %}
+					${ "edit_page_options" | trigger(page) }
+{% endif %}
+					<div class="clear"></div>
+				</div>

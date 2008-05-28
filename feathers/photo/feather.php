@@ -1,17 +1,25 @@
 <?php
 	class Photo extends Feather {
 		public function __construct() {
+			$this->setField(array("attr" => "photo", "type" => "file", "label" => "Photo"));
+			$this->setField(array("attr" => "from_url", "type" => "text", "label" => "From URL?", "optional" => true));
+			$this->setField(array("attr" => "caption", "type" => "text_block", "label" => "Caption", "optional" => true, "preview" => true, "bookmarklet" => "selection"));
 			$this->setFilter("caption", "markup_post_text");
 			$this->respondTo("delete_post", "delete_file");
 			$this->respondTo("filter_post", "filter_post");
 		}
 		static function submit() {
 			$filename = "";
-			if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0) {
+			if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0)
 				$filename = upload($_FILES['photo'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp"));
-			} else {
+			elseif (!empty($_POST['from_url'])) {
+				$file = tempnam(sys_get_temp_dir(), "chyrp");
+				file_put_contents($file, get_remote($_POST['from_url']));
+				$fake_file = array("name" => basename(parse_url($_POST['from_url'], PHP_URL_PATH)),
+				                   "tmp_name" => $file);
+				$filename = upload($fake_file, array("jpg", "jpeg", "png", "gif", "tiff", "bmp"), "", true);
+			} else
 				error(__("Error"), __("Couldn't upload photo."));
-			}
 
 			$values = array("filename" => $filename, "caption" => $_POST['caption']);
 			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : "" ;
@@ -26,9 +34,9 @@
 
 			$route = Route::current();
 			if (isset($_POST['bookmarklet']))
-				$route->redirect($route->url("bookmarklet/done/"));
+				redirect($route->url("bookmarklet/done/"));
 			else
-				$route->redirect($post->url());
+				redirect($post->url());
 		}
 		static function update() {
 			$post = new Post($_POST['id']);
@@ -56,7 +64,7 @@
 		}
 		static function delete_file($post) {
 			if ($post->feather != "photo") return;
-			unlink(MAIN_DIR."/upload/".$post->filename);
+			unlink(MAIN_DIR.Config::current()->uploads_path.$post->filename);
 		}
 		static function filter_post($post) {
 			if ($post->feather != "photo") return;
@@ -67,5 +75,5 @@
 	function image_tag_for($filename, $max_width = null, $max_height = null, $more_args = "q=100") {
 		$ext = pathinfo($filename, PATHINFO_EXTENSION);
 		$config = Config::current();
-		return '<a href="'.$config->url.'/upload/'.$filename.'"><img src="'.$config->url.'/feathers/photo/lib/phpThumb.php?src='.$config->url.'/upload/'.strtolower(urlencode($filename)).'&amp;w='.$max_width.'&amp;h='.$max_height.'&amp;f='.$ext.'&amp;'.$more_args.'" alt="'.$filename.'" /></a>';
+		return '<a href="'.$config->url.$config->uploads_path.$filename.'"><img src="'.$config->url.'/feathers/photo/lib/phpThumb.php?src='.$config->url.$config->uploads_path.strtolower(urlencode($filename)).'&amp;w='.$max_width.'&amp;h='.$max_height.'&amp;f='.$ext.'&amp;'.$more_args.'" alt="'.$filename.'" /></a>';
 	}

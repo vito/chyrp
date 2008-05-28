@@ -7,29 +7,27 @@
 					{% endif %}
 							{% if post.pinned %}<span class="pinned_text">${ "pinned" | translate }</span>{% endif %}
 							{% include "content/feathers/" ~ post.feather ~ ".twig" %}
-							{% if post.next_page %}<a class="right" href="$post.next_page_url">Next &rarr;</a>{% endif %}
-							{% if post.prev_page %}<a class="left" href="$post.prev_page_url">&larr; Previous</a>{% endif %}
+							{% if post.next_page %}<a class="right" href="$post.next_page_url">${ "Next &rarr;" | translate }</a>{% endif %}
+							{% if post.prev_page %}<a class="left" href="$post.prev_page_url">${ "&larr; Previous" | translate }</a>{% endif %}
 							<div class="clear"></div>
 							<span class="info">
-								<strong><a href="$post.url">${ post.created_at | date }</a></strong>
-								{% if site.enabled_modules.comments %}
+								<strong><a href="$post.url">${ post.created_at | date("F jS @ g:i A") }</a></strong>
+								{% if enabled_modules.comments %}
 								<em>|</em> <a href="$post.url#comments">$post.comment_count ${ "Comments" }</a>
 								{% endif %}
 								{% if post.tags.linked | length > 0 %}
 								<em>|</em> Tags: ${ post.tags.linked | join }
 								{% endif %}
+								{% if site.enable_trackbacking %}
 								<em>|</em> <a href="$post.trackback_url">${ "Trackback" | translate }</a>
-								{% if visitor.can.edit_post %}
-								<em>|</em> $post.edit_link
 								{% endif %}
-								{% if visitor.can.delete_post %}
-								<em>|</em> $post.delete_link
-								{% endif %}
+								${ post.edit_link("Edit" | translate, "<em>|</em> ") }
+								${ post.delete_link("Delete" | translate, "<em>|</em> ") }
 							</span>
 							<br class="clear" />
 					{% if not route.ajax or POST.action == "view_post" %}
 						</div>
-						{% if not route.action == "view" and not loop.last %}
+						{% if route.action != "view" and not loop.last %}
 						<br />
 						{% endif %}
 					</div>

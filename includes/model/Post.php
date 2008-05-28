@@ -7,6 +7,7 @@
 	 */
 	class Post extends Model {
 		public $no_results = false;
+		public $id = 0;
 
 		/**
 		 * Function: __construct
@@ -23,6 +24,11 @@
 		public function __construct($post_id = null, $options = array()) {
 			if (!isset($post_id) and empty($options)) return;
 			parent::grab($this, $post_id, $options);
+
+			if ($this->no_results)
+				return;
+
+			$this->slug =& $this->url;
 			$this->parse(!isset($options["filter"]) or $options["filter"]);
 		}
 
@@ -52,6 +58,7 @@
 			$timestamp = (!empty($_POST['created_at']) and (!isset($_POST['original_time']) or $_POST['created_at'] != $_POST['original_time'])) ?
 			             when("Y-m-d H:i:s", $_POST['created_at']) :
 			             datetime() ;
+			$updated = (!empty($_POST['updated_at'])) ? $_POST['updated_at'] : 0 ;
 			$trackbacks = (!empty($_POST['trackbacks'])) ? $_POST['trackbacks'] : "" ;
 			$options = (isset($_POST['option'])) ? $_POST['option'] : array() ;
 
@@ -71,6 +78,7 @@
 			                 "clean" => ":clean",
 			                 "url" => ":url",
 			                 "created_at" => ":created_at",
+			                 "updated_at" => ":updated_at"
 			             ),
 			             array(
 			                 ":xml" => $xml->asXML(),
@@ -80,7 +88,8 @@
 			                 ":status" => $status,
 			                 ":clean" => $clean,
 			                 ":url" => $url,
-			                 ":created_at" => $timestamp
+			                 ":created_at" => $timestamp,
+			                 ":updated_at" => $updated,
 			             ));
 			$id = $sql->db->lastInsertId();
 
@@ -105,10 +114,12 @@
 			foreach ($trackbacks as $url)
 				trackback_send($id, $url);
 
-			$trigger = Trigger::current();
-			$trigger->call("add_post", array($id, $options));
+			$post = new self($id);
 
-			return new self($id);
+			$trigger = Trigger::current();
+			$trigger->call("add_post", array($post, $options));
+
+			return $post;
 		}
 
 		/**
@@ -202,6 +213,64 @@
 		}
 
 		/**
+		 * Function: any_editable
+		 * Checks if the <Visitor> can edit any posts.
+		 */
+		static function any_editable() {
+			$visitor = Visitor::current();
+
+			# Can they edit posts?
+			if ($visitor->group()->can("edit_post"))
+				return true;
+
+			# Can they edit drafts?
+			if ($visitor->group()->can("edit_draft") and
+			    Post::find(array("where" => "`__posts`.`status` = 'draft'")))
+				return true;
+
+			# Can they edit their own posts, and do they have any?
+			if ($visitor->group()->can("edit_own_post") and
+			    Post::find(array("where" => "`__posts`.`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
+				return true;
+
+			# Can they edit their own drafts, and do they have any?
+			if ($visitor->group()->can("edit_own_draft") and
+			    Post::find(array("where" => "`__posts`.`status` = 'draft' and `__posts`.`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
+				return true;
+
+			return false;
+		}
+
+		/**
+		 * Function: any_deletable
+		 * Checks if the <Visitor> can delete any posts.
+		 */
+		static function any_deletable() {
+			$visitor = Visitor::current();
+
+			# Can they delete posts?
+			if ($visitor->group()->can("delete_post"))
+				return true;
+
+			# Can they delete drafts?
+			if ($visitor->group()->can("delete_draft") and
+			    Post::find(array("where" => "`__posts`.`status` = 'draft'")))
+				return true;
+
+			# Can they delete their own posts, and do they have any?
+			if ($visitor->group()->can("delete_own_post") and
+			    Post::find(array("where" => "`__posts`.`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
+				return true;
+
+			# Can they delete their own drafts, and do they have any?
+			if ($visitor->group()->can("delete_own_draft") and
+			    Post::find(array("where" => "`__posts`.`status` = 'draft' and `__posts`.`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
+				return true;
+
+			return false;
+		}
+
+		/**
 		 * Function: find
 		 * Grab all posts that match the passed options.
 		 *
@@ -209,6 +278,21 @@
 		 * An array of <Post>s from the result.
 		 */
 		static function find($options = array()) {
+			global $private;
+
+			$enabled_feathers = "`__posts`.`feather` in ('".implode("', '", Config::current()->enabled_feathers)."')";
+			if (!isset($options["where"]))
+				$options["where"] = array($private, $enabled_feathers);
+			elseif ($options["where"] === false)
+				$options["where"] = $enabled_feathers;
+			elseif (is_array($options["where"]))
+				$options["where"][] = $enabled_feathers;
+			else
+				$options["where"] = array($options["where"], $enabled_feathers);
+
+			$sql = SQL::current();
+			fallback($options["order"], "`__posts`.`pinned` desc, `__posts`.`created_at` desc, `__posts`.`id` desc");
+
 			$posts = parent::search(get_class(), $options);
 
 			foreach ($posts as $index => $post)
@@ -247,18 +331,7 @@
 		 *     true - if a post with that ID is in the database.
 		 */
 		static function exists($post_id) {
-			$sql = SQL::current();
-			$result = $sql->query("select count(`id`)
-			                       from `{$sql->prefix}posts`
-			                       where `id` = :id limit 1",
-			                       array(
-			                          ':id' => $post_id
-			                       ));
-
-			$count = $result->fetchColumn();
-			$result->closeCursor();
-
-			return ($count == 1);
+			return SQL::current()->count("posts", "`id` = :id", array(":id" => $post_id));
 		}
 
 		/**
@@ -301,8 +374,6 @@
 		 * Returns a post's URL.
 		 */
 		public function url() {
-			global $plural_feathers;
-
 			$config = Config::current();
 			$visitor = Visitor::current();
 			if ($config->clean_urls) {
@@ -318,7 +389,7 @@
 				              urlencode($this->clean),
 				              urlencode($this->url),
 				              urlencode($this->feather),
-				              urlencode(array_search($this->feather, $plural_feathers)));
+				              urlencode(pluralize($this->feather)));
 				$trigger = Trigger::current();
 				$vals = $trigger->filter("url_vals", $vals);
 				$route = Route::current();
@@ -388,31 +459,21 @@
 		 * Displays a link to the next post.
 		 */
 		public function next_link($text = "(name) &rarr;", $class = "next_page", $truncate = 30) {
-			global $private, $enabled_feathers, $temp_id;
+			global $private, $temp_id;
 			$post = (!isset($temp_id)) ? $this : new self($temp_id) ;
 			if (!isset($post->created_at)) return;
 
 			if (!isset($temp_id))
 				$temp_id = $this->id;
 
-			$sql = SQL::current();
-			$grab_next = $sql->select("posts",
-			                          "id",
-			                          $private.$enabled_feathers." and
-			                          `created_at` > :created_at",
-			                          "`created_at` asc",
-			                          array(
-			                              ":created_at" => $post->created_at
-			                          ),
-			                          1);
-			if (!$grab_next->rowCount()) return;
+			$next = new self(null, array("where" => array($private, "`created_at` > :created_at"),
+			                             "params" => array(":created_at" => $post->created_at)));
+			if ($next->no_results)
+				return;
 
-			$next = new self($grab_next->fetchColumn());
 			$text = str_replace("(name)", $next->title(), $text);
 
 			echo '<a href="'.htmlspecialchars($next->url(), 2, "utf-8").'" class="'.$class.'">'.truncate($text, $truncate).'</a>';
-
-			new self($post->id);
 		}
 
 		/**
@@ -420,31 +481,21 @@
 		 * Displays a link to the previous post.
 		 */
 		public function prev_link($text = "&larr; (name)", $class = "prev_page", $truncate = 30) {
-			global $private, $enabled_feathers, $temp_id;
+			global $private, $temp_id;
 			$post = (!isset($temp_id)) ? $this : new self($temp_id) ;
 			if (!isset($post->created_at)) return;
 
 			if (!isset($temp_id))
 				$temp_id = $this->id;
 
-			$sql = SQL::current();
-			$grab_prev = $sql->select("posts",
-			                          "id",
-			                          $private.$enabled_feathers." and
-			                          `created_at` < :created_at",
-			                          "`created_at` desc",
-			                          array(
-			                              ":created_at" => $post->created_at
-			                          ),
-			                          1);
-			if (!$grab_prev->rowCount()) return;
+			$prev = new self(null, array("where" => array($private, "`created_at` < :created_at"),
+			                             "params" => array(":created_at" => $post->created_at)));
+			if ($prev->no_results)
+				return;
 
-			$prev = new self($grab_prev->fetchColumn());
 			$text = str_replace("(name)", $prev->title(), $text);
 
 			echo '<a href="'.htmlspecialchars($prev->url(), 2, "utf-8").'" class="'.$class.'">'.truncate($text, $truncate).'</a>';
-
-			new self($post->id);
 		}
 
 		/**
@@ -499,7 +550,7 @@
 
 			fallback($text, __("Edit"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=edit&amp;sub=post&amp;id='.$this->id.'" title="Edit" class="post_edit_link" id="post_edit_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=edit_post&amp;id='.$this->id.'" title="Edit" class="post_edit_link edit_link" id="post_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
 		/**
@@ -516,7 +567,7 @@
 
 			fallback($text, __("Delete"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->url.'/admin/?action=delete&amp;sub=post&amp;id='.$this->id.'" title="Delete" class="post_delete_link" id="post_delete_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->url.'/admin/?action=delete_post&amp;id='.$this->id.'" title="Delete" class="post_delete_link delete_link" id="post_delete_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
 		public function trackback_url() {

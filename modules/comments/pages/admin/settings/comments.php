@@ -4,7 +4,7 @@
 			<h1><?php echo __("Comment Settings", "comments"); ?></h1>
 			<form class="settings" action="index.php?action=settings&amp;sub=comments" method="post">
 				<p>
-					<label for="defensio_api_key"><?php echo __("Defensio API Key", "comments"); ?><br /><span class="sub"> <?php echo __("(recommended)"); ?></span></label>
+					<label for="defensio_api_key"><?php echo __("Defensio API Key", "comments"); ?><br /> <span class="sub"><?php echo __("(recommended)"); ?></span></label>
 					<input class="text" type="text" name="defensio_api_key" value="<?php echo fix($config->defensio_api_key, "html"); ?>" id="defensio_api_key" /><br />
 					<small><?php echo __("A very good spam blocker. Get an API key by signing up at <a href=\"http://wordpress.com/\">WordPress.com</a> &ndash; they'll send it to your email.", "comments"); ?></small>
 				</p>

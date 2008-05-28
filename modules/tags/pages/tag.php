@@ -1,11 +1,9 @@
 <?php
-	$tag = $sql->select("tags", "*", "`clean` = :clean", "id", array(":clean" => $_GET['name']), 1)->fetchObject();
-
 	if (!count($posts))
 		show_404();
 
-	$theme->title = sprintf(__("Posts tagged with \"%s\"", "tags"), $tag->name);
+	$tag = clean2tag($_GET['name']);
 
-	$file = ($theme->file_exists("content/tag")) ? "content/tag" : "content/index" ;
-	$theme->load($file, array("posts" => $posts, "tag" => $tag));
+	$theme->title = sprintf(__("Posts tagged with \"%s\"", "tags"), $tag);
+	$theme->load(array("content/tag", "content/index"), array("posts" => $posts, "tag" => $tag));
 ?>

@@ -7,12 +7,12 @@
 			</blockquote>
 			<cite>
 				<strong>$comment.author_link</strong> ${ "on" | translate }
-				${ comment.created_at | date }
-				{% if visitor.can.edit_comment %}
+				${ comment.created_at | date("F jS, 2008, \\a\\\t g:i A") }
+				{% if comment.editable %}
 				<em>|</em> $comment.edit_link
 				{% endif %}
 
-				{% if visitor.can.delete_comment %}
+				{% if comment.deletable %}
 				<em>|</em> $comment.delete_link
 				{% endif %}
 			</cite>

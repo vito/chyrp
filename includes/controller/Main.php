@@ -18,14 +18,14 @@
 		 * Grabs the posts for the Archive page when viewing a year or a month.
 		 */
 		public function archive() {
-			global $private, $enabled_feathers, $posts;
+			global $private, $posts;
 			if (!isset($_GET['month'])) return;
 
 			if (isset($_GET['day']))
-				$posts = Post::find(array("where" => "`created_at` like :date and ".$private.$enabled_feathers,
+				$posts = Post::find(array("where" => array("`__posts`.`created_at` like :date", $private),
 				                          "params" => array(":date" => $_GET['year']."-".$_GET['month']."-".$_GET['day']."%")));
 			else
-				$posts = Post::find(array("where" => "`created_at` like :date and ".$private.$enabled_feathers,
+				$posts = Post::find(array("where" => array("`__posts`.`created_at` like :date", $private),
 				                          "params" => array(":date" => $_GET['year']."-".$_GET['month']."%")));
 		}
 
@@ -34,9 +34,9 @@
 		 * Grabs the posts for a search query.
 		 */
 		public function search() {
-			global $private, $enabled_feathers, $posts;
+			global $private, $posts;
 			fallback($_GET['query'], "");
-			$posts = Post::find(array("where" => "`xml` like :query and ".$private.$enabled_feathers,
+			$posts = Post::find(array("where" => "`xml` like :query and ".$private,
 			                          "params" => array(":query" => '%'.urldecode($_GET['query']).'%')));
 		}
 
@@ -45,11 +45,13 @@
 		 * Grabs the posts for viewing the Drafts lists. Shows an error if the user lacks permissions.
 		 */
 		public function drafts() {
-			global $posts;
-			if (!Visitor::current()->group()->can("view_draft"))
+			$visitor = Visitor::current();
+			if (!$visitor->group()->can("view_draft"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to view drafts."));
 
-			$posts = Post::find(array("where" => "`status` = 'draft'"));
+			global $posts;
+			$posts = Post::find(array("where" => array("`__posts`.`status` = 'draft'", "`__posts`.`user_id` = :current_user"),
+			                          "params" => array(":current_user" => $visitor->id)));
 		}
 
 		/**
@@ -57,9 +59,9 @@
 		 * Views posts of a specific feather.
 		 */
 		public function feather() {
-			global $private, $enabled_feathers, $plural_feathers, $posts;
-			$posts = Post::find(array("where" => "`feather` = :feather and ".$private.$enabled_feathers,
-			                          "params" => array(":feather" => $plural_feathers[$_GET['action']])));
+			global $private, $posts;
+			$posts = Post::find(array("where" => "`feather` = :feather and ".$private,
+			                          "params" => array(":feather" => depluralize($_GET['action']))));
 		}
 
 		/**
@@ -76,75 +78,63 @@
 		 * Views a post.
 		 */
 		public function view() {
-			global $action, $private, $enabled_feathers, $post, $plural_feathers;
+			global $action, $private, $post;
+
+			# Make sure we don't try and grab things from SQL by the encoded URL
+			$get = array_map("urldecode", $_GET);
 
 			$trigger = Trigger::current();
 			$config = Config::current();
 			$sql = SQL::current();
 			if (!$config->clean_urls)
-				return $grab_post = $sql->select("posts",
-				                                 "*",
-				                                 $private.$enabled_feathers." and
-				                                 `url` = :url",
-				                                 "id",
-				                                 array(
-				                                     ':url' => $_GET['url']
-				                                 ), 1);
+				return $post = new Post(null, array("where" => array($private, "`url` = :url"), "params" => array(":url" => $get['url'])));
 
 			# Check for a post...
-			$where = "";
+			$where = array($private);
 			$times = array("year", "month", "day", "hour", "minute", "second");
 
 			preg_match_all("/\(([^\)]+)\)/", $config->post_url, $matches);
 			$params = array();
 			foreach ($matches[1] as $attr)
-				if (in_array($attr, $times))
-				{
-					$where.= " and ".$attr."(`created_at`) = :created".$attr;
-					$params[':created'.$attr] = $_GET[$attr];
-				}
-				elseif ($attr == "author")
-				{
-					$where.= " and `user_id` = :attrauthor";
+				if (in_array($attr, $times)) {
+					$where[] = strtoupper($attr)."(`__posts`.`created_at`) = :created_".$attr;
+					$params[':created_'.$attr] = $get[$attr];
+				} elseif ($attr == "author") {
+					$where[] = "`__posts`.`user_id` = :attrauthor";
 					$params[':attrauthor'] = $sql->select("users",
 					                                      "id",
 					                                      "`login` = :login",
 					                                      "id",
 					                                      array(
-					                                          ":login" => $_GET['author']
+					                                          ":login" => $get['author']
 					                                      ), 1)->fetchColumn();
-				}
-				elseif ($attr == "feathers")
-				{
-					$where.= " and `feather` = :feather";
-					$params[':feather'] = @$plural_feathers[$_GET['feathers']];
-				}
-				else
-				{
+				} elseif ($attr == "feathers") {
+					$where[] = "`__posts`.`feather` = :feather";
+					$params[':feather'] = depluralize($get['feathers']);
+				} else {
 					list($where, $params, $attr) = $trigger->filter('main_controller_view', array($where, $params, $attr), true);
 
-					if ($attr !== null)
-					{
-						$where.= " and `".$attr."` = :attr".$attr;
-						$params[':attr'.$attr] = $_GET[$attr];
+					if ($attr !== null) {
+						$where[] = "`__posts`.`".$attr."` = :attr".$attr;
+						$params[':attr'.$attr] = $get[$attr];
 					}
 				}
 
-			$post = new Post(null, array("where" => $private.$enabled_feathers.$where, "params" => $params));
+			$post = new Post(null, array("where" => $where, "params" => $params));
 
 			if ($post->no_results) {
 				# Check for a page...
-				$url = fallback($_GET['url'], "", true);
+				fallback($get['url'], "");
 				$check_page = $sql->count("pages",
 				                          "`url` = :url",
 				                          array(
-				                              ':url' => $url
+				                              ':url' => $get['url']
 				                          ));
 				if ($check_page == 1)
 					return $action = $url;
 			}
 
-			return (!$post->no_results) ? $action = "view" : $action = $_GET['url'] ;
+			return (!$post->no_results) ? $action = "view" : $action = $get['url'] ;
 		}
 
 		/**
@@ -179,13 +169,12 @@
 		 * Toggles the Admin control panel (if available).
 		 */
 		public function toggle_admin() {
-			if (!isset($_COOKIE['chyrp_hide_admin']))
-				cookie_cutter("chyrp_hide_admin", "true");
+			if (!isset($_SESSION['chyrp_hide_admin']))
+				$_SESSION['chyrp_hide_admin'] = true;
 			else
-				cookie_cutter("chyrp_hide_admin", null, 0);
+				unset($_SESSION['chyrp_hide_admin']);
 
-			$route = Route::current();
-			$route->redirect("/");
+			redirect("/");
 		}
 
 		/**
@@ -202,14 +191,12 @@
 			if (empty($_POST['login']))
 				error(__("Error"), __("Please enter a username for your account."));
 
-			$sql = SQL::current();
-			$check_user = $sql->query("select count(`id`) from `".$sql->prefix."users`
-			                           where `login` = :login",
-			                          array(
-			                              ':login' => $_POST['login']
-			                          ));
-			if ($check_user->fetchColumn())
+
+			$check_user = User::find(array("where" => "`login` = :login",
+			                               "params" => array(":login" => $_POST['login'])));
+			if (count($check_user))
 				error(__("Error"), __("That username is already in use."));
+
 			if (empty($_POST['password1']) or empty($_POST['password2']))
 				error(__("Error"), __("Password cannot be blank."));
 			if (empty($_POST['email']))
@@ -219,13 +206,15 @@
 			if (!eregi("^[[:alnum:]][a-z0-9_.-\+]*@[a-z0-9.-]+\.[a-z]{2,6}$",$_POST['email']))
 				error(__("Error"), __("Unsupported e-mail address."));
 
+			Trigger::current()->call('process_registration');
+
 			User::add($_POST['login'], $_POST['password1'], $_POST['email']);
 
-			cookie_cutter("chyrp_user_id", $sql->db->lastInsertId());
-			cookie_cutter("chyrp_password", md5($_POST['password1']));
+			$_SESSION['chyrp_login'] = $_POST['login'];
+			$_SESSION['chyrp_password'] = md5($_POST['password1']);
 
 			$route = Route::current();
-			$route->redirect('/');
+			redirect('/');
 		}
 
 		/**
@@ -238,18 +227,10 @@
 			if (logged_in())
 				error(__("Error"), __("You're already logged in."));
 
-			$sql = SQL::current();
-			$get_id = $sql->query("select `id` from `".$sql->prefix."users`
-			                       where `login` = :login",
-			                      array(
-			                          ':login' => $_POST['login']
-			                      ));
+			$_SESSION['chyrp_login'] = $_POST['login'];
+			$_SESSION['chyrp_password'] = md5($_POST['password']);
 
-			cookie_cutter("chyrp_user_id", $get_id->fetchColumn());
-			cookie_cutter("chyrp_password", md5($_POST['password']));
-
-			$route = Route::current();
-			$route->redirect('/');
+			redirect("/");
 		}
 
 		/**
@@ -260,11 +241,9 @@
 			if (!logged_in())
 				error(__("Error"), __("You aren't logged in."));
 
-			cookie_cutter("chyrp_user_id", "", time() - 2592000);
-			cookie_cutter("chyrp_password", "", time() - 2592000);
+			session_destroy();
 
-			$route = Route::current();
-			$route->redirect('/');
+			redirect("/");
 		}
 
 		/**
@@ -284,10 +263,9 @@
 
 			$visitor->update($visitor->login, $password, $_POST['full_name'], $_POST['email'], $_POST['website'], $visitor->group()->id);
 
-			cookie_cutter("chyrp_password", $password);
+			$_SESSION['chyrp_password'] = $password;
 
-			$route = Route::current();
-			$route->redirect('/');
+			redirect("/");
 		}
 	}
 	$main = new MainController();

@@ -4,6 +4,10 @@
 	 * Contains the database settings and functions for interacting with the SQL database.
 	 */
 	class SQL {
+		# Array: $debug
+		# Holds debug information for SQL queries.
+		public $debug = array();
+
 		/**
 		 * Function: __construct
 		 * The class constructor is private so there is only one connection.
@@ -50,8 +54,8 @@
 			# Add the setting
 			$this->yaml[$setting] = $value;
 
-			if (isset($this->yaml[0]) and $this->yaml[0] == "--")
-				unset($this->yaml[0]);
+			if (isset($this->yaml['<?php header("Status']))
+				unset($this->yaml['<?php header("Status']);
 
 			# Generate the new YAML settings
 			$contents.= Spyc::YAMLDump($this->yaml, false, 0);
@@ -89,11 +93,13 @@
 		 */
 		public function query($query, $params = array(), $throw_exceptions = false) {
 			$this->queries++;
-			fallback($this->debug, array());
 
 			try {
+				$query = str_replace("__", $this->prefix, $query);
+
 				$q = $this->db->prepare($query);
 				$result = $q->execute($params);
+				$q->setFetchMode(PDO::FETCH_ASSOC);
 				if (defined('DEBUG') and DEBUG) {
 					#echo '<div class="sql_query" style="position: relative; z-index: 1000"><span style="background: rgba(0,0,0,.5); padding: 0 1px; border: 1px solid rgba(0,0,0,.25); color: white; font: 9px/14px normal \'Monaco\', monospace;">'.$query.'</span></div>';
 					$trace = debug_backtrace();
@@ -102,14 +108,18 @@
 					while (strpos($target["file"], "database.php")) # Getting a traceback from this file is pretty
 						$target = $trace[$index++];                 # useless (mostly when using $sql->select() and such)
 
-					$this->debug[] = array("number" => $this->queries, "file" => str_replace(MAIN_DIR."/", "", $target["file"]), "line" => $target["line"], "string" => normalize(str_replace(array_keys($params), array_values($params), $query)));
+					$debug = $this->debug[count($this->debug)] = array("number" => $this->queries, "file" => str_replace(MAIN_DIR."/", "", $target["file"]), "line" => $target["line"], "query" => normalize(str_replace(array_keys($params), array_values($params), $query)));
+					#error_log("\n\t".$debug["number"].". ".$debug["query"]."\n\n\tCalled from ".$debug["file"]." on line ".$target["line"].".");
 				}
 				if (!$result) throw PDOException();
 			} catch (PDOException $error) {
-				$message = preg_replace("/SQLSTATE\[[0-9]+\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
+				$message = preg_replace("/SQLSTATE\[.*?\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
 
 				if (XML_RPC or $throw_exceptions)
 					throw new Exception($message);
+
+				if (DEBUG)
+					$message.= "\n\n".$query."\n\n<pre>".$error->getTraceAsString()."</pre>";
 
 				error(__("Database Error"), $message);
 			}
@@ -121,26 +131,23 @@
 		 * Function: count
 		 * Performs a counting query and returns the number of matching rows.
 		 */
-		public function count($tables, $conds, $params = array())
-		{
-			return $this->query(QueryBuilder::build_count($tables, $conds), $params)->fetchColumn();
+		public function count($tables, $conds, $params = array(), $left_join = null) {
+			return $this->query(QueryBuilder::build_count($tables, $conds, $left_join), $params)->fetchColumn();
 		}
 
 		/**
 		 * Function: select
 		 * Performs a SELECT with given criteria and returns the query result object.
 		 */
-		public function select($tables, $fields, $conds, $order = null, $params = array(), $limit = null, $offset = null)
-		{
-			return $this->query(QueryBuilder::build_select($tables, $fields, $conds, $order, $limit, $offset), $params);
+		public function select($tables, $fields, $conds, $order = null, $params = array(), $limit = null, $offset = null, $group = null, $left_join = null) {
+			return $this->query(QueryBuilder::build_select($tables, $fields, $conds, $order, $limit, $offset, $group, $left_join), $params);
 		}
 
 		/**
 		 * Function: insert
 		 * Performs an INSERT with given data.
 		 */
-		public function insert($table, $data, $params = array())
-		{
+		public function insert($table, $data, $params = array()) {
 			return $this->query(QueryBuilder::build_insert($table, $data), $params);
 		}
 
@@ -148,8 +155,7 @@
 		 * Function: update
 		 * Performs an UDATE with given criteria and data.
 		 */
-		public function update($table, $conds, $data, $params = array())
-		{
+		public function update($table, $conds, $data, $params = array()) {
 			return $this->query(QueryBuilder::build_update($table, $conds, $data), $params);
 		}
 
@@ -157,17 +163,8 @@
 		 * Function: delete
 		 * Performs a DELETE with given criteria.
 		 */
-		public function delete($table, $conds, $params = array())
-		{
+		public function delete($table, $conds, $params = array()) {
 			return $this->query(QueryBuilder::build_delete($table, $conds), $params);
-		}
-
-		/**
-		 * Function: quote
-		 * Quotes the passed variable as needed for use in a query.
-		 */
-		public function quote($var) {
-			return $this->db->quote($var);
 		}
 
 		/**
@@ -176,9 +173,7 @@
 		 */
 		public static function & current() {
 			static $instance = null;
-			if (empty($instance))
-				$instance = new self();
-			return $instance;
+			return $instance = (empty($instance)) ? new self() : $instance ;
 		}
 	}
 

@@ -11,9 +11,11 @@
 		 * Checks if a valid user is logged in.
 		 */
 		public function __construct() {
-			if (isset($_COOKIE['chyrp_user_id']) and isset($_COOKIE['chyrp_password']))
-				if (User::authenticate(User::info("login", $_COOKIE['chyrp_user_id']), $_COOKIE['chyrp_password']))
-					parent::__construct($_COOKIE['chyrp_user_id']);
+			if (isset($_SESSION['chyrp_login']) and isset($_SESSION['chyrp_password']))
+				parent::__construct(null, array("where"  => array("`login` = :login",
+				                                                  "`password` = :password"),
+				                                "params" => array(":login"    => $_SESSION['chyrp_login'],
+				                                                  ":password" => $_SESSION['chyrp_password'])));
 		}
 
 		/**
@@ -33,8 +35,6 @@
 		 */
 		public static function & current() {
 			static $instance = null;
-			if (empty($instance))
-				$instance = new self();
-			return $instance;
+			return $instance = (empty($instance)) ? new self() : $instance ;
 		}
 	}
