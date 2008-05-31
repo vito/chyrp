@@ -10,10 +10,8 @@
 				</ol>
 				{% endif %}
 				<input type="hidden" name="last_comment" value="$post.latest_comment" id="last_comment" />
-{#
-				<?php $paginate->next_link(__("Next &rarr;", "theme"), "right", "comments_page"); ?>
-				<?php $paginate->prev_link(__("&larr; Previous", "theme"), "prev_page", "comments_page"); ?>
-#}
+				${ pagination.next_link("Next &rarr;" | translate, "right", "comments_page") }
+				${ pagination.prev_link("&larr; Previous" | translate, "prev_page", "comments_page") }
 				<br />
 				<br />
 {% if post.commentable %}

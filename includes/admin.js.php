@@ -84,7 +84,7 @@ $(function(){
 				$(this).fadeIn("fast")
 			})
 			return false
-		}).insertAfter("button:last")
+		}).appendTo(".buttons")
 	}
 
 	// Checkbox toggling.
