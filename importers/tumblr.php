@@ -135,10 +135,10 @@
 
 	$errors = array();
 
-	if (!file_exists(MAIN_DIR."/upload"))
-		$errors[] = __("Please create the <code>/upload</code> directory at your Chyrp install's root and CHMOD it to 777.");
-	elseif (!is_writable(MAIN_DIR."/upload"))
-		$errors[] = __("Please CHMOD <code>/upload</code> to 777.");
+	if (!file_exists(MAIN_DIR.$config->uploads_path))
+		$errors[] = sprintf(__("Please create the <code>%s</code> directory at your Chyrp install's root and CHMOD it to 777."), $config->uploads_path);
+	elseif (!is_writable(MAIN_DIR.$config->uploads_path))
+		$errors[] = sprintf(__("Please CHMOD <code>%s</code> to 777."), $config->uploads_path);
 
 	if (!empty($_POST)) {
 		switch($_POST['step']) {
