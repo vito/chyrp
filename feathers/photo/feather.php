@@ -44,9 +44,8 @@
 			if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0) {
 				delete_photo_file($_POST['id']);
 				$filename = upload($_FILES['photo']);
-			} else {
+			} else
 				$filename = $post->filename;
-			}
 
 			$values = array("filename" => $filename, "caption" => $_POST['caption']);
 
@@ -68,12 +67,11 @@
 		}
 		static function filter_post($post) {
 			if ($post->feather != "photo") return;
-			$post->image = image_tag_for($post->filename);
+			$post->image = self::image_tag_for($post->filename);
 		}
-	}
-
-	function image_tag_for($filename, $max_width = null, $max_height = null, $more_args = "q=100") {
-		$ext = pathinfo($filename, PATHINFO_EXTENSION);
-		$config = Config::current();
-		return '<a href="'.$config->url.$config->uploads_path.$filename.'"><img src="'.$config->url.'/feathers/photo/lib/phpThumb.php?src='.$config->url.$config->uploads_path.strtolower(urlencode($filename)).'&amp;w='.$max_width.'&amp;h='.$max_height.'&amp;f='.$ext.'&amp;'.$more_args.'" alt="'.$filename.'" /></a>';
+		static function image_tag_for($filename, $max_width = null, $max_height = null, $more_args = "q=100") {
+			$ext = pathinfo($filename, PATHINFO_EXTENSION);
+			$config = Config::current();
+			return '<a href="'.$config->url.$config->uploads_path.$filename.'"><img src="'.$config->url.'/feathers/photo/lib/phpThumb.php?src='.$config->url.$config->uploads_path.strtolower(urlencode($filename)).'&amp;w='.$max_width.'&amp;h='.$max_height.'&amp;f='.$ext.'&amp;'.$more_args.'" alt="'.$filename.'" /></a>';
+		}
 	}

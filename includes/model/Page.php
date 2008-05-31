@@ -228,6 +228,14 @@
 		}
 
 		/**
+		 * Function: children
+		 * Returns a page's children.
+		 */
+		public function children() {
+			return parent::search(get_class(), array("where" => "`parent_id` = :id", "params" => array(":id" => $this->id)));
+		}
+
+		/**
 		 * Function: user
 		 * Returns a page's creator. Example: $page->user()->full_name
 		 */
