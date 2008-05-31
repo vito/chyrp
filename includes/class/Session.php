@@ -9,6 +9,7 @@
 		/**
 		 * Function: open
 		 * Returns: true
+		 */
 		static function open() {
 			return true;
 		}
