@@ -72,7 +72,7 @@
 					redirect($post->url()."#comment_".$id);
 				}
 			} else {
-				$id = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, $check_comment["signature"], datetime(), $post_id, $visitor->id);
+				$id = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, "", datetime(), $post_id, $visitor->id);
 				if (isset($_POST['ajax']))
 					exit("{ comment_id: ".$id." }");
 				redirect($post->url()."#comment_".$id);

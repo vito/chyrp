@@ -45,6 +45,7 @@ $twig_filters = array(
 	'linebreaks' =>       'nl2br',
 	'camelize' =>         'camelize',
 	'strip_tags' =>       'strip_tags',
+	'pluralize' =>        'twig_pluralize_string_filter',
 
 	// array helpers
 	'join' =>             'twig_join_filter',
@@ -127,7 +128,7 @@ function twig_missing_filter($name)
 	if ($trigger->exists($name))
 		return $trigger->filter($name, $text, $args);
 
-	return $args[0];
+	return $text;
 }
 
 function twig_get_attribute($obj, $item)
@@ -389,3 +390,10 @@ function twig_option_selected_filter($foo) {
 	if (in_array($foo, $try))
 		return ' selected="selected"';
 }
+
+function twig_pluralize_string_filter($string, $number = null) {
+	if ($number and $number == 1)
+		return $string;
+	else
+		return pluralize($string);
+ }
