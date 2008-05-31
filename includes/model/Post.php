@@ -3,7 +3,7 @@
 
 	/**
 	 * Class: Post
-	 * The model for the Posts SQL table.
+	 * The Post model.
 	 */
 	class Post extends Model {
 		public $no_results = false;
@@ -11,15 +11,8 @@
 
 		/**
 		 * Function: __construct
-		 * Grabs the specified post and injects it into the <Post> class.
-		 *
-		 * Parameters:
-		 *     $post_id - The post's unique ID.
-		 *     $options - An array of options:
-		 *         where: A SQL query to grab the post by.
-		 *         params: Parameters to use for the "where" option.
-		 *         filter: Whether or not to run it through the _parse_post_ filter.
-		 *         read_from: An associative array of values to load into the <Post> class.
+		 * See Also:
+		 *     <Model::grab>
 		 */
 		public function __construct($post_id = null, $options = array()) {
 			if (!isset($post_id) and empty($options)) return;
@@ -33,13 +26,42 @@
 		}
 
 		/**
+		 * Function: find
+		 * See Also:
+		 *     <Model::search>
+		 */
+		static function find($options = array()) {
+			global $private;
+
+			$enabled_feathers = "`__posts`.`feather` in ('".implode("', '", Config::current()->enabled_feathers)."')";
+			if (!isset($options["where"]))
+				$options["where"] = array($private, $enabled_feathers);
+			elseif ($options["where"] === false)
+				$options["where"] = $enabled_feathers;
+			elseif (is_array($options["where"]))
+				$options["where"][] = $enabled_feathers;
+			else
+				$options["where"] = array($options["where"], $enabled_feathers);
+
+			fallback($options["order"], "`__posts`.`pinned` desc, `__posts`.`created_at` desc, `__posts`.`id` desc");
+
+			$posts = parent::search(get_class(), $options);
+
+			foreach ($posts as $index => $post)
+				if (!$post->theme_exists())
+					unset($posts[$index]);
+
+			return $posts;
+		}
+
+		/**
 		 * Function: add
 		 * Adds a post to the database with the passed XML, sanitized URL, and unique URL. The rest is read from $_POST.
 		 *
 		 * Trackbacks are automatically sent based on the contents of $_POST['trackbacks'].
 		 * Most of the $_POST variables will fall back gracefully if they don't exist, e.g. if they're posting from the Bookmarklet.
 		 *
-		 * Calls the add_post trigger with the inserted ID and extra options.
+		 * Calls the add_post trigger with the inserted post and extra options.
 		 *
 		 * Parameters:
 		 *     $values - The data to insert.
@@ -130,13 +152,15 @@
 		 *
 		 * Parameters:
 		 *     $values - An array of data to set for the post.
+		 *     $pinned - Pin the post?
+		 *     $status - Post status
+		 *     $slug - A new URL for the post.
+		 *     $timestamp - New @created_at@ timestamp for the post.
 		 *
 		 * See Also:
 		 *     <add>
 		 */
 		public function update($values, $pinned = null, $status = null, $slug = null, $timestamp = null) {
-			if (!isset($this->id)) return;
-
 			fallback($pinned, !empty($_POST['pinned']));
 			fallback($status, (isset($_POST['draft'])) ? "draft" : ((!empty($_POST['status'])) ? $_POST['status'] : $this->status));
 			fallback($slug, (!empty($_POST['slug'])) ? $_POST['slug'] : $this->feather.".".$this->id);
@@ -175,10 +199,8 @@
 
 		/**
 		 * Function: delete
-		 * Deletes a given post. Calls the "delete_post" trigger and passes the <Post> as an argument.
-		 *
-		 * Parameters:
-		 *     $id - The user to delete.
+		 * See Also:
+		 *     <Model::destroy>
 		 */
 		static function delete($id) {
 			parent::destroy(get_class(), $id);
@@ -268,38 +290,6 @@
 				return true;
 
 			return false;
-		}
-
-		/**
-		 * Function: find
-		 * Grab all posts that match the passed options.
-		 *
-		 * Returns:
-		 * An array of <Post>s from the result.
-		 */
-		static function find($options = array()) {
-			global $private;
-
-			$enabled_feathers = "`__posts`.`feather` in ('".implode("', '", Config::current()->enabled_feathers)."')";
-			if (!isset($options["where"]))
-				$options["where"] = array($private, $enabled_feathers);
-			elseif ($options["where"] === false)
-				$options["where"] = $enabled_feathers;
-			elseif (is_array($options["where"]))
-				$options["where"][] = $enabled_feathers;
-			else
-				$options["where"] = array($options["where"], $enabled_feathers);
-
-			$sql = SQL::current();
-			fallback($options["order"], "`__posts`.`pinned` desc, `__posts`.`created_at` desc, `__posts`.`id` desc");
-
-			$posts = parent::search(get_class(), $options);
-
-			foreach ($posts as $index => $post)
-				if (!$post->theme_exists())
-					unset($posts[$index]);
-
-			return $posts;
 		}
 
 		/**

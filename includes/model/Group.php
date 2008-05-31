@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * Class: Group
-	 * The model for the Groups SQL table.
+	 * The Group model.
 	 */
 	class Group extends Model {
 		public $no_results = false;
@@ -9,14 +9,8 @@
 
 		/**
 		 * Function: __construct
-		 * Grabs the specified group and injects it into the <Group> class.
-		 *
-		 * Parameters:
-		 *     $group_id - The group's unique ID.
-		 *     $options - An array of options:
-		 *         where: A SQL query to grab the group by.
-		 *         params: Parameters to use for the "where" option.
-		 *         read_from: An associative array of values to load into the <Group> class.
+		 * See Also:
+		 *     <Model::grab>
 		 */
 		public function __construct($group_id = null, $options = array()) {
 			parent::grab($this, $group_id, $options);
@@ -25,6 +19,15 @@
 				return false;
 
 			$this->permissions = Spyc::YAMLLoad($this->permissions);
+		}
+
+		/**
+		 * Function: find
+		 * See Also:
+		 *     <Model::search>
+		 */
+		static function find($options = array()) {
+			return parent::search(get_class(), $options);
 		}
 
 		/**
@@ -88,17 +91,6 @@
 		 */
 		static function delete($id) {
 			parent::destroy(get_class(), $id);
-		}
-
-		/**
-		 * Function: find
-		 * Grab all groups that match the passed options.
-		 *
-		 * Returns:
-		 * An array of <Group>s from the result.
-		 */
-		static function find($options = array()) {
-			return parent::search(get_class(), $options);
 		}
 
 		/**

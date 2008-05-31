@@ -87,66 +87,76 @@
 			$sql->connect();
 
 			# Posts table
-			$sql->query("create table if not exists `__posts` (
-			                 `id` int(11) not null auto_increment,
-			                 `xml` longtext not null,
-			                 `feather` varchar(32) not null default '',
-			                 `clean` varchar(128) not null default '',
-			                 `url` varchar(128) not null default '',
-			                 `pinned` tinyint(1) not null default '0',
-			                 `status` enum('public','draft','private','registered_only') not null default 'public',
-			                 `user_id` int(11) not null default '0',
-			                 `created_at` datetime not null default '0000-00-00 00:00:00',
-			                 `updated_at` datetime not null default '0000-00-00 00:00:00',
-			                 primary key (`id`)
-			             ) default charset=utf8");
+			$sql->query("CREATE TABLE IF NOT EXISTS `__posts` (
+			                 `id` int(11) NOT NULL auto_increment,
+			                 `xml` longtext NOT NULL,
+			                 `feather` varchar(32) NOT NULL default '',
+			                 `clean` varchar(128) NOT NULL default '',
+			                 `url` varchar(128) NOT NULL default '',
+			                 `pinned` tinyint(1) NOT NULL default '0',
+			                 `status` enum('public','draft','private','registered_only') NOT NULL default 'public',
+			                 `user_id` int(11) NOT NULL default '0',
+			                 `created_at` datetime NOT NULL default '0000-00-00 00:00:00',
+			                 `updated_at` datetime NOT NULL default '0000-00-00 00:00:00',
+			                 PRIMARY KEY (`id`)
+			             ) DEFAULT CHARSET=utf8");
 
 			# Pages table
-			$sql->query("create table if not exists `__pages` (
-			                 `id` int(11) not null auto_increment,
-			                 `title` varchar(250) not null default '',
-			                 `body` longtext not null,
-			                 `show_in_list` tinyint(1) not null default '1',
-			                 `list_order` int(11) not null default '0',
-			                 `clean` varchar(128) not null default '',
-			                 `url` varchar(128) not null default '',
-			                 `user_id` int(11) not null default '0',
-			                 `parent_id` int(11) not null default '0',
-			                 `created_at` datetime not null default '0000-00-00 00:00:00',
-			                 `updated_at` datetime not null default '0000-00-00 00:00:00',
-			                 primary key (`id`)
-			             ) default charset=utf8");
+			$sql->query("CREATE TABLE IF NOT EXISTS `__pages` (
+			                 `id` int(11) NOT NULL auto_increment,
+			                 `title` varchar(250) NOT NULL default '',
+			                 `body` longtext NOT NULL,
+			                 `show_in_list` tinyint(1) NOT NULL default '1',
+			                 `list_order` int(11) NOT NULL default '0',
+			                 `clean` varchar(128) NOT NULL default '',
+			                 `url` varchar(128) NOT NULL default '',
+			                 `user_id` int(11) NOT NULL default '0',
+			                 `parent_id` int(11) NOT NULL default '0',
+			                 `created_at` datetime NOT NULL default '0000-00-00 00:00:00',
+			                 `updated_at` datetime NOT NULL default '0000-00-00 00:00:00',
+			                 PRIMARY KEY (`id`)
+			             ) DEFAULT CHARSET=utf8");
 
 			# Users table
-			$sql->query("create table if not exists `__users` (
-			                 `id` int(11) not null auto_increment,
-			                 `login` varchar(64) not null default '',
-			                 `password` varchar(32) not null default '',
-			                 `full_name` varchar(250) not null default '',
-			                 `email` varchar(128) not null default '',
-			                 `website` varchar(128) not null default '',
-			                 `group_id` int(11) not null default '0',
-			                 `joined_at` datetime not null default '0000-00-00 00:00:00',
-			                 primary key (`id`),
-			                 unique (`login`)
-			             ) default charset=utf8");
+			$sql->query("CREATE TABLE IF NOT EXISTS `__users` (
+			                 `id` int(11) NOT NULL auto_increment,
+			                 `login` varchar(64) NOT NULL default '',
+			                 `password` varchar(32) NOT NULL default '',
+			                 `full_name` varchar(250) NOT NULL default '',
+			                 `email` varchar(128) NOT NULL default '',
+			                 `website` varchar(128) NOT NULL default '',
+			                 `group_id` int(11) NOT NULL default '0',
+			                 `joined_at` datetime NOT NULL default '0000-00-00 00:00:00',
+			                 PRIMARY KEY (`id`),
+			                 UNIQUE (`login`)
+			             ) DEFAULT CHARSET=utf8");
 
 			# Groups table
-			$sql->query("create table if not exists `__groups` (
-			                 `id` int(11) not null auto_increment,
-			                 `name` varchar(100) not null default '',
-		                     `permissions` longtext not null,
-			                 primary key (`id`),
-			                 unique (`name`)
-			             ) default charset=utf8");
+			$sql->query("CREATE TABLE IF NOT EXISTS `__groups` (
+			                 `id` int(11) NOT NULL auto_increment,
+			                 `name` varchar(100) NOT NULL default '',
+		                     `permissions` longtext NOT NULL,
+			                 PRIMARY KEY (`id`),
+			                 UNIQUE (`name`)
+			             ) DEFAULT CHARSET=utf8");
 
 			# Permissions table
-			$sql->query("create table if not exists `__permissions` (
-			                 `id` int(11) not null auto_increment,
-			                 `name` varchar(100) not null default '',
-			                 primary key (`id`),
-			                 unique (`name`)
-			             ) default charset=utf8");
+			$sql->query("CREATE TABLE IF NOT EXISTS `__permissions` (
+			                 `id` int(11) NOT NULL auto_increment,
+			                 `name` varchar(100) NOT NULL default '',
+			                 PRIMARY KEY (`id`),
+			                 UNIQUE (`name`)
+			             ) DEFAULT CHARSET=utf8");
+
+			# Sessions table
+			$sql->query("CREATE TABLE IF NOT EXISTS `__sessions` (
+			                 `id` varchar(32) NOT NULL default '',
+			                 `data` longtext,
+			                 `user_id` varchar(16) default NULL,
+			                 `created_at` datetime NOT NULL default '0000-00-00 00:00:00',
+			                 `updated_at` datetime NOT NULL default '0000-00-00 00:00:00',
+			                 PRIMARY KEY (`id`)
+			             ) DEFAULT CHARSET=utf8");
 
 			$permissions = array("view_site",
 			                     "change_settings",

@@ -8,6 +8,12 @@
 		# Holds debug information for SQL queries.
 		public $debug = array();
 
+		# Integer: $queries
+		# Number of queries it takes to load the page.
+		public $queries = 0;
+
+		public $db;
+
 		/**
 		 * Function: __construct
 		 * The class constructor is private so there is only one connection.
@@ -15,13 +21,6 @@
 		private function __construct() {
 			$this->connected = false;
 		}
-
-		/**
-		 * Integer: $queries
-		 * Number of queries it takes to load the page.
-		 */
-		public $queries = 0;
-		public $db;
 
 		/**
 		 * Function: load

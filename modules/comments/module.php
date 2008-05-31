@@ -816,11 +816,11 @@ $(function(){
 			$options["select"][]  = "MAX(`__comments`.`id`) as `latest_comment`";
 
 			$options["left_join"][] = array("table" => "comments",
-			                                "where" => array("`__comments`.`post_id` = `__posts`.`id` and
-			                                                  `__comments`.`status` != 'denied' or (
-			                                                      `__comments`.`status` = 'denied' and (
-			                                                          `__comments`.`author_ip` = :current_ip or (
-			                                                              `__comments`.`user_id` != '' and
+			                                "where" => array("`__comments`.`post_id` = `__posts`.`id` AND
+			                                                  `__comments`.`status` != 'denied' OR (
+			                                                      `__comments`.`status` = 'denied' AND (
+			                                                          `__comments`.`author_ip` = :current_ip OR (
+			                                                              `__comments`.`user_id` != '' AND
 			                                                              `__comments`.`user_id` = :user_id
 			                                                          )
 			                                                      )

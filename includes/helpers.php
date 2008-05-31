@@ -259,12 +259,14 @@
 	 * Parameters:
 	 *     $formatting - The formatting for date().
 	 *     $time - The string to convert to time (typically a datetime).
+	 *     $strftime - Use `strftime` instead of `date`?
 	 */
-	function when($formatting, $time, $strftime = false) {
+	function when($formatting, $when, $strftime = false) {
+		$time = (is_numeric($when)) ? $when : @strtotime($when) ;
 		if ($strftime)
-			return @strftime($formatting, @strtotime($time));
+			return @strftime($formatting, $time);
 		else
-			return @date($formatting, @strtotime($time));
+			return @date($formatting, $time);
 	}
 
 	/**
@@ -278,7 +280,8 @@
 		# If $when is not set (common behaviour), set it to a formatted version of the current time.
 		# It is formatted so that strtotime doesn't freak out.
 		fallback($when, @date("c", (time() + Config::current()->time_offset)));
-		return @date("Y-m-d H:i:s", @strtotime($when));
+		$time = (is_numeric($when)) ? $when : @strtotime($when) ;
+		return @date("Y-m-d H:i:s", $time);
 	}
 
 	/**

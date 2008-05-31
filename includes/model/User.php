@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * Class: User
-	 * The model for the Users SQL table.
+	 * The User model.
 	 */
 	class User extends Model {
 		public $no_results = false;
@@ -9,17 +9,20 @@
 
 		/**
 		 * Function: __construct
-		 * Grabs the specified user and injects it into the <User> class.
-		 *
-		 * Parameters:
-		 *     $user_id - The user's unique ID.
-		 *     $options - An array of options:
-		 *         where: A SQL query to grab the user by.
-		 *         params: Parameters to use for the "where" option.
-		 *         read_from: An associative array of values to load into the <User> class.
+		 * See Also:
+		 *     <Model::grab>
 		 */
 		public function __construct($user_id, $options = array()) {
 			parent::grab($this, $user_id, $options);
+		}
+
+		/**
+		 * Function: find
+		 * See Also:
+		 *     <Model::search>
+		 */
+		static function find($options = array()) {
+			return parent::search(get_class(), $options);
 		}
 
 		/**
@@ -148,17 +151,6 @@
 		 */
 		static function delete($id) {
 			parent::destroy(get_class(), $id);
-		}
-
-		/**
-		 * Function: find
-		 * Grab all users that match the passed options.
-		 *
-		 * Returns:
-		 * An array of <User>s from the result.
-		 */
-		static function find($options = array()) {
-			return parent::search(get_class(), $options);
 		}
 
 		/**

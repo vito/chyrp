@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * Class: Page
-	 * The model for the Pages SQL table.
+	 * The Page model.
 	 */
 	class Page extends Model {
 		public $no_results = false;
@@ -9,19 +9,22 @@
 
 		/**
 		 * Function: __construct
-		 * Grabs the specified page and injects it into the <Page> class.
-		 *
-		 * Parameters:
-		 *     $page_id - The page's unique ID.
-		 *     $options - An array of options:
-		 *         where: A SQL query to grab the page by.
-		 *         params: Parameters to use for the "where" option.
-		 *         read_from: An associative array of values to load into the <Page> class.
+		 * See Also:
+		 *     <Model::grab>
 		 */
 		public function __construct($page_id = null, $options = array()) {
 			if (!isset($page_id) and empty($options)) return;
 			parent::grab($this, $page_id, $options);
 			$this->slug =& $this->url;
+		}
+
+		/**
+		 * Function: find
+		 * See Also:
+		 *     <Model::search>
+		 */
+		static function find($options = array()) {
+			return parent::search(get_class(), $options);
 		}
 
 		/**
@@ -137,17 +140,6 @@
 
 			while ($child = SQL::current()->select("pages", "id", "`parent_id` = :id", "id", array(":id" => $page_id))->fetchObject())
 				parent::destroy(get_class(), $child->id);
-		}
-
-		/**
-		 * Function: find
-		 * Grab all pages that match the passed options.
-		 *
-		 * Returns:
-		 * An array of <Page>s from the result.
-		 */
-		static function find($options = array()) {
-			return parent::search(get_class(), $options);
 		}
 
 		/**

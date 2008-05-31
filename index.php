@@ -195,5 +195,4 @@
 	}
 
 	$trigger->call("bottom");
-	$sql->db = null;
 	ob_end_flush();

@@ -6,6 +6,26 @@
 	 * The basis for the Models system.
 	 */
 	class Model {
+		/**
+		 * Function: grab
+		 * Grabs a single model from the database.
+		 *
+		 * Parameters:
+		 *     $model - The instantiated model class to pass the object to (e.g. Post).
+		 *     $id - The ID of the model to grab. Can be null.
+		 *     $options - An array of options, mostly SQL things.
+		 *
+		 * Options:
+		 *     select - What to grab from the table. @(modelname)s@ by default.
+		 *     from - Which table(s) to grab from? @(modelname)s.*@ by default.
+		 *     left_join - A @LEFT JOIN@ associative array. Example: @array("table" => "foo", "where" => "foo = :bar")@
+		 *     where - A string or array of conditions. @array("`__(modelname)s`.`id` = :id")@ by default.
+		 *     params - An array of parameters to pass to PDO. @array(":id" => $id)@ by default.
+		 *     group - A string or array of "GROUP BY" conditions.
+		 *     order - What to order the SQL result by. @`__(modelname)s`.`id` DESC@ by default.
+		 *     offset - Offset for SQL query.
+		 *     read_from - An array to read from instead of performing another query.
+		 */
 		protected static function grab($model, $id, $options = array()) {
 			global $loaded_models, $action;
 			$model_name = strtolower(get_class($model));
@@ -19,7 +39,7 @@
 			fallback($options["where"], array("`__".$model_name."s`.`id` = :id"));
 			fallback($options["params"], array(":id" => $id));
 			fallback($options["group"], array());
-			fallback($options["order"], "`__".$model_name."s`.`id` desc");
+			fallback($options["order"], "`__".$model_name."s`.`id` DESC");
 			fallback($options["offset"], null);
 			fallback($options["read_from"], array());
 
@@ -58,6 +78,27 @@
 				$model->updated = $model->updated_at != "0000-00-00 00:00:00";
 		}
 
+		/**
+		 * Function: search
+		 * Returns an array of model objects that are found by the $options array.
+		 *
+		 * Parameters:
+		 *     $options - An array of options, mostly SQL things.
+		 *
+		 * Options:
+		 *     select - What to grab from the table. @(modelname)s@ by default.
+		 *     from - Which table(s) to grab from? @(modelname)s.*@ by default.
+		 *     left_join - A @LEFT JOIN@ associative array. Example: @array("table" => "foo", "where" => "foo = :bar")@
+		 *     where - A string or array of conditions. @array("`__(modelname)s`.`id` = :id")@ by default.
+		 *     params - An array of parameters to pass to PDO. @array(":id" => $id)@ by default.
+		 *     group - A string or array of "GROUP BY" conditions.
+		 *     order - What to order the SQL result by. @`__(modelname)s`.`id` DESC@ by default.
+		 *     offset - Offset for SQL query.
+		 *     limit - Limit for SQL query.
+		 *     pagination - Whether or not to paginate the results.
+		 *     per_page - If pagination is @true@, how many results per page?
+		 *     page_var - If pagination is @true@, what to name the page variable?
+		 */
 		protected static function search($model, $options = array()) {
 			global $paginate, $action;
 
@@ -114,7 +155,7 @@
 		 *
 		 * Parameters:
 		 *     $model - The model name.
-		 *     $id - The object to delete.
+		 *     $id - The ID of the object to delete.
 		 */
 		protected static function destroy($model, $id) {
 			$class = $model;

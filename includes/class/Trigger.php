@@ -1,14 +1,5 @@
 <?php
 	/**
-	 * Function: cmp
-	 * Sorts actions by priority when used with usort.
-	 */
-	function cmp($a, $b) {
-		if (empty($a) or empty($b)) return 0;
-		return ($a["priority"] < $b["priority"]) ? -1 : 1 ;
-	}
-
-	/**
 	 * Class: Trigger
 	 * Controls and keeps track of all of the Triggers and events.
 	 */
@@ -18,6 +9,15 @@
 		private $modified_text = array();
 
 		private function __construct() {}
+
+		/**
+		 * Function: cmp
+		 * Sorts actions by priority when used with usort.
+		 */
+		function cmp($a, $b) {
+			if (empty($a) or empty($b)) return 0;
+			return ($a["priority"] < $b["priority"]) ? -1 : 1 ;
+		}
 
 		/**
 		 * Function: call
@@ -34,7 +34,7 @@
 			$caller = (is_array($arg) and $array) ? "call_user_func_array" : "call_user_func" ;
 
 			if (isset($this->priorities[$name])) { # Predefined priorities?
-				usort($this->priorities[$name], "cmp");
+				usort($this->priorities[$name], array($this, "cmp"));
 
 				foreach ($this->priorities[$name] as $action) {
 					$caller($action["function"], $arg);
@@ -66,7 +66,7 @@
 			global $modules;
 
 			if (isset($this->priorities[$name])) { # Predefined priorities?
-				usort($this->priorities[$name], "cmp");
+				usort($this->priorities[$name], array($this, "cmp"));
 				foreach ($this->priorities[$name] as $action) {
 					if (!empty($arguments)) {
 						$params = array_merge(array($this->modified($name, $target)), (array) $arguments);

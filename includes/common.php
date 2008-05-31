@@ -11,7 +11,7 @@
 	 *     GPL-3
 	 *
 	 * Chyrp Copyright:
-	 *     Copyright (c) 2008 Alex Suraci, <http://i.am.toogeneric.com/>
+	 *     Copyright (c) 2008 Alex Suraci, <http://ecks.tc/>
 	 */
 
 	# Constant: CHYRP_VERSION
@@ -50,6 +50,18 @@
 	# Absolute path to /includes
 	define('INCLUDES_DIR', MAIN_DIR."/includes");
 
+	# Constant: MODULES_DIR
+	# Absolute path to /modules
+	define('MODULES_DIR', MAIN_DIR."/modules");
+
+	# Constant: FEATHERS_DIR
+	# Absolute path to /feathers
+	define('FEATHERS_DIR', MAIN_DIR."/feathers");
+
+	# Constant: THEMES_DIR
+	# Absolute path to /themes
+	define('THEMES_DIR', MAIN_DIR."/themes");
+
 	# File: Helpers
 	# Various functions used throughout Chyrp's code.
 	require_once INCLUDES_DIR."/helpers.php";
@@ -71,31 +83,6 @@
 	# Load the configuration settings
 	$config->load(INCLUDES_DIR."/config.yaml.php");
 
-	session_name(sanitize(camelize($config->name), false, true));
-	session_start();
-
-	# Keep track of the session's forced expiry date.
-	if (!isset($_COOKIE[session_name()."_ExpireDate"])) {
-		cookie_cutter(session_name()."_ExpireDate", time() + (60 * 60 * 24 * 30));
-		redirect(self_url());
-	}
-
-	# Make the session last forever (recycles every 30 days).
-	if ((int) $_COOKIE[session_name()."_ExpireDate"] - time() <= 0)
-		cookie_cutter(session_name(), $_COOKIE[session_name()], time() + (60 * 60 * 24 * 30));
-
-	# Constant: MODULES_DIR
-	# Absolute path to /modules
-	define('MODULES_DIR', MAIN_DIR."/modules");
-
-	# Constant: FEATHERS_DIR
-	# Absolute path to /feathers
-	define('FEATHERS_DIR', MAIN_DIR."/feathers");
-
-	# Constant: THEMES_DIR
-	# Absolute path to /themes
-	define('THEMES_DIR', MAIN_DIR."/themes");
-
 	# Constant: THEME_DIR
 	# Absolute path to /themes/(current theme)
 	define('THEME_DIR', MAIN_DIR."/themes/".$config->theme);
@@ -115,6 +102,20 @@
 	sanitize_input($_POST);
 	sanitize_input($_COOKIE);
 	sanitize_input($_REQUEST);
+
+	require_once INCLUDES_DIR."/class/Session.php"; # Session handler
+
+	if (!JAVASCRIPT) {
+		session_set_save_handler(array("Session", "open"),
+		                         array("Session", "close"),
+		                         array("Session", "read"),
+		                         array("Session", "write"),
+		                         array("Session", "destroy"),
+		                         array("Session", "gc"));
+		session_set_cookie_params(60 * 60 * 24 * 30);
+		session_name(sanitize(camelize($config->name), false, true));
+		session_start();
+	}
 
 	# File: Model
 	# See Also:
