@@ -813,7 +813,6 @@
 			$this->context["enabled_modules"] = $this->context["disabled_modules"] = array();
 
 			$issues = array();
-			$dependencies = array();
 			if ($open = opendir(MODULES_DIR)) {
 				while (($folder = readdir($open)) !== false) {
 					if (!file_exists(MODULES_DIR."/".$folder."/module.php") or !file_exists(MODULES_DIR."/".$folder."/info.yaml")) continue;
@@ -832,11 +831,6 @@
 								$info["conflicts_true"][] = $conflict;
 							}
 
-					if (!empty($info["depends"]))
-						foreach ($info["depends"] as $dependency)
-							if (!module_enabled($dependency))
-								$dependencies[$folder] = true;
-
 					$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
 					$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
 
@@ -851,9 +845,7 @@
 					                                           "author" => $info["author"],
 					                                           "conflict" => isset($issues[$folder]),
 					                                           "conflicts" => $info["conflicts_true"],
-					                                           "depends" => isset($dependencies[$folder]),
-					                                           "conflicts_class" => (isset($issues[$folder])) ? " conflict conflict_".join(" conflict_", $info["conflicts_true"]) : "",
-					                                           "depends_class" => (isset($dependencies[$folder])) ? " depends" : "");
+					                                           "conflicts_class" => (isset($issues[$folder])) ? " conflict conflict_".join(" conflict_", $info["conflicts_true"]) : "");
 				}
 			}
 

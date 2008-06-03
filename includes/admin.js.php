@@ -195,10 +195,8 @@ $(function(){
 			var classes = $(this).attr("class").split(" ")
 			classes.shift() // Remove the module's safename class
 
-			// Remove any classes we don't want
-			$(["conflict", "depends"]).each(function(){
-				remove_from_array(this, classes);
-			})
+			// Remove the "conflict" class
+			remove_from_array("conflict", classes);
 
 			for (i = 0; i < classes.length; i++) {
 				var conflict = classes[i].replace("conflict_", "module_")
