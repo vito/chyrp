@@ -106,9 +106,10 @@ $(function(){
 	$(".enable h2, .disable h2").append(" <span class=\"sub\"><?php echo __("(drag)"); ?></span>")
 	$(".disable ul li, .enable ul li").draggable({ zIndex: 100 })
 	$(".enable ul, .disable ul").droppable({
-		accept: ".enable ul.extend li",
+		accept: "ul.extend li",
 		activeClass: "active",
 		hoverClass: "hover",
+		revert: true,
 		drop: function(ev, ui) {
 			var classes = $(this).parent().attr("class").split(" ")
 			var box = $(this)
