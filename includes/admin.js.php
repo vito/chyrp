@@ -157,7 +157,7 @@ $(function(){
 		if ($(".disable ul.extend").height() > $(this).height())
 			$(this).height($(".disable ul.extend").height())
 	})
-<?php if ($_GET['action'] == "extend_modules"): ?>
+<?php if ($_GET['action'] == "extend_modules" or $_GET['action'] == "extend_feathers"): ?>
 
 	function remove_from_array(value, array) {
 		for (i = 0; i < array.length; i++)
