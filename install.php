@@ -1,6 +1,7 @@
 <?php
 	define('BASE_DIR', dirname(__FILE__));
 	define('INCLUDES_DIR', BASE_DIR."/includes");
+	define('DEBUG', false);
 	define('JAVASCRIPT', false);
 	define('ADMIN', false);
 	define('AJAX', false);
