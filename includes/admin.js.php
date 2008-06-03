@@ -184,9 +184,8 @@ $(function(){
 			position: "absolute",
 			top: 0,
 			bottom: 0,
-			zIndex: 1,
-			margin: "0 auto"
-		}).attr({ width: ($("#content.column").width() + 150), height: $(document).height() })
+			zIndex: 1
+		}).attr({ width: $(document).width(), height: $(document).height() })
 
 		var canvas = document.getElementById("canvas").getContext("2d")
 		var displayed = []
