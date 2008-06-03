@@ -76,7 +76,7 @@ class Twig_Compiler
 
 	public function pushContext()
 	{
-		$this->raw('$context[\'::parent\'] = $context;'. "\n");
+		$this->raw('$context[\'::parent\'] = $parent = $context;'. "\n");
 	}
 
 	public function popContext()
