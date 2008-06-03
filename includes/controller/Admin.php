@@ -660,7 +660,6 @@
 				$posts_atom.= '	<id>tag:'.parse_url($config->url, PHP_URL_HOST).','.@date("Y", $latest_timestamp).':Chyrp</id>'."\r";
 				$posts_atom.= '	<updated>'.@date("c", $latest_timestamp).'</updated>'."\r";
 				$posts_atom.= '	<link href="'.$config->url.'" rel="self" type="application/atom+xml" />'."\r";
-				$posts_atom.= '	<link href="'.$config->url.'" rel="self" type="application/atom+xml" />'."\r";
 				$posts_atom.= '	<generator uri="http://chyrp.net/" version="'.CHYRP_VERSION.'">Chyrp</generator>'."\r";
 
 				foreach ($posts as $post) {
@@ -743,7 +742,6 @@
 				$pages_atom.= '	<subtitle>'.htmlspecialchars($config->description, ENT_NOQUOTES, "utf-8").'</subtitle>'."\r";
 				$pages_atom.= '	<id>tag:'.parse_url($config->url, PHP_URL_HOST).','.@date("Y", $latest_timestamp).':Chyrp</id>'."\r";
 				$pages_atom.= '	<updated>'.@date("c", $latest_timestamp).'</updated>'."\r";
-				$pages_atom.= '	<link href="'.$config->url.'" rel="self" type="application/atom+xml" />'."\r";
 				$pages_atom.= '	<link href="'.$config->url.'" rel="self" type="application/atom+xml" />'."\r";
 				$pages_atom.= '	<generator uri="http://chyrp.net/" version="'.CHYRP_VERSION.'">Chyrp</generator>'."\r";
 
