@@ -1,8 +1,9 @@
 <?php
+	$title = (!empty($_GET['title'])) ? ": ".html_entity_decode(urldecode($_GET['title'])) : "" ;
 	echo "<".'?xml version="1.0" encoding="utf-8"?'.">\r";
 ?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-	<title><?php echo htmlspecialchars($config->name, ENT_NOQUOTES, "utf-8"); ?></title>
+	<title><?php echo htmlspecialchars($config->name.$title, ENT_NOQUOTES, "utf-8"); ?></title>
 	<subtitle><?php echo htmlspecialchars($config->description, ENT_NOQUOTES, "utf-8"); ?></subtitle>
 	<id><?php echo self_url() ?></id>
 	<updated><?php echo @date("c", $latest_timestamp); ?></updated>

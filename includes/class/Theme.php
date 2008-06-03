@@ -222,11 +222,17 @@
 			              ((count($_GET) == 1 and $_GET['action'] == "index") ?
 			                "/?feed" :
 			                  "&amp;feed") ;
+			$append.= ($config->clean_urls) ?
+			             "/".urlencode($this->title) :
+			             '&amp;title='.urlencode($this->title) ;
 
 			$route = Route::current();
 			$feeds = '<link rel="alternate" type="application/atom+xml" title="'.$config->name.' Feed" href="'.$route->url("feed/").'" />'."\n";
-			foreach ($pluralizations["feathers"] as $normal => $plural)
-				$feeds.= "\t\t".'<link rel="alternate" type="application/atom+xml" title="'.ucfirst($plural).' Feed" href="'.$route->url($plural."/feed/").'" />'."\n";
+
+			foreach ($pluralizations["feathers"] as $normal => $plural) {
+				$feeds.= "\t\t".'<link rel="alternate" type="application/atom+xml" title="'.ucfirst($plural).' Feed" href="'.$route->url($plural."/feed/".urlencode(ucfirst($plural))."/").'" />'."\n";
+			}
+
 			$feeds.= "\t\t".'<link rel="alternate" type="application/atom+xml" title="Current Page (if applicable)" href="'.$config->url.$request.$append.'" />';
 			return $feeds;
 		}

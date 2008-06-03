@@ -29,6 +29,7 @@
 		                     '/\/archive\/([^\/]+)\/([^\/]+)\//' => '/?action=archive&amp;year=$1&amp;month=$2',
 		                     '/\/bookmarklet\/([^\/]+)\//'       => '/?action=bookmarklet&amp;status=$1',
 		                     '/\/theme_preview\/([^\/]+)\//'     => '/?action=theme_preview&amp;theme=$1',
+		                     '/\/([^\/]+)\/feed\/([^\/]+)\//'    => '/?action=$1&amp;feed&amp;title=$2',
 		                     '/\/([^\/]+)\/feed\//'              => '/?action=$1&amp;feed');
 
 		/**
@@ -132,6 +133,12 @@
 			# Feed
 			if (preg_match("/\/feed\/?$/", $request)) {
 				$_GET['feed'] = "true";
+
+				if ($arg[0] == "feed") # Don't set the $_GET['action'] to "feed" (bottom of this function).
+					return $_GET['action'] = "index";
+			} elseif (preg_match("/\/feed\/([^\/]+)\/?$/", $request, $title)) { # Feed with a title parameter
+				$_GET['feed'] = "true";
+				$_GET['title'] = $title[1];
 
 				if ($arg[0] == "feed") # Don't set the $_GET['action'] to "feed" (bottom of this function).
 					return $_GET['action'] = "index";
