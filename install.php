@@ -202,7 +202,7 @@
 			if (!file_exists(BASE_DIR."/.htaccess"))
 				if (!@file_put_contents(BASE_DIR."/.htaccess", $htaccess))
 					$errors[] = __("Could not generate .htaccess file. Clean URLs will not be available.");
-			elseif (file_exists(BASE_DIR."/.htaccess") and !preg_match("/".preg_quote($htaccess, "/")."/", file_get_contents(BASE_DIR."/.htaccess"))))
+			elseif (file_exists(BASE_DIR."/.htaccess") and !preg_match("/".preg_quote($htaccess, "/")."/", file_get_contents(BASE_DIR."/.htaccess")))
 				if (!@file_put_contents(BASE_DIR."/.htaccess", "\n\n".$htaccess, FILE_APPEND))
 					$errors[] = __("Could not generate .htaccess file. Clean URLs will not be available.");
 
