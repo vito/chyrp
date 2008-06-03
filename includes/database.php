@@ -93,6 +93,14 @@
 		public function query($query, $params = array(), $throw_exceptions = false) {
 			$this->queries++;
 
+			# Ensure that every param in $params exists in the query.
+			# If it doesn't, remove it from $params.
+			preg_match_all("/:([a-zA-Z0-9_]+)/", $query, $params_in_query);
+			$query_params = $params_in_query[0];
+			if (count($query_params) != count(array_keys($params)))
+				foreach (array_diff($params, $query_params) as $param => $val)
+					unset($params[$param]);
+
 			try {
 				$query = str_replace("__", $this->prefix, $query);
 
