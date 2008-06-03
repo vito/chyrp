@@ -196,16 +196,15 @@
 			# Insert the default groups (see above)
 			foreach($groups as $name => $permission)
 				$sql->query("insert into `__groups` set
-			                 `name` = '".ucfirst($name)."',
-			                 `permissions` = '".$permission."'");
+				             `name` = '".ucfirst($name)."',
+				             `permissions` = '".$permission."'");
 
-			if (!file_exists(BASE_DIR."/.htaccess") and !is_writable(BASE_DIR))
-				$errors[] = __("Could not generate .htaccess file. Clean URLs will not be available.");
-			else {
-				$open_htaccess = fopen(BASE_DIR."/.htaccess", "w");
-				fwrite($open_htaccess, $htaccess);
-				fclose($open_htaccess);
-			}
+			if (!file_exists(BASE_DIR."/.htaccess"))
+				if (!@file_put_contents(BASE_DIR."/.htaccess", $htaccess))
+					$errors[] = __("Could not generate .htaccess file. Clean URLs will not be available.");
+			elseif (file_exists(BASE_DIR."/.htaccess") and !preg_match("/".preg_quote($htaccess, "/")."/", file_get_contents(BASE_DIR."/.htaccess"))))
+				if (!@file_put_contents(BASE_DIR."/.htaccess", "\n\n".$htaccess, FILE_APPEND))
+					$errors[] = __("Could not generate .htaccess file. Clean URLs will not be available.");
 
 			$config->set("name", $_POST['name']);
 			$config->set("description", $_POST['description']);
