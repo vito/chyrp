@@ -107,9 +107,9 @@ $(function(){
 	$(".disable ul li, .enable ul li").draggable({ zIndex: 100 })
 	$(".enable ul, .disable ul").droppable({
 		accept: "ul.extend li",
+		tolerance: "pointer",
 		activeClass: "active",
 		hoverClass: "hover",
-		revert: true,
 		drop: function(ev, ui) {
 			var classes = $(this).parent().attr("class").split(" ")
 			var box = $(this)
