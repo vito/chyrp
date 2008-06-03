@@ -48,8 +48,6 @@
 					<p><a href="{% url "feed/" %}">Feed</a> / theme &copy; <a href="http://lofisoami.com/">Aaron MacDonald</a> 2007</p>
 					<span>${ "Powered by <a href=\"http://chyrp.net/\">Chyrp</a>" | translate }</span>
 				</div>
-				${ SESSION | inspect }
-				${ COOKIE | inspect }
 		    </div>
 		    <div class="sidebar">
 				<form action="{% url "search/" %}" method="get" accept-charset="utf-8">
