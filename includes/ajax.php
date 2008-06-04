@@ -34,6 +34,12 @@
 			<input class="<?php echo $field["type"]; ?><?php if (isset($field["classes"])): ?> <?php echo join(" ", $field["classes"]); ?><?php endif; ?>" type="<?php echo $field["type"]; ?>" name="<?php echo $field["attr"]; ?>" value="<?php echo fix($post->$field["attr"]); ?>" id="$field["attr"]" />
 			<?php elseif ($field["type"] == "text_block"): ?>
 			<textarea class="wide<?php if (isset($field["classes"])): ?> <?php echo join(" ", $field["classes"]); ?><?php endif; ?>" rows="<?php echo fallback($field["rows"], 12, true); ?>" name="<?php echo $field["attr"]; ?>" id="<?php echo $field["attr"]; ?>" cols="50"><?php echo fix($post->$field["attr"]); ?></textarea>
+			<?php elseif ($field["type"] == "select"): ?>
+			<select name="<?php echo $field["attr"]; ?>" id="<?php echo $field["attr"]; ?>"<?php if (isset($field["classes"])): ?> class="<?php echo join(" ", $field["classes"]); ?>"<?php endif; ?>>
+				<?php foreach ($field["options"] as $value => $name): ?>
+				<option value="<?php echo fix($value); ?>"><?php echo fix($name); ?></option>
+				<?php endforeach; ?>
+			</select>
 			<?php endif; ?>
 		</p>
 <?php endforeach; ?>
