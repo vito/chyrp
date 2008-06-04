@@ -208,7 +208,7 @@
 				error(__("No ID Specified"), __("An ID is required to edit a page."));
 
 			$this->context["page"] = new Page($_GET['id']);
-			$this->context["pages"] = Page::find(array("where" => "`id` != :id", "params" => array(":id" => $_GET['id'])));
+			$this->context["pages"] = Page::find(array("where" => "`__pages`.`id` != :id", "params" => array(":id" => $_GET['id'])));
 		}
 
 		/**
@@ -322,9 +322,9 @@
 
 			$this->context["default_group"] = new Group($config->default_group);
 			$this->context["groups"] = Group::find(array("pagination" => false,
-			                                             "where" => array("`id` != :guest_id", "`id` != :default_id"),
+			                                             "where" => array("`__users`.`id` != :guest_id", "`__users`.`id` != :default_id"),
 			                                             "params" => array(":guest_id" => $config->guest_group, "default_id" => $config->default_group),
-			                                             "order" => "`id` desc"));
+			                                             "order" => "`__groups`.`id` desc"));
 		}
 
 		/**
@@ -373,8 +373,8 @@
 
 			$this->context["user"] = new User($_GET['id']);
 			$this->context["groups"] = Group::find(array("pagination" => false,
-			                                             "order" => "`id` asc",
-			                                             "where" => "`id` != :guest_id",
+			                                             "order" => "`__groups`.`id` asc",
+			                                             "where" => "`__groups`.`id` != :guest_id",
 			                                             "params" => array(":guest_id" => Config::current()->guest_group)));
 		}
 
@@ -552,8 +552,8 @@
 				error(__("Access Denied"), __("You do not have sufficient privileges to delete groups."));
 
 			$this->context["group"] = new Group($_GET['id']);
-			$this->context["groups"] = Group::find(array("where" => "`id` != :group_id",
-			                                             "order" => "`id` asc",
+			$this->context["groups"] = Group::find(array("where" => "`__groups`.`id` != :group_id",
+			                                             "order" => "`__groups`.`id` asc",
 			                                             "pagination" => false,
 			                                             "params" => array(":group_id" => $_GET['id'])));
 		}
@@ -603,7 +603,7 @@
 				$user = new User(null, array("where" => "`login` = :search", "params" => array(":search" => $_GET['search'])));
 				$this->context["groups"] = array($user->group());
 			} else
-				$this->context["groups"] = Group::find(array("per_page" => 25, "order" => "`id` asc"));
+				$this->context["groups"] = Group::find(array("per_page" => 25, "order" => "`__groups`.`id` asc"));
 
 			$this->context["updated"] = isset($_GET['updated']);
 			$this->context["deleted"] = isset($_GET['deleted']);
@@ -1108,7 +1108,7 @@
 		 * User Settings page.
 		 */
 		public function user_settings() {
-			$this->context["groups"] = Group::find(array("pagination" => false, "order" => "`id` desc"));
+			$this->context["groups"] = Group::find(array("pagination" => false, "order" => "`__groups`.`id` desc"));
 		}
 
 		/**

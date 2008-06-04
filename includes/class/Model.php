@@ -33,13 +33,13 @@
 			if ($model_name == "visitor")
 				$model_name = "user";
 
-			fallback($options["select"], "__".$model_name."s.*");
-			fallback($options["from"], ($model_name == "visitor" ? "users" : $model_name."s"));
+			fallback($options["select"], "__".pluralize($model_name).".*");
+			fallback($options["from"], ($model_name == "visitor" ? "users" : pluralize($model_name)));
 			fallback($options["left_join"], array());
-			fallback($options["where"], array("`__".$model_name."s`.`id` = :id"));
+			fallback($options["where"], array("`__".pluralize($model_name)."`.`id` = :id"));
 			fallback($options["params"], array(":id" => $id));
 			fallback($options["group"], array());
-			fallback($options["order"], "`__".$model_name."s`.`id` DESC");
+			fallback($options["order"], "`__".pluralize($model_name)."`.`id` DESC");
 			fallback($options["offset"], null);
 			fallback($options["read_from"], array());
 
@@ -107,13 +107,13 @@
 			if ($model_name == "visitor")
 				$model_name = "user";
 
-			fallback($options["select"], "__".strtolower($model)."s.*");
-			fallback($options["from"], strtolower($model)."s");
+			fallback($options["select"], "__".pluralize(strtolower($model)).".*");
+			fallback($options["from"], pluralize(strtolower($model)));
 			fallback($options["left_join"], array());
 			fallback($options["where"], null);
 			fallback($options["params"], array());
 			fallback($options["group"], array());
-			fallback($options["order"], "`__".strtolower($model)."s`.`id` DESC");
+			fallback($options["order"], "`__".pluralize(strtolower($model))."`.`id` DESC");
 			fallback($options["offset"], null);
 			fallback($options["limit"], null);
 			fallback($options["pagination"], true);
@@ -125,8 +125,8 @@
 			$options["select"] = (array) $options["select"];
 
 			$trigger = Trigger::current();
-			$options = $trigger->filter($action."_".$model_name."s_get", $options);
-			$options = $trigger->filter($model_name."s_get", $options);
+			$options = $trigger->filter($action."_".pluralize($model_name)."_get", $options);
+			$options = $trigger->filter(pluralize($model_name)."_get", $options);
 
 			$grab = (!$options["pagination"]) ?
 			         SQL::current()->select($options["from"], $options["select"], $options["where"], $options["order"], $options["params"], $options["limit"], $options["offset"], $options["group"], $options["left_join"]) :
@@ -163,6 +163,6 @@
 			if (Trigger::current()->exists("delete_".$model))
 				Trigger::current()->call("delete_".$model, new $class($id));
 
-			SQL::current()->delete($model."s", "`id` = :id", array(":id" => $id));
+			SQL::current()->delete(pluralize($model), "`__".pluralize($model)."`.`id` = :id", array(":id" => $id));
 		}
 	}

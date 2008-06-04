@@ -93,7 +93,7 @@
 			fallback($_POST['offset'], 0);
 			fallback($_POST['context']);
 
-			$id = (isset($_POST['id'])) ? "`id` = :id" : false ;
+			$id = (isset($_POST['id'])) ? "`__posts`.`id` = :id" : false ;
 			$reason = (isset($_POST['reason'])) ? "_".$_POST['reason'] : "" ;
 
 			switch($_POST['context']) {
@@ -163,10 +163,10 @@
 			break;
 		case "organize_pages":
 			foreach ($_POST['parent'] as $id => $parent)
-				$sql->update("pages", "`id` = :id", "`parent_id` = :parent", array(":id" => $id, ":parent" => $parent));
+				$sql->update("pages", "`__pages`.`id` = :id", "`parent_id` = :parent", array(":id" => $id, ":parent" => $parent));
 
 			foreach ($_POST['sort_pages'] as $index => $page)
-				$sql->update("pages", "`id` = :id", "`list_order` = :index", array(":id" => str_replace("page_list_", "", $page), ":index" => $index));
+				$sql->update("pages", "`__pages`.`id` = :id", "`list_order` = :index", array(":id" => str_replace("page_list_", "", $page), ":index" => $index));
 
 			break;
 		case "enable_module": case "enable_feather":

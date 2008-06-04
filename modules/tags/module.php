@@ -109,7 +109,7 @@
 			global $private, $posts;
 
 			$posts = array();
-			foreach (SQL::current()->select("tags", "*", "`clean` LIKE :tag", "`id`", array(":tag" => "%{{".$_GET['name']."}}%"))->fetchAll() as $tag)
+			foreach (SQL::current()->select("tags", "*", "`clean` LIKE :tag", "`__tags`.`id`", array(":tag" => "%{{".$_GET['name']."}}%"))->fetchAll() as $tag)
 				$posts[] = new Post($tag["post_id"]);
 		}
 

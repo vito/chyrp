@@ -78,7 +78,7 @@
 				$params = array();
 			}
 
-			$id = SQL::current()->select("posts", "`id`", $where, null, $params)->fetchColumn();
+			$id = SQL::current()->select("posts", "`__posts`.`id`", $where, null, $params)->fetchColumn();
 			if (!Post::exists($id))
 				return new IXR_Error(33, __("I can't find a post from that URL."));
 

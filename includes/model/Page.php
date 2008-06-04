@@ -103,7 +103,7 @@
 
 			$sql = SQL::current();
 			$sql->update("pages",
-			             "`id` = :id",
+			             "`__pages`.`id` = :id",
 			             array(
 			                 "title" => ":title",
 			                 "body" => ":body",
@@ -154,7 +154,7 @@
 		 *     SQL result - if the SQL result isn't empty.
 		 */
 		static function info($column, $page_id) {
-			return SQL::current()->select("pages", $column, "`id` = :id", "`id` desc", array(":id" => $page_id))->fetchColumn();
+			return SQL::current()->select("pages", $column, "`__pages`.`id` = :id", "`__pages`.`id` desc", array(":id" => $page_id))->fetchColumn();
 		}
 
 		/**
@@ -171,7 +171,7 @@
 			$sql = SQL::current();
 			$check = $sql->select("pages",
 			                      "id",
-			                      "`id` = :id",
+			                      "`__pages`.`id` = :id",
 			                      "id",
 			                      array(
 			                          ":id" => $page_id

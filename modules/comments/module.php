@@ -61,7 +61,9 @@
 			Group::remove_permission("add_comment");
 			Group::remove_permission("add_comment_private");
 			Group::remove_permission("edit_comment");
+			Group::remove_permission("edit_own_comment");
 			Group::remove_permission("delete_comment");
+			Group::remove_permission("delete_own_comment");
 			Group::remove_permission("code_in_comments");
 		}
 

@@ -75,7 +75,7 @@
 		 */
 		public function update($name, $permissions) {
 			$sql = SQL::current();
-			$sql->update("groups", "`id` = :id",
+			$sql->update("groups", "`__groups`.`id` = :id",
 			             array("name" => ":name", "permissions" => ":permissions"),
 			             array(":name" => $name, ":permissions" => Spyc::YAMLDump($permissions), ":id" => $this->id));
 
@@ -105,7 +105,7 @@
 		 *     SQL result - if the SQL result isn't empty.
 		 */
 		static function info($column, $group_id) {
-			return SQL::current()->select("groups", $column, "`id` = :id", "`id` desc", array(":id" => $group_id))->fetchColumn();
+			return SQL::current()->select("groups", $column, "`__groups`.`id` = :id", "`__groups`.`id` desc", array(":id" => $group_id))->fetchColumn();
 		}
 
 		/**

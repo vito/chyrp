@@ -117,7 +117,7 @@
 
 			if (empty($clean) or empty($url))
 				$sql->update("posts",
-				             "`id` = :id",
+				             "`__posts`.`id` = :id",
 				             array(
 				                 "clean" => ":clean",
 				                 "url" => ":url"
@@ -174,7 +174,7 @@
 
 			$sql = SQL::current();
 			$sql->update("posts",
-			             "`id` = :id",
+			             "`__posts`.`id` = :id",
 			             array(
 			                 "xml" => ":xml",
 			                 "pinned" => ":pinned",

@@ -130,7 +130,7 @@
 			return $id;
 		}
 		static function info($column, $comment_id = null) {
-			return SQL::current()->select("comments", $column, "`id` = :id", "`id` desc", array(":id" => $comment_id))->fetchColumn();
+			return SQL::current()->select("comments", $column, "`__comments`.`id` = :id", "`__comments`.`id` desc", array(":id" => $comment_id))->fetchColumn();
 		}
 		public function editable() {
 			$visitor = Visitor::current();

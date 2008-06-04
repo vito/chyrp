@@ -54,7 +54,7 @@
 		 *     SQL result - if the SQL result isn't empty.
 		 */
 		static function info($column, $user_id) {
-			return SQL::current()->select("users", $column, "`id` = :id", "`id` desc", array(":id" => $user_id))->fetchColumn();
+			return SQL::current()->select("users", $column, "`__users`.`id` = :id", "`__users`.`id` desc", array(":id" => $user_id))->fetchColumn();
 		}
 
 		/**
@@ -121,7 +121,7 @@
 		public function update($login, $password, $full_name, $email, $website, $group_id) {
 			$sql = SQL::current();
 			$sql->update("users",
-			             "`id` = :id",
+			             "`__users`.`id` = :id",
 			             array(
 			                 "login" => ":login",
 			                 "password" => ":password",
