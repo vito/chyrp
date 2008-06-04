@@ -85,7 +85,7 @@
 	function to_2000() {
 		$config = Config::current();
 		$config->set("uploads_path", "/uploads/");
-		$config->set("file_url", $config->url);
+		$config->set("chyrp_url", $config->url);
 		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v2.0")."</p>\n";
 	}
 

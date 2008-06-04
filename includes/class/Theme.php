@@ -172,11 +172,11 @@
 				$glob = glob(THEME_DIR."/stylesheets/*.css");
 				foreach($glob as $file) {
 					$file = basename($file);
-					$stylesheets.= '<link rel="stylesheet" href="'.$config->file_url.'/themes/'.$theme.'/stylesheets/'.$file.'" type="text/css" media="'.($file == "print.css" ? "print" : "screen").'" charset="utf-8" />'.(count($glob) == $count ? "" : "\n\t\t");
+					$stylesheets.= '<link rel="stylesheet" href="'.$config->chyrp_url.'/themes/'.$theme.'/stylesheets/'.$file.'" type="text/css" media="'.($file == "print.css" ? "print" : "screen").'" charset="utf-8" />'.(count($glob) == $count ? "" : "\n\t\t");
 					$count++;
 				}
 			} else
-				$stylesheets = '<link rel="stylesheet" href="'.$config->file_url.'/themes/'.$theme.'/style.css" type="text/css" media="screen" charset="utf-8" />';
+				$stylesheets = '<link rel="stylesheet" href="'.$config->chyrp_url.'/themes/'.$theme.'/style.css" type="text/css" media="screen" charset="utf-8" />';
 
 			return $stylesheets;
 		}
@@ -201,9 +201,9 @@
 			$config = Config::current();
 			$trigger = Trigger::current();
 
-			$javascripts = $trigger->filter("scripts", '<script src="'.$config->file_url.'/includes/lib/gz.php?file=jquery.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".
-			                                           '<script src="'.$config->file_url.'/includes/lib/gz.php?file=plugins.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".
-			                                           '<script src="'.$config->file_url.'/includes/javascript.php?action='.$action.$args.'" type="text/javascript" charset="utf-8"></script>');
+			$javascripts = $trigger->filter("scripts", '<script src="'.$config->chyrp_url.'/includes/lib/gz.php?file=jquery.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".
+			                                           '<script src="'.$config->chyrp_url.'/includes/lib/gz.php?file=plugins.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".
+			                                           '<script src="'.$config->chyrp_url.'/includes/javascript.php?action='.$action.$args.'" type="text/javascript" charset="utf-8"></script>');
 
 			return $javascripts;
 		}
@@ -253,7 +253,7 @@
 			$this->context["visitor"]      = $visitor;
 			$this->context["archive_list"] = $this->list_archives();
 			$this->context["page_list"]    = $this->list_pages();
-			$this->context["theme"]        = array("url" => $config->file_url."/themes/".$config->theme);
+			$this->context["theme"]        = array("url" => $config->chyrp_url."/themes/".$config->theme);
 			$this->context["route"]        = array("action" => $action, "ajax" => AJAX);
 			$this->context["hide_admin"]   = isset($_SESSION["chyrp_hide_admin"]);
 			$this->context["pagination"]   = $paginate;

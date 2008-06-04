@@ -935,8 +935,8 @@
 			$this->context["changed"] = isset($_GET['changed']);
 			$this->context["current_theme"] = array("name" => $config->theme,
 			                                        "screenshot" => (file_exists(THEMES_DIR."/".$config->theme."/screenshot.png") ?
-			                                                            $config->file_url."/themes/".$config->theme."/screenshot.png" :
-			                                                            $config->file_url."/admin/images/noscreenshot.png"),
+			                                                            $config->chyrp_url."/themes/".$config->theme."/screenshot.png" :
+			                                                            $config->chyrp_url."/admin/images/noscreenshot.png"),
 					                                "info" => Spyc::YAMLLoad(THEMES_DIR."/".$config->theme."/info.yaml"));
 
 			$current_info =& $this->context["current_theme"]["info"];
@@ -963,8 +963,8 @@
 
 					$this->context["themes"][] = array("name" => $folder,
 					                                   "screenshot" => (file_exists(THEMES_DIR."/".$folder."/screenshot.png") ?
-					                                                       $config->file_url."/themes/".$folder."/screenshot.png" :
-					                                                       $config->file_url."/admin/images/noscreenshot.png"),
+					                                                       $config->chyrp_url."/themes/".$folder."/screenshot.png" :
+					                                                       $config->chyrp_url."/admin/images/noscreenshot.png"),
 					                                   "info" => $info);
 				}
 				closedir($open);
@@ -1056,8 +1056,8 @@
 				case "general":
 					$config->set("name", $_POST['name']);
 					$config->set("description", $_POST['description']);
-					$config->set("file_url", rtrim($_POST['file_url'], '/'));
-					$config->set("url", rtrim(fallback($_POST['url'], $_POST['file_url'], true), '/'));
+					$config->set("chyrp_url", rtrim($_POST['chyrp_url'], '/'));
+					$config->set("url", rtrim(fallback($_POST['url'], $_POST['chyrp_url'], true), '/'));
 					$config->set("email", $_POST['email']);
 					$config->set("time_offset", ($_POST['time_offset'] * 3600));
 					$config->set("locale", $_POST['locale']);

@@ -61,7 +61,7 @@
 				</p>
 				<br />
 				<button type="submit" class="positive right" accesskey="s">
-					<img src="<?php echo $config->file_url."/admin/icons/success.png"; ?>" alt="" /> <?php echo __("Aggregate!", "rss"); ?>
+					<img src="<?php echo $config->chyrp_url."/admin/icons/success.png"; ?>" alt="" /> <?php echo __("Aggregate!", "rss"); ?>
 				</button>
 				<br class="clear" />
 				<input type="hidden" name="hash" value="<?php echo $config->secure_hashkey; ?>" id="hash" />

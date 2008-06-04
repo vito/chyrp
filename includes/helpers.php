@@ -82,11 +82,11 @@
 	 * Function: redirect
 	 * Redirects to the given URL and exits immediately.
 	 */
-	function redirect($url, $use_file_url = false) {
+	function redirect($url, $use_chyrp_url = false) {
 		# Handle URIs without domain
 		if ($url[0] == "/")
-			$url = (ADMIN or $use_file_url) ?
-				Config::current()->file_url.$url :
+			$url = (ADMIN or $use_chyrp_url) ?
+				Config::current()->chyrp_url.$url :
 				Config::current()->url.$url;
 
 		header("Location: ".html_entity_decode($url));

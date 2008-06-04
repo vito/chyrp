@@ -142,14 +142,14 @@
 			if (!$this->editable()) return;
 			fallback($text, __("Edit"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->file_url.'/admin/?action=edit_comment&amp;id='.$this->id.'" title="Edit" class="comment_edit_link edit_link" id="comment_edit_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->chyrp_url.'/admin/?action=edit_comment&amp;id='.$this->id.'" title="Edit" class="comment_edit_link edit_link" id="comment_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 		public function delete_link($text = null, $before = null, $after = null){
 			$visitor = Visitor::current();
 			if (!$this->deletable()) return;
 			fallback($text, __("Delete"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->file_url.'/admin/?action=delete_comment&amp;id='.$this->id.'" title="Delete" class="comment_delete_link delete_link" id="comment_delete_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->chyrp_url.'/admin/?action=delete_comment&amp;id='.$this->id.'" title="Delete" class="comment_delete_link delete_link" id="comment_delete_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 		public function author_link() {
 			if ($this->author_url != "") # If a URL is set

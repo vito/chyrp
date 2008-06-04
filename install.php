@@ -210,7 +210,7 @@
 			$config->set("name", $_POST['name']);
 			$config->set("description", $_POST['description']);
 			$config->set("url", $url);
-			$config->set("file_url", $url);
+			$config->set("chyrp_url", $url);
 			$config->set("email", $_POST['email']);
 			$config->set("locale", "en_US");
 			$config->set("theme", "default");

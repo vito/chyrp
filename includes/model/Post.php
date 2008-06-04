@@ -540,7 +540,7 @@
 
 			fallback($text, __("Edit"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->file_url.'/admin/?action=edit_post&amp;id='.$this->id.'" title="Edit" class="post_edit_link edit_link" id="post_edit_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->chyrp_url.'/admin/?action=edit_post&amp;id='.$this->id.'" title="Edit" class="post_edit_link edit_link" id="post_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
 		/**
@@ -557,11 +557,11 @@
 
 			fallback($text, __("Delete"));
 			$config = Config::current();
-			echo $before.'<a href="'.$config->file_url.'/admin/?action=delete_post&amp;id='.$this->id.'" title="Delete" class="post_delete_link delete_link" id="post_delete_'.$this->id.'">'.$text.'</a>'.$after;
+			echo $before.'<a href="'.$config->chyrp_url.'/admin/?action=delete_post&amp;id='.$this->id.'" title="Delete" class="post_delete_link delete_link" id="post_delete_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
 		public function trackback_url() {
-			return Config::current()->file_url."/includes/trackback.php?id=".$this->id;
+			return Config::current()->chyrp_url."/includes/trackback.php?id=".$this->id;
 		}
 
 		/**

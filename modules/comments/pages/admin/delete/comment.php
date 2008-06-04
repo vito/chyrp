@@ -6,7 +6,7 @@
 							<div class="center pad">
 								<input type="hidden" name="id" value="<?php echo fix($_GET['id'], "html"); ?>" id="id" />
 								<input type="submit" value="<?php echo __("Yes, delete this comment!"); ?>" class="margin-right" />
-								<a href="<?php echo $config->file_url; ?>/admin/?action=manage&amp;sub=comments"><?php echo __("No, don't delete it!"); ?></a>
+								<a href="<?php echo $config->chyrp_url; ?>/admin/?action=manage&amp;sub=comments"><?php echo __("No, don't delete it!"); ?></a>
 							</div>
 							<input type="hidden" name="hash" value="<?php echo $config->secure_hashkey; ?>" id="hash" />
 						</form>

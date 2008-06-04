@@ -72,6 +72,6 @@
 		static function image_tag_for($filename, $max_width = null, $max_height = null, $more_args = "q=100") {
 			$ext = pathinfo($filename, PATHINFO_EXTENSION);
 			$config = Config::current();
-			return '<a href="'.$config->file_url.$config->uploads_path.$filename.'"><img src="'.$config->file_url.'/feathers/photo/lib/phpThumb.php?src='.$config->file_url.$config->uploads_path.strtolower(urlencode($filename)).'&amp;w='.$max_width.'&amp;h='.$max_height.'&amp;f='.$ext.'&amp;'.$more_args.'" alt="'.$filename.'" /></a>';
+			return '<a href="'.$config->chyrp_url.$config->uploads_path.$filename.'"><img src="'.$config->chyrp_url.'/feathers/photo/lib/phpThumb.php?src='.$config->chyrp_url.$config->uploads_path.strtolower(urlencode($filename)).'&amp;w='.$max_width.'&amp;h='.$max_height.'&amp;f='.$ext.'&amp;'.$more_args.'" alt="'.$filename.'" /></a>';
 		}
 	}
