@@ -340,6 +340,43 @@
 			return $navs;
 		}
 
+		static function admin_manage_comments() {
+			global $admin;
+
+			$params = array();
+			$where = array();
+
+			if (!empty($_GET['query'])) {
+				$search = "";
+				$matches = array();
+
+				$queries = explode(" ", $_GET['query']);
+				foreach ($queries as $query)
+					if (!strpos($query, ":"))
+						$search.= $query;
+					else
+						$matches[] = $query;
+
+				foreach ($matches as $match) {
+					$match = explode(":", $match);
+					$test = $match[0];
+					$equals = $match[1];
+					$where[] = "`__comments`.`".$test."` = :".$test;
+					$params[":".$test] = $equals;
+				}
+
+				$where[] = "(`__comments`.`body` LIKE :query)";
+				$params[":query"] = "%".$search."%";
+			}
+
+			$admin->context["comments"] = Comment::find(array("where" => $where, "params" => $params, "per_page" => 25));
+
+			if (!empty($_GET['updated']))
+				$admin->context["updated"] = new Comment($_GET['updated']);
+
+			$admin->context["deleted"] = isset($_GET['deleted']);
+		}
+
 		static function admin_manage_posts_column_header() {
 			echo '<th>'.__("Comments", "comments").'</th>';
 		}

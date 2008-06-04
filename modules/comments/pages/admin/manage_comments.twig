@@ -1,0 +1,66 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Manage Comments" | translate("comments") }{% endblock %}
+
+{% block content %}
+			<h1>${ "Manage Comments" | translate("comments") }</h1>
+			{% if updated %}
+			<p class="message yay">${ "Comment updated." | translate("comments") } <a href="$updated.post.url#comment_$updated.id">${ "View Comment &rarr;" | translate("comments") }</a></p>
+			{% endif %}
+			{% if deleted %}
+			<p class="message yay">${ "Comment deleted." | translate("comments") }</p>
+			{% endif %}
+			{% if approved %}
+			<p class="message yay">${ "Comment approved." | translate("comments") }</p>
+			{% endif %}
+			{% if denied %}
+			<p class="message yay">${ "Comment denied." | translate("comments") }</p>
+			{% endif %}
+			{% if spammed %}
+			<p class="message yay">${ "Comments marked as spam." | translate("comments") }</p>
+			{% endif %}
+			<h2>${ "Need more detail?" | translate }</h2>
+			<form class="detail" action="index.php" method="get" accept-charset="utf-8">
+				<fieldset>
+					<input type="hidden" name="action" value="manage_comments" />
+					<div class="left pad">
+						<h3>${ "Search&hellip;" | translate }</h3>
+						<input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" /> <button type="submit" class="inline">${ "Search &rarr;" | translate("comments") }</button>
+					</div>
+					<br class="clear" />
+				</fieldset>
+			</form>
+			<br />
+			<h2>${ "Last 25 Comments" | translate("comments") }</h2>
+			<table border="0" cellspacing="0" cellpadding="0" class="wide">
+				<thead>
+					<tr class="head">
+						<th>${ "Post" | translate("comments") }</th>
+						<th>${ "Author" | translate("comments") }</th>
+						<th>${ "Added" | translate("comments") }</th>
+						<th>${ "Status" | translate("comments") }</th>
+						${ trigger.call("manage_comments_column_header") }
+						<th colspan="2">${ "Controls" | translate }</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for comment in comments %}
+					<tr id="comment_$comment.id" class="comment $comment.status{% if loop.last %} last{% endif %}">
+						<td class="main"><a href="$comment.post.url#comment_$comment.id">${ comment.post.title | truncate }</a></td>
+						<td>${ comment.user.full_name | fallback(comment.user.login) | fallback(comment.author) }</td>
+						<td>${ comment.created_at | strftime }</td>
+						<td>${ comment.status | replace("_", " ") | title }</td>
+						${ "manage_comments_column" | trigger(comment) }
+						<td class="controls">${ comment.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit') }</td>
+						<td class="controls">${ comment.delete_link('<img src="images/icons/delete.png" alt="delete" /> delete') }</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="6" class="center"><span class="sub">${ "(none)" | translate }</span></td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+			$pagination.next_link
+			$pagination.prev_link
+{% endblock %}

@@ -8,17 +8,20 @@
 
 		/**
 		 * Function: __construct
-		 * Grabs the specified comment and injects it into the <Comment> class.
-		 *
-		 * Parameters:
-		 *     $comment_id - The comment's unique ID.
-		 *     $options - An array of options:
-		 *         where: A SQL query to grab the comment by.
-		 *         params: Parameters to use for the "where" option.
-		 *         read_from: An associative array of values to load into the <Comment> class.
+		 * See Also:
+		 *     <Model::grab>
 		 */
 		public function __construct($comment_id, $options = array()) {
 			parent::grab($this, $comment_id, $options);
+		}
+
+		/**
+		 * Function: find
+		 * See Also:
+		 *     <Model::search>
+		 */
+		static function find($options = array()) {
+			return parent::search(get_class(), $options);
 		}
 
 		/**
@@ -238,6 +241,6 @@
 			if ($this->user_id)
 				return new User($this->user_id);
 			else
-				return Visitor::current();
+				return false;
 		}
 	}
