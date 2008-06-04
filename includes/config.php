@@ -19,7 +19,7 @@
 
 		/**
 		 * Function: load
-		 * Loads a given configuation YAML file.
+		 * Loads a given configuration YAML file.
 		 *
 		 * Parameters:
 		 *     $file - The YAML file to load into <Config>.
@@ -32,6 +32,8 @@
 					$this->$setting = array();
 				elseif (!is_int($setting)) # Don't load the "---"
 					$this->$setting = (is_string($value)) ? stripslashes($value) : $value ;
+
+			fallback($this->url, $this->chyrp_url);
 		}
 
 		/**

@@ -20,7 +20,7 @@
 					</p>
 					<p>
 						<label for="url">${ "Alternate URL" | translate }</label>
-						<input class="text" type="text" name="url" value="${ site.url | escape }" id="url" />
+						<input class="text" type="text" name="url" value="{% if site.url != site.chyrp_url %}${ site.url | escape }{% endif %}" id="url" /> <span class="sub">${ "(optional)" | translate }</span>
 						<small>
 							${ "Enter an alternate address here if you want your homepage URL to be different from the URL where Chyrp is normally available." | translate }
 						</small>

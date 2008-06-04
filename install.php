@@ -41,8 +41,7 @@
 
 		if ($sql->connect(true) and !empty($config->url) and $sql->query("select count(`id`) from `__users`")->fetchColumn())
 			error(__("Already Installed"), __("Chyrp is already correctly installed and configured."));
-	}
-	else {
+	} else {
 		if (!is_writable(BASE_DIR) and (!file_exists(BASE_DIR."/.htaccess") or !preg_match("/".preg_quote($htaccess, "/")."/", file_get_contents(BASE_DIR."/.htaccess"))))
 			$errors[] = sprintf(__("STOP! Before you go any further, you must create a .htaccess file in Chyrp's install directory and put this in it:\n<pre>%s</pre>."), htmlspecialchars($htaccess));
 
@@ -209,7 +208,7 @@
 
 			$config->set("name", $_POST['name']);
 			$config->set("description", $_POST['description']);
-			$config->set("url", $url);
+			$config->set("url", "");
 			$config->set("chyrp_url", $url);
 			$config->set("email", $_POST['email']);
 			$config->set("locale", "en_US");
