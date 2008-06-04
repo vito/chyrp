@@ -15,16 +15,18 @@
 			{% endif %}
 			<h2>${ "Need more detail?" | translate }</h2>
 			<form class="detail" action="index.php" method="get" accept-charset="utf-8">
-				<input type="hidden" name="action" value="manage_users" />
-				{% if visitor.group.can("edit_user") %}
-				<a href="{% admin "new_user" %}" class="button yay right">
-					<img src="images/icons/add.png" alt="add" /> ${ "New User" | translate }
-				</a>
-				{% endif %}
-				<div class="pad">
-					<h3>${ "Search&hellip;" | translate }</h3>
-					<input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" /> <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
-				</div>
+				<fieldset>
+					<input type="hidden" name="action" value="manage_users" />
+					{% if visitor.group.can("edit_user") %}
+					<a href="{% admin "new_user" %}" class="button yay right">
+						<img src="images/icons/add.png" alt="add" /> ${ "New User" | translate }
+					</a>
+					{% endif %}
+					<div class="pad">
+						<h3>${ "Search&hellip;" | translate }</h3>
+						<input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" /> <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
+					</div>
+				</fieldset>
 			</form>
 			<br />
 			<h2>${ "Last 25 Users" | translate }</h2>
@@ -53,6 +55,10 @@
 						${ "manage_users_column" | trigger(user) }
 						<td class="controls">${ user.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit') }</td>
 						<td class="controls">${ user.delete_link('<img src="images/icons/delete.png" alt="delete" /> delete') }</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="5" class="center"><span class="sub">${ "(none)" | translate }</span></td>
 					</tr>
 				{% endfor %}
 				</tbody>

@@ -12,22 +12,24 @@
 			{% endif %}
 			<h2>${ "Need more detail?" | translate }</h2>
 			<form class="detail" action="index.php" method="get" accept-charset="utf-8">
-				<input type="hidden" name="action" value="manage_posts" />
-				<div class="left pad margin-right">
-					<h3>${ "Search&hellip;" | translate }</h3>
-					<input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" /> <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
-				</div>
-				<div class="left pad">
-					<h3>${ "Browse by month:" | translate }</h3>
-					<select name="month">
-						<option value="">----------</option>
-						{% for archive in archives %}
-						<option value="${ archive.when | date("Y-m") }"${ GET.month | option_selected(archive.when | date("Y-m")) }>${ archive.when | date("F Y") } ($archive.count)</option>
-						{% endfor %}
-					</select>
-					<button type="submit" class="inline">${ "Show &rarr;" | translate }</button>
-				</div>
-				<br class="clear" />
+				<fieldset>
+					<input type="hidden" name="action" value="manage_posts" />
+					<div class="left pad margin-right">
+						<h3>${ "Search&hellip;" | translate }</h3>
+						<input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" /> <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
+					</div>
+					<div class="left pad">
+						<h3>${ "Browse by month:" | translate }</h3>
+						<select name="month">
+							<option value="">----------</option>
+							{% for archive in archives %}
+							<option value="${ archive.when | date("Y-m") }"${ GET.month | option_selected(archive.when | date("Y-m")) }>${ archive.when | date("F Y") } ($archive.count)</option>
+							{% endfor %}
+						</select>
+						<button type="submit" class="inline">${ "Show &rarr;" | translate }</button>
+					</div>
+					<br class="clear" />
+				</fieldset>
 			</form>
 			<br />
 			<h2>${ "Last 25 Posts" | translate }</h2>
@@ -52,6 +54,10 @@
 						${ "manage_posts_column" | trigger(post) }
 						<td class="controls">${ post.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit') }</td>
 						<td class="controls">${ post.delete_link('<img src="images/icons/delete.png" alt="delete" /> delete') }</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="6" class="center"><span class="sub">${ "(none)" | translate }</span></td>
 					</tr>
 				{% endfor %}
 				</tbody>

@@ -5,7 +5,10 @@
 {% block content %}
 			<h1>${ "Add Page" | translate }</h1>
 			<form id="write_form" action="{% admin "add_page" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
-				{% include "partials/page_fields.twig" %}
-				<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+				<fieldset>
+{% include "partials/page_fields.twig" %}
+
+					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+				</fieldset>
 			</form>
 {% endblock %}

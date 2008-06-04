@@ -2,10 +2,11 @@
 	class Chat extends Feather {
 		public function __construct() {
 			$this->setField(array("attr" => "title", "type" => "text", "label" => "Title", "optional" => true));
-			$this->setField(array("attr" => "dialogue", "type" => "text_block", "label" => "Dialogue", "preview" => true, "help" => true, "bookmarklet" => "selection"));
+			$this->setField(array("attr" => "dialogue", "type" => "text_block", "label" => "Dialogue", "preview" => true, "help" => "chat_dialogue", "bookmarklet" => "selection"));
 			$this->customFilter("dialogue", "format_dialogue");
 			$this->setFilter("dialogue", "markup_post_text");
 			$this->respondTo("preview_chat", "format_dialogue");
+			$this->respondTo("help_chat_dialogue", "help");
 		}
 		static function submit() {
 			$config = Config::current();
@@ -80,5 +81,15 @@
 			$return.= "</ul>";
 
 			return $return;
+		}
+		static function help() {
+			global $title, $body;
+			$title = "Dialogue Formatting";
+			$body = "<p>".__("To give yourself a special CSS class, append \" (me)\" to your username, like so:", "chat")."</p>\n";
+			$body.= "<ul class=\"list\">\n";
+			$body.= "\t<li>&quot;&lt;Alex&gt;&quot; &rarr; &quot;&lt;Alex (me)&gt;&quot;</li>\n";
+			$body.= "\t<li>&quot;Alex:&quot; &rarr; &quot;Alex (me):&quot;</li>\n";
+			$body.= "</ul>\n";
+			$body.= "<p>".__("This only has to be done to the first occurrence of the username.", "chat")."</p>";
 		}
 	}

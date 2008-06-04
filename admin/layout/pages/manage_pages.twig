@@ -12,11 +12,13 @@
 			{% endif %}
 			<h2>${ "Need more detail?" | translate }</h2>
 			<form class="detail" action="index.php" method="get" accept-charset="utf-8">
-				<input type="hidden" name="action" value="manage_pages" />
-				<div class="pad">
-					<h3>${ "Search&hellip;" | translate }</h3>
-					<input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" /> <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
-				</div>
+				<fieldset>
+					<input type="hidden" name="action" value="manage_pages" />
+					<div class="pad">
+						<h3>${ "Search&hellip;" | translate }</h3>
+						<input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" /> <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
+					</div>
+				</fieldset>
 			</form>
 			<br />
 			<h2>${ "Last 25 Pages" | translate }</h2>
@@ -41,6 +43,10 @@
 						${ "manage_pages_column" | trigger(page) }
 						<td class="controls">${ page.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit') }</td>
 						<td class="controls">${ page.delete_link('<img src="images/icons/delete.png" alt="delete" /> delete') }</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="6" class="center"><span class="sub">${ "(none)" | translate }</span></td>
 					</tr>
 				{% endfor %}
 				</tbody>

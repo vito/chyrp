@@ -5,33 +5,36 @@
 {% block content %}
 			<h1>${ "Content Settings" | translate }</h1>
 			<form id="content_settings" class="split" action="{% admin "settings" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
-				<p>
-					<label for="posts_per_page">${ "Posts Per Page" | translate }</label>
-					<input class="text nowidth" type="text" name="posts_per_page" value="${ site.posts_per_page | escape }" size="2" id="posts_per_page" />
-				</p>
-				<p>
-					<label for="feed_items">${ "Feed Posts Limit" | translate }</label>
-					<input class="text nowidth" type="text" name="feed_items" value="${ site.feed_items | escape }" size="2" id="feed_items" />
-				</p>
-				<p>
-					<label for="enable_trackbacking">${ "Enable Trackbacking" | translate }</label>
-					<input class="checkbox" type="checkbox" name="enable_trackbacking" id="enable_trackbacking"${ site.enable_trackbacking | checked } />
-					<small>
-						${ "Trackbacking allows sites to notify you when they write a new entry, usually because they link to or reference yours." | translate }
-					</small>
-				</p>
-				<p>
-					<label for="send_pingbacks">${ "Send Pingbacks" | translate }</label>
-					<input class="checkbox" type="checkbox" name="send_pingbacks" id="send_pingbacks"${ site.send_pingbacks | checked } />
-					<small>
-						${ "Attempts to notify sites linked to from your posts. It'll slow down things a bit when you submit them, depending on how many links you've got in it." | translate }
-					</small>
-				</p>
+				<fieldset>
+					<p>
+						<label for="posts_per_page">${ "Posts Per Page" | translate }</label>
+						<input class="text nowidth" type="text" name="posts_per_page" value="${ site.posts_per_page | escape }" size="2" id="posts_per_page" />
+					</p>
+					<p>
+						<label for="feed_items">${ "Feed Posts Limit" | translate }</label>
+						<input class="text nowidth" type="text" name="feed_items" value="${ site.feed_items | escape }" size="2" id="feed_items" />
+					</p>
+					<p>
+						<label for="enable_trackbacking">${ "Enable Trackbacking" | translate }</label>
+						<input class="checkbox" type="checkbox" name="enable_trackbacking" id="enable_trackbacking"${ site.enable_trackbacking | checked } />
+						<small>
+							${ "Trackbacking allows sites to notify you when they write a new entry, usually because they link to or reference yours." | translate }
+						</small>
+					</p>
+					<p>
+						<label for="send_pingbacks">${ "Send Pingbacks" | translate }</label>
+						<input class="checkbox" type="checkbox" name="send_pingbacks" id="send_pingbacks"${ site.send_pingbacks | checked } />
+						<small>
+							${ "Attempts to notify sites linked to from your posts. It'll slow down things a bit when you submit them, depending on how many links you've got in it." | translate }
+						</small>
+					</p>
 
-				<p class="buttons">
-					<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Update" | translate }</button>
+					<p class="buttons">
+						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Update" | translate }</button>
+					</p>
+
 					<input type="hidden" name="page" value="content" id="id" />
 					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
-				</p>
+				</fieldset>
 			</form>
 {% endblock %}

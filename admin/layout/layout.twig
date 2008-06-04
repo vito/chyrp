@@ -50,10 +50,5 @@
 				v$version &copy; 2008 Alex Suraci
 			</span>
 		</div>
-		<script type="text/javascript">
-{% for query in sql_debug %}
-			console.log('${ query.number }. $query.file[$query.line]: ${ query.query | quotes }')
-{% endfor %}
-		</script>
 	</body>
 </html>

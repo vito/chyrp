@@ -900,7 +900,8 @@
 					$this->context[$category][$folder] = array("name" => $info["name"],
 					                                           "url" => $info["url"],
 					                                           "description" => $info["description"],
-					                                           "author" => $info["author"]);
+					                                           "author" => $info["author"],
+					                                           "help" => fallback($info["help"], false, true));
 				}
 			}
 
