@@ -307,7 +307,7 @@
 		 *     $fallback - if the SQL result is empty.
 		 */
 		static function info($column, $post_id, $fallback = false) {
-			return SQL::current()->select("posts", $column, "`id` = :id", "`id` desc", array(":id" => $post_id))->fetchColumn();
+			return SQL::current()->select("posts", $column, "`__posts`.`id` = :id", "`__posts`.`id` desc", array(":id" => $post_id))->fetchColumn();
 		}
 
 		/**
@@ -321,7 +321,7 @@
 		 *     true - if a post with that ID is in the database.
 		 */
 		static function exists($post_id) {
-			return SQL::current()->count("posts", "`id` = :id", array(":id" => $post_id));
+			return SQL::current()->count("posts", "`__posts`.`id` = :id", array(":id" => $post_id));
 		}
 
 		/**
