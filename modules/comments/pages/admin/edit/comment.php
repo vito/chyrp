@@ -8,7 +8,7 @@
 						</p>
 						<br id="after_options" />
 						<button type="submit" class="positive right" accesskey="s">
-							<img src="<?php echo $config->url; ?>/admin/icons/success.png" alt="" /> <?php echo __("Save"); ?>
+							<img src="<?php echo $config->file_url; ?>/admin/icons/success.png" alt="" /> <?php echo __("Save"); ?>
 						</button>
 						<br class="clear" />
 						<br class="js_disabled" />

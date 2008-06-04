@@ -85,11 +85,11 @@
 								<?php if ($visitor->group()->can("edit_comment")) echo $comment->edit_link('<img src="icons/edit.png" /> '.__("edit")); ?>
 								<?php if ($visitor->group()->can("delete_comment")) echo $comment->delete_link('<img src="icons/delete.png" /> '.__("delete")); ?>
 <?php if ($comment->status == "approved"): ?>
-								<a href="<?php echo $config->url."/admin/?action=deny_comment&amp;id=".$comment->id; ?>"><img src="icons/deny.png" /> <?php echo __("deny", "comments"); ?></a>
+								<a href="<?php echo $config->file_url."/admin/?action=deny_comment&amp;id=".$comment->id; ?>"><img src="icons/deny.png" /> <?php echo __("deny", "comments"); ?></a>
 <?php elseif ($comment->status == "denied"): ?>
-								<a href="<?php echo $config->url."/admin/?action=approve_comment&amp;id=".$comment->id; ?>"><img src="icons/success.png" /> <?php echo __("approve", "comments"); ?></a>
+								<a href="<?php echo $config->file_url."/admin/?action=approve_comment&amp;id=".$comment->id; ?>"><img src="icons/success.png" /> <?php echo __("approve", "comments"); ?></a>
 <?php endif; ?>
-								<a href="<?php echo $config->url."/admin/?action=mark_spam&amp;id=".$comment->id; ?>"><img src="<?php echo $config->url."/modules/comments/spam.png"; ?>" /> <?php echo __("spam", "comments"); ?></a>
+								<a href="<?php echo $config->file_url."/admin/?action=mark_spam&amp;id=".$comment->id; ?>"><img src="<?php echo $config->file_url."/modules/comments/spam.png"; ?>" /> <?php echo __("spam", "comments"); ?></a>
 							</span>
 							<?php echo sprintf(__("<a href=\"mailto:%s\">%s</a> (%s)", "comments"), $comment->author_email, $comment->author, (($comment->author_ip == -1) ? "Local" : long2ip($comment->author_ip))); ?>
 						</h1>

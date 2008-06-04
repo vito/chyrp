@@ -4,8 +4,8 @@
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 		<title>{% block title %}$site.name{% if title %} &raquo; $title{% endif %}{% endblock %}</title>
 		<meta name="generator" content="Chyrp" />
-		<link rel="pingback" href="$site.url/includes/xmlrpc.php" />
-		<link rel="EditURI" type="application/rsd+xml" href="$site.url/includes/rsd.php" />
+		<link rel="pingback" href="$site.file_url/includes/xmlrpc.php" />
+		<link rel="EditURI" type="application/rsd+xml" href="$site.file_url/includes/rsd.php" />
 		$feeds
 		$stylesheets
 		$javascripts
@@ -27,7 +27,7 @@
 				<li><a id="your_drafts" href="{% url "drafts/" %}">${ "Your Drafts" | translate }</a></li>
 {% endif %}
 {% if visitor.group.can("change_settings") %}
-				<li><a id="site_settings" href="$site.url/admin/">${ "Admin" | translate }</a></li>
+				<li><a id="site_settings" href="$site.file_url/admin/">${ "Admin" | translate }</a></li>
 {% endif %}
 				<li class="close"><a class="toggle_admin" href="{% url "toggle_admin/" %}">${ "Close" | translate }</a></li>
 			</ul>

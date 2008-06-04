@@ -176,7 +176,7 @@
 			if (file_put_contents($path, $args[3]['bits']) === false)
 				return new IXR_Error(500, __('Failed to write file.'));
 
-			$url = $config->url.$config->uploads_path.str_replace('+', '%20', urlencode($file));
+			$url = $config->file_url.$config->uploads_path.str_replace('+', '%20', urlencode($file));
 
 			$trigger = Trigger::current();
 			list($url, $path) = $trigger->filter('metaWeblog_newMediaObject', array($url, $path), true);

@@ -117,7 +117,7 @@
 				display: none;
 			}
 		</style>
-		<script src="<?php echo $config->url; ?>/includes/lib/jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="<?php echo $config->file_url; ?>/includes/lib/jquery.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			function activate_nav_tab(id) {
 				$("[id^='nav_']").removeClass("selected")
@@ -164,7 +164,7 @@
 
 		$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$the_feather."/info.yaml");
 ?>
-			<form action="<?php echo $config->url."/admin/?action=add_post"; ?>" id="<?php echo $the_feather; ?>_form" style="display: <?php echo $style; ?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+			<form action="<?php echo $config->file_url."/admin/?action=add_post"; ?>" id="<?php echo $the_feather; ?>_form" style="display: <?php echo $style; ?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 <?php
 		foreach ($feathers[$the_feather]->fields as $field):
 			$optional = isset($field["optional"]) and $field["optional"];
@@ -176,7 +176,7 @@
 						<?php if ($optional): ?><span class="sub"><?php echo __("(optional)"); ?></span><?php endif; ?>
 						<?php if ($help): ?>
 						<span class="sub">
-							<a href="<?php echo $config->url."/admin/?action=help&feather=".$the_feather."&field=".$field["attr"]; ?>" target="_blank" class="help emblem"><img src="<?php echo $config->url."/admin/images/icons/help.png"; ?>" alt="help" /></a>
+							<a href="<?php echo $config->file_url."/admin/?action=help&feather=".$the_feather."&field=".$field["attr"]; ?>" target="_blank" class="help emblem"><img src="<?php echo $config->file_url."/admin/images/icons/help.png"; ?>" alt="help" /></a>
 						</span>
 						<?php endif; ?>
 					</label>

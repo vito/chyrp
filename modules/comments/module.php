@@ -363,7 +363,7 @@
 		$("#add_comment").ajaxForm({ dataType: "json", resetForm: true, beforeSubmit: function(){
 			$("#add_comment").loader();
 		}, success: function(json){
-			$.post("<?php echo $config->url; ?>/includes/ajax.php", { action: "show_comment", comment_id: json.comment_id, reason: "added" }, function(data) {
+			$.post("<?php echo $config->file_url; ?>/includes/ajax.php", { action: "show_comment", comment_id: json.comment_id, reason: "added" }, function(data) {
 				if ($(".comment_count").size() && $(".comment_plural").size()) {
 					var count = parseInt($(".comment_count:first").text())
 					count++
@@ -409,10 +409,10 @@ var Comment = {
 		if ($(".comments").attr("id") == undefined) return;
 		var id = $(".comments").attr("id").replace(/comments_/, "")
 		if (editing == 0 && notice == 0 && $(".comments").children().size() < <?php echo $config->comments_per_page; ?>) {
-			$.ajax({ type: "post", dataType: "json", url: "<?php echo $config->url; ?>/includes/ajax.php", data: "action=reload_comments&post_id="+id+"&last_comment="+$("#last_comment").val(), success: function(json) {
+			$.ajax({ type: "post", dataType: "json", url: "<?php echo $config->file_url; ?>/includes/ajax.php", data: "action=reload_comments&post_id="+id+"&last_comment="+$("#last_comment").val(), success: function(json) {
 				$.each(json.comment_ids, function(i, id) {
 					$("#last_comment").val(id)
-					$.post("<?php echo $config->url; ?>/includes/ajax.php", { action: "show_comment", comment_id: id }, function(data){
+					$.post("<?php echo $config->file_url; ?>/includes/ajax.php", { action: "show_comment", comment_id: id }, function(data){
 						$(data).appendTo(".comments").hide().fadeIn("slow")
 					})
 				})
@@ -422,7 +422,7 @@ var Comment = {
 	edit: function(id) {
 		editing++
 		$("#comment_"+id).loader()
-		$.post("<?php echo $config->url; ?>/includes/ajax.php", { action: "edit_comment", comment_id: id }, function(data) {
+		$.post("<?php echo $config->file_url; ?>/includes/ajax.php", { action: "edit_comment", comment_id: id }, function(data) {
 			if (isError(data)) return $("#comment_"+id).loader(true)
 			$("#comment_"+id).loader(true).fadeOut("fast", function(){ $(this).html(data).fadeIn("fast", function(){
 				$("#more_options_link_"+id).click(function(){
@@ -437,7 +437,7 @@ var Comment = {
 				})
 				$("#comment_cancel_edit_"+id).click(function(){
 					$("#comment_"+id).loader()
-					$.post("<?php echo $config->url; ?>/includes/ajax.php", { action: "show_comment", comment_id: id }, function(data){
+					$.post("<?php echo $config->file_url; ?>/includes/ajax.php", { action: "show_comment", comment_id: id }, function(data){
 						$("#comment_"+id).replaceWith(data)
 						$("#comment_"+id).loader(true)
 						$("#comment_edit_"+id).click(function(){
@@ -457,7 +457,7 @@ var Comment = {
 				}, success: function(response){
 					editing--
 					if (isError(response)) return $("#comment_"+id).loader(true)
-					$.post("<?php echo $config->url; ?>/includes/ajax.php", { action: "show_comment", comment_id: id, reason: "edited" }, function(data) {
+					$.post("<?php echo $config->file_url; ?>/includes/ajax.php", { action: "show_comment", comment_id: id, reason: "edited" }, function(data) {
 						if (isError(data)) return $("#comment_"+id).loader(true)
 						$("#comment_"+id).loader(true)
 						$("#comment_"+id).fadeOut("fast", function(){ $(this).replaceWith(data).fadeIn("fast", function(){
@@ -480,7 +480,7 @@ var Comment = {
 	destroy: function(id) {
 		notice--
 		$("#comment_"+id).loader()
-		$.post("<?php echo $config->url; ?>/includes/ajax.php", { action: "delete_comment", id: id }, function(response){
+		$.post("<?php echo $config->file_url; ?>/includes/ajax.php", { action: "delete_comment", id: id }, function(response){
 			$("#comment_"+id).loader(true)
 			if (isError(response)) return
 			$("#comment_"+id).animate({ height: "hide", opacity: "hide" })
@@ -594,7 +594,7 @@ $(function(){
 					if (!$comment->editable())
 						break;
 ?>
-<form id="comment_edit_<?php echo $comment->id; ?>" class="inline comment" action="<?php echo $config->url."/admin/?action=update_comment"; ?>" method="post" accept-charset="utf-8">
+<form id="comment_edit_<?php echo $comment->id; ?>" class="inline comment" action="<?php echo $config->file_url."/admin/?action=update_comment"; ?>" method="post" accept-charset="utf-8">
 	<p>
 		<label for="body"><?php echo __("Body", "comments"); ?></label>
 		<textarea name="body" rows="8" cols="40" class="wide"><?php echo fix($comment->body, "html"); ?></textarea>

@@ -82,9 +82,12 @@
 	 * Function: redirect
 	 * Redirects to the given URL and exits immediately.
 	 */
-	function redirect($url) {
-		if ($url[0] == "/") # Handle URIs without domain
-			$url = Config::current()->url.$url;
+	function redirect($url, $use_file_url = false) {
+		# Handle URIs without domain
+		if ($url[0] == "/")
+			$url = (ADMIN or $use_file_url) ?
+				Config::current()->file_url.$url :
+				Config::current()->url.$url;
 
 		header("Location: ".html_entity_decode($url));
 		exit;
