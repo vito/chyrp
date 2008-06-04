@@ -15,8 +15,15 @@
 						<textarea name="description" rows="2" cols="40">${ site.description | escape }</textarea>
 					</p>
 					<p>
-						<label for="url">${ "Website URL" | translate }</label>
+						<label for="url">${ "Chyrp URL" | translate }</label>
+						<input class="text" type="text" name="file_url" value="${ site.file_url | escape }" id="url" />
+					</p>
+					<p>
+						<label for="url">${ "Alternate URL" | translate }</label>
 						<input class="text" type="text" name="url" value="${ site.url | escape }" id="url" />
+						<small>
+							${ "Enter an alternate address here if you want your homepage URL to be different from the URL where Chyrp is normally available." | translate }
+						</small>
 					</p>
 					<p>
 						<label for="email">${ "Contact E-Mail Address" | translate }</label>

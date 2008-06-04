@@ -12,8 +12,8 @@
 					<form class="detail" action="index.php" method="get" accept-charset="utf-8">
 						<input type="hidden" name="action" value="manage" />
 						<input type="hidden" name="sub" value="spam" />
-						<a href="<?php echo $config->url."/admin/?action=purge_spam"; ?>" class="button negative right">
-							<img src="<?php echo $config->url."/admin/icons/deny.png"; ?>" alt="" /> <?php echo __("Delete All", "comments"); ?>
+						<a href="<?php echo $config->file_url."/admin/?action=purge_spam"; ?>" class="button negative right">
+							<img src="<?php echo $config->file_url."/admin/icons/deny.png"; ?>" alt="" /> <?php echo __("Delete All", "comments"); ?>
 						</a>
 						<div class="pad">
 							<h3><?php echo __("Search&hellip;"); ?></h3>
@@ -76,10 +76,10 @@
 						<br />
 						<div class="buttons">
 							<button type="submit" name="delete" class="negative right">
-								<img src="<?php echo $config->url."/admin/icons/delete.png"; ?>" alt="" /> <?php echo __("Delete Selected", "comments"); ?>
+								<img src="<?php echo $config->file_url."/admin/icons/delete.png"; ?>" alt="" /> <?php echo __("Delete Selected", "comments"); ?>
 							</button>
 							<button type="submit" name="despam" class="right">
-								<img src="<?php echo $config->url."/admin/icons/success.png"; ?>" alt="" /> <?php echo __("De-spam Selected", "comments"); ?>
+								<img src="<?php echo $config->file_url."/admin/icons/success.png"; ?>" alt="" /> <?php echo __("De-spam Selected", "comments"); ?>
 							</button>
 						</div>
 						<br class="clear" />

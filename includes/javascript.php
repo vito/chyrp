@@ -45,7 +45,7 @@ $(function(){
 var Post = {
   edit: function(id) {
 		$("#post_"+id+" .target, #post_"+id+".target").loader()
-		$.post("<?php echo $config->url; ?>/includes/ajax.php", { action: "edit_post", id: id }, function(data) {
+		$.post("<?php echo $config->file_url; ?>/includes/ajax.php", { action: "edit_post", id: id }, function(data) {
 			$("#post_"+id+" .target, #post_"+id+".target").loader(true).fadeOut("fast", function(){ $(this).html(data).fadeIn("fast", function(){
 <?php $trigger->call("ajax_post_edit_form_javascript"); ?>
 				$("#more_options_link_"+id).click(function(){
@@ -70,7 +70,7 @@ var Post = {
 						alert("<?php echo __("Post has been saved as a draft."); ?>")
 					} else {
 <?php endif; ?>
-						$.post("<?php echo $config->url; ?>/includes/ajax.php", { action: "view_post", context: "all", id: id, reason: "edited" }, function(data) {
+						$.post("<?php echo $config->file_url; ?>/includes/ajax.php", { action: "view_post", context: "all", id: id, reason: "edited" }, function(data) {
 							$("#post_"+id+" .target, #post_"+id+".target").loader(true)
 							$("#post_"+id+" .target, #post_"+id+".target").fadeOut("fast", function(){ $(this).html(data).fadeIn("fast", function(){
 								$("#post_edit_"+id).click(function(){
@@ -90,7 +90,7 @@ var Post = {
 				} })
 				$("#post_cancel_edit_"+id).click(function(){
 					$("#post_"+id+" .target, #post_"+id+".target").loader()
-					$.post("<?php echo $config->url; ?>/includes/ajax.php", { action: "view_post", context: "all", id: id, reason: "cancelled" }, function(data) {
+					$.post("<?php echo $config->file_url; ?>/includes/ajax.php", { action: "view_post", context: "all", id: id, reason: "cancelled" }, function(data) {
 						$("#post_"+id+" .target, #post_"+id+".target").loader(true)
 						$("#post_"+id+" .target, #post_"+id+".target").fadeOut("fast", function(){ $(this).html(data).fadeIn("fast", function(){
 							$("#post_edit_"+id).click(function(){
@@ -112,7 +112,7 @@ var Post = {
 	,
 	destroy: function(id) {
 		$("#post_"+id+" .target, #post_"+id+".target").loader()
-		$.post("<?php echo $config->url; ?>/includes/ajax.php", { action: "delete_post", id: id }, function(response){
+		$.post("<?php echo $config->file_url; ?>/includes/ajax.php", { action: "delete_post", id: id }, function(response){
 			$("#post_"+id+" .target, #post_"+id+".target").loader(true)
 			if (isError(response)) return
 			$("#post_"+id).animate({ height: "hide", opacity: "hide" }, function(){
@@ -137,7 +137,7 @@ $.fn.loader = function(remove) {
 	var loading_top = ($(this).height() / 2) - 11
 	var loading_left = ($(this).width() / 2) - 63
 
-	$(this).after("<div class=\"load_overlay\"><img src=\"<?php echo $config->url; ?>/includes/close.png\" style=\"display: none\" class=\"close\" /><img src=\"<?php echo $config->url; ?>/includes/loading.gif\" style=\"display: none\" class=\"loading\" /></div>")
+	$(this).after("<div class=\"load_overlay\"><img src=\"<?php echo $config->file_url; ?>/includes/close.png\" style=\"display: none\" class=\"close\" /><img src=\"<?php echo $config->file_url; ?>/includes/loading.gif\" style=\"display: none\" class=\"loading\" /></div>")
 
 	$(".load_overlay .loading").css({
 		position: "absolute",
@@ -162,9 +162,9 @@ $.fn.loader = function(remove) {
 		zIndex: 100,
 		width: $(this).width(),
 		height: $(this).height(),
-		background: ($.browser.msie) ? "transparent" : "transparent url('<?php echo $config->url; ?>/includes/trans.png')",
+		background: ($.browser.msie) ? "transparent" : "transparent url('<?php echo $config->file_url; ?>/includes/trans.png')",
 		textAlign: "center",
-		filter: ($.browser.msie) ? "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src='<?php echo $config->url; ?>/includes/trans.png');" : ""
+		filter: ($.browser.msie) ? "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src='<?php echo $config->file_url; ?>/includes/trans.png');" : ""
 	})
 
 	return this
@@ -196,22 +196,22 @@ function appendNextPost(minus) {
 	switch($action):
 		case "index":
 ?>
-	$.ajax({ type: "post", url: "<?php echo $config->url; ?>/includes/ajax.php", data: { action: "view_post", offset: <?php echo ($page * $config->posts_per_page); ?> - minus }, success: function(data) {
+	$.ajax({ type: "post", url: "<?php echo $config->file_url; ?>/includes/ajax.php", data: { action: "view_post", offset: <?php echo ($page * $config->posts_per_page); ?> - minus }, success: function(data) {
 <?php
 			break;
 		case "drafts":
 ?>
-	$.ajax({ type: "post", url: "<?php echo $config->url; ?>/includes/ajax.php", data: { action: "view_post", context: "drafts", offset: <?php echo ($page * $config->posts_per_page); ?> - minus }, success: function(data) {
+	$.ajax({ type: "post", url: "<?php echo $config->file_url; ?>/includes/ajax.php", data: { action: "view_post", context: "drafts", offset: <?php echo ($page * $config->posts_per_page); ?> - minus }, success: function(data) {
 <?php
 			break;
 		case "archive":
 ?>
-	$.ajax({ type: "post", url: "<?php echo $config->url; ?>/includes/ajax.php", data: { action: "view_post", context: "archive", year: "<?php echo $_GET['arg1']; ?>", month: "<?php echo $_GET['arg2']; ?>", offset: <?php echo ($page * $config->posts_per_page); ?> - minus }, success: function(data) {
+	$.ajax({ type: "post", url: "<?php echo $config->file_url; ?>/includes/ajax.php", data: { action: "view_post", context: "archive", year: "<?php echo $_GET['arg1']; ?>", month: "<?php echo $_GET['arg2']; ?>", offset: <?php echo ($page * $config->posts_per_page); ?> - minus }, success: function(data) {
 <?php
 			break;
 		case "search":
 ?>
-	$.ajax({ type: "post", url: "<?php echo $config->url; ?>/includes/ajax.php", data: { action: "view_post", context: "search", query: "<?php echo $_GET['arg1']; ?>", offset: <?php echo ($page * $config->posts_per_page); ?> - minus }, success: function(data) {
+	$.ajax({ type: "post", url: "<?php echo $config->file_url; ?>/includes/ajax.php", data: { action: "view_post", context: "search", query: "<?php echo $_GET['arg1']; ?>", offset: <?php echo ($page * $config->posts_per_page); ?> - minus }, success: function(data) {
 <?php
 			break;
 	endswitch;
@@ -233,7 +233,7 @@ function appendNextPost(minus) {
 	}, error: function(request){
 		if (request.status == 404) {
 			if (!$("#posts .post").size())
-				$.ajax({ type: "post", url: "<?php echo $config->url; ?>/includes/ajax.php", data: { action: "snippet", name: "no_posts", argument: "<?php echo $action; ?>" }, success: function(data) {
+				$.ajax({ type: "post", url: "<?php echo $config->file_url; ?>/includes/ajax.php", data: { action: "snippet", name: "no_posts", argument: "<?php echo $action; ?>" }, success: function(data) {
 					$("#posts *").each(function(){
 						$(this).addClass("nofade")
 					})

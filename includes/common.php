@@ -87,11 +87,7 @@
 	# Absolute path to /themes/(current theme)
 	define('THEME_DIR', MAIN_DIR."/themes/".$config->theme);
 
-	# Constant: THEME_URL
-	# URL to the current theme's folder
-	define('THEME_URL', $config->url."/themes/".$config->theme);
-
-	header("X-Pingback: ".$config->url."/includes/xmlrpc.php");
+	header("X-Pingback: ".$config->file_url."/includes/xmlrpc.php");
 
 	if (!ADMIN and !JAVASCRIPT and !XML_RPC and !TRACKBACK and strpos($_SERVER['REQUEST_URI'], "?") and $_GET['action'] != "search")
 		$config->clean_urls = false;

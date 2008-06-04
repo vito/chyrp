@@ -44,11 +44,11 @@ $(function(){
 	$(".js_enabled").css("display", "block")
 
 	// Automated PNG fixing.
-	$.ifixpng("<?php echo $config->url; ?>/admin/images/icons/pixel.gif")
+	$.ifixpng("<?php echo $config->file_url; ?>/admin/images/icons/pixel.gif")
 	$("img[@src$=.png]").ifixpng()
 
 	// Add the "Bookmarklet" with JS to the write nav since only JS-enabled users can use it.
-	$(document.createElement("li")).addClass("bookmarklet right").html("<?php echo sprintf(__("Bookmarklet: %s"), '<a href=\"javascript:var%20d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f=\''.$config->url.'/includes/bookmarklet.php\',l=d.location,e=encodeURIComponent,p=\'?url=\'+e(l.href)+\'&title=\'+e(d.title)+\'&selection=\'+e(s),u=f+p;a=function(){if(!w.open(u,\'t\',\'toolbar=0,resizable=0,status=1,width=450,height=430\'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0)\">Chyrp!</a>'); ?>").prependTo(".write_post_nav")
+	$(document.createElement("li")).addClass("bookmarklet right").html("<?php echo sprintf(__("Bookmarklet: %s"), '<a href=\"javascript:var%20d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f=\''.$config->file_url.'/includes/bookmarklet.php\',l=d.location,e=encodeURIComponent,p=\'?url=\'+e(l.href)+\'&title=\'+e(d.title)+\'&selection=\'+e(s),u=f+p;a=function(){if(!w.open(u,\'t\',\'toolbar=0,resizable=0,status=1,width=450,height=430\'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0)\">Chyrp!</a>'); ?>").prependTo(".write_post_nav")
 
 <?php if (match("/(edit|write)_/", $_GET['action'])): ?>
 	// Auto-expand text fields & auto-grow textareas.
@@ -80,7 +80,7 @@ $(function(){
 		var feather = ($("#edit_feather").size()) ? $("#edit_feather").val() : feather
 		$(document.createElement("div")).css("display", "none").attr("id", "preview").insertBefore("#write_form, #edit_form")
 		$(document.createElement("button")).html("<?php echo __("Preview &rarr;"); ?>").attr({ "type": "submit", "accesskey": "p" }).click(function(){
-			$("#preview").load("<?php echo $config->url; ?>/includes/ajax.php", { action: "preview", content: $(".preview_me").val(), feather: feather }, function(){
+			$("#preview").load("<?php echo $config->file_url; ?>/includes/ajax.php", { action: "preview", content: $(".preview_me").val(), feather: feather }, function(){
 				$(this).fadeIn("fast")
 			})
 			return false
@@ -118,11 +118,11 @@ $(function(){
 			var type = classes[1]
 			var extension = $(ui.draggable).attr("class").split(" ")[0]
 
-			$.post("<?php echo $config->url; ?>/includes/ajax.php", { action: "check_confirm", check: extension, type: type }, function(data){
+			$.post("<?php echo $config->file_url; ?>/includes/ajax.php", { action: "check_confirm", check: extension, type: type }, function(data){
 				if (data != "" && action == "disable")
 					var confirmed = (confirm(data)) ? 1 : 0
 
-				$.ajax({ type: "post", dataType: "json", url: "<?php echo $config->url; ?>/includes/ajax.php", data: { action: action + "_" + type, extension: extension, confirm: confirmed }, beforeSend: function(){
+				$.ajax({ type: "post", dataType: "json", url: "<?php echo $config->file_url; ?>/includes/ajax.php", data: { action: action + "_" + type, extension: extension, confirm: confirmed }, beforeSend: function(){
 					box.loader()
 				}, success: function(json){
 					box.loader(true)
@@ -301,7 +301,7 @@ $(function(){
 var Post = {
 	destroy: function(id) {
 		$("#post_"+id+" .target, #post_"+id+".target").loader()
-		$.post("<?php echo $config->url; ?>/includes/ajax.php", { action: "delete_post", id: id }, function(response){
+		$.post("<?php echo $config->file_url; ?>/includes/ajax.php", { action: "delete_post", id: id }, function(response){
 			$("#post_"+id+" .target, #post_"+id+".target").loader(true)
 			if (isError(response)) return
 			$("#post_"+id).animate({ height: "hide", opacity: "hide" }).remove()
@@ -321,7 +321,7 @@ $.fn.loader = function(remove) {
 	var loading_top = ($(this).outerHeight() / 2) - 11
 	var loading_left = ($(this).outerWidth() / 2) - 63
 
-	$(this).after("<div class=\"load_overlay\"><img src=\"<?php echo $config->url; ?>/includes/close.png\" style=\"display: none\" class=\"close\" /><img src=\"<?php echo $config->url; ?>/includes/loading.gif\" style=\"display: none\" class=\"loading\" /></div>")
+	$(this).after("<div class=\"load_overlay\"><img src=\"<?php echo $config->file_url; ?>/includes/close.png\" style=\"display: none\" class=\"close\" /><img src=\"<?php echo $config->file_url; ?>/includes/loading.gif\" style=\"display: none\" class=\"loading\" /></div>")
 
 	$(".load_overlay .loading").css({
 		position: "absolute",
@@ -346,9 +346,9 @@ $.fn.loader = function(remove) {
 		zIndex: 100,
 		width: $(this).outerWidth(),
 		height: $(this).outerHeight(),
-		background: ($.browser.msie) ? "transparent" : "transparent url('<?php echo $config->url; ?>/includes/trans.png')",
+		background: ($.browser.msie) ? "transparent" : "transparent url('<?php echo $config->file_url; ?>/includes/trans.png')",
 		textAlign: "center",
-		filter: ($.browser.msie) ? "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src='<?php echo $config->url; ?>/includes/trans.png');" : ""
+		filter: ($.browser.msie) ? "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src='<?php echo $config->file_url; ?>/includes/trans.png');" : ""
 	})
 
 	return this

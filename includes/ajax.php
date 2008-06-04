@@ -17,7 +17,7 @@
 			$default_file = FEATHERS_DIR."/".$post->feather."/fields.php";
 			$fields_file = (file_exists($theme_file)) ? $theme_file : $default_file ;
 ?>
-<form id="post_edit_<?php echo $post->id; ?>" class="inline" action="<?php echo $config->url."/admin/?action=update_post&amp;sub=text&amp;id=".$post->id; ?>" method="post" accept-charset="utf-8">
+<form id="post_edit_<?php echo $post->id; ?>" class="inline" action="<?php echo $config->file_url."/admin/?action=update_post&amp;sub=text&amp;id=".$post->id; ?>" method="post" accept-charset="utf-8">
 	<h2><?php echo sprintf(__("Editing &#8220;%s&#8221;"), truncate($title, 40, false)); ?></h2>
 	<br />
 <?php require $fields_file; ?>
