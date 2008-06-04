@@ -15,15 +15,54 @@
 			$title = call_user_func(array(Post::feather_class($_POST['id']), "title"), $post);
 			$theme_file = THEME_DIR."/forms/feathers/".$post->feather.".php";
 			$default_file = FEATHERS_DIR."/".$post->feather."/fields.php";
-			$fields_file = (file_exists($theme_file)) ? $theme_file : $default_file ;
 ?>
 <form id="post_edit_<?php echo $post->id; ?>" class="inline" action="<?php echo $config->chyrp_url."/admin/?action=update_post&amp;sub=text&amp;id=".$post->id; ?>" method="post" accept-charset="utf-8">
 	<h2><?php echo sprintf(__("Editing &#8220;%s&#8221;"), truncate($title, 40, false)); ?></h2>
 	<br />
-<?php require $fields_file; ?>
+<?php foreach ($feathers[$post->feather]->fields as $field): ?>
+		<p>
+			<label for="$field.attr">
+				<?php echo $field["label"]; ?>
+				<?php if (isset($field["optional"]) and $field["optional"]): ?><span class="sub"><?php echo __("(optional)"); ?></span><?php endif; ?>
+				<?php if (isset($field["help"]) and $field["help"]): ?>
+				<span class="sub">
+					<a href="<?php echo $route->url("/admin/?action=help&id=".$field["help"]); ?>" class="help emblem"><img src="<?php echo $config->chyrp_url; ?>/admin/images/icons/help.png" alt="help" /></a>
+				</span>
+				<?php endif; ?>
+			</label>
+			<?php if ($field["type"] == "text" or $field["type"] == "file"): ?>
+			<input class="<?php echo $field["type"]; ?><?php if (isset($field["classes"])): ?> <?php echo join(" ", $field["classes"]); ?><?php endif; ?>" type="<?php echo $field["type"]; ?>" name="<?php echo $field["attr"]; ?>" value="<?php echo fix($post->$field["attr"]); ?>" id="$field["attr"]" />
+			<?php elseif ($field["type"] == "text_block"): ?>
+			<textarea class="wide<?php if (isset($field["classes"])): ?> <?php echo join(" ", $field["classes"]); ?><?php endif; ?>" rows="<?php echo fallback($field["rows"], 12, true); ?>" name="<?php echo $field["attr"]; ?>" id="<?php echo $field["attr"]; ?>" cols="50"><?php echo fix($post->$field["attr"]); ?></textarea>
+			<?php endif; ?>
+		</p>
+<?php endforeach; ?>
 	<a id="more_options_link_<?php echo $post->id; ?>" href="javascript:void(0)" class="more_options_link"><?php echo __("More Options &raquo;"); ?></a>
 	<div id="more_options_<?php echo $post->id; ?>" class="more_options" style="display: none">
-		<?php edit_post_options($post); ?>
+<?php if ($visitor->group()->can("add_post")): ?>
+		<p>
+			<label for="status"><?php echo __("Status"); ?></label>
+			<select name="status" id="status">
+				<option value="draft"<?php selected("draft", $post->status); ?>><?php echo __("Draft"); ?></option>
+				<option value="public"<?php selected("public", $post->status); ?>><?php echo __("Public"); ?></option>
+				<option value="private"<?php selected("private", $post->status); ?>><?php echo __("Private"); ?></option>
+				<option value="registered_only"<?php selected("registered_only", $post->status); ?>><?php echo __("Registered Only"); ?></option>
+			</select>
+		</p>
+<?php endif; ?>
+		<p>
+			<label for="pinned"><?php echo __("Pinned?"); ?></label>
+			<input type="checkbox" name="pinned" id="pinned"<?php checked($post->pinned); ?> />&nbsp;<span class="sub"> <?php echo __("(shows this post above all others)"); ?></span>
+		</p>
+		<p>
+			<label for="slug"><?php echo __("Slug"); ?></label>
+			<input class="text" type="text" name="slug" value="<?php echo fix($post->url, "html"); ?>" id="slug" />
+		</p>
+		<p>
+			<label for="created_at"><?php echo __("Timestamp"); ?></label>
+			<input class="text" type="text" name="created_at" value="<?php echo when("F jS, Y H:i:s", $post->created_at); ?>" id="created_at" />
+		</p>
+		<?php $trigger->call("edit_post_options", $post);?>
 		<br class="clear" />
 	</div>
 	<br />
@@ -54,6 +93,7 @@
 			switch($_POST['context']) {
 				default:
 					$post = new Post(null, array("where" => array($private, $id),
+					                             "params" => array(":id" => $_POST['id']),
 					                             "offset" => $_POST['offset'],
 					                             "limit" => 1));
 					break;
