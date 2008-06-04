@@ -8,18 +8,20 @@
 	class AdminTwig {
 		public function __construct() {
 			global $action;
-			$this->twig = new Twig_Loader(MAIN_DIR."/admin/layout/", (is_writable(MAIN_DIR."/admin/layout/cache") and !DEBUG) ? MAIN_DIR."/admin/layout/cache" : null);
+			$this->twig = new Twig_Loader(MAIN_DIR."/admin/layout", (is_writable(MAIN_DIR."/admin/layout/cache") and !DEBUG) ? MAIN_DIR."/admin/layout/cache" : null);
 		}
 
 		public function load($action) {
 			global $admin, $paginate, $theme;
 
+			# Are there any extension-added pages?
 			$trigger = Trigger::current();
 			$write    = $trigger->filter("write_pages", array());
 			$manage   = $trigger->filter("manage_pages", array());
 			$settings = $trigger->filter("settings_pages", array());
 			$extend   = $trigger->filter("extend_pages", array());
 
+			$admin->context["trigger"]    = $trigger;
 			$admin->context["title"]      = camelize($action, true);
 			$admin->context["site"]       = Config::current();
 			$admin->context["visitor"]    = Visitor::current();
@@ -36,8 +38,8 @@
 			$admin->context["GET"]        = $_GET;
 
 			$admin->context["selected"]   = array("write"    => (in_array($action, $write) or match("/^write_/", $action)) ?
-			                                                     "selected" :
-			                                                     "deselected",
+			                                                    "selected" :
+			                                                    "deselected",
 			                                      "manage"   => (in_array($action, $manage) or match(array("/^manage_/", "/^edit_/", "/^delete_/"), $action)) ?
 			                                                    "selected" :
 			                                                    "deselected",
@@ -59,10 +61,20 @@
 
 			$admin->context["sql_debug"]  = SQL::current()->debug;
 
-			if (!file_exists(MAIN_DIR."/admin/layout/pages/".$action.".twig"))
-				error(__("Template Missing"), sprintf(__("Couldn't load template:<br /><br />%s"),"pages/".$action.".twig"));
+			$template = MAIN_DIR."/admin/layout/pages/".$action.".twig";
 
-			return $this->twig->getTemplate("pages/".$action.".twig")->display($admin->context);
+			$config = Config::current();
+			if (!file_exists($template)) {
+				foreach (array(MODULES_DIR => $config->enabled_modules, FEATHERS_DIR => $config->enabled_feathers) as $path => $try)
+					foreach ($try as $extension)
+						if (file_exists($path."/".$extension."/pages/admin/".$action.".twig"))
+							$template = $path."/".$extension."/pages/admin/".$action.".twig";
+
+				if (!file_exists($template))
+					error(__("Template Missing"), sprintf(__("Couldn't load template:<br /><br />%s"),"pages/".$action.".twig"));
+			}
+
+			return $this->twig->getTemplate($template)->display($admin->context);
 		}
 	}
 

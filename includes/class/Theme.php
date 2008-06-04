@@ -242,9 +242,11 @@
 
 			$this->context = array_merge($context, $this->context);
 
+			$trigger = Trigger::current();
 			$visitor = Visitor::current();
 			$config = Config::current();
 
+			$this->context["trigger"]      = $trigger;
 			$this->context["title"]        = $this->title;
 			$this->context["site"]         = $config;
 			$this->context["feeds"]        = $this->feeds();
@@ -262,8 +264,6 @@
 			$this->context["GET"]          = $_GET;
 
 			$this->context["visitor"]->logged_in = logged_in();
-
-			$trigger = Trigger::current();
 			$this->context = $trigger->filter("twig_global_context", $this->context);
 			$this->context = $trigger->filter(str_replace("/", "_", $this->file), $this->context);
 

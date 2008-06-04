@@ -1,4 +1,7 @@
 			{% for feather in site.enabled_feathers %}
 			<li${ GET.feather | selected(feather) }><a href="{% admin "write_post&feather="~feather %}">{% if site.enabled_feathers | length == 1 %}Post{% else %}${ feather | capitalize }{% endif %}</a></li>
 			{% endfor %}
+			{% for action, name in trigger.filter("write_nav") | items %}
+			<li${ route.action | selected(action) }><a href="{% admin action %}">$name</li>
+			{% endfor %}
 			<li${ route.action | selected("write_page") }><a href="{% admin "write_page" %}">${ "Page" | translate }</a></li>

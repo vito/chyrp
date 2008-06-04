@@ -2,5 +2,7 @@
 			<li${ route.action | selected("manage_pages", "edit_page", "delete_page") }><a href="{% admin "manage_pages" %}">${ "Pages" | translate }</a></li>
 			<li${ route.action | selected("manage_users", "edit_user", "delete_user") }><a href="{% admin "manage_users" %}">${ "Users" | translate }</a></li>
 			<li${ route.action | selected("manage_groups", "edit_group", "delete_group") }><a href="{% admin "manage_groups" %}">${ "Groups" | translate }</a></li>
-			{% trigger "manage_nav" %}
+			{% for action, name in trigger.filter("manage_nav") | items %}
+			<li${ route.action | selected(action) }><a href="{% admin action %}">$name</li>
+			{% endfor %}
 			<li${ route.action | selected("manage_export") }><a href="{% admin "manage_export" %}">${ "Export" | translate }</a></li>

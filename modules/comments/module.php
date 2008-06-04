@@ -334,13 +334,10 @@
 <?php
 		}
 
-		static function admin_manage_nav() {
-			$visitor = Visitor::current();
-			if (!$visitor->group()->can("edit_comment") and !$visitor->group()->can("delete_comment")) return;
-?>
-					<li<?php selected("manage", "comment").selected("edit", "comment"); ?>><a href="<?php url("manage", "comment"); ?>"><?php echo __("Comments", "comments"); ?></a></li>
-					<li<?php selected("manage", "spam").selected("edit", "spam"); ?>><a href="<?php url("manage", "spam"); ?>"><?php echo __("Spam", "comments"); ?></a></li>
-<?php
+		static function manage_nav($navs) {
+			$navs["manage_comments"] = __("Comments", "comments");
+			$navs["manage_spam"]     = __("Spam", "comments");
+			return $navs;
 		}
 
 		static function admin_manage_posts_column_header() {

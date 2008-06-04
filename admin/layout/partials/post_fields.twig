@@ -15,7 +15,7 @@
 						<textarea class="wide{% if field.classes %} ${ field.classes | join(" ") }{% endif %}" rows="${ field.rows | fallback(12) }" name="$field.attr" id="$field.attr" cols="50">${ post[field.attr] | escape }</textarea>
 						{% elseif field.type == "select" %}
 						<select name="$field.attr" id="$field.attr"{% if field.classes %} class="${ field.classes | join(" ") }"{% endif %}>
-							{% for value, name in field.options %}
+							{% for value, name in field.options | items %}
 							<option value="${ value | escape }">${ name | escape }</option>
 							{% endfor %}
 						</select>

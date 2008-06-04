@@ -99,20 +99,6 @@
 	sanitize_input($_COOKIE);
 	sanitize_input($_REQUEST);
 
-	require_once INCLUDES_DIR."/class/Session.php"; # Session handler
-
-	if (!JAVASCRIPT) {
-		session_set_save_handler(array("Session", "open"),
-		                         array("Session", "close"),
-		                         array("Session", "read"),
-		                         array("Session", "write"),
-		                         array("Session", "destroy"),
-		                         array("Session", "gc"));
-		session_set_cookie_params(60 * 60 * 24 * 30);
-		session_name(sanitize(camelize($config->name), false, true));
-		session_start();
-	}
-
 	# File: Model
 	# See Also:
 	#     <Model>
@@ -186,6 +172,20 @@
 	# See Also:
 	#     <Admin Controller>
 	require_once INCLUDES_DIR."/controller/Admin.php";
+
+	require_once INCLUDES_DIR."/class/Session.php"; # Session handler
+
+	if (!JAVASCRIPT) {
+		session_set_save_handler(array("Session", "open"),
+		                         array("Session", "close"),
+		                         array("Session", "read"),
+		                         array("Session", "write"),
+		                         array("Session", "destroy"),
+		                         array("Session", "gc"));
+		session_set_cookie_params(60 * 60 * 24 * 30);
+		session_name(sanitize(camelize($config->name), false, true));
+		session_start();
+	}
 
 	timer_start();
 

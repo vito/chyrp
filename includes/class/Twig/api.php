@@ -177,11 +177,14 @@ class Twig_Loader extends Twig_BaseLoader
 
 	public function getFilename($name)
 	{
+		if ($name[0] == '/') return $name;
+
 		$path = array();
 		foreach (explode('/', $name) as $part) {
 			if ($part[0] != '.')
 				array_push($path, $part);
 		}
-		return $this->folder . '/' . implode('/', $path);
+
+		return $this->folder . '/' .  implode('/', $path) ;
 	}
 }

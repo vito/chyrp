@@ -6,7 +6,7 @@
 	class Trigger {
 		private $called = array();
 		public $priorities = array();
-		private $modified_text = array();
+		private $modified = array();
 
 		private function __construct() {}
 
@@ -62,7 +62,7 @@
 		 * Returns:
 		 *     $target, filtered through any/all actions for the trigger $name.
 		 */
-		public function filter($name, $target = "", $arguments = null) {
+		public function filter($name, $target = array(), $arguments = null) {
 			global $modules;
 
 			if (isset($this->priorities[$name])) { # Predefined priorities?
@@ -70,9 +70,9 @@
 				foreach ($this->priorities[$name] as $action) {
 					if (!empty($arguments)) {
 						$params = array_merge(array($this->modified($name, $target)), (array) $arguments);
-						$this->modified_text[$name] = call_user_func_array($action["function"], $params);
+						$this->modified[$name] = call_user_func_array($action["function"], $params);
 					} else
-						$this->modified_text[$name] = call_user_func($action["function"], $this->modified($name, $target));
+						$this->modified[$name] = call_user_func($action["function"], $this->modified($name, $target));
 
 					$this->called[] = $action["function"];
 				}
@@ -83,13 +83,13 @@
 				if (!in_array(array($modules[$module], $name), $this->called) and is_callable(array($modules[$module], $name)))
 					if (!empty($arguments)) {
 						$params = array_merge(array($this->modified($name, $target)), (array) $arguments);
-						$this->modified_text[$name] = call_user_func_array(array($modules[$module], $name), $params);
+						$this->modified[$name] = call_user_func_array(array($modules[$module], $name), $params);
 					} else
-						$this->modified_text[$name] = call_user_func(array($modules[$module], $name), $this->modified($name, $target));
+						$this->modified[$name] = call_user_func(array($modules[$module], $name), $this->modified($name, $target));
 
 			$final = $this->modified($name, $target);
 
-			$this->modified_text[$name] = null;
+			$this->modified[$name] = null;
 
 			return $final;
 		}
@@ -99,7 +99,7 @@
 		 * A little helper function for <filter>.
 		 */
 		function modified($name, $target) {
-			return (!isset($this->modified_text[$name])) ? $target : $this->modified_text[$name] ;
+			return (!isset($this->modified[$name])) ? $target : $this->modified[$name] ;
 		}
 
 		/**
