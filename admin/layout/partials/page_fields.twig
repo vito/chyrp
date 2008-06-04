@@ -38,7 +38,7 @@
 							</select>
 						</p>
 {% if route.action == "write_page" %}
-						{% trigger "new_page_options" %}
+						${ trigger.call("new_page_options") }
 {% else %}
 						${ "edit_page_options" | trigger(page) }
 {% endif %}

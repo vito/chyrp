@@ -29,7 +29,7 @@
 						<th>${ "Created" | translate }</th>
 						<th>${ "Last Updated" | translate }</th>
 						<th>${ "Author" | translate }</th>
-						{% trigger "manage_pages_column_header" %}
+						${ trigger.call("manage_pages_column_header") }
 						<th colspan="2">${ "Controls" | translate }</th>
 					</tr>
 				</thead>

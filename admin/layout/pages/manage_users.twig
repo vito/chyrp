@@ -36,7 +36,7 @@
 						<th>${ "Name" | translate }</th>
 						<th>${ "Joined" | translate }</th>
 						<th>${ "Website" | translate }</th>
-						{% trigger "manage_users_column_header" %}
+						${ trigger.call("manage_users_column_header") }
 						<th colspan="2">${ "Controls" | translate }</th>
 					</tr>
 				</thead>

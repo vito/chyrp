@@ -24,7 +24,7 @@
 						</small>
 					</p>
 
-					{% trigger "export_choose" %}
+					${ trigger.call("export_choose") }
 
 					<p class="buttons">
 						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Export" | translate }</button>

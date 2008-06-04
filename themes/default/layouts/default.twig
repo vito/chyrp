@@ -9,7 +9,7 @@
 		$feeds
 		$stylesheets
 		$javascripts
-{% trigger "head" %}
+${ trigger.call("head") }
 	</head>
 	<body>
 {% if visitor.group.can("add_post") or visitor.group.can("add_draft") or visitor.group.can("add_page") or visitor.group.can("view_draft") or visitor.group.can("change_settings") %}
@@ -72,7 +72,7 @@ $page_list
 {% endif %}
 {% endif %}
 				</ul>
-{% trigger "sidebar" %}
+${ trigger.call("sidebar") }
 {% if tags %}
 				<h1>${ "Tags" | translate }</h1>
 				<ul id="tags_list">
@@ -97,6 +97,6 @@ $page_list
 				</ul>
 			</div>
 		</div>
-{% trigger "end_content" %}
+${ trigger.call("end_content") }
 	</body>
 </html>

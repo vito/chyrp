@@ -203,7 +203,7 @@ Applying Attributes:
 @define('txt_registered',		  '&#174;');
 @define('txt_copyright',		  '&#169;');
 
-class Textile2
+class Textile
 {
 	var $hlgn;
 	var $vlgn;
@@ -233,7 +233,7 @@ class Textile2
 	var $doc_root;
 
 // -------------------------------------------------------------
-	function Textile2()
+	function Textile()
 	{
 		$this->hlgn = "(?:\<(?!>)|(?<!<)\>|\<\>|\=|[()]+(?! ))";
 		$this->vlgn = "[\-^~]";

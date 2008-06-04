@@ -40,7 +40,7 @@
 						<th>${ "Posted" | translate }</th>
 						<th>${ "Status" | translate }</th>
 						<th>${ "Author" | translate }</th>
-						{% trigger "manage_posts_column_header" %}
+						${ trigger.call("manage_posts_column_header") }
 						<th colspan="2">${ "Controls" | translate }</th>
 					</tr>
 				</thead>

@@ -40,8 +40,7 @@ class Twig_Parser
 			'block' =>	array($this, 'parseBlock'),
 			'super' =>	array($this, 'parseSuper'),
 
-			# Twig specific extensions
-			'trigger' =>	array($this, 'parseTrigger'),
+			# Chyrp specific extensions
 			'url' =>	array($this, 'parseURL'),
 			'admin' =>	array($this, 'parseAdminURL')
 		);
@@ -162,13 +161,6 @@ class Twig_Parser
 			throw new Twig_SyntaxError('super outside block', $token->lineno);
 		$this->stream->expect(Twig_Token::BLOCK_END_TYPE);
 		return new Twig_Super($this->current_block, $token->lineno);
-	}
-
-	public function parseTrigger($token)
-	{
-		$expr = $this->parseExpression();
-		$this->stream->expect(Twig_Token::BLOCK_END_TYPE);
-		return new Twig_Trigger($expr, $token->lineno);
 	}
 
 	public function parseURL($token)

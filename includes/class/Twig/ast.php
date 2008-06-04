@@ -309,26 +309,6 @@ class Twig_Include extends Twig_Node
 }
 
 
-class Twig_Trigger extends Twig_Node
-{
-	public $expr;
-
-	public function __construct($expr, $lineno)
-	{
-		parent::__construct($lineno);
-		$this->expr = $expr;
-	}
-
-	public function compile($compiler)
-	{
-		$compiler->addDebugInfo($this);
-		$compiler->raw('Trigger::current()->call(');
-		$this->expr->compile($compiler);
-		$compiler->raw(');'."\n");
-	}
-}
-
-
 class Twig_URL extends Twig_Node
 {
 	public $expr;
