@@ -1,7 +1,7 @@
 <?php
-	define('BASE_DIR', dirname(__FILE__));
-	define('INCLUDES_DIR', BASE_DIR."/includes");
-	define('DEBUG', false);
+	define('MAIN_DIR', dirname(__FILE__));
+	define('INCLUDES_DIR', MAIN_DIR."/includes");
+	define('DEBUG', true);
 	define('JAVASCRIPT', false);
 	define('ADMIN', false);
 	define('AJAX', false);
@@ -9,8 +9,8 @@
 	ini_set('error_reporting', E_ALL);
 	ini_set('display_errors', true);
 
-	# YAML parser
-	require INCLUDES_DIR."/lib/spyc.php";
+	require_once INCLUDES_DIR."/class/QueryBuilder.php"; # SQL query builder
+	require_once INCLUDES_DIR."/lib/spyc.php"; # YAML parser
 
 	# Configuration files
 	require INCLUDES_DIR."/config.php";
@@ -35,14 +35,14 @@
 	$errors = array();
 	$installed = false;
 
-	if (file_exists(INCLUDES_DIR."/config.yaml.php") and file_exists(INCLUDES_DIR."/database.yaml.php") and file_exists(BASE_DIR."/.htaccess")) {
+	if (file_exists(INCLUDES_DIR."/config.yaml.php") and file_exists(INCLUDES_DIR."/database.yaml.php") and file_exists(MAIN_DIR."/.htaccess")) {
 		$sql->load(INCLUDES_DIR."/database.yaml.php");
 		$config->load(INCLUDES_DIR."/config.yaml.php");
 
 		if ($sql->connect(true) and !empty($config->url) and $sql->query("select count(`id`) from `__users`")->fetchColumn())
 			error(__("Already Installed"), __("Chyrp is already correctly installed and configured."));
 	} else {
-		if (!is_writable(BASE_DIR) and (!file_exists(BASE_DIR."/.htaccess") or !preg_match("/".preg_quote($htaccess, "/")."/", file_get_contents(BASE_DIR."/.htaccess"))))
+		if (!is_writable(MAIN_DIR) and (!file_exists(MAIN_DIR."/.htaccess") or !preg_match("/".preg_quote($htaccess, "/")."/", file_get_contents(MAIN_DIR."/.htaccess"))))
 			$errors[] = sprintf(__("STOP! Before you go any further, you must create a .htaccess file in Chyrp's install directory and put this in it:\n<pre>%s</pre>."), htmlspecialchars($htaccess));
 
 		if (!is_writable(INCLUDES_DIR))
@@ -50,11 +50,18 @@
 	}
 
 	if (!empty($_POST)) {
-		if (!@mysql_connect($_POST['host'], $_POST['username'], $_POST['password']))
-			$errors[] = sprintf(__("Could not connect to the MySQL server: %s"), mysql_error());
-		else
-			if (!@mysql_select_db($_POST['database']))
-				$errors[] = __("Could not switch to the MySQL database.");
+		if ($_POST['adapter'] == "mysql")
+			if (!@mysql_connect($_POST['host'], $_POST['username'], $_POST['password']))
+				$errors[] = sprintf(__("Could not connect to the MySQL server: %s"), mysql_error());
+			else
+				if (!@mysql_select_db($_POST['database']))
+					$errors[] = __("Could not switch to the MySQL database.");
+		elseif ($_POST['adapter'] == "sqlite")
+			try {
+				new PDO("sqlite:".$_POST['database']);
+			} catch(PDOException $e) {
+				$errors[] = __("Could not connect to SQLite database.");
+			}
 
 		if (empty($_POST['name']))
 			$errors[] = __("Please enter a name for your website.");
@@ -80,7 +87,7 @@
 			$sql->set("password", $_POST['password']);
 			$sql->set("database", $_POST['database']);
 			$sql->set("prefix", $_POST['prefix']);
-			$sql->set("adapter", "mysql");
+			$sql->set("adapter", $_POST['adapter']);
 
 			$sql->prefix = $_POST['prefix'];
 
@@ -88,73 +95,68 @@
 
 			# Posts table
 			$sql->query("CREATE TABLE IF NOT EXISTS `__posts` (
-			                 `id` int(11) NOT NULL auto_increment,
-			                 `xml` longtext NOT NULL,
-			                 `feather` varchar(32) NOT NULL default '',
-			                 `clean` varchar(128) NOT NULL default '',
-			                 `url` varchar(128) NOT NULL default '',
-			                 `pinned` tinyint(1) NOT NULL default '0',
-			                 `status` enum('public','draft','private','registered_only') NOT NULL default 'public',
-			                 `user_id` int(11) NOT NULL default '0',
-			                 `created_at` datetime NOT NULL default '0000-00-00 00:00:00',
-			                 `updated_at` datetime NOT NULL default '0000-00-00 00:00:00',
-			                 PRIMARY KEY (`id`)
+			                 `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+			                 `xml` LONGTEXT DEFAULT '',
+			                 `feather` VARCHAR(32) DEFAULT '',
+			                 `clean` VARCHAR(128) DEFAULT '',
+			                 `url` VARCHAR(128) DEFAULT '',
+			                 `pinned` TINYINT(1) DEFAULT '0',
+			                 `status` VARCHAR(32) DEFAULT 'public',
+			                 `user_id` INTEGER DEFAULT '0',
+			                 `created_at` DATETIME DEFAULT '0000-00-00 00:00:00',
+			                 `updated_at` DATETIME DEFAULT '0000-00-00 00:00:00'
 			             ) DEFAULT CHARSET=utf8");
 
 			# Pages table
 			$sql->query("CREATE TABLE IF NOT EXISTS `__pages` (
-			                 `id` int(11) NOT NULL auto_increment,
-			                 `title` varchar(250) NOT NULL default '',
-			                 `body` longtext NOT NULL,
-			                 `show_in_list` tinyint(1) NOT NULL default '1',
-			                 `list_order` int(11) NOT NULL default '0',
-			                 `clean` varchar(128) NOT NULL default '',
-			                 `url` varchar(128) NOT NULL default '',
-			                 `user_id` int(11) NOT NULL default '0',
-			                 `parent_id` int(11) NOT NULL default '0',
-			                 `created_at` datetime NOT NULL default '0000-00-00 00:00:00',
-			                 `updated_at` datetime NOT NULL default '0000-00-00 00:00:00',
-			                 PRIMARY KEY (`id`)
+			                 `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+			                 `title` VARCHAR(250) DEFAULT '',
+			                 `body` LONGTEXT DEFAULT '',
+			                 `show_in_list` TINYINT(1) DEFAULT '1',
+			                 `list_order` INTEGER DEFAULT '0',
+			                 `clean` VARCHAR(128) DEFAULT '',
+			                 `url` VARCHAR(128) DEFAULT '',
+			                 `user_id` INTEGER DEFAULT '0',
+			                 `parent_id` INTEGER DEFAULT '0',
+			                 `created_at` DATETIME DEFAULT '0000-00-00 00:00:00',
+			                 `updated_at` DATETIME DEFAULT '0000-00-00 00:00:00'
 			             ) DEFAULT CHARSET=utf8");
 
 			# Users table
 			$sql->query("CREATE TABLE IF NOT EXISTS `__users` (
-			                 `id` int(11) NOT NULL auto_increment,
-			                 `login` varchar(64) NOT NULL default '',
-			                 `password` varchar(32) NOT NULL default '',
-			                 `full_name` varchar(250) NOT NULL default '',
-			                 `email` varchar(128) NOT NULL default '',
-			                 `website` varchar(128) NOT NULL default '',
-			                 `group_id` int(11) NOT NULL default '0',
-			                 `joined_at` datetime NOT NULL default '0000-00-00 00:00:00',
-			                 PRIMARY KEY (`id`),
+			                 `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+			                 `login` VARCHAR(64) DEFAULT '',
+			                 `password` VARCHAR(32) DEFAULT '',
+			                 `full_name` VARCHAR(250) DEFAULT '',
+			                 `email` VARCHAR(128) DEFAULT '',
+			                 `website` VARCHAR(128) DEFAULT '',
+			                 `group_id` INTEGER DEFAULT '0',
+			                 `joined_at` DATETIME DEFAULT '0000-00-00 00:00:00',
 			                 UNIQUE (`login`)
 			             ) DEFAULT CHARSET=utf8");
 
 			# Groups table
 			$sql->query("CREATE TABLE IF NOT EXISTS `__groups` (
-			                 `id` int(11) NOT NULL auto_increment,
-			                 `name` varchar(100) NOT NULL default '',
-		                     `permissions` longtext NOT NULL,
-			                 PRIMARY KEY (`id`),
+			                 `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+			                 `name` VARCHAR(100) DEFAULT '',
+		                     `permissions` LONGTEXT DEFAULT '',
 			                 UNIQUE (`name`)
 			             ) DEFAULT CHARSET=utf8");
 
 			# Permissions table
 			$sql->query("CREATE TABLE IF NOT EXISTS `__permissions` (
-			                 `id` int(11) NOT NULL auto_increment,
-			                 `name` varchar(100) NOT NULL default '',
-			                 PRIMARY KEY (`id`),
+			                 `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+			                 `name` VARCHAR(100) DEFAULT '',
 			                 UNIQUE (`name`)
 			             ) DEFAULT CHARSET=utf8");
 
 			# Sessions table
 			$sql->query("CREATE TABLE IF NOT EXISTS `__sessions` (
-			                 `id` varchar(32) NOT NULL default '',
-			                 `data` longtext,
-			                 `user_id` varchar(16) default NULL,
-			                 `created_at` datetime NOT NULL default '0000-00-00 00:00:00',
-			                 `updated_at` datetime NOT NULL default '0000-00-00 00:00:00',
+			                 `id` VARCHAR(32) DEFAULT '',
+			                 `data` LONGTEXT DEFAULT '',
+			                 `user_id` VARCHAR(16) DEFAULT '0',
+			                 `created_at` DATETIME DEFAULT '0000-00-00 00:00:00',
+			                 `updated_at` DATETIME DEFAULT '0000-00-00 00:00:00',
 			                 PRIMARY KEY (`id`)
 			             ) DEFAULT CHARSET=utf8");
 
@@ -183,7 +185,7 @@
 			                     "delete_group");
 
 			foreach ($permissions as $permission)
-				$sql->query("insert into `__permissions` set `name` = '".$permission."'");
+				$sql->insert("permissions", array("name" => ":permission"), array(":permission" => $permission));
 
 			$groups = array(
 				"admin" => Spyc::YAMLDump($permissions),
@@ -194,16 +196,14 @@
 			);
 
 			# Insert the default groups (see above)
-			foreach($groups as $name => $permission)
-				$sql->query("insert into `__groups` set
-				             `name` = '".ucfirst($name)."',
-				             `permissions` = '".$permission."'");
+			foreach($groups as $name => $permissions)
+				$sql->insert("groups", array("name" => ":name", "permissions" => ":permissions"), array(":name" => ucfirst($name), ":permissions" => $permissions));
 
-			if (!file_exists(BASE_DIR."/.htaccess"))
-				if (!@file_put_contents(BASE_DIR."/.htaccess", $htaccess))
+			if (!file_exists(MAIN_DIR."/.htaccess"))
+				if (!@file_put_contents(MAIN_DIR."/.htaccess", $htaccess))
 					$errors[] = __("Could not generate .htaccess file. Clean URLs will not be available.");
-			elseif (file_exists(BASE_DIR."/.htaccess") and !preg_match("/".preg_quote($htaccess, "/")."/", file_get_contents(BASE_DIR."/.htaccess")))
-				if (!@file_put_contents(BASE_DIR."/.htaccess", "\n\n".$htaccess, FILE_APPEND))
+			elseif (file_exists(MAIN_DIR."/.htaccess") and !preg_match("/".preg_quote($htaccess, "/")."/", file_get_contents(MAIN_DIR."/.htaccess")))
+				if (!@file_put_contents(MAIN_DIR."/.htaccess", "\n\n".$htaccess, FILE_APPEND))
 					$errors[] = __("Could not generate .htaccess file. Clean URLs will not be available.");
 
 			$config->set("name", $_POST['name']);
@@ -231,21 +231,21 @@
 
 			$config->load(INCLUDES_DIR."/config.yaml.php");
 
-			if (!$sql->query("select `id` from `__users` where `login` = :login", array(":login" => $_POST['login']))->rowCount())
-				$sql->query("insert into `__users` set
-				                 `login` = :login,
-				                 `password` = :password,
-				                 `email` = :email,
-				                 `website` = :website,
-				                 `group_id` = 1,
-				                 `joined_at` = :datetime",
-				            array(
-				                ":login" => $_POST['login'],
-				                ":password" => md5($_POST['password_1']),
-				                ":email" => $_POST['email'],
-				                ":website" => $config->url,
-				                ":datetime" => datetime()
-				            ));
+			if (!$sql->select("users", "id", "`__users`.`login` = :login", null, array(":login" => $_POST['login']))->fetchColumn())
+				$sql->insert("users",
+				             array("login" => ":login",
+				                   "password" => ":password",
+				                   "email" => ":email",
+				                   "website" => ":website",
+				                   "group_id" => ":group_id",
+				                   "joined_at" => ":joined_at"),
+				             array(":login" => $_POST['login'],
+				                   ":password" => md5($_POST['password_1']),
+				                   ":email" => $_POST['email'],
+				                   ":website" => $config->url,
+				                   ":group_id" => 1,
+				                   ":joined_at" => datetime()
+				             ));
 
 			$_SESSION['chyrp_login'] = $_POST['login'];
 			$_SESSION['chyrp_password'] = md5($_POST['password_1']);
@@ -295,8 +295,7 @@
 				border-bottom: 1px dotted #ddd;
 				margin-bottom: 2px;
 			}
-			input[type="password"], input[type="text"], textarea {
-				margin-bottom: 1em;
+			input[type="password"], input[type="text"], textarea, select {
 				font-size: 1.25em;
 				width: 242px;
 				padding: 3px;
@@ -305,13 +304,14 @@
 			textarea {
 				margin-bottom: .75em;
 			}
-			select {
-				margin-bottom: 1em;
+			form hr {
+				border: 0;
+				padding-bottom: 1em;
+				margin-bottom: 3em;
+				border-bottom: 1px dashed #ddd;
 			}
 			form p {
 				padding-bottom: 1em;
-				margin-bottom: 2em;
-				border-bottom: 1px dashed #ddd;
 			}
 			form p.extra {
 				padding-bottom: 2em;
@@ -354,6 +354,17 @@
 				color: #555;
 			}
 		</style>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$(function(){
+				$("#adapter").change(function(){
+					if ($(this).val() == "sqlite")
+						$("#host_field, #username_field, #password_field").animate({ height: "hide", opacity: "hide" })
+					else
+						$("#host_field, #username_field, #password_field").show()
+				})
+			})
+		</script>
 	</head>
 	<body>
 <?php foreach ($errors as $index => $error): ?>
@@ -363,38 +374,63 @@
 <?php if (!$installed): ?>
 			<form action="install.php" method="post" accept-charset="utf-8">
 				<h1><?php echo __("Database Setup"); ?></h1>
-				<p>
+				<p id="adapter_field">
+					<label for="adapter"><?php echo __("Adapter"); ?></label>
+					<select name="adapter" id="adapter">
+						<option value="mysql" selected="selected">MySQL</option>
+						<option value="sqlite">SQLite</option>
+					</select>
+				</p>
+				<p id="host_field">
 					<label for="host"><?php echo __("Host"); ?> <span class="sub"><?php echo __("(usually ok as \"localhost\")"); ?></span></label>
 					<input type="text" name="host" value="<?php value_fallback("host", ((isset($_ENV['DATABASE_SERVER'])) ? $_ENV['DATABASE_SERVER'] : "localhost")); ?>" id="host" />
+				</p>
+				<p id="username_field">
 					<label for="username"><?php echo __("Username"); ?></label>
 					<input type="text" name="username" value="<?php value_fallback("username"); ?>" id="username" />
+				</p>
+				<p id="password_field">
 					<label for="password"><?php echo __("Password"); ?></label>
 					<input type="password" name="password" value="<?php value_fallback("password"); ?>" id="password" />
+				</p>
+				<p id="database_field">
 					<label for="database"><?php echo __("Database"); ?></label>
 					<input type="text" name="database" value="<?php value_fallback("database"); ?>" id="database" />
+				</p>
+				<p id="prefix_field">
 					<label for="prefix"><?php echo __("Table Prefix"); ?> <span class="sub"><?php echo __("(optional)"); ?></span></label>
 					<input type="text" name="prefix" value="<?php value_fallback("prefix"); ?>" id="prefix" />
 				</p>
-
+				<hr />
 				<h1><?php echo __("Website Setup"); ?></h1>
-				<p class="extra">
+				<p id="name_field">
 					<label for="name"><?php echo __("Site Name"); ?></label>
 					<input type="text" name="name" value="<?php value_fallback("name", __("My Awesome Site")); ?>" id="name" />
+				</p>
+				<p id="description_field">
 					<label for="description"><?php echo __("Description"); ?></label>
 					<textarea name="description" rows="2" cols="40"><?php value_fallback("description"); ?></textarea>
+				</p>
+				<p id="time_offset_field" class="extra">
 					<label for="time_offset"><?php echo __("Time Offset"); ?></label>
 					<input type="text" name="time_offset" value="0" id="time_offset" />
 					<span class="sub inline">(server time: <?php echo @date("F jS, Y g:i A"); ?>)</span>
 				</p>
 
 				<h1><?php echo __("Admin Account"); ?></h1>
-				<p>
+				<p id="login_field">
 					<label for="login"><?php echo __("Username"); ?></label>
 					<input type="text" name="login" value="<?php value_fallback("login", "Admin"); ?>" id="login" />
+				</p>
+				<p id="password_1_field">
 					<label for="password_1"><?php echo __("Password"); ?></label>
 					<input type="password" name="password_1" value="<?php value_fallback("password_1"); ?>" id="password_1" />
+				</p>
+				<p id="password_2_field">
 					<label for="password_2"><?php echo __("Password"); ?> <span class="sub"><?php echo __("(again)"); ?></span></label>
 					<input type="password" name="password_2" value="<?php value_fallback("password_2"); ?>" id="password_2" />
+				</p>
+				<p id="email_field">
 					<label for="email"><?php echo __("E-Mail Address"); ?></label>
 					<input type="text" name="email" value="<?php value_fallback("email"); ?>" id="email" />
 				</p>

@@ -96,32 +96,33 @@
 			$id = (isset($_POST['id'])) ? "`__posts`.`id` = :id" : false ;
 			$reason = (isset($_POST['reason'])) ? "_".$_POST['reason'] : "" ;
 
-			switch($_POST['context']) {
-				default:
-					$post = new Post(null, array("where" => array($private, $id),
-					                             "params" => array(":id" => $_POST['id']),
-					                             "offset" => $_POST['offset'],
-					                             "limit" => 1));
-					break;
-				case "drafts":
-					$post = new Post(null, array("where" => array("`__posts`.`status` = 'draft'", $id),
-					                             "params" => array(":id" => $_POST['id']),
-					                             "offset" => $_POST['offset'],
-					                             "limit" => 1));
-					break;
-				case "archive":
-					$post = new Post(null, array("where" => array("`__posts`.`created_at` like :created_at", $id),
-					                             "params" => array(":created_at" => "'".$_POST['year']."-".$_POST['month']."%'", ":id" => $_POST['id']),
-					                             "offset" => $_POST['offset'],
-					                             "limit" => 1));
-					break;
-				case "search":
-					$post = new Post(null, array("where" => array("`__posts`.`xml` like :query", $id),
-					                             "params" => array(":query" => "'%".urldecode($_POST['query'])."%'", ":id" => $_POST['id']),
-					                             "offset" => $_POST['offset'],
-					                             "limit" => 1));
-					break;
-			}
+			if (isset($_POST['id']))
+				$post = new Post($_POST['id']);
+			else
+				switch($_POST['context']) {
+					default:
+						$post = new Post(null, array("where" => $private,
+						                             "offset" => $_POST['offset'],
+						                             "limit" => 1));
+						break;
+					case "drafts":
+						$post = new Post(null, array("where" => "`__posts`.`status` = 'draft'",
+						                             "offset" => $_POST['offset'],
+						                             "limit" => 1));
+						break;
+					case "archive":
+						$post = new Post(null, array("where" => "`__posts`.`created_at` like :created_at",
+						                             "params" => array(":created_at" => "'".$_POST['year']."-".$_POST['month']."%'"),
+						                             "offset" => $_POST['offset'],
+						                             "limit" => 1));
+						break;
+					case "search":
+						$post = new Post(null, array("where" => "`__posts`.`xml` like :query",
+						                             "params" => array(":query" => "'%".urldecode($_POST['query'])."%'"),
+						                             "offset" => $_POST['offset'],
+						                             "limit" => 1));
+						break;
+				}
 
 			if ($post->no_results) {
 				header("HTTP/1.1 404 Not Found");

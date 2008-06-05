@@ -16,20 +16,19 @@
 		static function __install() {
 			$visitor = Visitor::current();
 			$sql = SQL::current();
-			$sql->query("create table if not exists `__comments` (
-			                 `id` int(11) not null auto_increment,
-			                 `body` longtext not null,
-			                 `author` varchar(250) not null default '',
-			                 `author_url` varchar(128) not null default '',
-			                 `author_email` varchar(128) not null default '',
-			                 `author_ip` int(10) not null,
-			                 `author_agent` varchar(255) not null default '',
-			                 `status` enum('denied','approved','spam','trackback','pingback') not null default 'denied',
-			                 `signature` varchar(32) not null default '',
-			                 `created_at` datetime not null,
-			                 `post_id` int(11) not null,
-			                 `user_id` int(11) not null,
-			                 primary key	 (`id`)
+			$sql->query("CREATE TABLE IF NOT EXISTS `__comments` (
+			                 `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+			                 `body` LONGTEXT DEFAULT '',
+			                 `author` VARCHAR(250) DEFAULT '',
+			                 `author_url` VARCHAR(128) DEFAULT '',
+			                 `author_email` VARCHAR(128) DEFAULT '',
+			                 `author_ip` INT(10) DEFAULT '',
+			                 `author_agent` VARCHAR(255) DEFAULT '',
+			                 `status` VARCHAR(32) default 'denied',
+			                 `signature` VARCHAR(32) DEFAULT '',
+			                 `post_id` INTEGER DEFAULT '0',
+			                 `user_id` INTEGER DEFAULT '0',
+			                 `created_at` DATETIME DEFAULT '0000-00-00 00:00:00'
 			             ) default charset=utf8");
 			$config = Config::current();
 			$config->set("default_comment_status", "denied");

@@ -71,9 +71,16 @@
 			if ($this->connected)
 				return true;
 			try {
-				$this->db = new PDO($this->adapter.":host=".$this->host.";".((isset($this->port)) ? "port=".$this->port.";" : "")."dbname=".$this->database,
-				                    $this->username,
-				                    $this->password, array(PDO::ATTR_PERSISTENT => true));
+				if ($this->adapter == "sqlite") {
+					$this->db = new PDO("sqlite:".$this->database, null, null, array(PDO::ATTR_PERSISTENT => true));
+
+					$this->db->sqliteCreateFunction("YEAR", "year_from_datetime", 1);
+					$this->db->sqliteCreateFunction("MONTH", "month_from_datetime", 1);
+					$this->db->sqliteCreateFunction("DAY", "day_from_datetime", 1);
+				} else
+					$this->db = new PDO($this->adapter.":host=".$this->host.";".((isset($this->port)) ? "port=".$this->port.";" : "")."dbname=".$this->database,
+					                    $this->username,
+					                    $this->password, array(PDO::ATTR_PERSISTENT => true));
 				$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				if ($this->adapter == "mysql")
 					$this->db->query("set names 'utf8';");
@@ -102,7 +109,10 @@
 					unset($params[$param]);
 
 			try {
-				$query = str_replace("__", $this->prefix, $query);
+				$query = str_replace("`", "", str_replace("__", $this->prefix, $query));
+
+				if ($this->adapter == "sqlite")
+					$query = preg_replace("/ DEFAULT CHARSET=utf8/i", "", preg_replace("/AUTO_INCREMENT/i", "AUTOINCREMENT", $query));
 
 				$q = $this->db->prepare($query);
 				$result = $q->execute($params);
@@ -127,6 +137,8 @@
 
 				if (DEBUG)
 					$message.= "\n\n".$query."\n\n<pre>".$error->getTraceAsString()."</pre>";
+
+				$this->db = null;
 
 				error(__("Database Error"), $message);
 			}

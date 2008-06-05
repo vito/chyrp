@@ -1102,3 +1102,27 @@
 
 		return false;
 	}
+
+	/**
+	 * Function: year_from_datetime
+	 * Returns the year of a datetime.
+	 */
+	function year_from_datetime($datetime) {
+		return when("Y", $datetime);
+	}
+
+	/**
+	 * Function: month_from_datetime
+	 * Returns the month of a datetime.
+	 */
+	function month_from_datetime($datetime) {
+		return when("m", $datetime);
+	}
+
+	/**
+	 * Function: day_from_datetime
+	 * Returns the day of a datetime.
+	 */
+	function day_from_datetime($datetime) {
+		return when("d", $datetime);
+	}

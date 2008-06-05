@@ -7,13 +7,12 @@
 
 		static function __install() {
 			$sql = SQL::current();
-			$sql->query("create table if not exists `__tags` (
-			              `id` int(11) not null auto_increment,
-			              `tags` varchar(250) not null,
-			              `clean` varchar(250) not null,
-			              `post_id` int(11) not null,
-			              primary key (`id`)
-			             ) default charset=utf8");
+			$sql->query("CREATE TABLE IF NOT EXISTS `__tags` (
+			              `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+			              `tags` VARCHAR(250) DEFAULT '',
+			              `clean` VARCHAR(250) DEFAULT '',
+			              `post_id` INTEGER DEFAULT '0'
+			             ) DEFAULT CHARSET=utf8");
 			$route = Route::current();
 			$route->add("tag/(name)/");
 		}
@@ -79,11 +78,14 @@
 			$tags_string = (!empty($tags)) ? "{{".implode("}} {{", $tags)."}}" : "" ;
 			$tags_cleaned_string = (!empty($tags_cleaned)) ? "{{".implode("}} {{", $tags_cleaned)."}}" : "" ;
 
-			$sql->insert("tags", array("tags" => ":tags", "clean" => ":clean", "post_id" => ":post_id"), array(
-			                 ":tags"    => $tags_string,
-			                 ":clean"   => $tags_cleaned_string,
-			                 ":post_id" => $post->id
-			             ));
+			if (empty($tags_string) and empty($tags_cleaned_string))
+				$sql->delete("tags", "`__tags`.`post_id` = :post_id", array(":post_id" => $post->id));
+			else
+				$sql->insert("tags", array("tags" => ":tags", "clean" => ":clean", "post_id" => ":post_id"), array(
+				                 ":tags"    => $tags_string,
+				                 ":clean"   => $tags_cleaned_string,
+				                 ":post_id" => $post->id
+				             ));
 		}
 
 		static function delete_post($post) {
@@ -154,7 +156,7 @@
 		static function posts_get($options) {
 			$sql = SQL::current();
 
-			$options["select"][] = "__tags.tags";
+			$options["select"][] = "__tags.tags AS `tags`";
 			$options["select"][] = "__tags.clean AS `clean_tags`";
 
 			$options["left_join"][] = array("table" => "tags",
