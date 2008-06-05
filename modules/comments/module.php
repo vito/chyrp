@@ -311,38 +311,44 @@
 			            ));
 		}
 
-		static function change_settings($sub) {
-			# Don't do anything if they're not submitting to the "comments" page
-			if ($sub != "comments") return;
-			global $route, $invalid_defensio_key;
+		static function admin_comment_settings($page) {
+			if ($sub != "comment_settings") return;
+			global $admin;
 
 			$config = Config::current();
 			$config->set("allowed_comment_html", explode(", ", $_POST['allowed_comment_html']));
 			$config->set("default_comment_status", $_POST['default_comment_status']);
 			$config->set("comments_per_page", $_POST['comments_per_page']);
+
 			if (!empty($_POST['defensio_api_key'])) {
 				$defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
 				$check = $defensio->validate_key(array("owner-url" => $config->url));
 				if ($check["status"] == "fail")
-					redirect("/admin/?action=settings&sub=".$_GET['sub']."&updated&invalid_defensio");
+					$admin->context["invalid_defensio"] = true;
 				else
 					$config->set("defensio_api_key", $_POST['defensio_api_key']);
 			}
 		}
 
-		static function admin_settings_nav() {
-?>
-					<li<?php selected("settings", "comments"); ?>><a href="<?php url("settings", "comments"); ?>"><?php echo __("Comments", "comments"); ?></a></li>
-<?php
+		static function settings_nav($navs) {
+			if (Visitor::current()->can("change_settings"))
+				$navs["comment_settings"] = __("Comments", "comments");
+
+			return $navs;
 		}
 
 		static function manage_nav($navs) {
-			$navs["manage_comments"] = __("Comments", "comments");
-			$navs["manage_spam"]     = __("Spam", "comments");
+			if (!Comment::any_editable() and !Comment::any_deletable()) {
+				$navs["manage_comments"] = __("Comments", "comments");
+				$navs["manage_spam"]     = __("Spam", "comments");
+			}
 			return $navs;
 		}
 
 		static function admin_manage_comments() {
+			if (!Comment::any_editable() and !Comment::any_deletable())
+				error(__("Access Denied"), __("You do not have sufficient privileges to manage any comments.", "comments"));
+
 			global $admin;
 
 			$params = array();
@@ -674,14 +680,6 @@ $(function(){
 <?php
 					break;
 			}
-		}
-
-		static function show_admin_manage_page($show_page, $sub) {
-			$visitor = Visitor::current();
-			if ($sub == "spam")
-				return ($visitor->group()->can("edit_comment") or $visitor->group()->can("delete_comment"));
-			else
-				return $show_page;
 		}
 
 		static function import_wordpress_post($data, $id) {

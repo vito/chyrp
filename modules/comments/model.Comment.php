@@ -129,17 +129,59 @@
 			Trigger::current()->call("add_comment", new self($id));
 			return $id;
 		}
+
 		static function info($column, $comment_id = null) {
 			return SQL::current()->select("comments", $column, "`__comments`.`id` = :id", "`__comments`.`id` desc", array(":id" => $comment_id))->fetchColumn();
 		}
+
 		public function editable() {
 			$visitor = Visitor::current();
 			return ($visitor->group()->can("edit_comment") or ($visitor->group()->can("edit_own_comment") and $visitor->id == $this->user_id));
 		}
+
 		public function deletable() {
 			$visitor = Visitor::current();
 			return ($visitor->group()->can("delete_comment") or ($visitor->group()->can("delete_own_comment") and $visitor->id == $this->user_id));
 		}
+
+		/**
+		 * Function: any_editable
+		 * Checks if the <Visitor> can edit any comments.
+		 */
+		static function any_editable() {
+			$visitor = Visitor::current();
+
+			# Can they edit comments?
+			if ($visitor->group()->can("edit_comment"))
+				return true;
+
+			# Can they edit their own comments, and do they have any?
+			if ($visitor->group()->can("edit_own_comment") and
+			    self::find(array("where" => "`__comments`.`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
+				return true;
+
+			return false;
+		}
+
+		/**
+		 * Function: any_deletable
+		 * Checks if the <Visitor> can delete any comments.
+		 */
+		static function any_deletable() {
+			$visitor = Visitor::current();
+
+			# Can they delete comments?
+			if ($visitor->group()->can("delete_comment"))
+				return true;
+
+			# Can they delete their own comments, and do they have any?
+			if ($visitor->group()->can("delete_own_comment") and
+			    self::find(array("where" => "`__comments`.`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
+				return true;
+
+			return false;
+		}
+
 		public function edit_link($text = null, $before = null, $after = null){
 			$visitor = Visitor::current();
 			if (!$this->editable()) return;
@@ -147,6 +189,7 @@
 			$config = Config::current();
 			echo $before.'<a href="'.$config->chyrp_url.'/admin/?action=edit_comment&amp;id='.$this->id.'" title="Edit" class="comment_edit_link edit_link" id="comment_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
+
 		public function delete_link($text = null, $before = null, $after = null){
 			$visitor = Visitor::current();
 			if (!$this->deletable()) return;
@@ -154,12 +197,14 @@
 			$config = Config::current();
 			echo $before.'<a href="'.$config->chyrp_url.'/admin/?action=delete_comment&amp;id='.$this->id.'" title="Delete" class="comment_delete_link delete_link" id="comment_delete_'.$this->id.'">'.$text.'</a>'.$after;
 		}
+
 		public function author_link() {
 			if ($this->author_url != "") # If a URL is set
 				echo '<a href="'.$this->author_url.'">'.$this->author.'</a>';
 			else # If not, just show their name
 				echo $this->author;
 		}
+
 		public function update($author, $author_email, $author_url, $body, $status, $timestamp) {
 			$sql = SQL::current();
 			$sql->query("update `__comments`
@@ -183,6 +228,7 @@
 			$trigger = Trigger::current();
 			$trigger->call("update_comment", $this);
 		}
+
 		static function delete($comment_id) {
 			$trigger = Trigger::current();
 			if ($trigger->exists("delete_comment"))
@@ -195,6 +241,7 @@
 			                ":id" => $comment_id
 			            ));
 		}
+
 		static function user_can($post_id) {
 			$visitor = Visitor::current();
 			if (!$visitor->group()->can("add_comment")) return false;
@@ -206,6 +253,7 @@
 			        ($post->comment_status == "registered_only" and !logged_in()) or
 			        ($post->comment_status == "private" and !$visitor->group()->can("add_comment_private")));
 		}
+
 		static function user_count($user_id) {
 			$sql = SQL::current();
 			$count = $sql->query("select count(`id`) from `__comments`
@@ -215,6 +263,7 @@
 			                     ));
 			return $count->fetchColumn();
 		}
+
 		static function post_count($post_id) {
 			$sql = SQL::current();
 			$count = $sql->query("select count(`id`) from `__comments`
@@ -234,9 +283,11 @@
 			                     ));
 			return $count->fetchColumn();
 		}
+
 		public function post() {
 			return new Post($this->post_id);
 		}
+
 		public function user() {
 			if ($this->user_id)
 				return new User($this->user_id);

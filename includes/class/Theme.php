@@ -201,7 +201,7 @@
 			$config = Config::current();
 			$trigger = Trigger::current();
 
-			$javascripts = $trigger->filter("scripts", '<script src="'.$config->chyrp_url.'/includes/lib/gz.php?file=jquery.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".
+			$javascripts = $trigger->filter("scripts", '<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".
 			                                           '<script src="'.$config->chyrp_url.'/includes/lib/gz.php?file=plugins.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".
 			                                           '<script src="'.$config->chyrp_url.'/includes/javascript.php?action='.$action.$args.'" type="text/javascript" charset="utf-8"></script>');
 
