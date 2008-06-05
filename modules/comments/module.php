@@ -331,7 +331,7 @@
 		}
 
 		static function settings_nav($navs) {
-			if (Visitor::current()->can("change_settings"))
+			if (Visitor::current()->group()->can("change_settings"))
 				$navs["comment_settings"] = __("Comments", "comments");
 
 			return $navs;
