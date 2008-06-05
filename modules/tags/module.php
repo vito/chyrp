@@ -76,8 +76,8 @@
 			$tags = array_diff($tags, array("")); // Remove empties
 			$tags_cleaned = array_map("sanitize", $tags);
 
-			$tags_string = "{{".implode("}} {{", $tags)."}}";
-			$tags_cleaned_string = "{{".implode("}} {{", $tags_cleaned)."}}";
+			$tags_string = (!empty($tags)) ? "{{".implode("}} {{", $tags)."}}" : "" ;
+			$tags_cleaned_string = (!empty($tags_cleaned)) ? "{{".implode("}} {{", $tags_cleaned)."}}" : "" ;
 
 			$sql->insert("tags", array("tags" => ":tags", "clean" => ":clean", "post_id" => ":post_id"), array(
 			                 ":tags"    => $tags_string,
