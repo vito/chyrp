@@ -55,7 +55,7 @@
 	}
 
 	if (!empty($_POST)) {
-		if (($_POST['adapter'] == "sqlite" or $_POST['adapter'] == "sqlite2") and !is_writable(MAIN_DIR))
+		if ($_POST['adapter'] == "sqlite" and !is_writable(MAIN_DIR))
 			$errors[] = __("SQLite database file could not be created. Please CHMOD your Chyrp directory to 777 and try again.");
 		else
 			if ($_POST['adapter'] == "mysql")
@@ -64,9 +64,9 @@
 				} catch(PDOException $e) {
 					$errors[] = __("Could not connect to the specified database.");
 				}
-			elseif ($_POST['adapter'] == "sqlite" or $_POST['adapter'] == "sqlite2")
+			elseif ($_POST['adapter'] == "sqlite")
 				try {
-					new PDO($_POST['adapter'].":".MAIN_DIR."/chyrp.db");
+					new PDO("sqlite:".MAIN_DIR."/chyrp.db");
 				} catch(PDOException $e) {
 					$errors[] = __("Could not connect to specified database.");
 				}
@@ -93,7 +93,7 @@
 			$sql->set("host", $_POST['host']);
 			$sql->set("username", $_POST['username']);
 			$sql->set("password", $_POST['password']);
-			$sql->set("database", ($_POST['adapter'] == "sqlite" or $_POST['adapter'] == "sqlite2") ? MAIN_DIR."/chyrp.db" : $_POST['database']);
+			$sql->set("database", ($_POST['adapter'] == "sqlite") ? MAIN_DIR."/chyrp.db" : $_POST['database']);
 			$sql->set("prefix", $_POST['prefix']);
 			$sql->set("adapter", $_POST['adapter']);
 
@@ -377,7 +377,7 @@
 		<script type="text/javascript">
 			$(function(){
 				$("#adapter").change(function(){
-					if ($(this).val() == "sqlite" || $(this).val() == "sqlite2")
+					if ($(this).val() == "sqlite")
 						$("#host_field, #username_field, #password_field, #database_field").animate({ height: "hide", opacity: "hide" })
 					else
 						$("#host_field, #username_field, #password_field, #database_field").show()
@@ -397,8 +397,7 @@
 					<label for="adapter"><?php echo __("Adapter"); ?></label>
 					<select name="adapter" id="adapter">
 						<option value="mysql" selected="selected">MySQL</option>
-						<option value="sqlite">SQLite</option>
-						<option value="sqlite2">SQLite 2</option>
+						<option value="sqlite">SQLite 3</option>
 					</select>
 				</p>
 				<p id="host_field">
