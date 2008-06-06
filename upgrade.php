@@ -86,6 +86,7 @@
 		$config = Config::current();
 		$config->set("uploads_path", "/uploads/");
 		$config->set("chyrp_url", $config->url);
+		# TODO: alter groups/permisions
 		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v2.0")."</p>\n";
 	}
 

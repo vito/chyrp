@@ -178,6 +178,7 @@
 			                     "add_page",
 			                     "edit_page",
 			                     "delete_page",
+			                     "add_user",
 			                     "edit_user",
 			                     "delete_user",
 			                     "add_group",
@@ -192,7 +193,7 @@
 				"member" => Spyc::YAMLDump(array("view_site")),
 				"friend" => Spyc::YAMLDump(array("view_site", "view_private")),
 				"banned" => Spyc::YAMLDump(array()),
-				"guest" => Spyc::YAMLDump(array("view_site", "view_private"))
+				"guest" => Spyc::YAMLDump(array("view_site"))
 			);
 
 			# Insert the default groups (see above)
