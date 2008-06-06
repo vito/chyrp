@@ -40,6 +40,9 @@
 	$errors = array();
 	$installed = false;
 
+	if (!class_exists("PDO") or (!in_array("mysql", PDO::getAvailableDrivers()) and !in_array("sqlite", PDO::getAvailableDrivers())))
+		$errors[] = __("Chyrp requires either the SQLite or the MySQL PDO driver. Installation cannot continue.");
+
 	if (file_exists(INCLUDES_DIR."/config.yaml.php") and file_exists(INCLUDES_DIR."/database.yaml.php") and file_exists(MAIN_DIR."/.htaccess")) {
 		$sql->load(INCLUDES_DIR."/database.yaml.php");
 		$config->load(INCLUDES_DIR."/config.yaml.php");
@@ -396,8 +399,12 @@
 				<p id="adapter_field">
 					<label for="adapter"><?php echo __("Adapter"); ?></label>
 					<select name="adapter" id="adapter">
+						<?php if (in_array("mysql", PDO::getAvailableDrivers())): ?>
 						<option value="mysql" selected="selected">MySQL</option>
+						<?php endif; ?>
+						<?php if (in_array("sqlite", PDO::getAvailableDrivers())): ?>
 						<option value="sqlite">SQLite 3</option>
+						<?php endif; ?>
 					</select>
 				</p>
 				<p id="host_field">

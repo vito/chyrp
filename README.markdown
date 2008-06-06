@@ -1,4 +1,4 @@
-Chyrp is a blogging engine designed to be lightweight while retaining functionality. It is driven by PHP and MySQL, and has a great standard theme and robust module engine. You can personalize and modify it any way you want.
+Chyrp is a blogging engine designed to be lightweight while retaining functionality. It is driven by PHP and MySQL (or SQLite), and has a great standard theme and robust module engine. You can personalize and modify it any way you want.
 
 All of your content is powered by a unique Feathers system that allows Chyrp to be whatever you want it to be. You can post anything and everything, or just stick to the default Text feather and run a regular blog. Chyrp destroys the fine line between a blog and a tumblelog.
 
@@ -7,8 +7,8 @@ Requirements
 Chyrp will thrive on virtually any server setup, but we guarantee Chyrp to run on no less than:
 
 * PHP 5
-* [PDO and PDO_MYSQL](http://www.php.net/pdo)
-* MySQL 4.1
+* [PDO and PDO_MYSQL](http://www.php.net/manual/en/ref.pdo-mysql.php) -OR- [PDO and PDO_SQLITE](http://www.php.net/manual/en/ref.pdo-sqlite.php)
+* MySQL 4.1 -OR- SQLite 3
 * Apache 1.3.3
 
 These requirements are more of guidelines, as these are the earliest versions of the services that we have tested Chyrp on. If you are successfully running Chyrp on an earlier version of these services, let us know.
@@ -17,7 +17,7 @@ Installation
 ============
 Installing Chyrp is easier than you expect. You can do it in four steps:
 
-1. Create a MySQL database with a username and password.
+1. If using MySQL, Create a MySQL database with a username and password.
 2. Download, unzip, and upload.
 3. Open your web browser and navigate to where you uploaded Chyrp.
 4. Follow through the installer.
