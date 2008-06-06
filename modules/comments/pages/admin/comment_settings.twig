@@ -1,0 +1,39 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Comment Settings" | translate("comments") }{% endblock %}
+
+{% block content %}
+{% if GET.invalid_defensio %}
+			<div class="failure">${ "Invalid Defensio API key." | translate("comments") }</div>
+{% endif %}
+			<h1>${ "Comment Settings" | translate("comments") }</h1>
+			<form class="settings" action="${ admin "comment_settings" }" method="post">
+				<p>
+					<label for="defensio_api_key">${ "Defensio API Key" | translate("comments") }<br /> <span class="sub">${ "(recommended)" | translate }</span></label>
+					<input class="text" type="text" name="defensio_api_key" value="${ site.defensio_api_key | escape }" id="defensio_api_key" /><br />
+					<small>${ "A very good spam blocker. Get an API key by signing up at <a href=\"http://wordpress.com/\">WordPress.com</a> &ndash; they'll send it to your email." | translate("comments") }</small>
+				</p>
+				<p>
+					<label for="allowed_comment_html">${ "Allowed HTML Tags" | translate("comments") }</label>
+					<input class="text code" type="text" name="allowed_comment_html" value="${ $site.allowed_comment_html | join(", ") | escape }" id="allowed_comment_html" /><br />
+					<small>${ "Format: <code>strong, blockquote, em</code>" | translate("comments") }</small>
+				</p>
+				<p>
+					<label for="default_comment_status">${ "Default Comment Status" | translate("comments") }</label>
+					<select name="default_comment_status">
+						<option value="approved">${ "Approved" | translate("comments") }</option>
+						<option value="denied">${ "Denied" | translate("comments") }</option>
+					</select>
+				</p>
+				<p>
+					<label for="comments_per_page">${ "Comments Per Page" | translate("comments") }</label>
+					<input class="text nowidth" type="text" name="comments_per_page" value="${ site.comments_per_page | escape }" size="2" id="comments_per_page" />
+				</p>
+				<br />
+				<button type="submit" accesskey="s" class="right">
+					${ "Update Settings &rarr;" | translate }
+				</button>
+				<br class="clear" />
+				<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+			</form>
+{% endblock %}
