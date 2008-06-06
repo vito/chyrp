@@ -129,7 +129,10 @@
 	#     <Group>
 	require_once INCLUDES_DIR."/model/Group.php";
 
-	require_once INCLUDES_DIR."/class/Session.php"; # Session handler
+	# File: Session
+	# See Also:
+	#     <Session>
+	require_once INCLUDES_DIR."/class/Session.php";
 
 	if (!JAVASCRIPT) {
 		session_set_save_handler(array("Session", "open"),

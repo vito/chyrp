@@ -11,6 +11,11 @@
 
 	require_once INCLUDES_DIR."/class/QueryBuilder.php"; # SQL query builder
 	require_once INCLUDES_DIR."/lib/spyc.php"; # YAML parser
+	require_once INCLUDES_DIR."/class/Trigger.php";
+	require_once INCLUDES_DIR."/class/Model.php";
+	require_once INCLUDES_DIR."/model/User.php";
+	require_once INCLUDES_DIR."/model/Visitor.php";
+	require_once INCLUDES_DIR."/class/Session.php"; # Session handler
 
 	# Configuration files
 	require INCLUDES_DIR."/config.php";
@@ -50,18 +55,21 @@
 	}
 
 	if (!empty($_POST)) {
-		if ($_POST['adapter'] == "mysql")
-			if (!@mysql_connect($_POST['host'], $_POST['username'], $_POST['password']))
-				$errors[] = sprintf(__("Could not connect to the MySQL server: %s"), mysql_error());
-			else
-				if (!@mysql_select_db($_POST['database']))
-					$errors[] = __("Could not switch to the MySQL database.");
-		elseif ($_POST['adapter'] == "sqlite")
-			try {
-				new PDO("sqlite:".$_POST['database']);
-			} catch(PDOException $e) {
-				$errors[] = __("Could not connect to SQLite database.");
-			}
+		if ($_POST['adapter'] == "sqlite" and !is_writable(MAIN_DIR))
+			$errors[] = __("SQLite database file could not be created. Please CHMOD your Chyrp directory to 777 and try again.");
+		else
+			if ($_POST['adapter'] == "mysql")
+				try {
+					new PDO($_POST['adapter'].":host=".$_POST['host'].";".((!empty($_POST['port'])) ? "port=".$_POST['port'].";" : "")."dbname=".$_POST['database'], $_POST['username'], $_POST['password']);
+				} catch(PDOException $e) {
+					$errors[] = __("Could not connect to the specified database.");
+				}
+			elseif ($_POST['adapter'] == "sqlite")
+				try {
+					new PDO("sqlite:".MAIN_DIR."/chyrp.db");
+				} catch(PDOException $e) {
+					$errors[] = __("Could not connect to specified database.");
+				}
 
 		if (empty($_POST['name']))
 			$errors[] = __("Please enter a name for your website.");
@@ -85,7 +93,7 @@
 			$sql->set("host", $_POST['host']);
 			$sql->set("username", $_POST['username']);
 			$sql->set("password", $_POST['password']);
-			$sql->set("database", $_POST['database']);
+			$sql->set("database", ($_POST['adapter'] == "sqlite") ? MAIN_DIR."/chyrp.db" : $_POST['database']);
 			$sql->set("prefix", $_POST['prefix']);
 			$sql->set("adapter", $_POST['adapter']);
 
@@ -248,6 +256,16 @@
 				                   ":joined_at" => datetime()
 				             ));
 
+			session_set_save_handler(array("Session", "open"),
+			                         array("Session", "close"),
+			                         array("Session", "read"),
+			                         array("Session", "write"),
+			                         array("Session", "destroy"),
+			                         array("Session", "gc"));
+			session_set_cookie_params(60 * 60 * 24 * 30);
+			session_name(sanitize(camelize($config->name), false, true));
+			session_start();
+
 			$_SESSION['chyrp_login'] = $_POST['login'];
 			$_SESSION['chyrp_password'] = md5($_POST['password_1']);
 
@@ -360,9 +378,9 @@
 			$(function(){
 				$("#adapter").change(function(){
 					if ($(this).val() == "sqlite")
-						$("#host_field, #username_field, #password_field").animate({ height: "hide", opacity: "hide" })
+						$("#host_field, #username_field, #password_field, #database_field").animate({ height: "hide", opacity: "hide" })
 					else
-						$("#host_field, #username_field, #password_field").show()
+						$("#host_field, #username_field, #password_field, #database_field").show()
 				})
 			})
 		</script>
