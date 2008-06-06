@@ -7,7 +7,7 @@ Requirements
 Chyrp will thrive on virtually any server setup, but we guarantee Chyrp to run on no less than:
 
 * PHP 5
-* [PDO and PDO_MYSQL](http://www.php.net/manual/en/ref.pdo-mysql.php) -OR- [PDO and PDO_SQLITE](http://www.php.net/manual/en/ref.pdo-sqlite.php)
+* [PDO and PDO\_MYSQL](http://www.php.net/manual/en/ref.pdo-mysql.php) -OR- [PDO and PDO\_SQLITE](http://www.php.net/manual/en/ref.pdo-sqlite.php)
 * MySQL 4.1 -OR- SQLite 3
 * Apache 1.3.3
 
