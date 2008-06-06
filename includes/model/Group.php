@@ -32,13 +32,16 @@
 
 		/**
 		 * Function: can
-		 * Checks if the group can perform $function.
+		 * Checks if the group can perform $functions.
 		 *
 		 * Parameters:
-		 *     $function - The function to check.
+		 *     $functions - The functions to check.
 		 */
-		public function can($function) {
-			return in_array($function, $this->permissions);
+		public function can($functions) {
+			foreach ((array) $functions as $function)
+				if (in_array($function, $this->permissions)) return true;
+
+			return false;
 		}
 
 		/**
