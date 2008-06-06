@@ -3,11 +3,11 @@
 {% block title %}${ "Comment Settings" | translate("comments") }{% endblock %}
 
 {% block content %}
-{% if GET.invalid_defensio %}
-			<div class="failure">${ "Invalid Defensio API key." | translate("comments") }</div>
+{% if invalid_defensio %}
+			<p class="message boo">${ "Invalid Defensio API key." | translate("comments") }</p>
 {% endif %}
 			<h1>${ "Comment Settings" | translate("comments") }</h1>
-			<form class="settings" action="${ admin "comment_settings" }" method="post">
+			<form class="settings" action="{% admin "comment_settings" %}" method="post">
 				<p>
 					<label for="defensio_api_key">${ "Defensio API Key" | translate("comments") }<br /> <span class="sub">${ "(recommended)" | translate }</span></label>
 					<input class="text" type="text" name="defensio_api_key" value="${ site.defensio_api_key | escape }" id="defensio_api_key" /><br />
@@ -15,7 +15,7 @@
 				</p>
 				<p>
 					<label for="allowed_comment_html">${ "Allowed HTML Tags" | translate("comments") }</label>
-					<input class="text code" type="text" name="allowed_comment_html" value="${ $site.allowed_comment_html | join(", ") | escape }" id="allowed_comment_html" /><br />
+					<input class="text code" type="text" name="allowed_comment_html" value="${ site.allowed_comment_html | join(", ") | escape }" id="allowed_comment_html" /><br />
 					<small>${ "Format: <code>strong, blockquote, em</code>" | translate("comments") }</small>
 				</p>
 				<p>

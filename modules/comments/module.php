@@ -311,8 +311,13 @@
 		}
 
 		static function admin_comment_settings($page) {
-			if ($sub != "comment_settings") return;
 			global $admin;
+
+			if (!Visitor::current()->group()->can("change_settings"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+
+			if (empty($_POST))
+				return;
 
 			$config = Config::current();
 			$config->set("allowed_comment_html", explode(", ", $_POST['allowed_comment_html']));
