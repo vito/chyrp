@@ -1,7 +1,0 @@
-			<li${ route.action | selected("general_settings") }><a href="{% admin "general_settings" %}">${ "General" | translate }</a></li>
-			<li${ route.action | selected("content_settings") }><a href="{% admin "content_settings" %}">${ "Content" | translate }</a></li>
-			<li${ route.action | selected("user_settings") }><a href="{% admin "user_settings" %}">${ "Users" | translate }</a></li>
-			<li${ route.action | selected("route_settings") }><a href="{% admin "route_settings" %}">${ "Routes" | translate }</a></li>
-			{% for action, name in trigger.filter("settings_nav") | items %}
-			<li${ route.action | selected(action) }><a href="{% admin action %}">$name</a></li>
-			{% endfor %}

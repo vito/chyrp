@@ -1,6 +1,0 @@
-			<li${ route.action | selected("extend_modules") }><a href="{% admin "extend_modules" %}">${ "Modules" | translate }</a></li>
-			<li${ route.action | selected("extend_feathers") }><a href="{% admin "extend_feathers" %}">${ "Feathers" | translate }</a></li>
-			<li${ route.action | selected("extend_themes") }><a href="{% admin "extend_themes" %}">${ "Themes" | translate }</a></li>
-			{% for action, name in trigger.filter("extend_nav") | items %}
-			<li${ route.action | selected(action) }><a href="{% admin action %}">$name</li>
-			{% endfor %}
