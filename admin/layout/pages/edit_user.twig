@@ -2,8 +2,6 @@
 
 {% block title %}${ "Edit User &#8220;%s&#8221;" | translate | format(user.login | escape) }{% endblock %}
 
-{% block subnav %}{% include "partials/manage_nav.twig" %}{% endblock %}
-
 {% block content %}
 			<h1>${ "Editing User &#8220;%s&#8221;" | translate | format(user.login | escape) }</h1>
 			<form id="user_edit" class="split" action="{% admin "update_user" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">

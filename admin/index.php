@@ -50,6 +50,8 @@
 			                                                    "selected" :
 			                                                    "deselected");
 
+			$this->subnav_context();
+
 			$admin->context["selected"] = $trigger->filter("nav_selected", $admin->context["selected"]);
 
 			$admin->context["bookmarklet"] = "javascript:var%20d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f='".$admin->context["site"]->url."/includes/bookmarklet.php',l=d.location,e=encodeURIComponent,p='?url='+e(l.href)+'&title='+e(d.title)+'&selection='+e(s),u=f+p;a=function(){if(!w.open(u,'t','toolbar=0,resizable=0,status=1,width=450,height=430'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0)";
@@ -75,6 +77,48 @@
 			}
 
 			return $this->twig->getTemplate($template)->display($admin->context);
+		}
+
+		public function subnav_context() {
+			global $admin;
+
+			$admin->context["subnav"] = array();
+			$subnav =& $admin->context["subnav"];
+
+			$subnav["write"] = array();
+			foreach (Config::current()->enabled_feathers as $index => $feather) {
+				$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$feather."/info.yaml");
+				$subnav["write"]["write_post&feather=".$feather] = array("title" => __($info["name"], $feather),
+				                                                         "selected" => (isset($_GET['feather']) and $_GET['feather'] == $feather) or (!isset($_GET['feather']) and !$index));
+			}
+			$subnav["write"]["write_page"] = array("title" => __("Page"));
+			foreach (array("write_post", "write_page") as $write)
+				$subnav[$write] = $subnav["write"];
+
+			$subnav["manage"] = array("manage_posts"  => array("title" => __("Posts"), "selected" => array("edit_post", "delete_post")),
+			                          "manage_pages"  => array("title" => __("Pages"), "selected" => array("edit_page", "delete_page")),
+			                          "manage_users"  => array("title" => __("Users"), "selected" => array("edit_user", "delete_user")),
+			                          "manage_groups" => array("title" => __("Groups"), "selected" => array("edit_group", "delete_group")));
+			foreach (array("manage_posts", "edit_post", "delete_post",
+			               "manage_pages", "edit_page", "delete_page",
+			               "manage_users", "edit_user", "delete_user", "new_user",
+			               "manage_groups", "edit_group", "delete_group", "new_group") as $manage)
+				$subnav[$manage] =& $subnav["manage"];
+
+			$subnav["settings"] = array("general_settings" => array("title" => __("General")),
+			                            "content_settings" => array("title" => __("Content")),
+			                            "user_settings"    => array("title" => __("Users")),
+			                            "route_settings"   => array("title" => __("Routes")));
+			foreach (array_keys($subnav["settings"]) as $settings)
+				$subnav[$settings] =& $subnav["settings"];
+
+			$subnav["extend"] = array("extend_modules"  => array("title" => __("Modules")),
+			                          "extend_feathers" => array("title" => __("Feathers")),
+			                          "extend_themes"   => array("title" => __("Themes")));
+			foreach (array_keys($subnav["extend"]) as $extend)
+				$subnav[$extend] =& $subnav["extend"];
+
+			$subnav = Trigger::current()->filter("admin_subnav", $subnav);
 		}
 	}
 

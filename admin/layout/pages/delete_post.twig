@@ -2,8 +2,6 @@
 
 {% block title %}${ "Delete &#8220;%s&#8221;?" | translate | format(post.title | escape) }{% endblock %}
 
-{% block subnav %}{% include "partials/manage_nav.twig" %}{% endblock %}
-
 {% block content %}
 			<h1>${ "Are you sure you want to delete &#8220;%s&#8221;?" | translate | format(post.title | escape) }</h1>
 			<form class="delete" action="{% admin "destroy_post" %}" method="post" accept-charset="utf-8">

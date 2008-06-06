@@ -2,8 +2,6 @@
 
 {% block title %}${ "Delete Group &#8220;%s&#8221;?" | translate | format(group.name | escape) }{% endblock %}
 
-{% block subnav %}{% include "partials/manage_nav.twig" %}{% endblock %}
-
 {% block content %}
 			<h1>${ "Are you sure you want to delete the &#8220;%s&#8221; group?" | translate | format(group.name | escape) }</h1>
 			<form class="delete" action="{% admin "destroy_group" %}" method="post" accept-charset="utf-8">

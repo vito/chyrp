@@ -2,8 +2,6 @@
 
 {% block title %}${ "New Group" | translate }{% endblock %}
 
-{% block subnav %}{% include "partials/manage_nav.twig" %}{% endblock %}
-
 {% block content %}
 			<h1>${ "New Group" | translate }</h1>
 			<form id="new_group" class="split" action="{% admin "add_group" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">

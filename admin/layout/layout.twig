@@ -39,10 +39,10 @@
 		</div>
 		<ul class="column ${ route.action }_nav" id="sub-nav">
 {% block subnav %}
-{% if (route.action | split("_") | last) == "settings" %}
-{% include "partials/settings_nav.twig" %}
-{% else %}
-{% include "partials/" ~ (route.action | split("_") | first) ~ "_nav.twig" %}
+{% if subnav[route.action] %}
+{% for action, nav in subnav[route.action] | items %}
+			<li${ route.action | selected(nav.selected, action) }><a href="{% admin action %}">$nav.title</a></li>
+{% endfor %}
 {% endif %}
 {% endblock %}
 		</ul>

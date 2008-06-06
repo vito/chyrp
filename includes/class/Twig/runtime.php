@@ -374,6 +374,14 @@ function twig_selected_filter($foo) {
 
 	$just_class = (end($try) === true);
 
+	if (is_array($try[0])) {
+		foreach ($try as $index => $it)
+			if (!$index) continue;
+				$try[0][] = $it;
+
+		$try = $try[0];
+	}
+
 	if (in_array($foo, $try))
 		return ($just_class) ? "selected" : ' class="selected"' ;
 }
