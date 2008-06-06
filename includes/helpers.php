@@ -15,7 +15,8 @@
 	 *     $title - The title for the error dialog.
 	 *     $body - The message for the error dialog.
 	 */
-	function error($title, $body) {
+	function error($title, $body, $status_403 = false) {
+		if ($status_403) header("Status: 403");
 		require (defined('THEME_DIR') and file_exists(THEME_DIR."/content/error.php")) ? THEME_DIR."/content/error.php" : INCLUDES_DIR."/error.php" ;
 		exit;
 	}

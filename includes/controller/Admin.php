@@ -1172,6 +1172,8 @@
 			# "Settings", if they can configure the installation.
 			if ($visitor->group()->can("change_settings"))
 				return "settings";
+
+			error(__("Access Denied"), __("You do not have sufficient privileges to access this area."), true);
 		}
 	}
 	$admin = new AdminController();
