@@ -381,9 +381,9 @@
 			$(function(){
 				$("#adapter").change(function(){
 					if ($(this).val() == "sqlite")
-						$("#host_field, #username_field, #password_field, #database_field").animate({ height: "hide", opacity: "hide" })
+						$("#host_field, #username_field, #password_field, #database_field, #prefix_field").animate({ height: "hide", opacity: "hide" })
 					else
-						$("#host_field, #username_field, #password_field, #database_field").show()
+						$("#host_field, #username_field, #password_field, #database_field, #prefix_field").show()
 				})
 			})
 		</script>
