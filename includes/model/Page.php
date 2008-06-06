@@ -210,10 +210,11 @@
 			$url = array('', $this->url);
 			$page = $this;
 
-			while ($page->parent_id) {
-				$url[] = $page->parent()->url;
-				$page = $page->parent();
-			}
+			if (isset($page->parent_id))
+				while ($page->parent_id) {
+					$url[] = $page->parent()->url;
+					$page = $page->parent();
+				}
 
 			return Route::current()->url("page/".implode('/', array_reverse($url)));
 		}
