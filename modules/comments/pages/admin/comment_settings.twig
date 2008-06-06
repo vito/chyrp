@@ -4,6 +4,9 @@
 
 {% block content %}
 			<h1>${ "Comment Settings" | translate("comments") }</h1>
+			{% if updated %}
+			<p class="message yay">${ "Settings updated." | translate }</p>
+			{% endif %}
 			{% if invalid_defensio %}
 			<p class="message boo">${ "Invalid Defensio API key." | translate("comments") }</p>
 			{% endif %}
@@ -35,6 +38,7 @@
 						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Update" | translate }</button>
 					</p>
 
+					<input type="hidden" name="page" value="comment" id="page" />
 					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
 				</fieldset>
 			</form>

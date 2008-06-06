@@ -310,7 +310,7 @@
 			            ));
 		}
 
-		static function admin_comment_settings($page) {
+		static function admin_comment_settings() {
 			global $admin;
 
 			if (!Visitor::current()->group()->can("change_settings"))
@@ -319,6 +319,9 @@
 			if (empty($_POST))
 				return;
 
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
+
 			$config = Config::current();
 			$config->set("allowed_comment_html", explode(", ", $_POST['allowed_comment_html']));
 			$config->set("default_comment_status", $_POST['default_comment_status']);
@@ -326,12 +329,15 @@
 
 			if (!empty($_POST['defensio_api_key'])) {
 				$defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
-				$check = $defensio->validate_key(array("owner-url" => $config->url));
-				if ($check["status"] == "fail")
-					$admin->context["invalid_defensio"] = true;
-				else
+				try {
+					$defensio->validate_key(array("owner-url" => $config->url));
 					$config->set("defensio_api_key", $_POST['defensio_api_key']);
+				} catch (Exception $e) {
+					$admin->context["invalid_defensio"] = true;
+				}
 			}
+
+			$admin->context["updated"] = true;
 		}
 
 		static function settings_nav($navs) {

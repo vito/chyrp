@@ -1041,52 +1041,6 @@
 		}
 
 		/**
-		 * Function: settings
-		 * Changes Chyrp settings. Shows an error if the user lacks permissions.
-		 */
-		public function settings() {
-			if (!Visitor::current()->group()->can("change_settings"))
-				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."), true);
-
-			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
-
-			$config = Config::current();
-			switch($_POST['page']) {
-				case "general":
-					$config->set("name", $_POST['name']);
-					$config->set("description", $_POST['description']);
-					$config->set("chyrp_url", rtrim($_POST['chyrp_url'], '/'));
-					$config->set("url", rtrim(fallback($_POST['url'], $_POST['chyrp_url'], true), '/'));
-					$config->set("email", $_POST['email']);
-					$config->set("time_offset", ($_POST['time_offset'] * 3600));
-					$config->set("locale", $_POST['locale']);
-					break;
-				case "content":
-					$config->set("feed_items", $_POST['feed_items']);
-					$config->set("enable_trackbacking", !empty($_POST['enable_trackbacking']));
-					$config->set("send_pingbacks", !empty($_POST['send_pingbacks']));
-					$config->set("posts_per_page", $_POST['posts_per_page']);
-					break;
-				case "user":
-					$config->set("can_register", !empty($_POST['can_register']));
-					$config->set("default_group", $_POST['default_group']);
-					$config->set("guest_group", $_POST['guest_group']);
-					break;
-				case "route":
-					$config->set("clean_urls", !empty($_POST['clean_urls']));
-					$config->set("post_url", $_POST['post_url']);
-					break;
-				default:
-					$trigger = Trigger::current();
-					$trigger->call("change_settings", $_POST['page']);
-					break;
-			}
-
-			redirect("/admin/?action=".$_POST['page']."_settings&updated");
-		}
-
-		/**
 		 * Function: general_settings
 		 * General Settings page.
 		 */
@@ -1094,6 +1048,7 @@
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
+			$this->context["updated"] = isset($_GET['updated']);
 			$this->context["locales"] = array();
 
 			if ($open = opendir(INCLUDES_DIR."/locale/")) {
@@ -1104,6 +1059,23 @@
 				}
 				closedir($open);
 			}
+
+			if (empty($_POST))
+				return;
+
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
+
+			$config = Config::current();
+			$config->set("name", $_POST['name']);
+			$config->set("description", $_POST['description']);
+			$config->set("chyrp_url", rtrim($_POST['chyrp_url'], '/'));
+			$config->set("url", rtrim(fallback($_POST['url'], $_POST['chyrp_url'], true), '/'));
+			$config->set("email", $_POST['email']);
+			$config->set("time_offset", ($_POST['time_offset'] * 3600));
+			$config->set("locale", $_POST['locale']);
+
+			$this->context["updated"] = true;
 		}
 
 		/**
@@ -1115,6 +1087,19 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
 			$this->context["groups"] = Group::find(array("pagination" => false, "order" => "`__groups`.`id` desc"));
+
+			if (empty($_POST))
+				return;
+
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
+
+			$config = Config::current();
+			$config->set("can_register", !empty($_POST['can_register']));
+			$config->set("default_group", $_POST['default_group']);
+			$config->set("guest_group", $_POST['guest_group']);
+
+			$this->context["updated"] = true;
 		}
 
 		/**
@@ -1124,6 +1109,20 @@
 		public function content_settings() {
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+
+			if (empty($_POST))
+				return;
+
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
+
+			$config = Config::current();
+			$config->set("feed_items", $_POST['feed_items']);
+			$config->set("enable_trackbacking", !empty($_POST['enable_trackbacking']));
+			$config->set("send_pingbacks", !empty($_POST['send_pingbacks']));
+			$config->set("posts_per_page", $_POST['posts_per_page']);
+
+			$this->context["updated"] = true;
 		}
 
 		/**
@@ -1133,6 +1132,18 @@
 		public function route_settings() {
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+
+			if (empty($_POST))
+				return;
+
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
+
+			$config = Config::current();
+			$config->set("clean_urls", !empty($_POST['clean_urls']));
+			$config->set("post_url", $_POST['post_url']);
+
+			$this->context["updated"] = true;
 		}
 
 		/**

@@ -4,7 +4,10 @@
 
 {% block content %}
 			<h1>${ "Site Configuration" | translate }</h1>
-			<form id="general_settings" class="split" action="{% admin "settings" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+			{% if updated %}
+			<p class="message yay">${ "Settings updated." | translate }</p>
+			{% endif %}
+			<form id="general_settings" class="split" action="{% admin "general_settings" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 				<fieldset>
 					<p>
 						<label for="name">${ "Site Name" | translate }</label>
@@ -49,7 +52,7 @@
 						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Update" | translate }</button>
 					</p>
 
-					<input type="hidden" name="page" value="general" id="id" />
+					<input type="hidden" name="page" value="general" id="page" />
 					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
 				</fieldset>
 			</form>

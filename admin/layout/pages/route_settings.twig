@@ -4,7 +4,10 @@
 
 {% block content %}
 			<h1>${ "Route Settings" | translate }</h1>
-			<form id="route_settings" class="split" action="{% admin "settings" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+			{% if updated %}
+			<p class="message yay">${ "Settings updated." | translate }</p>
+			{% endif %}
+			<form id="route_settings" class="split" action="{% admin "route_settings" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 				<fieldset>
 					<p>
 						<label for="clean_urls">${ "Clean URLs?" | translate }</label>
@@ -41,7 +44,7 @@
 						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Update" | translate }</button>
 					</p>
 
-					<input type="hidden" name="page" value="route" id="id" />
+					<input type="hidden" name="page" value="route" id="page" />
 					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
 				</fieldset>
 			</form>

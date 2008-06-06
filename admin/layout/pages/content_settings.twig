@@ -4,7 +4,10 @@
 
 {% block content %}
 			<h1>${ "Content Settings" | translate }</h1>
-			<form id="content_settings" class="split" action="{% admin "settings" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+			{% if updated %}
+			<p class="message yay">${ "Settings updated." | translate }</p>
+			{% endif %}
+			<form id="content_settings" class="split" action="{% admin "content_settings" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 				<fieldset>
 					<p>
 						<label for="posts_per_page">${ "Posts Per Page" | translate }</label>
@@ -33,7 +36,7 @@
 						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Update" | translate }</button>
 					</p>
 
-					<input type="hidden" name="page" value="content" id="id" />
+					<input type="hidden" name="page" value="content" id="page" />
 					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
 				</fieldset>
 			</form>
