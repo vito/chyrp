@@ -322,7 +322,7 @@
 
 			$this->context["default_group"] = new Group($config->default_group);
 			$this->context["groups"] = Group::find(array("pagination" => false,
-			                                             "where" => array("`__users`.`id` != :guest_id", "`__users`.`id` != :default_id"),
+			                                             "where" => array("`__groups`.`id` != :guest_id", "`__groups`.`id` != :default_id"),
 			                                             "params" => array(":guest_id" => $config->guest_group, "default_id" => $config->default_group),
 			                                             "order" => "`__groups`.`id` desc"));
 		}
