@@ -15,10 +15,22 @@
 	 *     $title - The title for the error dialog.
 	 *     $body - The message for the error dialog.
 	 */
-	function error($title, $body, $status_403 = false) {
-		if ($status_403) header("Status: 403");
+	function error($title, $body) {
 		require (defined('THEME_DIR') and file_exists(THEME_DIR."/content/error.php")) ? THEME_DIR."/content/error.php" : INCLUDES_DIR."/error.php" ;
 		exit;
+	}
+
+	/**
+	 * Function: show_403
+	 * Shows an error message with a 403 status.
+	 *
+	 * Parameters:
+	 *     $title - The title for the error dialog.
+	 *     $body - The message for the error dialog.
+	 */
+	function show_403($title, $body) {
+		header("Status: 403");
+		error($title, $body);
 	}
 
 	/**

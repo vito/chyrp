@@ -37,11 +37,19 @@
 		 * Parameters:
 		 *     $functions - The functions to check.
 		 */
-		public function can($functions) {
-			foreach ((array) $functions as $function)
-				if (in_array($function, $this->permissions)) return true;
+		public function can($functions, $and = false) {
+			if (!$and) {
+				foreach ((array) $functions as $function)
+					if (in_array($function, $this->permissions)) return true;
 
-			return false;
+				return false;
+			}
+			else {
+				foreach ((array) $functions as $function)
+					if (!in_array($function, $this->permissions)) return false;
+
+				return true;
+			}
 		}
 
 		/**

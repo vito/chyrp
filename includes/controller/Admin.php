@@ -17,7 +17,7 @@
 		public function write_post() {
 			$visitor = Visitor::current();
 			if (!$visitor->group()->can("add_post") and !$visitor->group()->can("add_draft"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
 			global $feathers;
 			$this->context["feathers"]       = $feathers;
@@ -32,7 +32,7 @@
 		public function add_post() {
 			$visitor = Visitor::current();
 			if (!$visitor->group()->can("add_post") and !$visitor->group()->can("add_draft"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
@@ -52,7 +52,7 @@
 			$this->context["post"] = new Post($_GET['id'], array("filter" => false));
 
 			if (!$this->context["post"]->editable())
-				error(__("Access Denied"), __("You do not have sufficient privileges to edit this post."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this post."));
 
 			global $feathers;
 			$this->context["feather"] = $feathers[$this->context["post"]->feather];
@@ -65,7 +65,7 @@
 		public function update_post() {
 			$post = new Post($_POST['id']);
 			if (!$post->editable())
-				error(__("Access Denied"), __("You do not have sufficient privileges to edit this post."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this post."));
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
@@ -87,7 +87,7 @@
 			$this->context["post"] = new Post($_GET['id']);
 
 			if (!$this->context["post"]->deletable())
-				error(__("Access Denied"), __("You do not have sufficient privileges to delete this post."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this post."));
 		}
 
 		/**
@@ -106,7 +106,7 @@
 
 			$post = new Post($_POST['id']);
 			if (!$post->deletable())
-				error(__("Access Denied"), __("You do not have sufficient privileges to delete this post."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this post."));
 
 			Post::delete($_POST['id']);
 
@@ -119,7 +119,7 @@
 		 */
 		public function manage_posts() {
 			if (!Post::any_editable() and !Post::any_deletable())
-				error(__("Access Denied"), __("You do not have sufficient privileges to manage any posts."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage any posts."));
 
 			$params = array();
 			$where = array();
@@ -171,7 +171,7 @@
 		 */
 		public function write_page() {
 			if (!Visitor::current()->group()->can("add_page"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to create pages."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to create pages."));
 
 			$this->context["pages"] = Page::find();
 		}
@@ -182,7 +182,7 @@
 		 */
 		public function add_page() {
 			if (!Visitor::current()->group()->can("add_page"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to create pages."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to create pages."));
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
@@ -202,7 +202,7 @@
 		 */
 		public function edit_page() {
 			if (!Visitor::current()->group()->can("edit_page"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to edit this page."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this page."));
 
 			if (empty($_GET['id']))
 				error(__("No ID Specified"), __("An ID is required to edit a page."));
@@ -217,7 +217,7 @@
 		 */
 		public function update_page() {
 			if (!Visitor::current()->group()->can("edit_page"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to edit pages."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit pages."));
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
@@ -235,7 +235,7 @@
 		 */
 		public function delete_page() {
 			if (!Visitor::current()->group()->can("delete_page"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to delete pages."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete pages."));
 
 			$this->context["page"] = new Page($_GET['id']);
 		}
@@ -246,7 +246,7 @@
 		 */
 		public function destroy_page() {
 			if (!Visitor::current()->group()->can("delete_page"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to delete pages."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete pages."));
 
 			if (empty($_POST['id']))
 				error(__("No ID Specified"), __("An ID is required to delete a post."));
@@ -269,7 +269,7 @@
 		public function manage_pages() {
 			$visitor = Visitor::current();
 			if (!$visitor->group()->can("edit_page") and !$visitor->group()->can("delete_page"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to manage pages."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage pages."));
 
 			$params = array();
 			$where = array();
@@ -316,7 +316,7 @@
 		 */
 		public function new_user() {
 			if (!Visitor::current()->group()->can("add_user"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to add users."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to add users."));
 
 			$config = Config::current();
 
@@ -333,7 +333,7 @@
 		 */
 		public function add_user() {
 			if (!Visitor::current()->group()->can("add_user"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to add users."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to add users."));
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
@@ -366,7 +366,7 @@
 		 */
 		public function edit_user() {
 			if (!Visitor::current()->group()->can("edit_user"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to edit this user."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this user."));
 
 			if (empty($_GET['id']))
 				error(__("No ID Specified"), __("An ID is required to edit a user."));
@@ -392,7 +392,7 @@
 			$visitor = Visitor::current();
 
 			if (!$visitor->group()->can("edit_user"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to edit users."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit users."));
 
 			$user = new User($_POST['id']);
 			$password = (!empty($_POST['new_password1']) and $_POST['new_password1'] == $_POST['new_password2']) ?
@@ -413,7 +413,7 @@
 		 */
 		public function delete_user() {
 			if (!Visitor::current()->group()->can("delete_user"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to delete users."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete users."));
 
 			$this->context["user"] = new User($_GET['id']);
 		}
@@ -424,7 +424,7 @@
 		 */
 		public function destroy_user() {
 			if (!Visitor::current()->group()->can("delete_user"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to delete users."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete users."));
 
 			if (empty($_POST['id']))
 				error(__("No ID Specified"), __("An ID is required to delete a user."));
@@ -447,7 +447,7 @@
 		public function manage_users() {
 			$visitor = Visitor::current();
 			if (!$visitor->group()->can("edit_user") and !$visitor->group()->can("delete_user") and !$visitor->group()->can("add_user"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to manage users."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage users."));
 
 			$params = array();
 			$where = array();
@@ -488,7 +488,7 @@
 		 */
 		public function new_group() {
 			if (!Visitor::current()->group()->can("add_group"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to create groups."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to create groups."));
 
 			$this->context["permissions"] = SQL::current()->query("select * from `__permissions`")->fetchAll();
 		}
@@ -499,7 +499,7 @@
 		 */
 		public function add_group() {
 			if (!Visitor::current()->group()->can("add_group"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to create groups."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to create groups."));
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
@@ -515,7 +515,7 @@
 		 */
 		public function edit_group() {
 			if (!Visitor::current()->group()->can("edit_group"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to edit groups."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit groups."));
 
 			$this->context["group"] = new Group($_GET['id']);
 			$this->context["permissions"] = SQL::current()->query("select * from `__permissions`")->fetchAll();
@@ -527,7 +527,7 @@
 		 */
 		public function update_group() {
 			if (!Visitor::current()->group()->can("edit_group"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to edit groups."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit groups."));
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
@@ -549,7 +549,7 @@
 		 */
 		public function delete_group() {
 			if (!Visitor::current()->group()->can("delete_group"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to delete groups."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete groups."));
 
 			$this->context["group"] = new Group($_GET['id']);
 			$this->context["groups"] = Group::find(array("where" => "`__groups`.`id` != :group_id",
@@ -564,7 +564,7 @@
 		 */
 		public function destroy_group() {
 			if (!Visitor::current()->group()->can("delete_group"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to delete groups."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete groups."));
 
 			if (!isset($_POST['id']))
 				error(__("No ID Specified"), __("An ID is required to delete a group."));
@@ -597,7 +597,7 @@
 		public function manage_groups() {
 			$visitor = Visitor::current();
 			if (!$visitor->group()->can("edit_group") and !$visitor->group()->can("delete_group") and !$visitor->group()->can("add_group"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to manage groups."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage groups."));
 
 			if (!empty($_GET['search'])) {
 				$user = new User(null, array("where" => "`login` = :search", "params" => array(":search" => $_GET['search'])));
@@ -806,7 +806,7 @@
 		 */
 		public function extend_modules() {
 			if (!Visitor::current()->group()->can("toggle_extensions"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable modules."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to enable/disable modules."));
 
 			$config = Config::current();
 
@@ -874,7 +874,7 @@
 		 */
 		public function extend_feathers() {
 			if (!Visitor::current()->group()->can("toggle_extensions"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable feathers."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to enable/disable feathers."));
 
 			$config = Config::current();
 
@@ -983,9 +983,9 @@
 
 			if (!$visitor->group()->can("toggle_extensions"))
 				if ($type == "module")
-					error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable modules."));
+					show_403(__("Access Denied"), __("You do not have sufficient privileges to enable/disable modules."));
 				else
-					error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable feathers."));
+					show_403(__("Access Denied"), __("You do not have sufficient privileges to enable/disable feathers."));
 
 			if (($type == "module" and module_enabled($_GET[$type])) or
 			    ($type == "feather" and feather_enabled($_GET[$type])))
@@ -1019,9 +1019,9 @@
 
 			if (!$visitor->group()->can("toggle_extensions"))
 				if ($type == "module")
-					error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable modules."));
+					show_403(__("Access Denied"), __("You do not have sufficient privileges to enable/disable modules."));
 				else
-					error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable feathers."));
+					show_403(__("Access Denied"), __("You do not have sufficient privileges to enable/disable feathers."));
 
 			if (($type == "module" and !module_enabled($_GET[$type])) or
 			    ($type == "feather" and !feather_enabled($_GET[$type])))
@@ -1046,7 +1046,7 @@
 		 */
 		public function settings() {
 			if (!Visitor::current()->group()->can("change_settings"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."), true);
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
@@ -1091,6 +1091,9 @@
 		 * General Settings page.
 		 */
 		public function general_settings() {
+			if (!Visitor::current()->group()->can("change_settings"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+
 			$this->context["locales"] = array();
 
 			if ($open = opendir(INCLUDES_DIR."/locale/")) {
@@ -1108,7 +1111,28 @@
 		 * User Settings page.
 		 */
 		public function user_settings() {
+			if (!Visitor::current()->group()->can("change_settings"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+
 			$this->context["groups"] = Group::find(array("pagination" => false, "order" => "`__groups`.`id` desc"));
+		}
+
+		/**
+		 * Function: content_settings
+		 * Content Settings page.
+		 */
+		public function content_settings() {
+			if (!Visitor::current()->group()->can("change_settings"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+		}
+
+		/**
+		 * Function: route_settings
+		 * Route Settings page.
+		 */
+		public function route_settings() {
+			if (!Visitor::current()->group()->can("change_settings"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 		}
 
 		/**
@@ -1117,7 +1141,7 @@
 		 */
 		public function change_theme() {
 			if (!Visitor::current()->group()->can("change_settings"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 			if (empty($_GET['theme']))
 				error(__("No Theme Specified"), __("You did not specify a theme to switch to."));
 
@@ -1173,7 +1197,7 @@
 			if ($visitor->group()->can("change_settings"))
 				return "settings";
 
-			error(__("Access Denied"), __("You do not have sufficient privileges to access this area."), true);
+			show_403(__("Access Denied"), __("You do not have sufficient privileges to access this area."));
 		}
 	}
 	$admin = new AdminController();
