@@ -342,17 +342,23 @@
 
 		static function settings_nav($navs) {
 			if (Visitor::current()->group()->can("change_settings"))
-				$navs["comment_settings"] = __("Comments", "comments");
+				$navs["comment_settings"] = array("title" => __("Comments", "comments"));
 
 			return $navs;
 		}
 
 		static function manage_nav($navs) {
-			if (!Comment::any_editable() and !Comment::any_deletable()) {
-				$navs["manage_comments"] = __("Comments", "comments");
-				$navs["manage_spam"]     = __("Spam", "comments");
-			}
+			if (!Comment::any_editable() and !Comment::any_deletable())
+				return $navs;
+
+			$navs["manage_comments"] = array("title" => __("Comments", "comments"), "selected" => array("edit_comment", "delete_comment"));
+			$navs["manage_spam"]     = array("title" => __("Spam", "comments"));
 			return $navs;
+		}
+
+		static function manage_nav_pages($pages) {
+			array_push($pages, "manage_comments", "manage_spam", "edit_comment", "delete_comment");
+			return $pages;
 		}
 
 		static function admin_manage_comments() {
