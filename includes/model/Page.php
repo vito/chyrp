@@ -99,7 +99,7 @@
 			if ($title != $this->title or $body != $this->body)
 				$updated = datetime();
 			else
-				$updated = null;
+				$updated = "0000-00-00 00:00:00";
 
 			$sql = SQL::current();
 			$sql->update("pages",
@@ -135,11 +135,14 @@
 		 * Parameters:
 		 *     $id - The page to delete. Child pages if this page will be removed as well.
 		 */
-		static function delete($id) {
-			parent::destroy(get_class(), $id);
+		static function delete($id, $recursive = false) {
+			if ($recursive) {
+				$page = new self($id);
+				foreach ($page->children() as $child)
+					self::delete($child->id);
+			}
 
-			while ($child = SQL::current()->select("pages", "id", "`parent_id` = :id", "id", array(":id" => $page_id))->fetchObject())
-				parent::destroy(get_class(), $child->id);
+			parent::destroy(get_class(), $id);
 		}
 
 		/**
@@ -210,11 +213,10 @@
 			$url = array('', $this->url);
 			$page = $this;
 
-			if (isset($page->parent_id))
-				while ($page->parent_id) {
-					$url[] = $page->parent()->url;
-					$page = $page->parent();
-				}
+			while (isset($page->parent_id) and $page->parent_id) {
+				$url[] = $page->parent()->url;
+				$page = $page->parent();
+			}
 
 			return Route::current()->url("page/".implode('/', array_reverse($url)));
 		}

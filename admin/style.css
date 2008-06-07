@@ -339,7 +339,7 @@ form.delete blockquote {
 	font-style: italic;
 }
 form.delete blockquote h2,
-form.delete blockquote.noitalic {
+form.delete .noitalic {
 	font-style: normal;
 }
 form.split label {

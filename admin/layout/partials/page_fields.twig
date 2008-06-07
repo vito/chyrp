@@ -32,8 +32,8 @@
 							<label for="parent_id">${ "Parent" | translate }</label>
 							<select name="parent_id" id="parent_id">
 								<option value="0">----------</option>
-								{% for page in pages %}
-								<option value="$page.id">${ page.title | escape }</option>
+								{% for parent in pages %}
+								<option value="$parent.id"${ page.parent_id | option_selected(parent.id) }>${ parent.title | escape }</option>
 								{% endfor %}
 							</select>
 						</p>

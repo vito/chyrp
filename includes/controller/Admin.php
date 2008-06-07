@@ -264,6 +264,13 @@
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				error(__("Access Denied"), __("Invalid security key."));
 
+			$page = new Page($_POST['id']);
+			foreach ($page->children() as $child)
+				if (isset($_POST['destroy_children']))
+					Page::delete($child->id, true);
+				else
+					$child->update($child->title, $child->body, 0, $child->show_in_list, $child->list_order, $child->url);
+
 			Page::delete($_POST['id']);
 
 			redirect("/admin/?action=manage_pages&deleted=".$_POST['id']);
