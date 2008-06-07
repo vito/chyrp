@@ -4,7 +4,7 @@
 				<div class="page" id="page_$page.if">
 					<div id="page_inner_$page.id">
 						<h2>
-							{% if visitor.group.can("edit_page") or visitor.group.can("delete_page") %}
+							{% if visitor.group.can("edit_page", "delete_page") %}
 							<span class="info right">
 								$page.edit_link
 								{% if visitor.group.can("delete_page") %}
