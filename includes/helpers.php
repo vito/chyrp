@@ -1139,3 +1139,18 @@
 	function day_from_datetime($datetime) {
 		return when("d", $datetime);
 	}
+
+	/**
+	 * Function: cancel_module
+	 * Temporarily removes a module from $config->enabled_modules.
+	 */
+	 function cancel_module($target) {
+		$this_disabled = array();
+
+		$config = Config::current();
+		foreach ($config->enabled_modules as $module)
+			if ($module != $target)
+				$this_disabled[] = $module;
+
+		return $config->enabled_modules = $this_disabled;
+	}

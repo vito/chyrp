@@ -139,7 +139,7 @@
 			                 ":id" => $this->id
 			            ));
 
-			Trigger::current()->call("update_user", array($this->id, $login, $password, $full_name, $email, $website, $group_id));
+			Trigger::current()->call("update_user", array($this, $login, $password, $full_name, $email, $website, $group_id));
 		}
 
 		/**

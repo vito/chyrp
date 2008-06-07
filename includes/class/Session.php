@@ -56,7 +56,9 @@
 		 * Destroys their session.
 		 */
 		static function destroy($id) {
-			return SQL::current()->delete("sessions", "`__sessions`.`id` = :id", array(":id" => $id));
+			if (SQL::current()->delete("sessions", "`__sessions`.`id` = :id", array(":id" => $id)))
+				return true;
+			return false;
 		}
 
 		/**
