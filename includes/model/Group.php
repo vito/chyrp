@@ -32,20 +32,25 @@
 
 		/**
 		 * Function: can
-		 * Checks if the group can perform $functions.
-		 *
-		 * Parameters:
-		 *     $functions - The functions to check.
+		 * Checks if the group can perform the specified functions.
 		 */
-		public function can($functions, $and = false) {
-			if (!$and) {
-				foreach ((array) $functions as $function)
+		public function can() {
+			$functions = func_get_args();
+
+			# OR comparison
+			if (end($functions) !== true)
+			{
+				foreach ($functions as $function)
 					if (in_array($function, $this->permissions)) return true;
 
 				return false;
 			}
-			else {
-				foreach ((array) $functions as $function)
+			# AND comparison
+			else
+			{
+				array_pop($functions);
+
+				foreach ($functions as $function)
 					if (!in_array($function, $this->permissions)) return false;
 
 				return true;

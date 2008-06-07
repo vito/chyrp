@@ -158,7 +158,7 @@
 			}
 
 			$visitor = Visitor::current();
-			if (!$visitor->group()->can('edit_post') and !$visitor->group()->can('delete_post'))
+			if (!$visitor->group()->can('edit_post', 'delete_post'))
 			{
 				$where[] = "`__posts`.`user_id` = :visitor_id";
 				$params[':visitor_id'] = $visitor->id;
