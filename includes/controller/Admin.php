@@ -157,6 +157,13 @@
 				$params[":when"] = $_GET['month']."-%";
 			}
 
+			$visitor = Visitor::current();
+			if (!$visitor->group()->can('edit_post') and !$visitor->group()->can('delete_post'))
+			{
+				$where[] = "`__posts`.`user_id` = :visitor_id";
+				$params[':visitor_id'] = $visitor->id;
+			}
+
 			$this->context["posts"] = Post::find(array("where" => $where, "params" => $params, "per_page" => 25));
 
 			if (!empty($_GET['updated']))
