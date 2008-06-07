@@ -52,9 +52,12 @@
 						<td>${ post.status | replace("_", " ") | title }</td>
 						<td>$post.user.login</td>
 						${ "manage_posts_column" | trigger(post) }
+{% if post.editable and post.deletable %}
 						<td class="controls">${ post.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit') }</td>
-{% if visitor.group.can('delete_own_post') or visitor.group.can('delete_post') %}
 						<td class="controls">${ post.delete_link('<img src="images/icons/delete.png" alt="delete" /> delete') }</td>
+{% elseif post.editable or post.deletable %}
+						${ post.delete_link('<img src="images/icons/delete.png" alt="delete" /> delete', '<td class="controls" colspan="2">', '</td>') }
+						${ post.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit', '<td class="controls" colspan="2">', '</td>') }
 {% endif %}
 					</tr>
 				{% else %}
