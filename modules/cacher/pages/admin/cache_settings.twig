@@ -1,17 +1,17 @@
 {% extends "layout.twig" %}
 
-{% block title %}${ "Cache Settings" | translate("comments") }{% endblock %}
+{% block title %}${ "Cache Settings" | translate("cacher") }{% endblock %}
 
 {% block content %}
-			<h1>${ "Cache Settings" | translate("comments") }</h1>
+			<h1>${ "Cache Settings" | translate("cacher") }</h1>
 			{% if updated %}
 			<p class="message yay">${ "Settings updated." | translate }</p>
 			{% endif %}
-			<form id="comment_settings" class="split" action="{% admin "comment_settings" %}" method="post">
+			<form id="cache_settings" class="split" action="{% admin "cache_settings" %}" method="post">
 				<fieldset>
 					<p>
-						<label for="cache_expire">${ "Expire Cache After&hellip;" | translate("comments") }</label>
-						<input class="text" type="text" name="cache_expire" value="${ site.cache_expire | escape }" id="cache_expire" /> <span class="sub">${ "(seconds)" | translate }</span>
+						<label for="cache_expire">${ "Expire Cache After&hellip;" | translate("cacher") }</label>
+						<input class="text" type="text" name="cache_expire" value="${ site.cache_expire | escape }" id="cache_expire" /> <span class="sub">${ "(seconds)" | translate("cacher") }</span>
 					</p>
 
 					<p class="buttons">

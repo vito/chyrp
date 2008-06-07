@@ -52,7 +52,7 @@
 			$contents = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
 
 			# Add the setting
-			$this->yaml[$setting] = $value;
+			$this->yaml[$setting] = $this->$setting = $value;
 
 			if (isset($this->yaml['<?php header("Status']))
 				unset($this->yaml['<?php header("Status']);
