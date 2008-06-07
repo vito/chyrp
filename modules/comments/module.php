@@ -84,23 +84,25 @@
 			                $_POST['post_id']);
 		}
 
-		static function admin_update_comment($action) {
-			$comment = new Comment($_POST['id']);
-			if (!$comment->editable() or empty($_POST))
-				return;
+		static function admin_update_comment() {
+			if (empty($_POST))
+				redirect("/admin/?action=manage_comments");
 
-			$timestamp = when("Y-m-d H:i:s", $_POST['created_at']);
+			$comment = new Comment($_POST['id']);
+			if (!$comment->editable())
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this comment.", "comments"));
+
 			$comment->update($_POST['author'],
 			                 $_POST['author_email'],
 			                 $_POST['author_url'],
 			                 $_POST['body'],
 			                 $_POST['status'],
-			                 $timestamp);
+			                 datetime($_POST['created_at']));
 
 			if (isset($_POST['ajax']))
 				exit("{ comment_id: ".$_POST['id']." }");
 
-			redirect("/admin/?action=manage&sub=comment&updated");
+			redirect("/admin/?action=manage_comments&updated");
 		}
 
 		static function admin_delete_comment_real($action) {
@@ -359,6 +361,17 @@
 		static function manage_nav_pages($pages) {
 			array_push($pages, "manage_comments", "manage_spam", "edit_comment", "delete_comment");
 			return $pages;
+		}
+
+		public function admin_edit_comment() {
+			global $admin;
+			if (empty($_GET['id']))
+				error(__("No ID Specified"), __("An ID is required to edit a comment.", "comments"));
+
+			$admin->context["comment"] = new Comment($_GET['id']);
+
+			if (!$admin->context["comment"]->editable())
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this comment.", "comments"));
 		}
 
 		static function admin_manage_comments() {

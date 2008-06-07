@@ -18,7 +18,7 @@ $(function(){
 			alert(response.replace(/HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW/m, ""))
 	})
 
-<?php if (match(array("/edit_/", "/write_/"), $action)): ?>
+<?php if (match(array("/edit_(post|page)/", "/write_(post|page)/"), $action)): ?>
 	// Fancify the "More Options" links.
 	$(document.createElement("a")).attr({
 		id: "more_options_link",
