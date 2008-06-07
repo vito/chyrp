@@ -1,11 +1,11 @@
 <?php
-	ini_set("session.gc_probability", 100);
-
 	/**
 	 * Class: Session
 	 * Handles their session.
 	 */
 	class Session {
+		static $data = null;
+
 		/**
 		 * Function: open
 		 * Returns: true
@@ -28,8 +28,8 @@
 		 * Reads their session from the database.
 		 */
 		static function read($id) {
-			$data = SQL::current()->select("sessions", "data", "`__sessions`.`id` = :id", "id", array(":id" => $id))->fetchColumn();
-			return fallback($data, "", true);
+			self::$data = SQL::current()->select("sessions", "data", "`__sessions`.`id` = :id", "id", array(":id" => $id))->fetchColumn();
+			return fallback(self::$data, "", true);
 		}
 
 		/**
@@ -37,6 +37,9 @@
 		 * Writes their session to the database, or updates it if it already exists.
 		 */
 		static function write($id, $data) {
+			if (empty($data) or $data == self::$data)
+				return;
+
 			$sql = SQL::current();
 			$user_id = fallback(Visitor::current()->id, null, true);
 
