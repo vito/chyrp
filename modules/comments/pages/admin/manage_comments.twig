@@ -51,8 +51,13 @@
 						<td>${ comment.created_at | strftime }</td>
 						<td>${ comment.status | replace("_", " ") | title }</td>
 						${ trigger.call("manage_comments_column", comment) }
+{% if comment.editable and comment.deletable %}
 						<td class="controls">${ comment.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit') }</td>
 						<td class="controls">${ comment.delete_link('<img src="images/icons/delete.png" alt="delete" /> delete') }</td>
+{% elseif comment.editable or comment.deletable %}
+						${ comment.delete_link('<img src="images/icons/delete.png" alt="delete" /> delete', '<td class="controls" colspan="2">', '</td>') }
+						${ comment.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit', '<td class="controls" colspan="2">', '</td>') }
+{% endif %}
 					</tr>
 				{% else %}
 					<tr>
