@@ -22,9 +22,8 @@ $(function(){
 	// Fancify the "More Options" links.
 	$(document.createElement("a")).attr({
 		id: "more_options_link",
-		class: "more_options_link",
 		href: "javascript:void(0)"
-	}).html("<?php echo $more_options_string; ?>").insertBefore(".buttons")
+	}).addClass("more_options_link").html("<?php echo $more_options_string; ?>").insertBefore(".buttons")
 	$("#more_options").clone().insertAfter("#more_options_link").removeClass("js_disabled")<?php if (empty($_COOKIE['show_more_options'])): ?>.css("display", "none")<?php endif; ?>
 
 	$("#more_options_link").click(function(){
