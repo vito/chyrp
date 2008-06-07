@@ -1170,7 +1170,7 @@
 				$page = new Page($id);
 				$page->update($page->title, $page->body, $page->parent_id, $page->show_in_list, $order, $page->url);
 			}
-			redirect("/admin/?action=manage&sub=page&reordered");
+			redirect("/admin/?action=manage_pages&reordered");
 		}
 
 		/**

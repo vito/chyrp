@@ -105,7 +105,7 @@
 			redirect("/admin/?action=manage_comments&updated");
 		}
 
-		static function admin_delete_comment_real($action) {
+		static function admin_destroy_comment($action) {
 			$comment = new Comment($_POST['id']);
 			if (!$comment->deletable() or empty($_POST))
 				return;
@@ -115,7 +115,7 @@
 			if (isset($_POST['ajax']))
 				exit;
 
-			redirect("/admin/?action=manage&sub=comment&deleted");
+			redirect("/admin/?action=manage_comments&deleted");
 		}
 
 		static function admin_mark_spam($action) {

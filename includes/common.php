@@ -211,9 +211,6 @@
 		require MODULES_DIR."/".$module."/module.php";
 	}
 
-	# Load the /clean/urls into their correct $_GET values.
-	$route->determine_action();
-
 	# These are down here so that the modules are
 	# initialized after the $_GET values are filled.
 	/**
@@ -237,6 +234,9 @@
 		$modules[$module] = new $camelized();
 		$modules[$module]->name = $module;
 	}
+
+	# Load the /clean/urls into their correct $_GET values.
+	$route->determine_action();
 
 	$action = (isset($_GET['action'])) ? strip_tags($_GET['action']) : "index" ;
 
