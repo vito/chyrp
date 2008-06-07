@@ -112,7 +112,7 @@
 					$where[] = "`__posts`.`feather` = :feather";
 					$params[':feather'] = depluralize($get['feathers']);
 				} else {
-					list($where, $params, $attr) = $trigger->filter('main_controller_view', array($where, $params, $attr), true);
+					list($where, $params, $attr) = $trigger->filter('main_controller_view', array($where, $params, $attr));
 
 					if ($attr !== null) {
 						$where[] = "`__posts`.`".$attr."` = :attr".$attr;
