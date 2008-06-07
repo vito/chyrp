@@ -86,8 +86,7 @@
 		 *     $regexp - $key values replaced with their regular expressions from <Routes->$code>.
 		 */
 		private function key_regexp($key) {
-			$trigger = Trigger::current();
-			$this->code = $trigger->filter("url_code", $this->code);
+			$this->code = Trigger::current()->filter("url_code", $this->code);
 			$replace = str_replace("/", "\\/", $key);
 			$replace = str_replace(array_keys($this->code), array_values($this->code), $replace);
 

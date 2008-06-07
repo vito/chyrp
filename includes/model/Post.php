@@ -380,10 +380,8 @@
 				              urlencode($this->url),
 				              urlencode($this->feather),
 				              urlencode(pluralize($this->feather)));
-				$trigger = Trigger::current();
-				$vals = $trigger->filter("url_vals", $vals, $this->id);
-				$route = Route::current();
-				return $config->url."/".str_replace(array_keys($route->code), $vals, $config->post_url);
+				$vals = Trigger::current()->filter("url_vals", $vals, $this->id);
+				return $config->url."/".str_replace(array_keys(Route::current()->code), $vals, $config->post_url);
 			} else
 				return $config->url."/?action=view&url=".urlencode($this->url);
 		}
