@@ -50,7 +50,7 @@
 						<td>${ comment.user.full_name | fallback(comment.user.login) | fallback(comment.author) }</td>
 						<td>${ comment.created_at | strftime }</td>
 						<td>${ comment.status | replace("_", " ") | title }</td>
-						${ "manage_comments_column" | trigger(comment) }
+						${ trigger.call("manage_comments_column", comment) }
 						<td class="controls">${ comment.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit') }</td>
 						<td class="controls">${ comment.delete_link('<img src="images/icons/delete.png" alt="delete" /> delete') }</td>
 					</tr>

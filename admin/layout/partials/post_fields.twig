@@ -72,7 +72,7 @@
 {% if route.action == "write_post" %}
 						${ trigger.call("new_post_options") }
 {% else %}
-						${ "edit_post_options" | trigger(post) }
+						${ trigger.call("edit_post_options", post) }
 {% endif %}
 						<div class="clear"></div>
 					</div>

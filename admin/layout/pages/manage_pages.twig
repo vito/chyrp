@@ -40,7 +40,7 @@
 						<td>${ page.created_at | strftime }</td>
 						<td>{% if page.updated %}${ page.updated_at | strftime }{% else %}<span class="sub">${ "never" | translate }</span>{% endif %}</td>
 						<td>$page.user.login</td>
-						${ "manage_pages_column" | trigger(page) }
+						${ trigger.call("manage_pages_column", page) }
 						<td class="controls">${ page.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit') }</td>
 						<td class="controls">${ page.delete_link('<img src="images/icons/delete.png" alt="delete" /> delete') }</td>
 					</tr>

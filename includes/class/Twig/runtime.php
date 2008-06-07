@@ -65,7 +65,6 @@ $twig_filters = array(
 	// debugging
 	'inspect' =>          'twig_inspect_filter',
 
-	'trigger' =>          'twig_trigger_filter',
 	'fallback' =>         'twig_fallback_filter',
 	'selected' =>         'twig_selected_filter',
 	'checked' =>          'twig_checked_filter',
@@ -355,13 +354,6 @@ function twig_last_filter($array) {
 
 function twig_offset_filter($array, $offset = 0) {
 	return $array[$offset];
-}
-
-function twig_trigger_filter($name) {
-	$args = func_get_args();
-	array_shift($args);
-
-	Trigger::current()->call($name, $args);
 }
 
 function twig_fallback_filter($try, $fallback) {

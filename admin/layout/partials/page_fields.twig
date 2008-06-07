@@ -40,7 +40,7 @@
 {% if route.action == "write_page" %}
 						${ trigger.call("new_page_options") }
 {% else %}
-						${ "edit_page_options" | trigger(page) }
+						${ trigger.call("edit_page_options", page) }
 {% endif %}
 						<div class="clear"></div>
 					</div>

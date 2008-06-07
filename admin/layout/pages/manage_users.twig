@@ -52,7 +52,7 @@
 						</td>
 						<td>${ user.joined_at | strftime }</td>
 						<td>{% if user.website != "" %}<a href="$user.website">$user.website</a>{% endif %}</td>
-						${ "manage_users_column" | trigger(user) }
+						${ trigger.call("manage_users_column", user) }
 						<td class="controls">${ user.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit') }</td>
 						<td class="controls">${ user.delete_link('<img src="images/icons/delete.png" alt="delete" /> delete') }</td>
 					</tr>
