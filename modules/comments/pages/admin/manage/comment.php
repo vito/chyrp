@@ -91,7 +91,7 @@
 <?php endif; ?>
 								<a href="<?php echo $config->chyrp_url."/admin/?action=mark_spam&amp;id=".$comment->id; ?>"><img src="<?php echo $config->chyrp_url."/modules/comments/spam.png"; ?>" /> <?php echo __("spam", "comments"); ?></a>
 							</span>
-							<?php echo sprintf(__("<a href=\"mailto:%s\">%s</a> (%s)", "comments"), $comment->author_email, $comment->author, (($comment->author_ip == -1) ? "Local" : long2ip($comment->author_ip))); ?>
+							<?php echo _f("<a href=\"mailto:%s\">%s</a> (%s)", "comments", array($comment->author_email, $comment->author, (($comment->author_ip == -1) ? "Local" : long2ip($comment->author_ip)))); ?>
 						</h1>
 						<div class="excerpt">
 							<?php echo truncate($comment->body, 250); ?>

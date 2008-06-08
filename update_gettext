@@ -1,24 +1,32 @@
 #!/bin/sh
-ruby gettext.rb > ./includes/locale/en_US.po
-ruby gettext.rb ./feathers/audio/ > ./feathers/audio/locale/en_US.po
-ruby gettext.rb ./feathers/chat/ > ./feathers/chat/locale/en_US.po
-ruby gettext.rb ./feathers/link/ > ./feathers/link/locale/en_US.po
-ruby gettext.rb ./feathers/photo/ > ./feathers/photo/locale/en_US.po
-ruby gettext.rb ./feathers/quote/ > ./feathers/quote/locale/en_US.po
-ruby gettext.rb ./feathers/text/ > ./feathers/text/locale/en_US.po
-ruby gettext.rb ./feathers/video/ > ./feathers/video/locale/en_US.po
-ruby gettext.rb ./modules/comments/ > ./modules/comments/locale/en_US.po
-ruby gettext.rb ./modules/tags/ > ./modules/tags/locale/en_US.po
-ruby gettext.rb ./themes/default/ > ./themes/default/locale/en_US.po
+ruby gettext.rb                                       > ./includes/locale/en_US.po
 
-msgfmt -v ./includes/locale/en_US.po -o ./includes/locale/en_US.mo
-msgfmt -v ./feathers/audio/locale/en_US.po -o ./feathers/audio/locale/en_US.mo
-msgfmt -v ./feathers/chat/locale/en_US.po -o ./feathers/chat/locale/en_US.mo
-msgfmt -v ./feathers/link/locale/en_US.po -o ./feathers/link/locale/en_US.mo
-msgfmt -v ./feathers/photo/locale/en_US.po -o ./feathers/photo/locale/en_US.mo
-msgfmt -v ./feathers/quote/locale/en_US.po -o ./feathers/quote/locale/en_US.mo
-msgfmt -v ./feathers/text/locale/en_US.po -o ./feathers/text/locale/en_US.mo
-msgfmt -v ./feathers/video/locale/en_US.po -o ./feathers/video/locale/en_US.mo
+ruby gettext.rb ./feathers/audio/   --domain=audio    > ./feathers/audio/locale/en_US.po
+ruby gettext.rb ./feathers/chat/    --domain=chat     > ./feathers/chat/locale/en_US.po
+ruby gettext.rb ./feathers/link/    --domain=link     > ./feathers/link/locale/en_US.po
+ruby gettext.rb ./feathers/photo/   --domain=photo    > ./feathers/photo/locale/en_US.po
+ruby gettext.rb ./feathers/quote/   --domain=qupte    > ./feathers/quote/locale/en_US.po
+ruby gettext.rb ./feathers/text/    --domain=text     > ./feathers/text/locale/en_US.po
+ruby gettext.rb ./feathers/video/   --domain=video    > ./feathers/video/locale/en_US.po
+
+ruby gettext.rb ./modules/comments/ --domain=comments > ./modules/comments/locale/en_US.po
+ruby gettext.rb ./modules/tags/     --domain=tags     > ./modules/tags/locale/en_US.po
+ruby gettext.rb ./modules/cacher/   --domain=cacher   > ./modules/cacher/locale/en_US.po
+
+ruby gettext.rb ./themes/default/                     > ./themes/default/locale/en_US.po # "theme" domain is automatically assumed in themes
+
+msgfmt -v ./includes/locale/en_US.po         -o ./includes/locale/en_US.mo
+
+msgfmt -v ./feathers/audio/locale/en_US.po   -o ./feathers/audio/locale/en_US.mo
+msgfmt -v ./feathers/chat/locale/en_US.po    -o ./feathers/chat/locale/en_US.mo
+msgfmt -v ./feathers/link/locale/en_US.po    -o ./feathers/link/locale/en_US.mo
+msgfmt -v ./feathers/photo/locale/en_US.po   -o ./feathers/photo/locale/en_US.mo
+msgfmt -v ./feathers/quote/locale/en_US.po   -o ./feathers/quote/locale/en_US.mo
+msgfmt -v ./feathers/text/locale/en_US.po    -o ./feathers/text/locale/en_US.mo
+msgfmt -v ./feathers/video/locale/en_US.po   -o ./feathers/video/locale/en_US.mo
+
 msgfmt -v ./modules/comments/locale/en_US.po -o ./modules/comments/locale/en_US.mo
-msgfmt -v ./modules/tags/locale/en_US.po -o ./modules/tags/locale/en_US.mo
-msgfmt -v ./themes/default/locale/en_US.po -o ./themes/default/locale/en_US.mo
+msgfmt -v ./modules/tags/locale/en_US.po     -o ./modules/tags/locale/en_US.mo
+msgfmt -v ./modules/cacher/locale/en_US.po   -o ./modules/cacher/locale/en_US.mo
+
+msgfmt -v ./themes/default/locale/en_US.po   -o ./themes/default/locale/en_US.mo

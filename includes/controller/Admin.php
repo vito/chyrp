@@ -876,9 +876,9 @@
 
 				if ($info["uploader"])
 					if (!file_exists(MAIN_DIR.$config->uploads_path))
-						$info["notifications"][] = sprintf(__("Please create the <code>%s</code> directory at your Chyrp install's root and CHMOD it to 777."), $config->uploads_path);
+						$info["notifications"][] = _f("Please create the <code>%s</code> directory at your Chyrp install's root and CHMOD it to 777.", array($config->uploads_path));
 					elseif (!is_writable(MAIN_DIR.$config->uploads_path))
-						$info["notifications"][] = sprintf(__("Please CHMOD <code>%s</code> to 777."), $config->uploads_path);
+						$info["notifications"][] = _f("Please CHMOD <code>%s</code> to 777.", array($config->uploads_path));
 			}
 		}
 
@@ -932,9 +932,9 @@
 
 				if ($info["uploader"])
 					if (!file_exists(MAIN_DIR.$config->uploads_path))
-						$info["notifications"][] = sprintf(__("Please create the <code>%s</code> directory at your Chyrp install's root and CHMOD it to 777."), $config->uploads_path);
+						$info["notifications"][] = _f("Please create the <code>%s</code> directory at your Chyrp install's root and CHMOD it to 777.", array($config->uploads_path));
 					elseif (!is_writable(MAIN_DIR.$config->uploads_path))
-						$info["notifications"][] = sprintf(__("Please CHMOD <code>%s</code> to 777."), $config->uploads_path);
+						$info["notifications"][] = _f("Please CHMOD <code>%s</code> to 777.", array($config->uploads_path));
 			}
 		}
 

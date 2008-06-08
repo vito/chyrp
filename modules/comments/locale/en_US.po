@@ -9,367 +9,221 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-04-30 18:16-0500\n"
+"PO-Revision-Date: 2008-06-08 16:21-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: modules/comments/pages/admin/settings/comments.php:2
-msgid "Invalid Defensio API key."
-msgstr ""
-
-#: modules/comments/pages/admin/settings/comments.php:4
-msgid "Comment Settings"
-msgstr ""
-
-#: modules/comments/pages/admin/settings/comments.php:7
-msgid "Defensio API Key"
-msgstr ""
-
-#: modules/comments/pages/admin/settings/comments.php:7
-msgid "(recommended)"
-msgstr ""
-
-#: modules/comments/pages/admin/settings/comments.php:9
-msgid "A very good spam blocker. Get an API key by signing up at <a href=\"http://wordpress.com/\">WordPress.com</a> &ndash; they'll send it to your email."
-msgstr ""
-
-#: modules/comments/pages/admin/settings/comments.php:12
-msgid "Allowed HTML Tags"
-msgstr ""
-
-#: modules/comments/pages/admin/settings/comments.php:14
-msgid "Format: <code>strong, blockquote, em</code>"
-msgstr ""
-
-#: modules/comments/pages/admin/settings/comments.php:17
-msgid "Default Comment Status"
-msgstr ""
-
-#: modules/comments/pages/admin/settings/comments.php:19
-#: modules/comments/pages/admin/manage/comment.php:27
-#: modules/comments/pages/admin/edit/comment.php:31
-#: modules/comments/module.php:603
-msgid "Approved"
-msgstr ""
-
-#: modules/comments/pages/admin/settings/comments.php:20
-#: modules/comments/pages/admin/manage/comment.php:28
-#: modules/comments/pages/admin/edit/comment.php:32
-#: modules/comments/module.php:604
-msgid "Denied"
-msgstr ""
-
-#: modules/comments/pages/admin/settings/comments.php:24
-msgid "Comments Per Page"
-msgstr ""
-
-#: modules/comments/pages/admin/settings/comments.php:29
-msgid "Update Settings &rarr;"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/spam.php:1
-msgid "Manage Spam"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/spam.php:3
-msgid "All spam deleted."
-msgstr ""
-
-#: modules/comments/pages/admin/manage/spam.php:5
-msgid "Selected spam has been deleted."
-msgstr ""
-
-#: modules/comments/pages/admin/manage/spam.php:7
-msgid "Selected comments have been de-spammed and approved."
-msgstr ""
-
-#: modules/comments/pages/admin/manage/spam.php:9
-msgid "You didn't select any comments!"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/spam.php:11
-#: modules/comments/pages/admin/manage/comment.php:14
-msgid "Need more detail?"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/spam.php:16
-msgid "Delete All"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/spam.php:19
-#: modules/comments/pages/admin/manage/comment.php:19
-msgid "Search&hellip;"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/spam.php:21
-#: modules/comments/pages/admin/manage/comment.php:21
-msgid "Search &rarr;"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/spam.php:26
-msgid "Last 25 Spam"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/spam.php:31
-#: modules/comments/pages/admin/edit/comment.php:17
-#: modules/comments/module.php:589
-msgid "Author"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/spam.php:32
-msgid "Post"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/spam.php:33
-msgid "Excerpt"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/spam.php:79
-msgid "Delete Selected"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/spam.php:82
-msgid "De-spam Selected"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/spam.php:92
-#: modules/comments/pages/admin/manage/comment.php:104
-msgid "Next &raquo;"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/spam.php:95
-#: modules/comments/pages/admin/manage/comment.php:107
-msgid "&laquo; Previous"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/comment.php:92
-#, php-format
-msgid "<a href=\"mailto:%s\">%s</a> (%s)"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/comment.php:2
-msgid "Manage Comments"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/comment.php:4
-msgid "Comment updated."
-msgstr ""
-
-#: modules/comments/pages/admin/manage/comment.php:6
-msgid "Comment deleted."
-msgstr ""
-
-#: modules/comments/pages/admin/manage/comment.php:8
-msgid "Comment approved."
-msgstr ""
-
-#: modules/comments/pages/admin/manage/comment.php:10
-msgid "Comment denied."
-msgstr ""
-
-#: modules/comments/pages/admin/manage/comment.php:12
-msgid "Comment marked as spam."
-msgstr ""
-
-#: modules/comments/pages/admin/manage/comment.php:24
-msgid "Show:"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/comment.php:26
-msgid "All"
+#: modules/comments/module.php:379
+msgid "You do not have sufficient privileges to manage any comments."
 msgstr ""
 
 #: modules/comments/pages/admin/manage/comment.php:29
 msgid "Trackback"
 msgstr ""
 
-#: modules/comments/pages/admin/manage/comment.php:30
-msgid "Pingback"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/comment.php:32
-msgid "Show &rarr;"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/comment.php:38
-msgid "Last 25 Comments"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/comment.php:83
-msgid "edit"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/comment.php:84
-msgid "delete"
-msgstr ""
-
-#: modules/comments/pages/admin/manage/comment.php:86
-msgid "deny"
+#: modules/comments/pages/admin/manage/comment.php:8
+msgid "Comment approved."
 msgstr ""
 
 #: modules/comments/pages/admin/manage/comment.php:88
-msgid "approve"
+msgid "deny"
 msgstr ""
 
-#: modules/comments/pages/admin/manage/comment.php:90
-msgid "spam"
+#: modules/comments/pages/admin/manage/comment.php:27
+#: modules/comments/pages/admin/edit/comment.php:31
+#: modules/comments/module.php:690
+msgid "Approved"
 msgstr ""
 
-#: modules/comments/pages/admin/edit/comment.php:6
-#: modules/comments/module.php:583
-msgid "Body"
+#: modules/comments/pages/admin/manage/comment.php:26
+msgid "All"
 msgstr ""
 
-#: modules/comments/pages/admin/edit/comment.php:11
-msgid "Save"
+#: modules/comments/pages/admin/manage/spam.php:16
+msgid "Delete All"
 msgstr ""
 
-#: modules/comments/pages/admin/edit/comment.php:21
-#: modules/comments/module.php:593
-msgid "Author URL"
+#: modules/comments/pages/admin/manage/spam.php:7
+msgid "Selected comments have been de-spammed and approved."
 msgstr ""
 
-#: modules/comments/pages/admin/edit/comment.php:25
-#: modules/comments/module.php:597
-msgid "Author E-Mail"
+#: modules/comments/info.yaml:7
+msgid "Please remember to update the permission settings for each group."
 msgstr ""
 
-#: modules/comments/pages/admin/edit/comment.php:29
-#: modules/comments/module.php:601
-msgid "Status"
-msgstr ""
-
-#: modules/comments/pages/admin/edit/comment.php:33
-#: modules/comments/module.php:326
-#: modules/comments/module.php:605
-msgid "Spam"
-msgstr ""
-
-#: modules/comments/pages/admin/edit/comment.php:37
-#: modules/comments/module.php:609
-msgid "Timestamp"
-msgstr ""
-
-#: modules/comments/pages/admin/delete/comment.php:8
-msgid "Yes, delete this comment!"
-msgstr ""
-
-#: modules/comments/pages/admin/delete/comment.php:9
-msgid "No, don't delete it!"
-msgstr ""
-
-#: modules/comments/module.php:73
-#: modules/comments/module.php:74
-#: modules/comments/module.php:75
-msgid "Error"
-msgstr ""
-
-#: modules/comments/module.php:73
+#: modules/comments/module.php:77
 msgid "Author can't be blank."
 msgstr ""
 
-#: modules/comments/module.php:74
-msgid "E-Mail address can't be blank."
+#: modules/comments/pages/admin/edit/comment.php:6
+#: modules/comments/module.php:670
+msgid "Body"
 msgstr ""
 
-#: modules/comments/module.php:75
-msgid "Message can't be blank."
+#: modules/comments/pages/admin/manage/comment.php:4
+msgid "Comment updated."
 msgstr ""
 
-#: modules/comments/module.php:212
-#: modules/comments/module.php:228
-msgid "Comment Status"
+#: modules/comments/pages/admin/manage/spam.php:9
+msgid "You didn't select any comments!"
 msgstr ""
 
-#: modules/comments/module.php:214
-#: modules/comments/module.php:230
-msgid "Open"
+#: modules/comments/pages/admin/manage/spam.php:3
+msgid "All spam deleted."
 msgstr ""
 
-#: modules/comments/module.php:215
-#: modules/comments/module.php:231
-msgid "Closed"
-msgstr ""
-
-#: modules/comments/module.php:216
-#: modules/comments/module.php:232
-msgid "Private"
-msgstr ""
-
-#: modules/comments/module.php:217
-#: modules/comments/module.php:233
-msgid "Registered Only"
-msgstr ""
-
-#: modules/comments/module.php:252
-#: modules/comments/module.php:277
-msgid "A ping from that URL is already registered."
-msgstr ""
-
-#: modules/comments/module.php:317
-#: modules/comments/module.php:325
-#: modules/comments/module.php:331
-msgid "Comments"
-msgstr ""
-
-#: modules/comments/module.php:361
-#: modules/comments/module.php:376
-msgid "Are you sure you want to delete this comment?\n\nIt cannot be restored if you do this."
-msgstr ""
-
-#: modules/comments/module.php:414
-msgid "&laquo; Fewer Options"
-msgstr ""
-
-#: modules/comments/module.php:417
-#: modules/comments/module.php:586
-msgid "More Options &raquo;"
-msgstr ""
-
-#: modules/comments/module.php:618
-msgid "Update"
-msgstr ""
-
-#: modules/comments/module.php:618
-msgid "or"
-msgstr ""
-
-#: modules/comments/module.php:619
-msgid "Cancel"
-msgstr ""
-
-#: modules/comments/model.Comment.php:67
-msgid "Spam Comment"
-msgstr ""
-
-#: modules/comments/model.Comment.php:67
+#: modules/comments/model.Comment.php:70
 msgid "Your comment has been marked as spam. It will have to be approved before it will show up."
 msgstr ""
 
-#: modules/comments/model.Comment.php:135
-msgid "Edit"
-msgstr ""
-
-#: modules/comments/model.Comment.php:142
-msgid "Delete"
+#: modules/comments/module.php:234
+#: modules/comments/module.php:249
+msgid "Open"
 msgstr ""
 
 #: modules/comments/info.yaml:1
 msgid "Do you want to remove the Comments from the database?"
 msgstr ""
 
-#: modules/comments/info.yaml:2
-msgid "Comment System"
+#: modules/comments/pages/admin/edit/comment.php:21
+#: modules/comments/module.php:680
+msgid "Author URL"
+msgstr ""
+
+#: modules/comments/pages/admin/manage/comment.php:6
+msgid "Comment deleted."
+msgstr ""
+
+#: modules/comments/pages/admin/manage/spam.php:1
+msgid "Manage Spam"
+msgstr ""
+
+#: modules/comments/module.php:235
+#: modules/comments/module.php:250
+msgid "Closed"
+msgstr ""
+
+#: modules/comments/pages/admin/manage/spam.php:33
+msgid "Excerpt"
+msgstr ""
+
+#: modules/comments/module.php:93
+#: modules/comments/module.php:374
+msgid "You do not have sufficient privileges to edit this comment."
+msgstr ""
+
+#: modules/comments/pages/admin/manage/comment.php:90
+msgid "approve"
 msgstr ""
 
 #: modules/comments/info.yaml:5
 msgid "Adds commenting functionality to posts, including Defensio spam protection, auto-reloading, pagination, etc. etc."
 msgstr ""
 
-#: modules/comments/info.yaml:7
-msgid "Please remember to update the permission settings for each group."
+#: modules/comments/module.php:78
+msgid "E-Mail address can't be blank."
+msgstr ""
+
+#: modules/comments/pages/admin/manage/comment.php:38
+msgid "Last 25 Comments"
+msgstr ""
+
+#: modules/comments/pages/admin/manage/comment.php:30
+msgid "Pingback"
+msgstr ""
+
+#: modules/comments/pages/admin/manage/comment.php:24
+msgid "Show:"
+msgstr ""
+
+#: modules/comments/pages/admin/manage/comment.php:10
+msgid "Comment denied."
+msgstr ""
+
+#: modules/comments/module.php:232
+#: modules/comments/module.php:247
+msgid "Comment Status"
+msgstr ""
+
+#: modules/comments/pages/admin/manage/comment.php:2
+msgid "Manage Comments"
+msgstr ""
+
+#: modules/comments/info.yaml:2
+msgid "Comment System"
+msgstr ""
+
+#: modules/comments/module.php:448
+#: modules/comments/module.php:463
+#: modules/comments/module.php:520
+#: modules/comments/module.php:541
+msgid "Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this."
+msgstr ""
+
+#: modules/comments/module.php:347
+#: modules/comments/module.php:356
+#: modules/comments/module.php:418
+msgid "Comments"
+msgstr ""
+
+#: modules/comments/module.php:79
+msgid "Message can't be blank."
+msgstr ""
+
+#: modules/comments/pages/admin/edit/comment.php:33
+#: modules/comments/module.php:357
+#: modules/comments/module.php:692
+msgid "Spam"
+msgstr ""
+
+#: modules/comments/pages/admin/edit/comment.php:25
+#: modules/comments/module.php:684
+msgid "Author E-Mail"
+msgstr ""
+
+#: modules/comments/pages/admin/manage/comment.php:92
+msgid "spam"
+msgstr ""
+
+#: modules/comments/pages/admin/manage/comment.php:28
+#: modules/comments/pages/admin/edit/comment.php:32
+#: modules/comments/module.php:691
+msgid "Denied"
+msgstr ""
+
+#: modules/comments/pages/admin/manage/spam.php:79
+msgid "Delete Selected"
+msgstr ""
+
+#: modules/comments/module.php:369
+msgid "An ID is required to edit a comment."
+msgstr ""
+
+#: modules/comments/module.php:271
+#: modules/comments/module.php:296
+msgid "A ping from that URL is already registered."
+msgstr ""
+
+#: modules/comments/module.php:252
+msgid "Registered Only"
+msgstr ""
+
+#: modules/comments/pages/admin/manage/comment.php:12
+msgid "Comment marked as spam."
+msgstr ""
+
+#: modules/comments/pages/admin/manage/spam.php:82
+msgid "De-spam Selected"
+msgstr ""
+
+#: modules/comments/pages/admin/manage/spam.php:26
+msgid "Last 25 Spam"
+msgstr ""
+
+#: modules/comments/pages/admin/manage/spam.php:5
+msgid "Selected spam has been deleted."
 msgstr ""
 

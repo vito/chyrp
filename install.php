@@ -51,7 +51,7 @@
 			error(__("Already Installed"), __("Chyrp is already correctly installed and configured."));
 	} else {
 		if (!is_writable(MAIN_DIR) and (!file_exists(MAIN_DIR."/.htaccess") or !preg_match("/".preg_quote($htaccess, "/")."/", file_get_contents(MAIN_DIR."/.htaccess"))))
-			$errors[] = sprintf(__("STOP! Before you go any further, you must create a .htaccess file in Chyrp's install directory and put this in it:\n<pre>%s</pre>."), htmlspecialchars($htaccess));
+			$errors[] = _f("STOP! Before you go any further, you must create a .htaccess file in Chyrp's install directory and put this in it:\n<pre>%s</pre>.", array(htmlspecialchars($htaccess)));
 
 		if (!is_writable(INCLUDES_DIR))
 			$errors[] = __("Chyrp's includes directory is not writable by the server.");

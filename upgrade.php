@@ -62,32 +62,32 @@
 		             change `edit_tweet` `edit_post` tinyint(1) not null default '0'");
 		$sql->query("alter table `__groups`
 		             change `delete_tweet` `delete_post` tinyint(1) not null default '0'");
-		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v1.0.3")."</p>\n";
+		echo "<p>"._f("Upgrading to %s&hellip;", array("v1.0.3"))."</p>\n";
 	}
 	function to_1040() {
 		$sql = SQL::current();
 		$sql->query("alter table `__pages`
 		             add `parent_id` int(11) not null default '0' after `user_id`");
-		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v1.0.4a")."</p>\n";
+		echo "<p>"._f("Upgrading to %s&hellip;", array("v1.0.4a"))."</p>\n";
 	}
 	function to_1100() {
 		$sql = SQL::current();
 		$sql->query("alter table `__pages`
 		             add `list_order` int(11) not null default '0' after `show_in_list`");
 
-		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v1.1")."</p>\n";
+		echo "<p>"._f("Upgrading to %s&hellip;", array("v1.1"))."</p>\n";
 	}
 	function to_1130() {
 		$config = Config::current();
 		$config->set("secure_hashkey", md5(random(32, true)));
-		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v1.1.3")."</p>\n";
+		echo "<p>"._f("Upgrading to %s&hellip;", array("v1.1.3"))."</p>\n";
 	}
 	function to_2000() {
 		$config = Config::current();
 		$config->set("uploads_path", "/uploads/");
 		$config->set("chyrp_url", $config->url);
 		# TODO: alter groups/permisions
-		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v2.0")."</p>\n";
+		echo "<p>"._f("Upgrading to %s&hellip;", array("v2.0"))."</p>\n";
 	}
 
 	if (!empty($_POST)) {

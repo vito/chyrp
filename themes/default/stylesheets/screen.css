@@ -282,36 +282,36 @@ span.info em {
 div.sub {
 	margin-top: -1.5em;
 }
-.inline {
+.inline_post_edit {
 	padding: 1em;
 	background: #f9f9f9;
 	border-right: 3px solid #f0f0f0;
 	border-bottom: 3px solid #f0f0f0;
 }
-.inline .more_options_link:link {
+.inline_post_edit .more_options_link:link {
 	display: block;
 	font-weight: bold;
 	color: #777;
 }
-.inline .more_options {
+.inline_post_edit .more_options {
 	padding: 10px;
 	background: #f9f9f9;
 }
-.inline .more_options p {
+.inline_post_edit .more_options p {
 	float: left;
 	width: 50%;
 	height: 55px;
 	margin: 0;
 }
-.inline .more_options p input[type="text"] {
+.inline_post_edit .more_options p input[type="text"] {
 	width: 90%;
 	margin-bottom: 0;
 }
-.inline .more_options p .sub {
+.inline_post_edit .more_options p .sub {
 	font-size: .8em;
 	color: #777;
 }
-.inline .buttons {
+.inline_post_edit .buttons {
 	padding: 5px;
 	background: #efefef;
 	color: #666;

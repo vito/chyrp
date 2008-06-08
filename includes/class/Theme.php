@@ -292,7 +292,7 @@
 						return $this->load($file[$i], $context);
 
 			if (!file_exists($this->directory.$file.".twig"))
-				error(__("Template Missing"), sprintf(__("Couldn't load template:<br /><br />%s"), $file.".twig"));
+				error(__("Template Missing"), _f("Couldn't load template:<br /><br />%s", array($file.".twig")));
 
 			$this->file = $file;
 			$this->prepare($context);

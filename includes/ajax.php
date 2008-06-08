@@ -16,8 +16,8 @@
 			$theme_file = THEME_DIR."/forms/feathers/".$post->feather.".php";
 			$default_file = FEATHERS_DIR."/".$post->feather."/fields.php";
 ?>
-<form id="post_edit_<?php echo $post->id; ?>" class="inline" action="<?php echo $config->chyrp_url."/admin/?action=update_post&amp;sub=text&amp;id=".$post->id; ?>" method="post" accept-charset="utf-8">
-	<h2><?php echo sprintf(__("Editing &#8220;%s&#8221;"), truncate($title, 40, false)); ?></h2>
+<form id="post_edit_<?php echo $post->id; ?>" class="inline_post_edit" action="<?php echo $config->chyrp_url."/admin/?action=update_post&amp;sub=text&amp;id=".$post->id; ?>" method="post" accept-charset="utf-8">
+	<h2><?php echo _f("Editing &#8220;%s&#8221;", array(truncate($title, 40, false))); ?></h2>
 	<br />
 <?php foreach ($feathers[$post->feather]->fields as $field): ?>
 		<p>
@@ -200,9 +200,9 @@
 
 			if ($info["uploader"])
 				if (!file_exists(MAIN_DIR.$config->uploads_path))
-					$info["notifications"][] = sprintf(__("Please create the <code>%s</code> directory at your Chyrp install's root and CHMOD it to 777."), $config->uploads_path);
+					$info["notifications"][] = _f("Please create the <code>%s</code> directory at your Chyrp install's root and CHMOD it to 777.", array($config->uploads_path));
 				elseif (!is_writable(MAIN_DIR.$config->uploads_path))
-					$info["notifications"][] = sprintf(__("Please CHMOD <code>%s</code> to 777."), $config->uploads_path);
+					$info["notifications"][] = _f("Please CHMOD <code>%s</code> to 777.", array($config->uploads_path));
 
 			$class_name = camelize($_POST["extension"]);
 			if (method_exists($class_name, "__install"))

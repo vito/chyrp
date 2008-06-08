@@ -92,6 +92,15 @@
 	}
 
 	/**
+	 * Function: _f
+	 * Returns a formatted translated string.
+	 */
+	function _f($string, $args = array(), $domain = "chyrp") {
+		array_unshift($args, __($string, $domain));
+		return call_user_func_array("sprintf", $args);
+	}
+
+	/**
 	 * Function: redirect
 	 * Redirects to the given URL and exits immediately.
 	 */
@@ -870,10 +879,10 @@
 					if (($i + 2) == count($extension)) $comma = ", and ";
 					$list.= "*.".$extension[$i].$comma;
 				}
-				error(__("Error"), sprintf(__("Only %s files are supported."), $list));
+				error(__("Error"), _f("Only %s files are supported.", array($list)));
 			}
 		} elseif (isset($extension) and $file_ext != $extension and $file_ext != strtoupper($extension))
-			error(__("Error"), sprintf(__("Only %s files are supported."), "*.".$extension));
+			error(__("Error"), _f("Only %s files are supported.", array("*.".$extension)));
 
 		array_pop($file_split);
 		$file_clean = implode(".", $file_split);

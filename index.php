@@ -11,7 +11,7 @@
 				$theme->title = ucfirst($_GET['action']);
 				$context["feather"] = $_GET['action'];
 			} elseif ($action == "search") {
-				$theme->title = fix(sprintf(__("Search results for \"%s\""), urldecode($_GET['query'])), "html");
+				$theme->title = fix(_f("Search results for \"%s\"", array(urldecode($_GET['query'])), "html"));
 				$context["search"] = urldecode($_GET['query']);
 			} elseif ($action == "drafts")
 				$theme->title = __("Drafts");
@@ -84,7 +84,7 @@
 					error(__("Error"), __("Please enter a valid year and month."));
 
 				$timestamp = @mktime(0, 0, 0, $_GET['month'], fallback($_GET['day'], "1", true), $_GET['year']);
-				$theme->title = sprintf(__("Archive of %s"), @date("F Y", $timestamp));
+				$theme->title = _f("Archive of %s", array(@date("F Y", $timestamp)));
 
 				$theme->load("content/archive", array("posts" => $posts,
 				                                      "archive" => array("year" => $_GET['year'],
@@ -131,7 +131,7 @@
 				else {
 					$new_password = random(16);
 					$user->update($user->login, md5($new_password), $user->full_name, $user->email, $user->website, $user->group_id);
-					$sent = @mail($user->email, __("Lost Password Request"), sprintf(__("%s,\n\nWe have received a request for a new password for your account at %s.\n\nPlease log in with the following password, and feel free to change it once you've successfully logged in:\n\t%s"), $user->login, $config->name, $new_password));
+					$sent = @mail($user->email, __("Lost Password Request"), _f("%s,\n\nWe have received a request for a new password for your account at %s.\n\nPlease log in with the following password, and feel free to change it once you've successfully logged in:\n\t%s", array($user->login, $config->name, $new_password)));
 				}
 			}
 

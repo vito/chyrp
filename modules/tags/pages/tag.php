@@ -4,6 +4,6 @@
 
 	$tag = clean2tag($_GET['name']);
 
-	$theme->title = sprintf(__("Posts tagged with \"%s\"", "tags"), $tag);
+	$theme->title = _f("Posts tagged with \"%s\"", "tags", array($tag));
 	$theme->load(array("content/tag", "content/index"), array("posts" => $posts, "tag" => $tag));
 ?>

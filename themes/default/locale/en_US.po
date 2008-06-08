@@ -9,105 +9,52 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-04-30 18:16-0500\n"
+"PO-Revision-Date: 2008-06-08 16:21-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: themes/default/layouts/default.twig:19
-msgid "Write"
-msgstr ""
-
-#: themes/default/layouts/default.twig:22
-msgid "Add Page"
-msgstr ""
-
-#: themes/default/layouts/default.twig:25
-#: themes/default/content/drafts.twig:3
-msgid "Drafts"
-msgstr ""
-
-#: themes/default/layouts/default.twig:28
-msgid "Admin"
-msgstr ""
-
-#: themes/default/layouts/default.twig:30
-msgid "Close"
-msgstr ""
-
-#: themes/default/layouts/default.twig:47
-msgid "Powered by <a href=\"http://chyrp.net/\">Chyrp</a>"
-msgstr ""
-
-#: themes/default/layouts/default.twig:55
-msgid "Pages"
-msgstr ""
-
-#: themes/default/layouts/default.twig:57
-msgid "Welcome, "
-msgstr ""
-
-#: themes/default/layouts/default.twig:60
-msgid "User Controls"
-msgstr ""
-
-#: themes/default/layouts/default.twig:62
-msgid "Toggle Admin Bar"
-msgstr ""
-
-#: themes/default/layouts/default.twig:64
-msgid "Log Out"
-msgstr ""
-
-#: themes/default/layouts/default.twig:67
-#: themes/default/forms/user/login.twig:3
-#: themes/default/forms/user/login.twig:15
-msgid "Log In"
-msgstr ""
-
-#: themes/default/layouts/default.twig:69
-#: themes/default/forms/user/register.twig:3
-#: themes/default/forms/user/register.twig:23
-msgid "Register"
-msgstr ""
-
-#: themes/default/layouts/default.twig:75
-msgid "Tags"
-msgstr ""
-
-#: themes/default/layouts/default.twig:80
-msgid "All &rarr;"
-msgstr ""
-
-#: themes/default/layouts/default.twig:83
-msgid "Archives"
-msgstr ""
-
-#: themes/default/layouts/default.twig:89
-msgid "Stats"
-msgstr ""
-
-#: themes/default/layouts/default.twig:91
-msgid "Queries:"
-msgstr ""
-
-#: themes/default/layouts/default.twig:92
+#: themes/default/layouts/default.twig:96
 msgid "Load time:"
 msgstr ""
 
-#: themes/default/info.yaml:1
-msgid "Chyrp Default"
+#: themes/default/content/search.twig:10
+msgid "Your search did not return any results."
+msgstr ""
+
+#: themes/default/layouts/default.twig:95
+msgid "Queries:"
+msgstr ""
+
+#: themes/default/forms/user/controls.twig:3
+msgid "Controls"
+msgstr ""
+
+#: themes/default/content/tag.twig:4
+#, php-format
+msgid "Posts tagged with &#8220;%s&#8221;"
+msgstr ""
+
+#: themes/default/forms/user/lost_password.twig:7
+msgid "You have specified a user that does not exist."
+msgstr ""
+
+#: themes/default/content/feather.twig:10
+msgid "There don't seem to be any posts as the Feather you specified."
+msgstr ""
+
+#: themes/default/forms/user/lost_password.twig:18
+msgid "Submit"
+msgstr ""
+
+#: themes/default/content/404.twig:3
+msgid "Not Found"
 msgstr ""
 
 #: themes/default/info.yaml:5
 msgid "Chyrp's default theme since v.0.0.1 Alpha, developed over a long period of time on and off (mostly off) by Aaron MacDonald."
-msgstr ""
-
-#: themes/default/forms/user/register.twig:7
-#: themes/default/forms/user/login.twig:7
-msgid "Username"
 msgstr ""
 
 #: themes/default/forms/user/register.twig:11
@@ -115,8 +62,8 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
-#: themes/default/forms/user/register.twig:15
-msgid "Password (again)"
+#: themes/default/content/tags.twig:4
+msgid "Tag Maelstrom"
 msgstr ""
 
 #: themes/default/forms/user/register.twig:19
@@ -124,112 +71,244 @@ msgstr ""
 msgid "E-Mail"
 msgstr ""
 
-#: themes/default/forms/user/controls.twig:3
-msgid "Controls"
-msgstr ""
-
-#: themes/default/forms/user/controls.twig:7
-msgid "Full Name"
-msgstr ""
-
-#: themes/default/forms/user/controls.twig:15
-msgid "Website"
-msgstr ""
-
-#: themes/default/forms/user/controls.twig:19
-msgid "New Password?"
-msgstr ""
-
-#: themes/default/forms/user/controls.twig:23
-msgid "Confirm"
-msgstr ""
-
-#: themes/default/forms/user/controls.twig:28
-msgid "Update"
-msgstr ""
-
-#: themes/default/forms/comment/new.twig:3
-msgid "Logged in as"
-msgstr ""
-
 #: themes/default/forms/comment/new.twig:4
 msgid "Log Out &rarr;"
 msgstr ""
 
-#: themes/default/forms/comment/new.twig:10
-msgid "Your Name"
+#: themes/default/layouts/default.twig:70
+#: themes/default/forms/user/register.twig:3
+#: themes/default/forms/user/register.twig:24
+msgid "Register"
 msgstr ""
 
-#: themes/default/forms/comment/new.twig:12
-msgid "Your E-Mail"
+#: themes/default/layouts/default.twig:32
+msgid "Close"
 msgstr ""
 
-#: themes/default/forms/comment/new.twig:14
-msgid "Your Website"
+#: themes/default/layouts/default.twig:21
+msgid "Write Draft"
 msgstr ""
 
-#: themes/default/forms/comment/new.twig:21
-msgid "Speak"
-msgstr ""
-
-#: themes/default/content/view.twig:14
-msgid "Next &rarr;"
-msgstr ""
-
-#: themes/default/content/view.twig:15
-msgid "&larr; Previous"
+#: themes/default/info.yaml:1
+msgid "Chyrp Default"
 msgstr ""
 
 #: themes/default/content/view.twig:6
 msgid "Comments"
 msgstr ""
 
-#: themes/default/content/tag.twig:3
-msgid "Posts tagged with &#8220;"
+#: themes/default/content/post.twig:10
+msgid "Next &rarr;"
 msgstr ""
 
-#: themes/default/content/tag.twig:3
-msgid "&#8221;"
+#: themes/default/layouts/default.twig:24
+msgid "Add Page"
 msgstr ""
 
-#: themes/default/content/search.twig:3
-msgid "Search results for &#8220;"
-msgstr ""
-
-#: themes/default/content/post.twig:2
-msgid "This post is a draft."
-msgstr ""
-
-#: themes/default/content/post.twig:2
-msgid "(click to hide)"
-msgstr ""
-
-#: themes/default/content/post.twig:8
-msgid "pinned"
-msgstr ""
-
-#: themes/default/content/post.twig:21
-msgid "Trackback"
-msgstr ""
-
-#: themes/default/content/comment.twig:3
-msgid "Your comment is awaiting moderation."
+#: themes/default/layouts/default.twig:86
+msgid "Archives"
 msgstr ""
 
 #: themes/default/content/comment.twig:9
 msgid "on"
 msgstr ""
 
-#: themes/default/content/archive.twig:15
-#: themes/default/content/archive.twig:18
+#: themes/default/layouts/default.twig:59
+#, php-format
+msgid "Welcome, %s!"
+msgstr ""
+
+#: themes/default/layouts/default.twig:62
+msgid "User Controls"
+msgstr ""
+
+#: themes/default/forms/user/controls.twig:7
+msgid "Full Name"
+msgstr ""
+
+#: themes/default/content/search.twig:4
+#, php-format
+msgid "Search results for &#8220;%s&#8221;"
+msgstr ""
+
+#: themes/default/forms/user/lost_password.twig:10
+msgid "E-mail sent!"
+msgstr ""
+
+#: themes/default/forms/user/register.twig:15
+msgid "Password (again)"
+msgstr ""
+
+#: themes/default/forms/user/lost_password.twig:3
+msgid "Lost Password"
+msgstr ""
+
+#: themes/default/content/post.twig:2
+msgid "This post is a draft."
+msgstr ""
+
+#: themes/default/content/post.twig:11
+msgid "&larr; Previous"
+msgstr ""
+
+#: themes/default/content/tag.twig:10
+#, php-format
+msgid "There don't be any posts tagged as &#8220;%s&#8221;."
+msgstr ""
+
+#: themes/default/layouts/default.twig:27
+msgid "Your Drafts"
+msgstr ""
+
+#: themes/default/layouts/default.twig:30
+msgid "Admin"
+msgstr ""
+
+#: themes/default/forms/user/lost_password.twig:12
+msgid "Please enter your username below and we will e-mail you a new password for your account."
+msgstr ""
+
+#: themes/default/forms/user/controls.twig:23
+msgid "Confirm"
+msgstr ""
+
+#: themes/default/forms/comment/new.twig:13
+msgid "Your Website"
+msgstr ""
+
+#: themes/default/forms/comment/new.twig:9
+msgid "Your Name"
+msgstr ""
+
+#: themes/default/forms/comment/new.twig:11
+msgid "Your E-Mail"
+msgstr ""
+
+#: themes/default/layouts/default.twig:64
+msgid "Toggle Admin Bar"
+msgstr ""
+
+#: themes/default/layouts/default.twig:77
+msgid "Tags"
+msgstr ""
+
+#: themes/default/content/archive.twig:16
+#: themes/default/content/archive.twig:19
 msgid "Archive of"
 msgstr ""
 
-#: themes/default/content/404.twig:3
-msgid "Not Found"
+#: themes/default/layouts/default.twig:19
+msgid "Write"
+msgstr ""
+
+#: themes/default/forms/user/controls.twig:28
+msgid "Update"
+msgstr ""
+
+#: themes/default/content/tag.twig:9
+#: themes/default/content/feather.twig:9
+#: themes/default/content/archive.twig:27
+msgid "No Posts"
+msgstr ""
+
+#: themes/default/content/drafts.twig:4
+msgid "Drafts"
 msgstr ""
 
 #: themes/default/content/404.twig:4
 msgid "Sorry, but you are looking for something that isn't here."
+msgstr ""
+
+#: themes/default/content/comment.twig:3
+msgid "Your comment is awaiting moderation."
+msgstr ""
+
+#: themes/default/forms/user/controls.twig:15
+msgid "Website"
+msgstr ""
+
+#: themes/default/layouts/default.twig:82
+msgid "All &rarr;"
+msgstr ""
+
+#: themes/default/forms/user/register.twig:7
+#: themes/default/forms/user/lost_password.twig:14
+#: themes/default/forms/user/login.twig:7
+msgid "Username"
+msgstr ""
+
+#: themes/default/forms/user/controls.twig:19
+msgid "New Password?"
+msgstr ""
+
+#: themes/default/layouts/default.twig:71
+msgid "Lost Password?"
+msgstr ""
+
+#: themes/default/content/tags.twig:7
+msgid "No Tags"
+msgstr ""
+
+#: themes/default/content/drafts.twig:10
+msgid "You don't have any drafts."
+msgstr ""
+
+#: themes/default/layouts/default.twig:57
+msgid "Pages"
+msgstr ""
+
+#: themes/default/content/archive.twig:28
+msgid "There don't seem to be any posts in the timeframe you specified."
+msgstr ""
+
+#: themes/default/forms/comment/new.twig:3
+#, php-format
+msgid "Logged in as %s"
+msgstr ""
+
+#: themes/default/content/post.twig:2
+msgid "(click to hide)"
+msgstr ""
+
+#: themes/default/content/tags.twig:8
+msgid "There aren't any tags yet. Such a shame."
+msgstr ""
+
+#: themes/default/content/post.twig:22
+msgid "Trackback"
+msgstr ""
+
+#: themes/default/layouts/default.twig:68
+#: themes/default/forms/user/login.twig:3
+#: themes/default/forms/user/login.twig:15
+msgid "Log In"
+msgstr ""
+
+#: themes/default/content/post.twig:8
+msgid "pinned"
+msgstr ""
+
+#: themes/default/forms/comment/new.twig:19
+msgid "Speak"
+msgstr ""
+
+#: themes/default/content/drafts.twig:9
+msgid "No Drafts"
+msgstr ""
+
+#: themes/default/layouts/default.twig:66
+msgid "Log Out"
+msgstr ""
+
+#: themes/default/content/search.twig:9
+msgid "No Results"
+msgstr ""
+
+#: themes/default/layouts/default.twig:93
+msgid "Stats"
+msgstr ""
+
+#: themes/default/layouts/default.twig:49
+msgid "Powered by <a href=\"http://chyrp.net/\">Chyrp</a>"
 msgstr ""
 

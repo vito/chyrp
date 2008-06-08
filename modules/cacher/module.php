@@ -11,11 +11,8 @@
 			if (!is_writable($this->caches))
 				cancel_module("cacher");
 
+			# Prepare actions that should result in new cache files.
 			$this->prepare_cache_updaters();
-
-			# Generate the user's directory.
-			if (!file_exists($this->path))
-				mkdir($this->path);
 
 			# Remove all expired files.
 			$this->remove_expired();
@@ -47,6 +44,10 @@
 
 			if (DEBUG)
 				error_log("GENERATING cache file for ".$this->url."...");
+
+			# Generate the user's directory.
+			if (!file_exists($this->path))
+				mkdir($this->path);
 
 			file_put_contents($this->file, ob_get_contents());
 		}

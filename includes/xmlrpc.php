@@ -115,7 +115,7 @@
 			$trigger = Trigger::current();
 			$trigger->call("pingback", array($id, $linked_to, $linked_from, $title, $excerpt));
 
-			return sprintf(__("Pingback from %s to %s registered!"), $linked_from, $linked_to);
+			return _f("Pingback from %s to %s registered!", array($linked_from, $linked_to));
 		}
 
 		/**

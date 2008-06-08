@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-04-30 18:16-0500\n"
+"PO-Revision-Date: 2008-06-08 16:21-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -22,14 +22,5 @@ msgstr ""
 
 #: feathers/link/info.yaml:4
 msgid "Link to other sites, name it, and add an optional description."
-msgstr ""
-
-#: feathers/link/feather.php:12
-#: feathers/link/feather.php:37
-msgid "Error"
-msgstr ""
-
-#: feathers/link/feather.php:12
-msgid "URL can't be empty."
 msgstr ""
 
