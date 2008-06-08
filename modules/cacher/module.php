@@ -3,7 +3,6 @@
 		public function __construct() {
 			$this->user = (logged_in()) ? Visitor::current()->login : "guest" ;
 			$this->caches = dirname(__FILE__)."/cache";
-			$this->expire_file = $this->caches."/LAST_EXPIRED";
 			$this->path = dirname(__FILE__)."/cache/".sanitize($this->user);
 			$this->url = self_url();
 			$this->file = $this->path."/".md5($this->url).".html";
@@ -12,22 +11,14 @@
 			if (!is_writable($this->caches))
 				cancel_module("cacher");
 
-			$regenerate = array("add_post",    "add_page",    "add_comment",
-			                    "update_post", "update_page", "update_comment",
-			                    "delete_post", "delete_page", "delete_comment");
-			foreach ($regenerate as $action)
-				$this->addAlias($action, "regenerate");
+			$this->prepare_cache_updaters();
 
 			# Generate the user's directory.
 			if (!file_exists($this->path))
 				mkdir($this->path);
 
-			if (!file_exists($this->expire_file))
-				touch($this->expire_file);
-
-			# Have the caches expired?
-			if (time() - filemtime($this->expire_file) > Config::current()->cache_expire)
-				$this->regenerate();
+			# Remove all expired files.
+			$this->remove_expired();
 		}
 
 		public function __install() {
@@ -44,7 +35,9 @@
 			if (!file_exists($this->file))
 				return;
 
-			if (DEBUG) error_log("SERVING cache file for ".$this->url."...");
+			if (DEBUG)
+				error_log("SERVING cache file for ".$this->url."...");
+
 			exit(file_get_contents($this->file));
 		}
 
@@ -52,27 +45,61 @@
 			if (file_exists($this->file))
 				return;
 
-			if (DEBUG) error_log("GENERATING cache file for ".$this->url."...");
+			if (DEBUG)
+				error_log("GENERATING cache file for ".$this->url."...");
+
 			file_put_contents($this->file, ob_get_contents());
 		}
 
-		public function regenerate() {
-			if (DEBUG) error_log("REGENERATING");
+		public function prepare_cache_updaters() {
+			$regenerate = array("add_post",    "add_page",
+			                    "update_post", "update_page",
+			                    "delete_post", "delete_page");
+			foreach ($regenerate as $action)
+				$this->addAlias($action, "regenerate");
 
-			touch($this->expire_file);
+			foreach (array("add_comment", "update_comment", "delete_comment") as $action)
+				$this->addAlias($action, "remove_post_cache");
+		}
+
+		public function remove_expired() {
+			foreach (glob($this->caches."/*/*.html") as $file) {
+				if (time() - filemtime($file) > Config::current()->cache_expire)
+					unlink($file);
+
+				$dir = dirname($file);
+				if (!count(glob($dir."/*")))
+					rmdir($dir);
+			}
+		}
+
+		public function regenerate() {
+			if (DEBUG)
+				error_log("REGENERATING");
+
 			foreach (glob($this->caches."/*/*.html") as $file)
 				unlink($file);
 		}
 
 		public function regenerate_local($user = null) {
-			if (DEBUG) error_log("REGENERATING local user ".$this->user."...");
+			if (DEBUG)
+				error_log("REGENERATING local user ".$this->user."...");
 
-			if (isset($user))
-				foreach (glob($this->caches."/".$user."/*.html") as $file)
-					unlink($file);
-			else
-				foreach (glob($this->path."/*.html") as $file)
-					unlink($file);
+			$directory = (isset($user)) ? $this->caches."/".$user : $this->path ;
+			foreach (glob($directory."/*.html") as $file)
+				unlink($file);
+		}
+
+		public function remove_caches_for($url) {
+			if (DEBUG)
+				error_log("REMOVING caches for ".$url."...");
+
+			foreach (glob($this->caches."/*/".md5($url).".html") as $file)
+				unlink($file);
+		}
+
+		public function remove_post_cache($comment) {
+			$this->remove_caches_for($comment->post()->url());
 		}
 
 		public function update_user($user) {

@@ -847,7 +847,8 @@ $(function(){
 				                                   ) and
 				                                   `status` != 'spam'", #where
 				                                  "`created_at` asc", # order
-				                                  $config->comments_per_page, "comments_page",
+				                                  $config->comments_per_page,
+				                                  "comments_page",
 				                                  array(
 				                                      ":post_id" => $post->id,
 				                                      ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
