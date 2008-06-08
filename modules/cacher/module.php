@@ -4,7 +4,7 @@
 			$this->user = (logged_in()) ? Visitor::current()->login : "guest" ;
 			$this->caches = dirname(__FILE__)."/cache";
 			$this->expire_file = $this->caches."/LAST_EXPIRED";
-			$this->path = dirname(__FILE__)."/cache/".$this->user;
+			$this->path = dirname(__FILE__)."/cache/".sanitize($this->user);
 			$this->url = self_url();
 			$this->file = $this->path."/".md5($this->url).".html";
 
@@ -25,6 +25,7 @@
 			if (!file_exists($this->expire_file))
 				touch($this->expire_file);
 
+			# Have the caches expired?
 			if (time() - filemtime($this->expire_file) > Config::current()->cache_expire)
 				$this->regenerate();
 		}
@@ -43,7 +44,7 @@
 			if (!file_exists($this->file))
 				return;
 
-			error_log("SERVING cache file for ".$this->url."...");
+			if (DEBUG) error_log("SERVING cache file for ".$this->url."...");
 			exit(file_get_contents($this->file));
 		}
 
@@ -51,28 +52,31 @@
 			if (file_exists($this->file))
 				return;
 
-			error_log("GENERATING cache file for ".$this->url."...");
+			if (DEBUG) error_log("GENERATING cache file for ".$this->url."...");
 			file_put_contents($this->file, ob_get_contents());
 		}
 
 		public function regenerate() {
-			error_log("REGENERATING");
+			if (DEBUG) error_log("REGENERATING");
 
 			touch($this->expire_file);
 			foreach (glob($this->caches."/*/*.html") as $file)
 				unlink($file);
 		}
 
-		public function regenerate_local() {
-			error_log("REGENERATING local user ".$this->user."...");
+		public function regenerate_local($user = null) {
+			if (DEBUG) error_log("REGENERATING local user ".$this->user."...");
 
-			foreach (glob($this->path."/*.html") as $file)
-				unlink($file);
+			if (isset($user))
+				foreach (glob($this->caches."/".$user."/*.html") as $file)
+					unlink($file);
+			else
+				foreach (glob($this->path."/*.html") as $file)
+					unlink($file);
 		}
 
 		public function update_user($user) {
-			if ($user->login == $this->user)
-				$this->regenerate_local();
+			$this->regenerate_local(sanitize($user->login));
 		}
 
 		public function settings_nav($navs) {
