@@ -102,13 +102,29 @@
 			if (isset($_POST['ajax']))
 				exit("{ comment_id: ".$_POST['id']." }");
 
-			redirect("/admin/?action=manage_comments&updated");
+			redirect("/admin/?action=manage_comments&updated=".$comment->id);
 		}
 
-		static function admin_destroy_comment($action) {
+		static function admin_delete_comment() {
+			global $admin;
+			$admin->context["comment"] = new Comment($_GET['id']);
+			if (!$admin->context["comment"]->deletable())
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this comment.", "comments"));
+		}
+
+		static function admin_destroy_comment() {
+			if (empty($_POST['id']))
+				error(__("No ID Specified"), __("An ID is required to delete a comment.", "comments"));
+
+			if ($_POST['destroy'] == "bollocks")
+				redirect("/admin/?action=manage_comments");
+
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				error(__("Access Denied"), __("Invalid security key."));
+
 			$comment = new Comment($_POST['id']);
-			if (!$comment->deletable() or empty($_POST))
-				return;
+			if (!$comment->deletable())
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this comment.", "comments"));
 
 			Comment::delete($_POST['id']);
 
@@ -118,7 +134,7 @@
 			redirect("/admin/?action=manage_comments&deleted");
 		}
 
-		static function admin_mark_spam($action) {
+		static function admin_mark_spam() {
 			$comment = new Comment($_GET['id']);
 			if (!$comment->editable())
 				return;
