@@ -13,6 +13,15 @@
 		 */
 		public function __construct($comment_id, $options = array()) {
 			parent::grab($this, $comment_id, $options);
+
+			$this->body_unfiltered = $this->body;
+			if (!isset($options["filter"]) or $options["filter"]) {
+				if (($this->status != "pingback" and !$this->status != "trackback") and !$this->user()->group()->can("code_in_comments"))
+					$this->body = strip_tags($this->body, "<".join("><", Config::current()->allowed_comment_html).">");
+
+				$this->body_unfiltered = $this->body;
+				$this->body = Trigger::current()->filter("markup_comment_text", $this->body);
+			}
 		}
 
 		/**

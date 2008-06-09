@@ -47,7 +47,7 @@ $(function(){
 	$("img[@src$=.png]").ifixpng()
 
 	// Add the "Bookmarklet" with JS to the write nav since only JS-enabled users can use it.
-	$(document.createElement("li")).addClass("bookmarklet right").html("<?php echo _f("Bookmarklet: %s", array('<a href=\"javascript:var%20d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f=\''.$config->chyrp_url.'/includes/bookmarklet.php\',l=d.location,e=encodeURIComponent,p=\'?url=\'+e(l.href)+\'&title=\'+e(d.title)+\'&selection=\'+e(s),u=f+p;a=function(){if(!w.open(u,\'t\',\'toolbar=0,resizable=0,status=1,width=450,height=430\'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0)\">Chyrp!</a>')); ?>").prependTo(".write_post_nav"))
+	$(document.createElement("li")).addClass("bookmarklet right").html("<?php echo _f("Bookmarklet: %s", array('<a href=\"javascript:var%20d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f=\''.$config->chyrp_url.'/includes/bookmarklet.php\',l=d.location,e=encodeURIComponent,p=\'?url=\'+e(l.href)+\'&title=\'+e(d.title)+\'&selection=\'+e(s),u=f+p;a=function(){if(!w.open(u,\'t\',\'toolbar=0,resizable=0,status=1,width=450,height=430\'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0)\">Chyrp!</a>')); ?>").prependTo(".write_post_nav")
 
 <?php if (match("/(edit|write)_/", $_GET['action'])): ?>
 	// Auto-expand text fields & auto-grow textareas.
@@ -89,8 +89,9 @@ $(function(){
 	// Checkbox toggling.
 	var all_checked = true
 	$("#toggler").html('<label for="toggle">Toggle All</label><input class="checkbox" type="checkbox" name="toggle" id="toggle" />')
+	$(".toggler").html('<input class="checkbox" type="checkbox" name="toggle" id="toggle" />')
 	$("#toggle").click(function(){
-		$("form#new_group, form#group_edit").find(":checkbox").not("#toggle").each(function(){
+		$("form#new_group, form#group_edit, table").find(":checkbox").not("#toggle").each(function(){
 			this.checked = document.getElementById("toggle").checked
 		})
 	})
@@ -147,7 +148,7 @@ $(function(){
 	$("ul.extend li").css("cursor", "move")
 	$("ul.extend li .description").css("display", "none")
 	$(".info_link").click(function(){
-		$(this).parent().find(".description").effect("blind", { mode: "toggle" })
+		$(this).parent().find(".description").effect("blind", { mode: "toggle" }, null, draw)
 		return false
 	})
 	$("ul.extend").each(function(){

@@ -5,7 +5,10 @@
 {% block content %}
 			<h1>${ "Manage Comments" | translate("comments") }</h1>
 			{% if updated %}
-			<p class="message yay">${ "Comment updated." | translate("comments") } <a href="$updated.post.url#comment_$updated.id">${ "View Comment &rarr;" | translate("comments") }</a></p>
+			<p class="message yay">
+				${ "Comment updated." | translate("comments") }
+				<a href="$updated.post.url#comment_$updated.id">${ "View Comment &rarr;" | translate("comments") }</a>
+			</p>
 			{% endif %}
 			{% if deleted %}
 			<p class="message yay">${ "Comment deleted." | translate("comments") }</p>
@@ -25,20 +28,36 @@
 					<input type="hidden" name="action" value="manage_comments" />
 					<div class="left pad">
 						<h3>${ "Search&hellip;" | translate }</h3>
-						<input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" /> <button type="submit" class="inline">${ "Search &rarr;" | translate("comments") }</button>
+						<input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" />
+						<button type="submit" class="inline">${ "Search &rarr;" | translate("comments") }</button>
 					</div>
 					<br class="clear" />
 				</fieldset>
 			</form>
 			<br />
+			<div class="controls right">
+				<h4>${ "With selected:" | translate }</h4>
+				<button class="lite" name="deny">
+					<img src="images/icons/deny.png" alt="deny" /> ${ "deny" | translate }
+				</button>
+				<button class="lite yay" name="approve">
+					<img src="images/icons/success.png" alt="approve" /> ${ "approve" | translate }
+				</button>
+				<button class="lite boo" name="spam">
+					<img src="../modules/comments/spam.png" alt="spam" /> ${ "mark as spam" | translate }
+				</button>
+				<button class="lite boo" name="delete">
+					<img src="images/icons/delete.png" alt="delete" /> ${ "delete" | translate }
+				</button>
+			</div>
 			<h2>${ "Last 25 Comments" | translate("comments") }</h2>
 			<table border="0" cellspacing="0" cellpadding="0" class="wide">
 				<thead>
 					<tr class="head">
+						<th class="toggler center"></th>
 						<th>${ "Post" | translate("comments") }</th>
 						<th>${ "Author" | translate("comments") }</th>
 						<th>${ "Added" | translate("comments") }</th>
-						<th>${ "Status" | translate("comments") }</th>
 						${ trigger.call("manage_comments_column_header") }
 						<th colspan="2">${ "Controls" | translate }</th>
 					</tr>
@@ -46,10 +65,12 @@
 				<tbody>
 				{% for comment in comments %}
 					<tr id="comment_$comment.id" class="comment $comment.status{% if loop.last %} last{% endif %}">
+						<td rowspan="2" class="checkbox center">
+							<input type="checkbox" name="comment[$comment.id]" value="" id="comment_checkbox_$comment.id" />
+						</td>
 						<td class="main"><a href="$comment.post.url#comment_$comment.id">${ comment.post.title | truncate }</a></td>
 						<td>${ comment.user.full_name | fallback(comment.user.login) | fallback(comment.author) }</td>
 						<td>${ comment.created_at | strftime }</td>
-						<td>${ comment.status | replace("_", " ") | title }</td>
 						${ trigger.call("manage_comments_column", comment) }
 {% if comment.editable and comment.deletable %}
 						<td class="controls">${ comment.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit') }</td>
@@ -59,6 +80,9 @@
 						${ comment.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit', '<td class="controls" colspan="2">', '</td>') }
 {% endif %}
 					</tr>
+					<tr class="excerpt">
+						<td colspan="5">${ comment.body_unfiltered | truncate(100) | markup_comment_text }</td>
+					</tr>
 				{% else %}
 					<tr>
 						<td colspan="6" class="center"><span class="sub">${ "(none)" | translate }</span></td>
@@ -66,6 +90,23 @@
 				{% endfor %}
 				</tbody>
 			</table>
+			<br />
+			<div class="controls">
+				<h4>${ "With selected:" | translate }</h4>
+				<button class="lite" name="deny">
+					<img src="images/icons/deny.png" alt="deny" /> ${ "deny" | translate }
+				</button>
+				<button class="lite yay" name="approve">
+					<img src="images/icons/success.png" alt="approve" /> ${ "approve" | translate }
+				</button>
+				<button class="lite boo" name="spam">
+					<img src="../modules/comments/spam.png" alt="spam" /> ${ "mark as spam" | translate }
+				</button>
+				<button class="lite boo" name="delete">
+					<img src="images/icons/delete.png" alt="delete" /> ${ "delete" | translate }
+				</button>
+			</div>
+			<br />
 			$pagination.next_link
 			$pagination.prev_link
 {% endblock %}

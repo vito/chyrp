@@ -5,7 +5,7 @@ require "optparse"
 OPTIONS = {
   :domain  => nil,
   :output  => nil,
-  :exclude => [".git", "modules", "lib", "feathers", "themes"],
+  :exclude => [".git", "modules", "lib", "feathers", "themes", "config.yaml.php", "database.yaml.php"],
   :keys    => ["name", "description", "plural", "notifications", "confirm"]
 }
 
@@ -50,18 +50,19 @@ class Gettext
 
   def prepare_files
     Find.find(@start) do |path|
+      cleaned = path.sub("./", "")
       if FileTest.directory?(path)
-        if OPTIONS[:exclude].include?(File.basename(path))
+        if OPTIONS[:exclude].include?(cleaned)
           Find.prune
         else
           next
         end
       else
         next unless path =~ /\.(php|twig|yaml)/
-        @files << [path.sub("./", ""), path] if File.read(path) =~ /(__|_f|_p)\(".*?"#{@domain}\)/
-        @files << [path.sub("./", ""), path] if File.read(path) =~ /\$\{ ?".*?" ?\| ?translate#{@twig_domain} ?\}/
-        @files << [path.sub("./", ""), path] if File.read(path) =~ /\$\{ ?".*?" ?\| ?translate_plural\(".*?", ?.*?#{@domain}\) ?\| ?format\(.*?\) ?\}/
-        @files << [path.sub("./", ""), path] if path =~ /\.yaml/
+        @files << [cleaned, path] if File.read(path) =~ /(__|_f|_p)\(".*?"#{@domain}\)/
+        @files << [cleaned, path] if File.read(path) =~ /".*?" ?\| ?translate#{@twig_domain}/
+        @files << [cleaned, path] if File.read(path) =~ /".*?" ?\| ?translate_plural\(".*?", ?.*?#{@domain}\) ?\| ?format\(.*?\)/
+        @files << [cleaned, path] if path =~ /\.yaml/
       end
     end
   end
@@ -72,6 +73,8 @@ class Gettext
         scan_yaml file, cleaned
         next
       end
+
+      puts file
 
       counter = 1
       File.open(file, "r") do |infile|

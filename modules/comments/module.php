@@ -137,7 +137,7 @@
 		static function admin_mark_spam() {
 			$comment = new Comment($_GET['id']);
 			if (!$comment->editable())
-				return;
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this comment.", "comments"));
 
 			$sql = SQL::current();
 			$sql->query("update `__comments`
@@ -147,16 +147,19 @@
 			                ":id" => $_GET['id']
 			            ));
 
-			$defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
-			$defensio->report_false_negatives(array("owner-url" => Config::current()->url, "signatures" => $comment->signature));
+			$config = Config::current();
+			if (!empty($config->defensio_api_key)) {
+				$defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
+				$defensio->report_false_negatives(array("owner-url" => Config::current()->url, "signatures" => $comment->signature));
+			}
 
-			redirect("/admin/?action=manage&sub=comment&spammed");
+			redirect("/admin/?action=manage_comments&spammed");
 		}
 
 		static function admin_approve_comment($action) {
 			$comment = new Comment($_GET['id']);
 			if (!$comment->editable())
-				return;
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this comment.", "comments"));
 
 			$sql = SQL::current();
 			$sql->query("update `__comments`
@@ -166,13 +169,13 @@
 			                ":id" => $_GET['id']
 			            ));
 
-			redirect("/admin/?action=manage&sub=comment&approved");
+			redirect("/admin/?action=manage_comments&approved");
 		}
 
-		static function admin_deny_comment($action) {
+		static function admin_deny_comment() {
 			$comment = new Comment($_GET['id']);
 			if (!$comment->editable())
-				return;
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this comment.", "comments"));
 
 			$sql = SQL::current();
 			$sql->query("update `__comments`
@@ -182,7 +185,7 @@
 			                ":id" => $_GET['id']
 			            ));
 
-			redirect("/admin/?action=manage&sub=comment&denied");
+			redirect("/admin/?action=manage_comments&denied");
 		}
 
 		static function admin_manage_spam($action) {
@@ -384,7 +387,7 @@
 			if (empty($_GET['id']))
 				error(__("No ID Specified"), __("An ID is required to edit a comment.", "comments"));
 
-			$admin->context["comment"] = new Comment($_GET['id']);
+			$admin->context["comment"] = new Comment($_GET['id'], array("filter" => false));
 
 			if (!$admin->context["comment"]->editable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this comment.", "comments"));
@@ -397,7 +400,7 @@
 			global $admin;
 
 			$params = array();
-			$where = array();
+			$where = array("`__comments`.`status` != 'spam'");
 
 			if (!empty($_GET['query'])) {
 				$search = "";
@@ -428,6 +431,9 @@
 				$admin->context["updated"] = new Comment($_GET['updated']);
 
 			$admin->context["deleted"] = isset($_GET['deleted']);
+			$admin->context["approved"] = isset($_GET['approved']);
+			$admin->context["denied"] = isset($_GET['denied']);
+			$admin->context["spammed"] = isset($_GET['spammed']);
 		}
 
 		static function admin_manage_posts_column_header() {
@@ -677,7 +683,7 @@ $(function(){
 					Comment::delete($_POST['id']);
 					break;
 				case "edit_comment":
-					$comment = new Comment($_POST['comment_id']);
+					$comment = new Comment($_POST['comment_id'], array("filter" => false));
 					if (!$comment->editable())
 						break;
 ?>

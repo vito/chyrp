@@ -428,6 +428,11 @@ table thead tr th {
 	border-right: 1px solid #444;
 	font-weight: bold;
 }
+table thead tr th input {
+	position: relative;
+	top: -2px;
+	right: -2px;
+}
 table thead tr th.header {
 	cursor: pointer;
 }
@@ -470,11 +475,16 @@ table tbody tr td a:visited {
 	border: none;
 }
 tr.draft,
+tr.excerpt,
 tr.draft td,
+tr.excerpt td,
 tr.draft td.main {
 	background-color: #dff4ff;
 	border-color: #c2e1ef !important;
 	color: #336699;
+}
+tr.excerpt p {
+	margin: 0;
 }
 /* @end */
 
@@ -512,7 +522,9 @@ p.message.boo {
 /* @group Buttons */
 /* Inspiration from Chawlk. */
 button,
-a.button {
+a.button,
+a.next_page,
+a.prev_page {
 	font-family: "Verdana", Helvetica, Arial, sans-serif;
 	font-weight: bold;
 	font-size: 1.125em;
@@ -528,20 +540,34 @@ a.button {
 a.button {
 	padding: .6em 1em .5em .9em;
 }
+button.lite {
+	padding: .25em .375em;
+}
+a.button.lite,
+a.next_page,
+a.prev_page {
+	padding: .2em .4em .3em;
+}
 button.inline {
 	padding: 4px 4px 3px;
 }
 button.right,
-a.button.right {
+a.button.right,
+a.next_page {
 	margin: 0 0 0 .5em;
+	float: right;
 }
 button:hover,
-a.button:hover {
+a.button:hover,
+a.next_page:hover,
+a.prev_page:hover {
 	background-color: #f7f7f7;
 	border-color: #d1d1d1;
 }
 button:active,
-a.button:active {
+a.button:active,
+a.next_page:active,
+a.prev_page:active {
 	background-color: #d7d7d7;
     border: 0;
     border-left: 1px solid #b1b1b1;
@@ -587,7 +613,11 @@ a.button.yay:active {
 }
 button img,
 a.button img {
-	margin: 0 5px -3px -2px;
+	margin: 0 5px -4px -2px;
+}
+button.lite img,
+a.button.lite img {
+	margin: 0 0 -4px -1px;
 }
 /* @end */
 
@@ -619,6 +649,21 @@ a.button img {
 /* @end */
 
 /* @group Helpers & General */
+.breakword {
+	word-wrap: break-word !important;
+}
+div.controls.right {
+	margin-top: -2px;
+}
+div.controls h4 {
+	display: inline;
+}
+div.controls button {
+	position: relative;
+	top: -2px;
+	right: -1px;
+	margin: 0 0 0 .5em;
+}
 hr {
 	border: 0;
 	border-top: 1px solid #ddd;
