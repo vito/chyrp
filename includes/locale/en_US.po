@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-08 16:21-0500\n"
+"PO-Revision-Date: 2008-06-09 18:53-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -798,7 +798,7 @@ msgstr ""
 msgid "Preview &rarr;"
 msgstr ""
 
-#: includes/admin.js.php:105
+#: includes/admin.js.php:106
 msgid "(drag)"
 msgstr ""
 
@@ -811,11 +811,8 @@ msgid "Website:"
 msgstr ""
 
 #: admin/layout/pages/manage_groups.twig:43
-#, php-format
 msgid "&#8220;%s&#8221; is the default group and has %s member."
-msgid_plural "&#8220;%s&#8221; is the default group and has %s members."
-msgstr[0] ""
-msgstr[1] ""
+msgstr ""
 
 #: includes/ajax.php:79
 #: admin/layout/pages/delete_user.twig:26
@@ -917,11 +914,8 @@ msgid "Database"
 msgstr ""
 
 #: admin/layout/pages/manage_groups.twig:45
-#, php-format
 msgid "&#8220;%s&#8221; has %s member."
-msgid_plural "&#8220;%s&#8221; has %s members."
-msgstr[0] ""
-msgstr[1] ""
+msgstr ""
 
 #: admin/layout/pages/manage_pages.twig:8
 msgid "Page updated."
@@ -1076,6 +1070,12 @@ msgstr ""
 msgid "Content Settings"
 msgstr ""
 
+#: admin/layout/pages/edit_post.twig:3
+#: admin/layout/pages/edit_page.twig:3
+#, php-format
+msgid "Edit &#8220;%s&#8221;"
+msgstr ""
+
 #: admin/layout/pages/manage_posts.twig:35
 msgid "Last 25 Posts"
 msgstr ""
@@ -1186,6 +1186,8 @@ msgid "You do not have sufficient privileges to manage any posts."
 msgstr ""
 
 #: includes/ajax.php:20
+#: admin/layout/pages/edit_post.twig:6
+#: admin/layout/pages/edit_page.twig:6
 #, php-format
 msgid "Editing &#8220;%s&#8221;"
 msgstr ""
