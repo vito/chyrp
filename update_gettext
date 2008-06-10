@@ -5,7 +5,7 @@ ruby gettext.rb ./feathers/audio/   --domain=audio    > ./feathers/audio/locale/
 ruby gettext.rb ./feathers/chat/    --domain=chat     > ./feathers/chat/locale/en_US.po
 ruby gettext.rb ./feathers/link/    --domain=link     > ./feathers/link/locale/en_US.po
 ruby gettext.rb ./feathers/photo/   --domain=photo    > ./feathers/photo/locale/en_US.po
-ruby gettext.rb ./feathers/quote/   --domain=qupte    > ./feathers/quote/locale/en_US.po
+ruby gettext.rb ./feathers/quote/   --domain=quote    > ./feathers/quote/locale/en_US.po
 ruby gettext.rb ./feathers/text/    --domain=text     > ./feathers/text/locale/en_US.po
 ruby gettext.rb ./feathers/video/   --domain=video    > ./feathers/video/locale/en_US.po
 

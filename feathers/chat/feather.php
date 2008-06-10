@@ -1,8 +1,8 @@
 <?php
 	class Chat extends Feather {
 		public function __construct() {
-			$this->setField(array("attr" => "title", "type" => "text", "label" => "Title", "optional" => true));
-			$this->setField(array("attr" => "dialogue", "type" => "text_block", "label" => "Dialogue", "preview" => true, "help" => "chat_dialogue", "bookmarklet" => "selection"));
+			$this->setField(array("attr" => "title", "type" => "text", "label" => __("Title", "chat"), "optional" => true));
+			$this->setField(array("attr" => "dialogue", "type" => "text_block", "label" => __("Dialogue", "chat"), "preview" => true, "help" => "chat_dialogue", "bookmarklet" => "selection"));
 			$this->customFilter("dialogue", "format_dialogue");
 			$this->setFilter("dialogue", "markup_post_text");
 			$this->respondTo("preview_chat", "format_dialogue");

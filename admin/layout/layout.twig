@@ -15,16 +15,16 @@
 				<ul id="navigation">
 {% block navigation %}
 {% if visitor.group.can("add_draft", "add_post") %}
-					<li class="first $selected.write"><a href="{% admin "write_post" %}">Write</a></li>
+					<li class="first $selected.write"><a href="{% admin "write_post" %}">${ "Write" | translate }</a></li>
 {% endif %}
 {% if visitor.group.can("edit_own_draft", "edit_own_post", "edit_post", "delete_own_draft", "delete_own_post", "delete_post") %}
-					<li class="second $selected.manage"><a href="{% admin "manage_posts" %}">Manage</a></li>
+					<li class="second $selected.manage"><a href="{% admin "manage_posts" %}">${ "Manage" | translate }</a></li>
 {% endif %}
 {% if visitor.group.can("change_settings") %}
-					<li class="third $selected.settings"><a href="{% admin "general_settings" %}">Settings</a></li>
+					<li class="third $selected.settings"><a href="{% admin "general_settings" %}">${ "Settings" | translate }</a></li>
 {% endif %}
 {% if visitor.group.can("toggle_extensions") %}
-					<li class="fourth $selected.extend"><a href="{% admin "extend_modules" %}">Extend</a></li>
+					<li class="fourth $selected.extend"><a href="{% admin "extend_modules" %}">${ "Extend" | translate }</a></li>
 {% endif %}
 {% endblock %}
 				</ul>
@@ -33,8 +33,9 @@
 		</div>
 		<div id="welcome">
 			<div class="column">
-				<a href="$site.url" class="right">View Site &rsaquo;</a>
-				Hello, ${ visitor.full_name | split | first | fallback(visitor.login) }. <a href="{% url "logout/" %}">Log Out &rsaquo;</a>
+				<a href="$site.url" class="right">${ "View Site &rsaquo;" | translate }</a>
+				${ "Hello, %s!" | translate | format(visitor.full_name | split | first | fallback(visitor.login)) }
+				<a href="{% url "logout/" %}">${ "Log Out &rsaquo;" | translate }</a>
 			</div>
 		</div>
 		<ul class="column ${ route.action }_nav" id="sub-nav">
@@ -53,9 +54,9 @@
 		</div>
 		<div class="column" id="footer">
 			<img src="images/chyrp.gif" alt="Logo" />
-			Chyrp loves you.<br />
+			${ "Chyrp loves you." | translate }<br />
 			<span class="sub">
-				v$version &copy; 2008 Alex Suraci
+				${ "v%s &copy; 2008 Alex Suraci" | translate | format(version) }
 			</span>
 		</div>
 	</body>

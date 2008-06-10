@@ -327,11 +327,13 @@ else {
 }
 
 function twig_translate_string_filter($string, $domain = "theme") {
-	return __($string, (ADMIN ? "chyrp" : $domain));
+	$domain = ($domain == "theme" and ADMIN) ? "chyrp" : $domain ;
+	return __($string, $domain);
 }
 
 function twig_translate_plural_string_filter($single, $plural, $number, $domain = "theme") {
-	return _p($single, $plural, $number, (ADMIN ? "chyrp" : $domain));
+	$domain = ($domain == "theme" and ADMIN) ? "chyrp" : $domain ;
+	return _p($single, $plural, $number, $domain);
 }
 
 function twig_inspect_filter($thing) {

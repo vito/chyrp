@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-09 18:53-0500\n"
+"PO-Revision-Date: 2008-06-09 20:40-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -18,25 +18,25 @@ msgstr ""
 
 #: modules/tags/info.yaml:1
 msgid "Do you want to remove your Tags from the database?"
-msgstr ""
+msgstr "XXX"
 
 #: modules/tags/pages/tags.php:2
 #: modules/tags/module.php:31
 #: modules/tags/module.php:40
 #: modules/tags/module.php:101
 msgid "Tags"
-msgstr ""
+msgstr "XXX"
 
 #: modules/tags/info.yaml:5
 msgid "Adds tagging functionality to posts, allowing organization, grouping, and adding keywords to posts."
-msgstr ""
+msgstr "XXX"
 
 #: modules/tags/module.php:31
 #: modules/tags/module.php:40
 msgid "(comma separated)"
-msgstr ""
+msgstr "XXX"
 
 #: modules/tags/info.yaml:2
 msgid "Tagginator"
-msgstr ""
+msgstr "XXX"
 

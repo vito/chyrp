@@ -1,9 +1,9 @@
 <?php
 	class Link extends Feather {
 		public function __construct() {
-			$this->setField(array("attr" => "source", "type" => "text", "label" => "URL", "bookmarklet" => "url"));
-			$this->setField(array("attr" => "name", "type" => "text", "label" => "Name", "bookmarklet" => "title"));
-			$this->setField(array("attr" => "description", "type" => "text_block", "label" => "Description", "optional" => true, "preview" => true, "bookmarklet" => "selection"));
+			$this->setField(array("attr" => "source", "type" => "text", "label" => __("URL", "link"), "bookmarklet" => "url"));
+			$this->setField(array("attr" => "name", "type" => "text", "label" => __("Name", "link"), "bookmarklet" => "title"));
+			$this->setField(array("attr" => "description", "type" => "text_block", "label" => __("Description", "link"), "optional" => true, "preview" => true, "bookmarklet" => "selection"));
 			$this->setFilter("description", "markup_post_text");
 			$this->respondTo("feed_url", "set_feed_url");
 		}

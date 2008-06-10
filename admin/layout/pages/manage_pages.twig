@@ -42,11 +42,11 @@
 						<td>$page.user.login</td>
 						${ trigger.call("manage_pages_column", page) }
 {% if visitor.group.can("edit_post", "delete_post", true) %}
-						<td class="controls">${ page.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit') }</td>
-						<td class="controls">${ page.delete_link('<img src="images/icons/delete.png" alt="delete" /> delete') }</td>
+						<td class="controls">${ page.edit_link('<img src="images/icons/edit.png" alt="edit" /> '~("edit" | translate)) }</td>
+						<td class="controls">${ page.delete_link('<img src="images/icons/delete.png" alt="delete" /> '~("delete" | translate)) }</td>
 {% else %}
-						${ page.delete_link('<img src="images/icons/delete.png" alt="delete" /> delete', '<td class="controls" colspan="2">', '</td>') }
-						${ page.edit_link('<img src="images/icons/edit.png" alt="edit" /> edit', '<td class="controls" colspan="2">', '</td>') }
+						${ page.edit_link('<img src="images/icons/edit.png" alt="edit" /> '~("edit" | translate), '<td class="controls" colspan="2">', '</td>') }
+						${ page.delete_link('<img src="images/icons/delete.png" alt="delete" /> '~("delete" | translate), '<td class="controls" colspan="2">', '</td>') }
 {% endif %}
 					</tr>
 				{% else %}

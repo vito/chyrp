@@ -10,10 +10,10 @@
 {% for safename, module in enabled_modules | items %}
 					<li class="${ safename ~ module.conflicts_class }" id="module_$safename">
 						<a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
-						${ '<a href="%s">%s</a> <span class="sub">by %s</span>' | translate | format(module.url, module.name, module.author.link) }
+						${ '<a href="%s">%s</a> <span class="sub">by %s</span>' | translate | format(module.url, module.name | format(safename), module.author.link) }
 						<div class="expand">
 							<div class="description">
-								$module.description
+								${ module.description | translate(safename) }
 							</div>
 							<a class="enable_button js_disabled" href="{% admin "disable&module="~safename %}">${ "Disable" | translate }</a>
 						</div>
@@ -27,10 +27,10 @@
 {% for safename, module in disabled_modules | items %}
 					<li class="${ safename ~ module.conflicts_class }" id="module_$safename">
 						<a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
-						${ '<a href="%s">%s</a> <span class="sub">by %s</span>' | translate | format(module.url, module.name, module.author.link) }
+						${ '<a href="%s">%s</a> <span class="sub">by %s</span>' | translate | format(module.url, module.name | format(safename), module.author.link) }
 						<div class="expand">
 							<div class="description">
-								$module.description
+								${ module.description | translate(safename) }
 							</div>
 							<a class="disable_button js_disabled" href="{% admin "enable&module="~safename %}">${ "Enable" | translate }</a>
 						</div>

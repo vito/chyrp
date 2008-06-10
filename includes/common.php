@@ -221,7 +221,9 @@
 	foreach ($config->enabled_feathers as $feather) {
 		$camelized = camelize($feather);
 		$feathers[$feather] = new $camelized;
-		$feathers[$feather]->name = $feather;
+		$feathers[$feather]->safename = $feather;
+		foreach (Spyc::YAMLLoad(FEATHERS_DIR."/".$feather."/info.yaml") as $key => $val)
+			$feathers[$feather]->$key = $val;
 	}
 
 	/**
@@ -232,7 +234,9 @@
 	foreach ($config->enabled_modules as $module) {
 		$camelized = camelize($module);
 		$modules[$module] = new $camelized();
-		$modules[$module]->name = $module;
+		$modules[$module]->safename = $module;
+		foreach (Spyc::YAMLLoad(MODULES_DIR."/".$module."/info.yaml") as $key => $val)
+			$modules[$module]->$key = $val;
 	}
 
 	# Load the /clean/urls into their correct $_GET values.

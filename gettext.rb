@@ -4,7 +4,8 @@ require "optparse"
 
 OPTIONS = {
   :domain  => nil,
-  :output  => nil,
+  :msgstr  => "XXX",
+  :msgstr_filter => "XXX :: %s",
   :exclude => [".git", "modules", "lib", "feathers", "themes", "config.yaml.php", "database.yaml.php"],
   :keys    => ["name", "description", "plural", "notifications", "confirm"]
 }
@@ -19,8 +20,8 @@ ARGV.options do |o|
 
   o.on("--domain=[val]", String,
        "Domain to generate translations for.") { |OPTIONS[:domain]| }
-  o.on("--output=[val]", String,
-       "File to print output to. If it already exists it will be overwritten.") { |OPTIONS[:output]| }
+  o.on("--msgstr=[val]", String,
+       "Message string to translate all found translations to. Useful for debugging.") { |OPTIONS[:mststr]| }
   o.on("--exclude=[val1,val1]", Array,
        "A list of directories to exclude from the scan.") { |OPTIONS[:exclude]| }
   o.on("--keys=[val1,val1]", Array,
@@ -127,7 +128,7 @@ class Gettext
   end
 
   def scan_twig(text, line, filename, clean_filename)
-    text.gsub(/"([^"]+)" ?\| ?translate#{@twig_domain}(?! ?\| ?format)/) do
+    text.gsub(/"([^"]+)" ?\| ?translate(?!_plural)#{@twig_domain}(?! ?\| ?format)/) do
       if @translations[$1].nil?
         @translations[$1] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => false,
@@ -139,7 +140,7 @@ class Gettext
   end
 
   def scan_twig_filter(text, line, filename, clean_filename)
-    text.gsub(/"([^"]+)" ?\| ?translate#{@twig_domain} ?\| ?format\(.*?\).*?/) do
+    text.gsub(/"([^"]+)" ?\| ?translate(?!_plural)#{@twig_domain} ?\| ?format\(.*?\).*?/) do
       if @translations[$1].nil?
         @translations[$1] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => true,
@@ -225,10 +226,10 @@ class Gettext
       output << "msgid_plural \""+attr[:plural]+"\"\n" if attr[:plural]
 
       if attr[:plural]
-        output << "msgstr[0] \"\"\n"
-        output << "msgstr[1] \"\"\n"
+        output << "msgstr[0] \"#{OPTIONS[:msgstr]}\"\n"
+        output << "msgstr[1] \"#{OPTIONS[:msgstr]}\"\n"
       else
-        output << "msgstr \"\"\n"
+        output << "msgstr \"#{(attr[:filter]) ? OPTIONS[:msgstr_filter] || OPTIONS[:msgstr] : OPTIONS[:msgstr]}\"\n"
       end
 
       output << "\n"

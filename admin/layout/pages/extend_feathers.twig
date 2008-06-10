@@ -10,12 +10,12 @@
 {% for safename, feather in enabled_feathers | items %}
 					<li class="$safename">
 						<a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
-						<a href="$feather.url">$feather.name</a> <span class="sub">by $feather.author.link</span>
+						${ '<a href="%s">%s</a> <span class="sub">by %s</span>' | translate | format(feather.url, feather.name | format(safename), feather.author.link) }
 						<div class="expand">
 							<div class="description">
-								$feather.description
+								${ feather.description | translate(safename) }
 							</div>
-							<a class="enable_button js_disabled" href="{% admin "disable&feather="~safename %}">Disable</a>
+							<a class="enable_button js_disabled" href="{% admin "disable&feather="~safename %}">${ "Disable" | translate }</a>
 						</div>
 					</li>
 {% endfor %}
@@ -27,12 +27,12 @@
 {% for safename, feather in disabled_feathers | items %}
 					<li class="$safename">
 						<a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
-						<a href="$feather.url">$feather.name</a> <span class="sub">by $feather.author.link</span>
+						${ '<a href="%s">%s</a> <span class="sub">by %s</span>' | translate | format(feather.url, feather.name | format(safename), feather.author.link) }
 						<div class="expand">
 							<div class="description">
-								$feather.description
+								${ feather.description | translate(safename) }
 							</div>
-							<a class="disable_button js_disabled" href="{% admin "enable&feather="~safename %}">Enable</a>
+							<a class="disable_button js_disabled" href="{% admin "enable&feather="~safename %}">${ "Enable" | translate }</a>
 						</div>
 					</li>
 {% endfor %}
@@ -40,5 +40,5 @@
 			</div>
 			<div class="clear"></div>
 			<br />
-			<a class="button right" href="http://chyrp.net/extend/browse/feathers">Get More Feathers &rsaquo;</a>
+			<a class="button right" href="http://chyrp.net/extend/browse/feathers">${ "Get More Feathers &rsaquo;" | translate }</a>
 {% endblock %}

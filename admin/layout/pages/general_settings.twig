@@ -36,7 +36,7 @@
 						<label for="time_offset">${ "Time Offset" | translate }</label>
 						<input class="text" type="text" name="time_offset" value="${ site.time_offset / 3600 }" id="time_offset" />
 						<small>
-							${ "(server time: %s)" | translate | format(now_server | date) }
+							${ "(server time: %s)" | translate | format(now_server | strftime) }
 						</small>
 					</p>
 					<p>
