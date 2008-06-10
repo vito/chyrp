@@ -69,7 +69,7 @@
 				}
 			elseif ($_POST['adapter'] == "sqlite")
 				try {
-					new PDO("sqlite:".MAIN_DIR."/chyrp.db");
+					new PDO("sqlite:".$_POST['database']);
 				} catch(PDOException $e) {
 					$errors[] = __("Could not connect to specified database.");
 				}
@@ -96,7 +96,7 @@
 			$sql->set("host", $_POST['host']);
 			$sql->set("username", $_POST['username']);
 			$sql->set("password", $_POST['password']);
-			$sql->set("database", ($_POST['adapter'] == "sqlite") ? MAIN_DIR."/chyrp.db" : $_POST['database']);
+			$sql->set("database", $_POST['database']);
 			$sql->set("prefix", $_POST['prefix']);
 			$sql->set("adapter", $_POST['adapter']);
 
@@ -377,13 +377,14 @@
 			}
 		</style>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="includes/lib/plugins.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			$(function(){
 				$("#adapter").change(function(){
 					if ($(this).val() == "sqlite")
-						$("#host_field, #username_field, #password_field, #database_field, #prefix_field").animate({ height: "hide", opacity: "hide" })
+						$("#host_field, #username_field, #password_field, #prefix_field").animate({ height: "hide", opacity: "hide" })
 					else
-						$("#host_field, #username_field, #password_field, #database_field, #prefix_field").show()
+						$("#host_field, #username_field, #password_field, #prefix_field").show()
 				})
 			})
 		</script>
