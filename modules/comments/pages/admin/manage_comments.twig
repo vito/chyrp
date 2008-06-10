@@ -13,14 +13,17 @@
 			{% if deleted %}
 			<p class="message yay">${ "Comment deleted." | translate("comments") }</p>
 			{% endif %}
-			{% if approved %}
-			<p class="message yay">${ "Comment approved." | translate("comments") }</p>
+			{% if bulk_deleted %}
+			<p class="message yay">${ "Selected comments deleted." | translate("comments") }</p>
 			{% endif %}
-			{% if denied %}
-			<p class="message yay">${ "Comment denied." | translate("comments") }</p>
+			{% if bulk_approved %}
+			<p class="message yay">${ "Selected comments approved." | translate("comments") }</p>
 			{% endif %}
-			{% if spammed %}
-			<p class="message yay">${ "Comments marked as spam." | translate("comments") }</p>
+			{% if bulk_denied %}
+			<p class="message yay">${ "Selected comments denied." | translate("comments") }</p>
+			{% endif %}
+			{% if bulk_spammed %}
+			<p class="message yay">${ "Selected comments marked as spam." | translate("comments") }</p>
 			{% endif %}
 			<h2>${ "Need more detail?" | translate }</h2>
 			<form class="detail" action="index.php" method="get" accept-charset="utf-8">
@@ -35,43 +38,46 @@
 				</fieldset>
 			</form>
 			<br />
-			<div class="controls right">
-				<h4>${ "With selected:" | translate("comments") }</h4>
-				<button class="lite" name="deny">
-					<img src="images/icons/deny.png" alt="deny" /> ${ "deny" | translate("comments") }
-				</button>
-				<button class="lite yay" name="approve">
-					<img src="images/icons/success.png" alt="approve" /> ${ "approve" | translate("comments") }
-				</button>
-				<button class="lite boo" name="spam">
-					<img src="../modules/comments/spam.png" alt="spam" /> ${ "mark as spam" | translate("comments") }
-				</button>
-				<button class="lite boo" name="delete">
-					<img src="images/icons/delete.png" alt="delete" /> ${ "delete" | translate("comments") }
-				</button>
-			</div>
-			<h2>${ "Last 25 Comments" | translate("comments") }</h2>
-			<table border="0" cellspacing="0" cellpadding="0" class="wide">
-				<thead>
-					<tr class="head">
-						<th class="toggler center"></th>
-						<th>${ "Post" | translate("comments") }</th>
-						<th>${ "Author" | translate("comments") }</th>
-						<th>${ "Added" | translate("comments") }</th>
-						${ trigger.call("manage_comments_column_header") }
-						<th colspan="2">${ "Controls" | translate }</th>
-					</tr>
-				</thead>
-				<tbody>
-				{% for comment in comments %}
-					<tr id="comment_$comment.id" class="comment $comment.status{% if loop.last %} last{% endif %}">
-						<td rowspan="2" class="checkbox center">
-							<input type="checkbox" name="comment[$comment.id]" value="" id="comment_checkbox_$comment.id" />
-						</td>
-						<td class="main"><a href="$comment.post.url#comment_$comment.id">${ comment.post.title | truncate }</a></td>
-						<td>${ comment.user.full_name | fallback(comment.user.login) | fallback(comment.author) }</td>
-						<td>${ comment.created_at | strftime }</td>
-						${ trigger.call("manage_comments_column", comment) }
+			<form action="{% admin "bulk_comments" %}" method="post">
+				<div class="controls right">
+					<h4>${ "With selected:" | translate("comments") }</h4>
+					<button class="lite" name="deny">
+						<img src="images/icons/deny.png" alt="deny" /> ${ "deny" | translate("comments") }
+					</button>
+					<button class="lite yay" name="approve">
+						<img src="images/icons/success.png" alt="approve" /> ${ "approve" | translate("comments") }
+					</button>
+					<button class="lite boo" name="spam">
+						<img src="../modules/comments/spam.png" alt="spam" /> ${ "mark as spam" | translate("comments") }
+					</button>
+					<button class="lite boo" name="delete">
+						<img src="images/icons/delete.png" alt="delete" /> ${ "delete" | translate("comments") }
+					</button>
+				</div>
+				<h2>${ "Last 25 Comments" | translate("comments") }</h2>
+				<table border="0" cellspacing="0" cellpadding="0" class="wide">
+					<thead>
+						<tr class="head">
+							<th class="toggler center"></th>
+							<th>${ "Post" | translate("comments") }</th>
+							<th>${ "Author" | translate("comments") }</th>
+							<th>${ "Added" | translate("comments") }</th>
+							<th>${ "Status" | translate("comments") }</th>
+							${ trigger.call("manage_comments_column_header") }
+							<th colspan="2">${ "Controls" | translate }</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% for comment in comments %}
+						<tr id="comment_$comment.id" class="comment $comment.status{% if loop.last %} last{% endif %}">
+							<td rowspan="2" class="checkbox center">
+								<input type="checkbox" name="comment[$comment.id]" value="" id="comment_checkbox_$comment.id" />
+							</td>
+							<td class="main"><a href="$comment.post.url#comment_$comment.id">${ comment.post.title | truncate }</a></td>
+							<td>${ comment.user.full_name | fallback(comment.user.login) | fallback(comment.author) }</td>
+							<td>${ comment.created_at | strftime }</td>
+							<td>${ comment.status | capitalize | translate("comments") }</td>
+							${ trigger.call("manage_comments_column", comment) }
 {% if comment.editable and comment.deletable %}
 						<td class="controls">${ comment.edit_link('<img src="images/icons/edit.png" alt="edit" /> '~("edit" | translate)) }</td>
 						<td class="controls">${ comment.delete_link('<img src="images/icons/delete.png" alt="delete" /> '~("delete" | translate)) }</td>
@@ -79,33 +85,34 @@
 						${ comment.edit_link('<img src="images/icons/edit.png" alt="edit" /> '~("edit" | translate), '<td class="controls" colspan="2">', '</td>') }
 						${ comment.delete_link('<img src="images/icons/delete.png" alt="delete" /> '~("delete" | translate), '<td class="controls" colspan="2">', '</td>') }
 {% endif %}
-					</tr>
-					<tr class="excerpt">
-						<td colspan="5">${ comment.body_unfiltered | truncate(100) | markup_comment_text }</td>
-					</tr>
-				{% else %}
-					<tr>
-						<td colspan="6" class="center"><span class="sub">${ "(none)" | translate }</span></td>
-					</tr>
-				{% endfor %}
-				</tbody>
-			</table>
-			<br />
-			<div class="controls">
-				<h4>${ "With selected:" | translate("comments") }</h4>
-				<button class="lite" name="deny">
-					<img src="images/icons/deny.png" alt="deny" /> ${ "deny" | translate("comments") }
-				</button>
-				<button class="lite yay" name="approve">
-					<img src="images/icons/success.png" alt="approve" /> ${ "approve" | translate("comments") }
-				</button>
-				<button class="lite boo" name="spam">
-					<img src="../modules/comments/spam.png" alt="spam" /> ${ "mark as spam" | translate("comments") }
-				</button>
-				<button class="lite boo" name="delete">
-					<img src="images/icons/delete.png" alt="delete" /> ${ "delete" | translate("comments") }
-				</button>
-			</div>
+						</tr>
+						<tr class="excerpt">
+							<td colspan="6">${ comment.body_unfiltered | truncate(100) | markup_comment_text }</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="6" class="center"><span class="sub">${ "(none)" | translate }</span></td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+				<br />
+				<div class="controls">
+					<h4>${ "With selected:" | translate("comments") }</h4>
+					<button class="lite" name="deny">
+						<img src="images/icons/deny.png" alt="deny" /> ${ "deny" | translate("comments") }
+					</button>
+					<button class="lite yay" name="approve">
+						<img src="images/icons/success.png" alt="approve" /> ${ "approve" | translate("comments") }
+					</button>
+					<button class="lite boo" name="spam">
+						<img src="../modules/comments/spam.png" alt="spam" /> ${ "mark as spam" | translate("comments") }
+					</button>
+					<button class="lite boo" name="delete">
+						<img src="images/icons/delete.png" alt="delete" /> ${ "delete" | translate("comments") }
+					</button>
+				</div>
+			</form>
 			<br />
 			$pagination.next_link
 			$pagination.prev_link

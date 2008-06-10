@@ -430,10 +430,66 @@
 			if (!empty($_GET['updated']))
 				$admin->context["updated"] = new Comment($_GET['updated']);
 
-			$admin->context["deleted"] = isset($_GET['deleted']);
-			$admin->context["approved"] = isset($_GET['approved']);
-			$admin->context["denied"] = isset($_GET['denied']);
-			$admin->context["spammed"] = isset($_GET['spammed']);
+			$admin->context["deleted"]       = isset($_GET['deleted']);
+			$admin->context["bulk_deleted"]  = isset($_GET['bulk_deleted']);
+			$admin->context["bulk_approved"] = isset($_GET['bulk_approved']);
+			$admin->context["bulk_denied"]   = isset($_GET['bulk_denied']);
+			$admin->context["bulk_spammed"]  = isset($_GET['bulk_spammed']);
+		}
+
+		static function admin_bulk_comments() {
+			if (!isset($_POST['comment']))
+				redirect("/admin/?action=manage_comments");
+
+			$comments = array_keys($_POST['comment']);
+
+			if (isset($_POST['delete'])) {
+				foreach ($comments as $comment)
+					Comment::delete($comment);
+
+				redirect("/admin/?action=manage_comments&bulk_deleted");
+			}
+
+			$sql = SQL::current();
+			if (isset($_POST['deny'])) {
+				foreach ($comments as $comment) {
+					$comment = new Comment($comment);
+					if (!$comment->editable())
+						continue;
+
+					$sql->update("comments", "`__comments`.`id` = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "denied"));
+				}
+
+				redirect("/admin/?action=manage_comments&bulk_denied");
+			}
+			if (isset($_POST['approve'])) {
+				foreach ($comments as $comment) {
+					$comment = new Comment($comment);
+					if (!$comment->editable())
+						continue;
+
+					$sql->update("comments", "`__comments`.`id` = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "approved"));
+				}
+
+				redirect("/admin/?action=manage_comments&bulk_approved");
+			}
+			if (isset($_POST['spam'])) {
+				foreach ($comments as $comment) {
+					$comment = new Comment($comment);
+					if (!$comment->editable())
+						continue;
+
+					$sql->update("comments", "`__comments`.`id` = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "spam"));
+
+					$config = Config::current();
+					if (!empty($config->defensio_api_key)) {
+						$defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
+						$defensio->report_false_negatives(array("owner-url" => Config::current()->url, "signatures" => $comment->signature));
+					}
+				}
+
+				redirect("/admin/?action=manage_comments&bulk_spammed");
+			}
 		}
 
 		static function admin_manage_posts_column_header() {

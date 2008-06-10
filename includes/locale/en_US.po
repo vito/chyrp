@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-09 20:43-0500\n"
+"PO-Revision-Date: 2008-06-10 00:55-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -115,7 +115,7 @@ msgstr ""
 msgid "User Settings"
 msgstr ""
 
-#: install.php:467
+#: install.php:468
 #: includes/bookmarklet.php:247
 msgid "Done!"
 msgstr ""
@@ -255,7 +255,7 @@ msgstr ""
 msgid "E-Mail address cannot be blank."
 msgstr ""
 
-#: install.php:427
+#: install.php:428
 #: includes/bookmarklet.php:176
 #: includes/ajax.php:26
 #: importers/wordpress.php:159
@@ -285,7 +285,7 @@ msgstr ""
 msgid "Already Installed"
 msgstr ""
 
-#: install.php:431
+#: install.php:432
 msgid "Website Setup"
 msgstr ""
 
@@ -445,7 +445,7 @@ msgstr ""
 msgid "Settings updated."
 msgstr ""
 
-#: install.php:398
+#: install.php:399
 msgid "Database Setup"
 msgstr ""
 
@@ -557,9 +557,9 @@ msgstr ""
 msgid "Please upload the .atom files for what you would like to import."
 msgstr ""
 
-#: install.php:419
-#: install.php:452
-#: install.php:456
+#: install.php:420
+#: install.php:453
+#: install.php:457
 #: importers/textpattern.php:152
 msgid "Password"
 msgstr ""
@@ -572,7 +572,7 @@ msgstr ""
 msgid "Attempts to notify sites linked to from your posts. It'll slow down things a bit when you submit them, depending on how many links you've got in it."
 msgstr ""
 
-#: install.php:460
+#: install.php:461
 msgid "E-Mail Address"
 msgstr ""
 
@@ -591,7 +591,7 @@ msgstr ""
 msgid "Please enter a username for your account."
 msgstr ""
 
-#: install.php:469
+#: install.php:470
 msgid "Chyrp has been successfully installed."
 msgstr ""
 
@@ -630,7 +630,7 @@ msgstr ""
 msgid "Chyrp: Import: WordPress"
 msgstr ""
 
-#: install.php:441
+#: install.php:442
 #: admin/layout/pages/general_settings.twig:36
 msgid "Time Offset"
 msgstr ""
@@ -646,7 +646,7 @@ msgid_plural "%s foos"
 msgstr[0] ""
 msgstr[1] ""
 
-#: install.php:475
+#: install.php:476
 msgid "Install some Modules."
 msgstr ""
 
@@ -742,7 +742,7 @@ msgstr ""
 msgid "or wait 3 seconds."
 msgstr ""
 
-#: install.php:464
+#: install.php:465
 msgid "Install!"
 msgstr ""
 
@@ -840,7 +840,7 @@ msgstr ""
 msgid "(drag)"
 msgstr ""
 
-#: install.php:400
+#: install.php:401
 msgid "Adapter"
 msgstr ""
 
@@ -867,7 +867,7 @@ msgstr[1] ""
 msgid "Cancel"
 msgstr ""
 
-#: install.php:456
+#: install.php:457
 msgid "(again)"
 msgstr ""
 
@@ -953,7 +953,7 @@ msgstr ""
 msgid "Usually something like <code>http://example.com/wp-content/uploads/</code>"
 msgstr ""
 
-#: install.php:423
+#: install.php:424
 #: importers/textpattern.php:154
 msgid "Database"
 msgstr ""
@@ -1024,7 +1024,7 @@ msgstr ""
 msgid "eXtended .XML File"
 msgstr ""
 
-#: install.php:433
+#: install.php:434
 #: admin/layout/pages/general_settings.twig:13
 msgid "Site Name"
 msgstr ""
@@ -1052,7 +1052,7 @@ msgstr ""
 msgid "Invalid security key."
 msgstr ""
 
-#: install.php:411
+#: install.php:412
 msgid "(usually ok as \"localhost\")"
 msgstr ""
 
@@ -1073,7 +1073,7 @@ msgstr ""
 msgid "Second submitted"
 msgstr ""
 
-#: install.php:474
+#: install.php:475
 msgid "Look for a translation for your language."
 msgstr ""
 
@@ -1171,7 +1171,7 @@ msgstr ""
 msgid "User updated."
 msgstr ""
 
-#: install.php:411
+#: install.php:412
 #: importers/textpattern.php:148
 msgid "Host"
 msgstr ""
@@ -1181,7 +1181,7 @@ msgstr ""
 msgid "You do not have sufficient privileges to delete users."
 msgstr ""
 
-#: install.php:437
+#: install.php:438
 #: admin/layout/pages/general_settings.twig:17
 msgid "Description"
 msgstr ""
@@ -1195,7 +1195,7 @@ msgstr ""
 msgid "Importing from WordPress requires the Text feather to be installed and enabled."
 msgstr ""
 
-#: install.php:434
+#: install.php:435
 msgid "My Awesome Site"
 msgstr ""
 
@@ -1315,7 +1315,7 @@ msgid "STOP! Before you go any further, you must create a .htaccess file in Chyr
 msgstr ""
 
 #: upgrade.php:104
-#: install.php:479
+#: install.php:480
 msgid "Take me to my site! &rarr;"
 msgstr ""
 
@@ -1483,7 +1483,7 @@ msgstr ""
 msgid "Could not connect to specified database."
 msgstr ""
 
-#: install.php:427
+#: install.php:428
 #: importers/textpattern.php:156
 msgid "Table Prefix"
 msgstr ""
@@ -1532,7 +1532,7 @@ msgstr ""
 msgid "Show in pages list?"
 msgstr ""
 
-#: install.php:473
+#: install.php:474
 msgid "<strong>Delete install.php</strong>, you won't need it anymore."
 msgstr ""
 
@@ -1642,8 +1642,8 @@ msgstr ""
 msgid "Default User Group"
 msgstr ""
 
-#: install.php:415
-#: install.php:448
+#: install.php:416
+#: install.php:449
 #: importers/textpattern.php:150
 msgid "Username"
 msgstr ""
@@ -1677,7 +1677,7 @@ msgstr ""
 msgid "(none)"
 msgstr ""
 
-#: install.php:477
+#: install.php:478
 msgid "Read &#8220;Getting Started&#8221;"
 msgstr ""
 
@@ -1720,7 +1720,7 @@ msgstr ""
 msgid "Add Group"
 msgstr ""
 
-#: install.php:476
+#: install.php:477
 msgid "Find some Feathers you want."
 msgstr ""
 
@@ -1751,7 +1751,7 @@ msgstr ""
 msgid "Missing Feather"
 msgstr ""
 
-#: install.php:446
+#: install.php:447
 msgid "Admin Account"
 msgstr ""
 

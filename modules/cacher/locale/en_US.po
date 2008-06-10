@@ -16,27 +16,32 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: feathers/chat/info.yaml:1
-msgid "Chat"
+#: modules/cacher/pages/admin/cache_settings.twig:14
+msgid "(seconds)"
 msgstr ""
 
-#: feathers/chat/feather.php:93
-msgid "This only has to be done to the first occurrence of the username."
+#: modules/cacher/info.yaml:6
+msgid "Please make sure that /modules/cacher/cache is writable by the server. If you are not certain whether it is or not, CHMOD it to 777."
 msgstr ""
 
-#: feathers/chat/info.yaml:4
-msgid "Post logs of IRC or other chat formats."
+#: modules/cacher/pages/admin/cache_settings.twig:3
+#: modules/cacher/pages/admin/cache_settings.twig:6
+msgid "Cache Settings"
 msgstr ""
 
-#: feathers/chat/feather.php:88
-msgid "To give yourself a special CSS class, append \" (me)\" to your username, like so:"
+#: modules/cacher/info.yaml:4
+msgid "Caches pages, drastically reducing server load."
 msgstr ""
 
-#: feathers/chat/feather.php:5
-msgid "Dialogue"
+#: modules/cacher/module.php:112
+msgid "Cache"
 msgstr ""
 
-#: feathers/chat/feather.php:4
-msgid "Title"
+#: modules/cacher/pages/admin/cache_settings.twig:13
+msgid "Expire Cache After&hellip;"
+msgstr ""
+
+#: modules/cacher/info.yaml:1
+msgid "Cacher"
 msgstr ""
 

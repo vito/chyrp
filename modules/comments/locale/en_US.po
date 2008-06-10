@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-09 20:43-0500\n"
+"PO-Revision-Date: 2008-06-10 00:55-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "Delete Selected"
 msgstr ""
 
-#: modules/comments/pages/admin/manage_comments.twig:59
+#: modules/comments/pages/admin/manage_comments.twig:63
 msgid "Author"
 msgstr ""
 
@@ -28,16 +28,19 @@ msgstr ""
 msgid "You didn't select any comments!"
 msgstr ""
 
+#: modules/comments/pages/admin/manage_comments.twig:17
+msgid "Selected comments deleted."
+msgstr ""
+
 #: modules/comments/pages/admin/comment_settings.twig:18
 msgid "A very good spam blocker. Get an API key from <a href=\"http://defensio.com/\">Defensio.com</a>."
 msgstr ""
 
-#: modules/comments/pages/admin/manage_comments.twig:17
 #: modules/comments/pages/admin/manage/comment.php:8
 msgid "Comment approved."
 msgstr ""
 
-#: modules/comments/pages/admin/manage_comments.twig:58
+#: modules/comments/pages/admin/manage_comments.twig:62
 msgid "Post"
 msgstr ""
 
@@ -45,17 +48,13 @@ msgstr ""
 msgid "Delete Comment"
 msgstr ""
 
-#: modules/comments/pages/admin/manage_comments.twig:50
-#: modules/comments/pages/admin/manage_comments.twig:106
+#: modules/comments/pages/admin/manage_comments.twig:54
+#: modules/comments/pages/admin/manage_comments.twig:112
 msgid "delete"
 msgstr ""
 
 #: modules/comments/info.yaml:7
 msgid "Please remember to update the permission settings for each group."
-msgstr ""
-
-#: modules/comments/pages/admin/manage_comments.twig:23
-msgid "Comments marked as spam."
 msgstr ""
 
 #: modules/comments/module.php:79
@@ -76,7 +75,7 @@ msgstr ""
 
 #: modules/comments/module.php:366
 #: modules/comments/module.php:375
-#: modules/comments/module.php:440
+#: modules/comments/module.php:496
 msgid "Comments"
 msgstr ""
 
@@ -88,8 +87,8 @@ msgstr ""
 msgid "You do not have sufficient privileges to edit this comment."
 msgstr ""
 
-#: modules/comments/pages/admin/manage_comments.twig:47
-#: modules/comments/pages/admin/manage_comments.twig:103
+#: modules/comments/pages/admin/manage_comments.twig:51
+#: modules/comments/pages/admin/manage_comments.twig:109
 msgid "mark as spam"
 msgstr ""
 
@@ -102,12 +101,12 @@ msgstr ""
 msgid "Manage Spam"
 msgstr ""
 
-#: modules/comments/pages/admin/manage/comment.php:92
-msgid "spam"
+#: modules/comments/module.php:762
+msgid "Author E-Mail"
 msgstr ""
 
-#: modules/comments/module.php:706
-msgid "Author E-Mail"
+#: modules/comments/pages/admin/manage/comment.php:92
+msgid "spam"
 msgstr ""
 
 #: modules/comments/pages/admin/manage_comments.twig:3
@@ -129,7 +128,7 @@ msgstr ""
 msgid "You do not have sufficient privileges to delete this comment."
 msgstr ""
 
-#: modules/comments/module.php:692
+#: modules/comments/module.php:748
 msgid "Body"
 msgstr ""
 
@@ -143,31 +142,34 @@ msgstr ""
 
 #: modules/comments/pages/admin/manage/comment.php:28
 #: modules/comments/pages/admin/comment_settings.twig:29
-#: modules/comments/module.php:713
+#: modules/comments/module.php:769
 msgid "Denied"
 msgstr ""
 
-#: modules/comments/pages/admin/manage_comments.twig:20
-#: modules/comments/pages/admin/manage/comment.php:10
-msgid "Comment denied."
-msgstr ""
-
-#: modules/comments/pages/admin/manage_comments.twig:53
+#: modules/comments/pages/admin/manage_comments.twig:57
 #: modules/comments/pages/admin/manage/comment.php:38
 msgid "Last 25 Comments"
+msgstr ""
+
+#: modules/comments/pages/admin/manage/comment.php:10
+msgid "Comment denied."
 msgstr ""
 
 #: modules/comments/pages/admin/comment_settings.twig:21
 msgid "Allowed HTML Tags"
 msgstr ""
 
-#: modules/comments/module.php:702
+#: modules/comments/module.php:758
 msgid "Author URL"
 msgstr ""
 
 #: modules/comments/module.php:290
 #: modules/comments/module.php:315
 msgid "A ping from that URL is already registered."
+msgstr ""
+
+#: modules/comments/pages/admin/manage_comments.twig:23
+msgid "Selected comments denied."
 msgstr ""
 
 #: modules/comments/pages/admin/manage/spam.php:3
@@ -186,8 +188,16 @@ msgstr ""
 msgid "Excerpt"
 msgstr ""
 
-#: modules/comments/pages/admin/manage_comments.twig:60
+#: modules/comments/pages/admin/manage_comments.twig:64
 msgid "Added"
+msgstr ""
+
+#: modules/comments/model.Comment.php:79
+msgid "Your comment has been marked as spam. It will have to be approved before it will show up."
+msgstr ""
+
+#: modules/comments/pages/admin/manage_comments.twig:26
+msgid "Selected comments marked as spam."
 msgstr ""
 
 #: modules/comments/pages/admin/comment_settings.twig:3
@@ -195,12 +205,8 @@ msgstr ""
 msgid "Comment Settings"
 msgstr ""
 
-#: modules/comments/model.Comment.php:79
-msgid "Your comment has been marked as spam. It will have to be approved before it will show up."
-msgstr ""
-
-#: modules/comments/pages/admin/manage_comments.twig:41
-#: modules/comments/pages/admin/manage_comments.twig:97
+#: modules/comments/pages/admin/manage_comments.twig:45
+#: modules/comments/pages/admin/manage_comments.twig:103
 #: modules/comments/pages/admin/manage/comment.php:88
 msgid "deny"
 msgstr ""
@@ -217,6 +223,10 @@ msgstr ""
 msgid "Comment System"
 msgstr ""
 
+#: modules/comments/pages/admin/manage_comments.twig:20
+msgid "Selected comments approved."
+msgstr ""
+
 #: modules/comments/pages/admin/manage/comment.php:29
 msgid "Trackback"
 msgstr ""
@@ -225,8 +235,8 @@ msgstr ""
 msgid "Show:"
 msgstr ""
 
-#: modules/comments/pages/admin/manage_comments.twig:39
-#: modules/comments/pages/admin/manage_comments.twig:95
+#: modules/comments/pages/admin/manage_comments.twig:43
+#: modules/comments/pages/admin/manage_comments.twig:101
 msgid "With selected:"
 msgstr ""
 
@@ -242,8 +252,8 @@ msgstr ""
 msgid "Default Comment Status"
 msgstr ""
 
-#: modules/comments/pages/admin/manage_comments.twig:44
-#: modules/comments/pages/admin/manage_comments.twig:100
+#: modules/comments/pages/admin/manage_comments.twig:48
+#: modules/comments/pages/admin/manage_comments.twig:106
 #: modules/comments/pages/admin/manage/comment.php:90
 msgid "approve"
 msgstr ""
@@ -274,7 +284,7 @@ msgid "Selected spam has been deleted."
 msgstr ""
 
 #: modules/comments/module.php:376
-#: modules/comments/module.php:714
+#: modules/comments/module.php:770
 msgid "Spam"
 msgstr ""
 
@@ -299,7 +309,7 @@ msgstr ""
 
 #: modules/comments/pages/admin/manage/comment.php:27
 #: modules/comments/pages/admin/comment_settings.twig:28
-#: modules/comments/module.php:712
+#: modules/comments/module.php:768
 msgid "Approved"
 msgstr ""
 
@@ -307,18 +317,22 @@ msgstr ""
 msgid "Comments Per Page"
 msgstr ""
 
-#: modules/comments/module.php:388
-msgid "An ID is required to edit a comment."
-msgstr ""
-
-#: modules/comments/module.php:470
-#: modules/comments/module.php:485
-#: modules/comments/module.php:542
-#: modules/comments/module.php:563
-msgid "Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this."
+#: modules/comments/pages/admin/manage_comments.twig:65
+msgid "Status"
 msgstr ""
 
 #: modules/comments/info.yaml:1
 msgid "Do you want to remove the Comments from the database?"
+msgstr ""
+
+#: modules/comments/module.php:388
+msgid "An ID is required to edit a comment."
+msgstr ""
+
+#: modules/comments/module.php:526
+#: modules/comments/module.php:541
+#: modules/comments/module.php:598
+#: modules/comments/module.php:619
+msgid "Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this."
 msgstr ""
 

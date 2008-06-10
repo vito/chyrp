@@ -533,23 +533,25 @@ a.prev_page {
 	padding: .5em .75em;
 	background: #f1f1f1;
 	border: 1px solid #ccc;
-	border-top: 0;
-	border-left: 0;
+	border-top-color: #f1f1f1;
+	border-left-color: #f1f1f1;
 	cursor: pointer;
 }
 a.button {
 	padding: .6em 1em .5em .9em;
 }
 button.lite {
-	padding: .25em .375em;
+	padding: .15em .375em .25em .275em;
 }
 a.button.lite,
 a.next_page,
 a.prev_page {
-	padding: .2em .4em .3em;
+	padding: .1em .4em .2em;
 }
 button.inline {
-	padding: 4px 4px 3px;
+	position: relative;
+	top: -1px;
+	padding: 4px 5px 4px 4px;
 }
 button.right,
 a.button.right,
@@ -561,55 +563,65 @@ button:hover,
 a.button:hover,
 a.next_page:hover,
 a.prev_page:hover {
-	background-color: #f7f7f7;
-	border-color: #d1d1d1;
+	background: #f7f7f7;
+	border-color: #f7f7f7;
+	border-bottom-color: #d1d1d1;
+	border-right-color: #d1d1d1;
 }
 button:active,
 a.button:active,
 a.next_page:active,
 a.prev_page:active {
 	background-color: #d7d7d7;
-    border: 0;
-    border-left: 1px solid #b1b1b1;
-    border-top: 1px solid #b1b1b1;
+    border-color: #d7d7d7;
+    border-left-color: #b1b1b1;
+    border-top-color: #b1b1b1;
 }
 button.boo,
 a.button.boo {
 	background: #faebe4;
-	border-color: #d6bdb5;
 	color: #3e3634;
+	border-color: #faebe4;
+	border-bottom-color: #d6bdb5;
+	border-right-color: #d6bdb5;
 }
 button.boo:hover,
 a.button.boo:hover {
 	background: #d51800;
 	color: #fff;
-	border-color: #9f1000;
+	border-color: #d51800;
+	border-bottom-color: #9f1000;
+	border-right-color: #9f1000;
 }
 button.boo:active,
 a.button.boo:active {
     background: #b30600;
-    border: 0;
-    border-left: 1px solid #7d0000;
-    border-top: 1px solid #7d0000;
+    border-color: #b30600;
+    border-left-color: #7d0000;
+    border-top-color: #7d0000;
 }
 button.yay,
 a.button.yay {
 	background: #ebfae4;
-	border-color: #bdd6b5;
 	color: #363e34;
+	border-color: #ebfae4;
+	border-bottom-color: #bdd6b5;
+	border-right-color: #bdd6b5;
 }
 button.yay:hover,
 a.button.yay:hover {
 	background: #189100;
 	color: #fff;
-	border-color: #105f00;
+	border-color: #189100;
+	border-bottom-color: #105f00;
+	border-right-color: #105f00;
 }
 button.yay:active,
 a.button.yay:active {
     background: #067000;
-    border: 0;
-    border-left: 1px solid #003d00;
-    border-top: 1px solid #003d00;
+    border-color: #067000;
+    border-left-color: #003d00;
+    border-top-color: #003d00;
 }
 button img,
 a.button img {
@@ -617,7 +629,7 @@ a.button img {
 }
 button.lite img,
 a.button.lite img {
-	margin: 0 0 -4px -1px;
+	margin: 0 -1px -3px 0;
 }
 /* @end */
 
