@@ -107,14 +107,10 @@
 		 * Function: build_count
 		 * Creates a SELECT COUNT(1) query.
 		 */
-		public static function build_count($tables, $conds, $left_join = null) {
-			# Left Joins are included in here to prevent PDO from freaking about when $param count doesn't match :param count.
+		public static function build_count($tables, $conds) {
 			$query = "
 				SELECT COUNT(1) AS count
 				FROM ".self::build_from($tables);
-			if (isset($left_join))
-				foreach ($left_join as $join)
-					$query.= "\n\t\t\t\tLEFT JOIN `__".$join["table"]."` ON ".self::build_where($join["where"]);
 			$query.= "\n\t\t\t\t".($conds ? "WHERE ".self::build_where($conds) : "");
 			return $query;
 		}

@@ -125,7 +125,7 @@
 						$target = $trace[$index++];                 # useless (mostly when using $sql->select() and such)
 
 					$debug = $this->debug[count($this->debug)] = array("number" => $this->queries, "file" => str_replace(MAIN_DIR."/", "", $target["file"]), "line" => $target["line"], "query" => normalize(str_replace(array_keys($params), array_values($params), $query)));
-					#error_log("\n\t".$debug["number"].". ".$debug["query"]."\n\n\tCalled from ".$debug["file"]." on line ".$target["line"].".");
+					error_log("\n\t".$debug["number"].". ".$debug["query"]."\n\n\tCalled from ".$debug["file"]." on line ".$target["line"].".");
 				}
 				if (!$result) throw new PDOException;
 			} catch (PDOException $error) {

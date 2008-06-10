@@ -14,13 +14,15 @@
 		 * See Also:
 		 * <SQL.select>
 		 */
-		public function select($tables, $fields, $conds, $order = null, $limit = 5, $var = "page", $params = array(), $group = null, $left_join = null) {
+		public function select($tables, $fields, $conds, $order = null, $per_page = 5, $var = "page", $params = array(), $group = null, $left_join = null) {
 			$sql = SQL::current();
-			$total_results = $sql->count($tables, $conds, $params, $left_join);
+
+			$this->per_page = $per_page;
+			$this->total_results = $sql->count($tables, $conds, $params);
 
 			$this->$var = (isset($_GET[$var])) ? $_GET[$var] : 1 ;
-			$this->total_pages = ceil($total_results / $limit);
-			$this->offset = ($this->$var - 1) * $limit;
+			$this->total_pages = ceil($this->total_results / $this->per_page);
+			$this->offset = ($this->$var - 1) * $this->per_page;
 
 			return $sql->select($tables, $fields, $conds, $order, $params, $limit, $this->offset, $group, $left_join);
 		}
