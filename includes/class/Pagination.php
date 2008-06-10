@@ -24,7 +24,7 @@
 			$this->total_pages = ceil($this->total_results / $this->per_page);
 			$this->offset = ($this->$var - 1) * $this->per_page;
 
-			return $sql->select($tables, $fields, $conds, $order, $params, $limit, $this->offset, $group, $left_join);
+			return $sql->select($tables, $fields, $conds, $order, $params, $per_page, $this->offset, $group, $left_join);
 		}
 
 		/**
