@@ -1,17 +1,17 @@
 {% extends "layout.twig" %}
 
-{% block title %}${ "Manage Comments" | translate("comments") }{% endblock %}
+{% block title %}${ "Manage Spam" | translate("comments") }{% endblock %}
 
 {% block content %}
-			<h1>${ "Manage Comments" | translate("comments") }</h1>
+			<h1>${ "Manage Spam" | translate("comments") }</h1>
 			{% if updated %}
-			<p class="message yay">
-				${ "Comment updated." | translate("comments") }
-				<a href="$updated.post.url#comment_$updated.id">${ "View Comment &rarr;" | translate("comments") }</a>
-			</p>
+			<p class="message yay">${ "Comment updated." | translate("comments") }</p>
 			{% endif %}
 			{% if deleted %}
 			<p class="message yay">${ "Comment deleted." | translate("comments") }</p>
+			{% endif %}
+			{% if purged %}
+			<p class="message yay">${ "All spam deleted." | translate("comments") }</p>
 			{% endif %}
 			{% if bulk_deleted %}
 			<p class="message yay">${ "Selected comments deleted." | translate("comments") }</p>
@@ -22,12 +22,10 @@
 			{% if bulk_denied %}
 			<p class="message yay">${ "Selected comments denied." | translate("comments") }</p>
 			{% endif %}
-			{% if bulk_spammed %}
-			<p class="message yay">${ "Selected comments marked as spam." | translate("comments") }</p>
-			{% endif %}
 			<h2>${ "Need more detail?" | translate }</h2>
 			<form class="detail" action="index.php" method="get" accept-charset="utf-8">
 				<fieldset>
+					<a class="button boo right" href="{% admin "purge_spam" %}"><img src="images/icons/deny.png" alt="deny" />${ "Delete All" | translate }</a>
 					<input type="hidden" name="action" value="manage_comments" />
 					<div class="left pad">
 						<h3>${ "Search&hellip;" | translate }</h3>
@@ -38,7 +36,7 @@
 				</fieldset>
 			</form>
 			<br />
-			<form action="{% admin "bulk_comments" %}" method="post">
+			<form action="{% admin "bulk_comments&from=spam" %}" method="post">
 				<div class="controls right">
 					<h4>${ "With selected:" | translate("comments") }</h4>
 					<button class="lite" name="deny">
@@ -47,14 +45,11 @@
 					<button class="lite yay" name="approve">
 						<img src="images/icons/success.png" alt="approve" /> ${ "approve" | translate("comments") }
 					</button>
-					<button class="lite boo" name="spam">
-						<img src="../modules/comments/spam.png" alt="spam" /> ${ "mark as spam" | translate("comments") }
-					</button>
 					<button class="lite boo" name="delete">
 						<img src="images/icons/delete.png" alt="delete" /> ${ "delete" | translate("comments") }
 					</button>
 				</div>
-				<h2>${ "Last 25 Comments" | translate("comments") }</h2>
+				<h2>${ "Last 25 Spam" | translate("comments") }</h2>
 				<table border="0" cellspacing="0" cellpadding="0" class="wide">
 					<thead>
 						<tr class="head">
@@ -62,7 +57,6 @@
 							<th>${ "Post" | translate("comments") }</th>
 							<th>${ "Author" | translate("comments") }</th>
 							<th>${ "Added" | translate("comments") }</th>
-							<th>${ "Status" | translate("comments") }</th>
 							${ trigger.call("manage_comments_column_header") }
 							<th colspan="2">${ "Controls" | translate }</th>
 						</tr>
@@ -76,7 +70,6 @@
 							<td class="main"><a href="$comment.post.url#comment_$comment.id">${ comment.post.title | truncate }</a></td>
 							<td>${ comment.user.full_name | fallback(comment.user.login) | fallback(comment.author) }</td>
 							<td>${ comment.created_at | strftime }</td>
-							<td>${ comment.status | capitalize | translate("comments") }</td>
 							${ trigger.call("manage_comments_column", comment) }
 {% if comment.editable and comment.deletable %}
 						<td class="controls">${ comment.edit_link('<img src="images/icons/edit.png" alt="edit" /> '~("edit" | translate)) }</td>
@@ -87,11 +80,11 @@
 {% endif %}
 						</tr>
 						<tr class="excerpt">
-							<td colspan="6">${ comment.body_unfiltered | truncate(100) | markup_comment_text }</td>
+							<td colspan="5">${ comment.body_unfiltered | truncate(100) | markup_comment_text }</td>
 						</tr>
 					{% else %}
 						<tr class="last">
-							<td colspan="6" class="center"><span class="sub">${ "(none)" | translate }</span></td>
+							<td colspan="5" class="center"><span class="sub">${ "(none)" | translate }</span></td>
 						</tr>
 					{% endfor %}
 					</tbody>
@@ -104,9 +97,6 @@
 					</button>
 					<button class="lite yay" name="approve">
 						<img src="images/icons/success.png" alt="approve" /> ${ "approve" | translate("comments") }
-					</button>
-					<button class="lite boo" name="spam">
-						<img src="../modules/comments/spam.png" alt="spam" /> ${ "mark as spam" | translate("comments") }
 					</button>
 					<button class="lite boo" name="delete">
 						<img src="images/icons/delete.png" alt="delete" /> ${ "delete" | translate("comments") }

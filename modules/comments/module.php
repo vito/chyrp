@@ -67,16 +67,12 @@
 		}
 
 		static function route_add_comment() {
-			global $comment;
-			$visitor = Visitor::current();
-			# If the user can't add a comment, and if they can add a private comment
-			# but the post isn't set to private, or if $_POST is empty.
-			if ((!$visitor->group()->can("add_comment") and ($visitor->group()->can("add_comment_private") and Post::info("status", $_POST['post_id']) != "private")) or empty($_POST))
-				return;
+			if (Comment::user_can($_POST['post_id']))
+				show_403(__("Access Denied"), __("You cannot comment on this post.", "comments"));
 
-			if ($_POST['author'] == "") error(__("Error"), __("Author can't be blank.", "comments"));
-			if ($_POST['email'] == "") error(__("Error"), __("E-Mail address can't be blank.", "comments"));
-			if ($_POST['body'] == "") error(__("Error"), __("Message can't be blank.", "comments"));
+			if (empty($_POST['author'])) error(__("Error"), __("Author can't be blank.", "comments"));
+			if (empty($_POST['email']))  error(__("Error"), __("E-Mail address can't be blank.", "comments"));
+			if (empty($_POST['body']))   error(__("Error"), __("Message can't be blank.", "comments"));
 			Comment::create($_POST['author'],
 			                $_POST['email'],
 			                $_POST['url'],
@@ -102,7 +98,10 @@
 			if (isset($_POST['ajax']))
 				exit("{ comment_id: ".$_POST['id']." }");
 
-			redirect("/admin/?action=manage_comments&updated=".$comment->id);
+			if ($_POST['status'] == "spam")
+				redirect("/admin/?action=manage_spam&updated=".$comment->id);
+			else
+				redirect("/admin/?action=manage_comments&updated=".$comment->id);
 		}
 
 		static function admin_delete_comment() {
@@ -131,7 +130,10 @@
 			if (isset($_POST['ajax']))
 				exit;
 
-			redirect("/admin/?action=manage_comments&deleted");
+			if ($comment->status == "spam")
+				redirect("/admin/?action=manage_spam&deleted");
+			else
+				redirect("/admin/?action=manage_comments&deleted");
 		}
 
 		static function admin_mark_spam() {
@@ -189,60 +191,56 @@
 		}
 
 		static function admin_manage_spam($action) {
-			global $comment;
-			$visitor = Visitor::current();
-			$config = Config::current();
+			if (!Comment::any_editable() and !Comment::any_deletable())
+				error(__("Access Denied"), __("You do not have sufficient privileges to manage any comments.", "comments"));
 
-			if (empty($_POST['comments']))
-				redirect("/admin/?action=manage&sub=spam&noneselected");
+			global $admin;
 
-			if (isset($_POST['delete'])) {
-				foreach ($_POST['comments'] as $id => $value) {
-					$comment = new Comment($id);
-					if (!$comment->deletable())
-						continue;
+			$params = array();
+			$where = array("`__comments`.`status` = 'spam'");
 
-					Comment::delete($id);
-				}
-				redirect("/admin/?action=manage&sub=spam&deleted");
-			}
+			if (!empty($_GET['query'])) {
+				$search = "";
+				$matches = array();
 
-			if (isset($_POST['despam'])) {
-				$sql = SQL::current();
-				$signatures = array();
-				foreach ($_POST['comments'] as $id => $value) {
-					$comment = new Comment($id);
-					if (!$comment->editable())
-						continue;
+				$queries = explode(" ", $_GET['query']);
+				foreach ($queries as $query)
+					if (!strpos($query, ":"))
+						$search.= $query;
+					else
+						$matches[] = $query;
 
-					$sql->query("update `__comments`
-					             set `status` = 'approved'
-					             where `id` = :id",
-					            array(
-					                ":id" => $id
-					            ));
-
-					$signatures[] = $comment->signature;
+				foreach ($matches as $match) {
+					$match = explode(":", $match);
+					$test = $match[0];
+					$equals = $match[1];
+					$where[] = "`__comments`.`".$test."` = :".$test;
+					$params[":".$test] = $equals;
 				}
 
-				$defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
-				$defensio->report_false_positives(array("owner-url" => $config->url, "signatures" => implode(",", $signatures)));
-
-				redirect("/admin/?action=manage&sub=spam&despammed");
+				$where[] = "(`__comments`.`body` LIKE :query)";
+				$params[":query"] = "%".$search."%";
 			}
-			redirect("/admin/?action=manage&sub=spam");
+
+			$admin->context["comments"] = Comment::find(array("where" => $where, "params" => $params, "per_page" => 25));
+
+			if (!empty($_GET['updated']))
+				$admin->context["updated"] = new Comment($_GET['updated']);
+
+			$admin->context["deleted"]       = isset($_GET['deleted']);
+			$admin->context["purged"]        = isset($_GET['purged']);
+			$admin->context["bulk_deleted"]  = isset($_GET['bulk_deleted']);
+			$admin->context["bulk_approved"] = isset($_GET['bulk_approved']);
+			$admin->context["bulk_denied"]   = isset($_GET['bulk_denied']);
 		}
 
-		static function admin_purge_spam($action) {
-			global $comment;
-			$visitor = Visitor::current();
-			if (!$visitor->group()->can("delete_comment")) return;
+		static function admin_purge_spam() {
+			if (!Visitor::current()->group()->can("delete_comment"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete comments.", "comments"));
 
-			$sql = SQL::current();
-			$sql->query("delete from `__comments`
-			             where `status` = 'spam'");
+			SQL::current()->delete("comments", "`status` = 'spam'");
 
-			redirect("/admin/?action=manage&sub=spam&purged");
+			redirect("/admin/?action=manage_spam&purged");
 		}
 
 		static function new_post_options() {
@@ -438,8 +436,9 @@
 		}
 
 		static function admin_bulk_comments() {
+			$from = (!isset($_GET['from'])) ? "manage_comments" : "manage_spam" ;
 			if (!isset($_POST['comment']))
-				redirect("/admin/?action=manage_comments");
+				redirect("/admin/?action=".$from);
 
 			$comments = array_keys($_POST['comment']);
 
@@ -447,20 +446,28 @@
 				foreach ($comments as $comment)
 					Comment::delete($comment);
 
-				redirect("/admin/?action=manage_comments&bulk_deleted");
+				redirect("/admin/?action=".$from."&bulk_deleted");
 			}
 
+			$false_positives = array();
+			$false_negatives = array();
+
 			$sql = SQL::current();
+			$config = Config::current();
+
 			if (isset($_POST['deny'])) {
 				foreach ($comments as $comment) {
 					$comment = new Comment($comment);
 					if (!$comment->editable())
 						continue;
 
+					if ($comment->status == "spam")
+						$false_positives[] = $comment->signature;
+
 					$sql->update("comments", "`__comments`.`id` = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "denied"));
 				}
 
-				redirect("/admin/?action=manage_comments&bulk_denied");
+				redirect("/admin/?action=".$from."&bulk_denied");
 			}
 			if (isset($_POST['approve'])) {
 				foreach ($comments as $comment) {
@@ -468,10 +475,13 @@
 					if (!$comment->editable())
 						continue;
 
+					if ($comment->status == "spam")
+						$false_positives[] = $comment->signature;
+
 					$sql->update("comments", "`__comments`.`id` = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "approved"));
 				}
 
-				redirect("/admin/?action=manage_comments&bulk_approved");
+				redirect("/admin/?action=".$from."&bulk_approved");
 			}
 			if (isset($_POST['spam'])) {
 				foreach ($comments as $comment) {
@@ -481,14 +491,18 @@
 
 					$sql->update("comments", "`__comments`.`id` = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "spam"));
 
-					$config = Config::current();
-					if (!empty($config->defensio_api_key)) {
-						$defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
-						$defensio->report_false_negatives(array("owner-url" => Config::current()->url, "signatures" => $comment->signature));
-					}
+					$false_negatives[] = $comment->signature;
 				}
 
-				redirect("/admin/?action=manage_comments&bulk_spammed");
+				redirect("/admin/?action=".$from."&bulk_spammed");
+			}
+
+			if (!empty($config->defensio_api_key)) {
+				$defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
+				if (!empty($false_positives))
+					$defensio->report_false_positives(array("owner-url" => $config->url, "signatures" => implode(",", $false_positives)));
+				if (!empty($false_negatives))
+					$defensio->report_false_negatives(array("owner-url" => $config->url, "signatures" => implode(",", $false_negatives)));
 			}
 		}
 
