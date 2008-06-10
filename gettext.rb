@@ -4,8 +4,8 @@ require "optparse"
 
 OPTIONS = {
   :domain  => nil,
-  :msgstr  => "XXX",
-  :msgstr_filter => "XXX :: %s",
+  :msgstr  => "",#"XXX",
+  :msgstr_filter => "",#"XXX :: %s",
   :exclude => [".git", "modules", "lib", "feathers", "themes", "config.yaml.php", "database.yaml.php"],
   :keys    => ["name", "description", "plural", "notifications", "confirm"]
 }

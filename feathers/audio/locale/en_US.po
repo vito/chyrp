@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-09 20:40-0500\n"
+"PO-Revision-Date: 2008-06-09 20:43-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -18,25 +18,25 @@ msgstr ""
 
 #: feathers/audio/info.yaml:7
 msgid "audio"
-msgstr "XXX"
+msgstr ""
 
 #: feathers/audio/info.yaml:4
 msgid "An audio feather, including a flash player."
-msgstr "XXX"
+msgstr ""
 
 #: feathers/audio/info.yaml:1
 msgid "Audio"
-msgstr "XXX"
+msgstr ""
 
 #: feathers/audio/feather.php:4
 msgid "MP3 File"
-msgstr "XXX"
+msgstr ""
 
 #: feathers/audio/feather.php:6
 msgid "Description"
-msgstr "XXX"
+msgstr ""
 
 #: feathers/audio/feather.php:5
 msgid "From URL?"
-msgstr "XXX"
+msgstr ""
 

@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-09 20:40-0500\n"
+"PO-Revision-Date: 2008-06-09 20:43-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -18,316 +18,316 @@ msgstr ""
 
 #: themes/default/layouts/default.twig:96
 msgid "Load time:"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/search.twig:10
 msgid "Your search did not return any results."
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/layouts/default.twig:95
 msgid "Queries:"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/forms/user/controls.twig:3
 msgid "Controls"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/tag.twig:4
 #, php-format
 msgid "Posts tagged with &#8220;%s&#8221;"
-msgstr "XXX :: %s"
+msgstr ""
 
 #: themes/default/forms/user/lost_password.twig:7
 msgid "You have specified a user that does not exist."
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/feather.twig:10
 msgid "There don't seem to be any posts as the Feather you specified."
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/forms/user/lost_password.twig:18
 msgid "Submit"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/404.twig:3
 msgid "Not Found"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/info.yaml:5
 msgid "Chyrp's default theme since v.0.0.1 Alpha, developed over a long period of time on and off (mostly off) by Aaron MacDonald."
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/forms/user/register.twig:11
 #: themes/default/forms/user/login.twig:11
 msgid "Password"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/tags.twig:4
 msgid "Tag Maelstrom"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/forms/user/register.twig:19
 #: themes/default/forms/user/controls.twig:11
 msgid "E-Mail"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/forms/comment/new.twig:4
 msgid "Log Out &rarr;"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/layouts/default.twig:70
 #: themes/default/forms/user/register.twig:3
 #: themes/default/forms/user/register.twig:24
 msgid "Register"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/layouts/default.twig:32
 msgid "Close"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/layouts/default.twig:21
 msgid "Write Draft"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/info.yaml:1
 msgid "Chyrp Default"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/view.twig:6
 msgid "Comments"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/view.twig:13
 #: themes/default/content/post.twig:10
 msgid "Next &rarr;"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/layouts/default.twig:24
 msgid "Add Page"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/layouts/default.twig:86
 msgid "Archives"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/comment.twig:9
 msgid "on"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/layouts/default.twig:59
 msgid "Guest"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/layouts/default.twig:59
 #, php-format
 msgid "Welcome, %s!"
-msgstr "XXX :: %s"
+msgstr ""
 
 #: themes/default/layouts/default.twig:62
 msgid "User Controls"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/forms/user/controls.twig:7
 msgid "Full Name"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/feathers/text.twig:3
 #: themes/default/content/feathers/chat.twig:3
 msgid "Permanent Link to"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/search.twig:4
 #, php-format
 msgid "Search results for &#8220;%s&#8221;"
-msgstr "XXX :: %s"
+msgstr ""
 
 #: themes/default/forms/user/lost_password.twig:10
 msgid "E-mail sent!"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/forms/user/register.twig:15
 msgid "Password (again)"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/forms/user/lost_password.twig:3
 msgid "Lost Password"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/post.twig:2
 msgid "This post is a draft."
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/view.twig:14
 #: themes/default/content/post.twig:11
 msgid "&larr; Previous"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/tag.twig:10
 #, php-format
 msgid "There don't be any posts tagged as &#8220;%s&#8221;."
-msgstr "XXX :: %s"
+msgstr ""
 
 #: themes/default/layouts/default.twig:27
 msgid "Your Drafts"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/layouts/default.twig:30
 msgid "Admin"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/forms/user/lost_password.twig:12
 msgid "Please enter your username below and we will e-mail you a new password for your account."
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/forms/user/controls.twig:23
 msgid "Confirm"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/forms/comment/new.twig:13
 msgid "Your Website"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/forms/comment/new.twig:9
 msgid "Your Name"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/forms/comment/new.twig:11
 msgid "Your E-Mail"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/layouts/default.twig:64
 msgid "Toggle Admin Bar"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/layouts/default.twig:77
 msgid "Tags"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/archive.twig:16
 #: themes/default/content/archive.twig:19
 msgid "Archive of"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/layouts/default.twig:19
 msgid "Write"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/forms/user/controls.twig:28
 msgid "Update"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/tag.twig:9
 #: themes/default/content/feather.twig:9
 #: themes/default/content/archive.twig:27
 msgid "No Posts"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/drafts.twig:4
 msgid "Drafts"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/404.twig:4
 msgid "Sorry, but you are looking for something that isn't here."
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/comment.twig:3
 msgid "Your comment is awaiting moderation."
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/forms/user/controls.twig:15
 msgid "Website"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/layouts/default.twig:82
 msgid "All &rarr;"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/forms/user/register.twig:7
 #: themes/default/forms/user/lost_password.twig:14
 #: themes/default/forms/user/login.twig:7
 msgid "Username"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/forms/user/controls.twig:19
 msgid "New Password?"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/drafts.twig:10
 msgid "You don't have any drafts."
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/layouts/default.twig:71
 msgid "Lost Password?"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/tags.twig:7
 msgid "No Tags"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/layouts/default.twig:57
 msgid "Pages"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/archive.twig:28
 msgid "There don't seem to be any posts in the timeframe you specified."
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/post.twig:25
 msgid "Delete"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/forms/comment/new.twig:3
 #, php-format
 msgid "Logged in as %s"
-msgstr "XXX :: %s"
+msgstr ""
 
 #: themes/default/content/post.twig:2
 msgid "(click to hide)"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/tags.twig:8
 msgid "There aren't any tags yet. Such a shame."
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/post.twig:22
 msgid "Trackback"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/layouts/default.twig:68
 #: themes/default/forms/user/login.twig:3
 #: themes/default/forms/user/login.twig:15
 msgid "Log In"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/post.twig:8
 msgid "pinned"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/post.twig:24
 msgid "Edit"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/forms/comment/new.twig:19
 msgid "Speak"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/drafts.twig:9
 msgid "No Drafts"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/layouts/default.twig:66
 msgid "Log Out"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/content/search.twig:9
 msgid "No Results"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/layouts/default.twig:93
 msgid "Stats"
-msgstr "XXX"
+msgstr ""
 
 #: themes/default/layouts/default.twig:49
 msgid "Powered by <a href=\"http://chyrp.net/\">Chyrp</a>"
-msgstr "XXX"
+msgstr ""
 

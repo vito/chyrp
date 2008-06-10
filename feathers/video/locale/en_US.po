@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-09 20:40-0500\n"
+"PO-Revision-Date: 2008-06-09 20:43-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -19,13 +19,13 @@ msgstr ""
 #: feathers/video/info.yaml:1
 #: feathers/video/feather.php:4
 msgid "Video"
-msgstr "XXX"
+msgstr ""
 
 #: feathers/video/feather.php:5
 msgid "Caption"
-msgstr "XXX"
+msgstr ""
 
 #: feathers/video/info.yaml:4
 msgid "Lets you post videos to your site."
-msgstr "XXX"
+msgstr ""
 
