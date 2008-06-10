@@ -21,6 +21,7 @@
 			$settings = $trigger->filter("settings_pages", array());
 			$extend   = $trigger->filter("extend_pages", array());
 
+			$admin->context["theme"]      = $theme;
 			$admin->context["trigger"]    = $trigger;
 			$admin->context["title"]      = camelize($action, true);
 			$admin->context["site"]       = Config::current();

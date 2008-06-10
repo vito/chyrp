@@ -246,6 +246,7 @@
 			$visitor = Visitor::current();
 			$config = Config::current();
 
+			$this->context["theme"]        = $this;
 			$this->context["trigger"]      = $trigger;
 			$this->context["title"]        = $this->title;
 			$this->context["site"]         = $config;

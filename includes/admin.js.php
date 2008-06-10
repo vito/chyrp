@@ -15,7 +15,7 @@ $(function(){
 	$(document).ajaxComplete(function(imconfused, request){
 		var response = request.responseText
 		if (isError(response))
-			alert(response.replace(/HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW/m, ""))
+			alert(response.replace(/(HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW|<([^>]+)>\n?)/gm, ""))
 	})
 
 <?php if (match(array("/edit_(post|page)/", "/write_(post|page)/"), $action)): ?>
@@ -74,19 +74,38 @@ $(function(){
 	})
 
 	// Content previewing.
-	if ($(".preview_me").length > 0) {
-		var feather = ($("#write_feather").size()) ? $("#write_feather").val() : ""
-		var feather = ($("#edit_feather").size()) ? $("#edit_feather").val() : feather
-		$(document.createElement("div")).css("display", "none").attr("id", "preview").insertBefore("#write_form, #edit_form")
-		$(document.createElement("button")).html("<?php echo __("Preview &rarr;"); ?>").attr({ "type": "submit", "accesskey": "p" }).click(function(){
-			$("#preview").load("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "preview", content: $(".preview_me").val(), feather: feather }, function(){
-				$(this).fadeIn("fast")
-			})
-			return false
-		}).appendTo(".buttons")
-	}
+	prepare_previewer()
 
 	// Checkbox toggling.
+	togglers()
+
+	// Page list reordering
+	reorder_pages()
+
+	// Extension enabling/disabling (drag'n'drop)
+	extend_draggables()
+
+<?php if ($_GET['action'] == "extend_modules" or $_GET['action'] == "extend_feathers"): ?>
+	draw_conflicts()
+
+	$(window).resize(function(){
+		draw_conflicts()
+	})
+<?php endif; ?>
+})
+
+var Post = {
+	destroy: function(id) {
+		$("#post_"+id+" .target, #post_"+id+".target").loader()
+		$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "delete_post", id: id }, function(response){
+			$("#post_"+id+" .target, #post_"+id+".target").loader(true)
+			if (isError(response)) return
+			$("#post_"+id).animate({ height: "hide", opacity: "hide" }).remove()
+		})
+	}
+}
+
+function togglers() {
 	var all_checked = true
 	$("#toggler").html('<label for="toggle">Toggle All</label><input class="checkbox" type="checkbox" name="toggle" id="toggle" />')
 	$(".toggler").html('<input class="checkbox" type="checkbox" name="toggle" id="toggle" />')
@@ -101,8 +120,23 @@ $(function(){
 	})
 	if ($("#toggler").size())
 		document.getElementById("toggle").checked = all_checked
+}
 
-	// Extension enabling/disabling (drag'n'drop)
+function prepare_previewer() {
+	if ($(".preview_me").length > 0) {
+		var feather = ($("#write_feather").size()) ? $("#write_feather").val() : ""
+		var feather = ($("#edit_feather").size()) ? $("#edit_feather").val() : feather
+		$(document.createElement("div")).css("display", "none").attr("id", "preview").insertBefore("#write_form, #edit_form")
+		$(document.createElement("button")).html("<?php echo __("Preview &rarr;"); ?>").attr({ "type": "submit", "accesskey": "p" }).click(function(){
+			$("#preview").load("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "preview", content: $(".preview_me").val(), feather: feather }, function(){
+				$(this).fadeIn("fast")
+			})
+			return false
+		}).appendTo(".buttons")
+	}
+}
+
+function extend_draggables() {
 	$(".enable h2, .disable h2").append(" <span class=\"sub\"><?php echo __("(drag)"); ?></span>")
 	$(".disable ul li, .enable ul li").draggable({ zIndex: 100 })
 	$(".enable ul, .disable ul").droppable({
@@ -141,14 +175,14 @@ $(function(){
 					$(this).height($(".enable ul.extend").height())
 				if ($(".disable ul.extend").height() > $(this).height())
 					$(this).height($(".disable ul.extend").height())
-				draw()
+				draw_conflicts()
 			})
 		}
 	})
 	$("ul.extend li").css("cursor", "move")
 	$("ul.extend li .description").css("display", "none")
 	$(".info_link").click(function(){
-		$(this).parent().find(".description").effect("blind", { mode: "toggle" }, null, draw)
+		$(this).parent().find(".description").effect("blind", { mode: "toggle" }, null, draw_conflicts)
 		return false
 	})
 	$("ul.extend").each(function(){
@@ -157,156 +191,179 @@ $(function(){
 		if ($(".disable ul.extend").height() > $(this).height())
 			$(this).height($(".disable ul.extend").height())
 	})
-<?php if ($_GET['action'] == "extend_modules" or $_GET['action'] == "extend_feathers"): ?>
+}
 
-	function remove_from_array(value, array) {
-		for (i = 0; i < array.length; i++)
-			if (array[i] == value)
-				array.splice(i, 1)
-		return array
-	}
-	function draw() {
-		if (!$(".extend li.conflict").size() && !($.browser.safari || $.browser.opera || ($.browser.mozilla && $.browser.version >= 1.9)))
-			return
-
-		$("#canvas").remove()
-
-		$("#header, #welcome, #sub-nav, #content a.button, .extend li, #footer, h1, h2").css({
-			position: "relative",
-			zIndex: 2
-		})
-		$("#header ul li a").css({
-			position: "relative",
-			zIndex: 3
-		})
-
-		$(document.createElement("canvas")).attr("id", "canvas").prependTo("body")
-		$("#canvas").css({
-			position: "absolute",
-			top: 0,
-			bottom: 0,
-			zIndex: 1
-		}).attr({ width: $(document).width(), height: $(document).height() })
-
-		var canvas = document.getElementById("canvas").getContext("2d")
-		var displayed = []
-
-		$(".extend li.conflict").each(function(){
-			var classes = $(this).attr("class").split(" ")
-			classes.shift() // Remove the module's safename class
-
-			// Remove the "conflict" class
-			remove_from_array("conflict", classes);
-
-			for (i = 0; i < classes.length; i++) {
-				var conflict = classes[i].replace("conflict_", "module_")
-
-				if (displayed[$(this).attr("id")+" :: "+conflict])
-					continue;
-
-				canvas.strokeStyle = "#d12f19"
-				canvas.fillStyle = "#fbe3e4"
-				canvas.lineWidth = 3
-
-				var this_status = $(this).parent().parent().attr("class").split(" ")[0] + "d"
-				var conflict_status = $("#"+conflict).parent().parent().attr("class").split(" ")[0] + "d"
-
-				if (conflict_status != this_status) {
-					var line_from_x = $("#"+conflict).offset().left
-					var line_from_y = $("#"+conflict).offset().top + 12
-					var line_to_x   = $(this).offset().left + $(this).outerWidth()
-					var line_to_y   = $(this).offset().top + 12
-
-					// Line
-					canvas.moveTo(line_from_x, line_from_y)
-					canvas.lineTo(line_to_x, line_to_y)
-					canvas.stroke()
-
-					// Beginning circle
-					canvas.beginPath()
-					canvas.arc(line_from_x, line_from_y, 5, 1.35, -1.35, false)
-					canvas.fill()
-					canvas.stroke()
-
-					// Ending circle
-					canvas.beginPath()
-					canvas.arc(line_to_x, line_to_y, 5, -1.75, 1.75, false)
-					canvas.fill()
-					canvas.stroke()
-				} else if (conflict_status == "disabled") {
-					var line_from_x = $("#"+conflict).offset().left
-					var line_from_y = $("#"+conflict).offset().top + 12
-					var line_to_x   = $(this).offset().left
-					var line_to_y   = $(this).offset().top + 12
-					var median = line_from_y + ((line_to_y - line_from_y) / 2)
-					var curve = line_from_x - 25
-
-					// Line
-					canvas.beginPath();
-					canvas.moveTo(line_from_x, line_from_y)
-					canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y);
-					canvas.stroke();
-
-					// Beginning circle
-					canvas.beginPath()
-					canvas.arc(line_from_x, line_from_y, 5, 1.35, -1.35, false)
-					canvas.fill()
-					canvas.stroke()
-
-					// Ending circle
-					canvas.beginPath()
-					canvas.arc(line_to_x, line_to_y, 5, 1.35, -1.35, false)
-					canvas.fill()
-					canvas.stroke()
-				} else if (conflict_status == "enabled") {
-					var line_from_x = $("#"+conflict).offset().left + $("#"+conflict).outerWidth()
-					var line_from_y = $("#"+conflict).offset().top + 12
-					var line_to_x   = $(this).offset().left + $(this).outerWidth()
-					var line_to_y   = $(this).offset().top + 12
-					var median = line_from_y + ((line_to_y - line_from_y) / 2)
-					var curve = line_from_x + 25
-
-					// Line
-					canvas.beginPath();
-					canvas.moveTo(line_from_x, line_from_y)
-					canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y);
-					canvas.stroke();
-
-					// Beginning circle
-					canvas.beginPath()
-					canvas.arc(line_from_x, line_from_y, 5, -1.75, 1.75, false)
-					canvas.fill()
-					canvas.stroke()
-
-					// Ending circle
-					canvas.beginPath()
-					canvas.arc(line_to_x, line_to_y, 5, -1.75, 1.75, false)
-					canvas.fill()
-					canvas.stroke()
-				}
-
-				displayed[conflict+" :: "+$(this).attr("id")] = true
-			}
-		})
-	}
-
-	draw()
-
-	$(window).resize(function(){
-		draw()
+function get_parent_hash() {
+	var parent_hash = ""
+	$(".sort_pages li").each(function(){
+		var id = $(this).attr("id").replace(/page_list_/, "")
+		var parent = $(this).parent().parent() // this > #sort_pages > page_list_(id)
+		var parent_id = (/page_list_/.test(parent.attr("id"))) ? parent.attr("id").replace(/page_list_/, "") : 0
+		$(this).attr("parent", parent_id)
+		parent_hash += "&parent["+id+"]="+parent_id
 	})
-<?php endif; ?>
-})
+	return parent_hash
+}
 
-var Post = {
-	destroy: function(id) {
-		$("#post_"+id+" .target, #post_"+id+".target").loader()
-		$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "delete_post", id: id }, function(response){
-			$("#post_"+id+" .target, #post_"+id+".target").loader(true)
-			if (isError(response)) return
-			$("#post_"+id).animate({ height: "hide", opacity: "hide" }).remove()
-		})
-	}
+function reorder_pages() {
+	var parent_hash = ""
+	$(".sort_pages li").css({
+		cursor: "move",
+		background: "#f9f9f9",
+		padding: ".15em .5em",
+		marginBottom: ".5em",
+		border: "1px solid #ddd"
+	})
+
+	$(".page-item").css("cursor", "move")
+	$("#content > .sort_pages").attr("id", "sort_pages").NestedSortable({
+		accept: "page-item",
+		opacity: 0.8,
+		fit: true,
+		nestingPxSpace: 1,
+		onStop: function(){
+			var serialize = $.SortSerialize("sort_pages")
+			var parent_hash = get_parent_hash()
+
+			$("#content > .sort_pages").loader()
+			$.post("<?php echo $config->url; ?>/includes/ajax.php", "action=organize_pages&"+serialize.hash+parent_hash, function(){
+				$("#content > .sort_pages").loader(true)
+			})
+		}
+	})
+	$(".sort_pages input").remove()
+}
+
+function remove_from_array(value, array) {
+	for (i = 0; i < array.length; i++)
+		if (array[i] == value)
+			array.splice(i, 1)
+	return array
+}
+
+function draw_conflicts() {
+	if (!$(".extend li.conflict").size() && !($.browser.safari || $.browser.opera || ($.browser.mozilla && $.browser.version >= 1.9)))
+		return
+
+	$("#canvas").remove()
+
+	$("#header, #welcome, #sub-nav, #content a.button, .extend li, #footer, h1, h2").css({
+		position: "relative",
+		zIndex: 2
+	})
+	$("#header ul li a").css({
+		position: "relative",
+		zIndex: 3
+	})
+
+	$(document.createElement("canvas")).attr("id", "canvas").prependTo("body")
+	$("#canvas").css({
+		position: "absolute",
+		top: 0,
+		bottom: 0,
+		zIndex: 1
+	}).attr({ width: $(document).width(), height: $(document).height() })
+
+	var canvas = document.getElementById("canvas").getContext("2d")
+	var displayed = []
+
+	$(".extend li.conflict").each(function(){
+		var classes = $(this).attr("class").split(" ")
+		classes.shift() // Remove the module's safename class
+
+		// Remove the "conflict" class
+		remove_from_array("conflict", classes);
+
+		for (i = 0; i < classes.length; i++) {
+			var conflict = classes[i].replace("conflict_", "module_")
+
+			if (displayed[$(this).attr("id")+" :: "+conflict])
+				continue;
+
+			canvas.strokeStyle = "#d12f19"
+			canvas.fillStyle = "#fbe3e4"
+			canvas.lineWidth = 3
+
+			var this_status = $(this).parent().parent().attr("class").split(" ")[0] + "d"
+			var conflict_status = $("#"+conflict).parent().parent().attr("class").split(" ")[0] + "d"
+
+			if (conflict_status != this_status) {
+				var line_from_x = $("#"+conflict).offset().left
+				var line_from_y = $("#"+conflict).offset().top + 12
+				var line_to_x   = $(this).offset().left + $(this).outerWidth()
+				var line_to_y   = $(this).offset().top + 12
+
+				// Line
+				canvas.moveTo(line_from_x, line_from_y)
+				canvas.lineTo(line_to_x, line_to_y)
+				canvas.stroke()
+
+				// Beginning circle
+				canvas.beginPath()
+				canvas.arc(line_from_x, line_from_y, 5, 1.35, -1.35, false)
+				canvas.fill()
+				canvas.stroke()
+
+				// Ending circle
+				canvas.beginPath()
+				canvas.arc(line_to_x, line_to_y, 5, -1.75, 1.75, false)
+				canvas.fill()
+				canvas.stroke()
+			} else if (conflict_status == "disabled") {
+				var line_from_x = $("#"+conflict).offset().left
+				var line_from_y = $("#"+conflict).offset().top + 12
+				var line_to_x   = $(this).offset().left
+				var line_to_y   = $(this).offset().top + 12
+				var median = line_from_y + ((line_to_y - line_from_y) / 2)
+				var curve = line_from_x - 25
+
+				// Line
+				canvas.beginPath();
+				canvas.moveTo(line_from_x, line_from_y)
+				canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y);
+				canvas.stroke();
+
+				// Beginning circle
+				canvas.beginPath()
+				canvas.arc(line_from_x, line_from_y, 5, 1.35, -1.35, false)
+				canvas.fill()
+				canvas.stroke()
+
+				// Ending circle
+				canvas.beginPath()
+				canvas.arc(line_to_x, line_to_y, 5, 1.35, -1.35, false)
+				canvas.fill()
+				canvas.stroke()
+			} else if (conflict_status == "enabled") {
+				var line_from_x = $("#"+conflict).offset().left + $("#"+conflict).outerWidth()
+				var line_from_y = $("#"+conflict).offset().top + 12
+				var line_to_x   = $(this).offset().left + $(this).outerWidth()
+				var line_to_y   = $(this).offset().top + 12
+				var median = line_from_y + ((line_to_y - line_from_y) / 2)
+				var curve = line_from_x + 25
+
+				// Line
+				canvas.beginPath();
+				canvas.moveTo(line_from_x, line_from_y)
+				canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y);
+				canvas.stroke();
+
+				// Beginning circle
+				canvas.beginPath()
+				canvas.arc(line_from_x, line_from_y, 5, -1.75, 1.75, false)
+				canvas.fill()
+				canvas.stroke()
+
+				// Ending circle
+				canvas.beginPath()
+				canvas.arc(line_to_x, line_to_y, 5, -1.75, 1.75, false)
+				canvas.fill()
+				canvas.stroke()
+			}
+
+			displayed[conflict+" :: "+$(this).attr("id")] = true
+		}
+	})
 }
 
 // "Loading..." overlay.

@@ -10,10 +10,11 @@
 ?>
 //<script type="text/javascript"> (This is so TextMate gives me nice JS highlighting.)
 $(function(){
+	// Scan AJAX responses for errors.
 	$(document).ajaxComplete(function(imconfused, request){
 		var response = request.responseText
 		if (isError(response))
-			alert(response.replace(/HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW/m, ""))
+			alert(response.replace(/(HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW|<([^>]+)>\n?)/gm, ""))
 	})
 
 	$(".toggle_admin").click(function(){
