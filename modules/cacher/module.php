@@ -18,12 +18,12 @@
 			$this->remove_expired();
 		}
 
-		public function __install() {
+		static function __install() {
 			$config = Config::current();
 			$config->set("cache_expire", 1800);
 		}
 
-		public function __uninstall() {
+		static function __uninstall() {
 			$config = Config::current();
 			$config->remove("cache_expire");
 		}

@@ -9,7 +9,7 @@
 	$page = fallback($_GET['page'], 1, true);
 	$more_options_string = (empty($_COOKIE['show_more_options'])) ? __("More Options &raquo;") : __("&laquo; Fewer Options") ;
 ?>
-//<script>
+<!-- --><script>
 $(function(){
 	// Scan AJAX responses for errors.
 	$(document).ajaxComplete(function(imconfused, request){
@@ -138,7 +138,11 @@ function prepare_previewer() {
 
 function extend_draggables() {
 	$(".enable h2, .disable h2").append(" <span class=\"sub\"><?php echo __("(drag)"); ?></span>")
-	$(".disable ul li, .enable ul li").draggable({ zIndex: 100 })
+	$(".disable ul li, .enable ul li").draggable({
+		zIndex: 100,
+		cancel: ".info_link",
+		revert: true
+	})
 	$(".enable ul, .disable ul").droppable({
 		accept: "ul.extend li",
 		tolerance: "pointer",
@@ -148,9 +152,13 @@ function extend_draggables() {
 			var classes = $(this).parent().attr("class").split(" ")
 			var box = $(this)
 			var confirmed = false
+			var previous = $(ui.draggable).parent().parent().attr("class").split(" ")[0]
 			var action = classes[0]
 			var type = classes[1]
 			var extension = $(ui.draggable).attr("class").split(" ")[0]
+
+			if (previous == action)
+				return
 
 			$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "check_confirm", check: extension, type: type }, function(data){
 				if (data != "" && action == "disable")
@@ -182,7 +190,7 @@ function extend_draggables() {
 	$("ul.extend li").css("cursor", "move")
 	$("ul.extend li .description").css("display", "none")
 	$(".info_link").click(function(){
-		$(this).parent().find(".description").effect("blind", { mode: "toggle" }, null, draw_conflicts)
+		$(this).parent().find(".description").toggle("blind", {}, null, function(){ draw_conflicts() })
 		return false
 	})
 	$("ul.extend").each(function(){
@@ -273,6 +281,7 @@ function draw_conflicts() {
 
 		// Remove the "conflict" class
 		remove_from_array("conflict", classes);
+		remove_from_array("ui-draggable", classes);
 
 		for (i = 0; i < classes.length; i++) {
 			var conflict = classes[i].replace("conflict_", "module_")
@@ -364,6 +373,8 @@ function draw_conflicts() {
 			displayed[conflict+" :: "+$(this).attr("id")] = true
 		}
 	})
+
+	return true
 }
 
 // "Loading..." overlay.
@@ -435,4 +446,4 @@ function isError(text) {
 }
 
 <?php $trigger->call("admin_javascript"); ?>
-//</script>
+<!-- --></script>

@@ -364,7 +364,7 @@
 				padding: 6px 8px 5px 30px;
 				border-bottom: 1px solid #FBC2C4;
 				color: #D12F19;
-				background: #FBE3E4 url('./admin/icons/failure.png') no-repeat 7px center;
+				background: #FBE3E4 url('./admin/images/icons/failure.png') no-repeat 7px center;
 			}
 			.error.last {
 				margin: 0 0 1em 0;

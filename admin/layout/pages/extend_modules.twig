@@ -15,7 +15,7 @@
 							<div class="description">
 								${ module.description | translate(safename) }
 							</div>
-							<a class="enable_button js_disabled" href="{% admin "disable&module="~safename %}">${ "Disable" | translate }</a>
+							<noscript><a class="enable_button" href="{% admin "disable&module="~safename %}">${ "Disable" | translate }</a></noscript>
 						</div>
 					</li>
 {% endfor %}
@@ -32,7 +32,7 @@
 							<div class="description">
 								${ module.description | translate(safename) }
 							</div>
-							<a class="disable_button js_disabled" href="{% admin "enable&module="~safename %}">${ "Enable" | translate }</a>
+							<noscript><a class="disable_button" href="{% admin "enable&module="~safename %}">${ "Enable" | translate }</a></noscript>
 						</div>
 					</li>
 {% endfor %}
