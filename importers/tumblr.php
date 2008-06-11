@@ -47,6 +47,7 @@
 						continue; # Can't import them since Tumblr has them locked in.
 
 					$arr_post = (array) $post;
+					$arr_attr = $arr_post["@attributes"];
 
 					$translate_types = array("regular" => "text", "conversation" => "chat");
 
@@ -99,10 +100,10 @@
 							break;
 					}
 
-					# Damn it feels good to be a gangsta...
+
 					$_POST['status'] = "public";
 					$_POST['pinned'] = false;
-					$_POST['created_at'] = when("Y-m-d H:i:s", $post->attributes()->date);
+					$_POST['created_at'] = when("Y-m-d H:i:s", $arr_attr["unix-timestamp"]);
 					$_POST['feather'] = str_replace(array_keys($translate_types), array_values($translate_types), $post->attributes()->type);
 
 					$new_post = Post::add($values, $clean, Post::check_url($clean));

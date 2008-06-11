@@ -25,6 +25,7 @@
 				$array = $array[0];
 			}
 
+			$this->array = $array;
 			$this->per_page = $per_page;
 			$this->name = $name;
 
