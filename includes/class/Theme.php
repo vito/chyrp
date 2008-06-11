@@ -171,7 +171,7 @@
 			$stylesheets = "";
 			if (file_exists(THEMES_DIR."/".$this->theme."/stylesheets/")) {
 				$count = 1;
-				$glob = glob(THEMES_DIR."/".$this->theme."stylesheets/*.css");
+				$glob = glob(THEMES_DIR."/".$this->theme."/stylesheets/*.css");
 				foreach($glob as $file) {
 					$file = basename($file);
 					$stylesheets.= '<link rel="stylesheet" href="'.$config->chyrp_url.'/themes/'.$this->theme.'/stylesheets/'.$file.'" type="text/css" media="'.($file == "print.css" ? "print" : "screen").'" charset="utf-8" />'.(count($glob) == $count ? "" : "\n\t\t");
