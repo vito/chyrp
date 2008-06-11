@@ -12,7 +12,7 @@
 		}
 
 		public function load($action) {
-			global $admin, $paginate, $theme;
+			global $admin, $theme;
 
 			# Are there any extension-added pages?
 			$trigger = Trigger::current();
@@ -31,7 +31,6 @@
 			$admin->context["route"]      = array("action" => $action);
 			$admin->context["hide_admin"] = isset($_SESSION["chyrp_hide_admin"]);
 			$admin->context["archives"]   = $theme->list_archives();
-			$admin->context["pagination"] = $paginate;
 			$admin->context["now"]        = time() + Config::current()->time_offset;
 			$admin->context["now_server"] = time();
 			$admin->context["version"]    = CHYRP_VERSION;

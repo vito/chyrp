@@ -30,7 +30,7 @@
 			</form>
 			<br />
 			<h2>${ "Groups" | translate }</h2>
-			{% for group in groups %}
+			{% for group in groups.paginated %}
 			<div class="box">
 				<h1>
 					<span class="right">
@@ -47,4 +47,6 @@
 				</h1>
 			</div>
 			{% endfor %}
+			$groups.next_link
+			$groups.prev_link
 {% endblock %}

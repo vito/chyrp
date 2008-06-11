@@ -97,7 +97,7 @@
 		 *     limit - Limit for SQL query.
 		 */
 		protected static function search($model, $options = array()) {
-			global $paginate, $action;
+			global $action;
 
 			$model_name = strtolower($model);
 

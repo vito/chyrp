@@ -161,9 +161,9 @@
 	#     <Feather>
 	require_once INCLUDES_DIR."/class/Feather.php";
 
-	# File: Pagination
+	# File: Paginator
 	# See Also:
-	#     <Pagination>
+	#     <Paginator>
 	require_once INCLUDES_DIR."/class/Pagination.php";
 
 	# File: Twig

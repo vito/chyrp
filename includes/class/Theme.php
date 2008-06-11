@@ -43,7 +43,7 @@
 
 			$this->page_list.= '<ul class="'.$main_class.'">'."\n";
 
-			$this->pages = Page::find(array("where" => "`show_in_list` = 1", "order" => "`list_order` asc", "pagination" => false));
+			$this->pages = Page::find(array("where" => "`show_in_list` = 1", "order" => "`list_order` asc"));
 
 			if ($home_link)
 				$this->page_list.= $this->tabs.'<li class="'.$list_class.($action == "index" ? " selected" : "").'">'."\n".$this->tabs."\t".'<a href="'.Config::current()->url.'">'.$home_text.'</a>'."\n".$this->tabs.'</li>'."\n";
@@ -186,17 +186,13 @@
 		 * Outputs the default JavaScript script references.
 		 */
 		public function javascripts() {
-			global $paginate, $action;
-			$target = $_GET;
+			global $action;
+
 			$args = "";
-			$i = 1;
-			foreach ($target as $val) {
-				if (empty($val) or $val == $action) continue;
-				$args.= "&amp;arg".$i."=".urlencode($val);
-				$i++;
-			}
-			if (isset($paginate->page))
-				$args.= "&amp;page=".$paginate->page;
+			$i = 0;
+			foreach ($_GET as $val)
+				if (!empty($val) and $val != $action)
+					$args.= "&amp;arg".++$i."=".urlencode($val);
 
 			$config = Config::current();
 			$trigger = Trigger::current();
@@ -238,7 +234,7 @@
 		}
 
 		public function prepare($context) {
-			global $action, $paginate;
+			global $action;
 
 			$this->context = array_merge($context, $this->context);
 
@@ -259,7 +255,6 @@
 			$this->context["theme"]        = array("url" => $config->chyrp_url."/themes/".$config->theme);
 			$this->context["route"]        = array("action" => $action, "ajax" => AJAX);
 			$this->context["hide_admin"]   = isset($_SESSION["chyrp_hide_admin"]);
-			$this->context["pagination"]   = $paginate;
 			$this->context["version"]      = CHYRP_VERSION;
 			$this->context["POST"]         = $_POST;
 			$this->context["GET"]          = $_GET;

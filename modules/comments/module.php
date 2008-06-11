@@ -67,7 +67,7 @@
 		}
 
 		static function route_add_comment() {
-			if (Comment::user_can($_POST['post_id']))
+			if (!Comment::user_can($_POST['post_id']))
 				show_403(__("Access Denied"), __("You cannot comment on this post.", "comments"));
 
 			if (empty($_POST['author'])) error(__("Error"), __("Author can't be blank.", "comments"));
@@ -222,7 +222,7 @@
 				$params[":query"] = "%".$search."%";
 			}
 
-			$admin->context["comments"] = Comment::find(array("where" => $where, "params" => $params, "per_page" => 25));
+			$admin->context["comments"] = new Paginator(Comment::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
 
 			if (!empty($_GET['updated']))
 				$admin->context["updated"] = new Comment($_GET['updated']);
@@ -423,7 +423,7 @@
 				$params[":query"] = "%".$search."%";
 			}
 
-			$admin->context["comments"] = Comment::find(array("where" => $where, "params" => $params, "per_page" => 25));
+			$admin->context["comments"] = new Paginator(Comment::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
 
 			if (!empty($_GET['updated']))
 				$admin->context["updated"] = new Comment($_GET['updated']);
@@ -758,7 +758,7 @@ $(function(){
 					if (!$comment->editable())
 						break;
 ?>
-<form id="comment_edit_<?php echo $comment->id; ?>" class="inline comment" action="<?php echo $config->chyrp_url."/admin/?action=update_comment"; ?>" method="post" accept-charset="utf-8">
+<form id="comment_edit_<?php echo $comment->id; ?>" class="inline_edit comment_edit" action="<?php echo $config->chyrp_url."/admin/?action=update_comment"; ?>" method="post" accept-charset="utf-8">
 	<p>
 		<label for="body"><?php echo __("Body", "comments"); ?></label>
 		<textarea name="body" rows="8" cols="40" class="wide"><?php echo fix($comment->body, "html"); ?></textarea>
@@ -918,7 +918,7 @@ $(function(){
 		}
 
 		static function filter_post($post) {
-			global $paginate, $action;
+			global $action;
 			$sql = SQL::current();
 			$config = Config::current();
 			$trigger = Trigger::current();
@@ -926,33 +926,34 @@ $(function(){
 			$post->commentable = Comment::user_can($post->id);
 
 			if ($action == "view") {
-				$get_comments = $paginate->select("comments", # table
-				                                  "*", # fields
-				                                  "`post_id` = :post_id and (
-				                                       `status` != 'denied' or (
-				                                           `status` = 'denied' and (
-				                                               `author_ip` = :current_ip or (
-				                                                   `user_id` != '' and
-				                                                   `user_id` = :current_user
-				                                               )
-				                                           )
-				                                       )
-				                                   ) and
-				                                   `status` != 'spam'", #where
-				                                  "`created_at` asc", # order
-				                                  $config->comments_per_page,
-				                                  "comments_page",
-				                                  array(
-				                                      ":post_id" => $post->id,
-				                                      ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-				                                      ":current_user" => $visitor->id
-				                                  ));
+				$get_comments = $sql->select("comments", # table
+				                             "`__comments`.`id`", # fields
+				                             "`post_id` = :post_id and (
+				                                  `status` != 'denied' or (
+				                                      `status` = 'denied' and (
+				                                          `author_ip` = :current_ip or (
+				                                              `user_id` != '' and
+				                                              `user_id` = :current_user
+				                                          )
+				                                      )
+				                                  )
+				                              ) and
+				                              `status` != 'spam'", #where
+				                             "`created_at` asc", # order
+				                             array(
+				                                 ":post_id" => $post->id,
+				                                 ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
+				                                 ":current_user" => $visitor->id
+				                             ));
+
+				$post->comments = array();
+				foreach ($get_comments->fetchAll() as $comment)
+					$post->comments[] = $comment["id"];
+
+				$post->comments = new Paginator(array($post->comments, "Comment"), $config->comments_per_page, "comments_page");
 
 				$shown_dates = array();
-				$post->comments = array();
-				foreach ($get_comments->fetchAll() as $comment) {
-					$comment = new Comment($comment["id"], array("read_from" => $comment));
-
+				foreach ($post->comments->paginated as &$comment) {
 					$comment->date_shown = in_array(when("m-d-Y", $comment->created_at), $shown_dates);
 					if (!in_array(when("m-d-Y", $comment->created_at), $shown_dates))
 						$shown_dates[] = when("m-d-Y", $comment->created_at);
@@ -963,8 +964,6 @@ $(function(){
 
 					$comment->body = $trigger->filter("markup_comment_text", $comment->body);
 					$comment->is_author = ($post->user_id == $comment->user_id);
-
-					$post->comments[] = $comment;
 				}
 			}
 		}

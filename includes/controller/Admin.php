@@ -158,13 +158,12 @@
 			}
 
 			$visitor = Visitor::current();
-			if (!$visitor->group()->can('edit_post', 'delete_post', 'edit_draft', 'delete_draft'))
-			{
+			if (!$visitor->group()->can('edit_post', 'delete_post', 'edit_draft', 'delete_draft')) {
 				$where[] = "`__posts`.`user_id` = :visitor_id";
 				$params[':visitor_id'] = $visitor->id;
 			}
 
-			$this->context["posts"] = Post::find(array("where" => $where, "params" => $params, "per_page" => 25));
+			$this->context["posts"] = new Paginator(Post::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
 
 			if (!empty($_GET['updated']))
 				$this->context["updated"] = new Post($_GET['updated']);
@@ -316,7 +315,7 @@
 				$params[":query"] = "%".$search."%";
 			}
 
-			$this->context["pages"] = Page::find(array("where" => $where, "params" => $params, "per_page" => 25));
+			$this->context["pages"] = new Paginator(Page::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
 
 			if (!empty($_GET['updated']))
 				$this->context["updated"] = new Page($_GET['updated']);
@@ -335,8 +334,7 @@
 			$config = Config::current();
 
 			$this->context["default_group"] = new Group($config->default_group);
-			$this->context["groups"] = Group::find(array("pagination" => false,
-			                                             "where" => array("`__groups`.`id` != :guest_id", "`__groups`.`id` != :default_id"),
+			$this->context["groups"] = Group::find(array("where" => array("`__groups`.`id` != :guest_id", "`__groups`.`id` != :default_id"),
 			                                             "params" => array(":guest_id" => $config->guest_group, "default_id" => $config->default_group),
 			                                             "order" => "`__groups`.`id` desc"));
 		}
@@ -386,8 +384,7 @@
 				error(__("No ID Specified"), __("An ID is required to edit a user."));
 
 			$this->context["user"] = new User($_GET['id']);
-			$this->context["groups"] = Group::find(array("pagination" => false,
-			                                             "order" => "`__groups`.`id` asc",
+			$this->context["groups"] = Group::find(array("order" => "`__groups`.`id` asc",
 			                                             "where" => "`__groups`.`id` != :guest_id",
 			                                             "params" => array(":guest_id" => Config::current()->guest_group)));
 		}
@@ -489,7 +486,7 @@
 				$params[":query"] = "%".$_GET['query']."%";
 			}
 
-			$this->context["users"] = User::find(array("where" => $where, "params" => $params, "per_page" => 25));
+			$this->context["users"] = new Paginator(User::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
 
 			$this->context["updated"] = isset($_GET['updated']);
 			$this->context["deleted"] = isset($_GET['deleted']);
@@ -568,7 +565,6 @@
 			$this->context["group"] = new Group($_GET['id']);
 			$this->context["groups"] = Group::find(array("where" => "`__groups`.`id` != :group_id",
 			                                             "order" => "`__groups`.`id` asc",
-			                                             "pagination" => false,
 			                                             "params" => array(":group_id" => $_GET['id'])));
 		}
 
@@ -617,7 +613,7 @@
 				$user = new User(null, array("where" => "`login` = :search", "params" => array(":search" => $_GET['search'])));
 				$this->context["groups"] = array($user->group());
 			} else
-				$this->context["groups"] = Group::find(array("per_page" => 25, "order" => "`__groups`.`id` asc"));
+				$this->context["groups"] = new Paginator(Group::find(array("placeholders" => true, "order" => "`__groups`.`id` asc")), 10);
 
 			$this->context["updated"] = isset($_GET['updated']);
 			$this->context["deleted"] = isset($_GET['deleted']);
@@ -743,7 +739,7 @@
 				} else
 					list($where, $params) = array(null, array());
 
-				$pages = Page::find(array("where" => $where, "params" => $params, "order" => "`__pages`.`id` asc", "pagination" => false));
+				$pages = Page::find(array("where" => $where, "params" => $params, "order" => "`__pages`.`id` asc"));
 
 				$latest_timestamp = 0;
 				foreach ($pages as $page)
@@ -1100,7 +1096,7 @@
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
-			$this->context["groups"] = Group::find(array("pagination" => false, "order" => "`__groups`.`id` desc"));
+			$this->context["groups"] = Group::find(array("order" => "`__groups`.`id` desc"));
 
 			if (empty($_POST))
 				return;

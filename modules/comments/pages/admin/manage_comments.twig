@@ -68,7 +68,7 @@
 						</tr>
 					</thead>
 					<tbody>
-					{% for comment in comments %}
+					{% for comment in comments.paginated %}
 						<tr id="comment_$comment.id" class="comment $comment.status{% if loop.last %} last{% endif %}">
 							<td rowspan="2" class="checkbox center">
 								<input type="checkbox" name="comment[$comment.id]" value="" id="comment_checkbox_$comment.id" />
@@ -114,6 +114,6 @@
 				</div>
 			</form>
 			<br />
-			$pagination.next_link
-			$pagination.prev_link
+			$comments.next_link
+			$comments.prev_link
 {% endblock %}

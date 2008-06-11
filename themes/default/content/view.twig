@@ -6,12 +6,12 @@
 				<h1 id="comments">${ "Comments" | translate }</h1>
 				{% if post.comment_count > 0 %}
 				<ol class="comments" id="comments_$post.id">
-					{% for comment in post.comments %}{% include "content/comment.twig" %}{% endfor %}
+					{% for comment in post.comments.paginated %}{% include "content/comment.twig" %}{% endfor %}
 				</ol>
 				{% endif %}
 				<input type="hidden" name="last_comment" value="$post.latest_comment" id="last_comment" />
-				${ pagination.next_link("Next &rarr;" | translate, "right", "comments_page") }
-				${ pagination.prev_link("&larr; Previous" | translate, "prev_page", "comments_page") }
+				${ post.comments.next_link("Next &rarr;" | translate, "right") }
+				${ post.comments.prev_link("&larr; Previous" | translate, "prev_page") }
 				<br />
 				<br />
 {% if post.commentable %}

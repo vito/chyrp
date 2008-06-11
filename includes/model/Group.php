@@ -166,7 +166,6 @@
 		 */
 		public function members() {
 			return User::find(array("where" => "`group_id` = :group_id",
-			                        "pagination" => false,
 			                        "params" => array(":group_id" => $this->id)));
 		}
 

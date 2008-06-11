@@ -19,7 +19,6 @@
 	elseif (!is_writable(MAIN_DIR.$config->uploads_path))
 		$errors[] = _f("Please CHMOD <code>%s</code> to 777.", array($config->uploads_path));
 
-	$sql->query("TRUNCATE TABLE `__posts`");
 	if (!empty($_POST)) {
 		switch($_POST['step']) {
 			case "1":

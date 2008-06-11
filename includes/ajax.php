@@ -16,7 +16,7 @@
 			$theme_file = THEME_DIR."/forms/feathers/".$post->feather.".php";
 			$default_file = FEATHERS_DIR."/".$post->feather."/fields.php";
 ?>
-<form id="post_edit_<?php echo $post->id; ?>" class="inline_post_edit" action="<?php echo $config->chyrp_url."/admin/?action=update_post&amp;sub=text&amp;id=".$post->id; ?>" method="post" accept-charset="utf-8">
+<form id="post_edit_<?php echo $post->id; ?>" class="inline_edit post_edit" action="<?php echo $config->chyrp_url."/admin/?action=update_post&amp;sub=text&amp;id=".$post->id; ?>" method="post" accept-charset="utf-8">
 	<h2><?php echo _f("Editing &#8220;%s&#8221;", array(truncate($title, 40, false))); ?></h2>
 	<br />
 <?php foreach ($feathers[$post->feather]->fields as $field): ?>
