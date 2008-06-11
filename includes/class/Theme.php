@@ -24,14 +24,14 @@
 			$visitor = Visitor::current();
 			$config = Config::current();
 
-			$theme = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $visitor->group()->can("change_settings")) ?
-			         $_GET['theme'] :
-			         $config->theme;
-			$this->directory = THEMES_DIR."/".$theme."/";
+			$this->theme = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $visitor->group()->can("change_settings")) ?
+			               $_GET['theme'] :
+			               $config->theme;
+			$this->directory = THEMES_DIR."/".$this->theme."/";
 
 			$this->twig = new Twig_Loader($this->directory, ((is_writable(MAIN_DIR."/includes/twig_cache") and !DEBUG) ? MAIN_DIR."/includes/twig_cache" : null));
 
-			$this->url = $config->chyrp_url."/themes/".$theme;
+			$this->url = $config->chyrp_url."/themes/".$this->theme;
 		}
 
 		/**
@@ -167,21 +167,18 @@
 			$visitor = Visitor::current();
 			$config = Config::current();
 			$trigger = Trigger::current();
-			$theme = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $visitor->group()->can("change_settings")) ?
-			         $_GET['theme'] :
-			         $config->theme ;
 
 			$stylesheets = "";
-			if (file_exists(THEME_DIR."/stylesheets/")) {
+			if (file_exists(THEMES_DIR."/".$this->theme."/stylesheets/")) {
 				$count = 1;
-				$glob = glob(THEME_DIR."/stylesheets/*.css");
+				$glob = glob(THEMES_DIR."/".$this->theme."stylesheets/*.css");
 				foreach($glob as $file) {
 					$file = basename($file);
-					$stylesheets.= '<link rel="stylesheet" href="'.$config->chyrp_url.'/themes/'.$theme.'/stylesheets/'.$file.'" type="text/css" media="'.($file == "print.css" ? "print" : "screen").'" charset="utf-8" />'.(count($glob) == $count ? "" : "\n\t\t");
+					$stylesheets.= '<link rel="stylesheet" href="'.$config->chyrp_url.'/themes/'.$this->theme.'/stylesheets/'.$file.'" type="text/css" media="'.($file == "print.css" ? "print" : "screen").'" charset="utf-8" />'.(count($glob) == $count ? "" : "\n\t\t");
 					$count++;
 				}
 			} else
-				$stylesheets = '<link rel="stylesheet" href="'.$config->chyrp_url.'/themes/'.$theme.'/style.css" type="text/css" media="screen" charset="utf-8" />';
+				$stylesheets = '<link rel="stylesheet" href="'.$config->chyrp_url.'/themes/'.$this->theme.'/style.css" type="text/css" media="screen" charset="utf-8" />';
 
 			return $stylesheets;
 		}
