@@ -30,7 +30,6 @@
 			$admin->context["stats"]      = array("load" => timer_stop(), "queries" => SQL::current()->queries);
 			$admin->context["route"]      = array("action" => $action);
 			$admin->context["hide_admin"] = isset($_SESSION["chyrp_hide_admin"]);
-			$admin->context["archives"]   = $theme->list_archives();
 			$admin->context["now"]        = time() + Config::current()->time_offset;
 			$admin->context["now_server"] = time();
 			$admin->context["version"]    = CHYRP_VERSION;

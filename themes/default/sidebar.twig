@@ -4,7 +4,7 @@
 					<input type="text" id="search" name="query" />
 				</form>
 				<h1>${ "Pages" | translate }</h1>
-$page_list
+				$theme.list_pages
 				<h1>${ "Welcome, %s!" | translate | format(visitor.login | fallback("Guest" | translate)) }</h1>
 				<ul>
 {% if visitor.logged_in %}
@@ -34,7 +34,7 @@ ${ trigger.call("sidebar") }
 {% if archive_list %}
 				<h1>${ "Archives" | translate }</h1>
 				<ul>
-{% for archive in archive_list %}
+{% for archive in theme.archives_list %}
 					<li><a href="$archive.url">${ archive.when | date("F Y") }</a> <span class="sub">($archive.count)</span></li>
 {% endfor %}
 				</ul>

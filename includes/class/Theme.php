@@ -110,7 +110,7 @@
 		}
 
 		/**
-		 * Function: list_archives
+		 * Function: archive_list
 		 * Generates an array of all of the archives, by month.
 		 *
 		 * Parameters:
@@ -121,7 +121,7 @@
 		 * Returns:
 		 *     $archives - The array. Each entry as "month", "year", and "url" values, stored as an array.
 		 */
-		public function list_archives($limit = 0, $order_by = "created_at", $order = "desc") {
+		public function archives_list($limit = 0, $order_by = "created_at", $order = "desc") {
 			$sql = SQL::current();
 			$dates = $sql->select("posts",
 			                       "DISTINCT YEAR(`created_at`) AS `year`, MONTH(`created_at`) AS `month`, `created_at`, COUNT(`id`) AS `posts`",
@@ -246,12 +246,7 @@
 			$this->context["trigger"]      = $trigger;
 			$this->context["title"]        = $this->title;
 			$this->context["site"]         = $config;
-			$this->context["feeds"]        = $this->feeds();
-			$this->context["stylesheets"]  = $this->stylesheets();
-			$this->context["javascripts"]  = $this->javascripts();
 			$this->context["visitor"]      = $visitor;
-			$this->context["archive_list"] = $this->list_archives();
-			$this->context["page_list"]    = $this->list_pages();
 			$this->context["theme"]        = array("url" => $config->chyrp_url."/themes/".$config->theme);
 			$this->context["route"]        = array("action" => $action, "ajax" => AJAX);
 			$this->context["hide_admin"]   = isset($_SESSION["chyrp_hide_admin"]);

@@ -22,7 +22,7 @@
 						<h3>${ "Browse by month:" | translate }</h3>
 						<select name="month">
 							<option value="">----------</option>
-							{% for archive in archives %}
+							{% for archive in theme.archives_list %}
 							<option value="${ archive.when | date("Y-m") }"${ GET.month | option_selected(archive.when | date("Y-m")) }>${ archive.when | date("F Y") } ($archive.count)</option>
 							{% endfor %}
 						</select>
