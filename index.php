@@ -74,8 +74,10 @@
 					                              "month" => @date("F", $timestamp),
 					                              "url" => $route->url("archive/".when("Y/m/", $time->created_at)));
 
-					$archives[$timestamp]["posts"] = Post::find(array("where" => array($private, "`__posts`.`created_at` like :created_at"),
-					                                                    "params" => array(":created_at" => when("Y-m", $time->created_at)."%")));
+					$archives[$timestamp]["posts"] = new Paginator(Post::find(array("placeholders" => true,
+					                                                                "where" => array($private, "`__posts`.`created_at` like :created_at"),
+					                                                                "params" => array(":created_at" => when("Y-m", $time->created_at)."%"))),
+					                                               $config->posts_per_page);
 				}
 
 				$theme->load("content/archive", array("archives" => $archives));

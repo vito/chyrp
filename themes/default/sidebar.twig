@@ -31,7 +31,7 @@ ${ trigger.call("sidebar") }
 					<li><a href="{% url "tags/" %}">${ "All &rarr;" | translate }</a></li>
 				</ul>
 {% endif %}
-{% if archive_list %}
+{% if theme.archives_list %}
 				<h1>${ "Archives" | translate }</h1>
 				<ul>
 {% for archive in theme.archives_list %}

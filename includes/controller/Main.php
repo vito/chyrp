@@ -22,11 +22,15 @@
 			if (!isset($_GET['month'])) return;
 
 			if (isset($_GET['day']))
-				$posts = Post::find(array("where" => array("`__posts`.`created_at` like :date", $private),
-				                          "params" => array(":date" => $_GET['year']."-".$_GET['month']."-".$_GET['day']."%")));
+				$posts = new Paginator(Post::find(array("placeholders" => true,
+				                                        "where" => array("`__posts`.`created_at` like :date", $private),
+				                                        "params" => array(":date" => $_GET['year']."-".$_GET['month']."-".$_GET['day']."%"))),
+				                       Config::current()->posts_per_page);
 			else
-				$posts = Post::find(array("where" => array("`__posts`.`created_at` like :date", $private),
-				                          "params" => array(":date" => $_GET['year']."-".$_GET['month']."%")));
+				$posts = new Paginator(Post::find(array("placeholders" => true,
+				                                        "where" => array("`__posts`.`created_at` like :date", $private),
+				                                        "params" => array(":date" => $_GET['year']."-".$_GET['month']."%"))),
+				                       Config::current()->posts_per_page);
 		}
 
 		/**
@@ -36,8 +40,10 @@
 		public function search() {
 			global $private, $posts;
 			fallback($_GET['query'], "");
-			$posts = Post::find(array("where" => array("`xml` LIKE :query", $private),
-			                          "params" => array(":query" => '%'.htmlspecialchars(urldecode($_GET['query'])).'%')));
+			$posts = new Paginator(Post::find(array("placeholders" => true,
+			                                        "where" => array("`xml` LIKE :query", $private),
+			                                        "params" => array(":query" => '%'.htmlspecialchars(urldecode($_GET['query'])).'%'))),
+				                   Config::current()->posts_per_page);
 		}
 
 		/**
@@ -50,8 +56,10 @@
 				error(__("Access Denied"), __("You do not have sufficient privileges to view drafts."));
 
 			global $posts;
-			$posts = Post::find(array("where" => array("`__posts`.`status` = 'draft'", "`__posts`.`user_id` = :current_user"),
-			                          "params" => array(":current_user" => $visitor->id)));
+			$posts = new Paginator(Post::find(array("placeholders" => true,
+			                                        "where" => array("`__posts`.`status` = 'draft'", "`__posts`.`user_id` = :current_user"),
+			                                        "params" => array(":current_user" => $visitor->id))),
+				                   Config::current()->posts_per_page);
 		}
 
 		/**
@@ -60,8 +68,10 @@
 		 */
 		public function feather() {
 			global $private, $posts;
-			$posts = Post::find(array("where" => "`feather` = :feather and ".$private,
-			                          "params" => array(":feather" => depluralize($_GET['action']))));
+			$posts = new Paginator(Post::find(array("placeholders" => true,
+			                                        "where" => "`feather` = :feather and ".$private,
+			                                        "params" => array(":feather" => depluralize($_GET['action'])))),
+				                   Config::current()->posts_per_page);
 		}
 
 		/**
@@ -70,7 +80,7 @@
 		 */
 		public function feed() {
 			global $posts;
-			$posts = Post::find();
+			$posts = new Paginator(Post::find(array("placeholders" => true)), Config::current()->posts_per_page);
 		}
 
 		/**
