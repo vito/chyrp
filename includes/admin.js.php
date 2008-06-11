@@ -227,8 +227,7 @@ function reorder_pages() {
 	$("#content > .sort_pages").attr("id", "sort_pages").NestedSortable({
 		accept: "page-item",
 		opacity: 0.8,
-		fit: true,
-		nestingPxSpace: 1,
+		nestingPxSpace: 5,
 		onStop: function(){
 			var serialize = $.SortSerialize("sort_pages")
 			var parent_hash = get_parent_hash()

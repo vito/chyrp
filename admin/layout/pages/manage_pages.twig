@@ -34,7 +34,7 @@
 					</tr>
 				</thead>
 				<tbody>
-				{% for page in pages %}
+				{% for page in pages.paginated %}
 					<tr id="page_$page.id" class="page target{% if loop.last %} last{% endif %}">
 						<td class="main"><a href="$page.url">${ page.title | truncate }</a></td>
 						<td>${ page.created_at | strftime }</td>
