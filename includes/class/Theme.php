@@ -22,11 +22,16 @@
 		 */
 		public function __construct() {
 			$visitor = Visitor::current();
-			$this->directory = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $visitor->group()->can("change_settings")) ?
-			                   THEMES_DIR."/".$_GET['theme']."/" :
-			                   THEME_DIR."/" ;
+			$config = Config::current();
+
+			$theme = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $visitor->group()->can("change_settings")) ?
+			         $_GET['theme'] :
+			         $config->theme;
+			$this->directory = THEMES_DIR."/".$theme."/";
 
 			$this->twig = new Twig_Loader($this->directory, ((is_writable(MAIN_DIR."/includes/twig_cache") and !DEBUG) ? MAIN_DIR."/includes/twig_cache" : null));
+
+			$this->url = $config->chyrp_url."/themes/".$theme;
 		}
 
 		/**
@@ -247,7 +252,6 @@
 			$this->context["title"]        = $this->title;
 			$this->context["site"]         = $config;
 			$this->context["visitor"]      = $visitor;
-			$this->context["theme"]        = array("url" => $config->chyrp_url."/themes/".$config->theme);
 			$this->context["route"]        = array("action" => $action, "ajax" => AJAX);
 			$this->context["hide_admin"]   = isset($_SESSION["chyrp_hide_admin"]);
 			$this->context["version"]      = CHYRP_VERSION;
