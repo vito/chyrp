@@ -12,7 +12,7 @@
 ${ trigger.call("head") }
 	</head>
 	<body>
-{% if visitor.group.can("add_post", "add_draft", "add_page", "view_draft", "change_settings", "toggle_extensions") %}
+{% if visitor.group.can("add_post", "add_draft", "add_page", "view_own_draft", "view_draft", "change_settings", "toggle_extensions") %}
 		<div class="controls" id="admin_bar"{% if hide_admin %} style="display: none"{% endif %}>
 			<ul>
 {% if visitor.group.can("add_post") %}
@@ -23,7 +23,7 @@ ${ trigger.call("head") }
 {% if visitor.group.can("add_page") %}
 				<li><a id="add_page" href="{% admin "write_page" %}">${ "Add Page" | translate }</a></li>
 {% endif %}
-{% if visitor.group.can("view_draft") %}
+{% if visitor.group.can("view_own_draft", "view_draft") %}
 				<li><a id="your_drafts" href="{% url "drafts/" %}">${ "Your Drafts" | translate }</a></li>
 {% endif %}
 {% if visitor.group.can("change_settings", "toggle_extensions") %}

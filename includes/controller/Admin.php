@@ -16,7 +16,7 @@
 		 */
 		public function write_post() {
 			$visitor = Visitor::current();
-			if (!$visitor->group()->can("add_post") and !$visitor->group()->can("add_draft"))
+			if (!$visitor->group()->can("add_post", "add_draft"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
 			global $feathers;
@@ -31,7 +31,7 @@
 		 */
 		public function add_post() {
 			$visitor = Visitor::current();
-			if (!$visitor->group()->can("add_post") and !$visitor->group()->can("add_draft"))
+			if (!$visitor->group()->can("add_post", "add_draft"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
@@ -158,7 +158,7 @@
 			}
 
 			$visitor = Visitor::current();
-			if (!$visitor->group()->can('edit_post', 'delete_post', 'edit_draft', 'delete_draft')) {
+			if (!$visitor->group()->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post")) {
 				$where[] = "`__posts`.`user_id` = :visitor_id";
 				$params[':visitor_id'] = $visitor->id;
 			}

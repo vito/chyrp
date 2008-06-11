@@ -191,7 +191,7 @@ var Cookie = {
 
 function appendNextPost(minus) {
 	var minus = (minus == "") ? 1 : minus ;
-<?php if ($action == "index" or ($action == "drafts" and $visitor->group()->can("view_draft")) or $action == "archive" or $action == "search"): ?>
+<?php if ($action == "index" or ($action == "drafts" and $visitor->group()->can("view_own_draft", "view_draft")) or $action == "archive" or $action == "search"): ?>
 	if ($("#posts").length == 0) return;
 <?php
 	switch($action):

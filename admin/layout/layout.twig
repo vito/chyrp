@@ -17,7 +17,7 @@
 {% if visitor.group.can("add_draft", "add_post") %}
 					<li class="first $selected.write"><a href="{% admin "write_post" %}">${ "Write" | translate }</a></li>
 {% endif %}
-{% if visitor.group.can("edit_own_draft", "edit_own_post", "edit_post", "delete_own_draft", "delete_own_post", "delete_post") %}
+{% if visitor.group.can("view_own_draft", "view_draft", "edit_own_draft", "edit_own_post", "edit_post", "delete_own_draft", "delete_own_post", "delete_post") %}
 					<li class="second $selected.manage"><a href="{% admin "manage_posts" %}">${ "Manage" | translate }</a></li>
 {% endif %}
 {% if visitor.group.can("change_settings") %}
