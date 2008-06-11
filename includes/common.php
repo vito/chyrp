@@ -164,7 +164,7 @@
 	# File: Paginator
 	# See Also:
 	#     <Paginator>
-	require_once INCLUDES_DIR."/class/Pagination.php";
+	require_once INCLUDES_DIR."/class/Paginator.php";
 
 	# File: Twig
 	# Chyrp's templating engine.

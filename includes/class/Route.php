@@ -118,7 +118,7 @@
 				return $_GET['action'] = "id";
 			}
 
-			# Pagination
+			# Paginator
 			if (preg_match_all("/\/((([^_\/]+)_)?page)\/([0-9]+)/", $request, $page_matches)) {
 				foreach ($page_matches[1] as $key => $page_var) {
 					$index = array_search($page_var, $arg);
