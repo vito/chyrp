@@ -140,7 +140,7 @@ function extend_draggables() {
 	$(".enable h2, .disable h2").append(" <span class=\"sub\"><?php echo __("(drag)"); ?></span>")
 	$(".disable ul li, .enable ul li").draggable({
 		zIndex: 100,
-		cancel: ".info_link",
+		cancel: "a",
 		revert: true
 	})
 	$(".enable ul, .disable ul").droppable({
@@ -187,12 +187,12 @@ function extend_draggables() {
 			})
 		}
 	})
-	$("ul.extend li").css("cursor", "move")
-	$("ul.extend li .description").css("display", "none")
 	$(".info_link").click(function(){
 		$(this).parent().find(".description").toggle("blind", {}, null, function(){ draw_conflicts() })
 		return false
 	})
+	$("ul.extend li").css("cursor", "move")
+	$("ul.extend li .description").css("display", "none")
 	$("ul.extend").each(function(){
 		if ($(".enable ul.extend").height() > $(this).height())
 			$(this).height($(".enable ul.extend").height())
