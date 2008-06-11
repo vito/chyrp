@@ -36,8 +36,8 @@
 		public function search() {
 			global $private, $posts;
 			fallback($_GET['query'], "");
-			$posts = Post::find(array("where" => "`xml` like :query and ".$private,
-			                          "params" => array(":query" => '%'.urldecode($_GET['query']).'%')));
+			$posts = Post::find(array("where" => array("`xml` LIKE :query", $private),
+			                          "params" => array(":query" => '%'.htmlspecialchars(urldecode($_GET['query'])).'%')));
 		}
 
 		/**

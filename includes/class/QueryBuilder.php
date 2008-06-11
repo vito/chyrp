@@ -144,7 +144,7 @@
 		 */
 		public static function build_where($conds) {
 			$conditions = (array) $conds;
-			return implode(" and ", array_filter($conditions));
+			return implode(" AND ", array_filter($conditions));
 		}
 
 		/**

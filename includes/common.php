@@ -89,7 +89,7 @@
 
 	header("X-Pingback: ".$config->chyrp_url."/includes/xmlrpc.php");
 
-	if (!ADMIN and !JAVASCRIPT and !XML_RPC and !TRACKBACK and strpos($_SERVER['REQUEST_URI'], "?") and $_GET['action'] != "search")
+	if (!ADMIN and !JAVASCRIPT and !XML_RPC and !TRACKBACK and strpos($_SERVER['REQUEST_URI'], "?"))
 		$config->clean_urls = false;
 
 	$sql->connect();

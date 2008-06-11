@@ -98,14 +98,11 @@
 		 * If the query results in an error, it will die and show the error.
 		 */
 		public function query($query, $params = array(), $throw_exceptions = false) {
-
 			# Ensure that every param in $params exists in the query.
 			# If it doesn't, remove it from $params.
-			preg_match_all("/:([a-zA-Z0-9_]+)/", $query, $params_in_query);
-			$query_params = array_unique($params_in_query[0]);
-			if (count($query_params) != count(array_keys($params)))
-				foreach (array_diff($params, $query_params) as $param => $val)
-					unset($params[$param]);
+			foreach ($params as $name => $val)
+				if (!strpos($query, $name))
+					unset($params[$name]);
 
 			try {
 				$query = str_replace("`", "", str_replace("__", $this->prefix, $query));

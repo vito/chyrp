@@ -59,7 +59,7 @@
 			return $post->caption;
 		}
 		static function feed_content($post) {
-			return image_tag_for($post->filename, 500, 500)."<br /><br />".$post->caption;
+			return self::image_tag_for($post->filename, 500, 500)."<br /><br />".$post->caption;
 		}
 		static function delete_file($post) {
 			if ($post->feather != "photo") return;

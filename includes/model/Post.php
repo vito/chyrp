@@ -84,6 +84,11 @@
 			$trackbacks = (!empty($_POST['trackbacks'])) ? $_POST['trackbacks'] : "" ;
 			$options = (isset($_POST['option'])) ? $_POST['option'] : array() ;
 
+			foreach ($values as $name => &$value)
+				$value = self::makesafe($value);
+			foreach ($options as $name => &$option)
+				$option = self::makesafe($option);
+
 			$xml = new SimpleXMLElement("<post></post>");
 			self::arr2xml($xml, $values);
 			self::arr2xml($xml, $options);
@@ -167,6 +172,11 @@
 			fallback($timestamp, (!empty($_POST['created_at'])) ? when("Y-m-d H:i:s", $_POST['created_at']) : $this->created_at);
 
 			$options = (isset($_POST['option'])) ? $_POST['option'] : array() ;
+
+			foreach ($values as $name => &$value)
+				$value = self::makesafe($value);
+			foreach ($options as $name => &$option)
+				$option = self::makesafe($option);
 
 			$xml = new SimpleXMLElement("<post></post>");
 			self::arr2xml($xml, $values);
@@ -598,5 +608,13 @@
 					$val = self::xml2arr($val);
 
 			return $parse;
+		}
+
+		/**
+		 * Function: makesafe
+		 * Makes a block of text safe to have in SimpleXML.
+		 */
+		static function makesafe($text) {
+			return preg_replace("/&(?!(lt|gt|amp|quot))/", "&amp;", $text);
 		}
 	}
