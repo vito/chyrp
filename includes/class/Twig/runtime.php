@@ -46,6 +46,7 @@ $twig_filters = array(
 	'camelize' =>         'camelize',
 	'strip_tags' =>       'strip_tags',
 	'pluralize' =>        'twig_pluralize_string_filter',
+	'sanitize' =>         'sanitize',
 
 	// array helpers
 	'join' =>             'twig_join_filter',
