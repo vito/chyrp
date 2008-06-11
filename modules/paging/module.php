@@ -4,13 +4,12 @@
 			$this->addAlias("markup_post_text", "makesafe", 8);
 			$this->addAlias("markup_post_text", "split");
 		}
-		static function makesafe($text) {
-			global $post;
+		public function makesafe($text, $post) {
 			if (!isset($post->id)) return;
 			return str_replace("<!--page-->", "(((page)))", $text);
 		}
-		static function split($text) {
-			global $post, $action;
+		public function split($text, $post) {
+			global $action;
 			if (!isset($post->id) or !strpos($text, "(((page)))")) return $text;
 
 			$text = preg_replace("/(<p>)?(\(\(\(page\)\)\))(<\/p>|<br \/>)?/", "\\2", $text);
@@ -28,8 +27,8 @@
 				return $split_pages[count($split_pages) - 1];
 
 			if ($action == "view") {
-				$post->next_page_url = next_page_url();
-				$post->prev_page_url = prev_page_url();
+				$post->next_page_url = $this->next_page_url($post);
+				$post->prev_page_url = $this->prev_page_url($post);
 			}
 
 			return $split_pages[$offset];
@@ -37,32 +36,30 @@
 		static function filter_post($post) {
 			$post->next_page = false;
 			$post->prev_page = false;
-
 		}
-	}
+		public function prev_page_url($post) {
+			global $action;
+			$request = rtrim($_SERVER['REQUEST_URI'], "/");
 
-	function prev_page_url() {
-		global $post, $action;
-		$request = rtrim($_SERVER['REQUEST_URI'], "/");
+			$config = Config::current();
+			if (!$config->clean_urls)
+				$mark = (strpos($request, "?")) ? "&" : "?" ;
 
-		$config = Config::current();
-		if (!$config->clean_urls)
-			$mark = (strpos($request, "?")) ? "&" : "?" ;
+			return ($config->clean_urls) ?
+			       preg_replace("/(\/page\/([0-9]+)|$)/", "/page/".($post->page - 1), "http://".$_SERVER['HTTP_HOST'].$request, 1) :
+			       preg_replace("/([\?&]page=([0-9]+)|$)/", $mark."page=".($post->page - 1), "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 1) ;
+		}
+		public function next_page_url($post) {
+			global $action;
+			$request = rtrim($_SERVER['REQUEST_URI'], "/");
+			$config = Config::current();
+			$slash = (substr($config->post_url, -1) == "/") ? "/" : "" ;
 
-		return ($config->clean_urls) ?
-		       preg_replace("/(\/page\/([0-9]+)|$)/", "/page/".($post->page - 1), "http://".$_SERVER['HTTP_HOST'].$request, 1) :
-		       preg_replace("/([\?&]page=([0-9]+)|$)/", $mark."page=".($post->page - 1), "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 1) ;
-	}
-	function next_page_url() {
-		global $post, $action;
-		$request = rtrim($_SERVER['REQUEST_URI'], "/");
-		$config = Config::current();
-		$slash = (substr($config->post_url, -1) == "/") ? "/" : "" ;
+			if (!$config->clean_urls)
+				$mark = (strpos($request, "?")) ? "&" : "?" ;
 
-		if (!$config->clean_urls)
-			$mark = (strpos($request, "?")) ? "&" : "?" ;
-
-		return ($config->clean_urls) ?
-		       preg_replace("/(\/page\/([0-9]+)|$)/", "/page/".($post->page + 1), "http://".$_SERVER['HTTP_HOST'].$request, 1) :
-		       preg_replace("/([\?&]page=([0-9]+)|$)/", $mark."page=".($post->page + 1), "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 1) ;
+			return ($config->clean_urls) ?
+			       preg_replace("/(\/page\/([0-9]+)|$)/", "/page/".($post->page + 1), "http://".$_SERVER['HTTP_HOST'].$request, 1) :
+			       preg_replace("/([\?&]page=([0-9]+)|$)/", $mark."page=".($post->page + 1), "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 1) ;
+		}
 	}

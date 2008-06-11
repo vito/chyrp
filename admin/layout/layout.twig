@@ -34,7 +34,7 @@
 		<div id="welcome">
 			<div class="column">
 				<a href="$site.url" class="right">${ "View Site &rsaquo;" | translate }</a>
-				${ "Hello, %s!" | translate | format(visitor.full_name | split | first | fallback(visitor.login)) }
+				${ "Hello, %s!" | translate | format(visitor.full_name | split | first | fallback(visitor.login | fallback("guest" | translate))) }
 				<a href="{% url "logout/" %}">${ "Log Out &rsaquo;" | translate }</a>
 			</div>
 		</div>

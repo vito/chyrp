@@ -52,8 +52,7 @@
 		static function feed_content($post) {
 			return $post->description;
 		}
-		static function set_feed_url() {
-			global $post;
+		static function set_feed_url($url, $post) {
 			if ($post->feather != "link") return;
 			return $post->source;
 		}

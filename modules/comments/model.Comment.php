@@ -15,8 +15,9 @@
 			parent::grab($this, $comment_id, $options);
 
 			$this->body_unfiltered = $this->body;
+			$group = ($this->user_id) ? $this->user()->group() : new Group(Config::current()->guest_group) ;
 			if (!isset($options["filter"]) or $options["filter"]) {
-				if (($this->status != "pingback" and !$this->status != "trackback") and !$this->user()->group()->can("code_in_comments"))
+				if (($this->status != "pingback" and !$this->status != "trackback") and !$group->can("code_in_comments"))
 					$this->body = strip_tags($this->body, "<".join("><", Config::current()->allowed_comment_html).">");
 
 				$this->body_unfiltered = $this->body;

@@ -6,10 +6,6 @@
 	if (!$visitor->group()->can("add_post"))
 		error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
-	function fallback($index, $fallback = "") {
-		echo (isset($_POST[$index])) ? $_POST[$index] : $fallback ;
-	}
-
 	$errors = array();
 	if (!empty($_POST)) {
 		switch($_POST['step']) {
@@ -17,9 +13,9 @@
 				$dbcon = $dbsel = false;
 				$step = "1";
 
-				if (!$link = @mysql_connect($_POST['host'], $_POST['username'], $_POST['password'])) {
+				if (!$link = @mysql_connect($_POST['host'], $_POST['username'], $_POST['password']))
 					$errors[] = "Could not connect to the MySQL server: ".mysql_error();
-				} else {
+				else {
 					$dbcon = true;
 					if (!@mysql_select_db($_POST['database'], $link))
 						$errors[] = "Could not switch to the MySQL database.";
@@ -27,35 +23,46 @@
 				}
 
 				if ($dbcon and $dbsel) {
-					$get_posts = mysql_query("select * from `".$_POST['prefix']."textpattern` order by `ID` asc", $link);
+					$get_posts = mysql_query("select * from `".$_POST['prefix']."textpattern` order by `ID` asc", $link) or die(mysql_error());
 					$posts = array();
-					while ($the_post = mysql_fetch_array($get_posts)) {
+					while ($post = mysql_fetch_array($get_posts)) {
 						$status_translate = array(1 => "draft", 2 => "private", 3 => "draft", 4 => "public", 5 => "public");
 
-						foreach ($the_post as $key => $val)
-							$posts[$the_post["ID"]][$key] = $val;
+						$posts[$post["ID"]] = array();
+						foreach ($post as $key => $val)
+							$posts[$post["ID"]][$key] = $val;
 
-						$posts[$the_post["ID"]] = $trigger->filter("import_textpattern_generate_array", $posts[$the_post["ID"]]);
+						$posts[$post["ID"]] = $trigger->filter("import_textpattern_generate_array", $posts[$post["ID"]]);
 					}
 
 					mysql_close($link);
 
 					$sql->connect();
 
-					foreach ($posts as $the_post) {
-						$values = array("title" => $the_post["Title"], "body" => $the_post["Body"]);
-						$pinned = ($the_post["Status"] == "5");
-						$status = str_replace(array_keys($status_translate), array_values($status_translate), $the_post["Status"]);
-						$clean = (isset($the_post["url_title"])) ? $the_post["url_title"] : sanitize($the_post["Title"]) ;
+					foreach ($posts as $post) {
+						if (!empty($_POST['media_url']) and preg_match_all("/".preg_quote($_POST['media_url'], "/")."([^ \t\"!\)]+)/", $post["Body"], $media))
+							foreach ($media[0] as $matched_url) {
+								$file = tempnam(sys_get_temp_dir(), "chyrp");
+								file_put_contents($file, get_remote($matched_url));
+								$fake_file = array("name" => basename(parse_url($matched_url, PHP_URL_PATH)),
+								                   "tmp_name" => $file);
+								$filename = upload($fake_file, null, "", true);
+								$post["Body"] = str_replace($matched_url, $config->url.$config->uploads_path.$filename, $post["Body"]);
+							}
+
+						$values = array("title" => $post["Title"], "body" => $post["Body"]);
+						$pinned = ($post["Status"] == "5");
+						$status = str_replace(array_keys($status_translate), array_values($status_translate), $post["Status"]);
+						$clean = (isset($post["url_title"])) ? $post["url_title"] : sanitize($post["Title"]) ;
 						$url = Post::check_url($clean);
 
 						# Damn it feels good to be a gangsta...
 						$_POST['status'] = $status;
 						$_POST['pinned'] = $pinned;
-						$_POST['created_at'] = $the_post["Posted"];
-						$id = Post::add($values, $clean, $url);
+						$_POST['created_at'] = $post["Posted"];
+						$new_post = Post::add($values, $clean, $url);
 
-						$trigger->call("import_textpattern_post", array($the_post, $id));
+						$trigger->call("import_textpattern_post", array($post, $new_post));
 
 						$step = "2";
 					}
@@ -99,7 +106,7 @@
 				border-bottom: 1px dotted #ddd;
 				margin-bottom: 2px;
 			}
-			input[type="password"], input[type="text"], textarea {
+			input.text, textarea {
 				margin-bottom: 1em;
 				font-size: 1.25em;
 				width: 242px;
@@ -109,10 +116,18 @@
 			select {
 				margin-bottom: 1em;
 			}
-			.sub {
+			.sub, small {
 				font-size: .8em;
 				color: #777;
 				font-weight: normal;
+			}
+			small {
+				margin-top: -1em;
+				float: left;
+				line-height: 1.2em;
+			}
+			code {
+				font-size: 1.2em;
 			}
 			.center {
 				text-align: center;
@@ -123,7 +138,7 @@
 				cursor: pointer;
 				border-bottom: 1px solid #FBC2C4;
 				color: #D12F19;
-				background: #FBE3E4 url('../admin/icons/failure.png') no-repeat 7px center;
+				background: #FBE3E4 url('../admin/images/icons/failure.png') no-repeat 7px center;
 			}
 			.done {
 				font-size: 1.25em;
@@ -146,15 +161,32 @@
 			<p><?php echo __("Please enter the database information for your TextPattern installation."); ?></p>
 			<form action="textpattern.php" method="post" accept-charset="utf-8">
 				<label for="host"><?php echo __("Host"); ?></label>
-				<input type="text" name="host" value="<?php fallback("host", "localhost"); ?>" id="host" />
+				<input class="text" type="text" name="host" value="<?php echo fallback($_POST['host'], "localhost", true); ?>" id="host" />
+				<br />
+				<br />
 				<label for="username"><?php echo __("Username"); ?></label>
-				<input type="text" name="username" value="<?php fallback("username"); ?>" id="username" />
+				<input class="text" type="text" name="username" value="<?php echo fallback($_POST['username'], "", true); ?>" id="username" />
+				<br />
+				<br />
 				<label for="password"><?php echo __("Password"); ?></label>
-				<input type="password" name="password" value="<?php fallback("password"); ?>" id="password" />
+				<input class="text" type="password" name="password" value="<?php echo fallback($_POST['password'], "", true); ?>" id="password" />
+				<br />
+				<br />
 				<label for="database"><?php echo __("Database"); ?></label>
-				<input type="text" name="database" value="<?php fallback("database"); ?>" id="database" />
+				<input class="text" type="text" name="database" value="<?php echo fallback($_POST['database'], "", true); ?>" id="database" />
+				<br />
+				<br />
 				<label for="prefix"><?php echo __("Table Prefix"); ?> <span class="sub"><?php echo __("(if any)"); ?></span></label>
-				<input type="text" name="prefix" value="<?php fallback("prefix"); ?>" id="prefix" />
+				<input class="text" type="text" name="prefix" value="<?php echo fallback($_POST['prefix'], "", true); ?>" id="prefix" />
+				<br />
+				<br />
+				<label for="media_url"><?php echo __("What URL is used for attached/embedded media?"); ?> <span class="sub"><?php echo __("(optional)"); ?></span></label>
+				<input class="text" type="text" name="media_url" value="<?php echo fallback($_POST['media_url'], "", true); ?>" id="media_url" />
+				<small>
+					<?php echo __("Usually something like <code>http://example.com/images/</code>"); ?>
+				</small>
+				<br />
+				<br />
 
 				<input type="hidden" name="step" value="1" id="step" />
 				<input type="hidden" name="feather" value="text" id="feather" />

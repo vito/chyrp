@@ -5,8 +5,8 @@
 			if (isset($_GET['feed']) or ADMIN)
 				$this->addAlias("markup_post_text", "read_more");
 		}
-		static function makesafe($text) {
-			global $post, $action;
+		static function makesafe($text, $post) {
+			global $action;
 			if (!isset($post->id) or !strstr($text, "<!--more-->")) return $text;
 
 			# For the curious: e51b2b9a58824dd068d8777ec6e97e4d is a md5 of "replace me!"
@@ -14,10 +14,12 @@
 		}
 		# To be used in the Twig template as ${ post.body | read_more("Read more...") }
 		static function read_more($text, $string = null) {
-			global $post, $action;
-			if (!isset($post->id) or !strstr($text, 'class="read_more"')) return $text;
+			global $action;
+			if (!strstr($text, 'class="read_more"')) return $text;
 
-			fallback($string, __("Read More &raquo;", "theme"));
+			if (!isset($string) or $string instanceof Post) # If it's called from anywhere but Twig the post will be passed as a second argument.
+				$string = __("Read More &raquo;", "theme");
+
 			preg_match("/<a class=\"read_more\" href=\"[^\"]+\">e51b2b9a58824dd068d8777ec6e97e4d<\/a>\(\(\(more\)\)\)(<\/p>|<br \/>)/", $text, $ending_tag);
 			$split_read = explode("(((more)))", $text);
 			$split_read[0].= @$ending_tag[1];

@@ -951,7 +951,7 @@
 		extract(parse_url($url), EXTR_SKIP);
 
 		if (ini_get("allow_url_fopen")) {
-			$content = file_get_contents($url);
+			$content = @file_get_contents($url);
 		} elseif (function_exists("curl_init")) {
 			$handle = curl_init();
 			curl_setopt($handle, CURLOPT_URL, $url);

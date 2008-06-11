@@ -27,7 +27,7 @@
 		<id>tag:<?php echo $tagged; ?></id>
 		<updated><?php echo when("c", $updated); ?></updated>
 		<published><?php echo when("c", $post->created_at); ?></published>
-		<link href="<?php echo htmlspecialchars($trigger->filter("feed_url", html_entity_decode($post->url())), ENT_NOQUOTES, "utf-8"); ?>" />
+		<link href="<?php echo htmlspecialchars($trigger->filter("feed_url", html_entity_decode($post->url()), $post), ENT_NOQUOTES, "utf-8"); ?>" />
 		<author>
 			<name><?php echo htmlspecialchars(fallback($post->user()->full_name, $post->user()->login, true), ENT_NOQUOTES, "utf-8"); ?></name>
 <?php if (!empty($author_uri)): ?>

@@ -502,25 +502,22 @@
 		 *     $filter - Should the data be run through any triggers?
 		 */
 		private function parse($filter = false) {
-			global $post;
-
 			foreach (self::xml2arr(simplexml_load_string($this->xml)) as $key => $val)
 				$this->$key = $val;
 
 			if ($filter) {
 				$class = camelize($this->feather);
-				$post = $this;
 
 				$trigger = Trigger::current();
 				$trigger->call("filter_post", $this);
 
 				if (isset(Feather::$custom_filters[$class])) # Run through feather-specified filters, first.
 					foreach (Feather::$custom_filters[$class] as $custom_filter)
-						$this->$custom_filter["field"] = call_user_func(array($class, $custom_filter["name"]), $this->$custom_filter["field"]);
+						$this->$custom_filter["field"] = call_user_func_array(array($class, $custom_filter["name"]), array($this->$custom_filter["field"], $this));
 
 				if (isset(Feather::$filters[$class])) # Now actually filter it.
 					foreach (Feather::$filters[$class] as $filter)
-						$this->$filter["field"] = $trigger->filter($filter["name"], $this->$filter["field"]);
+						$this->$filter["field"] = $trigger->filter($filter["name"], $this->$filter["field"], $this);
 			}
 		}
 

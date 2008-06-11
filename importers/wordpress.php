@@ -157,7 +157,7 @@
 				<br />
 				<br />
 				<label for="media_url"><?php echo __("What URL is used for attached/embedded media?"); ?> <span class="sub"><?php echo __("(optional)"); ?></span></label>
-				<input class="text" type="text" name="media_url" value="" id="media_url" />
+				<input class="text" type="text" name="media_url" value="<?php echo fallback($_POST['media_url'], "", true); ?>" id="media_url" />
 				<small>
 					<?php echo __("Usually something like <code>http://example.com/wp-content/uploads/</code>"); ?>
 				</small>

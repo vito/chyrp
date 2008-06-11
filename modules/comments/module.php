@@ -739,7 +739,8 @@ $(function(){
 					$comment = new Comment($_POST['comment_id']);
 					$trigger->call("show_comment", $comment);
 
-					if (($comment->status != "pingback" and !$comment->status != "trackback") and !$comment->user()->group()->can("code_in_comments"))
+					$group = ($comment->user_id) ? $comment->user()->group() : new Group(Config::current()->guest_group) ;
+					if (($comment->status != "pingback" and !$comment->status != "trackback") and !$group->can("code_in_comments"))
 						$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
 
 					$comment->body = $trigger->filter("markup_comment_text", $comment->body);
@@ -830,7 +831,7 @@ $(function(){
 
 		static function import_textpattern_generate_array($array) {
 			global $link;
-			$get_comments = mysql_query("select * from `".$_POST['prefix']."discuss` where `parentid` = ".fix($array["ID"])." order by `discussid` asc", $link);
+			$get_comments = mysql_query("select * from `".$_POST['prefix']."txp_discuss` where `parentid` = ".fix($array["ID"])." order by `discussid` asc", $link) or die(mysql_error());
 			while ($comment = mysql_fetch_array($get_comments)) {
 				foreach ($comment as $key => $val) {
 					$array["comments"][$comment["discussid"]][$key] = $val;
@@ -839,14 +840,14 @@ $(function(){
 			return $array;
 		}
 
-		static function import_textpattern_post($array, $id) {
+		static function import_textpattern_post($array, $post) {
 			global $comment;
 			if (!isset($array["comments"])) return;
 			foreach ($array["comments"] as $the_comment) {
 				$translate_status = array(-1 => "spam", 0 => "denied", 1 => "approved");
 				$status = str_replace(array_keys($translate_status), array_values($translate_status), $the_comment["visible"]);
 
-				$comment->add($the_comment["message"], $the_comment["name"], $the_comment["web"], $the_comment["email"], $the_comment["ip"], "", $status, $the_comment["posted"], $id, 0);
+				Comment::add($the_comment["message"], $the_comment["name"], $the_comment["web"], $the_comment["email"], $the_comment["ip"], "", $status, "", $the_comment["posted"], $post->id, 0);
 			}
 		}
 
@@ -956,7 +957,8 @@ $(function(){
 					if (!in_array(when("m-d-Y", $comment->created_at), $shown_dates))
 						$shown_dates[] = when("m-d-Y", $comment->created_at);
 
-					if (($comment->status != "pingback" and $comment->status != "trackback") and !$comment->user()->group()->can("code_in_comments"))
+					$group = ($comment->user_id) ? $comment->user()->group() : new Group(Config::current()->guest_group) ;
+					if (($comment->status != "pingback" and $comment->status != "trackback") and !$group->can("code_in_comments"))
 						$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
 
 					$comment->body = $trigger->filter("markup_comment_text", $comment->body);

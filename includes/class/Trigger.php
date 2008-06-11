@@ -65,11 +65,14 @@
 		public function filter($name, $target = array(), $arguments = null) {
 			global $modules;
 
+			if (!is_array($arguments))
+				$arguments = array($arguments);
+
 			if (isset($this->priorities[$name])) { # Predefined priorities?
 				usort($this->priorities[$name], array($this, "cmp"));
 				foreach ($this->priorities[$name] as $action) {
 					if (!empty($arguments)) {
-						$params = array_merge(array($this->modified($name, $target)), (array) $arguments);
+						$params = array_merge(array($this->modified($name, $target)), $arguments);
 						$this->modified[$name] = call_user_func_array($action["function"], $params);
 					} else
 						$this->modified[$name] = call_user_func($action["function"], $this->modified($name, $target));
@@ -82,7 +85,7 @@
 			foreach ($config->enabled_modules as $module)
 				if (!in_array(array($modules[$module], $name), $this->called) and is_callable(array($modules[$module], $name)))
 					if (!empty($arguments)) {
-						$params = array_merge(array($this->modified($name, $target)), (array) $arguments);
+						$params = array_merge(array($this->modified($name, $target)), $arguments);
 						$this->modified[$name] = call_user_func_array(array($modules[$module], $name), $params);
 					} else
 						$this->modified[$name] = call_user_func(array($modules[$module], $name), $this->modified($name, $target));
