@@ -49,13 +49,10 @@
 			return preg_replace("/(<p(\s+[^>]+)?>|^)/si", "\\1&mdash; ", $text, 1);
 		}
 		static function feed_content($post) {
-			$body = "<blockquote>";
+			$body = "<blockquote>\n\t";
 			$body.= $post->quote;
-			$body.= "</blockquote>";
-
-			if ($post->source != "")
-				$body.= self::add_dash($post->source);
-
+			$body.= "\n</blockquote>\n";
+			$body.= $post->source;
 			return $body;
 		}
 	}

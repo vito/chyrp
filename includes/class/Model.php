@@ -52,7 +52,7 @@
 			$options = $trigger->filter($model_name."_grab", $options);
 
 			$sql = SQL::current();
-			if ((!empty($options["read_from"])))
+			if (!empty($options["read_from"]))
 				$read = $options["read_from"];
 			elseif (isset($loaded_models[$model_name][$id]))
 				$read = $loaded_models[$model_name][$id];
@@ -95,9 +95,6 @@
 		 *     order - What to order the SQL result by. @`__(modelname)s`.`id` DESC@ by default.
 		 *     offset - Offset for SQL query.
 		 *     limit - Limit for SQL query.
-		 *     pagination - Whether or not to paginate the results.
-		 *     per_page - If pagination is @true@, how many results per page?
-		 *     page_var - If pagination is @true@, what to name the page variable?
 		 */
 		protected static function search($model, $options = array()) {
 			global $paginate, $action;
@@ -116,9 +113,7 @@
 			fallback($options["order"], "`__".pluralize(strtolower($model))."`.`id` DESC");
 			fallback($options["offset"], null);
 			fallback($options["limit"], null);
-			fallback($options["pagination"], true);
-			fallback($options["per_page"], Config::current()->posts_per_page);
-			fallback($options["page_var"], "page");
+			fallback($options["placeholders"], false);
 
 			$options["where"] = (array) $options["where"];
 			$options["from"] = (array) $options["from"];
@@ -128,13 +123,16 @@
 			$options = $trigger->filter($action."_".pluralize($model_name)."_get", $options);
 			$options = $trigger->filter(pluralize($model_name)."_get", $options);
 
-			$grab = (!$options["pagination"]) ?
-			         SQL::current()->select($options["from"], $options["select"], $options["where"], $options["order"], $options["params"], $options["limit"], $options["offset"], $options["group"], $options["left_join"]) :
-			         $paginate->select($options["from"], $options["select"], $options["where"], $options["order"], $options["per_page"], $options["page_var"], $options["params"], $options["group"], $options["left_join"]) ;
+			$grab = SQL::current()->select($options["from"], $options["select"], $options["where"], $options["order"], $options["params"], $options["limit"], $options["offset"], $options["group"], $options["left_join"]);
 
 			$shown_dates = array();
 			$results = array();
 			foreach ($grab->fetchAll() as $result) {
+				if ($options["placeholders"]) {
+					$results[] = $result["id"];
+					continue;
+				}
+
 				$result = new $model(null, array("read_from" => $result));
 
 				if (isset($result->created_at)) {
@@ -146,7 +144,7 @@
 				$results[] = $result;
 			}
 
-			return $results;
+			return ($options["placeholders"]) ? array($results, $model_name) : $results ;
 		}
 
 		/**

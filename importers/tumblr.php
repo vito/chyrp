@@ -9,7 +9,7 @@
 
 	function reverse($a, $b) {
 		if (empty($a) or empty($b)) return 0;
-		return ($a->attributes()->id < $b->attributes()->id) ? -1 : 1 ;
+		return (@strtotime($a->attributes()->date) < @strtotime($b->attributes()->date)) ? -1 : 1 ;
 	}
 
 	$errors = array();
@@ -19,6 +19,7 @@
 	elseif (!is_writable(MAIN_DIR.$config->uploads_path))
 		$errors[] = _f("Please CHMOD <code>%s</code> to 777.", array($config->uploads_path));
 
+	$sql->query("TRUNCATE TABLE `__posts`");
 	if (!empty($_POST)) {
 		switch($_POST['step']) {
 			case "1":
@@ -42,7 +43,7 @@
 
 				usort($posts, "reverse");
 
-				foreach ($posts as $post) {
+				foreach ($posts as $key => $post) {
 					if ($post->attributes()->type == "audio")
 						continue; # Can't import them since Tumblr has them locked in.
 
@@ -85,7 +86,7 @@
 							$clean = "";
 							break;
 						case "quote":
-							$source = preg_replace("/&mdash; /", "", (isset($arr_post["quote-source"]) ? $arr_post["quote-source"] : ""), 1);
+							$source = preg_replace("/^&mdash; /", "", (isset($arr_post["quote-source"]) ? $arr_post["quote-source"] : ""));
 
 							$values = array("quote" => $arr_post["quote-text"], "source" => $source);
 							$clean = "";

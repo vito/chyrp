@@ -656,7 +656,7 @@
 				} else
 					list($where, $params) = array(false, array());
 
-				$posts = Post::find(array("where" => $where, "params" => $params, "order" => "`__posts`.`id` asc", "pagination" => false));
+				$posts = Post::find(array("where" => $where, "params" => $params, "order" => "`__posts`.`id` asc"));
 
 				$latest_timestamp = 0;
 				foreach ($posts as $post)

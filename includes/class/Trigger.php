@@ -63,6 +63,9 @@
 		 *     $target, filtered through any/all actions for the trigger $name.
 		 */
 		public function filter($name, $target = array(), $arguments = null) {
+			if ((isset($this->exists[$name]) and !$this->exists[$name]) or !$this->exists($name))
+				return $target;
+
 			global $modules;
 
 			if (!is_array($arguments))
@@ -134,13 +137,19 @@
 		 *     true - if there are actions for the trigger.
 		 */
 		public function exists($name) {
-			$config = Config::current();
-			foreach ($config->enabled_modules as $module)
-				if (is_callable(array(camelize($module), $name)))
-					return true;
+			if (isset($this->exists[$name]))
+				return $this->exists[$name];
+
+			global $modules;
+
+			foreach (Config::current()->enabled_modules as $module)
+				if (is_callable(array($modules[$module], $name)))
+					return $this->exists[$name] = true;
 
 			if (isset($this->priorities[$name]))
-				return true;
+				return $this->exists[$name] = true;
+
+			$this->exists[$name] = false;
 		}
 
 		/**

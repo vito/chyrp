@@ -47,9 +47,10 @@
 
 			$posts = parent::search(get_class(), $options);
 
-			foreach ($posts as $index => $post)
-				if (!$post->theme_exists())
-					unset($posts[$index]);
+			if (!isset($options["placeholders"]) or !$options["placeholders"])
+				foreach ($posts as $index => $post)
+					if (!$post->theme_exists())
+						unset($posts[$index]);
 
 			return $posts;
 		}
@@ -513,7 +514,7 @@
 		 */
 		private function parse($filter = false) {
 			foreach (self::xml2arr(simplexml_load_string($this->xml)) as $key => $val)
-				$this->$key = $val;
+				$this->$key = codepoint2name($val);
 
 			if ($filter) {
 				$class = camelize($this->feather);
@@ -565,6 +566,10 @@
 			echo $before.'<a href="'.$config->chyrp_url.'/admin/?action=delete_post&amp;id='.$this->id.'" title="Delete" class="post_delete_link delete_link" id="post_delete_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
+		/**
+		 * Function: trackback_url
+		 * Returns the posts trackback URL.
+		 */
 		public function trackback_url() {
 			return Config::current()->chyrp_url."/includes/trackback.php?id=".$this->id;
 		}
@@ -615,6 +620,7 @@
 		 * Makes a block of text safe to have in SimpleXML.
 		 */
 		static function makesafe($text) {
-			return preg_replace("/&(?!(lt|gt|amp|quot))/", "&amp;", $text);
+			#return preg_replace("/&(?!(lt|gt|amp|quot))/", "&amp;", $text);
+			return name2codepoint(htmlentities($text, ENT_NOQUOTES, "utf-8", false));
 		}
 	}

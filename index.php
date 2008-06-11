@@ -145,7 +145,7 @@
 			header("Content-Type: application/atom+xml; charset=UTF-8");
 
 			$latest_timestamp = 0;
-			foreach ($posts as $post)
+			foreach ($posts->paginated as $post)
 				if (@strtotime($post->created_at) > $latest_timestamp)
 					$latest_timestamp = @strtotime($post->created_at);
 

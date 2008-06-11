@@ -10,7 +10,7 @@
 	<link href="<?php echo self_url() ?>" rel="self" type="application/atom+xml" />
 	<generator uri="http://chyrp.net/" version="<?php echo CHYRP_VERSION; ?>">Chyrp</generator>
 <?php
-	foreach ($posts as $post) {
+	foreach ($posts->paginated as $post) {
 		$title = htmlspecialchars($post->title(), ENT_NOQUOTES, "utf-8");
 		fallback($title, ucfirst($post->feather)." Post #".$post->id);
 

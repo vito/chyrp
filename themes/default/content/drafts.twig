@@ -3,7 +3,7 @@
 {% if posts %}
 					<h2>${ "Drafts" | translate }</h2>
 {% endif %}
-{% for post in posts %}
+{% for post in posts.paginated %}
 {% include "content/post.twig" %}
 {% else %}
 					<h2>${ "No Drafts" | translate }</h2>

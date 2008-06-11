@@ -3,7 +3,7 @@
 {% if posts %}
 					<h2>${ "Search results for &#8220;%s&#8221;" | translate | format(search | escape) }</h2>
 {% endif %}
-{% for post in posts %}
+{% for post in posts.paginated %}
 {% include "content/post.twig" %}
 {% else %}
 					<h2>${ "No Results" | translate }</h2>

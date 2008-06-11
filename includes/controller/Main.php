@@ -10,7 +10,7 @@
 		 */
 		public function index() {
 			global $posts;
-			$posts = Post::find();
+			$posts = new Paginator(Post::find(array("placeholders" => true)), Config::current()->posts_per_page);
 		}
 
 		/**
