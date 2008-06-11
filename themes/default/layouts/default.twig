@@ -48,54 +48,8 @@ ${ trigger.call("head") }
 					<p><a href="{% url "feed/" %}">Feed</a> / theme &copy; <a href="http://lofisoami.com/">Aaron MacDonald</a> 2007</p>
 					<span>${ "Powered by <a href=\"http://chyrp.net/\">Chyrp</a>" | translate }</span>
 				</div>
-		    </div>
-		    <div class="sidebar">
-				<form action="{% url "search/" %}" method="get" accept-charset="utf-8">
-					<input type="hidden" name="action" value="search" id="action" />
-					<input type="text" id="search" name="query" />
-				</form>
-				<h1>${ "Pages" | translate }</h1>
-$page_list
-				<h1>${ "Welcome, %s!" | translate | format(visitor.login | fallback("Guest" | translate)) }</h1>
-				<ul>
-{% if visitor.logged_in %}
-					<li><a href="{% url "controls/" %}">${ "User Controls" | translate }</a></li>
-{% if visitor.group.can("add_post", "add_page", "view_draft", "change_settings") %}
-					<li><a class="toggle_admin" href="{% url "toggle_admin/" %}">${ "Toggle Admin Bar" | translate }</a></li>
-{% endif %}
-					<li><a href="{% url "logout/" %}">${ "Log Out" | translate }</a></li>
-{% else %}
-					<li><a href="{% url "login/" %}">${ "Log In" | translate }</a></li>
-{% if site.can_register %}
-					<li><a href="{% url "register/" %}">${ "Register" | translate }</a></li>
-					<li><a href="{% url "lost_password/" %}">${ "Lost Password?" | translate }</a></li>
-{% endif %}
-{% endif %}
-				</ul>
-${ trigger.call("sidebar") }
-{% if tags %}
-				<h1>${ "Tags" | translate }</h1>
-				<ul id="tags_list">
-{% for tag in tags %}
-					<li><a href="{% url "tag/" ~ tag.url ~ "/" %}">$tag.name</a> <span class="sub">($tag.popularity)</span></li>
-{% endfor %}
-					<li><a href="{% url "tags/" %}">${ "All &rarr;" | translate }</a></li>
-				</ul>
-{% endif %}
-{% if archive_list %}
-				<h1>${ "Archives" | translate }</h1>
-				<ul>
-{% for archive in archive_list %}
-					<li><a href="$archive.url">${ archive.when | date("F Y") }</a> <span class="sub">($archive.count)</span></li>
-{% endfor %}
-				</ul>
-{% endif %}
-				<h1>${ "Stats" | translate }</h1>
-				<ul>
-					<li>${ "Queries:" | translate } $stats.queries</li>
-					<li>${ "Load time:" | translate } $stats.load</li>
-				</ul>
 			</div>
+			{% include "sidebar.twig" %}
 		</div>
 ${ trigger.call("end_content") }
 		<script type="text/javascript">
