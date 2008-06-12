@@ -298,6 +298,7 @@ function draw_conflicts() {
 		// Remove the "conflict" class
 		remove_from_array("conflict", classes);
 		remove_from_array("ui-draggable", classes);
+		remove_from_array("ui-draggable-dragging", classes);
 
 		for (i = 0; i < classes.length; i++) {
 			var conflict = classes[i].replace("conflict_", "module_")
