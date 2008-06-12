@@ -39,6 +39,9 @@
 			if (empty($_POST['source']))
 				error(__("Error"), __("URL can't be empty."));
 
+			if (!parse_url($_POST['source'], PHP_URL_SCHEME))
+				$_POST['source'] = "http://".$_POST['source'];
+
 			$values = array("name" => $_POST['name'], "source" => $_POST['source'], "description" => $_POST['description']);
 
 			$post->update($values);
