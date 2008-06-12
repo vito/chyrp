@@ -504,8 +504,6 @@
 				<select name="version">
 					<option value="1130">1.1.3.x</option>
 					<option value="1100">1.1.x</option>
-					<option value="1040">1.0.4a</option>
-					<option value="1030">1.0.3</option>
 				</select>
 				<p class="center"><input type="submit" value="<?php echo __("Upgrade &rarr;"); ?>"></p>
 			</form>
