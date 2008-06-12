@@ -5,7 +5,7 @@
 	 * Chyrp - A Lightweight Blogging Engine
 	 *
 	 * Version:
-	 *     v2.0
+	 *     v2.0 Beta
 	 *
 	 * License:
 	 *     GPL-3
@@ -16,7 +16,7 @@
 
 	# Constant: CHYRP_VERSION
 	# Chyrp's version number.
-	define('CHYRP_VERSION', "2.0");
+	define('CHYRP_VERSION', "2.0 Beta");
 
 	# Constant: DEBUG
 	# Should Chyrp use debugging processes?
