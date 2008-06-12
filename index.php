@@ -43,41 +43,38 @@
 				$theme->title = __("Archive");
 
 				if (!empty($_GET['year']))
-					$get_timestamps = $sql->query("select
-					                                   distinct year(`created_at`) as `year`,
-					                                   month(`created_at`) as `month`,
-					                                   `created_at`, count(`id`) as `posts`
-					                               from `__posts`
-					                               where
-					                                   year(`created_at`) = :year and
-					                                   ".$private.$enabled_feathers."
-					                               group by year(`created_at`), month(`created_at`)
-					                               order by `created_at` desc, `id` desc",
-					                              array(
-					                                  ":year" => $_GET['year']
-					                              ));
+					$timestamps = $sql->select("posts",
+					                           array("DISTINCT YEAR(`created_at`) AS `year",
+					                                 "MONTH(`created_at`) AS `month`",
+					                                 "`created_at`",
+					                                 "COUNT(`id`) AS `posts`"),
+					                           array("YEAR(`created_at`) = :year"),
+					                           "`created_at` DESC, `id` DESC",
+					                           array(":year" => $_GET['year']),
+					                           null, null,
+					                           array("YEAR(`created_at`)", "MONTH(`created_at`)"));
 				else
-					$get_timestamps = $sql->query("select
-					                                   distinct year(`created_at`) as `year`,
-					                                   month(`created_at`) as `month`,
-					                                   `created_at`, count(`id`) as `posts`
-					                               from `__posts`
-					                               where ".$private.$enabled_feathers."
-					                               group by year(`created_at`), month(`created_at`)
-					                               order by `created_at` desc, `id` desc");
+					$timestamps = $sql->select("posts",
+					                           array("DISTINCT YEAR(`created_at`) AS `year",
+					                                 "MONTH(`created_at`) AS `month`",
+					                                 "`created_at`",
+					                                 "COUNT(`id`) AS `posts`"),
+					                           null,
+					                           "`created_at` DESC, `id` DESC",
+					                           array(),
+					                           null, null,
+					                           array("YEAR(`created_at`)", "MONTH(`created_at`)"));
 
 				$archives = array();
-				while ($time = $get_timestamps->fetchObject()) {
+				while ($time = $timestamps->fetchObject()) {
 					$timestamp = @mktime(0, 0, 0, $time->month + 1, 0, $time->year);
 					$archives[$timestamp] = array("posts" => array(),
 					                              "year" => $time->year,
 					                              "month" => @date("F", $timestamp),
 					                              "url" => $route->url("archive/".when("Y/m/", $time->created_at)));
 
-					$archives[$timestamp]["posts"] = new Paginator(Post::find(array("placeholders" => true,
-					                                                                "where" => array($private, "`__posts`.`created_at` like :created_at"),
-					                                                                "params" => array(":created_at" => when("Y-m", $time->created_at)."%"))),
-					                                               $config->posts_per_page);
+					$archives[$timestamp]["posts"] = Post::find(array("where" => array($private, "`__posts`.`created_at` like :created_at"),
+					                                                  "params" => array(":created_at" => when("Y-m", $time->created_at)."%")));
 				}
 
 				$theme->load("content/archive", array("archives" => $archives));

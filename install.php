@@ -47,7 +47,7 @@
 		$sql->load(INCLUDES_DIR."/database.yaml.php");
 		$config->load(INCLUDES_DIR."/config.yaml.php");
 
-		if ($sql->connect(true) and !empty($config->url) and $sql->query("select count(`id`) from `__users`")->fetchColumn())
+		if ($sql->connect(true) and !empty($config->url) and $sql->count("users"))
 			error(__("Already Installed"), __("Chyrp is already correctly installed and configured."));
 	} else {
 		if (!is_writable(MAIN_DIR) and (!file_exists(MAIN_DIR."/.htaccess") or !preg_match("/".preg_quote($htaccess, "/")."/", file_get_contents(MAIN_DIR."/.htaccess"))))

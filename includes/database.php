@@ -147,7 +147,7 @@
 		 * Function: count
 		 * Performs a counting query and returns the number of matching rows.
 		 */
-		public function count($tables, $conds, $params = array(), $left_join = null) {
+		public function count($tables, $conds = null, $params = array(), $left_join = null) {
 			return $this->query(QueryBuilder::build_count($tables, $conds, $left_join), $params)->fetchColumn();
 		}
 
@@ -155,7 +155,7 @@
 		 * Function: select
 		 * Performs a SELECT with given criteria and returns the query result object.
 		 */
-		public function select($tables, $fields, $conds, $order = null, $params = array(), $limit = null, $offset = null, $group = null, $left_join = null) {
+		public function select($tables, $fields = "*", $conds = null, $order = null, $params = array(), $limit = null, $offset = null, $group = null, $left_join = null) {
 			return $this->query(QueryBuilder::build_select($tables, $fields, $conds, $order, $limit, $offset, $group, $left_join), $params);
 		}
 

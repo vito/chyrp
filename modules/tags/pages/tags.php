@@ -3,10 +3,10 @@
 
 	$trigger->call("tags_top");
 
-	if ($sql->query("SELECT COUNT(1) FROM `__tags`")->fetchColumn() > 0) {
+	if ($sql->count("tags") > 0) {
 		$tags = array();
 		$clean = array();
-		foreach($sql->query("SELECT * FROM `__tags`")->fetchAll() as $tag) {
+		foreach($sql->select("tags")->fetchAll() as $tag) {
 			$tags[] = $tag["tags"];
 			$clean[] = $tag["clean"];
 		}

@@ -4,8 +4,6 @@
 	if (!$visitor->group()->can("add_post"))
 		error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
-	$sql->query("TRUNCATE TABLE `chyrp_posts`");
-	$sql->query("TRUNCATE TABLE `chyrp_pages`");
 	$errors = array();
 	if (!empty($_POST)) {
 		switch($_POST['step']) {

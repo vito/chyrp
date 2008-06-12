@@ -115,29 +115,34 @@
 					$url = "http://".$url;
 
 			$sql = SQL::current();
-			$sql->query("insert into `__comments`
-			             (`body`, `author`, `author_url`, `author_email`, `author_ip`,
-			              `author_agent`, `status`, `signature`, `created_at`, `post_id`, `user_id`)
-			             values
-			             (:body, :author, :author_url, :author_email, :author_ip,
-			              :author_agent, :status, :signature, :created_at, :post_id, :user_id)",
-			            array(
-			                ":body" => $body,
-			                ":author" => strip_tags($author),
-			                ":author_url" => strip_tags($url),
-			                ":author_email" => strip_tags($email),
-			                ":author_ip" => ip2long($ip),
-			                ":author_agent" => $agent,
-			                ":status" => $status,
-			                ":signature" => $signature,
-			                ":created_at" => $timestamp,
-			                ":post_id" => $post_id,
-			                ":user_id"=> $user_id
-			            ));
-			$id = $sql->db->lastInsertId();
+			$sql->insert("comments",
+			             array("body" => ":body",
+			                   "author" => ":author",
+			                   "author_url" => ":author_url",
+			                   "author_email" => ":author_email",
+			                   "author_ip" => ":author_ip",
+			                   "author_agent" => ":author_agent",
+			                   "status" => ":status",
+			                   "signature" => ":signature",
+			                   "post_id" => ":post_id",
+			                   "user_id" => ":user_id",
+			                   "created_at" => ":created_at",
+			             array(":body" => $body,
+			                   ":author" => strip_tags($author),
+			                   ":author_url" => strip_tags($url),
+			                   ":author_email" => strip_tags($email),
+			                   ":author_ip" => ip2long($ip),
+			                   ":author_agent" => $agent,
+			                   ":status" => $status,
+			                   ":signature" => $signature,
+			                   ":created_at" => $timestamp,
+			                   ":post_id" => $post_id,
+			                   ":user_id"=> $user_id
+			             )));
+			$new = new self($sql->db->lastInsertId());;
 
-			Trigger::current()->call("add_comment", new self($id));
-			return $id;
+			Trigger::current()->call("add_comment", $new);
+			return $new;
 		}
 
 		static function info($column, $comment_id = null) {
@@ -217,26 +222,24 @@
 
 		public function update($author, $author_email, $author_url, $body, $status, $timestamp) {
 			$sql = SQL::current();
-			$sql->query("update `__comments`
-			             set
-			                 `author` = :author,
-			                 `author_email` = :author_email,
-			                 `author_url` = :author_url,
-			                 `body` = :body,
-			                 `status` = :status,
-			                 `created_at` = :created_at
-			             where `id` = :id",
-			            array(
-			                ":author" => $author,
-			                ":author_email" => $author_email,
-			                ":author_url" => $author_url,
-			                ":body" => $body,
-			                ":status" => $status,
-			                ":created_at" => $timestamp,
-			                ":id" => $this->id
-			            ));
-			$trigger = Trigger::current();
-			$trigger->call("update_comment", $this);
+			$sql->insert("comments",
+			             "`__comments`.`id` = :id",
+			             array("body" => ":body",
+			                   "author" => ":author",
+			                   "author_url" => ":author_url",
+			                   "author_email" => ":author_email",
+			                   "status" => ":status",
+			                   "created_at" => ":created_at"),
+			             array(":body" => $body,
+			                   ":author" => strip_tags($author),
+			                   ":author_url" => strip_tags($url),
+			                   ":author_email" => strip_tags($email),
+			                   ":status" => $status,
+			                   ":created_at" => $timestamp,
+			                   ":id" => $this->id
+			             ));
+
+			Trigger::current()->call("update_comment", $this);
 		}
 
 		static function delete($comment_id) {
@@ -244,12 +247,7 @@
 			if ($trigger->exists("delete_comment"))
 				$trigger->call("delete_comment", new self($comment_id));
 
-			$sql = SQL::current();
-			$sql->query("delete from `__comments`
-			             where `id` = :id",
-			            array(
-			                ":id" => $comment_id
-			            ));
+			SQL::current()->delete("comments", "`id` = :id", array(":id" => $comment_id));
 		}
 
 		static function user_can($post_id) {
@@ -266,32 +264,28 @@
 
 		static function user_count($user_id) {
 			$sql = SQL::current();
-			$count = $sql->query("select count(`id`) from `__comments`
-			                      where `user_id` = :user_id",
-			                     array(
-			                         ":user_id" => $user_id
-			                     ));
-			return $count->fetchColumn();
+			$count = $sql->count("comments", "`user_id` = :user_id",
+			                     array(":user_id" => $user_id));
+			return $count;
 		}
 
 		static function post_count($post_id) {
 			$sql = SQL::current();
-			$count = $sql->query("select count(`id`) from `__comments`
-			                      where `post_id` = :post_id and (
+			$count = $sql->count("comments",
+			                     array("`post_id` = :post_id", "(
 	                                  `status` != 'denied' or (
                                           `status` = 'denied' and (
                                               `author_ip` = :current_ip or
                                               `user_id` = :user_id
                                           )
                                       )
-                                  ) and
-                                  `status` != 'spam'",
+                                  )", "`status` != 'spam'"),
 			                     array(
 			                         ":post_id" => $post_id,
 		                             ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
 		                             ":user_id" => Visitor::current()->id
 			                     ));
-			return $count->fetchColumn();
+			return $count;
 		}
 
 		public function post() {

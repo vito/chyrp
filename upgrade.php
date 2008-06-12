@@ -101,9 +101,9 @@
 
 		$groups = array();
 		# Upgrade the Groups/Permissions stuff
-		$get_groups = $sql->query("select * from `".$sql->prefix."groups`");
+		$get_groups = $sql->query("SELECT * FROM `".$sql->prefix."groups`");
 		while ($group = $sql->fetch_object($get_groups)) {
-			$groups[$group->name] = array();
+			$groups[$group->name] = array();mo
 			foreach ($group as $key => $val)
 				if ($key != "name" and $val)
 					$groups[$group->name][] = $key;

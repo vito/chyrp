@@ -12,7 +12,7 @@
   PRIMARY KEY  (`id`)
 ) DEFAULT CHARSET=utf8;\n\n";
 	$tags = array();
-	foreach ($sql->select("tags", "*", null)->fetchAll() as $tag) {
+	foreach ($sql->select("tags")->fetchAll() as $tag) {
 		if (!isset($tags[$tag["post_id"]]))
 			$tags[$tag["post_id"]] = array("normal" => array(), "clean" => array());
 

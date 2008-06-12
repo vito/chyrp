@@ -501,7 +501,7 @@
 			if (!Visitor::current()->group()->can("add_group"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to create groups."));
 
-			$this->context["permissions"] = SQL::current()->query("select * from `__permissions`")->fetchAll();
+			$this->context["permissions"] = SQL::current()->select("permissions")->fetchAll();
 		}
 
 		/**
@@ -529,7 +529,7 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit groups."));
 
 			$this->context["group"] = new Group($_GET['id']);
-			$this->context["permissions"] = SQL::current()->query("select * from `__permissions`")->fetchAll();
+			$this->context["permissions"] = SQL::current()->select("permissions")->fetchAll();
 		}
 
 		/**

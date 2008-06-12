@@ -19,7 +19,7 @@
 
 		static function __uninstall($confirm) {
 			if ($confirm)
-				SQL::current()->query("drop table `__tags`");
+				SQL::current()->query("DROP TABLE `__tags`");
 
 			$route = Route::current();
 			$route->remove("tag/(name)/");
@@ -154,8 +154,6 @@
 		}
 
 		static function posts_get($options) {
-			$sql = SQL::current();
-
 			$options["select"][] = "__tags.tags AS `tags`";
 			$options["select"][] = "__tags.clean AS `clean_tags`";
 
@@ -219,7 +217,7 @@
 		$sql = SQL::current();
 		$tags = array();
 		$clean = array();
-		foreach($sql->query("select * from `__tags`")->fetchAll() as $tag) {
+		foreach($sql->select("tags")->fetchAll() as $tag) {
 			$tags[] = $tag["tags"];
 			$clean[] = $tag["clean"];
 		}
@@ -249,7 +247,7 @@
 	function clean2tag($clean_tag) {
 		$tags = array();
 		$clean = array();
-		foreach(SQL::current()->query("select * from `__tags`")->fetchAll() as $tag) {
+		foreach(SQL::current()->select("tags")->fetchAll() as $tag) {
 			$tags[] = $tag["tags"];
 			$clean[] = $tag["clean"];
 		}
@@ -265,7 +263,7 @@
 	function tag2clean($unclean_tag) {
 		$tags = array();
 		$clean = array();
-		foreach(SQL::current()->query("select * from `__tags`")->fetchAll() as $tag) {
+		foreach(SQL::current()->select("tags")->fetchAll() as $tag) {
 			$tags[] = $tag["tags"];
 			$clean[] = $tag["clean"];
 		}
