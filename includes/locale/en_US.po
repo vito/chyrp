@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-12 18:33-0500\n"
+"PO-Revision-Date: 2008-06-12 19:51-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgstr ""
 msgid "or wait 1 second."
 msgstr ""
 
-#: upgrade.php:499
+#: upgrade.php:501
 msgid "Upgrade"
 msgstr ""
 
@@ -121,8 +121,8 @@ msgid "Done!"
 msgstr ""
 
 #: includes/controller/Admin.php:894
-#: includes/controller/Admin.php:1019
-#: includes/controller/Admin.php:1055
+#: includes/controller/Admin.php:1026
+#: includes/controller/Admin.php:1062
 #: includes/ajax.php:143
 #: includes/ajax.php:188
 msgid "You do not have sufficient privileges to enable/disable feathers."
@@ -182,11 +182,11 @@ msgstr ""
 msgid "Controls"
 msgstr ""
 
-#: includes/controller/Admin.php:1080
-#: includes/controller/Admin.php:1118
-#: includes/controller/Admin.php:1142
-#: includes/controller/Admin.php:1165
-#: includes/controller/Admin.php:1186
+#: includes/controller/Admin.php:1087
+#: includes/controller/Admin.php:1125
+#: includes/controller/Admin.php:1149
+#: includes/controller/Admin.php:1172
+#: includes/controller/Admin.php:1193
 msgid "You do not have sufficient privileges to change settings."
 msgstr ""
 
@@ -207,7 +207,7 @@ msgstr ""
 msgid "New User"
 msgstr ""
 
-#: upgrade.php:186
+#: upgrade.php:188
 msgid "Config file could not be renamed. Please rename it to <code>/includes/config.yaml.php</code>"
 msgstr ""
 
@@ -302,7 +302,7 @@ msgstr ""
 msgid "Please enter a valid year and month."
 msgstr ""
 
-#: includes/controller/Admin.php:1188
+#: includes/controller/Admin.php:1195
 msgid "No Theme Specified"
 msgstr ""
 
@@ -418,7 +418,7 @@ msgstr ""
 msgid "Export"
 msgstr ""
 
-#: upgrade.php:503
+#: upgrade.php:505
 msgid "What are you upgrading from?"
 msgstr ""
 
@@ -487,7 +487,7 @@ msgstr ""
 msgid "Posts .atom File"
 msgstr ""
 
-#: upgrade.php:502
+#: upgrade.php:504
 msgid "You may also want to create an index.html file alongside your index.php to serve as a placeholder during the upgrade."
 msgstr ""
 
@@ -617,7 +617,7 @@ msgstr ""
 msgid "You do not have sufficient privileges to view drafts."
 msgstr ""
 
-#: upgrade.php:501
+#: upgrade.php:503
 msgid "Before upgrading, please disable all modules and feathers that don't come with Chyrp (you can leave the Text feather enabled)."
 msgstr ""
 
@@ -693,7 +693,7 @@ msgstr ""
 msgid "File does not seem to be a valid WordPress export file."
 msgstr ""
 
-#: upgrade.php:492
+#: upgrade.php:494
 msgid "There are many new and extended Group permissions with this release. If you are the administrator, you'll probably want to enable them for your group: <a href=\"%s\">Manage Groups</a>"
 msgstr ""
 
@@ -710,8 +710,8 @@ msgid "Group deleted."
 msgstr ""
 
 #: includes/controller/Admin.php:819
-#: includes/controller/Admin.php:1017
-#: includes/controller/Admin.php:1053
+#: includes/controller/Admin.php:1024
+#: includes/controller/Admin.php:1060
 #: includes/ajax.php:141
 #: includes/ajax.php:186
 msgid "You do not have sufficient privileges to enable/disable modules."
@@ -783,7 +783,7 @@ msgstr ""
 msgid "(ex. this_is_clean)"
 msgstr ""
 
-#: upgrade.php:189
+#: upgrade.php:191
 msgid "Database config file could not be renamed. Please rename it to <code>/includes/database.yaml.php</code>"
 msgstr ""
 
@@ -827,7 +827,7 @@ msgstr ""
 msgid "Import Chyrp"
 msgstr ""
 
-#: upgrade.php:477
+#: upgrade.php:479
 msgid "Upgrading&hellip;"
 msgstr ""
 
@@ -1054,10 +1054,10 @@ msgstr ""
 #: includes/controller/Admin.php:516
 #: includes/controller/Admin.php:544
 #: includes/controller/Admin.php:586
-#: includes/controller/Admin.php:1098
-#: includes/controller/Admin.php:1126
-#: includes/controller/Admin.php:1148
-#: includes/controller/Admin.php:1171
+#: includes/controller/Admin.php:1105
+#: includes/controller/Admin.php:1133
+#: includes/controller/Admin.php:1155
+#: includes/controller/Admin.php:1178
 msgid "Invalid security key."
 msgstr ""
 
@@ -1065,7 +1065,7 @@ msgstr ""
 msgid "(usually ok as \"localhost\")"
 msgstr ""
 
-#: includes/controller/Admin.php:1242
+#: includes/controller/Admin.php:1249
 msgid "You do not have sufficient privileges to access this area."
 msgstr ""
 
@@ -1296,7 +1296,7 @@ msgstr ""
 msgid "Password cannot be blank."
 msgstr ""
 
-#: upgrade.php:485
+#: upgrade.php:487
 #: importers/wordpress.php:175
 #: importers/tumblr.php:210
 #: importers/textpattern.php:200
@@ -1309,7 +1309,7 @@ msgstr ""
 msgid "Reorder Pages"
 msgstr ""
 
-#: upgrade.php:493
+#: upgrade.php:495
 msgid "If the admin section looks ugly to you, refresh your browser or clear your cache. The admin area is completely redesigned in 2.0."
 msgstr ""
 
@@ -1327,7 +1327,7 @@ msgstr ""
 msgid "STOP! Before you go any further, you must create a .htaccess file in Chyrp's install directory and put this in it:\n<pre>%s</pre>."
 msgstr ""
 
-#: upgrade.php:495
+#: upgrade.php:497
 #: install.php:484
 msgid "Take me to my site! &rarr;"
 msgstr ""
@@ -1364,7 +1364,7 @@ msgstr ""
 msgid "Please enter a name for your website."
 msgstr ""
 
-#: includes/controller/Admin.php:1188
+#: includes/controller/Admin.php:1195
 msgid "You did not specify a theme to switch to."
 msgstr ""
 
@@ -1451,11 +1451,11 @@ msgstr ""
 msgid "Edit Group &#8220;%s&#8221;"
 msgstr ""
 
-#: upgrade.php:490
+#: upgrade.php:492
 msgid "Tips"
 msgstr ""
 
-#: upgrade.php:508
+#: upgrade.php:510
 msgid "Upgrade &rarr;"
 msgstr ""
 
@@ -1597,7 +1597,7 @@ msgstr ""
 msgid "Draft"
 msgstr ""
 
-#: upgrade.php:89
+#: upgrade.php:91
 msgid "Uploads directory could not be renamed. Please rename it to <code>/uploads</code>"
 msgstr ""
 
@@ -1617,7 +1617,7 @@ msgstr ""
 msgid "Tumblr URL"
 msgstr ""
 
-#: upgrade.php:487
+#: upgrade.php:489
 msgid "Finished?"
 msgstr ""
 
@@ -1638,7 +1638,7 @@ msgstr ""
 msgid "Site Configuration"
 msgstr ""
 
-#: upgrade.php:486
+#: upgrade.php:488
 msgid "Next, back up your current installation and replace the old files with the new. Be careful of what you're overwriting &ndash; some systems will remove directories and upload the new ones, instead of merging them. <strong>Make sure you don't replace or remove your <code>/includes/database.yaml.php</code> and <code>/includes/config.yaml.php</code> files.</strong>"
 msgstr ""
 
@@ -1736,7 +1736,7 @@ msgstr ""
 msgid "Sorry, but you are looking for something that isn't here."
 msgstr ""
 
-#: upgrade.php:488
+#: upgrade.php:490
 msgid "Yay!"
 msgstr ""
 
@@ -1837,20 +1837,20 @@ msgstr ""
 #: includes/controller/Admin.php:610
 #: includes/controller/Admin.php:819
 #: includes/controller/Admin.php:894
-#: includes/controller/Admin.php:1017
-#: includes/controller/Admin.php:1019
-#: includes/controller/Admin.php:1053
-#: includes/controller/Admin.php:1055
-#: includes/controller/Admin.php:1080
-#: includes/controller/Admin.php:1098
-#: includes/controller/Admin.php:1118
-#: includes/controller/Admin.php:1126
-#: includes/controller/Admin.php:1142
-#: includes/controller/Admin.php:1148
-#: includes/controller/Admin.php:1165
-#: includes/controller/Admin.php:1171
-#: includes/controller/Admin.php:1186
-#: includes/controller/Admin.php:1242
+#: includes/controller/Admin.php:1024
+#: includes/controller/Admin.php:1026
+#: includes/controller/Admin.php:1060
+#: includes/controller/Admin.php:1062
+#: includes/controller/Admin.php:1087
+#: includes/controller/Admin.php:1105
+#: includes/controller/Admin.php:1125
+#: includes/controller/Admin.php:1133
+#: includes/controller/Admin.php:1149
+#: includes/controller/Admin.php:1155
+#: includes/controller/Admin.php:1172
+#: includes/controller/Admin.php:1178
+#: includes/controller/Admin.php:1193
+#: includes/controller/Admin.php:1249
 #: includes/common.php:264
 #: includes/bookmarklet.php:6
 #: includes/ajax.php:13
