@@ -101,8 +101,8 @@
 		$config->set("uploads_path", "/uploads/");
 		$config->set("chyrp_url", $config->url);
 		$sql->set("adapter", "mysql");
-		if (empty($sql->prefix)) { # For some reason the prefix was being removed in my remote testing. Hm.
-			$sql->set("prefix", "blah");
+		if (empty($sql->prefix)) { # For some reason the prefix was being removed in my remote testing.
+			$sql->prefix = "blah";
 			$sql->set("prefix", "");
 		}
 
