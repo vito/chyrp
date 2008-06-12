@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-12 12:13-0500\n"
+"PO-Revision-Date: 2008-06-12 13:47-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -115,7 +115,7 @@ msgstr ""
 msgid "User Settings"
 msgstr ""
 
-#: install.php:471
+#: install.php:472
 #: includes/bookmarklet.php:247
 msgid "Done!"
 msgstr ""
@@ -567,8 +567,8 @@ msgid "Usually something like <code>http://example.com/images/</code>"
 msgstr ""
 
 #: install.php:421
-#: install.php:456
-#: install.php:460
+#: install.php:457
+#: install.php:461
 #: importers/textpattern.php:171
 msgid "Password"
 msgstr ""
@@ -581,7 +581,7 @@ msgstr ""
 msgid "Attempts to notify sites linked to from your posts. It'll slow down things a bit when you submit them, depending on how many links you've got in it."
 msgstr ""
 
-#: install.php:464
+#: install.php:465
 msgid "E-Mail Address"
 msgstr ""
 
@@ -600,7 +600,7 @@ msgstr ""
 msgid "Please enter a username for your account."
 msgstr ""
 
-#: install.php:473
+#: install.php:474
 msgid "Chyrp has been successfully installed."
 msgstr ""
 
@@ -647,7 +647,7 @@ msgstr ""
 msgid "Created"
 msgstr ""
 
-#: install.php:479
+#: install.php:480
 msgid "Install some Modules."
 msgstr ""
 
@@ -751,7 +751,7 @@ msgstr ""
 msgid "or wait 3 seconds."
 msgstr ""
 
-#: install.php:468
+#: install.php:469
 msgid "Install!"
 msgstr ""
 
@@ -876,11 +876,11 @@ msgstr[1] ""
 #: admin/layout/pages/delete_user.twig:26
 #: admin/layout/pages/delete_post.twig:17
 #: admin/layout/pages/delete_page.twig:26
-#: admin/layout/pages/delete_group.twig:54
+#: admin/layout/pages/delete_group.twig:51
 msgid "Cancel"
 msgstr ""
 
-#: install.php:460
+#: install.php:461
 msgid "(again)"
 msgstr ""
 
@@ -1082,7 +1082,7 @@ msgstr ""
 msgid "Second submitted"
 msgstr ""
 
-#: install.php:478
+#: install.php:479
 msgid "Look for a translation for your language."
 msgstr ""
 
@@ -1328,7 +1328,7 @@ msgid "STOP! Before you go any further, you must create a .htaccess file in Chyr
 msgstr ""
 
 #: upgrade.php:495
-#: install.php:483
+#: install.php:484
 msgid "Take me to my site! &rarr;"
 msgstr ""
 
@@ -1383,7 +1383,7 @@ msgstr ""
 msgid "Pinned?"
 msgstr ""
 
-#: admin/layout/pages/delete_group.twig:40
+#: admin/layout/pages/delete_group.twig:38
 msgid "New &#8220;guest&#8221; group:"
 msgstr ""
 
@@ -1553,7 +1553,7 @@ msgstr ""
 msgid "Show in pages list?"
 msgstr ""
 
-#: install.php:477
+#: install.php:478
 msgid "<strong>Delete install.php</strong>, you won't need it anymore."
 msgstr ""
 
@@ -1654,7 +1654,7 @@ msgstr ""
 #: admin/layout/pages/delete_user.twig:25
 #: admin/layout/pages/delete_post.twig:16
 #: admin/layout/pages/delete_page.twig:25
-#: admin/layout/pages/delete_group.twig:53
+#: admin/layout/pages/delete_group.twig:50
 msgid "DESTROY!"
 msgstr ""
 
@@ -1677,7 +1677,7 @@ msgid "Default User Group"
 msgstr ""
 
 #: install.php:417
-#: install.php:452
+#: install.php:453
 #: importers/textpattern.php:167
 msgid "Username"
 msgstr ""
@@ -1686,7 +1686,7 @@ msgstr ""
 msgid "or"
 msgstr ""
 
-#: admin/layout/pages/delete_group.twig:29
+#: admin/layout/pages/delete_group.twig:28
 msgid "New default group:"
 msgstr ""
 
@@ -1711,7 +1711,7 @@ msgstr ""
 msgid "(none)"
 msgstr ""
 
-#: install.php:481
+#: install.php:482
 msgid "Read &#8220;Getting Started&#8221;"
 msgstr ""
 
@@ -1758,7 +1758,7 @@ msgstr ""
 msgid "Add Group"
 msgstr ""
 
-#: install.php:480
+#: install.php:481
 msgid "Find some Feathers you want."
 msgstr ""
 
@@ -1789,7 +1789,7 @@ msgstr ""
 msgid "Missing Feather"
 msgstr ""
 
-#: install.php:450
+#: install.php:451
 msgid "Admin Account"
 msgstr ""
 

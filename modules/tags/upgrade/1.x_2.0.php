@@ -2,7 +2,7 @@
 	require "../../../includes/common.php";
 
 	# Back up all the current tags.
-	echo "If the upgrade fails, here's a backup:<br />\n";
+	echo __("If the upgrade fails, here's a backup:", "tags")."<br />\n";
 	echo '<textarea rows="15" cols="100">';
 	echo "CREATE TABLE `".$sql->prefix."tags` (
   `id` int(11) NOT NULL auto_increment,
@@ -23,11 +23,11 @@
 	echo "</textarea>\n<br /><br />\n";
 
 	# Drop the old table.
-	echo "Dropping current Tags database table...<br /><br />\n";
+	echo __("Dropping current Tags database table...", "tags")."<br /><br />\n";
 	$sql->query("DROP TABLE `__tags`");
 
 	# Create the new table.
-	echo "Creating new database table...<br /><br />\n";
+	echo __("Creating new database table...", "tags")."<br /><br />\n";
 	$sql->query("CREATE TABLE IF NOT EXISTS `__tags` (
 			      `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
 			      `tags` VARCHAR(250) DEFAULT '',
@@ -36,7 +36,7 @@
 			     ) DEFAULT CHARSET=utf8");
 
 	# Create the tags in the new format.
-	echo "Inserting new tags... Executing the following:<br />\n";
+	echo __("Inserting new tags... Executing the following:", "tags")."<br />\n";
 	echo '<textarea rows="15" cols="100">';
 	foreach ($tags as $post => $tag) {
 		echo "INSERT INTO `".$sql->prefix."tags` VALUES (`tags`, `clean`, `post_id`) ('".implode(" ", $tag["normal"])."', '".implode(" ", $tag["clean"])."', ".$post.")\n";
@@ -50,5 +50,5 @@
 	}
 	echo "</textarea>\n<br /><br />\n";
 
-	echo "Done!";
+	echo __("Done!", "tags");
 ?>
