@@ -67,7 +67,7 @@ var Post = {
 					if ($("#post_edit_"+id+" select#status").val() == "draft") {
 						$("#post_"+id+" .target, #post_"+id+".target").loader(true)
 						$("#post_"+id).fadeOut("fast")
-						appendNextPost(0)
+						appendNextPost()
 						alert("<?php echo __("Post has been saved as a draft."); ?>")
 					} else {
 <?php endif; ?>
@@ -119,7 +119,7 @@ var Post = {
 			$("#post_"+id).animate({ height: "hide", opacity: "hide" }, function(){
 				$(this).remove()
 			})
-			appendNextPost(1)
+			appendNextPost()
 		})
 <?php if ($_GET['action'] == "view"): ?>
 		window.location = "<?php echo $config->url; ?>"
@@ -189,62 +189,28 @@ var Cookie = {
 	}
 }
 
-function appendNextPost(minus) {
-	var minus = (minus == "") ? 1 : minus ;
-<?php if ($action == "index" or ($action == "drafts" and $visitor->group()->can("view_own_draft", "view_draft")) or $action == "archive" or $action == "search"): ?>
-	if ($("#posts").length == 0) return;
-<?php
-	switch($action):
-		case "index":
-?>
-	$.ajax({ type: "post", url: "<?php echo $config->chyrp_url; ?>/includes/ajax.php", data: { action: "view_post", offset: <?php echo ($page * $config->posts_per_page); ?> - minus }, success: function(data) {
-<?php
-			break;
-		case "drafts":
-?>
-	$.ajax({ type: "post", url: "<?php echo $config->chyrp_url; ?>/includes/ajax.php", data: { action: "view_post", context: "drafts", offset: <?php echo ($page * $config->posts_per_page); ?> - minus }, success: function(data) {
-<?php
-			break;
-		case "archive":
-?>
-	$.ajax({ type: "post", url: "<?php echo $config->chyrp_url; ?>/includes/ajax.php", data: { action: "view_post", context: "archive", year: "<?php echo $_GET['arg1']; ?>", month: "<?php echo $_GET['arg2']; ?>", offset: <?php echo ($page * $config->posts_per_page); ?> - minus }, success: function(data) {
-<?php
-			break;
-		case "search":
-?>
-	$.ajax({ type: "post", url: "<?php echo $config->chyrp_url; ?>/includes/ajax.php", data: { action: "view_post", context: "search", query: "<?php echo $_GET['arg1']; ?>", offset: <?php echo ($page * $config->posts_per_page); ?> - minus }, success: function(data) {
-<?php
-			break;
-	endswitch;
-?>
-		$("#posts").append(data)
-		$("#posts .post:last").hide().fadeIn("slow")
-		var id = $("#posts .post:last").attr("id").replace(/post_/, "")
-
-		$("#post_edit_"+id).click(function(){
-			Post.edit(id)
-			return false
-		})
-
-		$("#post_delete_"+id).click(function(){
-			if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
-			Post.destroy(id)
-			return false
-		})
-	}, error: function(request){
-		if (request.status == 404) {
-			if (!$("#posts .post").size())
-				$.ajax({ type: "post", url: "<?php echo $config->chyrp_url; ?>/includes/ajax.php", data: { action: "snippet", name: "no_posts", argument: "<?php echo $action; ?>" }, success: function(data) {
-					$("#posts *").each(function(){
-						$(this).addClass("nofade")
-					})
-					$("#posts").append(data)
-					$("#posts *:not(.nofade)").hide().fadeIn("slow")
-				} })
-
-			$("#next_page_page").fadeOut("fast");
-		}
-	} });
+function appendNextPost() {
+<?php if (!empty($_GET['next_post'])): ?>
+	// if ($("#posts").length == 0) return;
+	// $.ajax({ type: "post", url: "<?php echo $config->chyrp_url; ?>/includes/ajax.php", data: { action: "view_post", id: <?php echo $_GET['next_post']; ?> }, success: function(data) {
+	// 	$("#posts").append(data)
+	// 	$("#posts .post:last").hide().fadeIn("slow")
+	// 	var id = $("#posts .post:last").attr("id").replace(/post_/, "")
+	//
+	// 	$("#post_edit_"+id).click(function(){
+	// 		Post.edit(id)
+	// 		return false
+	// 	})
+	//
+	// 	$("#post_delete_"+id).click(function(){
+	// 		if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
+	// 		Post.destroy(id)
+	// 		return false
+	// 	})
+	// }, error: function(request){
+	// 	if (request.status == 404)
+	// 		$("#next_page_page").fadeOut("fast");
+	// } });
 <?php endif; ?>
 }
 

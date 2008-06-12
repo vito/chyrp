@@ -188,13 +188,16 @@
 		 * Outputs the default JavaScript script references.
 		 */
 		public function javascripts() {
-			global $action;
+			global $action, $posts;
 
 			$args = "";
 			$i = 0;
 			foreach ($_GET as $val)
 				if (!empty($val) and $val != $action)
 					$args.= "&amp;arg".++$i."=".urlencode($val);
+
+			# if (isset($posts))
+			# 	$args.= "&amp;next_post=".$posts->next(true)->id;
 
 			$config = Config::current();
 			$trigger = Trigger::current();

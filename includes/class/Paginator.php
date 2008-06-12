@@ -20,14 +20,14 @@
 		 *     A paginated array $per_page or smaller.
 		 */
 		public function __construct($array, $per_page = 5, $name = "page", $model = true) {
-			if ($model) {
-				$model_name = $array[1];
-				$array = $array[0];
-			}
-
 			$this->array = $array;
+
+			if ($model)
+				list($array, $model_name) = $array;
+
 			$this->per_page = $per_page;
 			$this->name = $name;
+			$this->model = $model;
 
 			$this->total = count($array);
 			$this->page = (isset($_GET[$name])) ? $_GET[$name] : 1 ;
@@ -40,6 +40,53 @@
 					$this->result[] = ($model) ? new $model_name($array[$i]) : $array[$i] ;
 
 			$this->paginated = $this->paginate = $this->list =& $this->result;
+		}
+
+		/**
+		 * Function: next
+		 * Returns the next set of values (or the next single value) in a pagination sequence.
+		 */
+		public function next($first = false) {
+			$offset = $this->offset + $this->per_page;
+			$array = $this->array;
+
+			if ($this->model)
+				list($array, $model_name) = $array;
+
+			$result = array();
+			if ($first)
+				return ($this->model) ? new $model_name($array[$offset]) : $array[$offset] ;
+			else
+				for ($i = $offset; $i < ($offset + $this->per_page); $i++)
+					if (isset($array[$i]))
+						$result[] = ($this->model) ? new $model_name($array[$i]) : $array[$i] ;
+
+			return $result;
+		}
+
+		/**
+		 * Function: prev
+		 * Returns the previous set of values (or the previous single value) in a pagination sequence.
+		 */
+		public function prev($first = false) {
+			if ($this->offset = 0)
+				return $this->result;
+
+			$offset = $this->offset - $this->per_page;
+			$array = $this->array;
+
+			if ($this->model)
+				list($array, $model_name) = $array;
+
+			$result = array();
+			if ($first)
+				return ($this->model) ? new $model_name($array[$offset]) : $array[$offset] ;
+			else
+				for ($i = $offset; $i < ($offset + $this->per_page); $i++)
+					if (isset($array[$i]))
+						$result[] = ($this->model) ? new $model_name($array[$i]) : $array[$i] ;
+
+			return $result;
 		}
 
 		/**
