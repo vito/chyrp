@@ -94,7 +94,7 @@
 			fallback($_POST['context']);
 
 			$id = (isset($_POST['id'])) ? "`__posts`.`id` = :id" : false ;
-			$reason = (isset($_POST['reason'])) ? "_".$_POST['reason'] : "" ;
+			$reason = (isset($_POST['reason'])) ? $_POST['reason'] : "" ;
 
 			if (isset($_POST['id']))
 				$post = new Post($_POST['id']);
@@ -105,9 +105,7 @@
 				exit;
 			}
 
-			$trigger->call("above_post".$reason);
-			$theme->load("content/post", array("post" => $post));
-			$trigger->call("below_post");
+			$theme->load("content/post", array("post" => $post, "ajax_reason" => $reason));
 			break;
 		case "preview":
 			$content = ($trigger->exists("preview_".$_POST['feather'])) ?

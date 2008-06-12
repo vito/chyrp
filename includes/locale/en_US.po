@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-12 17:50-0500\n"
+"PO-Revision-Date: 2008-06-12 18:14-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -123,8 +123,8 @@ msgstr ""
 #: includes/controller/Admin.php:894
 #: includes/controller/Admin.php:1019
 #: includes/controller/Admin.php:1055
-#: includes/ajax.php:152
-#: includes/ajax.php:197
+#: includes/ajax.php:143
+#: includes/ajax.php:188
 msgid "You do not have sufficient privileges to enable/disable feathers."
 msgstr ""
 
@@ -659,7 +659,7 @@ msgstr ""
 
 #: includes/controller/Admin.php:882
 #: includes/controller/Admin.php:945
-#: includes/ajax.php:175
+#: includes/ajax.php:166
 #: importers/tumblr.php:18
 #, php-format
 msgid "Please create the <code>%s</code> directory at your Chyrp install's root and CHMOD it to 777."
@@ -712,8 +712,8 @@ msgstr ""
 #: includes/controller/Admin.php:819
 #: includes/controller/Admin.php:1017
 #: includes/controller/Admin.php:1053
-#: includes/ajax.php:150
-#: includes/ajax.php:195
+#: includes/ajax.php:141
+#: includes/ajax.php:186
 msgid "You do not have sufficient privileges to enable/disable modules."
 msgstr ""
 
@@ -803,7 +803,7 @@ msgstr ""
 msgid "Posts Per Page"
 msgstr ""
 
-#: includes/ajax.php:120
+#: includes/ajax.php:118
 msgid "You do not have sufficient privileges to enable/disable extensions."
 msgstr ""
 
@@ -933,7 +933,7 @@ msgstr ""
 msgid "Upgrading to %s&hellip;"
 msgstr ""
 
-#: includes/ajax.php:116
+#: includes/ajax.php:114
 #: admin/layout/pages/extend_themes.twig:23
 msgid "Preview"
 msgstr ""
@@ -1559,7 +1559,7 @@ msgstr ""
 
 #: includes/controller/Admin.php:884
 #: includes/controller/Admin.php:947
-#: includes/ajax.php:177
+#: includes/ajax.php:168
 #: importers/tumblr.php:20
 #, php-format
 msgid "Please CHMOD <code>%s</code> to 777."
@@ -1855,7 +1855,7 @@ msgstr ""
 #: includes/bookmarklet.php:6
 #: includes/ajax.php:13
 #: includes/ajax.php:88
-#: includes/ajax.php:120
+#: includes/ajax.php:118
 #: importers/wordpress.php:8
 #: importers/tumblr.php:8
 #: importers/textpattern.php:7

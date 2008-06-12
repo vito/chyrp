@@ -1,7 +1,7 @@
 					{% if route.action == "view" and post.status == "draft" %}
 					<div class="notice" onClick="$$(this).fadeOut('fast')">${ "This post is a draft." | translate }<span class="sub">${ "(click to hide)" | translate }</span></div>
 					{% endif %}
-					{% if not route.ajax or (route.ajax and POST.action == "view_post") %}
+					{% if not route.ajax or (route.ajax and POST.action == "view_post" and ajax_reason != "edited") %}
 					<div class="post{% if post.pinned %} pinned{% endif %}" id="post_$post.id">
 						<div class="$post.feather target">
 					{% endif %}
@@ -27,7 +27,7 @@
 								${ post.delete_link("Delete" | translate, "<em>|</em> ") }
 							</span>
 							<br class="clear" />
-					{% if not route.ajax or (route.ajax and POST.action == "view_post") %}
+					{% if not route.ajax or (route.ajax and POST.action == "view_post" and ajax_reason != "edited") %}
 						</div>
 						{% if route.action != "view" and not loop.last %}
 						<br />
