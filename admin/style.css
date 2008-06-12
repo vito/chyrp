@@ -342,6 +342,13 @@ form.delete blockquote h2,
 form.delete .noitalic {
 	font-style: normal;
 }
+form.delete h2.inline {
+	display: inline;
+}
+form.delete select {
+	position: relative;
+	top: -2px;
+}
 form.split label {
 	width: 41%;
 	float: left;
