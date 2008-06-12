@@ -132,7 +132,7 @@
 					throw new Exception($message);
 
 				if (DEBUG)
-					$message.= "\n\n".$query."\n\n<pre>".$error->getTraceAsString()."</pre>";
+					$message.= "\n\n".$query."\n\n<pre>".print_r($params, true)."</pre>\n\n<pre>".$error->getTraceAsString()."</pre>";
 
 				$this->db = null;
 
