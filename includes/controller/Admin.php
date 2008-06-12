@@ -837,7 +837,7 @@
 					if (!empty($info["conflicts"]))
 						foreach ($info["conflicts"] as $conflict)
 							if (file_exists(MODULES_DIR."/".$conflict."/module.php")) {
-								$issues[$conflict] = $issues[$folder] = true;
+								$issues[$folder] = true;
 								$info["conflicts_true"][] = $conflict;
 							}
 
