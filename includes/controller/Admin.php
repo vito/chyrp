@@ -850,6 +850,7 @@
 
 					$category = (module_enabled($folder)) ? "enabled_modules" : "disabled_modules" ;
 					$this->context[$category][$folder] = array("name" => $info["name"],
+					                                           "version" => $info["version"],
 					                                           "url" => $info["url"],
 					                                           "description" => $info["description"],
 					                                           "author" => $info["author"],
@@ -908,6 +909,7 @@
 
 					$category = (feather_enabled($folder)) ? "enabled_feathers" : "disabled_feathers" ;
 					$this->context[$category][$folder] = array("name" => $info["name"],
+					                                           "version" => $info["version"],
 					                                           "url" => $info["url"],
 					                                           "description" => $info["description"],
 					                                           "author" => $info["author"],

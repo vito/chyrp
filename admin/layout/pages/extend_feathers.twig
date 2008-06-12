@@ -10,7 +10,7 @@
 {% for safename, feather in enabled_feathers | items %}
 					<li class="$safename">
 						<a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
-						${ '<a href="%s">%s</a> <span class="sub">by %s</span>' | translate | format(feather.url, feather.name | format(safename), feather.author.link) }
+						${ '<a href="%s">%s</a> v%s <span class="sub">by %s</span>' | translate | format(feather.url, feather.name | format(safename), feather.version, feather.author.link) }
 						<div class="expand">
 							<div class="description">
 								${ feather.description | translate(safename) }
@@ -27,7 +27,7 @@
 {% for safename, feather in disabled_feathers | items %}
 					<li class="$safename">
 						<a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
-						${ '<a href="%s">%s</a> <span class="sub">by %s</span>' | translate | format(feather.url, feather.name | format(safename), feather.author.link) }
+						${ '<a href="%s">%s</a> v%s <span class="sub">by %s</span>' | translate | format(feather.url, feather.name | format(safename), feather.version, feather.author.link) }
 						<div class="expand">
 							<div class="description">
 								${ feather.description | translate(safename) }

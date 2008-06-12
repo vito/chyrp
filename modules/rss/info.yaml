@@ -1,6 +1,6 @@
 name: RSS Aggregator
 url: http://chyrp.net/
-version: 1.0.4
+version: 1.0
 description: Imports RSS feeds.
 author:
   name: Alex Suraci

@@ -1,6 +1,6 @@
 name: Audio
 url: http://chyrp.net/
-version: 1.0.6
+version: 2.0
 description: An audio feather, including a flash player.
 author:
   name: Alex Suraci
@@ -8,6 +8,7 @@ author:
 plural: audio
 uploader: true
 
+# 2.0: Updated for Chyrp v2.0, added external uploading
 # 1.0.6: Updated for Chyrp v1.1
 # 1.0.5: Updated for Chyrp v1.0.4
 # 1.0.4: Fixed editing borking the file upload if you don't choose a file

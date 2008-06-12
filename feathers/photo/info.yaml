@@ -1,12 +1,13 @@
 name: Photo
 url: http://chyrp.net/
-version: 1.0.8
+version: 2
 description: A photo feather, allowing you to upload any type of picture, with a caption.
 author:
   name: Alex Suraci
   url: http://i.am.toogeneric.com/
 uploader: true
 
+# 2.0: Updated for Chyrp v2.0, added external uploading
 # 1.0.8: Updated for Chyrp v1.1
 # 1.0.7: Changed the image scaling to use the phpThumb() library
 # 1.0.6: Updated for Chyrp v1.0.4
