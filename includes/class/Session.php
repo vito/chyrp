@@ -8,7 +8,8 @@
 
 		/**
 		 * Function: open
-		 * Returns: true
+		 * Returns:
+		 *     true
 		 */
 		static function open() {
 			return true;
