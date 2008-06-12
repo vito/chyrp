@@ -4,7 +4,7 @@
 	if (!$user->can("toggle_extensions"))
 		exit;
 
-	echo "Adding `signature column to `".$sql->prefix."comments`...<br />";
+	echo __("Adding `signature` column to comments table...", "comments")."<br />";
 	$sql->query("ALTER TABLE `__comments` ADD  `signature` VARCHAR(32) NOT NULL AFTER `status`");
-	echo "Done!";
+	echo __("Done!", "comments");
 ?>

@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-12 18:14-0500\n"
+"PO-Revision-Date: 2008-06-12 18:33-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -224,6 +224,10 @@ msgstr ""
 msgid "Manage Comments"
 msgstr ""
 
+#: modules/comments/upgrade/1.x_2.0.php:7
+msgid "Adding `signature` column to comments table..."
+msgstr ""
+
 #: modules/comments/info.yaml:2
 msgid "Comment System"
 msgstr ""
@@ -270,6 +274,10 @@ msgstr ""
 #: modules/comments/pages/admin/manage_spam.twig:20
 #: modules/comments/pages/admin/manage_comments.twig:20
 msgid "Selected comments approved."
+msgstr ""
+
+#: modules/comments/upgrade/1.x_2.0.php:9
+msgid "Done!"
 msgstr ""
 
 #: modules/comments/module.php:347
