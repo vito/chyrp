@@ -7,7 +7,7 @@
 			$config = Config::current();
 
 			if (!empty($config->defensio_api_key))
-				$this->defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
+				$this->defensio = new Defensio($config->url, $config->defensio_api_key);
 
 			$this->addAlias('metaWeblog_newPost_preQuery', 'metaWeblog_editPost_preQuery');
 			$this->addAlias("post_grab", "posts_get");
@@ -150,10 +150,8 @@
 			            ));
 
 			$config = Config::current();
-			if (!empty($config->defensio_api_key)) {
-				$defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
-				$defensio->report_false_negatives(array("owner-url" => Config::current()->url, "signatures" => $comment->signature));
-			}
+			if (!empty($config->defensio_api_key))
+				$this->defensio->report_false_negatives(array("owner-url" => Config::current()->url, "signatures" => $comment->signature));
 
 			redirect("/admin/?action=manage_comments&spammed");
 		}
@@ -347,13 +345,11 @@
 			$config->set("comments_per_page", $_POST['comments_per_page']);
 
 			if (!empty($_POST['defensio_api_key'])) {
-				$defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
-				try {
-					$defensio->validate_key(array("owner-url" => $config->url));
-					$config->set("defensio_api_key", $_POST['defensio_api_key']);
-				} catch (Exception $e) {
+				$defensio = new Defensio($config->url, $_POST['defensio_api_key']);
+				if ($defensio->errorsExist())
 					$admin->context["invalid_defensio"] = true;
-				}
+				else
+					$config->set("defensio_api_key", $_POST['defensio_api_key']);
 			}
 
 			$admin->context["updated"] = true;
@@ -498,11 +494,10 @@
 			}
 
 			if (!empty($config->defensio_api_key)) {
-				$defensio = new Gregphoto_Defensio($config->defensio_api_key, $config->url);
 				if (!empty($false_positives))
-					$defensio->report_false_positives(array("owner-url" => $config->url, "signatures" => implode(",", $false_positives)));
+					$this->defensio->report_false_positives(array("owner-url" => $config->url, "signatures" => implode(",", $false_positives)));
 				if (!empty($false_negatives))
-					$defensio->report_false_negatives(array("owner-url" => $config->url, "signatures" => implode(",", $false_negatives)));
+					$this->defensio->report_false_negatives(array("owner-url" => $config->url, "signatures" => implode(",", $false_negatives)));
 			}
 		}
 

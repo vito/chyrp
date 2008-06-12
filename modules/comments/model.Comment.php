@@ -73,13 +73,13 @@
 				                 "permalink" => $post->url(),
 				                 "referrer" => $_SERVER['HTTP_REFERER'],
 				                 "user-logged-in" => logged_in());
-				$check_comment = $modules["comments"]->defensio->audit_comment($comment);
+				list($spam, $spaminess, $signature) = $modules["comments"]->defensio->auditComment($comment);
 
-				if ($check_comment["spam"] == "true") {
-					self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], "spam", $check_comment["signature"], datetime(), $post_id, $visitor->id);
+				if ($spam) {
+					self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], "spam", $signature, datetime(), $post_id, $visitor->id);
 					error(__("Spam Comment"), __("Your comment has been marked as spam. It will have to be approved before it will show up.", "comments"));
 				} else {
-					$id = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, $check_comment["signature"], datetime(), $post_id, $visitor->id);
+					$id = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, $signature, datetime(), $post_id, $visitor->id);
 					if (isset($_POST['ajax']))
 						exit("{ comment_id: ".$id." }");
 					redirect($post->url()."#comment_".$id);
