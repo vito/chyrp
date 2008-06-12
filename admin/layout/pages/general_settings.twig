@@ -33,11 +33,12 @@
 						<input class="text" type="text" name="email" value="${ site.email | escape }" id="email" />
 					</p>
 					<p>
-						<label for="time_offset">${ "Time Offset" | translate }</label>
-						<input class="text" type="text" name="time_offset" value="${ site.time_offset / 3600 }" id="time_offset" />
-						<small>
-							${ "(server time: %s)" | translate | format(now_server | strftime) }
-						</small>
+						<label for="time_offset">${ "What time is it?" | translate }</label>
+						<select name="time_offset" id="time_offset">
+						{% for offset, timestamp in time_offsets | items %}
+							<option value="$offset"${ offset | option_selected(site.time_offset / 3600) }>${ timestamp | date("h:i A \\o\\\\n F jS, Y" | translate) }</option>
+						{% endfor %}
+						</select>
 					</p>
 					<p>
 						<label for="locale">${ "Language" | translate }</label>

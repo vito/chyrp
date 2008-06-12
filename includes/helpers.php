@@ -747,8 +747,12 @@
 	 * Function: selected
 	 * If $val1 == $val2, outputs ' selected="selected"'
 	 */
-	function selected($val1, $val2) {
-		if ($val1 == $val2) echo ' selected="selected"';
+	function selected($val1, $val2, $return = false) {
+		if ($val1 == $val2)
+			if ($return)
+				return ' selected="selected"';
+			else
+				echo ' selected="selected"';
 	}
 
 	/**
@@ -1435,4 +1439,17 @@
 	function codepoint2name($string) {
 		global $html_entities;
 		return str_replace(array_values($html_entities), array_keys($html_entities), $string);
+	}
+
+	/**
+	 * Function: offset_select
+	 * Returns an array of offsets associated to their timestamps.
+	 */
+	function time_offsets() {
+		$return = array();
+
+		for ($offset = -12; $offset <= 14; $offset++)
+			$return[$offset] = @time() + ($offset * 60 * 60);
+
+		return $return;
 	}

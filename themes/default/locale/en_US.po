@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-12 02:33-0500\n"
+"PO-Revision-Date: 2008-06-12 04:56-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -270,7 +270,7 @@ msgstr ""
 msgid "There don't seem to be any posts in the timeframe you specified."
 msgstr ""
 
-#: themes/default/content/post.twig:25
+#: themes/default/content/post.twig:27
 msgid "Delete"
 msgstr ""
 
@@ -287,7 +287,7 @@ msgstr ""
 msgid "There aren't any tags yet. Such a shame."
 msgstr ""
 
-#: themes/default/content/post.twig:22
+#: themes/default/content/post.twig:24
 msgid "Trackback"
 msgstr ""
 
@@ -301,7 +301,7 @@ msgstr ""
 msgid "pinned"
 msgstr ""
 
-#: themes/default/content/post.twig:24
+#: themes/default/content/post.twig:26
 msgid "Edit"
 msgstr ""
 

@@ -440,9 +440,11 @@
 					<textarea name="description" rows="2" cols="40"><?php value_fallback("description"); ?></textarea>
 				</p>
 				<p id="time_offset_field" class="extra">
-					<label for="time_offset"><?php echo __("Time Offset"); ?></label>
-					<input type="text" name="time_offset" value="0" id="time_offset" />
-					<span class="sub inline">(server time: <?php echo @date("F jS, Y g:i A"); ?>)</span>
+					<label for="time_offset"><?php echo __("What time is it?"); ?></label>
+					<select name="time_offset" id="time_offset">
+					<?php foreach (time_offsets() as $offset => $timestamp): ?>
+						<option value="<?php echo $offset; ?>"<?php selected($offset, 0); ?>><?php echo when("g:i A, F jS, Y", $timestamp); ?></option>
+					<?php endforeach; ?>
 				</p>
 
 				<h1><?php echo __("Admin Account"); ?></h1>
