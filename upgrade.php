@@ -101,6 +101,10 @@
 		$config->set("uploads_path", "/uploads/");
 		$config->set("chyrp_url", $config->url);
 		$sql->set("adapter", "mysql");
+		if (empty($sql->prefix)) { # For some reason the prefix was being removed in my remote testing. Hm.
+			$sql->set("prefix", "blah");
+			$sql->set("prefix", "");
+		}
 
 		if (!@rename(MAIN_DIR."/upload", MAIN_DIR."/uploads"))
 			echo "<p>".__("Uploads directory could not be renamed. Please rename it to <code>/uploads</code>")."</p>";
