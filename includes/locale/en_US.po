@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-12 14:19-0500\n"
+"PO-Revision-Date: 2008-06-12 15:04-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -385,7 +385,7 @@ msgid "Edit User &#8220;%s&#8221;"
 msgstr ""
 
 #: admin/layout/pages/manage_groups.twig:32
-#: admin/index.php:107
+#: admin/index.php:106
 msgid "Groups"
 msgstr ""
 
@@ -449,7 +449,7 @@ msgstr ""
 msgid "Please specify an ID of the post you would like to edit."
 msgstr ""
 
-#: admin/index.php:116
+#: admin/index.php:115
 msgid "General"
 msgstr ""
 
@@ -462,7 +462,7 @@ msgid "Theme changed."
 msgstr ""
 
 #: admin/layout/pages/manage_export.twig:11
-#: admin/index.php:104
+#: admin/index.php:103
 msgid "Posts"
 msgstr ""
 
@@ -475,7 +475,7 @@ msgstr ""
 msgid "An ID is required to delete a group."
 msgstr ""
 
-#: admin/index.php:117
+#: admin/index.php:116
 msgid "Content"
 msgstr ""
 
@@ -651,8 +651,8 @@ msgstr ""
 msgid "Install some Modules."
 msgstr ""
 
-#: includes/class/Theme.php:292
-#: admin/index.php:76
+#: includes/class/Theme.php:299
+#: admin/index.php:75
 #, php-format
 msgid "Couldn't load template:<br /><br />%s"
 msgstr ""
@@ -809,7 +809,7 @@ msgstr ""
 
 #: admin/layout/pages/extend_feathers.twig:3
 #: admin/layout/pages/extend_feathers.twig:6
-#: admin/index.php:125
+#: admin/index.php:124
 msgid "Feathers"
 msgstr ""
 
@@ -949,7 +949,7 @@ msgstr ""
 
 #: admin/layout/pages/extend_modules.twig:3
 #: admin/layout/pages/extend_modules.twig:6
-#: admin/index.php:124
+#: admin/index.php:123
 msgid "Modules"
 msgstr ""
 
@@ -995,8 +995,8 @@ msgstr ""
 msgid "You must be logged in to access this area."
 msgstr ""
 
-#: includes/class/Theme.php:292
-#: admin/index.php:76
+#: includes/class/Theme.php:299
+#: admin/index.php:75
 msgid "Template Missing"
 msgstr ""
 
@@ -1015,7 +1015,7 @@ msgstr ""
 
 #: admin/layout/pages/extend_themes.twig:3
 #: admin/layout/pages/extend_themes.twig:6
-#: admin/index.php:126
+#: admin/index.php:125
 msgid "Themes"
 msgstr ""
 
@@ -1442,7 +1442,7 @@ msgstr ""
 msgid "Registered Only"
 msgstr ""
 
-#: admin/index.php:97
+#: admin/index.php:96
 msgid "Page"
 msgstr ""
 
@@ -1514,7 +1514,7 @@ msgid "Full Name:"
 msgstr ""
 
 #: admin/layout/pages/manage_export.twig:19
-#: admin/index.php:105
+#: admin/index.php:104
 msgid "Pages"
 msgstr ""
 
@@ -1565,8 +1565,8 @@ msgstr ""
 msgid "Please CHMOD <code>%s</code> to 777."
 msgstr ""
 
-#: admin/index.php:106
-#: admin/index.php:118
+#: admin/index.php:105
+#: admin/index.php:117
 msgid "Users"
 msgstr ""
 
@@ -1770,7 +1770,7 @@ msgstr ""
 msgid "Please enter the database information for your TextPattern installation."
 msgstr ""
 
-#: admin/index.php:119
+#: admin/index.php:118
 msgid "Routes"
 msgstr ""
 

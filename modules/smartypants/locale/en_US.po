@@ -16,23 +16,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: feathers/link/feather.php:5
-msgid "Name"
+#: modules/smartypants/info.yaml:1
+msgid "SmartyPants"
 msgstr ""
 
-#: feathers/link/feather.php:4
-msgid "URL"
-msgstr ""
-
-#: feathers/link/info.yaml:1
-msgid "Link"
-msgstr ""
-
-#: feathers/link/feather.php:6
-msgid "Description"
-msgstr ""
-
-#: feathers/link/info.yaml:4
-msgid "Link to other sites, name it, and add an optional description."
+#: modules/smartypants/info.yaml:5
+msgid "A SmartyPants wrapper for posts, pages, and comments. Uses <a href=\"http://michelf.com/projects/php-smartypants/\">SmartyPants Typographer 1.0</a>."
 msgstr ""
 

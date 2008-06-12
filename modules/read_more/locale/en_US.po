@@ -16,23 +16,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: feathers/link/feather.php:5
-msgid "Name"
+#: modules/read_more/info.yaml:4
+msgid "Split entries at <code><!--more--></code>. Split your posts using the \"read_more\" twig filter. Pass a string as an argument to use it as the link text."
 msgstr ""
 
-#: feathers/link/feather.php:4
-msgid "URL"
-msgstr ""
-
-#: feathers/link/info.yaml:1
-msgid "Link"
-msgstr ""
-
-#: feathers/link/feather.php:6
-msgid "Description"
-msgstr ""
-
-#: feathers/link/info.yaml:4
-msgid "Link to other sites, name it, and add an optional description."
+#: modules/read_more/info.yaml:1
+msgid "Read More"
 msgstr ""
 

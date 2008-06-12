@@ -16,23 +16,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: feathers/link/feather.php:5
-msgid "Name"
+#: modules/paging/info.yaml:4
+msgid "Split entries into multiple pages at <code><!--page--></code> tags. Use $post.paginated.prev_link and $post.paginated.next_link in your theme."
 msgstr ""
 
-#: feathers/link/feather.php:4
-msgid "URL"
-msgstr ""
-
-#: feathers/link/info.yaml:1
-msgid "Link"
-msgstr ""
-
-#: feathers/link/feather.php:6
-msgid "Description"
-msgstr ""
-
-#: feathers/link/info.yaml:4
-msgid "Link to other sites, name it, and add an optional description."
+#: modules/paging/info.yaml:1
+msgid "Paging"
 msgstr ""
 
