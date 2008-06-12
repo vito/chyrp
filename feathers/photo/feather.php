@@ -2,7 +2,7 @@
 	class Photo extends Feather {
 		public function __construct() {
 			$this->setField(array("attr" => "photo", "type" => "file", "label" => __("Photo", "photo")));
-			$this->setField(array("attr" => "from_url", "type" => "text", "label" => __("From URL?", "photo"), "optional" => true));
+			$this->setField(array("attr" => "from_url", "type" => "text", "label" => __("From URL?", "photo"), "optional" => true, "no_value" => true));
 			$this->setField(array("attr" => "caption", "type" => "text_block", "label" => __("Caption", "photo"), "optional" => true, "preview" => true, "bookmarklet" => "selection"));
 			$this->setFilter("caption", "markup_post_text");
 			$this->respondTo("delete_post", "delete_file");

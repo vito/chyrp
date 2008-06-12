@@ -2,7 +2,7 @@
 	class Audio extends Feather {
 		public function __construct() {
 			$this->setField(array("attr" => "audio", "type" => "file", "label" => __("MP3 File", "audio")));
-			$this->setField(array("attr" => "from_url", "type" => "text", "label" => __("From URL?", "audio"), "optional" => true));
+			$this->setField(array("attr" => "from_url", "type" => "text", "label" => __("From URL?", "audio"), "optional" => true, "no_value" => true));
 			$this->setField(array("attr" => "description", "type" => "text_block", "label" => __("Description", "audio"), "optional" => true, "preview" => true, "bookmarklet" => "selection"));
 			$this->setFilter("description", "markup_post_text");
 			$this->respondTo("delete_post", "delete_file");
