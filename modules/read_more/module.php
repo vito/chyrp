@@ -2,7 +2,7 @@
 	class ReadMore extends Module {
 		public function __construct() {
 			$this->addAlias("markup_post_text", "makesafe", 8);
-			if (isset($_GET['feed']) or ADMIN)
+			if (ADMIN)
 				$this->addAlias("markup_post_text", "read_more");
 		}
 		static function makesafe($text, $post) {
