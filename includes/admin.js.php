@@ -170,7 +170,7 @@ function extend_draggables() {
 					box.loader(true)
 					$(json.notifications).each(function(){
 						if (this == "") return
-						alert(this)
+						alert(this.replace(/<([^>]+)>\n?/gm, ""))
 					})
 				} })
 			})
