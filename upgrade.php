@@ -101,12 +101,16 @@
 		}
 ?>
 			<p><?php echo __("All done!"); ?></p>
+			<p><?php echo __("Now you can begin overwriting all of your old Chyrp files with the new ones. Be careful though &mdash; some FTP applications will remove directories and upload the new ones instead of merging them. This may result in loss of data (modules, feathers, themes, uploads, etc.)."); ?></p>
+			<p><?php echo __("<strong>Be especially careful not to accidentally remove <code>/includes/database.yaml.php</code> and <code>/includes/config.yaml.php</code>."); ?></p>
 			<a class="done" href="<?php echo $config->url; ?>"><?php echo __("Take me to my site! &rarr;"); ?></a>
 <?php
 	} else {
 ?>
 			<h1><?php echo __("Upgrade"); ?></h1>
 			<form action="upgrade.php" method="post" accept-charset="utf-8">
+				<p><?php echo __("Before upgrading, please disable all modules and feathers that don't come with Chyrp (you can leave the Text feather enabled)."); ?></p>
+				<p><?php echo __("You may also want to create an index.html file alongside your index.php to serve as a placeholder during the upgrade."); ?></p>
 				<label for="version"><?php echo __("What are you upgrading from?"); ?></label>
 				<select name="version">
 					<option value="1130">1.1.3.x</option>
