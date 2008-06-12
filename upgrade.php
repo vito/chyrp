@@ -62,32 +62,105 @@
 		             change `edit_tweet` `edit_post` tinyint(1) not null default '0'");
 		$sql->query("alter table `__groups`
 		             change `delete_tweet` `delete_post` tinyint(1) not null default '0'");
-		echo "<p>"._f("Upgrading to %s&hellip;", array("v1.0.3"))."</p>\n";
+		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v1.0.3")."</p>\n";
 	}
 	function to_1040() {
 		$sql = SQL::current();
 		$sql->query("alter table `__pages`
 		             add `parent_id` int(11) not null default '0' after `user_id`");
-		echo "<p>"._f("Upgrading to %s&hellip;", array("v1.0.4a"))."</p>\n";
+		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v1.0.4a")."</p>\n";
 	}
 	function to_1100() {
 		$sql = SQL::current();
 		$sql->query("alter table `__pages`
 		             add `list_order` int(11) not null default '0' after `show_in_list`");
 
-		echo "<p>"._f("Upgrading to %s&hellip;", array("v1.1"))."</p>\n";
+		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v1.1")."</p>\n";
 	}
 	function to_1130() {
-		$config = Config::current();
+		global $config;
 		$config->set("secure_hashkey", md5(random(32, true)));
-		echo "<p>"._f("Upgrading to %s&hellip;", array("v1.1.3"))."</p>\n";
+		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "1.1.3")."</p>\n";
 	}
 	function to_2000() {
-		$config = Config::current();
+		global $config, $sql, $misc;
+		$sql->adapter = null;
 		$config->set("uploads_path", "/uploads/");
 		$config->set("chyrp_url", $config->url);
-		# TODO: alter groups/permisions
-		echo "<p>"._f("Upgrading to %s&hellip;", array("v2.0"))."</p>\n";
+		$sql->set("adapter", "mysql");
+
+		$groups = array();
+		# Upgrade the Groups/Permissions stuff
+		$get_groups = $sql->query("select * from `".$sql->prefix."groups`");
+		while ($group = $sql->fetch_object($get_groups)) {
+			$groups[$group->name] = array();
+			foreach ($group as $key => $val)
+				if ($key != "name" and $val)
+					$groups[$group->name][] = $key;
+		}
+		foreach ($groups as $key => &$val)
+			$val = Spyc::YAMLDump($val);
+
+		$sql->query("DROP TABLE IF EXISTS `".$sql->prefix."groups`");
+
+		# Groups table
+		$sql->query("CREATE TABLE IF NOT EXISTS `".$sql->prefix."groups` (
+		                 `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+		                 `name` VARCHAR(100) DEFAULT '',
+	                     `permissions` LONGTEXT DEFAULT '',
+		                 UNIQUE (`name`)
+		             ) DEFAULT CHARSET=utf8");
+
+		# Permissions table
+		$sql->query("CREATE TABLE IF NOT EXISTS `".$sql->prefix."permissions` (
+		                 `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+		                 `name` VARCHAR(100) DEFAULT '',
+		                 UNIQUE (`name`)
+		             ) DEFAULT CHARSET=utf8");
+
+		# Sessions table
+		$sql->query("CREATE TABLE IF NOT EXISTS `".$sql->prefix."sessions` (
+		                 `id` VARCHAR(32) DEFAULT '',
+		                 `data` LONGTEXT DEFAULT '',
+		                 `user_id` VARCHAR(16) DEFAULT '0',
+		                 `created_at` DATETIME DEFAULT '0000-00-00 00:00:00',
+		                 `updated_at` DATETIME DEFAULT '0000-00-00 00:00:00',
+		                 PRIMARY KEY (`id`)
+		             ) DEFAULT CHARSET=utf8");
+
+		$permissions = array("view_site",
+		                     "view_private",
+		                     "view_draft",
+		                     "view_own_draft",
+		                     "add_post",
+		                     "add_draft",
+		                     "edit_post",
+		                     "edit_draft",
+		                     "edit_own_post",
+		                     "edit_own_draft",
+		                     "delete_post",
+		                     "delete_draft",
+		                     "delete_own_post",
+		                     "delete_own_draft",
+		                     "add_page",
+		                     "edit_page",
+		                     "delete_page",
+		                     "add_user",
+		                     "edit_user",
+		                     "delete_user",
+		                     "add_group",
+		                     "edit_group",
+		                     "delete_group",
+		                     "change_settings",
+		                     "toggle_extensions");
+
+		foreach ($permissions as $permission)
+			$sql->query("INSERT INTO `".$sql->prefix."permissions` SET `name` = '".$permission."'");
+
+		foreach($groups as $name => $permissions)
+			$sql->query("INSERT INTO `".$sql->prefix."groups` SET `name` = '".$misc->fix(ucfirst($name))."', `permissions` = '".$misc->fix($permissions)."'");
+
+		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v2.0")."</p>\n";
 	}
 
 	if (!empty($_POST)) {
@@ -101,8 +174,6 @@
 		}
 ?>
 			<p><?php echo __("All done!"); ?></p>
-			<p><?php echo __("Now you can begin overwriting all of your old Chyrp files with the new ones. Be careful though &mdash; some FTP applications will remove directories and upload the new ones instead of merging them. This may result in loss of data (modules, feathers, themes, uploads, etc.)."); ?></p>
-			<p><?php echo __("<strong>Be especially careful not to accidentally remove <code>/includes/database.yaml.php</code> and <code>/includes/config.yaml.php</code>."); ?></p>
 			<a class="done" href="<?php echo $config->url; ?>"><?php echo __("Take me to my site! &rarr;"); ?></a>
 <?php
 	} else {
