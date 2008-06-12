@@ -1,0 +1,25 @@
+<?php
+$this->requireTemplate("layouts/default.twig");
+class __TwigTemplate_ffb39d853d44a5d66c82743cf726e7c5 extends __TwigTemplate_c19a24ba4c4f488924cc287729ac8d39 {
+/* LINE:2 */
+public function block_content($context) {
+$context['::superblock'] = array($this, 'parent::block_content');
+echo "\n";
+/* LINE:3 */
+$context['::parent'] = $parent = $context;
+foreach (twig_iterate($context, twig_get_attribute((isset($context['posts']) ? $context['posts'] : NULL), "paginated")) as $iterator) {
+twig_set_loop_context($context, $iterator, "post");
+echo "\n";
+/* LINE:4 */
+twig_get_current_template()->loader->getTemplate("content/post.twig")->display($context);
+echo "\n";
+}
+if (!$context['loop']['iterated']) {
+/* LINE:5 */
+echo "\n\t\t\t\t\t<h2>No Posts</h2>\n\t\t\t\t\t<p>Nothing here yet!</p>\n";
+}$context = $context['::parent'];
+/* LINE:8 */
+echo "\n";
+}
+
+}

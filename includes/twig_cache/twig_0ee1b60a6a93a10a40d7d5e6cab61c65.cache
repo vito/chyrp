@@ -1,0 +1,13 @@
+<?php
+class __TwigTemplate_0ee1b60a6a93a10a40d7d5e6cab61c65 {
+public function render($context) {
+/* LINE:1 */
+echo "\t\t\t\t\t\t<blockquote>\n\t\t\t\t\t\t\t";
+/* LINE:2 */
+echo twig_missing_filter("read_more", twig_get_attribute((isset($context['post']) ? $context['post'] : NULL), "quote"));
+echo "\n\t\t\t\t\t\t</blockquote>\n\t\t\t\t\t\t<div class=\"source\">&mdash; ";
+/* LINE:4 */
+echo twig_missing_filter("read_more", twig_get_attribute((isset($context['post']) ? $context['post'] : NULL), "source"));
+echo "</div>";
+}
+}

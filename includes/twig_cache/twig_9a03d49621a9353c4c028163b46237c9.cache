@@ -1,0 +1,108 @@
+<?php
+class __TwigTemplate_9a03d49621a9353c4c028163b46237c9 {
+public function render($context) {
+/* LINE:1 */
+echo "\t\t\t\t\t";
+if ((twig_get_attribute((isset($context['route']) ? $context['route'] : NULL), "action") == ($tmp1 = "view")) && (twig_get_attribute((isset($context['post']) ? $context['post'] : NULL), "status") == ($tmp1 = "draft"))) {
+echo "\n\t\t\t\t\t<div class=\"notice\" onClick=\"$";
+/* LINE:2 */
+echo "(this).fadeOut('fast')\">";
+echo twig_translate_string_filter("This post is a draft.");
+echo "<span class=\"sub\">";
+echo twig_translate_string_filter("(click to hide)");
+echo "</span></div>\n\t\t\t\t\t";
+}
+/* LINE:3 */
+echo "\n\t\t\t\t\t";
+/* LINE:4 */
+if (((!twig_get_attribute((isset($context['route']) ? $context['route'] : NULL), "ajax"))) || ((twig_get_attribute((isset($context['route']) ? $context['route'] : NULL), "ajax")) && (twig_get_attribute((isset($context['POST']) ? $context['POST'] : NULL), "action") == ($tmp1 = "view_post")))) {
+echo "\n\t\t\t\t\t<div class=\"post";
+/* LINE:5 */
+if (twig_get_attribute((isset($context['post']) ? $context['post'] : NULL), "pinned")) {
+echo " pinned";
+}
+echo "\" id=\"post_";
+echo twig_get_attribute((isset($context['post']) ? $context['post'] : NULL), "id");
+echo "\">\n\t\t\t\t\t\t<div class=\"";
+/* LINE:6 */
+echo twig_get_attribute((isset($context['post']) ? $context['post'] : NULL), "feather");
+echo " target\">\n\t\t\t\t\t";
+}
+/* LINE:7 */
+echo "\n\t\t\t\t\t\t\t";
+/* LINE:8 */
+if (twig_get_attribute((isset($context['post']) ? $context['post'] : NULL), "pinned")) {
+echo "<span class=\"pinned_text\">";
+echo twig_translate_string_filter("pinned");
+echo "</span>";
+}
+echo "\n\t\t\t\t\t\t\t";
+/* LINE:9 */
+twig_get_current_template()->loader->getTemplate((("content/feathers/") . (twig_get_attribute((isset($context['post']) ? $context['post'] : NULL), "feather"))) . (".twig"))->display($context);
+echo "\n\t\t\t\t\t\t\t";
+/* LINE:10 */
+if (twig_get_attribute((isset($context['route']) ? $context['route'] : NULL), "action") == ($tmp1 = "view")) {
+echo "\n\t\t\t\t\t\t\t";
+/* LINE:11 */
+echo twig_get_attribute(twig_get_attribute((isset($context['post']) ? $context['post'] : NULL), "paginated"), "next_link");
+echo "\n\t\t\t\t\t\t\t";
+/* LINE:12 */
+echo twig_get_attribute(twig_get_attribute((isset($context['post']) ? $context['post'] : NULL), "paginated"), "prev_link");
+echo "\n\t\t\t\t\t\t\t";
+}
+/* LINE:13 */
+echo "\n\t\t\t\t\t\t\t<div class=\"clear\"></div>\n\t\t\t\t\t\t\t<span class=\"info\">\n\t\t\t\t\t\t\t\t<strong><a href=\"";
+/* LINE:16 */
+echo twig_get_attribute((isset($context['post']) ? $context['post'] : NULL), "url");
+echo "\">";
+echo twig_date_format_filter(twig_get_attribute((isset($context['post']) ? $context['post'] : NULL), "created_at"), "F jS @ g:i A");
+echo "</a></strong>\n\t\t\t\t\t\t\t\t";
+/* LINE:17 */
+if (twig_get_attribute((isset($context['enabled_modules']) ? $context['enabled_modules'] : NULL), "comments")) {
+echo "\n\t\t\t\t\t\t\t\t<em>|</em> <a href=\"";
+/* LINE:18 */
+echo twig_get_attribute((isset($context['post']) ? $context['post'] : NULL), "url");
+echo "#comments\">";
+echo sprintf(twig_translate_plural_string_filter("%s Comment", "%s Comments", twig_get_attribute((isset($context['post']) ? $context['post'] : NULL), "comment_count")), twig_get_attribute((isset($context['post']) ? $context['post'] : NULL), "comment_count"));
+echo "</a>\n\t\t\t\t\t\t\t\t";
+}
+/* LINE:19 */
+echo "\n\t\t\t\t\t\t\t\t";
+/* LINE:20 */
+if (count(twig_get_attribute(twig_get_attribute((isset($context['post']) ? $context['post'] : NULL), "tags"), "linked")) > ($tmp1 = 0)) {
+echo "\n\t\t\t\t\t\t\t\t<em>|</em> Tags: ";
+/* LINE:21 */
+echo twig_join_filter(twig_get_attribute(twig_get_attribute((isset($context['post']) ? $context['post'] : NULL), "tags"), "linked"));
+echo "\n\t\t\t\t\t\t\t\t";
+}
+/* LINE:22 */
+echo "\n\t\t\t\t\t\t\t\t";
+/* LINE:23 */
+if (twig_get_attribute((isset($context['site']) ? $context['site'] : NULL), "enable_trackbacking")) {
+echo "\n\t\t\t\t\t\t\t\t<em>|</em> <a href=\"";
+/* LINE:24 */
+echo twig_get_attribute((isset($context['post']) ? $context['post'] : NULL), "trackback_url");
+echo "\">";
+echo twig_translate_string_filter("Trackback");
+echo "</a>\n\t\t\t\t\t\t\t\t";
+}
+/* LINE:25 */
+echo "\n\t\t\t\t\t\t\t\t";
+/* LINE:26 */
+echo call_user_func(array((isset($context['post']) ? $context['post'] : NULL), "edit_link"), twig_translate_string_filter("Edit"), "<em>|</em> ");
+echo "\n\t\t\t\t\t\t\t\t";
+/* LINE:27 */
+echo call_user_func(array((isset($context['post']) ? $context['post'] : NULL), "delete_link"), twig_translate_string_filter("Delete"), "<em>|</em> ");
+echo "\n\t\t\t\t\t\t\t</span>\n\t\t\t\t\t\t\t<br class=\"clear\" />\n\t\t\t\t\t";
+/* LINE:30 */
+if (((!twig_get_attribute((isset($context['route']) ? $context['route'] : NULL), "ajax"))) || ((twig_get_attribute((isset($context['route']) ? $context['route'] : NULL), "ajax")) && (twig_get_attribute((isset($context['POST']) ? $context['POST'] : NULL), "action") == ($tmp1 = "view_post")))) {
+echo "\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t";
+/* LINE:32 */
+if ((twig_get_attribute((isset($context['route']) ? $context['route'] : NULL), "action") != ($tmp1 = "view")) && ((!twig_get_attribute((isset($context['loop']) ? $context['loop'] : NULL), "last")))) {
+echo "\n\t\t\t\t\t\t<br />\n\t\t\t\t\t\t";
+}
+/* LINE:34 */
+echo "\n\t\t\t\t\t</div>\n\t\t\t\t\t";
+}
+}
+}

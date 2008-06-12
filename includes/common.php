@@ -20,7 +20,7 @@
 
 	# Constant: DEBUG
 	# Should Chyrp use debugging processes?
-	define('DEBUG', true);
+	define('DEBUG', false);
 
 	# Make sure E_STRICT is on so Chyrp remains errorless.
 	error_reporting(E_ALL | E_STRICT);
