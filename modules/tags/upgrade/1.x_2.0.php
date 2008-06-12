@@ -1,6 +1,9 @@
 <?php
 	require "../../../includes/common.php";
 
+	if (!$user->can("toggle_extensions"))
+		exit;
+
 	# Back up all the current tags.
 	echo __("If the upgrade fails, here's a backup:", "tags")."<br />\n";
 	echo '<textarea rows="15" cols="100">';
