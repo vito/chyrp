@@ -965,7 +965,7 @@
 
 			$current_info =& $this->context["current_theme"]["info"];
 
-			fallback($current_info["name"], $folder);
+			fallback($current_info["name"], $config->theme);
 			fallback($current_info["version"], "0");
 			fallback($current_info["url"], "");
 			fallback($current_info["description"], "");
@@ -986,6 +986,13 @@
 						load_translator($folder, THEMES_DIR."/".$folder."/locale/".$config->locale.".mo");
 
 					$info = Spyc::YAMLLoad(THEMES_DIR."/".$folder."/info.yaml");
+
+					fallback($info["name"], $folder);
+					fallback($info["version"], "0");
+					fallback($info["url"], "");
+					fallback($info["description"], "");
+					fallback($info["author"], array("name" => "", "url" => ""));
+
 					$info["author"]["link"] = (!empty($info["author"]["url"])) ?
 					                              '<a href="'.$info["author"]["url"].'">'.$info["author"]["name"].'</a>' :
 					                              $info["author"]["name"] ;

@@ -1,7 +1,7 @@
 <?php
 	require "../../../includes/common.php";
 
-	if (!$user->can("toggle_extensions"))
+	if (!$visitor->group()->can("toggle_extensions"))
 		exit;
 
 	# Back up all the current tags.

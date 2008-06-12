@@ -1,7 +1,7 @@
 <?php
 	require "../../../includes/common.php";
 
-	if (!$user->can("toggle_extensions"))
+	if (!$visitor->group()->can("toggle_extensions"))
 		exit;
 
 	echo __("Adding `signature` column to comments table...", "comments")."<br />";
