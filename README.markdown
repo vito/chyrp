@@ -30,9 +30,16 @@ Keeping Chyrp up to date is important to make sure that your blog is as safe as 
 
 1. Download the latest version of Chyrp from [http://chyrp.net/](http://chyrp.net/).
 2. Overwrite your current Chyrp installation files (be sure to back up `/themes`, `/modules`, and `/feathers`) with the new ones.
-3. Re-install by navigating to [install.php]().
-4. Upgrade your database by navigating to [upgrade.php]().
-5. Restore any backups you made.
+3. Upgrade by navigating to [upgrade.php]().
+4. Restore any backups you made.
+
+Upgrading from 1.1.x
+====================
+Upgrading from 1.1.x is only available for the first 2.0 release.
+
+1. Overwrite your old upgrade.php with the one included in the 2.0 package.
+2. Upgrade by navigating to [upgrade.php]().
+3. Follow its directions.
 
 Extensions
 ==========
