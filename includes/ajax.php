@@ -12,7 +12,7 @@
 			if (!$post->editable())
 				error(__("Access Denied"), __("You do not have sufficient privileges to edit posts."));
 
-			$title = call_user_func(array(Post::feather_class($_POST['id']), "title"), $post);
+			$title = $post->title();
 			$theme_file = THEME_DIR."/forms/feathers/".$post->feather.".php";
 			$default_file = FEATHERS_DIR."/".$post->feather."/fields.php";
 ?>
