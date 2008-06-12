@@ -147,7 +147,7 @@
 		public function next_page_url($clean_urls = true) {
 			global $action;
 			$request = rtrim($_SERVER['REQUEST_URI'], "/");
-			$only_page = (count($_GET) == 2 and isset($_GET['action']) and $_GET['action'] == "index" and isset($_GET[$this->name]));
+			$only_page = (count($_GET) == 1 and isset($_GET[$this->name]));
 
 			$config = Config::current();
 			if (!$config->clean_urls or !$clean_urls or ADMIN)
@@ -168,7 +168,7 @@
 		public function prev_page_url($clean_urls = true) {
 			global $action;
 			$request = rtrim($_SERVER['REQUEST_URI'], "/");
-			$only_page = (count($_GET) == 2 and isset($_GET['action']) and $_GET['action'] == "index" and isset($_GET[$this->name]));
+			$only_page = (count($_GET) == 1 and isset($_GET[$this->name]));
 
 			$config = Config::current();
 			if (!$config->clean_urls or !$clean_urls or ADMIN)
