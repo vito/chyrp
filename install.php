@@ -445,6 +445,7 @@
 					<?php foreach (time_offsets() as $offset => $timestamp): ?>
 						<option value="<?php echo $offset; ?>"<?php selected($offset, 0); ?>><?php echo when("g:i A, F jS, Y", $timestamp); ?></option>
 					<?php endforeach; ?>
+					</select>
 				</p>
 
 				<h1><?php echo __("Admin Account"); ?></h1>
