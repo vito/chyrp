@@ -347,6 +347,7 @@ class Defensio extends DefensioObject {
 	 */
 	function _parseResponse($response, $field = '') {
 		$lines = explode("\n", $response);
+		$array = array();
 		foreach($lines as $line) {
 			$line = trim($line);
 			if($line != "" && $line != "defensio-result:") {
@@ -356,7 +357,7 @@ class Defensio extends DefensioObject {
 			}
 		}
 
-		if($field != '') {
+		if($field != '' and isset($array[$field])) {
 			return $array[$field];
 		}
 		else {

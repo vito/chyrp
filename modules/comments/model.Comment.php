@@ -79,16 +79,16 @@
 					self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], "spam", $signature, datetime(), $post_id, $visitor->id);
 					error(__("Spam Comment"), __("Your comment has been marked as spam. It will have to be approved before it will show up.", "comments"));
 				} else {
-					$id = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, $signature, datetime(), $post_id, $visitor->id);
+					$comment = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, $signature, datetime(), $post_id, $visitor->id);
 					if (isset($_POST['ajax']))
-						exit("{ comment_id: ".$id." }");
-					redirect($post->url()."#comment_".$id);
+						exit("{ comment_id: ".$comment->id." }");
+					redirect($post->url()."#comment_".$comment->id);
 				}
 			} else {
 				$id = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, "", datetime(), $post_id, $visitor->id);
 				if (isset($_POST['ajax']))
-					exit("{ comment_id: ".$id." }");
-				redirect($post->url()."#comment_".$id);
+					exit("{ comment_id: ".$comment->id." }");
+				redirect($post->url()."#comment_".$comment->id);
 			}
 		}
 
@@ -126,7 +126,7 @@
 			                   "signature" => ":signature",
 			                   "post_id" => ":post_id",
 			                   "user_id" => ":user_id",
-			                   "created_at" => ":created_at",
+			                   "created_at" => ":created_at"),
 			             array(":body" => $body,
 			                   ":author" => strip_tags($author),
 			                   ":author_url" => strip_tags($url),
@@ -138,7 +138,7 @@
 			                   ":created_at" => $timestamp,
 			                   ":post_id" => $post_id,
 			                   ":user_id"=> $user_id
-			             )));
+			             ));
 			$new = new self($sql->db->lastInsertId());;
 
 			Trigger::current()->call("add_comment", $new);

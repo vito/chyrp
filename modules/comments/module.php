@@ -656,7 +656,7 @@ $(function(){
 						                                   "`id` > :last_comment",
 						                                   "(`status` != 'denied' OR ( `status` = 'denied'",
 						                                   "(`author_ip` = :current_ip OR (`user_id` != ''",
-						                                   "`user_id` = :user_id)))",
+						                                   "`user_id` = :user_id))))",
 						                                   "`status` != 'spam'"),
 						                             "`created_at` ASC",
 						                             array(":post_id" => $_POST['post_id'],
