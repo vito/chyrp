@@ -296,9 +296,10 @@ function draw_conflicts() {
 			var conflict_status = $("#"+conflict).parent().parent().attr("class").split(" ")[0] + "d"
 
 			if (conflict_status != this_status) {
-				var line_from_x = $("#"+conflict).offset().left
+				var line_from_x = (conflict_status == "disabled") ? $("#"+conflict).offset().left : $("#"+conflict).offset().left + $("#"+conflict).outerWidth()
 				var line_from_y = $("#"+conflict).offset().top + 12
-				var line_to_x   = $(this).offset().left + $(this).outerWidth()
+
+				var line_to_x = (conflict_status == "enabled") ? $(this).offset().left : $(this).offset().left + $(this).outerWidth()
 				var line_to_y   = $(this).offset().top + 12
 
 				// Line
@@ -308,13 +309,19 @@ function draw_conflicts() {
 
 				// Beginning circle
 				canvas.beginPath()
-				canvas.arc(line_from_x, line_from_y, 5, 1.35, -1.35, false)
+				if (conflict_status == "disabled")
+					canvas.arc(line_from_x, line_from_y, 5, 1.35, -1.35, false)
+				else
+					canvas.arc(line_from_x, line_from_y, 5, -1.35, 1.35, false)
 				canvas.fill()
 				canvas.stroke()
 
 				// Ending circle
 				canvas.beginPath()
-				canvas.arc(line_to_x, line_to_y, 5, -1.75, 1.75, false)
+				if (conflict_status == "disabled")
+					canvas.arc(line_to_x, line_to_y, 5, -1.75, 1.75, false)
+				else
+					canvas.arc(line_to_x, line_to_y, 5, 1.75, -1.75, false)
 				canvas.fill()
 				canvas.stroke()
 			} else if (conflict_status == "disabled") {
