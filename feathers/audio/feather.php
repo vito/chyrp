@@ -44,7 +44,7 @@
 			$post = new Post($_POST['id']);
 
 			if (isset($_FILES['audio']) and $_FILES['audio']['error'] == 0) {
-				delete_audio_file($_POST['id']);
+				$this->delete_file($post);
 				$filename = upload($_FILES['audio'], "mp3");
 			} else
 				$filename = $post->filename;
@@ -64,7 +64,6 @@
 		}
 		public function delete_file($post) {
 			if ($post->feather != "audio") return;
-
 			unlink(MAIN_DIR.Config::current()->uploads_path.$post->filename);
 		}
 		public function filter_post($post) {

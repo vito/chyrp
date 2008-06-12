@@ -42,7 +42,7 @@
 			$post = new Post($_POST['id']);
 
 			if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0) {
-				delete_photo_file($_POST['id']);
+				$this->delete_file($post);
 				$filename = upload($_FILES['photo']);
 			} else
 				$filename = $post->filename;
