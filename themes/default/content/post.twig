@@ -15,7 +15,7 @@
 							<span class="info">
 								<strong><a href="$post.url">${ post.created_at | date("F jS @ g:i A") }</a></strong>
 								{% if enabled_modules.comments %}
-								<em>|</em> <a href="$post.url#comments">$post.comment_count ${ "Comments" }</a>
+								<em>|</em> <a href="$post.url#comments">${ "%s Comment" | translate_plural("%s Comments", post.comment_count) | format(post.comment_count) }</a>
 								{% endif %}
 								{% if post.tags.linked | length > 0 %}
 								<em>|</em> Tags: ${ post.tags.linked | join }
