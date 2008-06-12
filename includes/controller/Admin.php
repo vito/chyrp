@@ -841,6 +841,12 @@
 								$info["conflicts_true"][] = $conflict;
 							}
 
+					fallback($info["name"], $folder);
+					fallback($info["version"], "0");
+					fallback($info["url"], "");
+					fallback($info["description"], "");
+					fallback($info["author"], array("name" => "", "url" => "");
+
 					$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
 					$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
 
@@ -900,6 +906,12 @@
 
 					$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$folder."/info.yaml");
 
+					fallback($info["name"], $folder);
+					fallback($info["version"], "0");
+					fallback($info["url"], "");
+					fallback($info["description"], "");
+					fallback($info["author"], array("name" => "", "url" => "");
+
 					$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
 					$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
 
@@ -952,6 +964,13 @@
 					                                "info" => Spyc::YAMLLoad(THEMES_DIR."/".$config->theme."/info.yaml"));
 
 			$current_info =& $this->context["current_theme"]["info"];
+
+			fallback($current_info["name"], $folder);
+			fallback($current_info["version"], "0");
+			fallback($current_info["url"], "");
+			fallback($current_info["description"], "");
+			fallback($current_info["author"], array("name" => "", "url" => "");
+
 			$current_info["author"]["link"] = (!empty($this->context["current_theme"]["info"]["author"]["url"])) ?
 			                                      '<a href="'.htmlspecialchars($current_info["author"]["url"]).'">'.htmlspecialchars($current_info["author"]["name"]).'</a>' :
 			                                      $current_info["author"]["name"] ;
