@@ -66,37 +66,15 @@
 <?php
 	$current_version = 2000;
 
-	function to_1030() {
-		$sql = SQL::current();
-		$sql->query("rename table `__tweets` to `__posts`");
-		$sql->query("alter table `__groups`
-		             change `add_tweet` `add_post` tinyint(1) not null default '0'");
-		$sql->query("alter table `__groups`
-		             change `edit_tweet` `edit_post` tinyint(1) not null default '0'");
-		$sql->query("alter table `__groups`
-		             change `delete_tweet` `delete_post` tinyint(1) not null default '0'");
-		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v1.0.3")."</p>\n";
-	}
-	function to_1040() {
-		$sql = SQL::current();
-		$sql->query("alter table `__pages`
-		             add `parent_id` int(11) not null default '0' after `user_id`");
-		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v1.0.4a")."</p>\n";
-	}
-	function to_1100() {
-		$sql = SQL::current();
-		$sql->query("alter table `__pages`
-		             add `list_order` int(11) not null default '0' after `show_in_list`");
-
-		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v1.1")."</p>\n";
-	}
 	function to_1130() {
 		global $config;
-		$config->set("secure_hashkey", md5(random(32, true)));
 		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "1.1.3")."</p>\n";
+		$config->set("secure_hashkey", md5(random(32, true)));
 	}
 	function to_2000() {
 		global $config, $sql, $misc;
+		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v2.0")."</p>\n";
+
 		$sql->adapter = null;
 		$config->set("uploads_path", "/uploads/");
 		$config->set("chyrp_url", $config->url);
@@ -192,7 +170,40 @@
 		foreach($groups as $name => $permissions)
 			$sql->query("INSERT INTO `".$sql->prefix."groups` SET `name` = '".$misc->fix(ucfirst($name))."', `permissions` = '".$misc->fix($permissions)."'");
 
-		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v2.0")."</p>\n";
+		if (file_exists(INCLUDES_DIR."/config.yml.php") and file_exists(INCLUDES_DIR."/database.yml.php")) {
+			foreach (array("database.yml.php" => "database.yaml.php",
+			               "config.yml.php"    => "config.yaml.php") as $from => $to) {
+				$file = @file_get_contents(INCLUDES_DIR."/".$from);
+				$nerr = str_replace("<?php\n\tif (strpos(\$_SERVER['REQUEST_URI'], \"".$from."\"))\n\t\texit(\"Gtfo.\");\n?>",
+				                    "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>",
+				                    $file);
+				if (!@file_put_contents(INCLUDES_DIR."/".$from, $nerr))
+					echo "<p>".sprintf(__("Config file's error message could not be updated. Please replace the <code>&lt;?php &hellip; ?&gt;</code> block in ".$to." with: %s"),
+					                   "<code>&lt;?php header(\"Status: 403\"); exit(\"Access denied.\"); ?&gt;</code>")."</p>";
+			}
+
+			if (!@rename(INCLUDES_DIR."/config.yml.php", INCLUDES_DIR."/config.yaml.php"))
+				echo "<p>".__("Config file could not be renamed. Please rename it to <code>/includes/config.yaml.php</code>")."</p>";
+
+			if (!@rename(INCLUDES_DIR."/database.yml.php", INCLUDES_DIR."/database.yaml.php"))
+				echo "<p>".__("Database config file could not be renamed. Please rename it to <code>/includes/database.yaml.php</code>")."</p>";
+		}
+	}
+	if (!function_exists("random")) { # Upgrade to 1.1.3.x
+		function random($length, $specialchars = false) {
+			$pattern = "1234567890abcdefghijklmnopqrstuvwxyz";
+
+			if ($specialchars)
+				$pattern.= "!@#$%^&*()?~";
+
+			$len = ($specialchars) ? 47 : 35 ;
+
+			$key = $pattern{rand(0, $len)};
+			for($i = 1; $i < $length; $i++) {
+				$key.= $pattern{rand(0, $len)};
+			}
+			return $key;
+		}
 	}
 
 	$html_entities = array(
@@ -450,14 +461,14 @@
 	    "&oacute;" => "&#243;"
 	);
 
-	if (!function_exists("name2codepoint")) {
-	function name2codepoint($string) {
+	if (!function_exists("name2codepoint")) { # Upgrade to 2.0
+		function name2codepoint($string) {
 			global $html_entities;
 			return str_replace(array_keys($html_entities), array_values($html_entities), $string);
 		}
 	}
 
-	function make_xml_safe($text) {
+	function make_xml_safe($text) { # Upgrade to 2.0
 		return name2codepoint(htmlentities($text, ENT_NOQUOTES, "utf-8", false));
 	}
 
@@ -495,9 +506,6 @@
 					<option value="1100">1.1.x</option>
 					<option value="1040">1.0.4a</option>
 					<option value="1030">1.0.3</option>
-					<option value="1020">1.0.2</option>
-					<option value="1010">1.0.1</option>
-					<option value="1000">1.0.0</option>
 				</select>
 				<p class="center"><input type="submit" value="<?php echo __("Upgrade &rarr;"); ?>"></p>
 			</form>
