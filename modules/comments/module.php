@@ -22,7 +22,7 @@
 			                 `author` VARCHAR(250) DEFAULT '',
 			                 `author_url` VARCHAR(128) DEFAULT '',
 			                 `author_email` VARCHAR(128) DEFAULT '',
-			                 `author_ip` INT(10) DEFAULT '',
+			                 `author_ip` INT(10) DEFAULT '0',
 			                 `author_agent` VARCHAR(255) DEFAULT '',
 			                 `status` VARCHAR(32) default 'denied',
 			                 `signature` VARCHAR(32) DEFAULT '',
