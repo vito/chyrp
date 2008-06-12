@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-12 15:04-0500\n"
+"PO-Revision-Date: 2008-06-12 17:50-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -62,10 +62,10 @@ msgid "Post deleted."
 msgstr ""
 
 #: index.php:30
-#: index.php:86
-#: index.php:102
-#: index.php:112
-#: index.php:120
+#: index.php:83
+#: index.php:99
+#: index.php:109
+#: index.php:117
 #: includes/helpers.php:886
 #: includes/helpers.php:889
 #: includes/helpers.php:899
@@ -105,7 +105,7 @@ msgstr ""
 msgid "Chyrp's includes directory is not writable by the server."
 msgstr ""
 
-#: index.php:160
+#: index.php:157
 #: includes/bookmarklet.php:9
 msgid "No Feathers"
 msgstr ""
@@ -120,9 +120,9 @@ msgstr ""
 msgid "Done!"
 msgstr ""
 
-#: includes/controller/Admin.php:888
-#: includes/controller/Admin.php:1000
-#: includes/controller/Admin.php:1036
+#: includes/controller/Admin.php:894
+#: includes/controller/Admin.php:1019
+#: includes/controller/Admin.php:1055
 #: includes/ajax.php:152
 #: includes/ajax.php:197
 msgid "You do not have sufficient privileges to enable/disable feathers."
@@ -175,18 +175,18 @@ msgstr ""
 msgid "Pingback from %s to %s registered!"
 msgstr ""
 
-#: index.php:122
+#: index.php:119
 #: admin/layout/pages/manage_users.twig:40
 #: admin/layout/pages/manage_posts.twig:44
 #: admin/layout/pages/manage_pages.twig:33
 msgid "Controls"
 msgstr ""
 
-#: includes/controller/Admin.php:1061
-#: includes/controller/Admin.php:1099
-#: includes/controller/Admin.php:1123
-#: includes/controller/Admin.php:1146
-#: includes/controller/Admin.php:1167
+#: includes/controller/Admin.php:1080
+#: includes/controller/Admin.php:1118
+#: includes/controller/Admin.php:1142
+#: includes/controller/Admin.php:1165
+#: includes/controller/Admin.php:1186
 msgid "You do not have sufficient privileges to change settings."
 msgstr ""
 
@@ -224,7 +224,7 @@ msgstr ""
 msgid "Importing from MovableType requires the Text feather to be installed and enabled."
 msgstr ""
 
-#: index.php:136
+#: index.php:133
 msgid "Lost Password Request"
 msgstr ""
 
@@ -250,7 +250,7 @@ msgstr ""
 msgid "Only %s files are supported."
 msgstr ""
 
-#: index.php:89
+#: index.php:86
 #, php-format
 msgid "Archive of %s"
 msgstr ""
@@ -298,11 +298,11 @@ msgstr ""
 msgid "(ex. 2007)"
 msgstr ""
 
-#: index.php:86
+#: index.php:83
 msgid "Please enter a valid year and month."
 msgstr ""
 
-#: includes/controller/Admin.php:1169
+#: includes/controller/Admin.php:1188
 msgid "No Theme Specified"
 msgstr ""
 
@@ -310,7 +310,7 @@ msgstr ""
 msgid "Could not connect to the specified database."
 msgstr ""
 
-#: importers/chyrp.php:33
+#: importers/chyrp.php:31
 msgid "Posts file does not seem to be a valid Chyrp export file."
 msgstr ""
 
@@ -430,7 +430,7 @@ msgstr ""
 #: importers/tumblr.php:212
 #: importers/textpattern.php:202
 #: importers/movabletype.php:149
-#: importers/chyrp.php:165
+#: importers/chyrp.php:163
 msgid "View Site &raquo;"
 msgstr ""
 
@@ -483,7 +483,7 @@ msgstr ""
 msgid "User deleted."
 msgstr ""
 
-#: importers/chyrp.php:146
+#: importers/chyrp.php:144
 msgid "Posts .atom File"
 msgstr ""
 
@@ -524,8 +524,8 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: index.php:102
-#: index.php:112
+#: index.php:99
+#: index.php:109
 #: includes/controller/Main.php:199
 #: includes/controller/Main.php:238
 msgid "You're already logged in."
@@ -558,7 +558,7 @@ msgstr ""
 msgid "(if any)"
 msgstr ""
 
-#: importers/chyrp.php:144
+#: importers/chyrp.php:142
 msgid "Please upload the .atom files for what you would like to import."
 msgstr ""
 
@@ -630,7 +630,7 @@ msgstr ""
 msgid "Confirm"
 msgstr ""
 
-#: index.php:104
+#: index.php:101
 msgid "Log In"
 msgstr ""
 
@@ -657,8 +657,8 @@ msgstr ""
 msgid "Couldn't load template:<br /><br />%s"
 msgstr ""
 
-#: includes/controller/Admin.php:876
-#: includes/controller/Admin.php:933
+#: includes/controller/Admin.php:882
+#: includes/controller/Admin.php:945
 #: includes/ajax.php:175
 #: importers/tumblr.php:18
 #, php-format
@@ -680,7 +680,7 @@ msgstr ""
 msgid "&#8220;Guest&#8221; Group"
 msgstr ""
 
-#: importers/chyrp.php:56
+#: importers/chyrp.php:54
 msgid "Pages file does not seem to be a valid Chyrp export file."
 msgstr ""
 
@@ -710,8 +710,8 @@ msgid "Group deleted."
 msgstr ""
 
 #: includes/controller/Admin.php:819
-#: includes/controller/Admin.php:998
-#: includes/controller/Admin.php:1034
+#: includes/controller/Admin.php:1017
+#: includes/controller/Admin.php:1053
 #: includes/ajax.php:150
 #: includes/ajax.php:195
 msgid "You do not have sufficient privileges to enable/disable modules."
@@ -726,7 +726,7 @@ msgstr ""
 msgid "You do not have sufficient privileges to delete groups."
 msgstr ""
 
-#: importers/chyrp.php:72
+#: importers/chyrp.php:70
 msgid "Chyrp: Import"
 msgstr ""
 
@@ -739,11 +739,11 @@ msgstr ""
 msgid "You do not have sufficient privileges to add users."
 msgstr ""
 
-#: index.php:114
+#: index.php:111
 msgid "Register"
 msgstr ""
 
-#: importers/chyrp.php:150
+#: importers/chyrp.php:148
 msgid "Pages .atom File"
 msgstr ""
 
@@ -823,7 +823,7 @@ msgstr ""
 msgid "(ex. 03)"
 msgstr ""
 
-#: importers/chyrp.php:143
+#: importers/chyrp.php:141
 msgid "Import Chyrp"
 msgstr ""
 
@@ -912,7 +912,7 @@ msgstr ""
 msgid "(ex. this_one_is_taken_2)"
 msgstr ""
 
-#: index.php:158
+#: index.php:155
 #: includes/controller/Admin.php:20
 #: includes/controller/Admin.php:35
 #: includes/bookmarklet.php:6
@@ -990,7 +990,7 @@ msgstr ""
 msgid "Drafts"
 msgstr ""
 
-#: index.php:120
+#: index.php:117
 #: includes/controller/Main.php:266
 msgid "You must be logged in to access this area."
 msgstr ""
@@ -1054,10 +1054,10 @@ msgstr ""
 #: includes/controller/Admin.php:516
 #: includes/controller/Admin.php:544
 #: includes/controller/Admin.php:586
-#: includes/controller/Admin.php:1079
-#: includes/controller/Admin.php:1107
-#: includes/controller/Admin.php:1129
-#: includes/controller/Admin.php:1152
+#: includes/controller/Admin.php:1098
+#: includes/controller/Admin.php:1126
+#: includes/controller/Admin.php:1148
+#: includes/controller/Admin.php:1171
 msgid "Invalid security key."
 msgstr ""
 
@@ -1065,7 +1065,7 @@ msgstr ""
 msgid "(usually ok as \"localhost\")"
 msgstr ""
 
-#: includes/controller/Admin.php:1223
+#: includes/controller/Admin.php:1242
 msgid "You do not have sufficient privileges to access this area."
 msgstr ""
 
@@ -1208,7 +1208,7 @@ msgstr ""
 msgid "My Awesome Site"
 msgstr ""
 
-#: importers/chyrp.php:164
+#: importers/chyrp.php:162
 msgid "All posts and pages have been successfully imported."
 msgstr ""
 
@@ -1264,7 +1264,7 @@ msgstr ""
 msgid "Editing &#8220;%s&#8221;"
 msgstr ""
 
-#: index.php:110
+#: index.php:107
 #: includes/controller/Main.php:197
 msgid "Registration Disabled"
 msgstr ""
@@ -1277,7 +1277,7 @@ msgstr ""
 msgid "Import Tumblr"
 msgstr ""
 
-#: index.php:110
+#: index.php:107
 #: includes/controller/Main.php:197
 msgid "I'm sorry, but this site is not allowing registration."
 msgstr ""
@@ -1301,7 +1301,7 @@ msgstr ""
 #: importers/tumblr.php:210
 #: importers/textpattern.php:200
 #: importers/movabletype.php:147
-#: importers/chyrp.php:163
+#: importers/chyrp.php:161
 msgid "All done!"
 msgstr ""
 
@@ -1364,7 +1364,7 @@ msgstr ""
 msgid "Please enter a name for your website."
 msgstr ""
 
-#: includes/controller/Admin.php:1169
+#: includes/controller/Admin.php:1188
 msgid "You did not specify a theme to switch to."
 msgstr ""
 
@@ -1373,7 +1373,7 @@ msgstr ""
 msgid "Write"
 msgstr ""
 
-#: index.php:136
+#: index.php:133
 #, php-format
 msgid "%s,\n\nWe have received a request for a new password for your account at %s.\n\nPlease log in with the following password, and feel free to change it once you've successfully logged in:\n\t%s"
 msgstr ""
@@ -1487,7 +1487,7 @@ msgstr ""
 #: importers/tumblr.php:203
 #: importers/textpattern.php:193
 #: importers/movabletype.php:140
-#: importers/chyrp.php:156
+#: importers/chyrp.php:154
 msgid "Import &rarr;"
 msgstr ""
 
@@ -1557,8 +1557,8 @@ msgstr ""
 msgid "<strong>Delete install.php</strong>, you won't need it anymore."
 msgstr ""
 
-#: includes/controller/Admin.php:878
-#: includes/controller/Admin.php:935
+#: includes/controller/Admin.php:884
+#: includes/controller/Admin.php:947
 #: includes/ajax.php:177
 #: importers/tumblr.php:20
 #, php-format
@@ -1700,7 +1700,7 @@ msgstr ""
 msgid "The non-unique sanitized name"
 msgstr ""
 
-#: index.php:160
+#: index.php:157
 #: includes/bookmarklet.php:9
 msgid "Please install a feather or two in order to add a post."
 msgstr ""
@@ -1719,7 +1719,7 @@ msgstr ""
 msgid "You do not have sufficient privileges to manage users."
 msgstr ""
 
-#: index.php:140
+#: index.php:137
 msgid "Lost Password"
 msgstr ""
 
@@ -1793,7 +1793,7 @@ msgstr ""
 msgid "Admin Account"
 msgstr ""
 
-#: index.php:158
+#: index.php:155
 #: includes/controller/Main.php:56
 #: includes/controller/Admin.php:20
 #: includes/controller/Admin.php:35
@@ -1836,21 +1836,21 @@ msgstr ""
 #: includes/controller/Admin.php:586
 #: includes/controller/Admin.php:610
 #: includes/controller/Admin.php:819
-#: includes/controller/Admin.php:888
-#: includes/controller/Admin.php:998
-#: includes/controller/Admin.php:1000
-#: includes/controller/Admin.php:1034
-#: includes/controller/Admin.php:1036
-#: includes/controller/Admin.php:1061
-#: includes/controller/Admin.php:1079
-#: includes/controller/Admin.php:1099
-#: includes/controller/Admin.php:1107
-#: includes/controller/Admin.php:1123
-#: includes/controller/Admin.php:1129
-#: includes/controller/Admin.php:1146
-#: includes/controller/Admin.php:1152
-#: includes/controller/Admin.php:1167
-#: includes/controller/Admin.php:1223
+#: includes/controller/Admin.php:894
+#: includes/controller/Admin.php:1017
+#: includes/controller/Admin.php:1019
+#: includes/controller/Admin.php:1053
+#: includes/controller/Admin.php:1055
+#: includes/controller/Admin.php:1080
+#: includes/controller/Admin.php:1098
+#: includes/controller/Admin.php:1118
+#: includes/controller/Admin.php:1126
+#: includes/controller/Admin.php:1142
+#: includes/controller/Admin.php:1148
+#: includes/controller/Admin.php:1165
+#: includes/controller/Admin.php:1171
+#: includes/controller/Admin.php:1186
+#: includes/controller/Admin.php:1242
 #: includes/common.php:264
 #: includes/bookmarklet.php:6
 #: includes/ajax.php:13

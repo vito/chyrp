@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-12 15:04-0500\n"
+"PO-Revision-Date: 2008-06-12 17:50-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -109,6 +109,13 @@ msgstr ""
 msgid "Archives"
 msgstr ""
 
+#: themes/default/content/post.twig:18
+#, php-format
+msgid "%s Comment"
+msgid_plural "%s Comments"
+msgstr[0] ""
+msgstr[1] ""
+
 #: themes/default/content/comment.twig:9
 msgid "on"
 msgstr ""
@@ -201,9 +208,13 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
-#: themes/default/content/archive.twig:16
-#: themes/default/content/archive.twig:19
+#: themes/default/content/archive.twig:17
+#: themes/default/content/archive.twig:20
 msgid "Archive of"
+msgstr ""
+
+#: themes/default/content/drafts.twig:4
+msgid "Drafts"
 msgstr ""
 
 #: themes/default/layouts/default.twig:19
@@ -216,12 +227,8 @@ msgstr ""
 
 #: themes/default/content/tag.twig:9
 #: themes/default/content/feather.twig:9
-#: themes/default/content/archive.twig:27
+#: themes/default/content/archive.twig:28
 msgid "No Posts"
-msgstr ""
-
-#: themes/default/content/drafts.twig:4
-msgid "Drafts"
 msgstr ""
 
 #: themes/default/content/404.twig:4
@@ -266,7 +273,7 @@ msgstr ""
 msgid "Pages"
 msgstr ""
 
-#: themes/default/content/archive.twig:28
+#: themes/default/content/archive.twig:29
 msgid "There don't seem to be any posts in the timeframe you specified."
 msgstr ""
 
