@@ -10,7 +10,7 @@
 			$this->respondTo("feed_item", "enclose_mp3");
 			$this->respondTo("filter_post", "filter_post");
 		}
-		static function submit() {
+		public function submit() {
 			$filename = "";
 			if (isset($_FILES['audio']) and $_FILES['audio']['error'] == 0)
 				$filename = upload($_FILES['audio'], "mp3");
@@ -40,7 +40,7 @@
 			else
 				redirect($post->url());
 		}
-		static function update() {
+		public function update() {
 			$post = new Post($_POST['id']);
 
 			if (isset($_FILES['audio']) and $_FILES['audio']['error'] == 0) {
@@ -53,25 +53,25 @@
 
 			$post->update($values);
 		}
-		static function title($post) {
+		public function title($post) {
 			return fallback($post->title, $post->title_from_excerpt(), true);
 		}
-		static function excerpt($post) {
+		public function excerpt($post) {
 			return $post->description;
 		}
-		static function feed_content($post) {
+		public function feed_content($post) {
 			return $post->description;
 		}
-		static function delete_file($post) {
+		public function delete_file($post) {
 			if ($post->feather != "audio") return;
 
 			unlink(MAIN_DIR.Config::current()->uploads_path.$post->filename);
 		}
-		static function filter_post($post) {
+		public function filter_post($post) {
 			if ($post->feather != "audio") return;
-			$post->audio_player = self::flash_player_for($post->filename);
+			$post->audio_player = $this->flash_player_for($post->filename, array(), $post);
 		}
-		static function player_js() {
+		public function player_js() {
 ?>
 //<script>
 var ap_instances = new Array();
@@ -102,7 +102,7 @@ var ap_clearID = setInterval( ap_registerPlayers, 100 );
 //</script>
 <?php
 		}
-		static function enclose_mp3($id) {
+		public function enclose_mp3($id) {
 			$post = new Post($id);
 			if ($post->feather != "audio") return;
 
@@ -110,9 +110,7 @@ var ap_clearID = setInterval( ap_registerPlayers, 100 );
 			$length = filesize(MAIN_DIR.$config->uploads_path.$post->filename);
 			echo '			<enclosure url="'.$config->chyrp_url.$config->uploads_path.$post->filename.'" type="audio/mpeg" length="'.$length.'" />'."\n";
 		}
-		static function flash_player_for($filename, $params = array()) {
-			global $post;
-
+		public function flash_player_for($filename, $params = array(), $post) {
 			$vars = "";
 			foreach ($params as $name => $val)
 				$vars.= "&amp;".$name."=".$val;
