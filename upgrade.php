@@ -16,7 +16,7 @@
 				padding: 0;
 			}
 			.window {
-				width: 250px;
+				width: <?php echo (empty($_POST)) ? "250" : "650" ; ?>px;
 				margin: 25px auto;
 				padding: 1em;
 				border: 1px solid #ddd;
@@ -35,6 +35,19 @@
 				margin-bottom: 2px;
 			}
 			select {
+				margin-bottom: 1em;
+			}
+			a {
+				color: #0088FF;
+			}
+			strong {
+				font-weight: normal;
+				color: #f00;
+			}
+			ol {
+				margin-bottom: 2em;
+			}
+			p, li {
 				margin-bottom: 1em;
 			}
 			.center {
@@ -188,6 +201,15 @@
 		}
 ?>
 			<p><?php echo __("All done!"); ?></p>
+			<p><?php echo __("Next, back up your current installation and replace the old files with the new. Be careful of what you're overwriting &ndash; some systems will remove directories and upload the new ones, instead of merging them. <strong>Make sure you don't replace or remove your <code>/includes/database.yaml.php</code> and <code>/includes/config.yaml.php</code> files.</strong>"); ?></p>
+			<p><?php echo __("Finished?"); ?></p>
+			<p><?php echo __("Yay!"); ?></p>
+			<br />
+			<h1><?php echo __("Tips"); ?></h1>
+			<ol>
+				<li><?php echo sprintf(__("There are many new and extended Group permissions with this release. If you are the administrator, you'll probably want to enable them for your group: <a href=\"%s\">Manage Groups</a>"), $config->url."/admin/?action=manage_groups"); ?></li>
+				<li><?php echo __("If the admin section looks ugly to you, refresh your browser or clear your cache. The admin area is completely redesigned in 2.0."); ?></li>
+			</ol>
 			<a class="done" href="<?php echo $config->url; ?>"><?php echo __("Take me to my site! &rarr;"); ?></a>
 <?php
 	} else {
