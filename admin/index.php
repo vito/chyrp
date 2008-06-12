@@ -27,7 +27,6 @@
 			$admin->context["site"]         = Config::current();
 			$admin->context["visitor"]      = Visitor::current();
 			$admin->context["logged_in"]    = logged_in();
-			$admin->context["stats"]        = array("load" => timer_stop(), "queries" => SQL::current()->queries);
 			$admin->context["route"]        = array("action" => $action);
 			$admin->context["hide_admin"]   = isset($_SESSION["chyrp_hide_admin"]);
 			$admin->context["now"]          = time() + Config::current()->time_offset;

@@ -272,8 +272,15 @@
 			foreach ($config->enabled_feathers as $feather)
 				$this->context["enabled_feathers"][$feather] = true;
 
-			$this->context["stats"] = array("load" => timer_stop(), "queries" => SQL::current()->queries);
 			$this->context["sql_debug"] = SQL::current()->debug;
+		}
+
+		public function sql_queries() {
+			return SQL::current()->queries;
+		}
+
+		public function load_time() {
+			return timer_stop();
 		}
 
 		/**

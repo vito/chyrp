@@ -41,7 +41,7 @@ ${ trigger.call("sidebar") }
 {% endif %}
 				<h1>${ "Stats" | translate }</h1>
 				<ul>
-					<li>${ "Queries:" | translate } $stats.queries</li>
-					<li>${ "Load time:" | translate } $stats.load</li>
+					<li>${ "Queries:" | translate } $theme.sql_queries</li>
+					<li>${ "Load time:" | translate } $theme.load_time</li>
 				</ul>
 			</div>
