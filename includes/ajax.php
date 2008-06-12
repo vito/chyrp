@@ -211,6 +211,13 @@
 			exit('{ notifications: [] }');
 
 			break;
+		case "reorder_feathers":
+			$feathers = $_POST['list'];
+			foreach ($feathers as &$value)
+				$value = preg_replace("/feathers\[([^\]]+)\]/", "\\1", $value);
+
+			$config->set("enabled_feathers", $feathers);
+			break;
 	}
 
 	$trigger->call("ajax");

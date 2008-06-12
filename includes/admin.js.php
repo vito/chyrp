@@ -46,17 +46,8 @@ $(function(){
 	$.ifixpng("<?php echo $config->chyrp_url; ?>/admin/images/icons/pixel.gif")
 	$("img[@src$=.png]").ifixpng()
 
-	// Add the "Bookmarklet" with JS to the write nav since only JS-enabled users can use it.
-	$(document.createElement("li")).addClass("bookmarklet right").html("<?php echo _f("Bookmarklet: %s", array('<a href=\"javascript:var%20d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f=\''.$config->chyrp_url.'/includes/bookmarklet.php\',l=d.location,e=encodeURIComponent,p=\'?url=\'+e(l.href)+\'&title=\'+e(d.title)+\'&selection=\'+e(s),u=f+p;a=function(){if(!w.open(u,\'t\',\'toolbar=0,resizable=0,status=1,width=450,height=430\'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0)\">Chyrp!</a>')); ?>").prependTo(".write_post_nav")
-
 <?php if (match("/(edit|write)_/", $_GET['action'])): ?>
-	// Auto-expand text fields & auto-grow textareas.
-	$("input.text").each(function(){
-		$(this).css("min-width", $(this).width()).Autoexpand()
-	})
-	$("textarea").each(function(){
-		$(this).css("min-height", $(this).height()).autogrow()
-	})
+	prepare_write_bling()
 
 <?php endif; ?>
 	// "Help" links should open in popup windows.
@@ -103,6 +94,32 @@ var Post = {
 			$("#post_"+id).animate({ height: "hide", opacity: "hide" }).remove()
 		})
 	}
+}
+
+function prepare_write_bling() {
+	// Add the "Bookmarklet" with JS to the write nav since only JS-enabled users can use it.
+	$(document.createElement("li")).addClass("bookmarklet right").html("<?php echo _f("Bookmarklet: %s", array('<a href=\"javascript:var%20d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f=\''.$config->chyrp_url.'/includes/bookmarklet.php\',l=d.location,e=encodeURIComponent,p=\'?url=\'+e(l.href)+\'&title=\'+e(d.title)+\'&selection=\'+e(s),u=f+p;a=function(){if(!w.open(u,\'t\',\'toolbar=0,resizable=0,status=1,width=450,height=430\'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0)\">Chyrp!</a>')); ?>").prependTo(".write_post_nav")
+
+	// Auto-expand text fields & auto-grow textareas.
+	$("input.text").each(function(){
+		$(this).css("min-width", $(this).width()).Autoexpand()
+	})
+	$("textarea").each(function(){
+		$(this).css("min-height", $(this).height()).autogrow()
+	})
+
+	// Make the Feathers sortable
+	$("#sub-nav li").css("float", "left")
+	$("#sub-nav").sortable({
+		axis: "x",
+		containment: "#sub-nav",
+		placeholder: "feathers_sort",
+		opacity: 0.8,
+		delay: 1,
+		update: function(){
+			$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", "action=reorder_feathers&"+$("#sub-nav").sortable("serialize"))
+		}
+	})
 }
 
 function togglers() {

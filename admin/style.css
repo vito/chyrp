@@ -683,6 +683,9 @@ ul.sort_pages input {
 /* @end */
 
 /* @group Helpers & General */
+.feathers_sort {
+	background: #ddd;
+}
 .breakword {
 	word-wrap: break-word !important;
 }

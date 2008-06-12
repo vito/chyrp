@@ -42,7 +42,7 @@
 {% block subnav %}
 {% if subnav[route.action] %}
 {% for action, nav in subnav[route.action] | items %}
-			<li${ route.action | selected(nav.selected, action) }><a href="{% admin action %}">$nav.title</a></li>
+			<li${ route.action | selected(nav.selected, action) }$nav.attributes><a href="{% admin action %}">$nav.title</a></li>
 {% endfor %}
 {% endif %}
 {% endblock %}

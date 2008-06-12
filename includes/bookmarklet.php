@@ -1,4 +1,5 @@
 <?php
+	define('BOOKMARKLET', true);
 	require_once "common.php";
 
 	if (!$visitor->group()->can("add_post"))
@@ -13,8 +14,6 @@
 	$args['url'] = (isset($_GET['url'])) ? urldecode(stripslashes($_GET['url'])) : null ;
 	$args['title'] = (isset($_GET['title'])) ? urldecode(stripslashes($_GET['title'])) : null ;
 	$args['selection'] = (isset($_GET['selection'])) ? urldecode(stripslashes($_GET['selection'])) : null ;
-
-	$post = new Post();
 
 	switch($_GET['status']) {
 		default:
@@ -165,26 +164,27 @@
 		$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$the_feather."/info.yaml");
 ?>
 			<form action="<?php echo $config->chyrp_url."/admin/?action=add_post"; ?>" id="<?php echo $the_feather; ?>_form" style="display: <?php echo $style; ?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">
-<?php
-		foreach ($feathers[$the_feather]->fields as $field):
-			$optional = isset($field["optional"]) and $field["optional"];
-			$help = isset($field["help"]) and $field["help"];
-?>
+<?php foreach ($feathers[$the_feather]->fields as $field): ?>
 				<p>
-					<label for="<?php echo $field["attr"]; ?>">
+					<label for="$field.attr">
 						<?php echo $field["label"]; ?>
-						<?php if ($optional): ?><span class="sub"><?php echo __("(optional)"); ?></span><?php endif; ?>
-						<?php if ($help): ?>
+						<?php if (isset($field["optional"]) and $field["optional"]): ?><span class="sub"><?php echo __("(optional)"); ?></span><?php endif; ?>
+						<?php if (isset($field["help"]) and $field["help"]): ?>
 						<span class="sub">
-							<a href="<?php echo $config->chyrp_url."/admin/?action=help&feather=".$the_feather."&field=".$field["attr"]; ?>" target="_blank" class="help emblem"><img src="<?php echo $config->chyrp_url."/admin/images/icons/help.png"; ?>" alt="help" /></a>
+							<a href="<?php echo $route->url("/admin/?action=help&id=".$field["help"]); ?>" class="help emblem"><img src="<?php echo $config->chyrp_url; ?>/admin/images/icons/help.png" alt="help" /></a>
 						</span>
 						<?php endif; ?>
 					</label>
 					<?php if ($field["type"] == "text" or $field["type"] == "file"): ?>
-					<input class="<?php echo $field["type"]; ?> <?php echo implode(" ", $field["classes"]); ?>" type="<?php echo $field["type"]; ?>" name="<?php echo $field["attr"]; ?>" id="<?php echo $field["attr"]; ?>" />
-					<?php endif; ?>
-					<?php if ($field["type"] == "text_block"): ?>
-					<textarea class="wide <?php echo implode(" ", $field["classes"]); ?>" rows="<?php echo fallback($field["rows"], 12, true); ?>" name="<?php echo $field["attr"]; ?>" id="<?php echo $field["attr"]; ?>"></textarea>
+					<input class="<?php echo $field["type"]; ?><?php if (isset($field["classes"])): ?> <?php echo join(" ", $field["classes"]); ?><?php endif; ?>" type="<?php echo $field["type"]; ?>" name="<?php echo $field["attr"]; ?>" value="" id="$field["attr"]" />
+					<?php elseif ($field["type"] == "text_block"): ?>
+					<textarea class="wide<?php if (isset($field["classes"])): ?> <?php echo join(" ", $field["classes"]); ?><?php endif; ?>" rows="<?php echo fallback($field["rows"], 10, true); ?>" name="<?php echo $field["attr"]; ?>" id="<?php echo $field["attr"]; ?>" cols="50"></textarea>
+					<?php elseif ($field["type"] == "select"): ?>
+					<select name="<?php echo $field["attr"]; ?>" id="<?php echo $field["attr"]; ?>"<?php if (isset($field["classes"])): ?> class="<?php echo join(" ", $field["classes"]); ?>"<?php endif; ?>>
+						<?php foreach ($field["options"] as $value => $name): ?>
+						<option value="<?php echo fix($value); ?>"><?php echo fix($name); ?></option>
+						<?php endforeach; ?>
+					</select>
 					<?php endif; ?>
 				</p>
 <?php endforeach; ?>

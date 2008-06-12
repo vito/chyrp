@@ -91,6 +91,7 @@
 			foreach (Config::current()->enabled_feathers as $index => $feather) {
 				$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$feather."/info.yaml");
 				$subnav["write"]["write_post&feather=".$feather] = array("title" => __($info["name"], $feather),
+				                                                         "attributes" => ' id="list_feathers['.$feather.']"',
 				                                                         "selected" => (isset($_GET['feather']) and $_GET['feather'] == $feather) or (!isset($_GET['feather']) and $action == "write_post" and !$index));
 			}
 			$subnav["write"]["write_page"] = array("title" => __("Page"));
