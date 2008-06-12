@@ -8,7 +8,7 @@
 			$this->respondTo("delete_post", "delete_file");
 			$this->respondTo("filter_post", "filter_post");
 		}
-		static function submit() {
+		public function submit() {
 			$filename = "";
 			if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0)
 				$filename = upload($_FILES['photo'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp"));
@@ -38,7 +38,7 @@
 			else
 				redirect($post->url());
 		}
-		static function update() {
+		public function update() {
 			$post = new Post($_POST['id']);
 
 			if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0) {
@@ -51,25 +51,25 @@
 
 			$post->update($values);
 		}
-		static function title($post) {
+		public function title($post) {
 			$caption = $post->title_from_excerpt();
 			return fallback($caption, $post->filename, true);
 		}
-		static function excerpt($post) {
+		public function excerpt($post) {
 			return $post->caption;
 		}
-		static function feed_content($post) {
+		public function feed_content($post) {
 			return self::image_tag_for($post->filename, 500, 500)."<br /><br />".$post->caption;
 		}
-		static function delete_file($post) {
+		public function delete_file($post) {
 			if ($post->feather != "photo") return;
 			unlink(MAIN_DIR.Config::current()->uploads_path.$post->filename);
 		}
-		static function filter_post($post) {
+		public function filter_post($post) {
 			if ($post->feather != "photo") return;
-			$post->image = self::image_tag_for($post->filename);
+			$post->image = $this->image_tag_for($post->filename);
 		}
-		static function image_tag_for($filename, $max_width = null, $max_height = null, $more_args = "q=100") {
+		public function image_tag_for($filename, $max_width = 500, $max_height = null, $more_args = "q=100") {
 			$ext = pathinfo($filename, PATHINFO_EXTENSION);
 			$config = Config::current();
 			return '<a href="'.$config->chyrp_url.$config->uploads_path.$filename.'"><img src="'.$config->chyrp_url.'/feathers/photo/lib/phpThumb.php?src='.$config->chyrp_url.$config->uploads_path.urlencode($filename).'&amp;w='.$max_width.'&amp;h='.$max_height.'&amp;f='.$ext.'&amp;'.$more_args.'" alt="'.$filename.'" /></a>';

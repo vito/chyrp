@@ -239,7 +239,7 @@
 		}
 
 		public function prepare($context) {
-			global $action;
+			global $action, $modules, $feathers;
 
 			$this->context = array_merge($context, $this->context);
 
@@ -249,6 +249,8 @@
 
 			$this->context["theme"]        = $this;
 			$this->context["trigger"]      = $trigger;
+			$this->context["modules"]      = $modules;
+			$this->context["feathers"]     = $feathers;
 			$this->context["title"]        = $this->title;
 			$this->context["site"]         = $config;
 			$this->context["visitor"]      = $visitor;
