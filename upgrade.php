@@ -89,6 +89,20 @@
 		$config->set("chyrp_url", $config->url);
 		$sql->set("adapter", "mysql");
 
+		if (!@rename(MAIN_DIR."/upload", MAIN_DIR."/uploads"))
+			echo "<p>".__("Uploads directory could not be renamed. Please rename it to <code>/uploads</code>")."</p>";
+
+		# Replace all the posts' XML with SimpleXML well-formed XML.
+		$get_posts = $sql->query("SELECT * FROM `".$sql->prefix."posts`");
+		while ($post = $sql->fetch_object($get_posts)) {
+			$xml = simplexml_load_string($post->xml, "SimpleXMLElement", LIBXML_NOCDATA);
+
+			foreach ($xml as $key => $val)
+			    $xml->$key = trim($val);
+
+			$sql->query("UPDATE `".$sql->prefix."posts` SET `xml` = '".$misc->fix($xml->asXML())."' WHERE `id` = '".$misc->fix($post->id)."'");
+		}
+
 		$groups = array();
 		# Upgrade the Groups/Permissions stuff
 		$get_groups = $sql->query("select * from `".$sql->prefix."groups`");
