@@ -63,7 +63,7 @@ var Post = {
 					$("#post_"+id+" .target, #post_"+id+".target").loader()
 				}, success: function(response){
 					if (isError(response)) return $("#post_"+id+" .target, #post_"+id+".target").loader(true)
-<?php if ($action != "drafts"): ?>
+<?php if ($action != "drafts" and $action != "view"): ?>
 					if ($("#post_edit_"+id+" select#status").val() == "draft") {
 						$("#post_"+id+" .target, #post_"+id+".target").loader(true)
 						$("#post_"+id).fadeOut("fast")
@@ -85,7 +85,7 @@ var Post = {
 								})
 							}) })
 						})
-<?php if ($action != "drafts"): ?>
+<?php if ($action != "drafts" and $action != "view"): ?>
 					}
 <?php endif; ?>
 				} })

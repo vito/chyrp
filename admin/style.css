@@ -504,6 +504,10 @@ h1.preview-header {
 	padding-bottom: .75em;
 	border-bottom: 1px dotted #ddd;
 }
+.preview-content ul,
+.preview-content ol {
+	margin: 0 0 1em 2em;
+}
 /* @end */
 
 /* @group Messages */
