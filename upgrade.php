@@ -104,6 +104,7 @@
 		if (empty($sql->prefix)) { # For some reason the prefix was being removed in my remote testing.
 			$sql->prefix = "blah";
 			$sql->set("prefix", "");
+			$sql->prefix = "";
 		}
 
 		if (!@rename(MAIN_DIR."/upload", MAIN_DIR."/uploads"))
