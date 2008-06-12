@@ -4,11 +4,6 @@
 
 	class Comments extends Module {
 		public function __construct() {
-			$config = Config::current();
-
-			if (!empty($config->defensio_api_key))
-				$this->defensio = new Defensio($config->url, $config->defensio_api_key);
-
 			$this->addAlias('metaWeblog_newPost_preQuery', 'metaWeblog_editPost_preQuery');
 			$this->addAlias("post_grab", "posts_get");
 		}
@@ -141,8 +136,10 @@
 			$sql->update("comments", "`id` = :id", array("status" => "spam"), array(":id" => $_GET['id']));
 
 			$config = Config::current();
-			if (!empty($config->defensio_api_key))
-				$this->defensio->report_false_negatives(array("owner-url" => Config::current()->url, "signatures" => $comment->signature));
+			if (!empty($config->defensio_api_key)) {
+				$defensio = new Defensio($config->url, $config->defensio_api_key);
+				$defensio->submitFalseNegatives(array("owner-url" => $config->url, "signatures" => $comment->signature));
+			}
 
 			redirect("/admin/?action=manage_comments&spammed");
 		}
@@ -462,10 +459,11 @@
 			}
 
 			if (!empty($config->defensio_api_key)) {
+				$defensio = new Defensio($config->url, $config->defensio_api_key);
 				if (!empty($false_positives))
-					$this->defensio->report_false_positives(array("owner-url" => $config->url, "signatures" => implode(",", $false_positives)));
+					$defensio->submitFalsePositives(array("owner-url" => $config->url, "signatures" => implode(",", $false_positives)));
 				if (!empty($false_negatives))
-					$this->defensio->report_false_negatives(array("owner-url" => $config->url, "signatures" => implode(",", $false_negatives)));
+					$defensio->submitFalseNegatives(array("owner-url" => $config->url, "signatures" => implode(",", $false_negatives)));
 			}
 		}
 

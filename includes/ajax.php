@@ -116,19 +116,12 @@
 			echo "<h2 class=\"preview-header\">".__("Preview")."</h2>\n<div class=\"preview-content\">".$content."</div>";
 			break;
 		case "check_confirm":
-			if (!$visitor->group()->can("change_settings"))
+			if (!$visitor->group()->can("toggle_extensions"))
 				error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable extensions."));
 
 			$dir = ($_POST['type'] == "module") ? MODULES_DIR : FEATHERS_DIR ;
 			$info = Spyc::YAMLLoad($dir."/".$_POST['check']."/info.yaml");
 			fallback($info["confirm"], "");
-
-			if ($_POST['type'] == "module")
-				if (!module_enabled($_POST['check']))
-					exit;
-			else
-				if (!feather_enabled($_POST['check']))
-					exit;
 
 			if (!empty($info["confirm"]))
 				echo __($info["confirm"], $_POST['check']);

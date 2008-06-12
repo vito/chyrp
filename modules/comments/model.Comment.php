@@ -73,7 +73,9 @@
 				                 "permalink" => $post->url(),
 				                 "referrer" => $_SERVER['HTTP_REFERER'],
 				                 "user-logged-in" => logged_in());
-				list($spam, $spaminess, $signature) = $modules["comments"]->defensio->auditComment($comment);
+
+				$defensio = new Defensio($config->url, $config->defensio_api_key);
+				list($spam, $spaminess, $signature) = $defensio->auditComment($comment);
 
 				if ($spam) {
 					self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], "spam", $signature, datetime(), $post_id, $visitor->id);
