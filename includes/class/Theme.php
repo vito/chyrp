@@ -46,7 +46,7 @@
 			global $action;
 			fallback($home_text, __("Home"));
 
-			$this->page_list.= '<ul class="'.$main_class.'">'."\n";
+			$this->page_list = '<ul class="'.$main_class.'">'."\n";
 
 			$this->pages = Page::find(array("where" => "`show_in_list` = 1", "order" => "`list_order` asc"));
 
