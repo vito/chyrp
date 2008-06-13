@@ -13,16 +13,14 @@
 			              `clean` VARCHAR(250) DEFAULT '',
 			              `post_id` INTEGER DEFAULT '0'
 			             ) DEFAULT CHARSET=utf8");
-			$route = Route::current();
-			$route->add("tag/(name)/");
+			Route::current()->add("tag/(name)/");
 		}
 
 		static function __uninstall($confirm) {
 			if ($confirm)
 				SQL::current()->query("DROP TABLE `__tags`");
 
-			$route = Route::current();
-			$route->remove("tag/(name)/");
+			Route::current()->remove("tag/(name)/");
 		}
 
 		static function new_post_options() {
@@ -65,6 +63,8 @@
 		}
 
 		static function update_post($post) {
+			if (!isset($_POST['tags'])) return;
+
 			$sql = SQL::current();
 			$sql->delete("tags", "`post_id` = :post_id", array(":post_id" => $post->id));
 
@@ -93,7 +93,7 @@
 		}
 
 		static function parse_urls($urls) {
-			$urls["/\/tag\/(.*?)\//"] = "?action=tag&amp;name=$1";
+			$urls["/\/tag\/(.*?)\//"] = "/?action=tag&amp;name=$1";
 			return $urls;
 		}
 
