@@ -219,30 +219,30 @@
 
 		/**
 		 * Function: deletable
-		 * Checks if the <Visitor> can delete the post.
+		 * Checks if the <User> can delete the post.
 		 */
-		public function deletable() {
-			$visitor = Visitor::current();
-			if ($visitor->group()->can("delete_post"))
+		public function deletable($user = null) {
+			fallback($user, Visitor::current());
+			if ($user->group()->can("delete_post"))
 				return true;
 
 			return ($this->status == "draft" and $visitor->group()->can("delete_draft")) or
-			       ($visitor->group()->can("delete_own_post") and $this->user_id == $visitor->id) or
-			       (($visitor->group()->can("delete_own_draft") and $this->status == "draft") and $this->user_id == $visitor->id);
+			       ($user->group()->can("delete_own_post") and $this->user_id == $user->id) or
+			       (($user->group()->can("delete_own_draft") and $this->status == "draft") and $this->user_id == $user->id);
 		}
 
 		/**
 		 * Function: editable
-		 * Checks if the <Visitor> can edit the post.
+		 * Checks if the <User> can edit the post.
 		 */
-		public function editable() {
-			$visitor = Visitor::current();
-			if ($visitor->group()->can("edit_post"))
+		public function editable($user = null) {
+			fallback($user, Visitor::current());
+			if ($user->group()->can("edit_post"))
 				return true;
 
-			return ($this->status == "draft" and $visitor->group()->can("edit_draft")) or
-			       ($visitor->group()->can("edit_own_post") and $this->user_id == $visitor->id) or
-			       (($visitor->group()->can("edit_own_draft") and $this->status == "draft") and $this->user_id == $visitor->id);
+			return ($this->status == "draft" and $user->group()->can("edit_draft")) or
+			       ($user->group()->can("edit_own_post") and $this->user_id == $user->id) or
+			       (($user->group()->can("edit_own_draft") and $this->status == "draft") and $this->user_id == $user->id);
 		}
 
 		/**
