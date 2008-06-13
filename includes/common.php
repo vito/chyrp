@@ -171,11 +171,6 @@
 	# Chyrp's templating engine.
 	require_once INCLUDES_DIR."/class/Twig.php";
 
-	# File: Theme
-	# See Also:
-	#     <Theme>
-	require_once INCLUDES_DIR."/class/Theme.php";
-
 	# File: Route
 	# See Also:
 	#     <Route>
@@ -242,6 +237,11 @@
 
 	# Load the /clean/urls into their correct $_GET values.
 	$route->determine_action();
+
+	# File: Theme
+	# See Also:
+	#     <Theme>
+	require_once INCLUDES_DIR."/class/Theme.php";
 
 	$action = (isset($_GET['action'])) ? strip_tags($_GET['action']) : "index" ;
 
