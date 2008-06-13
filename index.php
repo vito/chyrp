@@ -24,7 +24,7 @@
 				redirect($post->url());
 
 			if (!isset($post))
-				fallback($post, new Post(null, array("where" => "`url` = :url", "params" => array(":url" => $_GET['url']))));
+				fallback($post, new Post(null, array("where" => "`__posts`.`url` = :url", "params" => array(":url" => $_GET['url']))));
 
 			if (!$post->theme_exists())
 				error(__("Error"), __("The feather theme file for this post does not exist. The post cannot be displayed."));
