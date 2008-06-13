@@ -13,11 +13,11 @@
 		 * Registers the various XMLRPC methods.
 		 */
 		public function __construct() {
-			set_error_handler(array($this, 'error_handler'));
-			set_exception_handler(array($this, 'exception_handler'));
+			set_error_handler('XMLRPC::error_handler');
+			set_exception_handler('XMLRPC::exception_handler');
 
 			$methods = array(
-				'pingback.ping' => 'this:pingback_ping',
+				'pingback.ping'             => 'this:pingback_ping',
 				'metaWeblog.getRecentPosts' => 'this:metaWeblog_getRecentPosts',
 				'metaWeblog.getCategories'  => 'this:metaWeblog_getCategories',
 				'metaWeblog.newMediaObject' => 'this:metaWeblog_newMediaObject',
@@ -34,8 +34,7 @@
 				'mt.supportedTextFilters'   => 'this:mt_supportedTextFilters',
 				'mt.supportedMethods'       => 'this:listMethods');
 
-			$trigger = Trigger::current();
-			$methods = $trigger->filter('xmlrpc_methods', $methods);
+			$methods = Trigger::current()->filter("xmlrpc_methods", $methods);
 
 			$this->IXR_Server($methods);
 		}
@@ -130,7 +129,11 @@
 			$result = array();
 
 			foreach ($this->getRecentPosts($args[3]) as $post) {
-				$post = new Post(null, array('read_from' => $post, 'filter' => false));
+				$post = new Post(
+					null,
+					array(
+						'read_from' => $post,
+						'filter' => false));
 
 				$struct = array(
 					'postid'            => $post->id,
@@ -143,8 +146,7 @@
 					'mt_basename'       => $post->url,
 					'mt_allow_pings'    => (int) $config->enable_trackbacking);
 
-				list($post, $struct) = $trigger->filter('metaWeblog_getPost', array($post, $struct), true);
-				$result[] = $struct;
+				$result[] = $trigger->filter('metaWeblog_getPost', $struct, $post);
 			}
 
 			return $result;
@@ -157,9 +159,8 @@
 		public function metaWeblog_getCategories($args) {
 			$this->auth($args[1], $args[2]);
 
-			$trigger = Trigger::current();
 			$categories = array();
-			return $trigger->filter('metaWeblog_getCategories', $categories);
+			return Trigger::current()->filter('metaWeblog_getCategories', $categories);
 		}
 
 		/**
@@ -170,16 +171,14 @@
 			$this->auth($args[1], $args[2]);
 
 			$config = Config::current();
-			$file = unique_filename(trim($args[3]['name'], '/')));
+			$file = unique_filename(trim($args[3]['name'], ' /'));
 			$path = MAIN_DIR.$config->uploads_path.$file;
 
 			if (file_put_contents($path, $args[3]['bits']) === false)
 				return new IXR_Error(500, __('Failed to write file.'));
 
 			$url = $config->chyrp_url.$config->uploads_path.str_replace('+', '%20', urlencode($file));
-
-			$trigger = Trigger::current();
-			list($url, $path) = $trigger->filter('metaWeblog_newMediaObject', array($url, $path), true);
+			$url = Trigger::current()->filter('metaWeblog_newMediaObject', $url, $path);
 
 			return array('url' => $url);
 		}
@@ -191,9 +190,6 @@
 		public function metaWeblog_getPost($args) {
 			$this->auth($args[1], $args[2]);
 
-			$config = Config::current();
-			$trigger = Trigger::current();
-
 			$post = new Post($args[0], array('filter' => false));
 			$struct = array(
 				'postid'            => $post->id,
@@ -204,10 +200,9 @@
 				'link'              => $post->url(),
 				'permaLink'         => $post->url(),
 				'mt_basename'       => $post->url,
-				'mt_allow_pings'    => (int) $config->enable_trackbacking);
+				'mt_allow_pings'    => (int) Config::current()->enable_trackbacking);
 
-			list($post, $struct) = $trigger->filter('metaWeblog_getPost', array($post, $struct), true);
-			return array($struct);
+			return array(Trigger::current()->filter('metaWeblog_getPost', $struct, $post));
 		}
 
 		/**
@@ -215,27 +210,26 @@
 		 * Creates a new post.
 		 */
 		public function metaWeblog_newPost($args) {
-			$this->auth($args[1], $args[2], 'edit');
+			$this->auth($args[1], $args[2], 'add');
 
 			# Support for extended body
-			if (empty($args[3]['mt_text_more']))
-				$body = $args[3]['description'];
-			else
-				$body = $args[3]['description'].'<!--more-->'.$args[3]['mt_text_more'];
+			$body = $args[3]['description'];
+			if (!empty($args[3]['mt_text_more']))
+				$body .= '<!--more-->'.$args[3]['mt_text_more'];
 
 			# Add excerpt to body so it isn't lost
 			if (!empty($args[3]['mt_excerpt']))
-				$body = $args[3]['mt_excerpt'].$body;
+				$body = $args[3]['mt_excerpt']."\n".$body;
 
 			if (trim($body) == '')
 				return new IXR_Error(500, __("Body can't be blank."));
 
-			$clean = sanitize(fallback($args[3]['mt_basename'], $args[3]['title']));
+			$clean = sanitize(fallback($args[3]['mt_basename'], $args[3]['title'], true));
 			$url = Post::check_url($clean);
 
 			$_POST['created_at'] = fallback($this->convertFromDateCreated($args[3]), datetime(), true);
 			$_POST['feather'] = XML_RPC_FEATHER;
-			if ($args[4] === 0) $_POST['draft'] = true;
+			if (!$args[4] or !$user->group()->can('edit_own_post', 'edit_post')) $_POST['draft'] = true;
 
 			$trigger = Trigger::current();
 			$trigger->call('metaWeblog_newPost_preQuery', array($args[3]), true);
@@ -251,8 +245,7 @@
 			$trigger->call('metaWeblog_newPost', array($post, $args[3]), true);
 
 			# Send any and all pingbacks to URLs in the body
-			$config = Config::current();
-			if ($config->send_pingbacks)
+			if (Config::current()->send_pingbacks)
 				send_pingbacks($args[3]['description'], $post->id);
 
 			return $post->id;
@@ -264,15 +257,15 @@
 		 */
 		public function metaWeblog_editPost($args) {
 			$this->auth($args[1], $args[2], 'edit');
+			global $user;
 
 			if (!Post::exists($args[0]))
-				return new IXR_Error(500, __('Fake post ID, or nonexistant post.'));
+				return new IXR_Error(500, __("Fake post ID, or nonexistant post."));
 
 			# Support for extended body
-			if (empty($args[3]['mt_text_more']))
-				$body = $args[3]['description'];
-			else
-				$body = $args[3]['description'].'<!--more-->'.$args[3]['mt_text_more'];
+			$body = $args[3]['description'];
+			if (!empty($args[3]['mt_text_more']))
+				$body .= '<!--more-->'.$args[3]['mt_text_more'];
 
 			# Add excerpt to body so it isn't lost
 			if (!empty($args[3]['mt_excerpt']))
@@ -283,28 +276,27 @@
 
 			$post = new Post($args[0], array('filter' => false));
 
+			# More specific permission check
+			if (!$post->editable($user))
+				return new IXR_Error(500, __("You don't have permission to edit this post."));
+
+			# Enforce post status when necessary 
+			if (!$args[4] and !$user->group()->can('edit_own_post', 'edit_post'))
+				$status = 'draft';
+			else if ($post->status != 'public' and $post->status != 'draft')
+				$status = $post->status;
+			else
+				$status = ($args[4]) ? 'public' : 'draft';
+
 			$trigger = Trigger::current();
 			$trigger->call('metaWeblog_editPost_preQuery', array($args[3], $post), true);
 
 			$post->update(
-				array(
-					'title' => $args[3]['title'],
-					'body'  => $body
-				),
+				array('title' => $args[3]['title'], 'body' => $body ),
 				null,
-				($args[4] !== 0) ? 'public' : 'draft',
-				sanitize(
-					fallback(
-						$args[3]['mt_basename'],
-						$args[3]['title'],
-						true
-					)
-				),
-				fallback(
-					$this->convertFromDateCreated($args[3]),
-					$post->created_at,
-					true
-				));
+				$status,
+				sanitize(fallback($args[3]['mt_basename'], $args[3]['title'], true)),
+				fallback($this->convertFromDateCreated($args[3]), $post->created_at, true));
 
 			$trigger->call('metaWeblog_editPost', array($post, $args[3]), true);
 
@@ -317,9 +309,14 @@
 		 */
 		public function blogger_deletePost($args) {
 			$this->auth($args[2], $args[3], 'delete');
+			global $user;
 
-			if (!Post::exists($args[1]))
-				return new IXR_Error(500, __('Fake post ID, or nonexistant post.'));
+			$post = new Post($args[1], array('filter' => false));
+
+			if ($post->no_results)
+				return new IXR_Error(500, __("Fake post ID, or nonexistant post."));
+			else if (!$post->deletable($user))
+				return new IXR_Error(500, __("You don't have permission to delete this post."));
 
 			Post::delete($args[1]);
 			return true;
@@ -344,8 +341,8 @@
 		 * Retrieves a specified user.
 		 */
 		public function blogger_getUserInfo($args) {
-			global $user;
 			$this->auth($args[1], $args[2]);
+			global $user;
 
 			return array(array(
 				'userid'    => $user->id,
@@ -385,9 +382,8 @@
 		public function mt_getCategoryList($args) {
 			$this->auth($args[1], $args[2]);
 
-			$trigger = Trigger::current();
 			$categories = array();
-			return $trigger->filter('mt_getCategoryList', $categories);
+			return Trigger::current()->filter('mt_getCategoryList', $categories);
 		}
 
 		/**
@@ -398,14 +394,12 @@
 			$this->auth($args[1], $args[2]);
 
 			if (!Post::exists($args[0]))
-				return new IXR_Error(500, __('Fake post ID, or nonexistant post.'));
+				return new IXR_Error(500, __("Fake post ID, or nonexistant post."));
 
-			$post = new Post($args[0]);
+			$post = new Post($args[0], array('filter' => false));
 
-			$trigger = Trigger::current();
 			$categories = array();
-			list($post, $categories) = $trigger->filter('mt_getPostCategories', array($post, $categories), true);
-			return $categories;
+			return Trigger::current()->filter('mt_getPostCategories', $categories, $post);
 		}
 
 		/**
@@ -414,14 +408,16 @@
 		 */
 		public function mt_setPostCategories($args) {
 			$this->auth($args[1], $args[2], 'edit');
+			global $user;
 
-			if (!Post::exists($args[0]))
-				return new IXR_Error(500, __('Fake post ID, or nonexistant post.'));
+			$post = new Post($args[0], array('filter' => false));
 
-			$post = new Post($args[0]);
+			if ($post->no_results)
+				return new IXR_Error(500, __("Fake post ID, or nonexistant post."));
+			else if (!$post->deletable($user))
+				return new IXR_Error(500, __("You don't have permission to edit this post."));
 
-			$trigger = Trigger::current();
-			$trigger->call('mt_setPostCategories', array($post, $args[3]), true);
+			Trigger::current()->call('mt_setPostCategories', array($args[3], $post));
 			return true;
 		}
 
@@ -440,20 +436,28 @@
 		private function getRecentPosts($limit) {
 			global $user;
 
-			$statuses = "'public'";
-			$statuses.= ($user->group()->can("view_drafts")) ? ", 'draft'" : '';
+			if (!in_array(XML_RPC_FEATHER, Config::current()->enabled_feathers))
+				throw new Exception(__(sprintf("%s feather is not enabled.", XML_RPC_FEATHER)));
 
-			$config = Config::current();
-			if (!in_array(XML_RPC_FEATHER, $config->enabled_feathers))
-				throw new Exception(__(XML_RPC_FEATHER.' feather is not enabled.'));
+			$where = array('feather = :feather');
+			$params = array(
+				':feather' => XML_RPC_FEATHER,
+				':statuses' => "'public'");
 
-			$sql = SQL::current();
-			return $sql->select("posts",
-			                    "*",
-			                    array("`feather` = :feather", "`status` IN (:statuses)"),
-			                    "`pinned` DESC, `created_at` DESC, `id` DESC",
-			                    array(":feather" => XML_RPC_FEATHER, ":statuses" => $statuses),
-			                    1)->fetchAll();
+			if ($user->group()->can('view_own_drafts', 'view_drafts'))
+				$params[':statuses'] .= ", 'draft'";
+
+			if (!$user->group()->can('view_draft', 'edit_draft', 'edit_post', 'delete_draft', 'delete_post')) {
+				$where[] = 'user_id = :user_id';
+				$params[':user_id'] = $user->id;
+			}
+
+			return SQL::current()->select(
+				'posts',
+				'__posts.*',
+				$where,
+				'pinned DESC, created_at DESC, id DESC',
+				$params)->fetchAll();
 		}
 
 		/**
@@ -473,22 +477,26 @@
 		 */
 		private function auth($login, $password, $do = 'add') {
 			global $user;
-			$user = new User(null, array("where" => array("`login` = :login", "`password` = :password"),
-			                             "params" => array(":login" => $login, ":password" => md5($password))));
+			$user = new User(
+				null,
+				array(
+					"where" => array(
+						"login = :login",
+						"password = :password"),
+					"params" => array(
+						":login" => $login,
+						":password" => md5($password))));
 
-			if (!$user->group()->can($do.'_post'))
-				if (in_array($do, array('edit', 'delete') and $user->group()->can($do.'_own_post')))
-					return;
-				else
-					throw new Exception(__(sprintf("You don't have permission to %s this post.", $do)));
+			if (!$user->group()->can("{$do}_own_post", "{$do}_post", "{$do}_draft", "{$do}_own_draft"))
+				throw new Exception(__(sprintf("You don't have permission to %s posts/drafts.", $do)));
 		}
 
-		static public function error_handler($errno, $errstr, $errfile, $errline) {
-			if ($errno == E_STRICT) return;
-			throw new Exception($errstr.' in '.$errfile.' on line '.$errline.'.');
+		public static function error_handler($errno, $errstr, $errfile, $errline) {
+			if (error_reporting() === 0 or $errno == E_STRICT) return;
+			throw new Exception(sprintf("%s in %s on line %s", $errstr, $errfile, $errline));
 		}
 
-		static public function exception_handler($exception) {
+		public static function exception_handler($exception) {
 			$ixr_error = new IXR_Error(500, $exception->getMessage());
 			echo $ixr_error->getXml();
 		}
