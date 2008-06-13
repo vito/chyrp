@@ -97,7 +97,7 @@
 			$config = Config::current();
 			$sql = SQL::current();
 			if (!$config->clean_urls)
-				return $post = new Post(null, array("where" => array($private, "`url` = :url"), "params" => array(":url" => $get['url'])));
+				return $post = new Post(null, array("where" => array($private, "`__posts`.`url` = :url"), "params" => array(":url" => $get['url'])));
 
 			# Check for a post...
 			$where = array($private);
