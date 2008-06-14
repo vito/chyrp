@@ -40,6 +40,10 @@
 	$errors = array();
 	$installed = false;
 
+	# TODO: Determine exact PHP version that is required for Chyrp
+	if (version_compare(PHP_VERSION, "5.0.0", "<"))
+		$errors[] = __("Chyrp requires PHP 5. Installation cannot continue.");
+
 	if (!class_exists("PDO") or (!in_array("mysql", PDO::getAvailableDrivers()) and !in_array("sqlite", PDO::getAvailableDrivers())))
 		$errors[] = __("Chyrp requires either the SQLite or the MySQL PDO driver. Installation cannot continue.");
 
