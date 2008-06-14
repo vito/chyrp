@@ -621,6 +621,8 @@
 		 */
 		static function makesafe($text) {
 			#return preg_replace("/&(?!(lt|gt|amp|quot))/", "&amp;", $text);
+			#return name2codepoint(htmlentities($text, ENT_NOQUOTES, "UTF-8", true));
+			$text = html_entity_decode($text, ENT_QUOTES, "UTF-8");
 			return name2codepoint(htmlentities($text, ENT_NOQUOTES, "UTF-8"));
 		}
 	}
