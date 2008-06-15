@@ -740,50 +740,60 @@ $(function(){
 			}
 		}
 
-		static function import_wordpress_post($data, $id) {
-			global $comment;
-			if (isset($data["WP:COMMENT"])) {
-				foreach ($data["WP:COMMENT"] as $the_comment) {
-					$body = (isset($the_comment["WP:COMMENT_CONTENT"][0]["data"])) ? $the_comment["WP:COMMENT_CONTENT"][0]["data"] : "" ;
-					$author = (isset($the_comment["WP:COMMENT_AUTHOR"][0]["data"])) ? $the_comment["WP:COMMENT_AUTHOR"][0]["data"] : "" ;
-					$author_url = (isset($the_comment["WP:COMMENT_AUTHOR_URL"][0]["data"])) ? $the_comment["WP:COMMENT_AUTHOR_URL"][0]["data"] : "" ;
-					$author_email = (isset($the_comment["WP:COMMENT_AUTHOR_EMAIL"][0]["data"])) ? $the_comment["WP:COMMENT_AUTHOR_EMAIL"][0]["data"] : "" ;
-					$author_ip = (isset($the_comment["WP:COMMENT_AUTHOR_IP"][0]["data"])) ? $the_comment["WP:COMMENT_AUTHOR_IP"][0]["data"] : "" ;
-					$status = (isset($the_comment["WP:COMMENT_APPROVED"][0]["data"]) and $the_comment["WP:COMMENT_APPROVED"][0]["data"] == "1") ? "approved" : "denied" ;
+		static function import_wordpress_post($item, $post) {
+			$wordpress = $item->children("http://wordpress.org/export/1.0/");
+			if (!isset($wordpress->comment)) return;
 
-					$comment->add($body, $author, $author_url, $author_email, $author_ip, "", $status, $the_comment["WP:COMMENT_DATE"][0]["data"], $id, 0);
-				}
+			foreach ($wordpress->comment as $comment) {
+				$comment = $comment->children("http://wordpress.org/export/1.0/");
+				fallback($comment->comment_content, "");
+				fallback($comment->comment_author, "");
+				fallback($comment->comment_author_url, "");
+				fallback($comment->comment_author_email, "");
+				fallback($comment->comment_author_ip, "");
+
+				Comment::add($comment->comment_content,
+				             $comment->comment_author,
+				             $comment->comment_author_url,
+				             $comment->comment_author_email,
+				             $comment->comment_author_ip,
+				             "",
+				             (isset($comment->comment_approved) && $comment->comment_approved == "1" ? "approved" : "denied"),
+				             "",
+				             $comment->comment_date,
+				             $post->id,
+				             0);
 			}
 		}
 
-		static function import_movabletype_post($data, $id) {
+		static function import_movabletype_post($item, $id) {
 			global $comment;
 			preg_match_all("/COMMENT:\nAUTHOR: (.*?)\nEMAIL: (.*?)\nIP: (.*?)\nURL: (.*?)\nDATE: (.*?)\n(.*?)\n-----/", $data, $comments);
 			array_shift($comments);
-			for ($i = 0; $i < count($comments[0]); $i++) {
-				$comment->add($comments[5][$i], $comments[0][$i], $comments[3][$i], $comments[1][$i], $comments[2][$i], "", "approved", $comments[4][$i], $id, 0);
-			}
+
+			for ($i = 0; $i < count($comments[0]); $i++)
+				Comment::add($comments[5][$i], $comments[0][$i], $comments[3][$i], $comments[1][$i], $comments[2][$i], "", "approved", $comments[4][$i], $id, 0);
 		}
 
 		static function import_textpattern_generate_array($array) {
 			global $link;
 			$get_comments = mysql_query("select * from `".$_POST['prefix']."txp_discuss` where `parentid` = ".fix($array["ID"])." order by `discussid` asc", $link) or die(mysql_error());
-			while ($comment = mysql_fetch_array($get_comments)) {
-				foreach ($comment as $key => $val) {
+
+			while ($comment = mysql_fetch_array($get_comments))
+				foreach ($comment as $key => $val)
 					$array["comments"][$comment["discussid"]][$key] = $val;
-				}
-			}
+
 			return $array;
 		}
 
 		static function import_textpattern_post($array, $post) {
 			global $comment;
 			if (!isset($array["comments"])) return;
-			foreach ($array["comments"] as $the_comment) {
+			foreach ($array["comments"] as $comment) {
 				$translate_status = array(-1 => "spam", 0 => "denied", 1 => "approved");
-				$status = str_replace(array_keys($translate_status), array_values($translate_status), $the_comment["visible"]);
+				$status = str_replace(array_keys($translate_status), array_values($translate_status), $comment["visible"]);
 
-				Comment::add($the_comment["message"], $the_comment["name"], $the_comment["web"], $the_comment["email"], $the_comment["ip"], "", $status, "", $the_comment["posted"], $post->id, 0);
+				Comment::add($comment["message"], $comment["name"], $comment["web"], $comment["email"], $comment["ip"], "", $status, "", $comment["posted"], $post->id, 0);
 			}
 		}
 

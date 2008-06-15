@@ -115,23 +115,22 @@
 				$posts[] = new Post($tag["post_id"]);
 		}
 
-		static function import_wordpress_post($data, $id) {
-			if (isset($data["CATEGORY"])) {
-				$tags    = "";
-				$cleaned = "";
-				foreach ($data["CATEGORY"] as $tag)
-					if (isset($tag["attr"]["DOMAIN"]) and $tag["attr"]["DOMAIN"] == "tag" and !empty($tag["data"])) {
-						$tags.=    "{{".strip_tags(trim($tag["data"]))."}} ";
-						$cleaned.= "{{".sanitize(strip_tags(trim($tag["data"])))."}} ";
-					}
+		static function import_wordpress_post($item, $post) {
+			if (!isset($item->category)) return;
 
-				$sql = SQL::current();
-				$sql->insert("tags", array("tags" => ":tags", "clean" => ":clean", "post_id" => ":post_id"), array(
-				                 ":tags"    => trim($tags),
-				                 ":clean"   => trim($cleaned),
-				                 ":post_id" => $id
-				             ));
-			}
+			$tags = $cleaned = "";
+			foreach ($item->category as $tag)
+				if (isset($tag->attributes()->domain) and $tag->attributes()->domain == "tag" and !empty($tag)) {
+					$tags.=    "{{".strip_tags(trim($tag))."}} ";
+					$cleaned.= "{{".sanitize(strip_tags(trim($tag)))."}} ";
+				}
+
+			$sql = SQL::current();
+			$sql->insert("tags", array("tags" => ":tags", "clean" => ":clean", "post_id" => ":post_id"), array(
+			                 ":tags"    => trim($tags),
+			                 ":clean"   => trim($cleaned),
+			                 ":post_id" => $post->id
+			             ));
 		}
 
 		static function metaWeblog_getPost($post, $struct) {
