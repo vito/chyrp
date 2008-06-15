@@ -224,18 +224,18 @@
 
 		public function update($author, $author_email, $author_url, $body, $status, $timestamp) {
 			$sql = SQL::current();
-			$sql->insert("comments",
+			$sql->update("comments",
 			             "`__comments`.`id` = :id",
 			             array("body" => ":body",
 			                   "author" => ":author",
-			                   "author_url" => ":author_url",
 			                   "author_email" => ":author_email",
+			                   "author_url" => ":author_url",
 			                   "status" => ":status",
 			                   "created_at" => ":created_at"),
 			             array(":body" => $body,
 			                   ":author" => strip_tags($author),
-			                   ":author_url" => strip_tags($url),
-			                   ":author_email" => strip_tags($email),
+			                   ":author_email" => strip_tags($author_email),
+			                   ":author_url" => strip_tags($author_url),
 			                   ":status" => $status,
 			                   ":created_at" => $timestamp,
 			                   ":id" => $this->id
