@@ -120,17 +120,19 @@
 
 			$tags = $cleaned = "";
 			foreach ($item->category as $tag)
-				if (isset($tag->attributes()->domain) and $tag->attributes()->domain == "tag" and !empty($tag)) {
+				if (isset($tag->attributes()->domain) and $tag->attributes()->domain == "tag" and !empty($tag) and isset($tag->attributes()->nicename)) {
 					$tags.=    "{{".strip_tags(trim($tag))."}} ";
 					$cleaned.= "{{".sanitize(strip_tags(trim($tag)))."}} ";
 				}
 
-			$sql = SQL::current();
-			$sql->insert("tags", array("tags" => ":tags", "clean" => ":clean", "post_id" => ":post_id"), array(
-			                 ":tags"    => trim($tags),
-			                 ":clean"   => trim($cleaned),
-			                 ":post_id" => $post->id
-			             ));
+			if (!empty($tags) and !empty($cleaned))
+				SQL::current()->insert("tags",
+				                       array("tags"     => ":tags",
+				                             "clean"    => ":clean",
+				                             "post_id"  => ":post_id"),
+				                       array(":tags"    => trim($tags),
+				                             ":clean"   => trim($cleaned),
+				                             ":post_id" => $post->id));
 		}
 
 		static function metaWeblog_getPost($post, $struct) {
