@@ -447,7 +447,7 @@
 					<label for="time_offset"><?php echo __("What time is it?"); ?></label>
 					<select name="time_offset" id="time_offset">
 					<?php foreach (time_offsets() as $offset => $timestamp): ?>
-						<option value="<?php echo $offset; ?>"<?php selected($offset, 0); ?>><?php echo when("g:i A, F jS, Y", $timestamp); ?></option>
+						<option value="<?php echo $offset; ?>"<?php selected($offset, fallback($_POST['time_offset'], 0, true)); ?>><?php echo when("g:i A, F jS, Y", $timestamp); ?></option>
 					<?php endforeach; ?>
 					</select>
 				</p>
