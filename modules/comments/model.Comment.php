@@ -23,6 +23,8 @@
 				$this->body_unfiltered = $this->body;
 				$this->body = Trigger::current()->filter("markup_comment_text", $this->body);
 			}
+
+			Trigger::current()->call("filter_comment", $this);
 		}
 
 		/**
