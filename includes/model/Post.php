@@ -226,7 +226,7 @@
 			if ($user->group()->can("delete_post"))
 				return true;
 
-			return ($this->status == "draft" and $visitor->group()->can("delete_draft")) or
+			return ($this->status == "draft" and $user->group()->can("delete_draft")) or
 			       ($user->group()->can("delete_own_post") and $this->user_id == $user->id) or
 			       (($user->group()->can("delete_own_draft") and $this->status == "draft") and $this->user_id == $user->id);
 		}
