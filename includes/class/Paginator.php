@@ -19,7 +19,7 @@
 		 * Returns:
 		 *     A paginated array $per_page or smaller.
 		 */
-		public function __construct($array, $per_page = 5, $name = "page", $model = true) {
+		public function __construct($array, $per_page = 5, $name = "page", $model = true, $page = null) {
 			$this->array = $array;
 
 			if ($model)
@@ -30,12 +30,12 @@
 			$this->model = $model;
 
 			$this->total = count($array);
-			$this->page = (isset($_GET[$name])) ? $_GET[$name] : 1 ;
+			$this->page = fallback($page, (isset($_GET[$name]) ? $_GET[$name] : 1), true);
 			$this->pages = ceil($this->total / $this->per_page);
 			$this->offset = ($this->page - 1) * $this->per_page;
 
 			$this->result = array();
-			for ($i = $this->offset; $i < ($this->offset + $per_page); $i++)
+			for ($i = $this->offset; $i < ($this->offset + $this->per_page); $i++)
 				if (isset($array[$i]))
 					$this->result[] = ($model) ? new $model_name($array[$i]) : $array[$i] ;
 
@@ -44,49 +44,18 @@
 
 		/**
 		 * Function: next
-		 * Returns the next set of values (or the next single value) in a pagination sequence.
+		 * Returns the next pagination sequence.
 		 */
-		public function next($first = false) {
-			$offset = $this->offset + $this->per_page;
-			$array = $this->array;
-
-			if ($this->model)
-				list($array, $model_name) = $array;
-
-			$result = array();
-			if ($first)
-				return ($this->model) ? new $model_name($array[$offset]) : $array[$offset] ;
-			else
-				for ($i = $offset; $i < ($offset + $this->per_page); $i++)
-					if (isset($array[$i]))
-						$result[] = ($this->model) ? new $model_name($array[$i]) : $array[$i] ;
-
-			return $result;
+		public function next() {
+			return new self($this->array, $this->per_page, $this->name, $this->model, $this->page + 1);
 		}
 
 		/**
 		 * Function: prev
-		 * Returns the previous set of values (or the previous single value) in a pagination sequence.
+		 * Returns the next pagination sequence.
 		 */
-		public function prev($first = false) {
-			if ($this->offset = 0)
-				return $this->result;
-
-			$offset = $this->offset - $this->per_page;
-			$array = $this->array;
-
-			if ($this->model)
-				list($array, $model_name) = $array;
-
-			$result = array();
-			if ($first)
-				return ($this->model) ? new $model_name($array[$offset]) : $array[$offset] ;
-			else
-				for ($i = $offset; $i < ($offset + $this->per_page); $i++)
-					if (isset($array[$i]))
-						$result[] = ($this->model) ? new $model_name($array[$i]) : $array[$i] ;
-
-			return $result;
+		public function prev() {
+			return new self($this->array, $this->per_page, $this->name, $this->model, $this->page - 1);
 		}
 
 		/**

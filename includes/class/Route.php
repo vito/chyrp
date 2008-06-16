@@ -212,6 +212,7 @@
 			global $post, $action;
 			$config = Config::current();
 			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls) return;
+			if ($_GET['action'] != $this->arg[0]) return;
 
 			$attr = array();
 			$post_url = $this->key_regexp(rtrim($config->post_url, "/"));
@@ -226,8 +227,8 @@
 						$attr[rtrim(ltrim($parameter, "("), ")")] = urldecode($this->arg[$index]);
 
 				$post = Post::from_url($attr);
-				if ($post->no_results)
-					return $_GET['action'] = (empty($this->arg[0])) ? "index" : $this->arg[0] ;
+				#if ($post->no_results)
+					#return $_GET['action'] = (empty($this->arg[0])) ? "index" : $this->arg[0] ;
 			}
 		}
 
