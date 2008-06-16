@@ -110,21 +110,6 @@
 		}
 
 		/**
-		 * Function: info
-		 * Grabs a specified column from a group's SQL row.
-		 *
-		 * Parameters:
-		 *     $column - The name of the SQL column.
-		 *     $group_id - The group ID to grab from.
-		 *
-		 * Returns:
-		 *     SQL result - if the SQL result isn't empty.
-		 */
-		static function info($column, $group_id) {
-			return SQL::current()->select("groups", $column, "`__groups`.`id` = :id", "`__groups`.`id` desc", array(":id" => $group_id))->fetchColumn();
-		}
-
-		/**
 		 * Function: add_permission
 		 * Adds a permission to the Groups table.
 		 *

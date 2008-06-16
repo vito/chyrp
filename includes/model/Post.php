@@ -304,24 +304,6 @@
 		}
 
 		/**
-		 * Function: info
-		 * Grabs a specified column from a post's SQL row.
-		 *
-		 * Parameters:
-		 *     $column - The name of the SQL column.
-		 *     $post_id - The post ID to grab from.
-		 *     $fallback - What to display if the result is empty.
-		 *
-		 * Returns:
-		 *     false - if $post_id isn't set.
-		 *     SQL result - if the SQL result isn't empty.
-		 *     $fallback - if the SQL result is empty.
-		 */
-		static function info($column, $post_id, $fallback = false) {
-			return SQL::current()->select("posts", $column, "`__posts`.`id` = :id", "`__posts`.`id` desc", array(":id" => $post_id))->fetchColumn();
-		}
-
-		/**
 		 * Function: exists
 		 * Checks if a post exists.
 		 *
@@ -359,18 +341,6 @@
 		}
 
 		/**
-		 * Function: feather_class
-		 * Returns the class name for the given posts's Feather.
-		 *
-		 * Parameters:
-		 *     $post_id - The post ID to grab from.
-		 */
-		static function feather_class($post_id) {
-			$feather = self::info("feather", $post_id);
-			return camelize($feather);
-		}
-
-		/**
 		 * Function: url
 		 * Returns a post's URL.
 		 */
@@ -378,7 +348,7 @@
 			$config = Config::current();
 			$visitor = Visitor::current();
 			if ($config->clean_urls) {
-				$login = (strpos($config->post_url, "(author)") !== false) ? User::info("login", $this->user_id) : null ;
+				$login = (strpos($config->post_url, "(author)") !== false) ? $this->user()->login : null ;
 				$vals = array(when("Y", $this->created_at),
 				              when("m", $this->created_at),
 				              when("d", $this->created_at),
@@ -450,7 +420,8 @@
 		 * Returns the given post's Feed content, provided by its Feather.
 		 */
 		public function feed_content() {
-			return call_user_func(array(self::feather_class($this->id), "feed_content"), $this);
+			global $feathers;
+			return call_user_func(array($feathers[$this->feather], "feed_content"), $this);
 		}
 
 		/**

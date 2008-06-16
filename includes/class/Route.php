@@ -135,7 +135,10 @@
 
 				if ($arg[0] == "feed") # Don't set the $_GET['action'] to "feed" (bottom of this function).
 					return $_GET['action'] = "index";
-			} elseif (preg_match("/\/feed\/([^\/]+)\/?$/", $request, $title)) { # Feed with a title parameter
+			}
+
+			# Feed with a title parameter
+			if (preg_match("/\/feed\/([^\/]+)\/?$/", $request, $title)) {
 				$_GET['feed'] = "true";
 				$_GET['title'] = $title[1];
 

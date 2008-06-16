@@ -14,8 +14,6 @@
 		$title = htmlspecialchars($post->title(), ENT_NOQUOTES, "utf-8");
 		fallback($title, ucfirst($post->feather)." Post #".$post->id);
 
-		$author_uri = User::info("website", $post->user_id);
-
 		$updated = (substr($post->updated_at, 0, 4) == "0000") ? $post->created_at : $post->updated_at ;
 
 		$tagged = substr(strstr($route->url("id/".$post->id."/"), "//"), 2);
@@ -31,7 +29,7 @@
 		<author>
 			<name><?php echo htmlspecialchars(fallback($post->user()->full_name, $post->user()->login, true), ENT_NOQUOTES, "utf-8"); ?></name>
 <?php if (!empty($author_uri)): ?>
-			<uri><?php echo $author_uri; ?></uri>
+			<uri><?php echo $post->user()->website; ?></uri>
 <?php endif; ?>
 		</author>
 		<content type="html">

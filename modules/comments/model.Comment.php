@@ -147,10 +147,6 @@
 			return $new;
 		}
 
-		static function info($column, $comment_id = null) {
-			return SQL::current()->select("comments", $column, "`__comments`.`id` = :id", "`__comments`.`id` desc", array(":id" => $comment_id))->fetchColumn();
-		}
-
 		public function editable() {
 			$visitor = Visitor::current();
 			return ($visitor->group()->can("edit_comment") or ($visitor->group()->can("edit_own_comment") and $visitor->id == $this->user_id));

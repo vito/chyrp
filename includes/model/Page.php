@@ -146,21 +146,6 @@
 		}
 
 		/**
-		 * Function: info
-		 * Grabs a specified column from a page's SQL row.
-		 *
-		 * Parameters:
-		 *     $column - The name of the SQL column.
-		 *     $page_id - The page ID to grab from.
-		 *
-		 * Returns:
-		 *     SQL result - if the SQL result isn't empty.
-		 */
-		static function info($column, $page_id) {
-			return SQL::current()->select("pages", $column, "`__pages`.`id` = :id", "`__pages`.`id` desc", array(":id" => $page_id))->fetchColumn();
-		}
-
-		/**
 		 * Function: exists
 		 * Checks if a page exists.
 		 *

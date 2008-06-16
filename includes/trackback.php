@@ -9,7 +9,7 @@
 			exit;
 		}
 
-		if (!Post::info('id', $_GET['id']))
+		if (!Post::exists($_GET['id']))
 			trackback_respond(true, __("Fake post ID, or nonexistant post."));
 
 		if (!empty($_POST['url'])) {

@@ -43,21 +43,6 @@
 		}
 
 		/**
-		 * Function: info
-		 * Grabs a specified column from a user's SQL row.
-		 *
-		 * Parameters:
-		 *     $column - The name of the SQL column.
-		 *     $user_id - The user ID to grab from.
-		 *
-		 * Returns:
-		 *     SQL result - if the SQL result isn't empty.
-		 */
-		static function info($column, $user_id) {
-			return SQL::current()->select("users", $column, "`__users`.`id` = :id", "`__users`.`id` desc", array(":id" => $user_id))->fetchColumn();
-		}
-
-		/**
 		 * Function: add
 		 * Adds a user to the database with the passed username, password, and e-mail.
 		 *

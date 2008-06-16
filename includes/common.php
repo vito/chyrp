@@ -207,6 +207,9 @@
 		require MODULES_DIR."/".$module."/module.php";
 	}
 
+	# Load the /clean/urls into their correct $_GET values.
+	$route->determine_action();
+
 	# These are down here so that the modules are
 	# initialized after the $_GET values are filled.
 	/**
@@ -240,9 +243,6 @@
 	foreach ($modules as &$module)
 		if (is_callable(array($module, "__init")))
 			$module->__init();
-
-	# Load the /clean/urls into their correct $_GET values.
-	$route->determine_action();
 
 	# File: Theme
 	# See Also:
