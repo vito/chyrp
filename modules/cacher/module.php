@@ -1,6 +1,6 @@
 <?php
 	class Cacher extends Module {
-		public function __construct() {
+		public function __init() {
 			$this->user = (logged_in()) ? Visitor::current()->login : "guest" ;
 			$this->caches = dirname(__FILE__)."/cache";
 			$this->path = dirname(__FILE__)."/cache/".sanitize($this->user);
