@@ -21,7 +21,7 @@
 	<br />
 <?php foreach ($feathers[$post->feather]->fields as $field): ?>
 		<p>
-			<label for="$field.attr">
+			<label for="<?php echo $field["attr"]; ?>">
 				<?php echo $field["label"]; ?>
 				<?php if (isset($field["optional"]) and $field["optional"]): ?><span class="sub"><?php echo __("(optional)"); ?></span><?php endif; ?>
 				<?php if (isset($field["help"]) and $field["help"]): ?>
@@ -31,7 +31,7 @@
 				<?php endif; ?>
 			</label>
 			<?php if ($field["type"] == "text" or $field["type"] == "file"): ?>
-			<input class="<?php echo $field["type"]; ?><?php if (isset($field["classes"])): ?> <?php echo join(" ", $field["classes"]); ?><?php endif; ?>" type="<?php echo $field["type"]; ?>" name="<?php echo $field["attr"]; ?>" value="<?php echo (isset($field["no_value"]) and $field["no_value"]) ? "" : fix($post->$field["attr"]) ; ?>" id="$field["attr"]" />
+			<input class="<?php echo $field["type"]; ?><?php if (isset($field["classes"])): ?> <?php echo join(" ", $field["classes"]); ?><?php endif; ?>" type="<?php echo $field["type"]; ?>" name="<?php echo $field["attr"]; ?>" value="<?php echo (isset($field["no_value"]) and $field["no_value"]) ? "" : fix($post->$field["attr"]) ; ?>" id="<?php echo $field["attr"]; ?>" />
 			<?php elseif ($field["type"] == "text_block"): ?>
 			<textarea class="wide<?php if (isset($field["classes"])): ?> <?php echo join(" ", $field["classes"]); ?><?php endif; ?>" rows="<?php echo fallback($field["rows"], 12, true); ?>" name="<?php echo $field["attr"]; ?>" id="<?php echo $field["attr"]; ?>" cols="50"><?php echo (isset($field["no_value"]) and $field["no_value"]) ? "" : fix($post->$field["attr"]) ; ?></textarea>
 			<?php elseif ($field["type"] == "select"): ?>
