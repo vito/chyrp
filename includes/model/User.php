@@ -14,6 +14,7 @@
 		 */
 		public function __construct($user_id, $options = array()) {
 			parent::grab($this, $user_id, $options);
+			Trigger::current()->call("filter_user", $this);
 		}
 
 		/**
