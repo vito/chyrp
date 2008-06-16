@@ -23,9 +23,6 @@
 			if ($action == "id")
 				redirect($post->url());
 
-			if (!isset($post))
-				fallback($post, new Post(null, array("where" => "`__posts`.`url` = :url", "params" => array(":url" => $_GET['url']))));
-
 			if (!$post->theme_exists())
 				error(__("Error"), __("The feather theme file for this post does not exist. The post cannot be displayed."));
 
@@ -161,7 +158,7 @@
 		case "page":
 			fallback($page, new Page(null, array("where" => "`url` = :url", "params" => array(":url" => $_GET['url']))));
 
-			if (empty($page->no_results)) {
+			if (!$page->no_results) {
 				$theme->title = $page->title;
 
 				$page->body = $trigger->filter("markup_page_text", $page->body);

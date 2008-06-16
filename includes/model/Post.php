@@ -596,4 +596,47 @@
 			$text = html_entity_decode($text, ENT_QUOTES, "UTF-8");
 			return name2codepoint(htmlentities($text, ENT_NOQUOTES, "UTF-8"));
 		}
+
+		/**
+		 * Function: from_url
+		 * Attempts to grab a post from its clean URL.
+		 */
+		static function from_url($attrs = null) {
+			global $private;
+
+			fallback($attrs, $_GET);
+			$get = array_map("urldecode", $attrs);
+
+			$where = array($private);
+			$times = array("year", "month", "day", "hour", "minute", "second");
+
+			preg_match_all("/\(([^\)]+)\)/", Config::current()->post_url, $matches);
+			$params = array();
+			foreach ($matches[1] as $attr)
+				if (in_array($attr, $times)) {
+					$where[] = strtoupper($attr)."(`__posts`.`created_at`) = :created_".$attr;
+					$params[':created_'.$attr] = $get[$attr];
+				} elseif ($attr == "author") {
+					$where[] = "`__posts`.`user_id` = :attrauthor";
+					$params[':attrauthor'] = SQL::current()->select("users",
+					                                      "id",
+					                                      "`login` = :login",
+					                                      "id",
+					                                      array(
+					                                          ":login" => $get['author']
+					                                      ), 1)->fetchColumn();
+				} elseif ($attr == "feathers") {
+					$where[] = "`__posts`.`feather` = :feather";
+					$params[':feather'] = depluralize($get['feathers']);
+				} else {
+					list($where, $params, $attr) = Trigger::current()->filter("post_url_token", array($where, $params, $attr));
+
+					if ($attr !== null) {
+						$where[] = "`__posts`.`".$attr."` = :attr".$attr;
+						$params[':attr'.$attr] = $get[$attr];
+					}
+				}
+
+			return new self(null, array("where" => $where, "params" => $params));
+		}
 	}

@@ -98,7 +98,7 @@
 		 * This meaty function determines what exactly to do with the URL.
 		 */
 		public function determine_action() {
-			global $request, $grab_page, $pluralizations;
+			global $pluralizations;
 			$config = Config::current();
 			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls) return;
 
@@ -106,23 +106,23 @@
 			$parse = parse_url($config->url);
 			fallback($parse["path"]);
 
-			$safe_path = str_replace("/", "\\/", $parse["path"]);
-			$request = preg_replace("/".$safe_path."/", "", $_SERVER['REQUEST_URI'], 1);
-			$arg = explode("/", trim($request, "/"));
+			$this->safe_path = str_replace("/", "\\/", $parse["path"]);
+			$this->request = preg_replace("/".$this->safe_path."/", "", $_SERVER['REQUEST_URI'], 1);
+			$this->arg = explode("/", trim($this->request, "/"));
 
-			if (empty($arg[0])) return $_GET['action'] = "index"; # If they're just at /, don't bother with all this.
+			if (empty($this->arg[0])) return $_GET['action'] = "index"; # If they're just at /, don't bother with all this.
 
 			# Viewing a post by its ID
-			if ($arg[0] == "id") {
-				$_GET['id'] = $arg[1];
+			if ($this->arg[0] == "id") {
+				$_GET['id'] = $this->arg[1];
 				return $_GET['action'] = "id";
 			}
 
 			# Paginator
-			if (preg_match_all("/\/((([^_\/]+)_)?page)\/([0-9]+)/", $request, $page_matches)) {
+			if (preg_match_all("/\/((([^_\/]+)_)?page)\/([0-9]+)/", $this->request, $page_matches)) {
 				foreach ($page_matches[1] as $key => $page_var) {
-					$index = array_search($page_var, $arg);
-					$_GET[$page_var] = $arg[$index + 1];
+					$index = array_search($page_var, $this->arg);
+					$_GET[$page_var] = $this->arg[$index + 1];
 				}
 
 				if ($index == 0) # Don't set the $_GET['action'] to "page" (bottom of this function).
@@ -130,61 +130,61 @@
 			}
 
 			# Feed
-			if (preg_match("/\/feed\/?$/", $request)) {
+			if (preg_match("/\/feed\/?$/", $this->request)) {
 				$_GET['feed'] = "true";
 
-				if ($arg[0] == "feed") # Don't set the $_GET['action'] to "feed" (bottom of this function).
+				if ($this->arg[0] == "feed") # Don't set the $_GET['action'] to "feed" (bottom of this function).
 					return $_GET['action'] = "index";
 			}
 
 			# Feed with a title parameter
-			if (preg_match("/\/feed\/([^\/]+)\/?$/", $request, $title)) {
+			if (preg_match("/\/feed\/([^\/]+)\/?$/", $this->request, $title)) {
 				$_GET['feed'] = "true";
 				$_GET['title'] = $title[1];
 
-				if ($arg[0] == "feed") # Don't set the $_GET['action'] to "feed" (bottom of this function).
+				if ($this->arg[0] == "feed") # Don't set the $_GET['action'] to "feed" (bottom of this function).
 					return $_GET['action'] = "index";
 			}
 
 			# Archive
-			if ($arg[0] == "archive") {
+			if ($this->arg[0] == "archive") {
 				# Make sure they're numeric; there might be a /page/ in there.
-				if (isset($arg[1]) and is_numeric($arg[1]))
-					$_GET['year'] = $arg[1];
-				if (isset($arg[2]) and is_numeric($arg[2]))
-					$_GET['month'] = $arg[2];
-				if (isset($arg[3]) and is_numeric($arg[3]))
-					$_GET['day'] = $arg[3];
+				if (isset($this->arg[1]) and is_numeric($this->arg[1]))
+					$_GET['year'] = $this->arg[1];
+				if (isset($this->arg[2]) and is_numeric($this->arg[2]))
+					$_GET['month'] = $this->arg[2];
+				if (isset($this->arg[3]) and is_numeric($this->arg[3]))
+					$_GET['day'] = $this->arg[3];
 
 				return $_GET['action'] = "archive";
 			}
 
 			# Searching
-			if ($arg[0] == "search") {
-				if (isset($arg[1]) and strpos($request, "?action=search&query="))
-					redirect(str_replace("?action=search&query=", "", $request));
+			if ($this->arg[0] == "search") {
+				if (isset($this->arg[1]) and strpos($this->request, "?action=search&query="))
+					redirect(str_replace("?action=search&query=", "", $this->request));
 
-				if (isset($arg[1]))
-					$_GET['query'] = $arg[1];
+				if (isset($this->arg[1]))
+					$_GET['query'] = $this->arg[1];
 
 				return $_GET['action'] = "search";
 			}
 
 			# Theme Previewing
-			if ($arg[0] == "theme_preview" and !empty($arg[1])) {
-				$_GET['theme'] = $arg[1];
+			if ($this->arg[0] == "theme_preview" and !empty($this->arg[1])) {
+				$_GET['theme'] = $this->arg[1];
 				return $_GET['action'] = "theme_preview";
 			}
 
 			# Bookmarklet
-			if ($arg[0] == "bookmarklet") {
-				$_GET['status'] = $arg[1];
+			if ($this->arg[0] == "bookmarklet") {
+				$_GET['status'] = $this->arg[1];
 				return $_GET['action'] = "bookmarklet";
 			}
 
 			# Viewing Feathers
-			if (in_array($arg[0], array_values($pluralizations["feathers"])) and (empty($arg[1]) or $arg[1] == "feed" or $arg[1] == "page"))
-				return $_GET['action'] = $arg[0];
+			if (in_array($this->arg[0], array_values($pluralizations["feathers"])) and (empty($this->arg[1]) or $this->arg[1] == "feed" or $this->arg[1] == "page"))
+				return $_GET['action'] = $this->arg[0];
 
 			# Custom pages added by Modules, Feathers, Themes, etc.
 			foreach ($config->routes as $route)
@@ -195,49 +195,40 @@
 					$fix_slashes = str_replace("/", "\\/", $route);
 					$to_regexp = preg_replace("/\(([^\)]+)\)/", "([^\/]+)", $fix_slashes);
 
-					if (preg_match("/".$to_regexp."/", $request, $url_matches)) {
+					if (preg_match("/".$to_regexp."/", $this->request, $url_matches)) {
 						array_shift($url_matches);
 
 						foreach ($matches[1] as $index => $parameter)
 							$_GET[$parameter] = $url_matches[$index];
 
-						return $_GET['action'] = $arg[0];
+						return $_GET['action'] = $this->arg[0];
 					}
 				}
 
-			# Default pages
-			if (in_array($arg[0], array("drafts", "login", "process_login", "process_registration", "update_self", "register", "logout", "lost_password")))
-				return $_GET['action'] = $arg[0];
+			return $_GET['action'] = (empty($this->arg[0])) ? "index" : $this->arg[0] ;
+		}
 
-			# Page viewing
-			$sql = SQL::current();
-			$count = count($arg) - 1;
-			$parent = new Page();
-			for ($i = 0; $i <= $count; $i++) {
-				$parent = new Page(null, array("where" => array("`url` = :url", "`parent_id` = :parent_id"),
-				                               "params" => array(":url" => $arg[$i], ":parent_id" => $parent->id)));
-				if (!$parent->id)
-					break;
-				else if ($i == $count) {
-					$_GET['url'] = $arg[$i];
-					return $_GET['action'] = "page";
-				}
-			}
+		public function check_viewing_post() {
+			global $post;
+			$config = Config::current();
+			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls) return;
 
-			# Post viewing
+			$attr = array();
 			$post_url = $this->key_regexp(rtrim($config->post_url, "/"));
 			preg_match_all("/([^\/]+)(\/|$)/", $config->post_url, $parameters);
-			if (preg_match("/".$post_url."/", rtrim($request, "/"), $matches)) {
+			if (preg_match("/".$post_url."/", rtrim($this->request, "/"), $matches)) {
 				array_shift($matches);
 
 				foreach ($parameters[1] as $index => $parameter)
 					if ($parameters[1][$index][0] == "(")
-						$_GET[rtrim(ltrim($parameter, "("), ")")] = urldecode($arg[$index]);
+						$attr[rtrim(ltrim($parameter, "("), ")")] = urldecode($this->arg[$index]);
+
+				$post = Post::from_url($attr);
+				if ($post->no_results)
+					return $post = null;
 
 				return $_GET['action'] = "view";
 			}
-
-			return $_GET['action'] = (empty($arg[0])) ? "index" : $arg[0] ;
 		}
 
 		/**

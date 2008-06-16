@@ -841,19 +841,24 @@
 	 * Returns:
 	 *     $name - A unique version of the given $name.
 	 */
-	function unique_filename($name) {
-		$double_exts = array(".tar.gz", ".tar.bz");
-
+	function unique_filename($name, $num = 2) {
 		if (file_exists(MAIN_DIR.Config::current()->uploads_path.$name)) {
-			# Handle "double" extensions
-			foreach ($double_exts as $ext)
-				if (stripos($name, $ext) == strlen($name) - strlen($ext))
-					return unique_filename(substr($name, 0, -strlen($ext))."-".random(3).$ext);
-
-			# Handle "single" extensions
 			$name = explode(".", $name);
+
+			# Handle "double extensions"
+			foreach (array("tar" => "gz", "tar" => "bz", "tar" => "bz2") as $first => $second)
+				if ($name[count($name) - 2] == $first and end($name) == $second) {
+					$name[count($name) - 2] == $first.".".$second;
+					unset($name[count($name) - 1]);
+				}
+
 			$ext = ".".array_pop($name);
-			return unique_filename(implode(".", $name)."-".random(3).$ext);
+
+			$try = implode(".", $name)."-".$num.$ext;
+			if (!file_exists(MAIN_DIR.Config::current()->uploads_path.$try))
+				return $try;
+
+			return unique_filename(implode(".", $name).$ext, $num + 1);
 		} else
 			return $name;
 	}

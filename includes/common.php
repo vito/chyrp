@@ -244,6 +244,8 @@
 		if (is_callable(array($module, "__init")))
 			$module->__init();
 
+	$route->check_viewing_post();
+
 	# File: Theme
 	# See Also:
 	#     <Theme>

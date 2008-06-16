@@ -88,63 +88,24 @@
 		 * Views a post.
 		 */
 		public function view() {
-			global $action, $private, $post;
+			global $action, $private, $post, $page;
 
-			# Make sure we don't try and grab things from SQL by the encoded URL
+			$config = Config::current();
 			$get = array_map("urldecode", $_GET);
 
-			$trigger = Trigger::current();
-			$config = Config::current();
-			$sql = SQL::current();
 			if (!$config->clean_urls)
 				return $post = new Post(null, array("where" => array($private, "`__posts`.`url` = :url"), "params" => array(":url" => $get['url'])));
 
-			# Check for a post...
-			$where = array($private);
-			$times = array("year", "month", "day", "hour", "minute", "second");
-
-			preg_match_all("/\(([^\)]+)\)/", $config->post_url, $matches);
-			$params = array();
-			foreach ($matches[1] as $attr)
-				if (in_array($attr, $times)) {
-					$where[] = strtoupper($attr)."(`__posts`.`created_at`) = :created_".$attr;
-					$params[':created_'.$attr] = $get[$attr];
-				} elseif ($attr == "author") {
-					$where[] = "`__posts`.`user_id` = :attrauthor";
-					$params[':attrauthor'] = $sql->select("users",
-					                                      "id",
-					                                      "`login` = :login",
-					                                      "id",
-					                                      array(
-					                                          ":login" => $get['author']
-					                                      ), 1)->fetchColumn();
-				} elseif ($attr == "feathers") {
-					$where[] = "`__posts`.`feather` = :feather";
-					$params[':feather'] = depluralize($get['feathers']);
-				} else {
-					list($where, $params, $attr) = $trigger->filter('main_controller_view', array($where, $params, $attr));
-
-					if ($attr !== null) {
-						$where[] = "`__posts`.`".$attr."` = :attr".$attr;
-						$params[':attr'.$attr] = $get[$attr];
-					}
-				}
-
-			$post = new Post(null, array("where" => $where, "params" => $params));
+			$trigger = Trigger::current();
+			$sql = SQL::current();
 
 			if ($post->no_results) {
-				# Check for a page...
 				fallback($get['url'], "");
-				$check_page = $sql->count("pages",
-				                          "`url` = :url",
-				                          array(
-				                              ':url' => $get['url']
-				                          ));
-				if ($check_page == 1)
-					return $action = $url;
-			}
 
-			return (!$post->no_results) ? $action = "view" : $action = $get['url'] ;
+				$page = new Page(null, array("where" => "`__pages`.`url` = :url", "params" => array(":url" => $get["url"])));
+				if (!$page->no_results)
+					return $action = "page";
+			}
 		}
 
 		/**

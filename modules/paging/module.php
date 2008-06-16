@@ -23,29 +23,4 @@
 			$post->next_page = false;
 			$post->prev_page = false;
 		}
-		public function prev_page_url($post) {
-			global $action;
-			$request = rtrim($_SERVER['REQUEST_URI'], "/");
-
-			$config = Config::current();
-			if (!$config->clean_urls)
-				$mark = (strpos($request, "?")) ? "&" : "?" ;
-
-			return ($config->clean_urls) ?
-			       preg_replace("/(\/page\/([0-9]+)|$)/", "/page/".($post->page - 1), "http://".$_SERVER['HTTP_HOST'].$request, 1) :
-			       preg_replace("/([\?&]page=([0-9]+)|$)/", $mark."page=".($post->page - 1), "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 1) ;
-		}
-		public function next_page_url($post) {
-			global $action;
-			$request = rtrim($_SERVER['REQUEST_URI'], "/");
-			$config = Config::current();
-			$slash = (substr($config->post_url, -1) == "/") ? "/" : "" ;
-
-			if (!$config->clean_urls)
-				$mark = (strpos($request, "?")) ? "&" : "?" ;
-
-			return ($config->clean_urls) ?
-			       preg_replace("/(\/page\/([0-9]+)|$)/", "/page/".($post->page + 1), "http://".$_SERVER['HTTP_HOST'].$request, 1) :
-			       preg_replace("/([\?&]page=([0-9]+)|$)/", $mark."page=".($post->page + 1), "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 1) ;
-		}
 	}

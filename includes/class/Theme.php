@@ -214,10 +214,10 @@
 		 * Outputs the Feed references.
 		 */
 		public function feeds() {
-			global $action, $request, $pluralizations;
+			global $action, $pluralizations;
 
 			$config = Config::current();
-			$request = ($config->clean_urls) ? rtrim($request, "/") : htmlspecialchars($_SERVER['REQUEST_URI']) ;
+			$request = ($config->clean_urls) ? rtrim(Route::current()->request, "/") : htmlspecialchars($_SERVER['REQUEST_URI']) ;
 			$append = ($config->clean_urls) ?
 			              "/feed" :
 			              ((count($_GET) == 1 and $action == "index") ?
