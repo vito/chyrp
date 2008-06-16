@@ -58,7 +58,8 @@
 		}
 
 		static function route_add_comment() {
-			if (!Comment::user_can($_POST['post_id']))
+			$post = new Post($_POST['post_id']);
+			if (!Comment::user_can($post->id))
 				show_403(__("Access Denied"), __("You cannot comment on this post.", "comments"));
 
 			if (empty($_POST['author'])) error(__("Error"), __("Author can't be blank.", "comments"));
@@ -844,7 +845,7 @@ $(function(){
 			$config = Config::current();
 			$trigger = Trigger::current();
 			$visitor = Visitor::current();
-			$post->commentable = Comment::user_can($post->id);
+			$post->commentable = Comment::user_can($post);
 
 			if ($action == "view") {
 				$get_comments = $sql->select("comments", # table

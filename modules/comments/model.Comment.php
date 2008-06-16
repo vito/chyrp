@@ -47,10 +47,10 @@
 		 *     $type - The type of comment. Optional, used for trackbacks/pingbacks.
 		 */
 		static function create($author, $email, $url, $body, $post_id, $type = null) {
-			if (!self::user_can($post_id)) return;
+			$post = new Post($post_id);
+			if (!self::user_can($post->id)) return;
 			global $modules;
 
-			$post = new Post($post_id);
 			$config = Config::current();
 			$route = Route::current();
 			$visitor = Visitor::current();
@@ -248,11 +248,10 @@
 			SQL::current()->delete("comments", "`id` = :id", array(":id" => $comment_id));
 		}
 
-		static function user_can($post_id) {
+		static function user_can($post) {
 			$visitor = Visitor::current();
 			if (!$visitor->group()->can("add_comment")) return false;
 
-			$post = new Post($post_id, array("filter" => false));
 			// assume allowed comments by default
 			return empty($post->comment_status) or
 			       !($post->comment_status == "closed" or
