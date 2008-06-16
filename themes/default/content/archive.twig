@@ -24,7 +24,7 @@
 	{% endfor %}
 {% endif %}
 
-{% if not archives and not posts %} {# No results #}
+{% if not archives and not posts.paginated %} {# No results #}
 					<h2>${ "No Posts" | translate }</h2>
 					<p>${ "There don't seem to be any posts in the timeframe you specified." | translate }</p>
 {% endif %}
