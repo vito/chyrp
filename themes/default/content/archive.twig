@@ -12,7 +12,7 @@
 	{% endfor %}
 {% endif %}
 
-{% if posts %} {# Posts? (For daily/monthly archives) #}
+{% if posts.paginated %} {# Posts? (For daily/monthly archives) #}
 {% if archive.depth == "day" %}
 	<h2>${ "Archive of" | translate } $archive.month $archive.day, $archive.year</h2>
 {% endif %}

@@ -1,6 +1,6 @@
 {% extends "layouts/default.twig" %}
 {% block content %}
-{% if posts %}
+{% if posts.paginated %}
 					<h2>${ "Drafts" | translate }</h2>
 {% endif %}
 {% for post in posts.paginated %}
