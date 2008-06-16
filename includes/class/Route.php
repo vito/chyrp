@@ -209,7 +209,7 @@
 		}
 
 		public function check_viewing_post() {
-			global $post;
+			global $post, $action;
 			$config = Config::current();
 			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls) return;
 
@@ -219,15 +219,15 @@
 			if (preg_match("/".$post_url."/", rtrim($this->request, "/"), $matches)) {
 				array_shift($matches);
 
+				$action = $_GET['action'] = "view";
+
 				foreach ($parameters[1] as $index => $parameter)
 					if ($parameters[1][$index][0] == "(")
 						$attr[rtrim(ltrim($parameter, "("), ")")] = urldecode($this->arg[$index]);
 
 				$post = Post::from_url($attr);
 				if ($post->no_results)
-					return $post = null;
-
-				return $_GET['action'] = "view";
+					return $_GET['action'] = (empty($this->arg[0])) ? "index" : $this->arg[0] ;
 			}
 		}
 
