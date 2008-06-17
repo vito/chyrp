@@ -102,6 +102,7 @@ function prepare_write_bling() {
 
 	// Auto-expand text fields & auto-grow textareas.
 	$("input.text").each(function(){
+		if ($(this).parent().parent().attr("class") == "more_options") return
 		$(this).css("min-width", $(this).width()).Autoexpand()
 	})
 	$("textarea").each(function(){
