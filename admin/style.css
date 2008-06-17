@@ -134,6 +134,11 @@ a:hover {
 #sub-nav li.right a {
 	color: #444;
 }
+.feathers_sort {
+	background: #dfdfdf;
+	border-top: .2em solid #e8e8e8;
+	height: 2.3em !important;
+}
 /* @end */
 
 /* @group Content */
@@ -695,9 +700,6 @@ ul.sort_pages input {
 /* @end */
 
 /* @group Helpers & General */
-.feathers_sort {
-	background: #ddd;
-}
 .breakword {
 	word-wrap: break-word !important;
 }
