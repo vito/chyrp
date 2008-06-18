@@ -41,7 +41,8 @@
 	$installed = false;
 
 	# TODO: Determine exact PHP version that is required for Chyrp
-	if (version_compare(PHP_VERSION, "5.0.0", "<"))
+	# Note (from Alex): Minimum requirement for PDO::prepare is 5.1.0
+	if (version_compare(PHP_VERSION, "5.1.0", "<"))
 		$errors[] = __("Chyrp requires PHP 5. Installation cannot continue.");
 
 	if (!class_exists("PDO") or (!in_array("mysql", PDO::getAvailableDrivers()) and !in_array("sqlite", PDO::getAvailableDrivers())))
