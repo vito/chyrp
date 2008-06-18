@@ -51,8 +51,8 @@
 			$tags = array_diff($tags, array("")); // Remove empties
 			$tags_cleaned = array_map("sanitize", $tags);
 
-			$tags_string = "{{".implode("}} {{", $tags)."}}";
-			$tags_cleaned_string = "{{".implode("}} {{", $tags_cleaned)."}}";
+			$tags_string = "{{".implode("}},{{", $tags)."}}";
+			$tags_cleaned_string = "{{".implode("}},{{", $tags_cleaned)."}}";
 
 			$sql = SQL::current();
 			$sql->insert("tags", array("tags" => ":tags", "clean" => ":clean", "post_id" => ":post_id"), array(
@@ -75,8 +75,8 @@
 			$tags = array_diff($tags, array("")); // Remove empties
 			$tags_cleaned = array_map("sanitize", $tags);
 
-			$tags_string = (!empty($tags)) ? "{{".implode("}} {{", $tags)."}}" : "" ;
-			$tags_cleaned_string = (!empty($tags_cleaned)) ? "{{".implode("}} {{", $tags_cleaned)."}}" : "" ;
+			$tags_string = (!empty($tags)) ? "{{".implode("}},{{", $tags)."}}" : "" ;
+			$tags_cleaned_string = (!empty($tags_cleaned)) ? "{{".implode("}},{{", $tags_cleaned)."}}" : "" ;
 
 			if (empty($tags_string) and empty($tags_cleaned_string))
 				$sql->delete("tags", "`__tags`.`post_id` = :post_id", array(":post_id" => $post->id));
@@ -110,9 +110,10 @@
 		static function route_tag() {
 			global $private, $posts;
 
-			$posts = array();
-			foreach (SQL::current()->select("tags", "*", "`clean` LIKE :tag", "`__tags`.`id`", array(":tag" => "%{{".$_GET['name']."}}%"))->fetchAll() as $tag)
-				$posts[] = new Post($tag["post_id"]);
+			$posts = new Paginator(Post::find(array("placeholders" => true,
+			                                        "where" => "__tags.clean LIKE :tag",
+			                                        "params" => array(":tag" => "%{{".$_GET['name']."}}%"))),
+			                       Config::current()->posts_per_page);
 		}
 
 		static function import_wordpress_post($item, $post) {
@@ -121,8 +122,8 @@
 			$tags = $cleaned = "";
 			foreach ($item->category as $tag)
 				if (isset($tag->attributes()->domain) and $tag->attributes()->domain == "tag" and !empty($tag) and isset($tag->attributes()->nicename)) {
-					$tags.=    "{{".strip_tags(trim($tag))."}} ";
-					$cleaned.= "{{".sanitize(strip_tags(trim($tag)))."}} ";
+					$tags.=    "{{".strip_tags(trim($tag))."}},";
+					$cleaned.= "{{".sanitize(strip_tags(trim($tag)))."}},";
 				}
 
 			if (!empty($tags) and !empty($cleaned))
@@ -130,8 +131,8 @@
 				                       array("tags"     => ":tags",
 				                             "clean"    => ":clean",
 				                             "post_id"  => ":post_id"),
-				                       array(":tags"    => trim($tags),
-				                             ":clean"   => trim($cleaned),
+				                       array(":tags"    => rtrim($tags, ","),
+				                             ":clean"   => rtrim($cleaned, ","),
 				                             ":post_id" => $post->id));
 		}
 
@@ -173,8 +174,8 @@
 			if (empty($tags) or empty($cleaned_tags))
 				return array();
 
-			$tags = explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", $tags));
-			$cleaned_tags = explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", $cleaned_tags));
+			$tags = explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", $tags));
+			$cleaned_tags = explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", $cleaned_tags));
 
 			$tags = array_combine($cleaned_tags, $tags);
 
@@ -189,7 +190,7 @@
 			if (empty($tags))
 				return array();
 
-			return explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", $tags));
+			return explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", $tags));
 		}
 
 		static function filter_post($post) {
@@ -226,9 +227,9 @@
 		if (!count($tags))
 			return array();
 
-		# array("{{foo}} {{bar}}", "{{foo}}") to "{{foo}} {{bar}} {{foo}}" to array("foo", "bar", "foo") to array("foo" => 2, "bar" => 1)
-		$tags = array_count_values(explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $tags))));
-		$clean = array_count_values(explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $clean))));
+		# array("{{foo}},{{bar}}", "{{foo}}") to "{{foo}},{{bar}},{{foo}}" to array("foo", "bar", "foo") to array("foo" => 2, "bar" => 1)
+		$tags = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $tags))));
+		$clean = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $clean))));
 		$tag2clean = array_combine(array_keys($tags), array_keys($clean));
 
 		foreach ($tags as $name => $popularity)
@@ -253,9 +254,9 @@
 			$clean[] = $tag["clean"];
 		}
 
-		# array("{{foo}} {{bar}}", "{{foo}}") to "{{foo}} {{bar}} {{foo}}" to array("foo", "bar", "foo") to array("foo" => 2, "bar" => 1)
-		$tags = array_count_values(explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $tags))));
-		$clean = array_count_values(explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $clean))));
+		# array("{{foo}},{{bar}}", "{{foo}}") to "{{foo}},{{bar}},{{foo}}" to array("foo", "bar", "foo") to array("foo" => 2, "bar" => 1)
+		$tags = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $tags))));
+		$clean = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $clean))));
 		$clean2tag = array_combine(array_keys($clean), array_keys($tags));
 
 		return $clean2tag[$clean_tag];
@@ -269,9 +270,9 @@
 			$clean[] = $tag["clean"];
 		}
 
-		# array("{{foo}} {{bar}}", "{{foo}}") to "{{foo}} {{bar}} {{foo}}" to array("foo", "bar", "foo") to array("foo" => 2, "bar" => 1)
-		$tags = array_count_values(explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $tags))));
-		$clean = array_count_values(explode(" ", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $clean))));
+		# array("{{foo}},{{bar}}", "{{foo}}") to "{{foo}},{{bar}},{{foo}}" to array("foo", "bar", "foo") to array("foo" => 2, "bar" => 1)
+		$tags = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $tags))));
+		$clean = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(" ", $clean))));
 		$tag2clean = array_combine(array_keys($tags), array_keys($clean));
 
 		return $tag2clean[$unclean_tag];
