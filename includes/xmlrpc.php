@@ -6,6 +6,7 @@
 
 	/**
 	 * Class: XMLRPC
+	 * Provides functionality for using external clients, services, etc. for accessing and adding to Chyrp.
 	 */
 	class XMLRPC extends IXR_Server {
 		/**

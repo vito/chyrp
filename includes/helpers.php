@@ -1,4 +1,9 @@
 <?php
+	/**
+	 * File: Helpers
+	 * Various functions used throughout Chyrp's code.
+	 */
+
 	# Integer: $time_start
 	# Times Chyrp.
 	$time_start = 0;
