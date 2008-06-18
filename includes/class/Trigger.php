@@ -33,18 +33,19 @@
 			global $modules;
 			$caller = (is_array($arg) and $array) ? "call_user_func_array" : "call_user_func" ;
 
+			$this->called[$name] = array();
 			if (isset($this->priorities[$name])) { # Predefined priorities?
 				usort($this->priorities[$name], array($this, "cmp"));
 
 				foreach ($this->priorities[$name] as $action) {
 					$caller($action["function"], $arg);
-					$this->called[] = $action["function"];
+					$this->called[$name][] = $action["function"];
 				}
 			}
 
 			$config = Config::current();
 			foreach ($config->enabled_modules as $module)
-				if (!in_array(array($modules[$module], $name), $this->called) and is_callable(array($modules[$module], $name)))
+				if (!in_array(array($modules[$module], $name), $this->called[$name]) and is_callable(array($modules[$module], $name)))
 					$caller(array($modules[$module], $name), $arg);
 		}
 
@@ -71,6 +72,8 @@
 			if (!is_array($arguments))
 				$arguments = array($arguments);
 
+			$this->called[$name] = array();
+
 			if (isset($this->priorities[$name])) { # Predefined priorities?
 				usort($this->priorities[$name], array($this, "cmp"));
 				foreach ($this->priorities[$name] as $action) {
@@ -80,13 +83,13 @@
 					} else
 						$this->modified[$name] = call_user_func($action["function"], $this->modified($name, $target));
 
-					$this->called[] = $action["function"];
+					$this->called[$name][] = $action["function"];
 				}
 			}
 
 			$config = Config::current();
 			foreach ($config->enabled_modules as $module)
-				if (!in_array(array($modules[$module], $name), $this->called) and is_callable(array($modules[$module], $name)))
+				if (!in_array(array($modules[$module], $name), $this->called[$name]) and is_callable(array($modules[$module], $name)))
 					if (!empty($arguments)) {
 						$params = array_merge(array($this->modified($name, $target)), $arguments);
 						$this->modified[$name] = call_user_func_array(array($modules[$module], $name), $params);
