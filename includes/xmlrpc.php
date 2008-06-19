@@ -440,16 +440,16 @@
 			if (!in_array(XML_RPC_FEATHER, Config::current()->enabled_feathers))
 				throw new Exception(__(sprintf("%s feather is not enabled.", XML_RPC_FEATHER)));
 
-			$where = array('feather = :feather');
-			$params = array(
-				':feather' => XML_RPC_FEATHER,
-				':statuses' => "'public'");
+			$where = array('`__posts`.`feather` = :feather');
+			$params = array(':feather' => XML_RPC_FEATHER);
 
-			if ($user->group()->can('view_own_drafts', 'view_drafts'))
-				$params[':statuses'] .= ", 'draft'";
+			if ($user->group()->can('view_own_draft', 'view_draft'))
+				$where[] = '`__posts`.`status` IN ( "public", "draft" )';
+			else
+				$where[] = '`__posts`.`status` = "public"';
 
 			if (!$user->group()->can('view_draft', 'edit_draft', 'edit_post', 'delete_draft', 'delete_post')) {
-				$where[] = 'user_id = :user_id';
+				$where[] = '`__posts`.`user_id` = :user_id';
 				$params[':user_id'] = $user->id;
 			}
 
@@ -457,7 +457,7 @@
 				'posts',
 				'__posts.*',
 				$where,
-				'pinned DESC, created_at DESC, id DESC',
+				'`__posts`.`created_at` DESC, `__posts`.`id` DESC',
 				$params)->fetchAll();
 		}
 
@@ -488,7 +488,9 @@
 						":login" => $login,
 						":password" => md5($password))));
 
-			if (!$user->group()->can("{$do}_own_post", "{$do}_post", "{$do}_draft", "{$do}_own_draft"))
+			if ($user->no_results)
+				throw new Exception(__("Login incorrect."));
+			else if (!$user->group()->can("{$do}_own_post", "{$do}_post", "{$do}_draft", "{$do}_own_draft"))
 				throw new Exception(__(sprintf("You don't have permission to %s posts/drafts.", $do)));
 		}
 
