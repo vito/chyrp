@@ -413,6 +413,7 @@ span.checkbox {
 }
 textarea {
 	font-size: 1em;
+	font-family: "Monaco", "Consolas", monospace;
 }
 textarea.wide,
 input.text.wide {

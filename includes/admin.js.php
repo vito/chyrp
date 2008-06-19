@@ -42,6 +42,11 @@ $(function(){
 	$(".js_disabled").remove()
 	$(".js_enabled").css("display", "block")
 
+	$("textarea").keyup(function(event){
+		if ($(this).val().match(/\\ct/gm))
+			$(this).val($(this).val().replace(/\\ct/gm, "	"))
+	})
+
 	// Automated PNG fixing.
 	$.ifixpng("<?php echo $config->chyrp_url; ?>/admin/images/icons/pixel.gif")
 	$("img[@src$=.png]").ifixpng()
