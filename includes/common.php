@@ -224,7 +224,7 @@
 		foreach (Spyc::YAMLLoad(FEATHERS_DIR."/".$feather."/info.yaml") as $key => $val)
 			$feathers[$feather]->$key = $val;
 	}
-	foreach ($feathers as &$feather)
+	foreach ($feathers as $feather)
 		if (is_callable(array($feather, "__init")))
 			$feather->__init();
 
@@ -240,7 +240,7 @@
 		foreach (Spyc::YAMLLoad(MODULES_DIR."/".$module."/info.yaml") as $key => $val)
 			$modules[$module]->$key = $val;
 	}
-	foreach ($modules as &$module)
+	foreach ($modules as $module)
 		if (is_callable(array($module, "__init")))
 			$module->__init();
 
