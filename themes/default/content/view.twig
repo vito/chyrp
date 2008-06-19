@@ -1,5 +1,8 @@
 {% extends "layouts/default.twig" %}
 {% block content %}
+				{% if not post.next.no_results %}<a class="right" href="$post.next.url">${ post.next.title | truncate(40) } &rarr;</a>{% endif %}
+				{% if not post.prev.no_results %}<a href="$post.prev.url">&larr; ${ post.prev.title | truncate(40) }</a>{% endif %}
+				<div class="clear"></div>
 {% include "content/post.twig" %}
 {% if enabled_modules.comments %}
 				<br />

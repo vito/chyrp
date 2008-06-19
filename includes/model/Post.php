@@ -441,47 +441,27 @@
 		}
 
 		/**
-		 * Function: next_link
-		 * Displays a link to the next post.
+		 * Function: next
+		 * Returns:
+		 *     The next post (the post made after this one).
 		 */
-		public function next_link($text = "(name) &rarr;", $class = "next_page", $truncate = 30) {
-			global $temp_id;
-			$post = (!isset($temp_id)) ? $this : new self($temp_id) ;
-			if (!isset($post->created_at)) return;
-
-			if (!isset($temp_id))
-				$temp_id = $this->id;
-
-			$next = new self(null, array("where" => "`created_at` > :created_at",
-			                             "params" => array(":created_at" => $post->created_at)));
-			if ($next->no_results)
-				return;
-
-			$text = str_replace("(name)", $next->title(), $text);
-
-			echo '<a href="'.htmlspecialchars($next->url(), 2, "utf-8").'" class="'.$class.'">'.truncate($text, $truncate).'</a>';
+		public function next() {
+			return new self(null, array("where" => "__posts.created_at > :created_at OR __posts.id > :id",
+			                            "order" => "__posts.created_at ASC, __posts.id ASC",
+			                            "params" => array(":created_at" => $this->created_at,
+			                                              ":id" => $this->id)));
 		}
 
 		/**
-		 * Function: prev_link
-		 * Displays a link to the previous post.
+		 * Function: prev
+		 * Returns:
+		 *     The next post (the post made after this one).
 		 */
-		public function prev_link($text = "&larr; (name)", $class = "prev_page", $truncate = 30) {
-			global $temp_id;
-			$post = (!isset($temp_id)) ? $this : new self($temp_id) ;
-			if (!isset($post->created_at)) return;
-
-			if (!isset($temp_id))
-				$temp_id = $this->id;
-
-			$prev = new self(null, array("where" => "`created_at` < :created_at",
-			                             "params" => array(":created_at" => $post->created_at)));
-			if ($prev->no_results)
-				return;
-
-			$text = str_replace("(name)", $prev->title(), $text);
-
-			echo '<a href="'.htmlspecialchars($prev->url(), 2, "utf-8").'" class="'.$class.'">'.truncate($text, $truncate).'</a>';
+		public function prev() {
+			return new self(null, array("where" => "__posts.created_at < :created_at OR __posts.id < :id",
+			                            "order" => "__posts.created_at DESC, __posts.id DESC",
+			                            "params" => array(":created_at" => $this->created_at,
+			                                              ":id" => $this->id)));
 		}
 
 		/**
