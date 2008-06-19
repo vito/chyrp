@@ -694,6 +694,10 @@ $(function(){
 					$comment = new Comment($_POST['comment_id'], array("filter" => false));
 					if (!$comment->editable())
 						break;
+
+					if ($theme->file_exists("forms/comment/edit"))
+						$theme->load("forms/comment/edit", array("comment" => $comment));
+					else {
 ?>
 <form id="comment_edit_<?php echo $comment->id; ?>" class="inline_edit comment_edit" action="<?php echo $config->chyrp_url."/admin/?action=update_comment"; ?>" method="post" accept-charset="utf-8">
 	<p>
@@ -737,6 +741,7 @@ $(function(){
 	</div>
 </form>
 <?php
+					}
 					break;
 			}
 		}

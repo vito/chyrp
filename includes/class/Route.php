@@ -227,8 +227,10 @@
 						$attr[rtrim(ltrim($parameter, "("), ")")] = urldecode($this->arg[$index]);
 
 				$post = Post::from_url($attr);
-				if ($post->no_results)
+				if ($post->no_results) {
+					echo $attr["url"];
 					return $_GET['action'] = (empty($this->arg[0])) ? "index" : $this->arg[0] ;
+				}
 			}
 		}
 
