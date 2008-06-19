@@ -15,6 +15,10 @@
 			$title = $post->title();
 			$theme_file = THEME_DIR."/forms/feathers/".$post->feather.".php";
 			$default_file = FEATHERS_DIR."/".$post->feather."/fields.php";
+
+			if ($theme->file_exists("forms/post/edit"))
+				$theme->load("forms/post/edit", array("post" => $post, "feather" => $feathers[$post->feather]));
+			else {
 ?>
 <form id="post_edit_<?php echo $post->id; ?>" class="inline_edit post_edit" action="<?php echo $config->chyrp_url."/admin/?action=update_post&amp;sub=text&amp;id=".$post->id; ?>" method="post" accept-charset="utf-8">
 	<h2><?php echo _f("Editing &#8220;%s&#8221;", array(truncate($title, 40, false))); ?></h2>
@@ -81,6 +85,7 @@
 	<input type="hidden" name="hash" value="<?php echo $config->secure_hashkey; ?>" id="hash" />
 </form>
 <?php
+			}
 			break;
 		case "delete_post":
 			$post = new Post($_POST['id']);
