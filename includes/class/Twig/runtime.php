@@ -368,17 +368,19 @@ function twig_selected_filter($foo) {
 	array_shift($try);
 
 	$just_class = (end($try) === true);
+	if ($just_class)
+		array_pop($try);
 
 	if (is_array($try[0])) {
 		foreach ($try as $index => $it)
-			if (!$index) continue;
+			if ($index)
 				$try[0][] = $it;
 
 		$try = $try[0];
 	}
 
 	if (in_array($foo, $try))
-		return ($just_class) ? "selected" : ' class="selected"' ;
+		return ($just_class) ? " selected" : ' class="selected"' ;
 }
 
 function twig_checked_filter($foo) {
