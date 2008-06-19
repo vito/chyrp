@@ -311,6 +311,7 @@
 			$config->set("comments_per_page", $_POST['comments_per_page']);
 
 			if (!empty($_POST['defensio_api_key'])) {
+				$_POST['defensio_api_key'] = trim($_POST['defensio_api_key']);
 				$defensio = new Defensio($config->url, $_POST['defensio_api_key']);
 				if ($defensio->errorsExist())
 					$admin->context["invalid_defensio"] = true;
