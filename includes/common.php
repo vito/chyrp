@@ -27,7 +27,6 @@
 
 	# Fallback all these definitions.
 	if (!defined('JAVASCRIPT'))  define('JAVASCRIPT', false);
-	if (!defined('BOOKMARKLET')) define('BOOKMARKLET', false);
 	if (!defined('ADMIN'))       define('ADMIN', false);
 	if (!defined('AJAX'))        define('AJAX', false);
 	if (!defined('XML_RPC'))     define('XML_RPC', false);

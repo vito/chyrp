@@ -1,5 +1,4 @@
 <?php
-	define('BOOKMARKLET', true);
 	require_once "common.php";
 
 	if (!$visitor->group()->can("add_post"))
@@ -11,9 +10,9 @@
 	$feather = $config->enabled_feathers[0];
 	fallback($_GET['status']);
 
-	$args['url'] = (isset($_GET['url'])) ? urldecode(stripslashes($_GET['url'])) : null ;
-	$args['title'] = (isset($_GET['title'])) ? urldecode(stripslashes($_GET['title'])) : null ;
-	$args['selection'] = (isset($_GET['selection'])) ? urldecode(stripslashes($_GET['selection'])) : null ;
+	$args["url"] = $args["page_url"] = (isset($_GET['url'])) ? urldecode(stripslashes($_GET['url'])) : null ;
+	$args["title"] = $args["page_title"] = (isset($_GET['title'])) ? urldecode(stripslashes($_GET['title'])) : null ;
+	$args["selection"] = (isset($_GET['selection'])) ? urldecode(stripslashes($_GET['selection'])) : null ;
 
 	switch($_GET['status']) {
 		default:
@@ -36,12 +35,15 @@
 			abbr,acronym { border: 0; font-variant: normal; }
 			input, textarea, select { font-family: inherit; font-size: inherit; font-weight: inherit; }
 			/* End Reset */
+			html {
+				font-size: 62.5%;
+			}
 			body {
-				font: .8em/1.5em normal "Lucida Grande", "Trebuchet MS", Verdana, Helvetica, Arial, sans-serif;
-				color: #333;
-				background: #eee;
+				font: 1.25em/1.5em normal "Verdana", Helvetica, Arial, sans-serif;
+				color: #626262;
+				background: #e8e8e8;
 				margin: 0;
-				padding: 1em;
+				padding: 1.25em;
 			}
 			a:link, a:visited {
 				text-decoration: none;
@@ -68,27 +70,32 @@
 			input.code, code {
 				font-family: "Consolas", "Monaco", monospace;
 			}
-			.navigation {
-				margin: 0;
-				padding: 0;
-			}
-			.navigation li {
-				float: left;
-				margin: 0 0 -1px .5em;
-				padding: .25em .5em;
-				background: #ddd;
-				border: 1px solid #ddd;
-				border-bottom: 0;
-			}
-			.navigation li.selected {
-				background: #fff;
-			}
 			.navigation li a {
-				color: #888;
-				border: none;
+				float: left;
+				padding: .4em .75em;
+				background: #dfdfdf;
+				border-top: .2em solid #e8e8e8;
+				border-bottom: 0;
+				color: #737373;
+			}
+			.navigation li.selected a {
+				background: #fff;
+				border-top-color: #c7c7c7;
+			}
+			.navigation li.right {
+				margin: .75em 0 0;
+			}
+			.navigation li.right a {
+				float: none;
+				background: transparent;
+				padding: 0;
+				font-size: .95em;
+				color: #777;
+			}
+			.navigation li.right a {
+				color: #444;
 			}
 			.content {
-				border: 1px solid #ddd;
 				background: #fff;
 				padding: 1em;
 				height: 27.75em;
@@ -117,19 +124,29 @@
 			}
 		</style>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="http://localhost/chyrp/includes/lib/gz.php?file=plugins.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			function activate_nav_tab(id) {
-				$("[id^='nav_']").removeClass("selected")
+				$("[class^='nav_']").removeClass("selected")
 				$("[id$='_form']").hide()
 				$("#"+id+"_form").show()
-				$("#nav_" + id).addClass("selected")
+				$(".nav_" + id).addClass("selected")
 			}
 			$(function(){
-				$("input.text").keyup(function(){
-					if ($(this).val().length > 10 && ($(this).parent().width() - $(this).width()) < 10)
-						return;
-
-					$(this).attr("size", $(this).val().length)
+				$("input.text").each(function(){
+					$(this).css("min-width", $(this).width()).Autoexpand()
+				})
+				$(".navigation li").css("float", "left")
+				$(".navigation").sortable({
+					axis: "x",
+					containment: ".navigation",
+					placeholder: "feathers_sort",
+					opacity: 0.8,
+					delay: 1,
+					revert: true,
+					update: function(){
+						$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", "action=reorder_feathers&"+$(".navigation").sortable("serialize"))
+					}
 				})
 			})
 		</script>
@@ -144,7 +161,7 @@
 
 		$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$the_feather."/info.yaml");
 ?>
-			<li id="nav_<?php echo $the_feather; ?>"<?php if ($feather == $the_feather) echo ' class="selected"'; ?>>
+			<li id="list_feathers[<?php echo $the_feather; ?>]" class="nav_<?php echo $the_feather; ?><?php if ($feather == $the_feather) echo ' selected'; ?>">
 				<a href="javascript:activate_nav_tab('<?php echo $the_feather; ?>')"><?php echo $info["name"]; ?></a>
 			</li>
 <?php
@@ -176,13 +193,13 @@
 						<?php endif; ?>
 					</label>
 					<?php if ($field["type"] == "text" or $field["type"] == "file"): ?>
-					<input class="<?php echo $field["type"]; ?><?php if (isset($field["classes"])): ?> <?php echo join(" ", $field["classes"]); ?><?php endif; ?>" type="<?php echo $field["type"]; ?>" name="<?php echo $field["attr"]; ?>" value="" id="$field["attr"]" />
+					<input class="<?php echo $field["type"]; ?><?php if (isset($field["classes"])): ?> <?php echo join(" ", $field["classes"]); ?><?php endif; ?>" type="<?php echo $field["type"]; ?>" name="<?php echo $field["attr"]; ?>" value="<?php if (isset($field["bookmarklet"]) and isset($args[$field["bookmarklet"]])) echo fix($args[$field["bookmarklet"]]); ?>" id="$field["attr"]" />
 					<?php elseif ($field["type"] == "text_block"): ?>
-					<textarea class="wide<?php if (isset($field["classes"])): ?> <?php echo join(" ", $field["classes"]); ?><?php endif; ?>" rows="<?php echo fallback($field["rows"], 10, true); ?>" name="<?php echo $field["attr"]; ?>" id="<?php echo $field["attr"]; ?>" cols="50"></textarea>
+					<textarea class="wide<?php if (isset($field["classes"])): ?> <?php echo join(" ", $field["classes"]); ?><?php endif; ?>" rows="<?php echo fallback($field["rows"], 10, true); ?>" name="<?php echo $field["attr"]; ?>" id="<?php echo $field["attr"]; ?>" cols="50"><?php if (isset($field["bookmarklet"]) and isset($args[$field["bookmarklet"]])) echo fix($args[$field["bookmarklet"]]); ?></textarea>
 					<?php elseif ($field["type"] == "select"): ?>
 					<select name="<?php echo $field["attr"]; ?>" id="<?php echo $field["attr"]; ?>"<?php if (isset($field["classes"])): ?> class="<?php echo join(" ", $field["classes"]); ?>"<?php endif; ?>>
 						<?php foreach ($field["options"] as $value => $name): ?>
-						<option value="<?php echo fix($value); ?>"><?php echo fix($name); ?></option>
+						<option value="<?php echo fix($value); ?>"<?php if (isset($field["bookmarklet"]) and isset($args[$field["bookmarklet"]])) selected($value, $args[$field["bookmarklet"]]); ?>><?php echo fix($name); ?></option>
 						<?php endforeach; ?>
 					</select>
 					<?php endif; ?>

@@ -2,7 +2,7 @@
 	class Quote extends Feather {
 		public function __construct() {
 			$this->setField(array("attr" => "quote", "type" => "text_block", "rows" => 5, "label" => __("Quote", "quote"), "bookmarklet" => "selection"));
-			$this->setField(array("attr" => "source", "type" => "text_block", "rows" => 5, "label" => __("Source", "quote"), "optional" => true, "preview" => true, "bookmarklet" => "linked_title"));
+			$this->setField(array("attr" => "source", "type" => "text_block", "rows" => 5, "label" => __("Source", "quote"), "optional" => true, "preview" => true, "bookmarklet" => "page_title"));
 			$this->setFilter("quote", "markup_post_text");
 			$this->setFilter("source", "markup_post_text");
 		}

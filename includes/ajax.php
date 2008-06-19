@@ -208,11 +208,11 @@
 
 			break;
 		case "reorder_feathers":
-			$feathers = $_POST['list'];
-			foreach ($feathers as &$value)
+			$reorder = fallback($_POST['list'], $config->enabled_feathers, true);
+			foreach ($reorder as &$value)
 				$value = preg_replace("/feathers\[([^\]]+)\]/", "\\1", $value);
 
-			$config->set("enabled_feathers", $feathers);
+			$config->set("enabled_feathers", $reorder);
 			break;
 	}
 
