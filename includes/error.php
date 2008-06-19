@@ -8,14 +8,8 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<title>Chyrp: <?php echo $title; ?></title>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 		<style type="text/css">
-			html {
-				background: #FFF;
-				margin: 0;
-				padding: 0;
-				font: 11px 'Lucida Grande', Verdana, sans-serif;
-				color: #777;
-			}
 			html, body, ul, ol, li,
 			h1, h2, h3, h4, h5, h6,
 			form, fieldset, a, p {
@@ -23,59 +17,80 @@
 				padding: 0;
 				border: 0;
 			}
+			html {
+				font-size: 62.5%;
+			}
+			body {
+				font: 1.25em/1.5em normal "Verdana", Helvetica, Arial, sans-serif;
+				color: #626262;
+				background: #e8e8e8;
+				padding: 0 0 5em;
+			}
 			.window {
-				width: 300px;
-				margin: 0 auto;
-				padding: 0;
+				width: 30em;
+				background: #fff;
+				padding: 2em;
+				margin: 5em auto 0;
+				-webkit-border-radius: 2em;
 			}
 			h1 {
-				display: block;
-				padding: 5px;
-				font-size: 14px;
-				text-shadow: 5px 0;
-				color: #8CC165;
-				background: #191919;
-				font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Trebuchet MS", Helvetica, Arial, sans-serif;
-				border-bottom: 5px solid #FFF;
-				border-top: 5px solid #FFF;
-			}
-			code {
-				color: #6B0;
-				font-family: Consolas, Monaco, monospace;
-			}
-			.footer {
-				margin: 10px 0;
-				color: #777;
-				font-size: 9px;
+				color: #ccc;
+				font-size: 3em;
+				margin: .25em 0 .5em;
 				text-align: center;
 			}
-			p {
-				padding: 0 10px;
+			code {
+				color: #06B;
+				font-family: Monaco, monospace;
+			}
+			.footer {
+				color: #777;
+				margin-top: 1em;
+				font-size: .9em;
+				text-align: center;
 			}
 			.error {
 				color: #F22;
 				font-size: 12px;
 			}
 			a:link, a:visited {
-				text-decoration: none;
-			}
-			a.big {
-				font-size: 16px;
+				xtext-decoration: none;
 				color: #6B0;
-				font-weight: bold;
 			}
 			a:hover {
 				text-decoration: underline;
 			}
+			a.big {
+				background: #eee;
+				margin-top: 2em;
+				display: block;
+				padding: .75em 1em;
+				color: #777;
+				text-shadow: #fff 1px 1px 0;
+				font: 1em normal "Lucida Grande", "Verdana", Helvetica, Arial, sans-serif;
+				text-decoration: none;
+				-webkit-border-radius: .5em;
+			}
+			a.big:hover {
+				background: #f5f5f5;
+			}
+			a.big:active {
+				background: #e0e0e0;
+			}
 		</style>
+		<script type="text/javascript" charset="utf-8">
+			$(function(){
+				$(".message").append('<a class="big" href="javascript:history.back()">&larr; Back</a>')
+			})
+		</script>
 	</head>
 	<body>
 		<div class="window">
 			<h1><?php echo $title; ?></h1>
-			<p>
+			<div class="message">
 				<?php echo nl2br($body); ?>
-			</p>
+			</div>
 		</div>
-		<div class="footer">Chyrp &copy; 2007 Alex Suraci</div>
+		<p class="footer">Chyrp <?php echo CHYRP_VERSION; ?> &copy; 2008 Alex Suraci</p>
 	</body>
 </html>
