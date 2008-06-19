@@ -18,17 +18,17 @@
 		 * Grabs the posts for the Archive page when viewing a year or a month.
 		 */
 		public function archive() {
-			global $private, $posts;
+			global $posts;
 			if (!isset($_GET['month'])) return;
 
 			if (isset($_GET['day']))
 				$posts = new Paginator(Post::find(array("placeholders" => true,
-				                                        "where" => array("`__posts`.`created_at` like :date", $private),
+				                                        "where" => "`__posts`.`created_at` like :date",
 				                                        "params" => array(":date" => $_GET['year']."-".$_GET['month']."-".$_GET['day']."%"))),
 				                       Config::current()->posts_per_page);
 			else
 				$posts = new Paginator(Post::find(array("placeholders" => true,
-				                                        "where" => array("`__posts`.`created_at` like :date", $private),
+				                                        "where" => "`__posts`.`created_at` like :date",
 				                                        "params" => array(":date" => $_GET['year']."-".$_GET['month']."%"))),
 				                       Config::current()->posts_per_page);
 		}
@@ -38,10 +38,10 @@
 		 * Grabs the posts for a search query.
 		 */
 		public function search() {
-			global $private, $posts;
+			global $posts;
 			fallback($_GET['query'], "");
 			$posts = new Paginator(Post::find(array("placeholders" => true,
-			                                        "where" => array("`xml` LIKE :query", $private),
+			                                        "where" => "`xml` LIKE :query",
 			                                        "params" => array(":query" => '%'.htmlspecialchars(urldecode($_GET['query'])).'%'))),
 				                   Config::current()->posts_per_page);
 		}
@@ -67,9 +67,9 @@
 		 * Views posts of a specific feather.
 		 */
 		public function feather() {
-			global $private, $posts;
+			global $posts;
 			$posts = new Paginator(Post::find(array("placeholders" => true,
-			                                        "where" => "`feather` = :feather and ".$private,
+			                                        "where" => "`feather` = :feather",
 			                                        "params" => array(":feather" => depluralize($_GET['action'])))),
 				                   Config::current()->posts_per_page);
 		}
@@ -88,24 +88,16 @@
 		 * Views a post.
 		 */
 		public function view() {
-			global $action, $private, $post, $page;
+			global $action, $post;
 
 			$config = Config::current();
 			$get = array_map("urldecode", $_GET);
 
 			if (!$config->clean_urls)
-				return $post = new Post(null, array("where" => array($private, "`__posts`.`url` = :url"), "params" => array(":url" => $get['url'])));
+				return $post = new Post(null, array("where" => "`__posts`.`url` = :url", "params" => array(":url" => $get['url'])));
 
-			$trigger = Trigger::current();
-			$sql = SQL::current();
-
-			if ($post->no_results) {
-				fallback($get['url'], "");
-
-				$page = new Page(null, array("where" => "`__pages`.`url` = :url", "params" => array(":url" => $get["url"])));
-				if (!$page->no_results)
-					return $action = "page";
-			}
+			if ($post->no_results)
+				show_404();
 		}
 
 		/**

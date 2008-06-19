@@ -108,7 +108,7 @@
 		}
 
 		static function route_tag() {
-			global $private, $posts;
+			global $posts;
 
 			$posts = new Paginator(Post::find(array("placeholders" => true,
 			                                        "where" => "__tags.clean LIKE :tag",

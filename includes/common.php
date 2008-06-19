@@ -271,11 +271,6 @@
 			else
 				error(__("Access Denied"), __("You are not allowed to view this site."));
 
-		$trigger->call("runtime");
-
-		if (in_array($action, array_values($pluralizations["feathers"])))
-			$action = "feather";
-
 		# Array: $statuses
 		# An array of post statuses that <Visitor> can view.
 		$statuses = array("public");
@@ -286,17 +281,13 @@
 		if ($action == "view" and $visitor->group()->can("view_draft"))
 			$statuses[] = "draft";
 
-		/**
-		 * String: $private
-		 * SQL "where" text for which posts the current user can view.
-		 */
-		$private = "`__posts`.`status` in ('".implode("', '", $statuses)."')";
+		Post::$private = "`__posts`.`status` in ('".implode("', '", $statuses)."')";
+		Post::$enabled_feathers = " and `__posts`.`feather` in ('".implode("', '", $config->enabled_feathers)."')";
 
-		/**
-		 * String: $enabled_feathers
-		 * SQL "where" text for each of the feathers. Prevents posts of a disabled Feather from showing.
-		 */
-		$enabled_feathers = " and `__posts`.`feather` in ('".implode("', '", $config->enabled_feathers)."')";
+		$trigger->call("runtime");
+
+		if (in_array($action, array_values($pluralizations["feathers"])))
+			$action = "feather";
 
 		if (isset($_GET['feed']))
 			$config->posts_per_page = $config->feed_items;

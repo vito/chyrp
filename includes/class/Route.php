@@ -209,7 +209,7 @@
 		}
 
 		public function check_viewing_post() {
-			global $post, $action;
+			global $post, $page, $action;
 			$config = Config::current();
 			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls) return;
 			if ($_GET['action'] != $this->arg[0]) return;
@@ -227,9 +227,14 @@
 						$attr[rtrim(ltrim($parameter, "("), ")")] = urldecode($this->arg[$index]);
 
 				$post = Post::from_url($attr);
-				if ($post->no_results) {
-					echo $attr["url"];
-					return $_GET['action'] = (empty($this->arg[0])) ? "index" : $this->arg[0] ;
+				if ($post->no_results) { # No post found; check for a page?
+					$url = fallback($attr["url"], fallback($_GET['url'], $this->arg[0], true), true);
+					$page = new Page(null, array("where" => "__pages.url = :url",
+					                             "params" => array(":url" => $url)));
+					if ($page->no_results)
+						return $_GET['action'] = (empty($this->arg[0])) ? "index" : $this->arg[0] ;
+					else
+						return list($_GET['url'], $_GET['action']) = array($url, "page");
 				}
 			}
 		}

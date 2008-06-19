@@ -7,7 +7,20 @@
 	 */
 	class Post extends Model {
 		public $no_results = false;
+
 		public $id = 0;
+
+		/**
+		 * String: $private
+		 * SQL "where" text for which posts the current user can view.
+		 */
+		static $private;
+
+	    /**
+		 * String: $enabled_feathers
+		 * SQL "where" text for each of the feathers. Prevents posts of a disabled Feather from showing.
+		 */
+		static $enabled_feathers;
 
 		/**
 		 * Function: __construct
@@ -16,6 +29,14 @@
 		 */
 		public function __construct($post_id = null, $options = array()) {
 			if (!isset($post_id) and empty($options)) return;
+
+			if (isset($options["where"]) and !is_array($options["where"]))
+				$options["where"] = array($options["where"]);
+			elseif (!isset($options["where"]))
+				$options["where"] = array();
+
+			array_merge($options["where"], array(self::$enabled_feathers, self::$private));
+
 			parent::grab($this, $post_id, $options);
 
 			if ($this->no_results)
@@ -31,17 +52,12 @@
 		 *     <Model::search>
 		 */
 		static function find($options = array()) {
-			global $private;
+			if (isset($options["where"]) and !is_array($options["where"]))
+				$options["where"] = array($options["where"]);
+			elseif (!isset($options["where"]))
+				$options["where"] = array();
 
-			$enabled_feathers = "`__posts`.`feather` in ('".implode("', '", Config::current()->enabled_feathers)."')";
-			if (!isset($options["where"]))
-				$options["where"] = array($private, $enabled_feathers);
-			elseif ($options["where"] === false)
-				$options["where"] = $enabled_feathers;
-			elseif (is_array($options["where"]))
-				$options["where"][] = $enabled_feathers;
-			else
-				$options["where"] = array($options["where"], $enabled_feathers);
+			array_merge($options["where"], array(self::$enabled_feathers, self::$private));
 
 			fallback($options["order"], "`__posts`.`pinned` desc, `__posts`.`created_at` desc, `__posts`.`id` desc");
 
@@ -429,14 +445,14 @@
 		 * Displays a link to the next post.
 		 */
 		public function next_link($text = "(name) &rarr;", $class = "next_page", $truncate = 30) {
-			global $private, $temp_id;
+			global $temp_id;
 			$post = (!isset($temp_id)) ? $this : new self($temp_id) ;
 			if (!isset($post->created_at)) return;
 
 			if (!isset($temp_id))
 				$temp_id = $this->id;
 
-			$next = new self(null, array("where" => array($private, "`created_at` > :created_at"),
+			$next = new self(null, array("where" => "`created_at` > :created_at",
 			                             "params" => array(":created_at" => $post->created_at)));
 			if ($next->no_results)
 				return;
@@ -451,14 +467,14 @@
 		 * Displays a link to the previous post.
 		 */
 		public function prev_link($text = "&larr; (name)", $class = "prev_page", $truncate = 30) {
-			global $private, $temp_id;
+			global $temp_id;
 			$post = (!isset($temp_id)) ? $this : new self($temp_id) ;
 			if (!isset($post->created_at)) return;
 
 			if (!isset($temp_id))
 				$temp_id = $this->id;
 
-			$prev = new self(null, array("where" => array($private, "`created_at` < :created_at"),
+			$prev = new self(null, array("where" => "`created_at` < :created_at",
 			                             "params" => array(":created_at" => $post->created_at)));
 			if ($prev->no_results)
 				return;
@@ -602,12 +618,10 @@
 		 * Attempts to grab a post from its clean URL.
 		 */
 		static function from_url($attrs = null) {
-			global $private;
-
 			fallback($attrs, $_GET);
 			$get = array_map("urldecode", $attrs);
 
-			$where = array($private);
+			$where = array();
 			$times = array("year", "month", "day", "hour", "minute", "second");
 
 			preg_match_all("/\(([^\)]+)\)/", Config::current()->post_url, $matches);

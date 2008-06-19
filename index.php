@@ -32,6 +32,22 @@
 
 			$theme->load(array("content/view", "content/index"), array("post" => $post, "posts" => array($post)));
 			break;
+		case "page":
+			fallback($page, new Page(null, array("where" => "`url` = :url", "params" => array(":url" => $_GET['url']))));
+
+			if (!$page->no_results) {
+				$theme->title = $page->title;
+
+				$page->body = $trigger->filter("markup_page_text", $page->body);
+
+				if (file_exists(THEME_DIR."/content/".$page->url.".twig"))
+					$theme->load("content/".$page->url, array("page" => $page));
+				else
+					$theme->load("content/page", array("page" => $page));
+			} else
+				show_404();
+
+			break;
 		case "archive":
 			fallback($_GET['year']);
 			fallback($_GET['month']);
@@ -70,7 +86,7 @@
 					                              "month" => @date("F", $timestamp),
 					                              "url" => $route->url("archive/".when("Y/m/", $time->created_at)));
 
-					$archives[$timestamp]["posts"] = Post::find(array("where" => array($private, "`__posts`.`created_at` like :created_at"),
+					$archives[$timestamp]["posts"] = Post::find(array("where" => "`__posts`.`created_at` like :created_at",
 					                                                  "params" => array(":created_at" => when("Y-m", $time->created_at)."%")));
 				}
 
@@ -155,23 +171,12 @@
 
 			require "includes/bookmarklet.php";
 			break;
-		case "page":
-			fallback($page, new Page(null, array("where" => "`url` = :url", "params" => array(":url" => $_GET['url']))));
-
-			if (!$page->no_results) {
-				$theme->title = $page->title;
-
-				$page->body = $trigger->filter("markup_page_text", $page->body);
-
-				if (file_exists(THEME_DIR."/content/".$page->url.".twig"))
-					$theme->load("content/".$page->url, array("page" => $page));
-				else
-					$theme->load("content/page", array("page" => $page));
-			} else
-				show_404();
-
-			break;
 		default:
+			# Unknown action. Check for:
+			#     1. Module-provided pages.
+			#     2. Feather-provided pages.
+			#     3. Theme-provided pages.
+
 			$page_exists = false;
 			foreach ($config->enabled_modules as $module)
 				if (file_exists(MODULES_DIR."/".$module."/pages/".$action.".php"))
@@ -181,7 +186,7 @@
 				if (file_exists(FEATHERS_DIR."/".$feather."/pages/".$action.".php"))
 					$page_exists = require FEATHERS_DIR."/".$feather."/pages/".$action.".php";
 
-			if (file_exists(THEME_DIR."/pages/".$action.".php"))
+			if (file_exists(THEME_DIR."/pages/".$action.".twig"))
 				$page_exists = $theme->load("pages/".$action);
 
 			if (!$page_exists)
