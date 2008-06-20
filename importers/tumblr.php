@@ -22,6 +22,9 @@
 	if (!empty($_POST)) {
 		switch($_POST['step']) {
 			case "1":
+				if (!parse_url($_POST['url'], PHP_URL_SCHEME))
+					$_POST['url'] = "http://".$_POST['url'];
+
 				$url = rtrim($_POST['url'], "/")."/api/read?num=50";
 				$xml = simplexml_load_string(get_remote($url));
 
