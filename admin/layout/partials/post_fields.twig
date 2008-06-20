@@ -70,9 +70,9 @@
 							<input type="hidden" name="original_time" value="${ post.created_at | fallback(now) | strftime }" />
 						</p>
 {% if route.action == "write_post" %}
-						${ trigger.call("new_post_options") }
+${ trigger.call("new_post_options") }
 {% else %}
-						${ trigger.call("edit_post_options", post) }
+${ trigger.call("edit_post_options", post) }
 {% endif %}
 						<div class="clear"></div>
 					</div>
