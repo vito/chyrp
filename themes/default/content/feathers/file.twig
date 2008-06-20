@@ -1,0 +1,15 @@
+						{# ${ feathers.photo.image_tag_for(post.filename, 448) } #}
+						<div class="file-display">
+							<div class="file-icon">
+								$post.file.icon
+							</div>
+							<div class="file-information">
+								<div class="file-name">
+									$post.file.name
+								</div>
+								<div class="file-link">
+									<a href="$post.file.download">Download &rarr;  ($post.file.size, $post.downloads ${ "download" | pluralize(post.downloads) })</a>
+								</div>
+							</div>
+						</div>
+						${ post.description | read_more }
