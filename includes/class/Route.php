@@ -227,15 +227,17 @@
 						$attr[rtrim(ltrim($parameter, "("), ")")] = urldecode($this->arg[$index]);
 
 				$post = Post::from_url($attr);
-				if ($post->no_results) { # No post found; check for a page?
-					$url = fallback($attr["url"], fallback($_GET['url'], $this->arg[0], true), true);
-					$page = new Page(null, array("where" => "__pages.url = :url",
-					                             "params" => array(":url" => $url)));
-					if ($page->no_results)
-						return $_GET['action'] = (empty($this->arg[0])) ? "index" : $this->arg[0] ;
-					else
-						return list($_GET['url'], $_GET['action']) = array($url, "page");
-				}
+				if ($post->no_results)
+					return $_GET['action'] = (empty($this->arg[0])) ? "index" : $this->arg[0] ;
+			}
+			else { # No post found; check for a page?
+				$url = fallback($attr["url"], fallback($_GET['url'], $this->arg[0], true), true);
+				$page = new Page(null, array("where" => "__pages.url = :url",
+				                             "params" => array(":url" => $url)));
+				if (!$page->no_results)
+					return list($_GET['url'], $_GET['action']) = array($url, "page");
+				else
+					return $_GET['action'] = (empty($this->arg[0])) ? "index" : $this->arg[0] ;
 			}
 		}
 
