@@ -174,7 +174,22 @@
 				$glob = glob(THEMES_DIR."/".$this->theme."/stylesheets/*.css");
 				foreach($glob as $file) {
 					$file = basename($file);
-					$stylesheets.= '<link rel="stylesheet" href="'.$config->chyrp_url.'/themes/'.$this->theme.'/stylesheets/'.$file.'" type="text/css" media="'.($file == "print.css" ? "print" : "screen").'" charset="utf-8" />'.(count($glob) == $count ? "" : "\n\t\t");
+
+					if ($file == "ie.css")
+					    $stylesheets.= "<!--[if IE]>";
+					if (preg_match("/^ie([0-9\.]+)\.css/", $file, $matches))
+					    $stylesheets.= "<!--[if IE ".$matches[1]."]>";
+					elseif (preg_match("/(lt|gt)ie([0-9\.]+)\.css/", $file, $matches))
+					    $stylesheets.= "<!--[if ".$matches[1]." IE ".$matches[2]."]>";
+
+					$stylesheets.= '<link rel="stylesheet" href="'.$config->chyrp_url.'/themes/'.$this->theme.'/stylesheets/'.$file.'" type="text/css" media="'.($file == "print.css" ? "print" : "screen").'" charset="utf-8" />';
+
+					if ($file == "ie.css" or preg_match("/(lt|gt)?ie([0-9\.]+)\.css/", $file))
+						$stylesheets.= "<![endif]-->";
+
+					if ($count != count($glob))
+						$stylesheets.= "\n\t\t";
+
 					$count++;
 				}
 			} else
@@ -197,7 +212,7 @@
 					$args.= "&amp;arg".++$i."=".urlencode($val);
 
 			# if (isset($posts))
-			# 	$args.= "&amp;next_post=".$posts->next(true)->id;
+			# 	$args.= "&amp;next_post=".$posts->next()->paginated[0]->id;
 
 			$config = Config::current();
 			$trigger = Trigger::current();
@@ -205,6 +220,18 @@
 			$javascripts = $trigger->filter("scripts", '<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".
 			                                           '<script src="'.$config->chyrp_url.'/includes/lib/gz.php?file=plugins.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".
 			                                           '<script src="'.$config->chyrp_url.'/includes/javascript.php?action='.$action.$args.'" type="text/javascript" charset="utf-8"></script>');
+
+			if (file_exists(THEMES_DIR."/".$this->theme."/javascripts/")) {
+				$count = 1;
+				$glob = glob(THEMES_DIR."/".$this->theme."/javascripts/*.js");
+				foreach($glob as $file) {
+					$file = basename($file);
+
+					$javascripts.= "\n\t\t".'<script src="'.$config->chyrp_url.'/includes/lib/gz.php?file=theme/'.$file.'" type="text/javascript" charset="utf-8"></script>';
+
+					$count++;
+				}
+			}
 
 			return $javascripts;
 		}

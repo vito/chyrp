@@ -39,6 +39,15 @@
 				if (isset($array[$i]))
 					$this->result[] = ($model) ? new $model_name($array[$i]) : $array[$i] ;
 
+			$shown_dates = array();
+			if ($model)
+				foreach ($this->result as &$result)
+					if (isset($result->created_at)) {
+						$result->date_shown = in_array(when("m-d-Y", $result->created_at), $shown_dates);
+						if (!in_array(when("m-d-Y", $result->created_at), $shown_dates))
+							$shown_dates[] = when("m-d-Y", $result->created_at);
+					}
+
 			$this->paginated = $this->paginate = $this->list =& $this->result;
 		}
 

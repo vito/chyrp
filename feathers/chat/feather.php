@@ -55,7 +55,7 @@
 		}
 		static function format_dialogue($text) {
 			$split = explode("\n", $text);
-			$return = "<ul>";
+			$return = '<ul class="dialogue">';
 			$count = 0;
 			$my_name = "";
 			foreach ($split as $line) {

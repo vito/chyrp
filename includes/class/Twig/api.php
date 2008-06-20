@@ -177,7 +177,7 @@ class Twig_Loader extends Twig_BaseLoader
 
 	public function getFilename($name)
 	{
-		if ($name[0] == '/') return $name;
+		if ($name[0] == '/' or preg_match("/[a-zA-Z]:\\\/", $name)) return $name;
 
 		$path = array();
 		foreach (explode('/', $name) as $part) {

@@ -98,7 +98,7 @@
 		 * This meaty function determines what exactly to do with the URL.
 		 */
 		public function determine_action() {
-			global $pluralizations;
+			global $pluralizations, $page;
 			$config = Config::current();
 			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls) return;
 
@@ -205,14 +205,18 @@
 					}
 				}
 
-			return $_GET['action'] = (empty($this->arg[0])) ? "index" : $this->arg[0] ;
+			# Check for a page
+			$page = new Page(null, array("where" => "__pages.url = :url",
+			                             "params" => array(":url" => end($this->arg))));
+			if (!$page->no_results)
+				return list($_GET['url'], $_GET['action']) = array(end($this->arg), "page");
 		}
 
 		public function check_viewing_post() {
 			global $post, $page, $action;
 			$config = Config::current();
-			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls) return;
-			if ($_GET['action'] != $this->arg[0]) return;
+			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls or isset($_GET['action']))
+				return;
 
 			$attr = array();
 			$post_url = $this->key_regexp(rtrim($config->post_url, "/"));
@@ -228,15 +232,6 @@
 
 				$post = Post::from_url($attr);
 				if ($post->no_results)
-					return $_GET['action'] = (empty($this->arg[0])) ? "index" : $this->arg[0] ;
-			}
-			else { # No post found; check for a page?
-				$url = fallback($attr["url"], fallback($_GET['url'], $this->arg[0], true), true);
-				$page = new Page(null, array("where" => "__pages.url = :url",
-				                             "params" => array(":url" => $url)));
-				if (!$page->no_results)
-					return list($_GET['url'], $_GET['action']) = array($url, "page");
-				else
 					return $_GET['action'] = (empty($this->arg[0])) ? "index" : $this->arg[0] ;
 			}
 		}
