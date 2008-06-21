@@ -48,7 +48,7 @@ body {
 	padding: 1.5em 2.5em;
 	background: #e7e7e7;
 	color: #aaa;
-	position: fixed;
+	position: absolute;
 	top: 9em;
 	right: 0;
 	-webkit-border-top-left-radius: 1em;
@@ -162,6 +162,9 @@ body {
 		-webkit-border-bottom-left-radius: 1em;
 		-webkit-border-bottom-right-radius: 1em;
 	}
+	#page .photo .image {
+		text-align: center;
+	}
 	#page .chat ul.dialogue {
 		list-style: none;
 		margin: 0;
@@ -245,18 +248,19 @@ body {
 	}
 	#page form#add_comment button {
 		cursor: pointer;
-		margin-top: -2em;
+		margin-top: -1.5em;
 		width: 37em;
-		background: #222;
+		background: #f0f0f0;
 		padding: .75em;
-		color: #fff;
+		color: #555;
+		text-shadow: #fff 0 1px 0;
 		border: 0;
 		font-size: 1em;
 		-webkit-border-bottom-left-radius: .75em;
 		-webkit-border-bottom-right-radius: .75em;
 		}
 		#page form#add_comment button:hover {
-			background: #333;
+			background: #e0e0e0;
 }
 
 #footer {

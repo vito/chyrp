@@ -1,4 +1,6 @@
 						<div class="content">
-							${ feathers.photo.image_tag_for(post.filename, 445, 334) }
+							<div class="image">
+								${ feathers.photo.image_tag_for(post.filename, 445) }
+							</div>
 							${ post.caption | read_more }
 						</div>
