@@ -14,7 +14,7 @@
 		public function submit() {
 			$filename = "";
 			if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0)
-				$filename = upload($_FILES['photo'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp"));
+				$filename = upload($_FILES['photo'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp", "tar.gz"));
 			elseif (!empty($_POST['from_url'])) {
 				$file = tempnam(sys_get_temp_dir(), "chyrp");
 				file_put_contents($file, get_remote($_POST['from_url']));

@@ -847,25 +847,28 @@
 	 *     $name - A unique version of the given $name.
 	 */
 	function unique_filename($name, $num = 2) {
-		if (file_exists(MAIN_DIR.Config::current()->uploads_path.$name)) {
-			$name = explode(".", $name);
-
-			# Handle "double extensions"
-			foreach (array("tar" => "gz", "tar" => "bz", "tar" => "bz2") as $first => $second)
-				if ($name[count($name) - 2] == $first and end($name) == $second) {
-					$name[count($name) - 2] == $first.".".$second;
-					unset($name[count($name) - 1]);
-				}
-
-			$ext = ".".array_pop($name);
-
-			$try = implode(".", $name)."-".$num.$ext;
-			if (!file_exists(MAIN_DIR.Config::current()->uploads_path.$try))
-				return $try;
-
-			return unique_filename(implode(".", $name).$ext, $num + 1);
-		} else
+		if (!file_exists(MAIN_DIR.Config::current()->uploads_path.$name))
 			return $name;
+
+		$name = explode(".", $name);
+
+		# Handle "double extensions"
+		foreach (array("tar.gz", "tar.bz", "tar.bz2") as $extension) {
+			list($first, $second) = explode(".", $extension);
+			$file_first =& $name[count($name) - 2];
+			if ($file_first == $first and end($name) == $second) {
+				$file_first = $first.".".$second;
+				array_pop($name);
+			}
+		}
+
+		$ext = ".".array_pop($name);
+
+		$try = implode(".", $name)."-".$num.$ext;
+		if (!file_exists(MAIN_DIR.Config::current()->uploads_path.$try))
+			return $try;
+
+		return unique_filename(implode(".", $name).$ext, $num + 1);
 	}
 
 	/**
@@ -882,21 +885,34 @@
 	 */
 	function upload($file, $extension = null, $path = "", $put = false) {
 		$file_split = explode(".", $file['name']);
+
+		$original_ext = end($file_split);
+
+		# Handle "double extensions"
+		foreach (array("tar.gz", "tar.bz", "tar.bz2") as $ext) {
+			list($first, $second) = explode(".", $ext);
+			$file_first =& $file_split[count($file_split) - 2];
+			if ($file_first == $first and end($file_split) == $second) {
+				$file_first = $first.".".$second;
+				array_pop($file_split);
+			}
+		}
+
 		$file_ext = end($file_split);
 
 		if (is_array($extension)) {
-			if (!in_array(strtolower($file_ext), $extension)) {
+			if (!in_array(strtolower($file_ext), $extension) and !in_array(strtolower($original_ext), $extension)) {
 				$list = "";
 				for ($i = 0; $i < count($extension); $i++) {
 					$comma = "";
 					if (($i + 1) != count($extension)) $comma = ", ";
 					if (($i + 2) == count($extension)) $comma = ", and ";
-					$list.= "*.".$extension[$i].$comma;
+					$list.= "<code>*.".$extension[$i]."</code>".$comma;
 				}
-				error(__("Error"), _f("Only %s files are supported.", array($list)));
+				error(__("Invalid Extension"), _f("Only %s files are supported.", array($list)));
 			}
-		} elseif (isset($extension) and $file_ext != $extension and $file_ext != strtoupper($extension))
-			error(__("Error"), _f("Only %s files are supported.", array("*.".$extension)));
+		} elseif (isset($extension) and strtolower($file_ext) != strtolower($extension) and strtolower($original_ext) != strtolower($extension))
+			error(__("Invalid Extension"), _f("Only %s files are supported.", array("*.".$extension)));
 
 		array_pop($file_split);
 		$file_clean = implode(".", $file_split);
