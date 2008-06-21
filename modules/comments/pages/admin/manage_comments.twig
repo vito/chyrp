@@ -73,7 +73,11 @@
 							<td rowspan="2" class="checkbox center">
 								<input type="checkbox" name="comment[$comment.id]" value="" id="comment_checkbox_$comment.id" />
 							</td>
-							<td class="main"><a href="$comment.post.url#comment_$comment.id">${ comment.post.title | truncate }</a></td>
+							<td class="main">
+								{% if not comment.post.no_results %}
+								<a href="$comment.post.url#comment_$comment.id">${ comment.post.title | truncate }</a>
+								{% endif %}
+							</td>
 							<td>${ comment.user.full_name | fallback(comment.user.login) | fallback(comment.author) }</td>
 							<td>${ comment.created_at | strftime }</td>
 							<td>${ comment.status | capitalize | translate("comments") }</td>
