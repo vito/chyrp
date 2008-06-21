@@ -20,9 +20,9 @@ $(function(){
 			width: $(this).width() + $(this).offset().left,
 			position: "absolute",
 			left: 0,
-			top: $(this).offset().top,
+			top: "auto",
 			marginLeft: 0,
-			marginTop: 0
+			marginTop: "1em"
 		})
 	})
 
