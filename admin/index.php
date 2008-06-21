@@ -8,7 +8,7 @@
 	class AdminTwig {
 		public function __construct() {
 			global $action;
-			$this->twig = new Twig_Loader(MAIN_DIR."/admin/layout", (is_writable(INCLUDES_DIR."/twig_cache") and !DEBUG) ? INCLUDES_DIR."/twig_cache" : null);
+			$this->twig = new Twig_Loader(MAIN_DIR."/admin/layout", (is_writable(INCLUDES_DIR."/caches") and !DEBUG) ? INCLUDES_DIR."/caches" : null);
 		}
 
 		public function load($action) {

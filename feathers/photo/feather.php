@@ -7,6 +7,9 @@
 			$this->setFilter("caption", "markup_post_text");
 			$this->respondTo("delete_post", "delete_file");
 			$this->respondTo("filter_post", "filter_post");
+
+			if (!file_exists(INCLUDES_DIR."/caches/phpthumb/"))
+				mkdir(INCLUDES_DIR."/caches/phpthumb/");
 		}
 		public function submit() {
 			$filename = "";

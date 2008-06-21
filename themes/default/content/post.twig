@@ -6,6 +6,12 @@
 					{% endif %}
 					<div class="block post{% if post.pinned %} pinned{% endif %}" id="post_$post.id">
 						<div class="$post.feather target">
+							{% if post.pinned %}<span class="pinned_text">${ "pinned" | translate }</span>{% endif %}
+							{% include "content/feathers/" ~ post.feather ~ ".twig" %}
+							{% if route.action == "view" %}
+							$post.paginated.next_link
+							$post.paginated.prev_link
+							{% endif %}
 							<ul class="info">
 								<li><strong><a href="$post.url">${ post.created_at | date("g:i A" | translate) }</a></strong></li>
 								{% if enabled_modules.categorize and post.category.id != 0 %}
@@ -23,11 +29,5 @@
 								${ post.edit_link("Edit" | translate, "<li>", "</li>") }
 								${ post.delete_link("Delete" | translate, "<li>", "</li>") }
 							</ul>
-							{% if post.pinned %}<span class="pinned_text">${ "pinned" | translate }</span>{% endif %}
-							{% include "content/feathers/" ~ post.feather ~ ".twig" %}
-							{% if route.action == "view" %}
-							$post.paginated.next_link
-							$post.paginated.prev_link
-							{% endif %}
 						</div>
 					</div>

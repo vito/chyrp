@@ -31,9 +31,9 @@ ${ trigger.call("head") }
 			<li class="close"><a class="toggle_admin" href="{% url "toggle_admin/" %}">${ "Close" | translate }</a></li>
 		</ul>
 {% endif %}
-		<h1 id="header">
-			<a href="$site.url">$site.name</a>
-			<p>$site.description</p>
+		<div id="header">
+			<h1><a href="$site.url">$site.name</a></h1>
+			<h2>$site.description</h2>
 		</h1>
 		<div id="page">
 {% block content %}{% endblock %}

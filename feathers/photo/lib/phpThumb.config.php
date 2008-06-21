@@ -32,7 +32,7 @@ $PHPTHUMB_CONFIG['document_root'] = realpath((getenv('DOCUMENT_ROOT') && ereg('^
 // * Cache directory configuration (choose only one of these - leave the other lines commented-out):
 // Note: this directory must be writable (usually chmod 777 is neccesary) for caching to work.
 // If the directory is not writable no error will be generated but caching will be disabled.
-$PHPTHUMB_CONFIG['cache_directory'] = dirname(__FILE__).'/cache/';                            // set the cache directory relative to the phpThumb() installation
+$PHPTHUMB_CONFIG['cache_directory'] = "../../../includes/caches/phpthumb/";                            // set the cache directory relative to the phpThumb() installation
 //$PHPTHUMB_CONFIG['cache_directory'] = $PHPTHUMB_CONFIG['document_root'].'/phpthumb/cache/'; // set the cache directory to an absolute directory for all source images
 //$PHPTHUMB_CONFIG['cache_directory'] = './cache/';                                           // set the cache directory relative to the source image - must start with '.' (will not work to cache URL- or database-sourced images, please use an absolute directory name)
 //$PHPTHUMB_CONFIG['cache_directory'] = null;                                                 // disable thumbnail caching (not recommended)
@@ -74,8 +74,8 @@ $PHPTHUMB_CONFIG['cache_source_filemtime_ignore_remote'] = true;  // if true, re
 // If cache_default_only_suffix is non-empty, GETstring parameters (except 'src') are ignored and only $PHPTHUMB_DEFAULTS
 // parameters (set at the bottom of phpThumb.config.php) are used for processing.
 // The '*' character MUST be used to represent the source image name
-$PHPTHUMB_CONFIG['cache_default_only_suffix'] = '';           // cached in normal phpThumb manner
-//$PHPTHUMB_CONFIG['cache_default_only_suffix'] = '*_thumb';  // cache 'pic.jpg' becomes 'pic_thumb.jpg' (or 'pic_thumb.png' if PNG output is selected, etc)
+//$PHPTHUMB_CONFIG['cache_default_only_suffix'] = '';           // cached in normal phpThumb manner
+$PHPTHUMB_CONFIG['cache_default_only_suffix'] = '*_thumb';  // cache 'pic.jpg' becomes 'pic_thumb.jpg' (or 'pic_thumb.png' if PNG output is selected, etc)
 //$PHPTHUMB_CONFIG['cache_default_only_suffix'] = 'small-*';  // cache 'pic.jpg' becomes 'small-pic.jpg' (or 'small-pic.png' if PNG output is selected, etc)
 
 $PHPTHUMB_CONFIG['cache_prefix'] = 'phpThumb_cache_'.str_replace('www.', '', @$_SERVER['SERVER_NAME']);

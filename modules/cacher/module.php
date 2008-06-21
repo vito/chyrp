@@ -2,8 +2,8 @@
 	class Cacher extends Module {
 		public function __init() {
 			$this->user = (logged_in()) ? Visitor::current()->login : "guest" ;
-			$this->caches = dirname(__FILE__)."/cache";
-			$this->path = dirname(__FILE__)."/cache/".sanitize($this->user);
+			$this->caches = INCLUDES_DIR."/caches";
+			$this->path = INCLUDES_DIR."/caches/".sanitize($this->user);
 			$this->url = self_url();
 			$this->file = $this->path."/".md5($this->url).".html";
 
