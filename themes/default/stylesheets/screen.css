@@ -1,10 +1,303 @@
-html {
-	font: .9em/1.3em normal "Palatino", Georgia, Times, serif !important;
-}
 body {
-	font: inherit;
-	width: 50em;
+	width: 40em;
 	margin: 0 auto;
+	background: #eee;
+	color: #555;
+	font-family: "Lucida Grande";
+}
+
+#admin_bar {
+	background: #222;
+	padding: .75em 1.25em;
+	margin: 0 0 3em;
+	-webkit-border-bottom-right-radius: 1em;
+	-webkit-border-bottom-left-radius: 1em;
+	}
+	#admin_bar li {
+		display: inline;
+		margin-right: 2em;
+		}
+		#admin_bar li a {
+			text-decoration: none;
+			color: white;
+	}
+	#admin_bar li.close {
+		margin-right: 0;
+		float: right;
+		}
+		#admin_bar li.close a {
+			color: #f00;
+			font-weight: bold;
+}
+
+#header h1 a {
+	color: #666;
+	text-decoration: none;
+	font: italic 1.25em/1.6em "Warnock Pro", "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
+	display: block;
+}
+#header h2 {
+	display: block;
+	margin: -1.5em 0 .5em 3em;
+	font: 2em/2em "Warnock Pro", "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
+	color: #999;
+}
+
+#sidebar {
+	width: 13em;
+	padding: 1.5em 2.5em;
+	background: #e7e7e7;
+	color: #aaa;
+	position: absolute;
+	top: 9em;
+	right: 0;
+	-webkit-border-top-left-radius: 1em;
+	-webkit-border-bottom-left-radius: 1em;
+	}
+	#sidebar h2 {
+		color: #888;
+		font-size: 1.5em;
+		line-height: 1.75em;
+		margin-bottom: 0;
+		text-shadow: #fff 0 .1em 0;
+	}
+	#sidebar ul {
+		padding: 0;
+		list-style: none;
+		}
+		#sidebar li {
+			margin: 0 -4em;
+			padding: 0 4em;
+		}
+		#sidebar li a {
+			text-decoration: none;
+			color: #333;
+	}
+	#sidebar input {
+		width: 13.35em;
+		margin: -1.25em -2em 1.25em;
+		padding: .55em;
+		font-size: 1.25em;
+		border: 0;
+		-webkit-border-top-left-radius: .75em;
+		-webkit-border-bottom-left-radius: .75em;
+}
+
+#page .date {
+	background: #ddd;
+	margin: 0 0 1.5em;
+	padding: .75em 1em;
+	color: #555;
+	text-shadow: #fff 0 .1em 0;
+	-webkit-border-radius: 1em;
+}
+#page .post h1,
+#page .page h1 {
+	font-size: 2.25em;
+	background: #222;
+	color: #fff;
+	padding: .5em;
+	margin: 0;
+	-webkit-border-radius: .4em;
+	-webkit-border-bottom-left-radius: 0;
+	-webkit-border-bottom-right-radius: 0;
+	}
+	#page .block h1 a {
+		text-decoration: none;
+		color: #fff;
+}
+#page .post .content,
+#page .page .content {
+	background: #fff;
+	padding: 1.5em;
+	margin-bottom: 3em;
+	-webkit-border-radius: 1em;
+	}
+	#page .post .info,
+	#page .page .info {
+		float: left;
+		text-align: right;
+		list-style: none;
+		margin: 1em 0 0 -15em;
+		padding: .5em 0;
+		width: 15em;
+		}
+		#page .post .info li,
+		#page .page .info li {
+			padding: 0 .75em;
+		}
+		#page .post .info a,
+		#page .page .info a {
+			color: #666;
+			text-decoration: none;
+			text-shadow: #fff 0 .1em 0;
+			}
+			#page .post .info a:hover,
+			#page .page .info a:hover {
+				color: #333;
+	}
+	#page .video .object-youtube {
+		width: 37em;
+		height: 28.5em;
+	}
+	#page .audio object {
+		height: 3em;
+	}
+	#page .link h1 .right {
+		color: #333;
+		font-size: 1.5em;
+		margin: -.15em -.125em 0 0;
+	}
+	#page .quote blockquote {
+		padding: 0;
+		margin: .5em 1em;
+		font: italic 2.5em/1.25em "Warnock Pro", "Goudy Old Style", "Palatino", "Book Antiqua", Georgia, serif;
+	}
+	#page .quote .source {
+		background: #333;
+		color: #fff;
+		padding: .8em 1.2em 1.2em;
+		margin: -1.5em -1.5em -1.5em;
+		border-top: .5em solid #2a2a2a;
+		-webkit-border-bottom-left-radius: 1em;
+		-webkit-border-bottom-right-radius: 1em;
+	}
+	#page .photo .image {
+		text-align: center;
+	}
+	#page .chat ul.dialogue {
+		list-style: none;
+		margin: 0;
+		}
+		#page .chat ul.dialogue li {
+			margin: 0 -1.5em;
+			padding: 0 1.5em;
+		}
+		#page .chat ul.dialogue li.even {
+			background: #f5f5f5;
+		}
+		#page .chat ul.dialogue li .label {
+			font-weight: bold;
+}
+
+#page .comments {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	}
+	#page .comments li {
+		display: block;
+		background: #222;
+		color: #fff;
+		margin: 0 0 1.5em;
+		padding: 1.5em;
+		-webkit-border-radius: 1em;
+		-webkit-border-bottom-left-radius: 2em;
+		-webkit-border-bottom-right-radius: 2em;
+		}
+		#page .comments li blockquote {
+			margin: 0;
+			font-style: normal;
+			color: inherit;
+		}
+		#page .comments li cite {
+			display: block;
+			font-style: inherit;
+			background: #2a2a2a;
+			color: #555;
+			border-top: .5em solid #252525;
+			padding: .75em 1em;
+			margin: 1.5em -1.5em -1.5em;
+			-webkit-border-bottom-left-radius: 1em;
+			-webkit-border-bottom-right-radius: 1em;
+			}
+			#page .comments li cite a {
+				color: #777;
+				text-decoration: none;
+}
+
+#page form#add_comment {
+	padding: 1.5em;
+	background: #fff;
+	-webkit-border-radius: 1em;
+	-webkit-border-top-left-radius: 2em;
+	-webkit-border-top-right-radius: 2em;
+	}
+	#page form#add_comment h2 {
+		font-size: 1.25em;
+		padding: .5em .75em;
+		margin: -1.25em -1.25em 1.3125em;
+		background: #222;
+		color: #fff;
+		-webkit-border-top-left-radius: .875em;
+		-webkit-border-top-right-radius: .875em;
+		}
+		#page form#add_comment h2 .right {
+			color: #777;
+			font-size: .8em;
+			line-height: 1.875em;
+			}
+			#page form#add_comment h2 .right a {
+				color: #999;
+				text-decoration: none;
+	}
+	#page form#add_comment .wide {
+		width: 39.3125em;
+		height: 12em;
+		margin: 0;
+	}
+	#page form#add_comment button {
+		cursor: pointer;
+		margin-top: -1.5em;
+		width: 37em;
+		background: #f0f0f0;
+		padding: .75em;
+		color: #555;
+		text-shadow: #fff 0 1px 0;
+		border: 0;
+		font-size: 1em;
+		-webkit-border-bottom-left-radius: .75em;
+		-webkit-border-bottom-right-radius: .75em;
+		}
+		#page form#add_comment button:hover {
+			background: #e0e0e0;
+}
+
+#footer {
+	margin-top: 2em;
+}
+
+.page_numbers {
+	display: block;
+	width: 100px;
+	margin: 0 auto;
+	text-align: center;
+	padding: .75em;
+	color: #aaa;
+}
+.next_page,
+.prev_page {
+	margin-bottom: 1.5em;
+	padding: .75em;
+	background: #e7e7e7;
+	color: #555;
+	text-shadow: #fff 0 .1em 0;
+	text-decoration: none;
+	-webkit-border-radius: .75em;
+	}
+	.next_page:hover,
+	.prev_page:hover {
+		background: #e0e0e0;
+	}
+	.next_page:active,
+	.prev_page:active {
+		background: #d0d0d0;
+}
+.next_page {
+	float: right;
+}
+.prev_page {
+	float: left;
 }
 
 .right { float: right; }
