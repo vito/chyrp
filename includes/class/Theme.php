@@ -29,7 +29,7 @@
 			               $config->theme;
 			$this->directory = THEMES_DIR."/".$this->theme."/";
 
-			$this->twig = new Twig_Loader($this->directory, ((is_writable(MAIN_DIR."/includes/twig_cache") and !DEBUG) ? MAIN_DIR."/includes/twig_cache" : null));
+			$this->twig = new Twig_Loader($this->directory, ((is_writable(INCLUDES_DIR."/caches") and !DEBUG) ? INCLUDES_DIR."/caches" : null));
 
 			$this->url = $config->chyrp_url."/themes/".$this->theme;
 		}
@@ -171,7 +171,7 @@
 			$stylesheets = "";
 			if (file_exists(THEMES_DIR."/".$this->theme."/stylesheets/")) {
 				$count = 1;
-				$glob = glob(THEMES_DIR."/".$this->theme."/stylesheets/*.css");
+				$glob = glob(THEMES_DIR."/".$this->theme."/stylesheets/*.css*");
 				foreach($glob as $file) {
 					$file = basename($file);
 
@@ -222,15 +222,11 @@
 			                                           '<script src="'.$config->chyrp_url.'/includes/javascript.php?action='.$action.$args.'" type="text/javascript" charset="utf-8"></script>');
 
 			if (file_exists(THEMES_DIR."/".$this->theme."/javascripts/")) {
-				$count = 1;
-				$glob = glob(THEMES_DIR."/".$this->theme."/javascripts/*.js");
-				foreach($glob as $file) {
-					$file = basename($file);
+				foreach(glob(THEMES_DIR."/".$this->theme."/javascripts/*.js") as $file)
+					$javascripts.= "\n\t\t".'<script src="'.$config->chyrp_url.'/includes/lib/gz.php?file=theme/'.basename($file).'" type="text/javascript" charset="utf-8"></script>';
 
-					$javascripts.= "\n\t\t".'<script src="'.$config->chyrp_url.'/includes/lib/gz.php?file=theme/'.$file.'" type="text/javascript" charset="utf-8"></script>';
-
-					$count++;
-				}
+				foreach(glob(THEMES_DIR."/".$this->theme."/javascripts/*.js.php") as $file)
+					$javascripts.= "\n\t\t".'<script src="'.THEME_URL.'/javascripts/'.basename($file).'" type="text/javascript" charset="utf-8"></script>';
 			}
 
 			return $javascripts;

@@ -83,10 +83,6 @@
 	# Load the configuration settings
 	$config->load(INCLUDES_DIR."/config.yaml.php");
 
-	# Constant: THEME_DIR
-	# Absolute path to /themes/(current theme)
-	define('THEME_DIR', MAIN_DIR."/themes/".$config->theme);
-
 	header("X-Pingback: ".$config->chyrp_url."/includes/xmlrpc.php");
 
 	if (!ADMIN and !JAVASCRIPT and !XML_RPC and !TRACKBACK and strpos($_SERVER['REQUEST_URI'], "?"))
@@ -209,6 +205,25 @@
 	# Load the /clean/urls into their correct $_GET values.
 	$route->determine_action();
 
+	# Variable: $visitor
+	# Holds the current user and their group.
+	$visitor = Visitor::current();
+
+	$config->theme = ($visitor->group()->can("change_settings") and
+	                      !empty($_GET['action']) and
+	                      $_GET['action'] == "theme_preview" and
+	                      !empty($_GET['theme'])) ?
+	                 $_GET['theme'] :
+	                 $config->theme;
+
+	# Constant: THEME_DIR
+	# Absolute path to /themes/(current theme)
+	define('THEME_DIR', MAIN_DIR."/themes/".$config->theme);
+
+	# Constant: THEME_URL
+	# URL to /themes/(current theme)
+	define('THEME_URL', $config->chyrp_url."/themes/".$config->theme);
+
 	# These are down here so that the modules are
 	# initialized after the $_GET values are filled.
 	/**
@@ -260,10 +275,6 @@
 		load_translator("theme", THEME_DIR."/locale/".$config->locale.".mo");
 
 	if (!JAVASCRIPT and !XML_RPC) {
-		# Variable: $visitor
-		# Holds the current user and their group.
-		$visitor = Visitor::current();
-
 		if (!$visitor->group()->can("view_site") and !in_array($action, array("process_login", "login", "logout", "process_registration", "register")))
 			if ($trigger->exists("can_not_view_site"))
 				$trigger->call("can_not_view_site");
