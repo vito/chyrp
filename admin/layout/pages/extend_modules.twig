@@ -10,6 +10,9 @@
 {% for safename, module in enabled_modules | items %}
 					<li class="${ safename ~ module.conflicts_class }" id="module_$safename">
 						<a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
+						{% if module.help %}
+						<a href="{% admin "help&id="~module.help %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
+						{% endif %}
 						${ '<a href="%s">%s</a> v%s <span class="sub">by %s</span>' | translate | format(module.url, module.name | translate(safename), module.version, module.author.link) }
 						<div class="expand">
 							<div class="description">
@@ -27,6 +30,9 @@
 {% for safename, module in disabled_modules | items %}
 					<li class="${ safename ~ module.conflicts_class }" id="module_$safename">
 						<a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
+						{% if module.help %}
+						<a href="{% admin "help&id="~module.help %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
+						{% endif %}
 						${ '<a href="%s">%s</a> v%s <span class="sub">by %s</span>' | translate | format(module.url, module.name | translate(safename), module.version, module.author.link) }
 						<div class="expand">
 							<div class="description">

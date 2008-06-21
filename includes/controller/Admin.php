@@ -843,9 +843,10 @@
 
 					fallback($info["name"], $folder);
 					fallback($info["version"], "0");
-					fallback($info["url"], "");
-					fallback($info["description"], "");
+					fallback($info["url"]);
+					fallback($info["description"]);
 					fallback($info["author"], array("name" => "", "url" => ""));
+					fallback($info["help"]);
 
 					$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
 					$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
@@ -860,6 +861,7 @@
 					                                           "url" => $info["url"],
 					                                           "description" => $info["description"],
 					                                           "author" => $info["author"],
+					                                           "help" => $info["help"],
 					                                           "conflict" => isset($issues[$folder]),
 					                                           "conflicts" => $info["conflicts_true"],
 					                                           "conflicts_class" => (isset($issues[$folder])) ? " conflict conflict_".join(" conflict_", $info["conflicts_true"]) : "");
@@ -908,9 +910,10 @@
 
 					fallback($info["name"], $folder);
 					fallback($info["version"], "0");
-					fallback($info["url"], "");
-					fallback($info["description"], "");
+					fallback($info["url"]);
+					fallback($info["description"]);
 					fallback($info["author"], array("name" => "", "url" => ""));
+					fallback($info["help"]);
 
 					$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
 					$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
@@ -925,7 +928,7 @@
 					                                           "url" => $info["url"],
 					                                           "description" => $info["description"],
 					                                           "author" => $info["author"],
-					                                           "help" => fallback($info["help"], false, true));
+					                                           "help" => $info["help"]);
 				}
 			}
 
@@ -957,25 +960,6 @@
 
 			$this->context["themes"] = array();
 			$this->context["changed"] = isset($_GET['changed']);
-			$this->context["current_theme"] = array("name" => $config->theme,
-			                                        "screenshot" => (file_exists(THEMES_DIR."/".$config->theme."/screenshot.png") ?
-			                                                            $config->chyrp_url."/themes/".$config->theme."/screenshot.png" :
-			                                                            $config->chyrp_url."/admin/images/noscreenshot.png"),
-					                                "info" => Spyc::YAMLLoad(THEMES_DIR."/".$config->theme."/info.yaml"));
-
-			$current_info =& $this->context["current_theme"]["info"];
-
-			fallback($current_info["name"], $config->theme);
-			fallback($current_info["version"], "0");
-			fallback($current_info["url"], "");
-			fallback($current_info["description"], "");
-			fallback($current_info["author"], array("name" => "", "url" => ""));
-
-			$current_info["author"]["link"] = (!empty($this->context["current_theme"]["info"]["author"]["url"])) ?
-			                                      '<a href="'.htmlspecialchars($current_info["author"]["url"]).'">'.htmlspecialchars($current_info["author"]["name"]).'</a>' :
-			                                      $current_info["author"]["name"] ;
-			$current_info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $current_info["description"]);
-			$current_info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $current_info["description"]);
 
 			if ($open = opendir(THEMES_DIR)) {
 			     while (($folder = readdir($open)) !== false) {
@@ -989,8 +973,8 @@
 
 					fallback($info["name"], $folder);
 					fallback($info["version"], "0");
-					fallback($info["url"], "");
-					fallback($info["description"], "");
+					fallback($info["url"]);
+					fallback($info["description"]);
 					fallback($info["author"], array("name" => "", "url" => ""));
 
 					$info["author"]["link"] = (!empty($info["author"]["url"])) ?

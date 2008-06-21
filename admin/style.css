@@ -202,6 +202,13 @@ a:hover {
 	top: 4px;
 	right: 4px;
 }
+.enable ul li a.help img,
+.disable ul li a.help img {
+	top: 3px;
+	right: 20px;
+	width: 15px;
+	height: 15px;
+}
 .enable ul li .sub,
 .disable ul li .sub {
 	font-size: .9em;
@@ -302,6 +309,7 @@ ul.extend .expand {
 	-moz-border-radius: 3px;
 	border: 0 !important;
 	padding-bottom: 20px !important;
+	position: relative;
 }
 .theme .link {
 	font-weight: bold;
