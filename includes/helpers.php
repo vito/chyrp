@@ -309,9 +309,9 @@
 	function datetime($when = null) {
 		# If $when is not set (common behaviour), set it to a formatted version of the current time.
 		# It is formatted so that strtotime doesn't freak out.
-		fallback($when, date("c", (time() + Config::current()->time_offset)));
-		$time = (is_numeric($when)) ? $when : strtotime($when) ;
-		return ($when instanceof DateTime) ? $when->format("Y-m-d H:i:s") : date("Y-m-d H:i:s", $time) ;
+		fallback($when, now()->format("c"));
+		$time = (is_numeric($when) or $when instanceof DateTime) ? $when : strtotime($when) ;
+		return ($time instanceof DateTime) ? $time->format("Y-m-d H:i:s") : date("Y-m-d H:i:s", $time) ;
 	}
 
 	/**
@@ -1465,19 +1465,6 @@
 	function codepoint2name($string) {
 		global $html_entities;
 		return str_replace(array_values($html_entities), array_keys($html_entities), $string);
-	}
-
-	/**
-	 * Function: offset_select
-	 * Returns an array of offsets associated to their timestamps.
-	 */
-	function time_offsets() {
-		$return = array();
-
-		for ($offset = -12; $offset <= 14; $offset++)
-			$return[$offset] = @time() + ($offset * 60 * 60);
-
-		return $return;
 	}
 
 	/**

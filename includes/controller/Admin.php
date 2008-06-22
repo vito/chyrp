@@ -802,7 +802,7 @@
 			$zip_contents = $zip->file();
 
 			header("Content-type: application/octet-stream");
-			header("Content-Disposition: attachment; filename=\"".sanitize(camelize($config->name), false, true)."_Export_".@date("Y-m-d", time() + $config->time_offset).".zip\"");
+			header("Content-Disposition: attachment; filename=\"".sanitize(camelize($config->name), false, true)."_Export_".now()->format("Y-m-d").".zip\"");
 			header("Content-length: ".strlen($zip_contents)."\n\n");
 
 			echo $zip_contents;
@@ -1096,7 +1096,7 @@
 			$config->set("chyrp_url", rtrim($_POST['chyrp_url'], '/'));
 			$config->set("url", rtrim(fallback($_POST['url'], $_POST['chyrp_url'], true), '/'));
 			$config->set("email", $_POST['email']);
-			$config->set("time_offset", ($_POST['time_offset'] * 3600));
+			$config->set("timezone", $_POST['timezone']);
 			$config->set("locale", $_POST['locale']);
 
 			$this->context["updated"] = true;
