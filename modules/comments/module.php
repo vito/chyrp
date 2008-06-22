@@ -831,13 +831,13 @@ $(function(){
 			$action = "comments_feed";
 		}
 
-		static function metaWeblog_getPost($post, $struct) {
+		static function metaWeblog_getPost($struct, $post) {
 			if (isset($post->comment_status))
 				$struct['mt_allow_comments'] = intval($post->comment_status == 'open');
 			else
 				$struct['mt_allow_comments'] = 1;
 
-			return array($post, $struct);
+			return $struct;
 		}
 
 		static function metaWeblog_editPost_preQuery($struct, $post = null) {

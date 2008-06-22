@@ -147,7 +147,7 @@
 					'mt_basename'       => $post->url,
 					'mt_allow_pings'    => (int) $config->enable_trackbacking);
 
-				$result[] = $trigger->filter('metaWeblog_getPost', $post, $struct);
+				$result[] = $trigger->filter('metaWeblog_getPost', $struct, $post);
 			}
 
 			return $result;
@@ -203,7 +203,7 @@
 				'mt_basename'       => $post->url,
 				'mt_allow_pings'    => (int) Config::current()->enable_trackbacking);
 
-			return array(Trigger::current()->filter('metaWeblog_getPost', $post, $struct));
+			return array(Trigger::current()->filter('metaWeblog_getPost', $struct, $post));
 		}
 
 		/**

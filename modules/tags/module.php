@@ -136,9 +136,9 @@
 				                             ":post_id" => $post->id));
 		}
 
-		static function metaWeblog_getPost($post, $struct) {
+		static function metaWeblog_getPost($struct, $post) {
 			$struct['mt_tags'] = self::unlinked_tags($post->tags);
-			return array($post, $struct);
+			return $struct;
 		}
 
 		static function metaWeblog_editPost_preQuery($struct, $post = null) {
