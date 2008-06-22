@@ -448,7 +448,10 @@
 					<label for="timezone"><?php echo __("What time is it?"); ?></label>
 					<select name="timezone" id="timezone">
 					<?php foreach (utc_timezones() as $zone): ?>
-						<option value="<?php echo $zone["name"]; ?>"<?php selected($zone["name"], fallback($_POST['timezone'], 0, true)); ?>><?php echo $zone["now"]->format(__("h:i A \o\\n F jS, Y")) (<?php $split = explode("/", $zone["now"]->getTimezone->getName); echo end($split); ?>)</option>
+						<option value="<?php echo $zone["name"]; ?>"<?php selected($zone["name"], fallback($_POST['timezone'], 0, true)); ?>>
+							<?php echo $zone["now"]->format(__("h:i A \o\\n F jS, Y")); ?>
+							(GMT<?php if ($zone["offset"] > 0): echo "+"; ?>+<?php echo $zone["offset"]; ?>)
+						</option>
 					<?php endforeach; ?>
 					</select>
 				</p>
