@@ -137,7 +137,12 @@
 		}
 
 		static function metaWeblog_getPost($struct, $post) {
-			$struct['mt_tags'] = self::unlinked_tags($post->tags);
+			if (!isset($post->tags))
+				$struct['mt_tags'] = "";
+			else
+				$struct['mt_tags'] = implode(", ", self::unlinked_tags($post->tags));
+
+			trigger_error("<pre>".htmlspecialchars(print_r($post, true))."</pre>");
 			return $struct;
 		}
 

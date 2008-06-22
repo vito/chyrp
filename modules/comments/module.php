@@ -898,7 +898,7 @@ $(function(){
 
 		static function posts_get($options) {
 			$options["select"][]  = "COUNT(`__comments`.`id`) as `comment_count`";
-			$options["select"][]  = "MAX(`__comments`.`id`) as `latest_comment`";
+			$options["select"][]  = "MAX(`__comments`.`created_at`) as `latest_comment`";
 
 			$options["left_join"][] = array("table" => "comments",
 			                                "where" => array("`__comments`.`post_id` = `__posts`.`id` AND
