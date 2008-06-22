@@ -1082,6 +1082,8 @@
 				closedir($open);
 			}
 
+			$this->context["timezones"] = utc_timezones(true);
+
 			if (empty($_POST))
 				return;
 

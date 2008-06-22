@@ -447,8 +447,8 @@
 				<p id="time_offset_field" class="extra">
 					<label for="time_offset"><?php echo __("What time is it?"); ?></label>
 					<select name="time_offset" id="time_offset">
-					<?php foreach (time_offsets() as $offset => $timestamp): ?>
-						<option value="<?php echo $offset; ?>"<?php selected($offset, fallback($_POST['time_offset'], 0, true)); ?>><?php echo when("g:i A, F jS, Y", $timestamp); ?></option>
+					<?php foreach (utc_timezones() as $zone): ?>
+						<option value="<?php echo $zone["name"]; ?>"<?php selected($zone["name"], fallback($_POST['timezone'], 0, true)); ?>><?php echo $zone["now"]->format(__("h:i A \o\\n F jS, Y")) (<?php $split = explode("/", $zone["now"]->getTimezone->getName); echo end($split); ?>)</option>
 					<?php endforeach; ?>
 					</select>
 				</p>

@@ -292,11 +292,11 @@
 	 *     $strftime - Use `strftime` instead of `date`?
 	 */
 	function when($formatting, $when, $strftime = false) {
-		$time = (is_numeric($when)) ? $when : @strtotime($when) ;
+		$time = (is_numeric($when)) ? $when : strtotime($when) ;
 		if ($strftime)
-			return @strftime($formatting, $time);
+			return strftime($formatting, $time);
 		else
-			return @date($formatting, $time);
+			return date($formatting, $time);
 	}
 
 	/**
@@ -309,9 +309,9 @@
 	function datetime($when = null) {
 		# If $when is not set (common behaviour), set it to a formatted version of the current time.
 		# It is formatted so that strtotime doesn't freak out.
-		fallback($when, @date("c", (time() + Config::current()->time_offset)));
-		$time = (is_numeric($when)) ? $when : @strtotime($when) ;
-		return @date("Y-m-d H:i:s", $time);
+		fallback($when, date("c", (time() + Config::current()->time_offset)));
+		$time = (is_numeric($when)) ? $when : strtotime($when) ;
+		return ($when instanceof DateTime) ? $when->format("Y-m-d H:i:s") : date("Y-m-d H:i:s", $time) ;
 	}
 
 	/**
@@ -1478,4 +1478,59 @@
 			$return[$offset] = @time() + ($offset * 60 * 60);
 
 		return $return;
+	}
+
+	/**
+	 * Function: utc_timezones
+	 * Returns every possible UTC timezone as array([offset], [valid PHP timezone], DateTime).
+	 */
+	function utc_timezones($datetime = false) {
+		$weirdos = array("-9.5"   => "Pacific/Marquesas",
+		                 "-3.5"   => "Canada/Newfoundland",
+		                 "+3.5"   => "Iran",
+		                 "+4.5"   => "Asia/Kabul",
+		                 "+5.5"   => "Asia/Colombo",
+		                 "+5.75"  => "Asia/Katmandu",
+		                 "+6.5"   => "Indian/Cocos",
+		                 "+8.75"  => "Australia/Eucla",
+		                 "+9.5"   => "Australia/North",
+		                 "+10.5"  => "Australia/Lord_Howe",
+		                 "+11.5"  => "Pacific/Norfolk",
+		                 "+12.75" => "Pacific/Chatham");
+
+		$zones = array(0 => array("offset" => "+0", "name" => "Etc/GMT"));
+		foreach (timezone_identifiers_list() as $zone)
+			if (preg_match("/Etc\/GMT(\+|\-)([1-9]+)/", $zone, $matches)) {
+				$zones[] = array("offset" => $matches[1].$matches[2],
+				                 "name" => $zone);
+			}
+
+		foreach ($weirdos as $offset => $weirdo)
+			$zones[] = array("offset" => $offset,
+			                 "name" => $weirdo);
+
+		function by_time($a, $b) {
+			$date_a = new DateTime("now", new DateTimeZone($a["name"]));
+			$date_b = new DateTime("now", new DateTimeZone($b["name"]));
+
+			return ($date_a->format("Z") < $date_b->format("Z")) ? -1 : 1;
+		}
+		usort($zones, "by_time");
+
+		foreach ($zones as $index => &$zone)
+			$zone["now"] = new DateTime("now", new DateTimeZone($zone["name"]));
+
+		return $zones;
+	}
+
+	/**
+	 * Function: now
+	 * Returns a DateTime object based on their timezone.
+	 *
+	 * Parameters:
+	 *     $when - When to base the DateTime off of.
+	 */
+	function now($when = null) {
+		fallback($when, "now");
+		return new DateTime($when, new DateTimeZone(Config::current()->timezone));
 	}

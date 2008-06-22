@@ -33,10 +33,10 @@
 						<input class="text" type="text" name="email" value="${ site.email | escape }" id="email" />
 					</p>
 					<p>
-						<label for="time_offset">${ "What time is it?" | translate }</label>
-						<select name="time_offset" id="time_offset">
-						{% for offset, timestamp in time_offsets | items %}
-							<option value="$offset"${ offset | option_selected(site.time_offset / 3600) }>${ timestamp | date("h:i A \\o\\\\n F jS, Y" | translate) }</option>
+						<label for="timezone">${ "What time is it?" | translate }</label>
+						<select name="timezone" id="timezone">
+						{% for zone in timezones %}
+							<option value="$zone.name"${ zone.name | option_selected(site.timezone) }>${ zone.now.format("h:i A \\o\\\\n F jS, Y" | translate) } (${ zone.now.getTimezone.getName | split("/") | last })</option>
 						{% endfor %}
 						</select>
 					</p>
