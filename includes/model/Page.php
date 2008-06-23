@@ -23,8 +23,8 @@
 		 * See Also:
 		 *     <Model::search>
 		 */
-		static function find($options = array()) {
-			return parent::search(get_class(), $options);
+		static function find($options = array(), $options_for_object = array()) {
+			return parent::search(get_class(), $options, $options_for_object);
 		}
 
 		/**
@@ -220,7 +220,7 @@
 		 * Returns a page's children.
 		 */
 		public function children() {
-			return parent::search(get_class(), array("where" => "`parent_id` = :id", "params" => array(":id" => $this->id)));
+			return self::find(array("where" => "`parent_id` = :id", "params" => array(":id" => $this->id)));
 		}
 
 		/**

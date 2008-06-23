@@ -84,6 +84,7 @@
 		 *
 		 * Parameters:
 		 *     $options - An array of options, mostly SQL things.
+		 *     $options_for_object - An array of options for the instantiation of the model.
 		 *
 		 * Options:
 		 *     select - What to grab from the table. @(modelname)s@ by default.
@@ -95,8 +96,11 @@
 		 *     order - What to order the SQL result by. @`__(modelname)s`.`id` DESC@ by default.
 		 *     offset - Offset for SQL query.
 		 *     limit - Limit for SQL query.
+		 *
+		 * See Also:
+		 *     <Model.grab>
 		 */
-		protected static function search($model, $options = array()) {
+		protected static function search($model, $options = array(), $options_for_object = array()) {
 			global $action;
 
 			$model_name = strtolower($model);
@@ -133,7 +137,8 @@
 					continue;
 				}
 
-				$result = new $model(null, array("read_from" => $result));
+				$options_for_object["read_from"] = $result;
+				$result = new $model(null, $options_for_object);
 
 				if (isset($result->created_at)) {
 					$result->date_shown = in_array(when("m-d-Y", $result->created_at), $shown_dates);

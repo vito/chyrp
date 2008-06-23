@@ -51,7 +51,7 @@
 		 * See Also:
 		 *     <Model::search>
 		 */
-		static function find($options = array()) {
+		static function find($options = array(), $options_for_object = array()) {
 			if (isset($options["where"]) and !is_array($options["where"]))
 				$options["where"] = array($options["where"]);
 			elseif (!isset($options["where"]))
@@ -61,7 +61,7 @@
 
 			fallback($options["order"], "`__posts`.`pinned` desc, `__posts`.`created_at` desc, `__posts`.`id` desc");
 
-			$posts = parent::search(get_class(), $options);
+			$posts = parent::search(get_class(), $options, $options_for_object);
 
 			if (!isset($options["placeholders"]) or !$options["placeholders"])
 				foreach ($posts as $index => $post)
