@@ -16,7 +16,7 @@
 
 	# Constant: CHYRP_VERSION
 	# Chyrp's version number.
-	define('CHYRP_VERSION', "2.0 Beta");
+	define('CHYRP_VERSION', "2.0 Beta 3");
 
 	# Constant: DEBUG
 	# Should Chyrp use debugging processes?
@@ -83,7 +83,7 @@
 	# Load the configuration settings
 	$config->load(INCLUDES_DIR."/config.yaml.php");
 
-	date_default_timezone_set($config->timezone);
+	date_default_timezone_set(fallback($config->timezone, "US/Eastern", true));
 
 	header("X-Pingback: ".$config->chyrp_url."/includes/xmlrpc.php");
 
