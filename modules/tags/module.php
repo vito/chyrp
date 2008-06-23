@@ -142,7 +142,6 @@
 			else
 				$struct['mt_tags'] = implode(", ", self::unlinked_tags($post->tags));
 
-			trigger_error("<pre>".htmlspecialchars(print_r($post, true))."</pre>");
 			return $struct;
 		}
 
