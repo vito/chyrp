@@ -40,7 +40,7 @@
 
 	/**
 	 * Function: logged_in
-	 * Returns whether $user is set.
+	 * Returns whether or not $visitor->id is 0.
 	 */
 	function logged_in() {
 		return Visitor::current()->id;

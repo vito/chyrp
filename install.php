@@ -450,7 +450,7 @@
 					<?php foreach (utc_timezones() as $zone): ?>
 						<option value="<?php echo $zone["name"]; ?>"<?php selected($zone["name"], fallback($_POST['timezone'], 0, true)); ?>>
 							<?php echo $zone["now"]->format(__("h:i A \o\\n F jS, Y")); ?>
-							(GMT<?php if ($zone["offset"] > 0): echo "+"; ?>+<?php echo $zone["offset"]; ?>)
+							(GMT<?php if ($zone["offset"] > 0) echo "+"; ?>+<?php echo $zone["offset"]; ?>)
 						</option>
 					<?php endforeach; ?>
 					</select>
