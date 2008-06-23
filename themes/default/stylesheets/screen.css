@@ -118,13 +118,15 @@ body {
 		float: left;
 		text-align: right;
 		list-style: none;
-		margin: 1em 0 0 -15em;
-		padding: .5em 0;
+		margin: 1.5em 0 .5em -15em;
 		width: 15em;
+		z-index: -1;
 		}
 		#page .post .info li,
 		#page .page .info li {
-			padding: 0 .75em;
+			padding: 0 2.75em 0 .75em;
+			margin-right: -2em;
+			-webkit-border-bottom-right-radius: 1.5em;
 		}
 		#page .post .info a,
 		#page .page .info a {

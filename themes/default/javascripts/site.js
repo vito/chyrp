@@ -17,13 +17,14 @@ $(function(){
 	})
 	$(".info").each(function(){
 		$(this).css({
-			width: $(this).width() + $(this).offset().left,
+			width: $(this).width() + $(this).offset().left + 24,
 			position: "absolute",
 			left: 0,
 			top: "auto",
 			marginLeft: 0,
-			marginTop: "1em"
+			marginTop: "1.5em"
 		})
+		$(this).find("li").css("marginRight", 0)
 	})
 
 	// Uncomment for debugging.

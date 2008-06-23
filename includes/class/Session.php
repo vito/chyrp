@@ -70,7 +70,7 @@
 		 * Garbage collector. Removes sessions older than 30 days and sessions with no stored data.
 		 */
 		static function gc() {
-			$thirty_days = now("+ 30 days");
+			$thirty_days = now("+30 days");
 			$delete = SQL::current()->delete("sessions", "`__sessions`.`created_at` >= :thirty_days OR `__sessions`.`data` = '' OR `data` IS NULL", array(":thirty_days" => datetime($thirty_days)));
 			return true;
 		}
