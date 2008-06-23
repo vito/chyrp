@@ -29,9 +29,8 @@
 			$admin->context["logged_in"]    = logged_in();
 			$admin->context["route"]        = array("action" => $action);
 			$admin->context["hide_admin"]   = isset($_SESSION["chyrp_hide_admin"]);
-			$admin->context["now"]          = time() + Config::current()->time_offset;
+			$admin->context["now"]          = now();
 			$admin->context["now_server"]   = time();
-			$admin->context["time_offsets"] = time_offsets();
 			$admin->context["version"]      = CHYRP_VERSION;
 			$admin->context["POST"]         = $_POST;
 			$admin->context["GET"]          = $_GET;

@@ -292,11 +292,11 @@
 	 *     $strftime - Use `strftime` instead of `date`?
 	 */
 	function when($formatting, $when, $strftime = false) {
-		$time = (is_numeric($when)) ? $when : @strtotime($when) ;
+		$time = (is_numeric($when)) ? $when : strtotime($when) ;
 		if ($strftime)
-			return @strftime($formatting, $time);
+			return strftime($formatting, $time);
 		else
-			return @date($formatting, $time);
+			return date($formatting, $time);
 	}
 
 	/**
@@ -309,9 +309,9 @@
 	function datetime($when = null) {
 		# If $when is not set (common behaviour), set it to a formatted version of the current time.
 		# It is formatted so that strtotime doesn't freak out.
-		fallback($when, @date("c", (time() + Config::current()->time_offset)));
-		$time = (is_numeric($when)) ? $when : @strtotime($when) ;
-		return @date("Y-m-d H:i:s", $time);
+		fallback($when, now()->format("c"));
+		$time = (is_numeric($when) or $when instanceof DateTime) ? $when : strtotime($when) ;
+		return ($time instanceof DateTime) ? $time->format("Y-m-d H:i:s") : date("Y-m-d H:i:s", $time) ;
 	}
 
 	/**
@@ -1468,14 +1468,41 @@
 	}
 
 	/**
-	 * Function: offset_select
-	 * Returns an array of offsets associated to their timestamps.
+	 * Function: utc_timezones
+	 * Returns every possible UTC timezone as array([offset], [valid PHP timezone], DateTime).
 	 */
-	function time_offsets() {
-		$return = array();
+	function utc_timezones($datetime = false) {
+		$zones = array();
+		$offsets = array();
+		foreach (DateTimeZone::listIdentifiers() as $timezone) {
+			$dt = new DateTime("now", new DateTimeZone($timezone));
+			$offset = $dt->getTimezone()->getOffset($dt);
+			if (!in_array($offset, $offsets)) {
+				$zones[] = array("offset" => $offset / 3600,
+				                 "name" => $timezone);
+				$offsets[] = $offset;
+			}
+		}
 
-		for ($offset = -12; $offset <= 14; $offset++)
-			$return[$offset] = @time() + ($offset * 60 * 60);
+		foreach ($zones as $index => &$zone)
+			$zone["now"] = new DateTime("now", new DateTimeZone($zone["name"]));
 
-		return $return;
+		function by_time($a, $b) {
+			return ($a["now"]->format("Z") < $b["now"]->format("Z")) ? -1 : 1;
+		}
+		usort($zones, "by_time");
+
+		return $zones;
+	}
+
+	/**
+	 * Function: now
+	 * Returns a DateTime object based on their timezone.
+	 *
+	 * Parameters:
+	 *     $when - When to base the DateTime off of.
+	 */
+	function now($when = null) {
+		fallback($when, "now");
+		return new DateTime($when, new DateTimeZone(Config::current()->timezone));
 	}

@@ -82,8 +82,8 @@
 		if (empty($_POST['name']))
 			$errors[] = __("Please enter a name for your website.");
 
-		if (!isset($_POST['time_offset']))
-			$errors[] = __("Time offset cannot be blank.");
+		if (!isset($_POST['timezone']))
+			$errors[] = __("Time zone cannot be blank.");
 
 		if (empty($_POST['login']))
 			$errors[] = __("Please enter a username for your account.");
@@ -235,7 +235,7 @@
 			$config->set("feed_items", 20);
 			$config->set("clean_urls", false);
 			$config->set("post_url", "(year)/(month)/(day)/(url)/");
-			$config->set("time_offset", $_POST['time_offset'] * 3600);
+			$config->set("timezone", $_POST['timezone']);
 			$config->set("can_register", true);
 			$config->set("default_group", 2);
 			$config->set("guest_group", 5);
@@ -444,11 +444,14 @@
 					<label for="description"><?php echo __("Description"); ?></label>
 					<textarea name="description" rows="2" cols="40"><?php value_fallback("description"); ?></textarea>
 				</p>
-				<p id="time_offset_field" class="extra">
-					<label for="time_offset"><?php echo __("What time is it?"); ?></label>
-					<select name="time_offset" id="time_offset">
-					<?php foreach (time_offsets() as $offset => $timestamp): ?>
-						<option value="<?php echo $offset; ?>"<?php selected($offset, fallback($_POST['time_offset'], 0, true)); ?>><?php echo when("g:i A, F jS, Y", $timestamp); ?></option>
+				<p id="timezone_field" class="extra">
+					<label for="timezone"><?php echo __("What time is it?"); ?></label>
+					<select name="timezone" id="timezone">
+					<?php foreach (utc_timezones() as $zone): ?>
+						<option value="<?php echo $zone["name"]; ?>"<?php selected($zone["name"], fallback($_POST['timezone'], 0, true)); ?>>
+							<?php echo $zone["now"]->format(__("h:i A \o\\n F jS, Y")); ?>
+							(GMT<?php if ($zone["offset"] > 0): echo "+"; ?>+<?php echo $zone["offset"]; ?>)
+						</option>
 					<?php endforeach; ?>
 					</select>
 				</p>
