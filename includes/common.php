@@ -83,7 +83,9 @@
 	# Load the configuration settings
 	$config->load(INCLUDES_DIR."/config.yaml.php");
 
-	date_default_timezone_set(fallback($config->timezone, "US/Eastern", true));
+	fallback(Config::current()->timezone, "US/Eastern");
+
+	date_default_timezone_set($config->timezone);
 
 	header("X-Pingback: ".$config->chyrp_url."/includes/xmlrpc.php");
 
