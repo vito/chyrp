@@ -130,12 +130,6 @@
 			$result = array();
 
 			foreach ($this->getRecentPosts($args[3]) as $post) {
-				$post = new Post(
-					null,
-					array(
-						'read_from' => $post,
-						'filter' => false));
-
 				$struct = array(
 					'postid'            => $post->id,
 					'userid'            => $post->user_id,
@@ -453,12 +447,12 @@
 				$params[':user_id'] = $user->id;
 			}
 
-			return SQL::current()->select(
-				'posts',
-				'__posts.*',
-				$where,
-				'`__posts`.`created_at` DESC, `__posts`.`id` DESC',
-				$params)->fetchAll();
+			return Post::find(
+				array(
+					'where' => $where,
+					'order' => '`__posts`.`created_at` DESC, `__posts`.`id` DESC',
+					'params' => $params),
+				array('filter' => false));
 		}
 
 		/**
