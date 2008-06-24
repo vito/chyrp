@@ -284,7 +284,7 @@
 				$status = ($args[4]) ? 'public' : 'draft';
 
 			$trigger = Trigger::current();
-			$trigger->call('metaWeblog_editPost_preQuery', array($args[3], $post), true);
+			$trigger->call('metaWeblog_editPost_preQuery', array($args[3], $post));
 
 			$post->update(
 				array('title' => $args[3]['title'], 'body' => $body ),
@@ -293,7 +293,7 @@
 				sanitize(fallback($args[3]['mt_basename'], $args[3]['title'], true)),
 				fallback($this->convertFromDateCreated($args[3]), $post->created_at, true));
 
-			$trigger->call('metaWeblog_editPost', array($post, $args[3]), true);
+			$trigger->call('metaWeblog_editPost', array($args[3], $post));
 
 			return true;
 		}
@@ -358,8 +358,6 @@
 			$result = array();
 
 			foreach ($this->getRecentPosts($args[3]) as $post) {
-				$post = new Post(null, array('read_from' => $post, 'filter' => false));
-
 				$result[] = array(
 					'postid'      => $post->id,
 					'userid'      => $post->user_id,
