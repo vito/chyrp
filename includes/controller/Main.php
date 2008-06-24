@@ -84,6 +84,14 @@
 		}
 
 		/**
+		 * Function: rss
+		 * Redirects to /feed (backwards compatibility).
+		 */
+		public function rss() {
+			redirect(Route::current()->url("feed/"));
+		}
+
+		/**
 		 * Function: view
 		 * Views a post.
 		 */
