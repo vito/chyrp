@@ -656,19 +656,19 @@
 
 				$latest_timestamp = 0;
 				foreach ($posts as $post)
-					if (@strtotime($post->created_at) > $latest_timestamp)
-						$latest_timestamp = @strtotime($post->created_at);
+					if (strtotime($post->created_at) > $latest_timestamp)
+						$latest_timestamp = strtotime($post->created_at);
 
 				$id = substr(strstr($config->url, "//"), 2);
 				$id = str_replace("#", "/", $id);
-				$id = preg_replace("/(".preg_quote(parse_url($config->url, PHP_URL_HOST)).")/", "\\1,".@date("Y", $latest_timestamp).":", $id, 1);
+				$id = preg_replace("/(".preg_quote(parse_url($config->url, PHP_URL_HOST)).")/", "\\1,".date("Y", $latest_timestamp).":", $id, 1);
 
 				$posts_atom = '<?xml version="1.0" encoding="utf-8"?>'."\r";
 				$posts_atom.= '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:chyrp="http://chyrp.net/export/1.0/">'."\r";
 				$posts_atom.= '	<title>'.fix($config->name, false).' Posts</title>'."\r";
 				$posts_atom.= '	<subtitle>'.fix($config->description, false).'</subtitle>'."\r";
-				$posts_atom.= '	<id>tag:'.parse_url($config->url, PHP_URL_HOST).','.@date("Y", $latest_timestamp).':Chyrp</id>'."\r";
-				$posts_atom.= '	<updated>'.@date("c", $latest_timestamp).'</updated>'."\r";
+				$posts_atom.= '	<id>tag:'.parse_url($config->url, PHP_URL_HOST).','.date("Y", $latest_timestamp).':Chyrp</id>'."\r";
+				$posts_atom.= '	<updated>'.date("c", $latest_timestamp).'</updated>'."\r";
 				$posts_atom.= '	<link href="'.$config->url.'" rel="self" type="application/atom+xml" />'."\r";
 				$posts_atom.= '	<generator uri="http://chyrp.net/" version="'.CHYRP_VERSION.'">Chyrp</generator>'."\r";
 
@@ -676,7 +676,7 @@
 					$title = fix($post->title(), false);
 					fallback($title, ucfirst($post->feather)." Post #".$post->id);
 
-					$updated = (substr($post->updated_at, 0, 4) == "0000") ? $post->created_at : $post->updated_at ;
+					$updated = ($post->updated) ? $post->created_at : $post->updated_at ;
 
 					$tagged = substr(strstr($route->url("id/".$post->id."/"), "//"), 2);
 					$tagged = str_replace("#", "/", $tagged);
@@ -743,20 +743,20 @@
 
 				$latest_timestamp = 0;
 				foreach ($pages as $page)
-					if (@strtotime($page->created_at) > $latest_timestamp)
-						$latest_timestamp = @strtotime($page->created_at);
+					if (strtotime($page->created_at) > $latest_timestamp)
+						$latest_timestamp = strtotime($page->created_at);
 
 				$pages_atom = '<?xml version="1.0" encoding="utf-8"?>'."\r";
 				$pages_atom.= '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:chyrp="http://chyrp.net/export/1.0/">'."\r";
 				$pages_atom.= '	<title>'.htmlspecialchars($config->name, ENT_NOQUOTES, "utf-8").' Pages</title>'."\r";
 				$pages_atom.= '	<subtitle>'.htmlspecialchars($config->description, ENT_NOQUOTES, "utf-8").'</subtitle>'."\r";
-				$pages_atom.= '	<id>tag:'.parse_url($config->url, PHP_URL_HOST).','.@date("Y", $latest_timestamp).':Chyrp</id>'."\r";
-				$pages_atom.= '	<updated>'.@date("c", $latest_timestamp).'</updated>'."\r";
+				$pages_atom.= '	<id>tag:'.parse_url($config->url, PHP_URL_HOST).','.date("Y", $latest_timestamp).':Chyrp</id>'."\r";
+				$pages_atom.= '	<updated>'.date("c", $latest_timestamp).'</updated>'."\r";
 				$pages_atom.= '	<link href="'.$config->url.'" rel="self" type="application/atom+xml" />'."\r";
 				$pages_atom.= '	<generator uri="http://chyrp.net/" version="'.CHYRP_VERSION.'">Chyrp</generator>'."\r";
 
 				foreach ($pages as $page) {
-					$updated = (substr($page->updated_at, 0, 4) == "0000") ? $page->created_at : $page->updated_at ;
+					$updated = ($page->updated) ? $page->created_at : $page->updated_at ;
 
 					$tagged = substr(strstr($page->url(), "//"), 2);
 					$tagged = str_replace("#", "/", $tagged);

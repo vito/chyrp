@@ -82,10 +82,10 @@
 
 				$archives = array();
 				while ($time = $timestamps->fetchObject()) {
-					$timestamp = @mktime(0, 0, 0, $time->month + 1, 0, $time->year);
+					$timestamp = mktime(0, 0, 0, $time->month + 1, 0, $time->year);
 					$archives[$timestamp] = array("posts" => array(),
 					                              "year" => $time->year,
-					                              "month" => @date("F", $timestamp),
+					                              "month" => strftime("%B", $timestamp),
 					                              "url" => $route->url("archive/".when("Y/m/", $time->created_at)));
 
 					$archives[$timestamp]["posts"] = Post::find(array("where" => "`__posts`.`created_at` like :created_at",
@@ -97,13 +97,13 @@
 				if (!is_numeric($_GET['year']) or !is_numeric($_GET['month']))
 					error(__("Error"), __("Please enter a valid year and month."));
 
-				$timestamp = @mktime(0, 0, 0, $_GET['month'], fallback($_GET['day'], "1", true), $_GET['year']);
-				$theme->title = _f("Archive of %s", array(@date("F Y", $timestamp)));
+				$timestamp = mktime(0, 0, 0, $_GET['month'], fallback($_GET['day'], "1", true), $_GET['year']);
+				$theme->title = _f("Archive of %s", array(date("F Y", $timestamp)));
 
 				$theme->load("content/archive", array("posts" => $posts,
 				                                      "archive" => array("year" => $_GET['year'],
-				                                                         "month" => @date("F", $timestamp),
-				                                                         "day" => @date("jS", $timestamp),
+				                                                         "month" => strftime("%B", $timestamp),
+				                                                         "day" => date("jS", $timestamp),
 				                                                         "depth" => isset($_GET['day']) ? "day" : (isset($_GET['month']) ? "month" : (isset($_GET['year']) ? "year" : ""))
 				                                                   )
 				                                ));
@@ -160,8 +160,8 @@
 
 			$latest_timestamp = 0;
 			foreach ($posts->paginated as $post)
-				if (@strtotime($post->created_at) > $latest_timestamp)
-					$latest_timestamp = @strtotime($post->created_at);
+				if (strtotime($post->created_at) > $latest_timestamp)
+					$latest_timestamp = strtotime($post->created_at);
 
 			require "includes/feed.php";
 			break;

@@ -9,7 +9,7 @@
 
 	function reverse($a, $b) {
 		if (empty($a) or empty($b)) return 0;
-		return (@strtotime($a->attributes()->date) < @strtotime($b->attributes()->date)) ? -1 : 1 ;
+		return (strtotime($a->attributes()->date) < strtotime($b->attributes()->date)) ? -1 : 1 ;
 	}
 
 	$errors = array();

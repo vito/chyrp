@@ -5,9 +5,9 @@
 	$comments = Comment::find(array("limit" => 20));
 
 	$latest_timestamp = 0;
-		foreach ($comments as $comment)
-			if (@strtotime($comment->created_at) > $latest_timestamp)
-				$latest_timestamp = @strtotime($comment->created_at);
+	foreach ($comments as $comment)
+		if (strtotime($comment->created_at) > $latest_timestamp)
+			$latest_timestamp = strtotime($comment->created_at);
 
 	echo "<".'?xml version="1.0" encoding="utf-8"?'.">\r";
 ?>

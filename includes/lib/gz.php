@@ -13,7 +13,7 @@
 		ob_start();
 
 	header("Content-Type: application/x-javascript");
-	header("Last-Modified: ".@date("r", filemtime($_GET['file'])));
+	header("Last-Modified: ".date("r", filemtime($_GET['file'])));
 
 	if (strpos($_GET['file'], "theme/") === 0) {
 		require "../common.php";

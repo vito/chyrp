@@ -6,7 +6,7 @@
 	<title><?php echo htmlspecialchars($config->name.$title, ENT_NOQUOTES, "utf-8"); ?></title>
 	<subtitle><?php echo htmlspecialchars($config->description, ENT_NOQUOTES, "utf-8"); ?></subtitle>
 	<id><?php echo self_url() ?></id>
-	<updated><?php echo @date("c", $latest_timestamp); ?></updated>
+	<updated><?php echo date("c", $latest_timestamp); ?></updated>
 	<link href="<?php echo self_url() ?>" rel="self" type="application/atom+xml" />
 	<generator uri="http://chyrp.net/" version="<?php echo CHYRP_VERSION; ?>">Chyrp</generator>
 <?php
@@ -14,7 +14,7 @@
 		$title = htmlspecialchars($post->title(), ENT_NOQUOTES, "utf-8");
 		fallback($title, ucfirst($post->feather)." Post #".$post->id);
 
-		$updated = (substr($post->updated_at, 0, 4) == "0000") ? $post->created_at : $post->updated_at ;
+		$updated = ($post->updated) ? $post->created_at : $post->updated_at ;
 
 		$tagged = substr(strstr($route->url("id/".$post->id."/"), "//"), 2);
 		$tagged = str_replace("#", "/", $tagged);
