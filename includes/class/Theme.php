@@ -280,6 +280,7 @@
 			$this->context["route"]        = array("action" => $action, "ajax" => AJAX);
 			$this->context["hide_admin"]   = isset($_SESSION["chyrp_hide_admin"]);
 			$this->context["version"]      = CHYRP_VERSION;
+			$this->context["now"]          = now();
 			$this->context["POST"]         = $_POST;
 			$this->context["GET"]          = $_GET;
 

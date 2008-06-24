@@ -13,41 +13,43 @@ ${ trigger.call("head") }
 	</head>
 	<body>
 {% if visitor.group.can("add_post", "add_draft", "add_page", "view_own_draft", "view_draft", "change_settings", "toggle_extensions") %}
-		<ul id="admin_bar"{% if hide_admin %} style="display: none"{% endif %}>
+		<div class="controls" id="admin_bar"{% if hide_admin %} style="display: none"{% endif %}>
+			<ul>
 {% if visitor.group.can("add_post") %}
-			<li><a id="add_post" href="{% admin "write_post" %}">${ "Write" | translate }</a></li>
+				<li><a id="add_post" href="{% admin "write_post" %}">${ "Write" | translate }</a></li>
 {% elseif visitor.group.can("add_draft") %}
-			<li><a id="add_draft" href="{% admin "write_post" %}">${ "Write Draft" | translate }</a></li>
+				<li><a id="add_draft" href="{% admin "write_post" %}">${ "Write Draft" | translate }</a></li>
 {% endif %}
 {% if visitor.group.can("add_page") %}
-			<li><a id="add_page" href="{% admin "write_page" %}">${ "Add Page" | translate }</a></li>
+				<li><a id="add_page" href="{% admin "write_page" %}">${ "Add Page" | translate }</a></li>
 {% endif %}
 {% if visitor.group.can("view_own_draft", "view_draft") %}
-			<li><a id="your_drafts" href="{% url "drafts/" %}">${ "Your Drafts" | translate }</a></li>
+				<li><a id="your_drafts" href="{% url "drafts/" %}">${ "Your Drafts" | translate }</a></li>
 {% endif %}
 {% if visitor.group.can("change_settings", "toggle_extensions") %}
-			<li><a id="site_settings" href="$site.chyrp_url/admin/">${ "Admin" | translate }</a></li>
+				<li><a id="site_settings" href="$site.chyrp_url/admin/">${ "Admin" | translate }</a></li>
 {% endif %}
-			<li class="close"><a class="toggle_admin" href="{% url "toggle_admin/" %}">${ "Close" | translate }</a></li>
-		</ul>
-{% endif %}
-		<div id="header">
-			<h1><a href="$site.url">$site.name</a></h1>
-			<h2>$site.description</h2>
+				<li class="close"><a class="toggle_admin" href="{% url "toggle_admin/" %}">${ "Close" | translate }</a></li>
+			</ul>
 		</div>
-		<div id="page">
+{% endif %}
+		<div class="wrapper">
+			<div class="container">
+				<div class="header">
+					<h1><a href="$site.url">$site.name</a> <span>$site.description</span></h1>
+				</div>
+				<div id="posts">
 {% block content %}{% endblock %}
-			$posts.next_link
-			$posts.prev_link
-			<span class="page_numbers">
-				Page $posts.page of $posts.pages
-			</span>
-			<div class="clear">
+				</div>
+				$posts.next_link
+				$posts.prev_link
+				<br />
+				<div class="footer">
+					<p><a href="{% url "feed/" %}">Feed</a> / theme &copy; <a href="http://lofisoami.com/">Aaron MacDonald</a> 2007</p>
+					<span>${ "Powered by <a href=\"http://chyrp.net/\">Chyrp</a>" | translate }</span>
+				</div>
+			</div>
 			{% include "sidebar.twig" %}
-		</div>
-		<div id="footer">
-			<p><a href="{% url "feed/" %}">feed</a> / theme &copy; <a href="http://toogeneric.com/">Alex Suraci</a> 2008</p>
-			<span>${ "Powered by <a href=\"http://chyrp.net/\">Chyrp</a>" | translate }</span>
 		</div>
 ${ trigger.call("end_content") }
 	</body>

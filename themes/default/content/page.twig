@@ -1,17 +1,20 @@
 {% extends "layouts/default.twig" %}
 
 {% block content %}
-				<div class="page" id="page_$page.id">
-					{% if visitor.group.can("edit_page", "delete_page") %}
-					<ul class="info">
-						${ page.edit_link("Edit" | translate, "<li>", "</li>") }
-						${ page.delete_link("Delete" | translate, "<li>", "</li>") }
-					</ul>
-					{% endif %}
-					<h1>
-						$page.title
-					</h1>
-					<div class="content">
+				<div class="page" id="page_$page.if">
+					<div id="page_inner_$page.id">
+						<h2>
+							{% if visitor.group.can("edit_page", "delete_page") %}
+							<span class="info right">
+								$page.edit_link
+								{% if visitor.group.can("delete_page") %}
+								<em>|</em> $page.delete_link
+								{% endif %}
+							</span>
+							{% endif %}
+							$page.title
+						</h2>
+						<br />
 						$page.body
 					</div>
 				</div>

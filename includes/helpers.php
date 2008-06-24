@@ -1504,5 +1504,5 @@
 	 */
 	function now($when = null) {
 		fallback($when, "now");
-		return new DateTime($when, new DateTimeZone(Config::current()->timezone));
+		return new Timestamp($when);
 	}

@@ -1,33 +1,39 @@
 					{% if route.action == "view" and post.status == "draft" %}
 					<div class="notice" onClick="$$(this).fadeOut('fast')">${ "This post is a draft." | translate }<span class="sub">${ "(click to hide)" | translate }</span></div>
 					{% endif %}
-					{% if not post.date_shown %}
-					<div class="date">${ post.created_at | date("F jS, Y" | translate) }</div>
-					{% endif %}
-					<div class="block post{% if post.pinned %} pinned{% endif %}" id="post_$post.id">
+					{% if not route.ajax or (route.ajax and ajax_reason != "edited" and ajax_reason != "cancelled") %}
+					<div class="post{% if post.pinned %} pinned{% endif %}" id="post_$post.id">
 						<div class="$post.feather target">
-							<ul class="info">
-								<li><strong><a href="$post.url">${ post.created_at | date("g:i A" | translate) }</a></strong></li>
-								{% if enabled_modules.categorize and post.category.id != 0 %}
-								<li><a href="$post.category.url" rel="tag">$post.category.name</a></li>
-								{% endif %}
-								{% if enabled_modules.comments %}
-								<li><a href="$post.url#comments">${ "%s Comment" | translate_plural("%s Comments", post.comment_count) | format(post.comment_count) }</a></li>
-								{% endif %}
-								{% if post.tags.linked | length > 0 %}
-								<li><strong>Tags:</strong> ${ post.tags.linked | join }</li>
-								{% endif %}
-								{% if site.enable_trackbacking %}
-								<li><a href="$post.trackback_url">${ "Trackback" | translate }</a></li>
-								{% endif %}
-								${ post.edit_link("Edit" | translate, "<li>", "</li>") }
-								${ post.delete_link("Delete" | translate, "<li>", "</li>") }
-							</ul>
+					{% endif %}
 							{% if post.pinned %}<span class="pinned_text">${ "pinned" | translate }</span>{% endif %}
 							{% include "content/feathers/" ~ post.feather ~ ".twig" %}
 							{% if route.action == "view" %}
 							$post.paginated.next_link
 							$post.paginated.prev_link
 							{% endif %}
+							<div class="clear"></div>
+							<span class="info">
+								<strong><a href="$post.url">${ post.created_at | date("F jS @ g:i A") }</a></strong>
+								{% if enabled_modules.categorize and post.category.id != 0 %}
+								<em>|</em> <a href="$post.category.url" rel="tag">$post.category.name</a>
+								{% endif %}
+								{% if enabled_modules.comments %}
+								<em>|</em> <a href="$post.url#comments">${ "%s Comment" | translate_plural("%s Comments", post.comment_count) | format(post.comment_count) }</a>
+								{% endif %}
+								{% if post.tags.linked | length > 0 %}
+								<em>|</em> Tags: ${ post.tags.linked | join }
+								{% endif %}
+								{% if site.enable_trackbacking %}
+								<em>|</em> <a href="$post.trackback_url">${ "Trackback" | translate }</a>
+								{% endif %}
+								${ post.edit_link("Edit" | translate, "<em>|</em> ") }
+								${ post.delete_link("Delete" | translate, "<em>|</em> ") }
+							</span>
+							<br class="clear" />
+					{% if not route.ajax or (route.ajax and ajax_reason != "edited" and ajax_reason != "cancelled") %}
 						</div>
+						{% if route.action != "view" and not loop.last %}
+						<br />
+						{% endif %}
 					</div>
+					{% endif %}

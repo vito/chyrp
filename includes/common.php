@@ -71,6 +71,7 @@
 		redirect("install.php");
 
 	require_once INCLUDES_DIR."/class/QueryBuilder.php"; # SQL query builder
+	require_once INCLUDES_DIR."/class/Timestamp.php"; # A smarter DateTime class
 	require_once INCLUDES_DIR."/lib/spyc.php"; # YAML parser
 
 	require_once INCLUDES_DIR."/config.php"; # Configuration
