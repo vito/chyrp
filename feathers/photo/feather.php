@@ -7,6 +7,8 @@
 			$this->setFilter("caption", "markup_post_text");
 			$this->respondTo("delete_post", "delete_file");
 			$this->respondTo("filter_post", "filter_post");
+			$this->respondTo("new_post_options", "alt_text_field");
+			$this->respondTo("edit_post_options", "alt_text_field");
 
 			if (!file_exists(INCLUDES_DIR."/caches/phpthumb/"))
 				mkdir(INCLUDES_DIR."/caches/phpthumb/");
@@ -62,7 +64,7 @@
 			return $post->caption;
 		}
 		public function feed_content($post) {
-			return self::image_tag_for($post->filename, 500, 500)."<br /><br />".$post->caption;
+			return self::image_tag_for($post, 500, 500)."<br /><br />".$post->caption;
 		}
 		public function delete_file($post) {
 			if ($post->feather != "photo") return;
@@ -70,11 +72,22 @@
 		}
 		public function filter_post($post) {
 			if ($post->feather != "photo") return;
-			$post->image = $this->image_tag_for($post->filename);
+			$post->image = $this->image_tag_for($post);
 		}
-		public function image_tag_for($filename, $max_width = 500, $max_height = null, $more_args = "q=100") {
+		public function image_tag_for($post, $max_width = 500, $max_height = null, $more_args = "q=100") {
+			$filename = $post->filename;
 			$ext = pathinfo($filename, PATHINFO_EXTENSION);
 			$config = Config::current();
-			return '<a href="'.$config->chyrp_url.$config->uploads_path.$filename.'"><img src="'.$config->chyrp_url.'/feathers/photo/lib/phpThumb.php?src='.$config->chyrp_url.$config->uploads_path.urlencode($filename).'&amp;w='.$max_width.'&amp;h='.$max_height.'&amp;f='.$ext.'&amp;'.$more_args.'" alt="'.$filename.'" /></a>';
+			return '<a href="'.$config->chyrp_url.$config->uploads_path.$filename.'"><img src="'.$config->chyrp_url.'/fsdffeathers/photo/lib/phpThumb.php?src='.$config->chyrp_url.$config->uploads_path.urlencode($filename).'&amp;w='.$max_width.'&amp;h='.$max_height.'&amp;f='.$ext.'&amp;'.$more_args.'" alt="'.fallback($post->alt_text, $filename, true).'" /></a>';
+		}
+		public function alt_text_field($post = null) {
+			if (isset($post) and $post->feather != "photo") return;
+			if (isset($_GET['feather']) and $_GET['feather'] != "photo") return;
+?>
+					<p>
+						<label for="option_alt_text"><?php echo __("Alt-Text", "photo"); ?></label>
+						<input class="text" type="text" name="option[alt_text]" value="<?php echo fix(fallback($post->alt_text, "", true)); ?>" id="alt_text" />
+					</p>
+<?php
 		}
 	}
