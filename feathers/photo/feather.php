@@ -78,7 +78,7 @@
 			$filename = $post->filename;
 			$ext = pathinfo($filename, PATHINFO_EXTENSION);
 			$config = Config::current();
-			return '<a href="'.$config->chyrp_url.$config->uploads_path.$filename.'"><img src="'.$config->chyrp_url.'/fsdffeathers/photo/lib/phpThumb.php?src='.$config->chyrp_url.$config->uploads_path.urlencode($filename).'&amp;w='.$max_width.'&amp;h='.$max_height.'&amp;f='.$ext.'&amp;'.$more_args.'" alt="'.fallback($post->alt_text, $filename, true).'" /></a>';
+			return '<a href="'.$config->chyrp_url.$config->uploads_path.$filename.'"><img src="'.$config->chyrp_url.'/feathers/photo/lib/phpThumb.php?src='.$config->chyrp_url.$config->uploads_path.urlencode($filename).'&amp;w='.$max_width.'&amp;h='.$max_height.'&amp;f='.$ext.'&amp;'.$more_args.'" alt="'.fallback($post->alt_text, $filename, true).'" /></a>';
 		}
 		public function alt_text_field($post = null) {
 			if (isset($post) and $post->feather != "photo") return;
