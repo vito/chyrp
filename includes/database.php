@@ -44,8 +44,10 @@
 		 *     $setting - The setting name.
 		 *     $value - The new value. Can be boolean, numeric, an array, a string, etc.
 		 */
-		public function set($setting, $value) {
-			if (isset($this->$setting) and $this->$setting == $value) return false; # No point in changing it
+		public function set($setting, $value, $overwrite = true) {
+			global $errors;
+			if (isset($this->$setting) and ($this->$setting == $value or !$overwrite))
+				return false;
 
 			# Add the PHP protection!
 			$contents = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
@@ -59,7 +61,8 @@
 			# Generate the new YAML settings
 			$contents.= Spyc::YAMLDump($this->yaml, false, 0);
 
-			file_put_contents(INCLUDES_DIR."/database.yaml.php", $contents);
+			if (!@file_put_contents(INCLUDES_DIR."/database.yaml.php", $contents))
+				$errors[] = _f("Could not set \"<code>%s</code>\" database setting because <code>%s</code> is not writable.", array($setting, "/includes/database.yaml.php"));
 		}
 
 		/**

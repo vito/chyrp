@@ -37,6 +37,9 @@
 	$index = (parse_url($url, PHP_URL_PATH)) ? "/".trim(parse_url($url, PHP_URL_PATH), "/")."/" : "/" ;
 	$htaccess = "<IfModule mod_rewrite.c>\nRewriteEngine On\nRewriteBase ".str_replace("install.php", "", $index)."\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule ^.+$ index.php [L]\n</IfModule>";
 
+	if (file_exists(MAIN_DIR."/.htaccess"))
+		$htaccess_has_chyrp = preg_match("/".preg_quote($htaccess, "/")."/", file_get_contents(MAIN_DIR."/.htaccess"));
+
 	$errors = array();
 	$installed = false;
 
@@ -55,11 +58,14 @@
 		if ($sql->connect(true) and !empty($config->url) and $sql->count("users"))
 			error(__("Already Installed"), __("Chyrp is already correctly installed and configured."));
 	} else {
-		if (!is_writable(MAIN_DIR) and (!file_exists(MAIN_DIR."/.htaccess") or !preg_match("/".preg_quote($htaccess, "/")."/", file_get_contents(MAIN_DIR."/.htaccess"))))
-			$errors[] = _f("STOP! Before you go any further, you must create a .htaccess file in Chyrp's install directory and put this in it:\n<pre>%s</pre>.", array(htmlspecialchars($htaccess)));
+		if (# Directory is NOT writable, .htaccess file does NOT already exist.
+			(!is_writable(MAIN_DIR) and !file_exists(MAIN_DIR."/.htaccess")) or
+			# .htaccess file DOES exist, IS writable, and it does NOT contain the Chyrp htaccess whatnot.
+		    (file_exists(MAIN_DIR."/.htaccess") and !is_writable(MAIN_DIR."/.htaccess") and !$htaccess_has_chyrp))
+			$errors[] = _f("STOP! Before you go any further, you must create a .htaccess file in Chyrp's install directory and put this in it:\n<pre>%s</pre>", array(htmlspecialchars($htaccess)));
 
 		if (!is_writable(INCLUDES_DIR))
-			$errors[] = __("Chyrp's includes directory is not writable by the server.");
+			$errors[] = __("Chyrp's includes directory is not writable by the server. In order for the installer to generate your configuration files, please CHMOD or CHOWN it so that Chyrp can write to it.");
 	}
 
 	if (!empty($_POST)) {
@@ -219,10 +225,10 @@
 
 			if (!file_exists(MAIN_DIR."/.htaccess"))
 				if (!@file_put_contents(MAIN_DIR."/.htaccess", $htaccess))
-					$errors[] = __("Could not generate .htaccess file. Clean URLs will not be available.");
-			elseif (file_exists(MAIN_DIR."/.htaccess") and !preg_match("/".preg_quote($htaccess, "/")."/", file_get_contents(MAIN_DIR."/.htaccess")))
+					$errors[] = _f("Could not generate .htaccess file. Clean URLs will not be available unless you create it and put this in it:\n<pre>%s</pre>", array(htmlspecialchars($htaccess)));
+			elseif (file_exists(MAIN_DIR."/.htaccess") and !$htaccess_has_chyrp)
 				if (!@file_put_contents(MAIN_DIR."/.htaccess", "\n\n".$htaccess, FILE_APPEND))
-					$errors[] = __("Could not generate .htaccess file. Clean URLs will not be available.");
+					$errors[] = _f("Could not generate .htaccess file. Clean URLs will not be available unless you create it and put this in it:\n<pre>%s</pre>", array(htmlspecialchars($htaccess)));
 
 			$config->set("name", $_POST['name']);
 			$config->set("description", $_POST['description']);
