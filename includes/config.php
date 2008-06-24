@@ -61,7 +61,7 @@
 			# Generate the new YAML settings
 			$contents.= Spyc::YAMLDump($this->yaml, 2, 60);
 
-			if (!@file_put_contents(INCLUDES_DIR."/config.yaml.php", $contents))
+			if (!@file_put_contents(INCLUDES_DIR."/config.yaml.php", $contents) and is_array($errors))
 				$errors[] = _f("Could not set \"<code>%s</code>\" configuration setting because <code>%s</code> is not writable.", array($setting, "/includes/config.yaml.php"));
 		}
 
