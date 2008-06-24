@@ -207,7 +207,6 @@ function twig_make_array($object)
 
 function twig_date_format_filter($timestamp, $format='F j, Y, G:i')
 {
-	var_dump($format);
 	$timestamp = (is_numeric($timestamp) or $timestamp instanceof DateTime) ? $timestamp : strtotime($timestamp) ;
 	return ($timestamp instanceof DateTime) ? $timestamp->format($format) : date($format, $timestamp) ;
 }
