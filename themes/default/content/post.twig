@@ -13,7 +13,7 @@
 							{% endif %}
 							<div class="clear"></div>
 							<span class="info">
-								<strong><a href="$post.url">${ post.created_at | date("F jS @ g:i A") }</a></strong>
+								<strong><a href="$post.url">${ post.created_at | strftime("%B %d @ %I:%M %p") }</a></strong>
 								{% if enabled_modules.categorize and post.category.id != 0 %}
 								<em>|</em> <a href="$post.category.url" rel="tag">$post.category.name</a>
 								{% endif %}

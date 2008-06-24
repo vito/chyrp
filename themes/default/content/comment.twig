@@ -6,14 +6,8 @@
 				<p>$comment.body</p>
 			</blockquote>
 			<cite>
-				<strong>$comment.author_link</strong> ${ "on" | translate }
-				${ comment.created_at | date("F jS, 2008, \\a\\\t g:i A") }
-				{% if comment.editable %}
-				<em>|</em> $comment.edit_link
-				{% endif %}
-
-				{% if comment.deletable %}
-				<em>|</em> $comment.delete_link
-				{% endif %}
+				${ "<strong>%s</strong> on %s" | translate | format(comment.author_link, comment.created_at | strftime("%B %d, %Y, at %I:%M %r")) }
+				${ comment.edit_link("Edit" | translate, "<em>|</em> ") }
+				${ comment.delete_link("Delete" | translate, "<em>|</em> ") }
 			</cite>
 		</li>

@@ -215,9 +215,9 @@
 
 		public function author_link() {
 			if ($this->author_url != "") # If a URL is set
-				echo '<a href="'.$this->author_url.'">'.$this->author.'</a>';
-			else # If not, just show their name
-				echo $this->author;
+				return '<a href="'.$this->author_url.'">'.$this->author.'</a>';
+			else # If not, just return their name
+				return $this->author;
 		}
 
 		public function update($author, $author_email, $author_url, $body, $status, $timestamp) {

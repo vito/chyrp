@@ -35,7 +35,7 @@ ${ trigger.call("sidebar") }
 				<h1>${ "Archives" | translate }</h1>
 				<ul>
 {% for archive in theme.archives_list %}
-					<li><a href="$archive.url">${ archive.when | date("F Y") }</a> <span class="sub">($archive.count)</span></li>
+					<li><a href="$archive.url">${ archive.when | strftime("%B %Y") }</a> <span class="sub">($archive.count)</span></li>
 {% endfor %}
 				</ul>
 {% endif %}

@@ -18,25 +18,25 @@ $(function(){
 			alert(response.replace(/(HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW|<([^>]+)>\n?)/gm, ""))
 	})
 
-<?php if (match(array("/edit_(post|page)/", "/write_(post|page)/"), $action)): ?>
-	// Fancify the "More Options" links.
-	$(document.createElement("a")).attr({
-		id: "more_options_link",
-		href: "javascript:void(0)"
-	}).addClass("more_options_link").html("<?php echo $more_options_string; ?>").insertBefore(".buttons")
-	$("#more_options").clone().insertAfter("#more_options_link").removeClass("js_disabled")<?php if (empty($_COOKIE['show_more_options'])): ?>.css("display", "none")<?php endif; ?>
+	if ($("#more_options").size()) {
+		// Fancify the "More Options" links.
+		$(document.createElement("a")).attr({
+			id: "more_options_link",
+			href: "javascript:void(0)"
+		}).addClass("more_options_link").html("<?php echo $more_options_string; ?>").insertBefore(".buttons")
+		$("#more_options").clone().insertAfter("#more_options_link").removeClass("js_disabled")<?php if (empty($_COOKIE['show_more_options'])): ?>.css("display", "none")<?php endif; ?>
 
-	$("#more_options_link").click(function(){
-		if ($("#more_options").css("display") == "none") {
-			$(this).html("<?php echo __("&laquo; Fewer Options"); ?>")
-			Cookie.set("show_more_options", "true", 30)
-		} else {
-			$(this).html("<?php echo __("More Options &raquo;"); ?>")
-			Cookie.destroy("show_more_options")
-		}
-		$("#more_options").slideToggle()
-	})
-<?php endif; ?>
+		$("#more_options_link").click(function(){
+			if ($("#more_options").css("display") == "none") {
+				$(this).html("<?php echo __("&laquo; Fewer Options"); ?>")
+				Cookie.set("show_more_options", "true", 30)
+			} else {
+				$(this).html("<?php echo __("More Options &raquo;"); ?>")
+				Cookie.destroy("show_more_options")
+			}
+			$("#more_options").slideToggle()
+		})
+	}
 
 	// Remove things that only exist for JS-disabled users.
 	$(".js_disabled").remove()

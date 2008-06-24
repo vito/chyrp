@@ -2,10 +2,10 @@
 {% block content %}
 {% if archives %} {# List? (For all/yearly archives) #}
 	{% for archive in archives %}
-	<h2><a href="$archive.url">$archive.month $archive.year</a></h2>
+	<h2><a href="$archive.url">${ archive.timestamp | strftime("%B %Y") }</a></h2>
 	<ul>
 		{% for post in archive.posts %}
-		<li>${ post.created_at | date("d") }: <a href="$post.url">${ post.title | normalize | truncate(70) }</a></li>
+		<li>${ post.created_at | strftime("%d") }: <a href="$post.url">${ post.title | normalize | truncate(70) }</a></li>
 		{% endfor %}
 	</ul>
 	<br />
@@ -14,10 +14,10 @@
 
 {% if posts.paginated %} {# Posts? (For daily/monthly archives) #}
 {% if archive.depth == "day" %}
-	<h2>${ "Archive of" | translate } $archive.month $archive.day, $archive.year</h2>
+	<h2>${ "Archive of %s" | translate | format(archive.timestamp | strftime("%B %d, %Y")) }</h2>
 {% endif %}
 {% if archive.depth == "month" %}
-	<h2>${ "Archive of" | translate } $archive.month $archive.year</h2>
+	<h2>${ "Archive of %s" | translate | format(archive.timestamp | strftime("%B %Y")) }</h2>
 {% endif %}
 	{% for post in posts.paginated %}
 	{% include "content/post.twig" %}

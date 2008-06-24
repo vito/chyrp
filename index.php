@@ -86,6 +86,7 @@
 					$archives[$timestamp] = array("posts" => array(),
 					                              "year" => $time->year,
 					                              "month" => strftime("%B", $timestamp),
+					                              "timestamp" => $timestamp,
 					                              "url" => $route->url("archive/".when("Y/m/", $time->created_at)));
 
 					$archives[$timestamp]["posts"] = Post::find(array("where" => "`__posts`.`created_at` like :created_at",
@@ -98,12 +99,13 @@
 					error(__("Error"), __("Please enter a valid year and month."));
 
 				$timestamp = mktime(0, 0, 0, $_GET['month'], fallback($_GET['day'], "1", true), $_GET['year']);
-				$theme->title = _f("Archive of %s", array(date("F Y", $timestamp)));
+				$theme->title = _f("Archive of %s", array(strftime("%B %Y", $timestamp)));
 
 				$theme->load("content/archive", array("posts" => $posts,
 				                                      "archive" => array("year" => $_GET['year'],
 				                                                         "month" => strftime("%B", $timestamp),
-				                                                         "day" => date("jS", $timestamp),
+				                                                         "day" => strftime("%d", $timestamp),
+				                                                         "timestamp" => $timestamp,
 				                                                         "depth" => isset($_GET['day']) ? "day" : (isset($_GET['month']) ? "month" : (isset($_GET['year']) ? "year" : ""))
 				                                                   )
 				                                ));

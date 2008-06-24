@@ -34,7 +34,7 @@
 					$status = (empty($status)) ? "public" : str_replace(array_keys($status_translate), array_values($status_translate), $status[1]) ;
 					$clean = (empty($basename)) ? sanitize($title) : str_replace("_", "-", $basename[1]) ;
 					$url = Post::check_url($clean);
-					$timestamp = (empty($date)) ? datetime() : date("Y-m-d H:i:s", strtotime($date[1])) ;
+					$timestamp = (empty($date)) ? datetime() : datetime($date[1]) ;
 
 					# Damn it feels good to be a gangsta...
 					$_POST['status'] = $status;
