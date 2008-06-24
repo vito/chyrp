@@ -88,6 +88,7 @@
 		 * Redirects to /feed (backwards compatibility).
 		 */
 		public function rss() {
+			header("HTTP/1.1 301 Moved Permanently");
 			redirect(Route::current()->url("feed/"));
 		}
 
