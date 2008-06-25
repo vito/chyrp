@@ -91,7 +91,7 @@
 				$this->connected = true;
 				return true;
 			} catch (PDOException $error) {
-				$message = preg_replace("/[A-Z]+\[[0-9]+\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
+				$message = preg_replace("/SQLSTATE\[.*?\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
 				return ($checking) ? false : error(__("Database Error"), $message) ;
 			}
 		}

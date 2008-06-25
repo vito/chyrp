@@ -182,7 +182,7 @@
 		 * See Also:
 		 *     <add>
 		 */
-		public function update($values, $pinned = null, $status = null, $slug = null, $timestamp = null) {
+		public function update($values, $pinned = null, $status = null, $slug = null, $timestamp = null, $update_timestamp = true) {
 			fallback($pinned, (int) !empty($_POST['pinned']));
 			fallback($status, (isset($_POST['draft'])) ? "draft" : ((!empty($_POST['status'])) ? $_POST['status'] : $this->status));
 			fallback($slug, (!empty($_POST['slug'])) ? $_POST['slug'] : $this->feather.".".$this->id);
@@ -216,7 +216,7 @@
 			                 ":status" => $status,
 			                 ":url" => $slug,
 			                 ":created_at" => $timestamp,
-			                 ":updated_at" => datetime(),
+			                 ":updated_at" => ($update_timestamp) ? datetime() : $this->updated_at,
 			                 ":id" => $this->id
 			             ));
 

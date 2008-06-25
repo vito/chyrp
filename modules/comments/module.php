@@ -801,6 +801,7 @@ var Comment = {
 
 			$title = _f("Comments on &#8220;%s&#8221;", array(htmlspecialchars($title)), "comments");
 
+			error_log(print_r($_SERVER, true));
 			$ids = array_reverse($post->comments->array[0]);
 
 			$comments = array();
