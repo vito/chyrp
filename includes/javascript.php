@@ -45,35 +45,61 @@ $(function(){
 
 var Post = {
   edit: function(id) {
-		$("#post_"+id+" .target, #post_"+id+".target").loader()
+		$("#post_"+id).loader()
 		$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "edit_post", id: id }, function(data) {
-			$("#post_"+id+" .target, #post_"+id+".target").loader(true).fadeOut("fast", function(){ $(this).html(data).fadeIn("fast", function(){
+			$("#post_"+id).loader(true).fadeOut("fast", function(){
+				$(this).replaceWith(data)
+				$("#post_edit_form_"+id).css("opacity", 0).animate({ opacity: 1 }, function(){
 <?php $trigger->call("ajax_post_edit_form_javascript"); ?>
-				$("#more_options_link_"+id).click(function(){
-					if ($("#more_options_"+id).css("display") == "none") {
-						$(this).html("<?php echo __("&laquo; Fewer Options"); ?>")
-						$("#more_options_"+id).slideDown("slow")
-					} else {
-						$(this).html("<?php echo __("More Options &raquo;"); ?>")
-						$("#more_options_"+id).slideUp("slow")
-					}
-					return false
-				})
-				$("#post_edit_"+id).ajaxForm({ beforeSubmit: function(){
-					$("#post_"+id+" .target, #post_"+id+".target").loader()
-				}, success: function(response){
-					if (isError(response)) return $("#post_"+id+" .target, #post_"+id+".target").loader(true)
+					$("#more_options_link_"+id).click(function(){
+						if ($("#more_options_"+id).css("display") == "none") {
+							$(this).html("<?php echo __("&laquo; Fewer Options"); ?>")
+							$("#more_options_"+id).slideDown("slow")
+						} else {
+							$(this).html("<?php echo __("More Options &raquo;"); ?>")
+							$("#more_options_"+id).slideUp("slow")
+						}
+						return false
+					})
+					$("#post_edit_form_"+id).ajaxForm({ beforeSubmit: function(){
+						$("#post_edit_form_"+id).loader()
+					}, success: function(response){
+						if (isError(response))
+							return $("#post_edit_form_"+id).loader(true)
+
 <?php if ($action != "drafts" and $action != "view"): ?>
-					if ($("#post_edit_"+id+" select#status").val() == "draft") {
-						$("#post_"+id+" .target, #post_"+id+".target").loader(true)
-						$("#post_"+id).fadeOut("fast")
-						appendNextPost()
-						alert("<?php echo __("Post has been saved as a draft."); ?>")
-					} else {
+						if ($("#post_edit_form_"+id+" select#status").val() == "draft") {
+							$("#post_edit_form_"+id).loader(true).fadeOut("fast")
+							alert("<?php echo __("Post has been saved as a draft."); ?>")
+						} else {
 <?php endif; ?>
-						$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "view_post", context: "all", id: id, reason: "edited" }, function(data) {
-							$("#post_"+id+" .target, #post_"+id+".target").loader(true)
-							$("#post_"+id+" .target, #post_"+id+".target").fadeOut("fast", function(){ $(this).html(data).fadeIn("fast", function(){
+							$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "view_post", context: "all", id: id, reason: "edited" }, function(data) {
+								$("#post_edit_form_"+id).loader(true).fadeOut("fast", function(){
+									$(this).replaceWith(data)
+									$("#post_"+id).hide().fadeIn("fast", function(){
+										$("#post_edit_"+id).click(function(){
+											Post.edit(id)
+											return false
+										})
+										$("#post_delete_"+id).click(function(){
+											if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
+											Post.destroy(id)
+											return false
+										})
+									})
+								})
+							})
+<?php if ($action != "drafts" and $action != "view"): ?>
+						}
+<?php endif; ?>
+					}
+				})
+				$("#post_cancel_edit_"+id).click(function(){
+					$("#post_edit_form_"+id).loader()
+					$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "view_post", context: "all", id: id, reason: "cancelled" }, function(data) {
+						$("#post_edit_form_"+id).loader(true).fadeOut("fast", function(){
+							$(this).replaceWith(data)
+							$(this).hide().fadeIn("fast", function(){
 								$("#post_edit_"+id).click(function(){
 									Post.edit(id)
 									return false
@@ -83,34 +109,14 @@ var Post = {
 									Post.destroy(id)
 									return false
 								})
-							}) })
+							})
 						})
-<?php if ($action != "drafts" and $action != "view"): ?>
-					}
-<?php endif; ?>
-				} })
-				$("#post_cancel_edit_"+id).click(function(){
-					$("#post_"+id+" .target, #post_"+id+".target").loader()
-					$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "view_post", context: "all", id: id, reason: "cancelled" }, function(data) {
-						$("#post_"+id+" .target, #post_"+id+".target").loader(true)
-						$("#post_"+id+" .target, #post_"+id+".target").fadeOut("fast", function(){ $(this).html(data).fadeIn("fast", function(){
-							$("#post_edit_"+id).click(function(){
-								Post.edit(id)
-								return false
-							})
-							$("#post_delete_"+id).click(function(){
-								if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
-								Post.destroy(id)
-								return false
-							})
-						}) })
 					})
 					return false
 				})
 			}) })
 		})
-	}
-	,
+	},
 	destroy: function(id) {
 		$("#post_"+id+" .target, #post_"+id+".target").loader()
 		$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "delete_post", id: id }, function(response){
@@ -134,7 +140,6 @@ $.fn.loader = function(remove) {
 	}
 
 	var offset = $(this).offset()
-	var width = $(this).width()
 	var loading_top = ($(this).height() / 2) - 11
 	var loading_left = ($(this).width() / 2) - 63
 
@@ -161,8 +166,8 @@ $.fn.loader = function(remove) {
 		top: offset.top,
 		left: offset.left,
 		zIndex: 100,
-		width: $(this).width(),
-		height: $(this).height(),
+		width: $(this).outerWidth(),
+		height: $(this).outerHeight(),
 		background: ($.browser.msie) ? "transparent" : "transparent url('<?php echo $config->chyrp_url; ?>/includes/trans.png')",
 		textAlign: "center",
 		filter: ($.browser.msie) ? "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src='<?php echo $config->chyrp_url; ?>/includes/trans.png');" : ""

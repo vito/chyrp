@@ -5,6 +5,6 @@
 				<button type="submit" accesskey="s" class="right">
 					<?php echo __("Update Settings &rarr;"); ?>
 				</button>
-				<br class="clear" />
+				<div class="clear"></div>
 				<input type="hidden" name="hash" value="<?php echo $config->secure_hashkey; ?>" id="hash" />
 			</form>

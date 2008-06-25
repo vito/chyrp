@@ -326,7 +326,7 @@ ul.extend .expand {
 .theme.current small a {
 	color: #789f72;
 }
-.theme.current a.button {
+.theme.current .button {
 	background: #189100;
 	color: #FFF;
 	border: 0;
@@ -548,7 +548,7 @@ p.message.boo {
 /* @group Buttons */
 /* Inspiration from Chawlk. */
 button,
-a.button,
+.button,
 a.next_page,
 a.prev_page {
 	font-family: "Verdana", Helvetica, Arial, sans-serif;
@@ -563,13 +563,13 @@ a.prev_page {
 	border-left-color: #f1f1f1;
 	cursor: pointer;
 }
-a.button {
+.button {
 	padding: .6em 1em .5em .9em;
 }
 button.lite {
 	padding: .15em .375em .25em .275em;
 }
-a.button.lite,
+.button.lite,
 a.next_page,
 a.prev_page {
 	padding: .1em .4em .2em;
@@ -580,13 +580,13 @@ button.inline {
 	padding: 4px 5px 4px 4px;
 }
 button.right,
-a.button.right,
+.button.right,
 a.next_page {
 	margin: 0 0 0 .5em;
 	float: right;
 }
 button:hover,
-a.button:hover,
+.button:hover,
 a.next_page:hover,
 a.prev_page:hover {
 	background: #f7f7f7;
@@ -595,7 +595,7 @@ a.prev_page:hover {
 	border-right-color: #d1d1d1;
 }
 button:active,
-a.button:active,
+.button:active,
 a.next_page:active,
 a.prev_page:active {
 	background-color: #d7d7d7;
@@ -604,7 +604,7 @@ a.prev_page:active {
     border-top-color: #b1b1b1;
 }
 button.boo,
-a.button.boo {
+.button.boo {
 	background: #faebe4;
 	color: #3e3634;
 	border-color: #faebe4;
@@ -612,7 +612,7 @@ a.button.boo {
 	border-right-color: #d6bdb5;
 }
 button.boo:hover,
-a.button.boo:hover {
+.button.boo:hover {
 	background: #d51800;
 	color: #fff;
 	border-color: #d51800;
@@ -620,14 +620,14 @@ a.button.boo:hover {
 	border-right-color: #9f1000;
 }
 button.boo:active,
-a.button.boo:active {
+.button.boo:active {
     background: #b30600;
     border-color: #b30600;
     border-left-color: #7d0000;
     border-top-color: #7d0000;
 }
 button.yay,
-a.button.yay {
+.button.yay {
 	background: #ebfae4;
 	color: #363e34;
 	border-color: #ebfae4;
@@ -635,7 +635,7 @@ a.button.yay {
 	border-right-color: #bdd6b5;
 }
 button.yay:hover,
-a.button.yay:hover {
+.button.yay:hover {
 	background: #189100;
 	color: #fff;
 	border-color: #189100;
@@ -643,18 +643,18 @@ a.button.yay:hover {
 	border-right-color: #105f00;
 }
 button.yay:active,
-a.button.yay:active {
+.button.yay:active {
     background: #067000;
     border-color: #067000;
     border-left-color: #003d00;
     border-top-color: #003d00;
 }
 button img,
-a.button img {
+.button img {
 	margin: 0 6px -3px -4px;
 }
 button.lite img,
-a.button.lite img {
+.button.lite img {
 	margin: 0 -1px -3px 0;
 }
 /* @end */

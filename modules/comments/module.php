@@ -731,7 +731,7 @@ $(function(){
 			<label for="created_at"><?php echo __("Timestamp"); ?></label>
 			<input class="text" type="text" name="created_at" value="<?php echo when("F jS, Y H:i:s", $comment->created_at); ?>" id="created_at" />
 		</p>
-		<br class="clear" />
+		<div class="clear"></div>
 	</div>
 	<br />
 	<input type="hidden" name="id" value="<?php echo fix($comment->id, "html"); ?>" id="id" />

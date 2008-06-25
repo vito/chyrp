@@ -168,7 +168,7 @@
 	}
 ?>
 		</ul>
-		<br class="clear" />
+		<div class="clear"></div>
 <?php endif; ?>
 		<div class="content">
 <?php

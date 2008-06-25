@@ -20,7 +20,7 @@
 				$theme->load("forms/post/edit", array("post" => $post, "feather" => $feathers[$post->feather]));
 			else {
 ?>
-<form id="post_edit_<?php echo $post->id; ?>" class="inline_edit post_edit" action="<?php echo $config->chyrp_url."/admin/?action=update_post&amp;sub=text&amp;id=".$post->id; ?>" method="post" accept-charset="utf-8">
+<form id="post_edit_form_<?php echo $post->id; ?>" class="inline_edit post_edit" action="<?php echo $config->chyrp_url."/admin/?action=update_post&amp;sub=text&amp;id=".$post->id; ?>" method="post" accept-charset="utf-8">
 	<h2><?php echo _f("Editing &#8220;%s&#8221;", array(truncate($title, 40, false))); ?></h2>
 	<br />
 <?php foreach ($feathers[$post->feather]->fields as $field): ?>
@@ -73,7 +73,7 @@
 			<input class="text" type="text" name="created_at" value="<?php echo when("F jS, Y H:i:s", $post->created_at); ?>" id="created_at" />
 		</p>
 		<?php $trigger->call("edit_post_options", $post);?>
-		<br class="clear" />
+		<div class="clear"></div>
 	</div>
 	<br />
 	<input type="hidden" name="id" value="<?php echo fix($post->id, "html"); ?>" id="id" />

@@ -417,7 +417,6 @@ $.fn.loader = function(remove) {
 	}
 
 	var offset = $(this).offset()
-	var width = $(this).outerWidth()
 	var loading_top = ($(this).outerHeight() / 2) - 11
 	var loading_left = ($(this).outerWidth() / 2) - 63
 

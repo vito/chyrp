@@ -317,6 +317,9 @@ div.sub {
 	color: #666;
 	font-size: 11px;
 }
+.post_edit {
+	margin-bottom: 2em;
+}
 a.cancel:link {
 	color: #f00;
 	border: none;

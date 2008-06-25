@@ -23,7 +23,7 @@
 <?php endif; ?>
 			<?php $trigger->call("admin_manage_nav"); ?>
 		</ul>
-		<br class="clear" />
+		<div class="clear"></div>
 		<div class="content">
 			<h1><?php echo __("New Aggregator", "rss"); ?></h1>
 			<form action="index.php?action=new_aggregator" method="post">
@@ -63,7 +63,7 @@
 				<button type="submit" class="positive right" accesskey="s">
 					<img src="<?php echo $config->chyrp_url."/admin/icons/success.png"; ?>" alt="" /> <?php echo __("Aggregate!", "rss"); ?>
 				</button>
-				<br class="clear" />
+				<div class="clear"></div>
 				<input type="hidden" name="hash" value="<?php echo $config->secure_hashkey; ?>" id="hash" />
 			</form>
 		</div>
