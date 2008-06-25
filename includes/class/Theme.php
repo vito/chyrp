@@ -315,12 +315,15 @@
 			global $action;
 
 			if (is_array($file))
-				for ($i = 0; $i < count($file); $i++)
-					if (file_exists($this->directory.$file[$i].".twig") or ($i + 1) == count($file))
+				for ($i = 0; $i < count($file); $i++) {
+					$check = ($file[$i][0] == '/' or preg_match("/[a-zA-Z]:\\\/", $file[$i])) ? $file[$i] : $this->directory.$file[$i] ;
+					if (file_exists($check.".twig") or ($i + 1) == count($file))
 						return $this->load($file[$i], $context);
+				}
 
-			if (!file_exists($this->directory.$file.".twig"))
-				error(__("Template Missing"), _f("Couldn't load template:<br /><br />%s", array($file.".twig")));
+			$file = ($file[0] == '/' or preg_match("/[a-zA-Z]:\\\/", $file)) ? $file : $this->directory.$file ;
+			if (!file_exists($file.".twig"))
+				error(__("Template Missing"), _f("Couldn't load template: <code>%s</code>", array($file.".twig")));
 
 			$this->file = $file;
 			$this->prepare($context);

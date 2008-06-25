@@ -8,25 +8,41 @@
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 		<title><?php echo __("Chyrp Upgrader"); ?></title>
 		<style type="text/css" media="screen">
-			body {
-				font: .8em/1.5em normal "Lucida Grande", "Trebuchet MS", Verdana, Helvetica, Arial, sans-serif;
-				color: #333;
-				background: #eee;
+			html, body, ul, ol, li,
+			h1, h2, h3, h4, h5, h6,
+			form, fieldset, a, p {
 				margin: 0;
 				padding: 0;
+				border: 0;
+			}
+			html {
+				font-size: 62.5%;
+			}
+			body {
+				font: 1.25em/1.5em normal "Verdana", Helvetica, Arial, sans-serif;
+				color: #626262;
+				background: #e8e8e8;
+				padding: 0 0 5em;
+			}
+			p {
+				margin-bottom: 1em;
 			}
 			.window {
-				width: <?php echo (empty($_POST)) ? "250" : "650" ; ?>px;
-				margin: 25px auto;
-				padding: 1em;
-				border: 1px solid #ddd;
+				width: 30em;
 				background: #fff;
+				padding: 2em;
+				margin: 5em auto 0;
+				-webkit-border-radius: 2em;
 			}
 			h1 {
-				font-size: 1.75em;
-				margin-top: 0;
-				color: #aaa;
-				font-weight: bold;
+				color: #ccc;
+				font-size: 3em;
+				margin: .25em 0 .5em;
+				text-align: center;
+			}
+			code {
+				color: #06B;
+				font-family: Monaco, monospace;
 			}
 			label {
 				display: block;
@@ -37,27 +53,52 @@
 			select {
 				margin-bottom: 1em;
 			}
-			a {
-				color: #0088FF;
+			.footer {
+				color: #777;
+				margin-top: 1em;
+				font-size: .9em;
+				text-align: center;
+			}
+			.error {
+				color: #F22;
+				font-size: 12px;
+			}
+			a:link, a:visited {
+				xtext-decoration: none;
+				color: #6B0;
+			}
+			a:hover {
+				text-decoration: underline;
+			}
+			a.big {
+				background: #eee;
+				margin-top: 2em;
+				display: block;
+				padding: .75em 1em;
+				color: #777;
+				text-shadow: #fff 1px 1px 0;
+				font: 1em normal "Lucida Grande", "Verdana", Helvetica, Arial, sans-serif;
+				text-decoration: none;
+				-webkit-border-radius: .5em;
+			}
+			a.big:hover {
+				background: #f5f5f5;
+			}
+			a.big:active {
+				background: #e0e0e0;
 			}
 			strong {
 				font-weight: normal;
 				color: #f00;
 			}
 			ol {
-				margin-bottom: 2em;
+				margin: 0 0 2em 2em;
 			}
 			p, li {
 				margin-bottom: 1em;
 			}
 			.center {
 				text-align: center;
-			}
-			.done {
-				font-size: 1.25em;
-				font-weight: bold;
-				text-decoration: none;
-				color: #555;
 			}
 		</style>
 	</head>
@@ -68,13 +109,10 @@
 
 	function to_1130() {
 		global $config;
-		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "1.1.3")."</p>\n";
 		$config->set("secure_hashkey", md5(random(32, true)));
 	}
 	function to_2000() {
 		global $config, $sql, $misc;
-		echo "<p>".sprintf(__("Upgrading to %s&hellip;"), "v2.0")."</p>\n";
-
 		$sql->adapter = null;
 		$config->set("uploads_path", "/uploads/");
 		$config->set("chyrp_url", $config->url);
@@ -289,11 +327,11 @@
 	    "&Pi;" => "&#928;",
 	    "&OElig;" => "&#338;",
 	    "&Scaron;" => "&#352;",
-	    'frac14' => 188,
+	    "&frac14;" => "&#188;",
 	    "&egrave;" => "&#232;",
 	    "&sub;" => "&#8834;",
 	    "&iexcl;" => "&#161;",
-	    'frac12' => 189,
+	    "&frac12;" => "&#189;",
 	    "&ordf;" => "&#170;",
 	    "&sum;" => "&#8721;",
 	    "&prop;" => "&#8733;",
@@ -329,7 +367,7 @@
 	    "&Ugrave;" => "&#217;",
 	    "&eta;" => "&#951;",
 	    "&Agrave;" => "&#192;",
-	    'sup1' => 185,
+	    "&sup1;" => "&#185;",
 	    "&forall;" => "&#8704;",
 	    "&eth;" => "&#240;",
 	    "&rceil;" => "&#8969;",
@@ -339,7 +377,7 @@
 	    "&harr;" => "&#8596;",
 	    "&reg;" => "&#174;",
 	    "&Egrave;" => "&#200;",
-	    'sup3' => 179,
+	    "&sup3;" => "&#179;",
 	    "&dagger;" => "&#8224;",
 	    "&divide;" => "&#247;",
 	    "&Ouml;" => "&#214;",
@@ -355,8 +393,8 @@
 	    "&Nu;" => "&#925;",
 	    "&plusmn;" => "&#177;",
 	    "&chi;" => "&#967;",
-	    'sup2' => 178,
-	    'frac34' => 190,
+	    "&sup2;" => "&#178;",
+	    "&frac34;" => "&#190;",
 	    "&Aacute;" => "&#193;",
 	    "&cent;" => "&#162;",
 	    "&oline;" => "&#8254;",
@@ -374,7 +412,7 @@
 	    "&ordm;" => "&#186;",
 	    "&ensp;" => "&#8194;",
 	    "&uuml;" => "&#252;",
-	    'there4' => 8756,
+	    "&there4;" => "&#8756;",
 	    "&part;" => "&#8706;",
 	    "&icirc;" => "&#238;",
 	    "&bull;" => "&#8226;",
@@ -475,26 +513,22 @@
 	}
 
 	if (!empty($_POST)) {
+		for ($i = (int) $_POST['version']; $i <= $current_version; $i++)
+			if (is_callable("to_".($i + 1)))
+				call_user_func("to_".($i + 1));
 ?>
-			<h1><?php echo __("Upgrading&hellip;"); ?></h1>
-<?php
-		for ($i = (int) $_POST['version']; $i <= $current_version; $i++) {
-			$function = "to_".($i + 1); # It's "to", not "from", so add 1
-			if (is_callable($function))
-				call_user_func($function);
-		}
-?>
-			<p><?php echo __("All done!"); ?></p>
+			<h1><?php echo __("All done!"); ?></h1>
 			<p><?php echo __("Next, back up your current installation and replace the old files with the new. Be careful of what you're overwriting &ndash; some systems will remove directories and upload the new ones, instead of merging them. <strong>Make sure you don't replace or remove your <code>/includes/database.yaml.php</code> and <code>/includes/config.yaml.php</code> files.</strong>"); ?></p>
 			<p><?php echo __("Finished?"); ?></p>
 			<p><?php echo __("Yay!"); ?></p>
 			<br />
 			<h1><?php echo __("Tips"); ?></h1>
 			<ol>
-				<li><?php echo sprintf(__("There are many new and extended Group permissions with this release. If you are the administrator, you'll probably want to enable them for your group: <a href=\"%s\">Manage Groups</a>"), $config->url."/admin/?action=manage_groups"); ?></li>
+				<li><?php echo __("Chyrp 2.0 uses Timezones instead of the previous method of using your offset from the server's time. <strong>Be sure to set yours under Settings > General.</strong>"); ?></li>
+				<li><?php echo __("There are many new and extended Group permissions with this release. If you are the administrator, you'll probably want to enable them for your group, under Manage > Groups."); ?></li>
 				<li><?php echo __("If the admin section looks ugly to you, refresh your browser or clear your cache. The admin area is completely redesigned in 2.0."); ?></li>
 			</ol>
-			<a class="done" href="<?php echo $config->url; ?>"><?php echo __("Take me to my site! &rarr;"); ?></a>
+			<a class="big" href="<?php echo $config->url; ?>"><?php echo __("Take me to my site! &rarr;"); ?></a>
 <?php
 	} else {
 ?>
@@ -502,6 +536,7 @@
 			<form action="upgrade.php" method="post" accept-charset="utf-8">
 				<p><?php echo __("Before upgrading, please disable all modules and feathers that don't come with Chyrp (you can leave the Text feather enabled)."); ?></p>
 				<p><?php echo __("You may also want to create an index.html file alongside your index.php to serve as a placeholder during the upgrade."); ?></p>
+				<p><?php echo __("If your version number is not listed, you do not have to upgrade."); ?></p>
 				<label for="version"><?php echo __("What are you upgrading from?"); ?></label>
 				<select name="version">
 					<option value="1130">1.1.3.x</option>
