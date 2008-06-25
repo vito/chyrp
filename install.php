@@ -299,63 +299,24 @@
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 		<title>Chyrp Installer</title>
 		<style type="text/css" media="screen">
-			body {
-				font: .8em/1.5em normal "Lucida Grande", "Trebuchet MS", Verdana, Helvetica, Arial, sans-serif;
-				color: #333;
-				background: #eee;
-				margin: 0;
-				padding: 0;
-			}
-			a {
-				color: #0088FF;
-			}
-			h1 {
-				font-size: 1.75em;
-				margin-top: 0;
-				color: #aaa;
-				font-weight: bold;
-			}
 			h2 {
 				font-size: 1.25em;
 				font-weight: bold;
 			}
-			ol {
-				margin: 0 0 1em;
-				padding: 0 0 0 2em;
-			}
-			label {
-				display: block;
-				font-weight: bold;
-				border-bottom: 1px dotted #ddd;
-				margin-bottom: 2px;
-			}
 			input[type="password"], input[type="text"], textarea, select {
 				font-size: 1.25em;
-				width: 242px;
-				padding: 3px;
-				border: 1px solid #ddd;
-			}
-			textarea {
-				margin-bottom: .75em;
+				width: 23.3em;
+				padding: .3em;
+				border: .1em solid #ddd;
 			}
 			form hr {
 				border: 0;
 				padding-bottom: 1em;
-				margin-bottom: 3em;
-				border-bottom: 1px dashed #ddd;
+				margin-bottom: 4em;
+				border-bottom: .1em dashed #ddd;
 			}
 			form p {
 				padding-bottom: 1em;
-			}
-			form p.extra {
-				padding-bottom: 2em;
-			}
-			.window {
-				width: 250px;
-				margin: 25px auto;
-				padding: 1em;
-				border: 1px solid #ddd;
-				background: #fff;
 			}
 			.sub {
 				font-size: .8em;
@@ -366,26 +327,104 @@
 				float: left;
 				margin-top: -1.5em !important;
 			}
-			.center {
-				text-align: center;
-				padding: 0;
-				margin-bottom: 1em;
-				border: 0;
-			}
 			.error {
-				padding: 6px 8px 5px 30px;
-				border-bottom: 1px solid #FBC2C4;
+				padding: .6em .8em .5em 2.75em;
+				border-bottom: .1em solid #FBC2C4;
 				color: #D12F19;
-				background: #FBE3E4 url('./admin/images/icons/failure.png') no-repeat 7px center;
+				background: #FBE3E4 url('./admin/images/icons/failure.png') no-repeat .7em center;
 			}
 			.error.last {
 				margin: 0 0 1em 0;
 			}
-			.done {
-				font-size: 1.25em;
+			html, body, ul, ol, li,
+			h1, h2, h3, h4, h5, h6,
+			form, fieldset, a, p {
+				margin: 0;
+				padding: 0;
+				border: 0;
+			}
+			html {
+				font-size: 62.5%;
+			}
+			body {
+				font: 1.25em/1.5em normal "Verdana", Helvetica, Arial, sans-serif;
+				color: #626262;
+				background: #e8e8e8;
+				padding: 0 0 5em;
+			}
+			.window {
+				width: 30em;
+				background: #fff;
+				padding: 2em;
+				margin: 5em auto 0;
+				-webkit-border-radius: 2em;
+			}
+			h1 {
+				color: #ccc;
+				font-size: 3em;
+				margin: .25em 0 .5em;
+				text-align: center;
+			}
+			code {
+				color: #06B;
+				font-family: Monaco, monospace;
+			}
+			label {
+				display: block;
 				font-weight: bold;
+				border-bottom: .1em dotted #ddd;
+				margin-bottom: .2em;
+			}
+			.footer {
+				color: #777;
+				margin-top: 1em;
+				font-size: .9em;
+				text-align: center;
+			}
+			.error {
+				color: #F22;
+			}
+			a:link, a:visited {
+				color: #6B0;
+			}
+			a.big,
+			button {
+				background: #eee;
+				margin-top: 2em;
+				display: block;
+				text-align: left;
+				padding: .75em 1em;
+				color: #777;
+				text-shadow: #fff .1em .1em 0;
+				font: 1em normal "Lucida Grande", "Verdana", Helvetica, Arial, sans-serif;
 				text-decoration: none;
-				color: #555;
+				border: 0;
+				cursor: pointer;
+				-webkit-border-radius: .5em;
+			}
+			button {
+				width: 100%;
+			}
+			a.big:hover,
+			button:hover {
+				background: #f5f5f5;
+			}
+			a.big:active,
+			button:active {
+				background: #e0e0e0;
+			}
+			strong {
+				font-weight: normal;
+				color: #f00;
+			}
+			ol {
+				margin: 0 0 2em 2em;
+			}
+			p {
+				margin-bottom: 1em;
+			}
+			.center {
+				text-align: center;
 			}
 		</style>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript" charset="utf-8"></script>
@@ -393,10 +432,13 @@
 		<script type="text/javascript">
 			$(function(){
 				$("#adapter").change(function(){
-					if ($(this).val() == "sqlite")
+					if ($(this).val() == "sqlite") {
+						$(document.createElement("span")).addClass("sub").css("display", "none").html("<?php echo __("(full path)"); ?>").appendTo("#database_field label").animate({ opacity: "show" })
 						$("#host_field, #username_field, #password_field, #prefix_field").animate({ height: "hide", opacity: "hide" })
-					else
-						$("#host_field, #username_field, #password_field, #prefix_field").show()
+					} else {
+						$("#database_field label .sub").animate({ opacity: "hide" }).remove()
+						$("#host_field, #username_field, #password_field, #prefix_field").animate({ height: "show", opacity: "show" })
+					}
 				})
 			})
 		</script>
@@ -433,14 +475,16 @@
 					<input type="password" name="password" value="<?php value_fallback("password"); ?>" id="password" />
 				</p>
 				<p id="database_field">
-					<label for="database"><?php echo __("Database"); ?></label>
+					<label for="database"><?php echo __("Database"); ?> </label>
 					<input type="text" name="database" value="<?php value_fallback("database"); ?>" id="database" />
 				</p>
 				<p id="prefix_field">
 					<label for="prefix"><?php echo __("Table Prefix"); ?> <span class="sub"><?php echo __("(optional)"); ?></span></label>
 					<input type="text" name="prefix" value="<?php value_fallback("prefix"); ?>" id="prefix" />
 				</p>
+
 				<hr />
+
 				<h1><?php echo __("Website Setup"); ?></h1>
 				<p id="name_field">
 					<label for="name"><?php echo __("Site Name"); ?></label>
@@ -450,17 +494,20 @@
 					<label for="description"><?php echo __("Description"); ?></label>
 					<textarea name="description" rows="2" cols="40"><?php value_fallback("description"); ?></textarea>
 				</p>
-				<p id="timezone_field" class="extra">
+				<p id="timezone_field">
 					<label for="timezone"><?php echo __("What time is it?"); ?></label>
 					<select name="timezone" id="timezone">
-					<?php foreach (utc_timezones() as $zone): ?>
-						<option value="<?php echo $zone["name"]; ?>"<?php selected($zone["name"], fallback($_POST['timezone'], 0, true)); ?>>
+<?php foreach (utc_timezones() as $zone): ?>
+						<option value="<?php echo $zone["name"]; ?>"<?php selected($zone["name"], fallback($_POST['timezone'], "Africa/Abidjan", true)); ?>>
 							<?php echo $zone["now"]->format(__("h:i A \o\\n F jS, Y")); ?>
-							(GMT<?php if ($zone["offset"] > 0) echo "+"; ?>+<?php echo $zone["offset"]; ?>)
+
+							(GMT<?php if ($zone["offset"] > 0) echo "+"; ?><?php echo $zone["offset"]; ?>)
 						</option>
-					<?php endforeach; ?>
+<?php endforeach; ?>
 					</select>
 				</p>
+
+				<hr />
 
 				<h1><?php echo __("Admin Account"); ?></h1>
 				<p id="login_field">
@@ -480,7 +527,7 @@
 					<input type="text" name="email" value="<?php value_fallback("email"); ?>" id="email" />
 				</p>
 
-				<p class="center"><input type="submit" value="<?php echo __("Install!"); ?>"></p>
+				<button type="submit"><?php echo __("Install! &rarr;"); ?></button>
 			</form>
 <?php else: ?>
 			<h1><?php echo __("Done!"); ?></h1>
@@ -495,7 +542,7 @@
 				<li><a href="http://chyrp.net/extend/browse/feathers"><?php echo __("Find some Feathers you want."); ?></a></li>
 				<li><a href="getting_started.html"><?php echo __("Read &#8220;Getting Started&#8221;"); ?></a></li>
 			</ol>
-			<a class="done" href="<?php echo $config->url; ?>"><?php echo __("Take me to my site! &rarr;"); ?></a>
+			<a class="big" href="<?php echo $config->url; ?>"><?php echo __("Take me to my site! &rarr;"); ?></a>
 <?php
 	endif;
 ?>
