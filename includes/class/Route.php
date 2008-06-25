@@ -22,6 +22,10 @@
 		                     '(feather)'  => '([^\/]+)',
 		                     '(feathers)' => '([^\/]+)');
 
+		/**
+		 * Function: $urls
+		 * An array of clean URL => dirty URL translations.
+		 */
 		public $urls = array('/\/id\/([0-9]+)\//'                => '/?action=view&amp;id=$1',
 		                     '/\/page\/(([^\/]+)\/)+/'           => '/?action=page&amp;url=$2',
 		                     '/\/search\//'                      => '/?action=search',
@@ -31,6 +35,12 @@
 		                     '/\/theme_preview\/([^\/]+)\//'     => '/?action=theme_preview&amp;theme=$1',
 		                     '/\/([^\/]+)\/feed\/([^\/]+)\//'    => '/?action=$1&amp;feed&amp;title=$2',
 		                     '/\/([^\/]+)\/feed\//'              => '/?action=$1&amp;feed');
+
+		/**
+		 * String: $action
+		 * The current action.
+		 */
+		public $action = "";
 
 		/**
 		 * Function: __construct
@@ -100,7 +110,11 @@
 		public function determine_action() {
 			global $pluralizations, $page;
 			$config = Config::current();
-			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls) return;
+
+			$this->action =& $_GET['action'];
+
+			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls)
+				return;
 
 			# Parse the current URL and extract information.
 			$parse = parse_url($config->url);
@@ -110,12 +124,12 @@
 			$this->request = preg_replace("/".$this->safe_path."/", "", $_SERVER['REQUEST_URI'], 1);
 			$this->arg = explode("/", trim($this->request, "/"));
 
-			if (empty($this->arg[0])) return $_GET['action'] = "index"; # If they're just at /, don't bother with all this.
+			if (empty($this->arg[0])) return $this->action = "index"; # If they're just at /, don't bother with all this.
 
 			# Viewing a post by its ID
 			if ($this->arg[0] == "id") {
 				$_GET['id'] = $this->arg[1];
-				return $_GET['action'] = "id";
+				return $this->action = "id";
 			}
 
 			# Paginator
@@ -125,16 +139,16 @@
 					$_GET[$page_var] = $this->arg[$index + 1];
 				}
 
-				if ($index == 0) # Don't set the $_GET['action'] to "page" (bottom of this function).
-					return $_GET['action'] = "index";
+				if ($index == 0) # Don't set $this->action to "page" (bottom of this function).
+					return $this->action = "index";
 			}
 
 			# Feed
 			if (preg_match("/\/feed\/?$/", $this->request)) {
 				$_GET['feed'] = "true";
 
-				if ($this->arg[0] == "feed") # Don't set the $_GET['action'] to "feed" (bottom of this function).
-					return $_GET['action'] = "index";
+				if ($this->arg[0] == "feed") # Don't set $this->action to "feed" (bottom of this function).
+					return $this->action = "index";
 			}
 
 			# Feed with a title parameter
@@ -142,8 +156,8 @@
 				$_GET['feed'] = "true";
 				$_GET['title'] = $title[1];
 
-				if ($this->arg[0] == "feed") # Don't set the $_GET['action'] to "feed" (bottom of this function).
-					return $_GET['action'] = "index";
+				if ($this->arg[0] == "feed") # Don't set $this->action to "feed" (bottom of this function).
+					return $this->action = "index";
 			}
 
 			# Archive
@@ -156,7 +170,7 @@
 				if (isset($this->arg[3]) and is_numeric($this->arg[3]))
 					$_GET['day'] = $this->arg[3];
 
-				return $_GET['action'] = "archive";
+				return $this->action = "archive";
 			}
 
 			# Searching
@@ -167,24 +181,24 @@
 				if (isset($this->arg[1]))
 					$_GET['query'] = $this->arg[1];
 
-				return $_GET['action'] = "search";
+				return $this->action = "search";
 			}
 
 			# Theme Previewing
 			if ($this->arg[0] == "theme_preview" and !empty($this->arg[1])) {
 				$_GET['theme'] = $this->arg[1];
-				return $_GET['action'] = "theme_preview";
+				return $this->action = "theme_preview";
 			}
 
 			# Bookmarklet
 			if ($this->arg[0] == "bookmarklet") {
 				$_GET['status'] = $this->arg[1];
-				return $_GET['action'] = "bookmarklet";
+				return $this->action = "bookmarklet";
 			}
 
 			# Viewing Feathers
 			if (in_array($this->arg[0], array_values($pluralizations["feathers"])) and (empty($this->arg[1]) or $this->arg[1] == "feed" or $this->arg[1] == "page"))
-				return $_GET['action'] = $this->arg[0];
+				return $this->action = $this->arg[0];
 
 			# Custom pages added by Modules, Feathers, Themes, etc.
 			foreach ($config->routes as $route)
@@ -201,7 +215,7 @@
 						foreach ($matches[1] as $index => $parameter)
 							$_GET[$parameter] = $url_matches[$index];
 
-						return $_GET['action'] = $this->arg[0];
+						return $this->action = $this->arg[0];
 					}
 				}
 
@@ -209,13 +223,13 @@
 			$page = new Page(null, array("where" => "__pages.url = :url",
 			                             "params" => array(":url" => end($this->arg))));
 			if (!$page->no_results)
-				return list($_GET['url'], $_GET['action']) = array(end($this->arg), "page");
+				return list($_GET['url'], $this->action) = array(end($this->arg), "page");
 		}
 
 		public function check_viewing_post() {
-			global $post, $page, $action;
+			global $post, $page;
 			$config = Config::current();
-			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls or isset($_GET['action']))
+			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls or isset($this->action))
 				return;
 
 			$attr = array();
@@ -224,7 +238,7 @@
 			if (preg_match("/".$post_url."/", rtrim($this->request, "/"), $matches)) {
 				array_shift($matches);
 
-				$action = $_GET['action'] = "view";
+				$this->action = $this->action = "view";
 
 				foreach ($parameters[1] as $index => $parameter)
 					if ($parameters[1][$index][0] == "(")
@@ -235,7 +249,7 @@
 					return;
 			}
 
-			return $_GET['action'] = (empty($this->arg[0])) ? "index" : $this->arg[0] ;
+			return $this->action = (empty($this->arg[0])) ? "index" : $this->arg[0] ;
 		}
 
 		/**

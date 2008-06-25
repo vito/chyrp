@@ -270,7 +270,7 @@
 	#     <Theme>
 	require_once INCLUDES_DIR."/class/Theme.php";
 
-	$action = (isset($_GET['action'])) ? strip_tags($_GET['action']) : "index" ;
+	$action =& $route->action;
 
 	# Load the translation engine
 	load_translator("chyrp", INCLUDES_DIR."/locale/".$config->locale.".mo");
