@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-24 22:01-0500\n"
+"PO-Revision-Date: 2008-06-24 22:58-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgstr ""
 msgid "or wait 1 second."
 msgstr ""
 
-#: upgrade.php:501
+#: upgrade.php:535
 msgid "Upgrade"
 msgstr ""
 
@@ -109,7 +109,7 @@ msgstr ""
 msgid "User Settings"
 msgstr ""
 
-#: install.php:486
+#: install.php:533
 #: includes/bookmarklet.php:264
 msgid "Done!"
 msgstr ""
@@ -150,6 +150,10 @@ msgstr ""
 #: admin/layout/partials/post_fields.twig:64
 #: admin/layout/partials/page_fields.twig:28
 msgid "Slug"
+msgstr ""
+
+#: upgrade.php:527
+msgid "Chyrp 2.0 uses Timezones instead of the previous method of using your offset from the server's time. <strong>Be sure to set yours under Settings > General.</strong>"
 msgstr ""
 
 #: admin/layout/pages/manage_posts.twig:8
@@ -210,7 +214,7 @@ msgstr ""
 msgid "New User"
 msgstr ""
 
-#: upgrade.php:188
+#: upgrade.php:226
 msgid "Config file could not be renamed. Please rename it to <code>/includes/config.yaml.php</code>"
 msgstr ""
 
@@ -247,7 +251,7 @@ msgstr ""
 msgid "(ex. 12)"
 msgstr ""
 
-#: install.php:458
+#: install.php:502
 msgid "h:i A \o\\n F jS, Y"
 msgstr ""
 
@@ -266,7 +270,7 @@ msgstr ""
 msgid "E-Mail address cannot be blank."
 msgstr ""
 
-#: install.php:440
+#: install.php:482
 #: includes/bookmarklet.php:188
 #: includes/ajax.php:30
 #: importers/wordpress.php:159
@@ -297,7 +301,7 @@ msgstr ""
 msgid "Already Installed"
 msgstr ""
 
-#: install.php:444
+#: install.php:488
 msgid "Website Setup"
 msgstr ""
 
@@ -428,7 +432,7 @@ msgstr ""
 msgid "Export"
 msgstr ""
 
-#: upgrade.php:505
+#: upgrade.php:540
 msgid "What are you upgrading from?"
 msgstr ""
 
@@ -451,7 +455,7 @@ msgstr ""
 msgid "Settings updated."
 msgstr ""
 
-#: install.php:411
+#: install.php:453
 msgid "Database Setup"
 msgstr ""
 
@@ -497,7 +501,7 @@ msgstr ""
 msgid "Posts .atom File"
 msgstr ""
 
-#: upgrade.php:504
+#: upgrade.php:538
 msgid "You may also want to create an index.html file alongside your index.php to serve as a placeholder during the upgrade."
 msgstr ""
 
@@ -506,7 +510,7 @@ msgstr ""
 msgid "E-mail address cannot be blank."
 msgstr ""
 
-#: install.php:454
+#: install.php:498
 #: admin/layout/pages/general_settings.twig:36
 msgid "What time is it?"
 msgstr ""
@@ -576,9 +580,9 @@ msgstr ""
 msgid "Usually something like <code>http://example.com/images/</code>"
 msgstr ""
 
-#: install.php:432
-#: install.php:471
-#: install.php:475
+#: install.php:474
+#: install.php:518
+#: install.php:522
 #: importers/textpattern.php:171
 msgid "Password"
 msgstr ""
@@ -591,7 +595,7 @@ msgstr ""
 msgid "Attempts to notify sites linked to from your posts. It'll slow down things a bit when you submit them, depending on how many links you've got in it."
 msgstr ""
 
-#: install.php:479
+#: install.php:526
 msgid "E-Mail Address"
 msgstr ""
 
@@ -610,7 +614,7 @@ msgstr ""
 msgid "Please enter a username for your account."
 msgstr ""
 
-#: install.php:488
+#: install.php:535
 msgid "Chyrp has been successfully installed."
 msgstr ""
 
@@ -627,7 +631,7 @@ msgstr ""
 msgid "You do not have sufficient privileges to view drafts."
 msgstr ""
 
-#: upgrade.php:503
+#: upgrade.php:537
 msgid "Before upgrading, please disable all modules and feathers that don't come with Chyrp (you can leave the Text feather enabled)."
 msgstr ""
 
@@ -649,22 +653,29 @@ msgstr ""
 msgid "You do not have sufficient privileges to edit groups."
 msgstr ""
 
+#: upgrade.php:539
+msgid "If your version number is not listed, you do not have to upgrade."
+msgstr ""
+
+#: install.php:436
+msgid "(full path)"
+msgstr ""
+
 #: importers/wordpress.php:73
 msgid "Chyrp: Import: WordPress"
+msgstr ""
+
+#: admin/index.php:74
+#, php-format
+msgid "Couldn't load template:<br /><br />%s"
 msgstr ""
 
 #: admin/layout/pages/manage_pages.twig:29
 msgid "Created"
 msgstr ""
 
-#: install.php:494
+#: install.php:541
 msgid "Install some Modules."
-msgstr ""
-
-#: includes/class/Theme.php:323
-#: admin/index.php:74
-#, php-format
-msgid "Couldn't load template:<br /><br />%s"
 msgstr ""
 
 #: includes/controller/Admin.php:884
@@ -701,10 +712,6 @@ msgstr ""
 
 #: importers/wordpress.php:60
 msgid "File does not seem to be a valid WordPress export file."
-msgstr ""
-
-#: upgrade.php:494
-msgid "There are many new and extended Group permissions with this release. If you are the administrator, you'll probably want to enable them for your group: <a href=\"%s\">Manage Groups</a>"
 msgstr ""
 
 #: admin/layout/layout.twig:38
@@ -766,10 +773,6 @@ msgstr ""
 msgid "or wait 3 seconds."
 msgstr ""
 
-#: install.php:483
-msgid "Install!"
-msgstr ""
-
 #: includes/controller/Admin.php:50
 msgid "An ID is required to edit a post."
 msgstr ""
@@ -802,7 +805,7 @@ msgstr ""
 msgid "Clean URLs?"
 msgstr ""
 
-#: upgrade.php:191
+#: upgrade.php:229
 msgid "Database config file could not be renamed. Please rename it to <code>/includes/database.yaml.php</code>"
 msgstr ""
 
@@ -843,10 +846,6 @@ msgstr ""
 msgid "Import Chyrp"
 msgstr ""
 
-#: upgrade.php:479
-msgid "Upgrading&hellip;"
-msgstr ""
-
 #: admin/layout/pages/extend_modules.twig:41
 #: admin/layout/pages/extend_feathers.twig:41
 msgid "Enable"
@@ -874,7 +873,7 @@ msgstr ""
 msgid "(drag)"
 msgstr ""
 
-#: install.php:413
+#: install.php:455
 msgid "Adapter"
 msgstr ""
 
@@ -901,7 +900,7 @@ msgstr[1] ""
 msgid "Cancel"
 msgstr ""
 
-#: install.php:475
+#: install.php:522
 msgid "(again)"
 msgstr ""
 
@@ -949,11 +948,6 @@ msgstr ""
 msgid "The plural form of the post's feather"
 msgstr ""
 
-#: upgrade.php:71
-#: upgrade.php:76
-msgid "Upgrading to %s&hellip;"
-msgstr ""
-
 #: includes/ajax.php:119
 #: admin/layout/pages/extend_themes.twig:23
 msgid "Preview"
@@ -983,7 +977,7 @@ msgstr ""
 msgid "Usually something like <code>http://example.com/wp-content/uploads/</code>"
 msgstr ""
 
-#: install.php:436
+#: install.php:478
 #: importers/textpattern.php:175
 msgid "Database"
 msgstr ""
@@ -1016,7 +1010,7 @@ msgstr ""
 msgid "You must be logged in to access this area."
 msgstr ""
 
-#: includes/class/Theme.php:323
+#: includes/class/Theme.php:326
 #: admin/index.php:74
 msgid "Template Missing"
 msgstr ""
@@ -1054,7 +1048,7 @@ msgstr ""
 msgid "eXtended .XML File"
 msgstr ""
 
-#: install.php:446
+#: install.php:490
 #: admin/layout/pages/general_settings.twig:13
 msgid "Site Name"
 msgstr ""
@@ -1082,7 +1076,7 @@ msgstr ""
 msgid "Invalid security key."
 msgstr ""
 
-#: install.php:424
+#: install.php:466
 msgid "(usually ok as \"localhost\")"
 msgstr ""
 
@@ -1103,7 +1097,7 @@ msgstr ""
 msgid "Second submitted"
 msgstr ""
 
-#: install.php:493
+#: install.php:540
 msgid "Look for a translation for your language."
 msgstr ""
 
@@ -1201,7 +1195,7 @@ msgstr ""
 msgid "User updated."
 msgstr ""
 
-#: install.php:424
+#: install.php:466
 #: importers/textpattern.php:163
 msgid "Host"
 msgstr ""
@@ -1211,7 +1205,7 @@ msgstr ""
 msgid "You do not have sufficient privileges to delete users."
 msgstr ""
 
-#: install.php:450
+#: install.php:494
 #: admin/layout/pages/general_settings.twig:17
 msgid "Description"
 msgstr ""
@@ -1225,7 +1219,7 @@ msgstr ""
 msgid "Importing from WordPress requires the Text feather to be installed and enabled."
 msgstr ""
 
-#: install.php:447
+#: install.php:491
 msgid "My Awesome Site"
 msgstr ""
 
@@ -1321,7 +1315,7 @@ msgstr ""
 msgid "Password cannot be blank."
 msgstr ""
 
-#: upgrade.php:487
+#: upgrade.php:520
 #: importers/wordpress.php:175
 #: importers/tumblr.php:213
 #: importers/textpattern.php:200
@@ -1334,7 +1328,7 @@ msgstr ""
 msgid "Reorder Pages"
 msgstr ""
 
-#: upgrade.php:495
+#: upgrade.php:529
 msgid "If the admin section looks ugly to you, refresh your browser or clear your cache. The admin area is completely redesigned in 2.0."
 msgstr ""
 
@@ -1347,8 +1341,16 @@ msgstr ""
 msgid "Public"
 msgstr ""
 
-#: upgrade.php:497
-#: install.php:498
+#: upgrade.php:528
+msgid "There are many new and extended Group permissions with this release. If you are the administrator, you'll probably want to enable them for your group, under Manage > Groups."
+msgstr ""
+
+#: install.php:530
+msgid "Install! &rarr;"
+msgstr ""
+
+#: upgrade.php:531
+#: install.php:545
 msgid "Take me to my site! &rarr;"
 msgstr ""
 
@@ -1438,14 +1440,14 @@ msgstr ""
 msgid "Post author (username)"
 msgstr ""
 
+#: admin/layout/pages/user_settings.twig:14
+msgid "Allow people to register"
+msgstr ""
+
 #: admin/layout/partials/post_fields.twig:34
 #: admin/layout/partials/post_fields.twig:38
 #: admin/layout/partials/page_fields.twig:15
 msgid "Save"
-msgstr ""
-
-#: admin/layout/pages/user_settings.twig:14
-msgid "Allow people to register"
 msgstr ""
 
 #: admin/layout/pages/route_settings.twig:37
@@ -1476,11 +1478,11 @@ msgstr ""
 msgid "Invalid Extension"
 msgstr ""
 
-#: upgrade.php:492
+#: upgrade.php:525
 msgid "Tips"
 msgstr ""
 
-#: upgrade.php:510
+#: upgrade.php:545
 msgid "Upgrade &rarr;"
 msgstr ""
 
@@ -1529,7 +1531,7 @@ msgstr ""
 msgid "Could not connect to specified database."
 msgstr ""
 
-#: install.php:440
+#: install.php:482
 #: importers/textpattern.php:179
 msgid "Table Prefix"
 msgstr ""
@@ -1582,7 +1584,7 @@ msgstr ""
 msgid "Show in pages list?"
 msgstr ""
 
-#: install.php:492
+#: install.php:539
 msgid "<strong>Delete install.php</strong>, you won't need it anymore."
 msgstr ""
 
@@ -1626,7 +1628,7 @@ msgstr ""
 msgid "Draft"
 msgstr ""
 
-#: upgrade.php:91
+#: upgrade.php:129
 msgid "Uploads directory could not be renamed. Please rename it to <code>/uploads</code>"
 msgstr ""
 
@@ -1651,7 +1653,7 @@ msgstr ""
 msgid "Tumblr URL"
 msgstr ""
 
-#: upgrade.php:489
+#: upgrade.php:522
 msgid "Finished?"
 msgstr ""
 
@@ -1668,7 +1670,7 @@ msgstr ""
 msgid "Site Configuration"
 msgstr ""
 
-#: upgrade.php:488
+#: upgrade.php:521
 msgid "Next, back up your current installation and replace the old files with the new. Be careful of what you're overwriting &ndash; some systems will remove directories and upload the new ones, instead of merging them. <strong>Make sure you don't replace or remove your <code>/includes/database.yaml.php</code> and <code>/includes/config.yaml.php</code> files.</strong>"
 msgstr ""
 
@@ -1706,8 +1708,8 @@ msgstr ""
 msgid "What URL is used for attached/embedded media?"
 msgstr ""
 
-#: install.php:428
-#: install.php:467
+#: install.php:470
+#: install.php:514
 #: importers/textpattern.php:167
 msgid "Username"
 msgstr ""
@@ -1741,7 +1743,7 @@ msgstr ""
 msgid "(none)"
 msgstr ""
 
-#: install.php:496
+#: install.php:543
 msgid "Read &#8220;Getting Started&#8221;"
 msgstr ""
 
@@ -1766,7 +1768,7 @@ msgstr ""
 msgid "Sorry, but you are looking for something that isn't here."
 msgstr ""
 
-#: upgrade.php:490
+#: upgrade.php:523
 msgid "Yay!"
 msgstr ""
 
@@ -1788,7 +1790,7 @@ msgstr ""
 msgid "Add Group"
 msgstr ""
 
-#: install.php:495
+#: install.php:542
 msgid "Find some Feathers you want."
 msgstr ""
 
@@ -1825,8 +1827,13 @@ msgstr ""
 msgid "Missing Feather"
 msgstr ""
 
-#: install.php:465
+#: install.php:512
 msgid "Admin Account"
+msgstr ""
+
+#: includes/class/Theme.php:326
+#, php-format
+msgid "Couldn't load template: <code>%s</code>"
 msgstr ""
 
 #: index.php:172
