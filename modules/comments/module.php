@@ -30,6 +30,7 @@
 			$config->set("allowed_comment_html", array("strong", "em", "blockquote", "code", "pre", "a"));
 			$config->set("comments_per_page", 25);
 			$config->set("defensio_api_key", null);
+			$config->set("auto_reload_comments", 0);
 			Group::add_permission("add_comment");
 			Group::add_permission("add_comment_private");
 			Group::add_permission("edit_comment");
@@ -48,6 +49,7 @@
 			$config->remove("allowed_comment_html");
 			$config->remove("comments_per_page");
 			$config->remove("defensio_api_key");
+			$config->remove("auto_reload_comments");
 			Group::remove_permission("add_comment");
 			Group::remove_permission("add_comment_private");
 			Group::remove_permission("edit_comment");
@@ -253,19 +255,19 @@
 			global $comment, $url, $title, $excerpt, $blog_name;
 
 			$sql = SQL::current();
-			$count = $sql->count("comments", array("`post_id` = :id", "`author_url` = :url"), array(
-			                        ":id" => $_GET['id'],
-			                        ":url" => $_POST['url']
-			                    ));
-			if ($count == 1)
+			$count = $sql->count("comments",
+			                     array("`post_id` = :id",
+			                           "`author_url` = :url"),
+			                     array(":id" => $_GET['id'],
+			                           ":url" => $_POST['url']
+			                     ));
+			if ($count)
 				trackback_respond(true, __("A ping from that URL is already registered.", "comments"));
 
-			$url = fix($url, "html");
-			$title = fix($title, "html");
 			Comment::create($blog_name,
 			                "",
 			                $_POST["url"],
-			                "<strong><a href=\"$url\">$title</a></strong> $excerpt",
+			                '<strong><a href="'.fix($url).'">'.fix($title).'</a></strong>'."\n".$excerpt,
 			                $_GET["id"],
 			                "trackback");
 		}
@@ -278,7 +280,7 @@
 			                        ":id" => $id,
 			                        ":url" => $from
 			                    ));
-			if ($count == 1)
+			if ($count)
 				return new IXR_Error(48, __("A ping from that URL is already registered.", "comments"));
 
 			Comment::create($title,
@@ -469,22 +471,21 @@
 			}
 		}
 
-		static function admin_manage_posts_column_header() {
+		static function manage_posts_column_header() {
 			echo '<th>'.__("Comments", "comments").'</th>';
 		}
 
-		static function admin_manage_posts_column($id) {
-			global $comment;
-			$post = new Post($id);
+		static function manage_posts_column($post) {
 			echo '<td align="center"><a href="'.$post->url().'#comments">'.$post->comment_count.'</a></td>';
 		}
 
 		static function javascript_domready() {
 			$config = Config::current();
 ?>
-//<script>
+<!-- --><script>
+<?php if ($config->auto_reload_comments): ?>
 	if ($(".comments").size()) {
-		var updater = setInterval("Comment.reload()", 30000);
+		var updater = setInterval("Comment.reload()", <?php echo $config->auto_reload_comments * 1000; ?>);
 		$("#add_comment").append($(document.createElement("input")).attr({ type: "hidden", name: "ajax", value: "true", id: "ajax" }));
 		$("#add_comment").ajaxForm({ dataType: "json", resetForm: true, beforeSubmit: function(){
 			$("#add_comment").loader();
@@ -509,6 +510,7 @@
 			$("#add_comment").loader(true)
 		} })
 	}
+<?php endif; ?>
 	$(".comment_edit_link").click(function(){
 		var id = $(this).attr("id").replace(/comment_edit_/, "")
 		Comment.edit(id)
@@ -520,14 +522,14 @@
 		Comment.destroy(id)
 		return false
 	})
-//</script>
+<!-- --></script>
 <?php
 		}
 
 		static function javascript() {
 			$config = Config::current();
 ?>
-//<script>
+<!-- --><script>
 var editing = 0
 var notice = 0
 var Comment = {
@@ -621,20 +623,7 @@ var Comment = {
 		})
 	}
 }
-//</script>
-<?php
-		}
-
-		static function admin_javascript() {
-?>
-$(function(){
-	$("#checkbox_header").html('<input type="checkbox" name="comments_all" id="comments_all" />')
-	$("#comments_all").click(function(){
-		$("#spam_form").find(":checkbox").not("#comments_all").each(function(){
-	      this.checked = document.getElementById("comments_all").checked
-		})
-	})
-})
+<!-- --></script>
 <?php
 		}
 

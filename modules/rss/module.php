@@ -1,12 +1,12 @@
 <?php
 	# This module is outdated.
-	class RSS {
+	class RSS extends Module {
 		static function __install() {
 			$config = Config::current();
 			$config->set("rss_last_update", 0);
 			$config->set("rss_feeds", array());
 		}
-		static function runtime() {
+		public function runtime() {
 			global $action;
 			if ($action != "index" or JAVASCRIPT or ADMIN) return;
 
@@ -47,9 +47,11 @@
 				$config->set("rss_last_update", time());
 			}
 		}
-		static function admin_settings_nav() {
-?>
-					<li<?php selected("settings", "aggregation"); ?>><a href="<?php url("settings", "aggregation"); ?>"><?php echo __("Aggregation", "rss"); ?></a></li>
-<?php
+
+		public function settings_nav($navs) {
+			if (Visitor::current()->group()->can("change_settings"))
+				$navs["aggregation_settings"] = array("title" => __("Aggregation", "rss"));
+
+			return $navs;
 		}
 	}

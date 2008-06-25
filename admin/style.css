@@ -371,7 +371,7 @@ form.split label {
 	color: #999;
 }
 form.split select {
-	margin: 3px 0 0;
+	margin: 3px 0 1em;
 }
 form.split small,
 form.split .small {

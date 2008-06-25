@@ -33,6 +33,11 @@
 						<label for="comments_per_page">${ "Comments Per Page" | translate("comments") }</label>
 						<input class="text nowidth" type="text" name="comments_per_page" value="${ site.comments_per_page | escape }" size="2" id="comments_per_page" />
 					</p>
+					<p>
+						<label for="auto_reload_comments">${ "Reload Comments Every X Seconds" | translate("comments") }</label>
+						<input class="text nowidth" type="text" name="auto_reload_comments" value="${ site.auto_reload_comments | escape }" size="2" id="auto_reload_comments" />
+						 <span class="sub">${ "(0: disable)" | translate("comments") }</span>
+					</p>
 
 					<p class="buttons">
 						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Update" | translate }</button>

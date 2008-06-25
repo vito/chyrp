@@ -102,9 +102,7 @@
 		}
 
 		static function manage_posts_column($post) {
-			echo "<td>";
-			echo implode(", ", $post->tags["linked"]);
-			echo "</td>";
+			echo "<td>".implode(", ", $post->tags["linked"])."</td>";
 		}
 
 		static function route_tag() {
