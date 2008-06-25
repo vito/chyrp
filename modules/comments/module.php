@@ -805,30 +805,20 @@ $(function(){
 		}
 
 		static function view_feed() {
-			global $post, $action, $get_comments, $latest_timestamp, $title;
+			global $post, $action, $comments, $title;
 
 			$title = $post->title();
 			fallback($title, ucfirst($post->feather)." Post #".$post->id);
 
-			$sql = SQL::current();
-			$visitor = Visitor::current();
-			$get_comments = $sql->select("comments",
-						                 "*",
-						                 array("`post_id` = :post_id",
-						                       "(`status` != 'denied' OR ( `status` = 'denied'",
-						                       "(`author_ip` = :current_ip OR (`user_id` != ''",
-						                       "`user_id` = :user_id)))",
-						                       "`status` != 'spam'"),
-						                 "`created_at` DESC",
-						                 array(":post_id" => $post->id,
-			                                   ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-			                                   ":user_id" => $visitor->id
-						                 ));
+			$title = _f("Comments on &#8220;%s&#8221;", array(htmlspecialchars($title)), "comments");
 
-			$latest_comment = new Comment($post->latest_comment);
-			$latest_timestamp = $comment->created_at;
+			$ids = array_reverse($post->comments->array[0]);
 
-			$action = "comments_feed";
+			$comments = array();
+			for ($i = 0; $i < 20; $i++)
+				$comments[] = new Comment($ids[$i]);
+
+			$action = "comments_rss";
 		}
 
 		static function metaWeblog_getPost($struct, $post) {
