@@ -174,7 +174,7 @@
 
 		if (file_exists(INCLUDES_DIR."/config.yml.php") and file_exists(INCLUDES_DIR."/database.yml.php")) {
 			foreach (array("database.yml.php" => "database.yaml.php",
-			               "config.yml.php"    => "config.yaml.php") as $from => $to) {
+			               "config.yml.php"   => "config.yaml.php") as $from => $to) {
 				$file = @file_get_contents(INCLUDES_DIR."/".$from);
 				$nerr = str_replace("<?php\n\tif (strpos(\$_SERVER['REQUEST_URI'], \"".$from."\"))\n\t\texit(\"Gtfo.\");\n?>",
 				                    "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>",
