@@ -9,12 +9,18 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-12 19:51-0500\n"
+"PO-Revision-Date: 2008-06-24 21:11-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: themes/default/content/archive.twig:17
+#: themes/default/content/archive.twig:20
+#, php-format
+msgid "Archive of %s"
+msgstr ""
 
 #: themes/default/sidebar.twig:45
 msgid "Load time:"
@@ -93,11 +99,11 @@ msgstr ""
 msgid "Chyrp Default"
 msgstr ""
 
-#: themes/default/content/view.twig:6
+#: themes/default/content/view.twig:9
 msgid "Comments"
 msgstr ""
 
-#: themes/default/content/view.twig:13
+#: themes/default/content/view.twig:16
 msgid "Next &rarr;"
 msgstr ""
 
@@ -109,16 +115,12 @@ msgstr ""
 msgid "Archives"
 msgstr ""
 
-#: themes/default/content/post.twig:18
+#: themes/default/content/post.twig:21
 #, php-format
 msgid "%s Comment"
 msgid_plural "%s Comments"
 msgstr[0] ""
 msgstr[1] ""
-
-#: themes/default/content/comment.twig:9
-msgid "on"
-msgstr ""
 
 #: themes/default/sidebar.twig:8
 msgid "Guest"
@@ -163,7 +165,7 @@ msgstr ""
 msgid "This post is a draft."
 msgstr ""
 
-#: themes/default/content/view.twig:14
+#: themes/default/content/view.twig:17
 msgid "&larr; Previous"
 msgstr ""
 
@@ -208,9 +210,9 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
-#: themes/default/content/archive.twig:17
-#: themes/default/content/archive.twig:20
-msgid "Archive of"
+#: themes/default/content/comment.twig:9
+#, php-format
+msgid "<strong>%s</strong> on %s"
 msgstr ""
 
 #: themes/default/content/drafts.twig:4
@@ -277,7 +279,8 @@ msgstr ""
 msgid "There don't seem to be any posts in the timeframe you specified."
 msgstr ""
 
-#: themes/default/content/post.twig:27
+#: themes/default/content/post.twig:30
+#: themes/default/content/comment.twig:11
 msgid "Delete"
 msgstr ""
 
@@ -294,7 +297,7 @@ msgstr ""
 msgid "There aren't any tags yet. Such a shame."
 msgstr ""
 
-#: themes/default/content/post.twig:24
+#: themes/default/content/post.twig:27
 msgid "Trackback"
 msgstr ""
 
@@ -308,7 +311,8 @@ msgstr ""
 msgid "pinned"
 msgstr ""
 
-#: themes/default/content/post.twig:26
+#: themes/default/content/post.twig:29
+#: themes/default/content/comment.twig:10
 msgid "Edit"
 msgstr ""
 

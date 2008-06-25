@@ -9,27 +9,30 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-12 19:51-0500\n"
+"PO-Revision-Date: 2008-06-24 21:11-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: feathers/quote/info.yaml:4
-msgid "Post quotes and cite sources."
+#: feathers/link/feather.php:5
+msgid "Name"
 msgstr ""
 
-#: feathers/quote/feather.php:11
-msgid "Quote can't be empty."
+#: feathers/link/feather.php:4
+msgid "URL"
 msgstr ""
 
-#: feathers/quote/feather.php:5
-msgid "Source"
+#: feathers/link/info.yaml:1
+msgid "Link"
 msgstr ""
 
-#: feathers/quote/info.yaml:1
-#: feathers/quote/feather.php:4
-msgid "Quote"
+#: feathers/link/feather.php:6
+msgid "Description"
+msgstr ""
+
+#: feathers/link/info.yaml:4
+msgid "Link to other sites, name it, and add an optional description."
 msgstr ""
 

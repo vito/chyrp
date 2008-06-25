@@ -9,34 +9,30 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-12 19:51-0500\n"
+"PO-Revision-Date: 2008-06-24 21:11-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: feathers/chat/info.yaml:1
-msgid "Chat"
+#: modules/rss/module.php:52
+msgid "Aggregation"
 msgstr ""
 
-#: feathers/chat/feather.php:93
-msgid "This only has to be done to the first occurrence of the username."
+#: modules/rss/info.yaml:1
+msgid "RSS Aggregator"
 msgstr ""
 
-#: feathers/chat/info.yaml:4
-msgid "Post logs of IRC or other chat formats."
+#: modules/rss/pages/admin/new_aggregator.php:64
+msgid "Aggregate!"
 msgstr ""
 
-#: feathers/chat/feather.php:88
-msgid "To give yourself a special CSS class, append \" (me)\" to your username, like so:"
+#: modules/rss/info.yaml:4
+msgid "Imports RSS feeds."
 msgstr ""
 
-#: feathers/chat/feather.php:5
-msgid "Dialogue"
-msgstr ""
-
-#: feathers/chat/feather.php:4
-msgid "Title"
+#: modules/rss/pages/admin/new_aggregator.php:28
+msgid "New Aggregator"
 msgstr ""
 
