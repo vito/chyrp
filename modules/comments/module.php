@@ -24,12 +24,14 @@
 			                 `user_id` INTEGER DEFAULT '0',
 			                 `created_at` DATETIME DEFAULT '0000-00-00 00:00:00'
 			             ) default charset=utf8");
+
 			$config = Config::current();
 			$config->set("default_comment_status", "denied");
 			$config->set("allowed_comment_html", array("strong", "em", "blockquote", "code", "pre", "a"));
 			$config->set("comments_per_page", 25);
 			$config->set("defensio_api_key", null);
 			$config->set("auto_reload_comments", 0);
+
 			Group::add_permission("add_comment");
 			Group::add_permission("add_comment_private");
 			Group::add_permission("edit_comment");
@@ -49,6 +51,7 @@
 			$config->remove("comments_per_page");
 			$config->remove("defensio_api_key");
 			$config->remove("auto_reload_comments");
+
 			Group::remove_permission("add_comment");
 			Group::remove_permission("add_comment_private");
 			Group::remove_permission("edit_comment");
@@ -640,12 +643,20 @@ var Comment = {
 					if ($post->latest_comment > $_POST['last_comment']) {
 						$new_comments = $sql->select("comments",
 						                             "`id`",
-						                             array("`post_id` = :post_id",
-						                                   "`id` > :last_comment",
-						                                   "(`status` != 'denied' OR ( `status` = 'denied'",
-						                                   "(`author_ip` = :current_ip OR (`user_id` != ''",
-						                                   "`user_id` = :user_id))))",
-						                                   "`status` != 'spam'"),
+						                             array("`__comments`.`post_id` = :post_id",
+						                                   "`__comments`.`id` > :last_comment",
+						                                   "`__comments`.`status` != 'spam'",
+						                                   "`__comments`.`status` != 'denied' OR (
+						                                        `__comments`.`status` = 'denied' AND (
+						                                            (
+						                                                `__comments`.`author_ip` != 0 AND
+						                                                `__comments`.`author_ip` = :current_ip
+						                                            ) OR (
+						                                                `__comments`.`user_id` != 0 AND
+						                                                `__comments`.`user_id` = :user_id
+						                                            )
+						                                        )
+						                                    )"),
 						                             "`created_at` ASC",
 						                             array(":post_id" => $_POST['post_id'],
 						                                   ":last_comment" => $_POST['last_comment'],
@@ -834,22 +845,24 @@ var Comment = {
 			if ($route->action == "view") {
 				$get_comments = $sql->select("comments", # table
 				                             "`__comments`.`id`", # fields
-				                             "`post_id` = :post_id and (
-				                                  `status` != 'denied' or (
-				                                      `status` = 'denied' and (
-				                                          `author_ip` = :current_ip or (
-				                                              `user_id` != '' and
-				                                              `user_id` = :current_user
-				                                          )
-				                                      )
-				                                  )
-				                              ) and
-				                              `status` != 'spam'", #where
+				                             array("`__comments`.`post_id` = :post_id",
+				                                   "`__comments`.`status` != 'spam'",
+				                                   "`__comments`.`status` != 'denied' OR (
+				                                        `__comments`.`status` = 'denied' AND (
+				                                            (
+				                                                `__comments`.`author_ip` != 0 AND
+				                                                `__comments`.`author_ip` = :current_ip
+				                                            ) OR (
+				                                                `__comments`.`user_id` != 0 AND
+				                                                `__comments`.`user_id` = :user_id
+				                                            )
+				                                        )
+				                                    )"),
 				                             "`created_at` asc", # order
 				                             array(
 				                                 ":post_id" => $post->id,
 				                                 ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-				                                 ":current_user" => $visitor->id
+				                                 ":user_id" => $visitor->id
 				                             ));
 
 				$post->comments = array();
@@ -879,16 +892,19 @@ var Comment = {
 			$options["select"][]  = "MAX(`__comments`.`created_at`) as `latest_comment`";
 
 			$options["left_join"][] = array("table" => "comments",
-			                                "where" => array("`__comments`.`post_id` = `__posts`.`id` AND
-			                                                  `__comments`.`status` != 'denied' OR (
+			                                "where" => array("`__comments`.`post_id` = `__posts`.`id`",
+			                                                 "`__comments`.`status` != 'spam'",
+			                                                 "`__comments`.`status` != 'denied' OR (
 			                                                      `__comments`.`status` = 'denied' AND (
-			                                                          `__comments`.`author_ip` = :current_ip OR (
-			                                                              `__comments`.`user_id` != '' AND
+			                                                          (
+			                                                              `__comments`.`author_ip` != 0 AND
+			                                                              `__comments`.`author_ip` = :current_ip
+			                                                          ) OR (
+			                                                              `__comments`.`user_id` != 0 AND
 			                                                              `__comments`.`user_id` = :user_id
 			                                                          )
 			                                                      )
-			                                                  )",
-			                                                 "`__comments`.`status` != 'spam'"));
+			                                                  )"));
 
 			$options["params"][":current_ip"] = ip2long($_SERVER['REMOTE_ADDR']);
 			$options["params"][":user_id"]    = Visitor::current()->id;

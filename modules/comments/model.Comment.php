@@ -268,25 +268,6 @@
 			return $count;
 		}
 
-		static function post_count($post_id) {
-			$sql = SQL::current();
-			$count = $sql->count("comments",
-			                     array("`post_id` = :post_id", "(
-	                                  `status` != 'denied' or (
-                                          `status` = 'denied' and (
-                                              `author_ip` = :current_ip or
-                                              `user_id` = :user_id
-                                          )
-                                      )
-                                  )", "`status` != 'spam'"),
-			                     array(
-			                         ":post_id" => $post_id,
-		                             ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-		                             ":user_id" => Visitor::current()->id
-			                     ));
-			return $count;
-		}
-
 		public function post() {
 			return new Post($this->post_id);
 		}

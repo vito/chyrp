@@ -118,7 +118,7 @@
 				$result = $q->execute($params);
 				$q->setFetchMode(PDO::FETCH_ASSOC);
 				if (defined('DEBUG') and DEBUG) {
-					#echo '<div class="sql_query" style="position: relative; z-index: 1000"><span style="background: rgba(0,0,0,.5); padding: 0 1px; border: 1px solid rgba(0,0,0,.25); color: white; font: 9px/14px normal \'Monaco\', monospace;">'.$query.'</span></div>';
+					#echo '<pre class="sql_query" style="position: relative; z-index: 1000"><span style="background: rgba(0,0,0,.5); padding: 0 1px; border: 1px solid rgba(0,0,0,.25); color: white; font: 9px/14px normal \'Monaco\', monospace;">'.$query.'</span></pre>';
 					$trace = debug_backtrace();
 					$target = $trace[$index = 0];
 

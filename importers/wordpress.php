@@ -59,8 +59,9 @@
 							$_POST['status']  = str_replace(array_keys($status_translate), array_values($status_translate), $wordpress->status);
 							$_POST['pinned']  = false;
 							$_POST['created_at'] = ($wordpress->post_date == "0000-00-00 00:00:00") ? datetime() : $wordpress->post_date ;
+							$_POST['feather'] = "text";
 
-							$data = $values = array("title" => (string) $item->title, "body" => (string) $content->encoded);
+							$data = array("title" => (string) $item->title, "body" => (string) $content->encoded);
 							$post = Post::add($data, $clean, Post::check_url($clean));
 
 							$trigger->call("import_wordpress_post", array($item, $post));
@@ -178,7 +179,6 @@
 				<br />
 				<br />
 				<input type="hidden" name="step" value="1" id="step" />
-				<input type="hidden" name="feather" value="text" id="feather" />
 				<p class="center"><input type="submit" value="<?php echo __("Import &rarr;"); ?>" /></p>
 				<input type="hidden" name="hash" value="<?php echo $config->secure_hashkey; ?>" id="hash" />
 			</form>

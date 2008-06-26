@@ -117,7 +117,9 @@
 			global $pluralizations, $page;
 			$config = Config::current();
 
-			fallback($_GET['action'], "index");
+			if (!$config->clean_urls)
+				fallback($_GET['action'], "index");
+
 			$this->action =& $_GET['action'];
 
 			# Correctly translate viewing feathers with dirty URLs on.
