@@ -3,7 +3,7 @@
 
 	require_once "../includes/common.php";
 
-	$action = fallback($_GET['action'], $admin->determine_action(), true);
+	$action = ($_GET['action'] == "index") ? $admin->determine_action() : $_GET['action'];
 
 	class AdminTwig {
 		public function __construct() {

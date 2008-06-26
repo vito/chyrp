@@ -8,8 +8,8 @@
 			$context = array("posts" => $posts);
 
 			if ($route->action == "feather") {
-				$theme->title = ucfirst($_GET['action']);
-				$context["feather"] = $_GET['action'];
+				$theme->title = ucfirst($_GET['feather']);
+				$context["feather"] = $_GET['feather'];
 			} elseif ($route->action == "search") {
 				$theme->title = fix(_f("Search results for \"%s\"", array(urldecode($_GET['query'])), "html"));
 				$context["search"] = urldecode($_GET['query']);

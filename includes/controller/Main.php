@@ -70,7 +70,7 @@
 			global $posts;
 			$posts = new Paginator(Post::find(array("placeholders" => true,
 			                                        "where" => "`feather` = :feather",
-			                                        "params" => array(":feather" => depluralize($_GET['action'])))),
+			                                        "params" => array(":feather" => depluralize($_GET['feather'])))),
 				                   Config::current()->posts_per_page);
 		}
 

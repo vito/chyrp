@@ -74,8 +74,8 @@
 					$url = substr($url, 5);
 
 				return (substr($config->post_url, -1) == "/" or $url == "search/") ?
-					$config->url."/".$url :
-					$config->url."/".rtrim($url, "/") ;
+				       $config->url."/".$url :
+				       $config->url."/".rtrim($url, "/") ;
 			}
 
 			$urls = Trigger::current()->filter("parse_urls", $this->urls);
@@ -86,9 +86,9 @@
 			$urls["/\/(.*?)\/$/"] = "/?action=$1";
 
 			return $config->url.preg_replace(
-				array_keys($urls),
-				array_values($urls),
-				"/".$url, 1);
+			       array_keys($urls),
+			       array_values($urls),
+			       "/".$url, 1);
 		}
 
 		/**
@@ -117,7 +117,14 @@
 			global $pluralizations, $page;
 			$config = Config::current();
 
+			fallback($_GET['action'], "index");
 			$this->action =& $_GET['action'];
+
+			# Correctly translate viewing feathers with dirty URLs on.
+			if (!$config->clean_urls and in_array($this->action, array_values($pluralizations["feathers"]))) {
+				$_GET['feather'] = $this->action;
+				$this->action = "feather";
+			}
 
 			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls)
 				return;
@@ -203,8 +210,10 @@
 			}
 
 			# Viewing Feathers
-			if (in_array($this->arg[0], array_values($pluralizations["feathers"])) and (empty($this->arg[1]) or $this->arg[1] == "feed" or $this->arg[1] == "page"))
-				return $this->action = $this->arg[0];
+			if (in_array($this->arg[0], array_values($pluralizations["feathers"])) and (empty($this->arg[1]) or $this->arg[1] == "feed" or $this->arg[1] == "page")) {
+				$_GET['feather'] = $this->arg[0];
+				return $this->action = "feather";
+			}
 
 			# Custom pages added by Modules, Feathers, Themes, etc.
 			foreach ($config->routes as $route)

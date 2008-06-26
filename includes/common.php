@@ -299,9 +299,6 @@
 
 		$trigger->call("runtime");
 
-		if (in_array($route->action, array_values($pluralizations["feathers"])))
-			$route->action = "feather";
-
 		if (isset($_GET['feed']))
 			$config->posts_per_page = $config->feed_items;
 
