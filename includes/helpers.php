@@ -292,7 +292,11 @@
 	 *     $strftime - Use `strftime` instead of `date`?
 	 */
 	function when($formatting, $when, $strftime = false) {
+		if ($when instanceof DateTime)
+			$when = gmstrftime("%c", time() + $when->getTimezone()->getOffset($when));
+
 		$time = (is_numeric($when)) ? $when : strtotime($when) ;
+
 		if ($strftime)
 			return strftime($formatting, $time);
 		else
@@ -307,11 +311,14 @@
 	 *     $when - An optional timestamp.
 	 */
 	function datetime($when = null) {
-		# If $when is not set (common behaviour), set it to a formatted version of the current time.
-		# It is formatted so that strtotime doesn't freak out.
 		fallback($when, now()->format("c"));
-		$time = (is_numeric($when) or $when instanceof DateTime) ? $when : strtotime($when) ;
-		return ($time instanceof DateTime) ? $time->format("Y-m-d H:i:s") : date("Y-m-d H:i:s", $time) ;
+
+		if ($when instanceof DateTime)
+			$when = gmstrftime("%c", time() + $when->getTimezone()->getOffset($when));
+
+		$time = (is_numeric($when)) ? $when : strtotime($when) ;
+
+		return date("Y-m-d H:i:s", $time);
 	}
 
 	/**
@@ -1096,7 +1103,7 @@
 		#if (version_compare(PHP_VERSION, '5.2.0', '>='))
 		#	return setcookie($name, $data, $time, '/', $host, false, true);
 		#else
-			return setcookie($name, $data, $time, '/', $host);
+			return setcookie($name, $data, $time, "/", $host);
 	}
 
 	/**
@@ -1128,8 +1135,8 @@
 	 * Parameters:
 	 *     $data - The array to be sanitized, usually one of ($_GET, $_POST, $_COOKIE, $_REQUEST)
 	 */
-	function sanitize_input(& $data) {
-		foreach ($data as & $value)
+	function sanitize_input(&$data) {
+		foreach ($data as &$value)
 			if (is_array($value))
 				sanitize_input($value);
 			else

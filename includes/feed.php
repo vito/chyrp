@@ -14,7 +14,7 @@
 		$title = htmlspecialchars($post->title(), ENT_NOQUOTES, "utf-8");
 		fallback($title, ucfirst($post->feather)." Post #".$post->id);
 
-		$updated = ($post->updated) ? $post->created_at : $post->updated_at ;
+		$updated = ($post->updated) ? $post->updated_at : $post->created_at ;
 
 		$tagged = substr(strstr($route->url("id/".$post->id."/"), "//"), 2);
 		$tagged = str_replace("#", "/", $tagged);

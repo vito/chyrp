@@ -36,7 +36,7 @@
 						<label for="timezone">${ "What time is it?" | translate }</label>
 						<select name="timezone" id="timezone">
 						{% for zone in timezones %}
-							<option value="$zone.name"${ zone.name | option_selected(site.timezone) }>${ zone.now.format("h:i A \\o\\\\n F jS, Y" | translate) } (GMT{% if zone.offset > 0 %}+{% endif %}$zone.offset)</option>
+							<option value="$zone.name"${ zone.name | option_selected(site.timezone) }>${ zone.now | strftime("%I:%M %p on %B %d, %Y" | translate) } (GMT{% if zone.offset > 0 %}+{% endif %}$zone.offset)</option>
 						{% endfor %}
 						</select>
 					</p>
@@ -45,6 +45,8 @@
 						<select name="locale" id="locale">
 							{% for locale in locales %}
 							<option value="$locale.code"${ locale.code | option_selected(site.locale) }>$locale.name</option>
+							{% else %}
+							<option value="en_US">English (US)</option>
 							{% endfor %}
 						</select>
 					</p>

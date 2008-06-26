@@ -499,9 +499,8 @@
 					<select name="timezone" id="timezone">
 <?php foreach (utc_timezones() as $zone): ?>
 						<option value="<?php echo $zone["name"]; ?>"<?php selected($zone["name"], fallback($_POST['timezone'], "Africa/Abidjan", true)); ?>>
-							<?php echo $zone["now"]->format(__("h:i A \o\\n F jS, Y")); ?>
-
-							(GMT<?php if ($zone["offset"] > 0) echo "+"; ?><?php echo $zone["offset"]; ?>)
+							<?php echo when(__("%I:%M %p on %B %d, %Y"), $zone["now"], true); ?>
+							(GMT<?php if ($zone["offset"] >= 0) echo "+"; ?><?php echo $zone["offset"]; ?>)
 						</option>
 <?php endforeach; ?>
 					</select>
