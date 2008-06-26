@@ -35,7 +35,7 @@
 			elseif (!isset($options["where"]))
 				$options["where"] = array();
 
-			array_merge($options["where"], array(self::$enabled_feathers, self::$private));
+			$options["where"] = array_merge($options["where"], array(self::$enabled_feathers, self::$private));
 
 			parent::grab($this, $post_id, $options);
 
@@ -57,7 +57,7 @@
 			elseif (!isset($options["where"]))
 				$options["where"] = array();
 
-			array_merge($options["where"], array(self::$enabled_feathers, self::$private));
+			$options["where"] = array_merge($options["where"], array(self::$enabled_feathers, self::$private));
 
 			fallback($options["order"], "`__posts`.`pinned` desc, `__posts`.`created_at` desc, `__posts`.`id` desc");
 
