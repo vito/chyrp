@@ -82,7 +82,8 @@
 		}
 		public function alt_text_field($post = null) {
 			if (isset($post) and $post->feather != "photo") return;
-			if (isset($_GET['feather']) and $_GET['feather'] != "photo") return;
+			if (!isset($_GET['feather']) and Config::current()->enabled_feathers[0] != "photo" or
+			    isset($_GET['feather']) and $_GET['feather'] != "photo") return;
 ?>
 					<p>
 						<label for="option_alt_text"><?php echo __("Alt-Text", "photo"); ?></label>
