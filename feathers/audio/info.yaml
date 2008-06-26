@@ -7,8 +7,3 @@ author:
   url: http://i.am.toogeneric.com/
 plural: audio
 uploader: true
-
-# 2.0: Updated for Chyrp v2.0, added external uploading
-# 1.0.6: Updated for Chyrp v1.1
-# 1.0.5: Updated for Chyrp v1.0.4
-# 1.0.4: Fixed editing borking the file upload if you don't choose a file

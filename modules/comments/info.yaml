@@ -1,6 +1,6 @@
 name: Comment System
 url: http://chyrp.net/
-version: 2.0
+version: 2.0.1
 description: Adds commenting functionality to posts, including Defensio spam protection, auto-reloading, pagination, etc. etc.
 author:
   name: Alex Suraci
@@ -8,12 +8,3 @@ author:
 notifications:
   - Please remember to update the permission settings for each group.
 confirm: Do you want to remove the Comments from the database?
-
-# 2.0: Updated for Chyrp v2.0
-# 1.0.7: Updated for Chyrp v1.1.3, author URL is automatically prefixed with http:// if no scheme is set
-# 1.0.6: Updated for Chyrp v1.1, added comments RSS.
-# 1.0.5: Updated for Chyrp v1.0.4
-# 1.0.4: Fixed the comment count function, much more accurate now.
-# 1.0.3: Updated for Chyrp v1.0.3
-# 1.0.2: Updated for Chyrp v1.0.2
-# 1.0 : Initial release.

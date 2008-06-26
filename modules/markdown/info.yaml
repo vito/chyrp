@@ -8,7 +8,3 @@ author:
 conflicts:
   - textilize
   - wpformatting
-
-# 2.0: Updated for Chyrp v2.0
-# 1.0.2: Updated for Chyrp v1.1
-# 1.0.1: Name and description are now translatable

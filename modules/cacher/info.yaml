@@ -7,5 +7,3 @@ author:
   url: http://i.am.toogeneric.com/
 notifications:
   - Please make sure that /modules/cacher/cache is writable by the server. If you are not certain whether it is or not, CHMOD it to 777.
-
-# 1.0: Initial release for Chyrp v2.0
