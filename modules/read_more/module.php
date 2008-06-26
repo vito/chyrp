@@ -8,7 +8,10 @@
 		}
 		static function makesafe($text, $post) {
 			if (!is_string($text)) return;
-			if (!isset($post->id) or !strstr($text, "<!--more-->") or isset($_GET['feed'])) return $text;
+			if (!isset($post->id) or !strstr($text, "<!--more-->")) return $text;
+
+			if (isset($_GET['feed']))
+				return str_replace("<!--more-->", "", $text);
 
 			# For the curious: e51b2b9a58824dd068d8777ec6e97e4d is a md5 of "replace me!"
 			return str_replace("<!--more-->", '<a class="read_more" href="'.$post->url().'">e51b2b9a58824dd068d8777ec6e97e4d</a>(((more)))', $text);
