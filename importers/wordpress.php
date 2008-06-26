@@ -1,6 +1,9 @@
 <?php
 	require_once "../includes/common.php";
 
+	if (ini_get("memory_limit") < 20) # Some imports are relatively large.
+		ini_set("memory_limit", "20M");
+
 	if (!in_array("text", $config->enabled_feathers))
 		error(__("Missing Feather"), __("Importing from WordPress requires the Text feather to be installed and enabled."));
 
@@ -11,7 +14,18 @@
 	if (!empty($_POST)) {
 		switch($_POST['step']) {
 			case "1":
-				$xml = simplexml_load_file($_FILES['xml_file']['tmp_name'], "SimpleXMLElement", LIBXML_NOCDATA);
+				$stupid_xml = utf8_encode(file_get_contents($_FILES['xml_file']['tmp_name']));
+				$sane_xml = preg_replace(array("/<wp:comment_content>(?!<!\[CDATA\[)/", "/(?!\]\]>)<\/wp:comment_content>/"),
+				                         array("<wp:comment_content><![CDATA[", "]]></wp:comment_content>"),
+				                         $stupid_xml);
+
+				$fix_amps_count = 1;
+				while ($fix_amps_count)
+					$sane_xml = preg_replace("/<wp:meta_value>(.+)&(?!amp;)(.+)<\/wp:meta_value>/m",
+					                         "<wp:meta_value>\\1&amp;\\2</wp:meta_value>",
+					                         $sane_xml, -1, $fix_amps_count);
+
+				$xml = simplexml_load_string($sane_xml, "SimpleXMLElement", LIBXML_NOCDATA);
 
 				if ($xml and strpos($xml->channel->generator, "wordpress.org")) {
 					foreach ($xml->channel->item as $item) {
@@ -32,7 +46,7 @@
 
 						$clean = (isset($wordpress->post_name)) ? $wordpress->post_name : sanitize($item->title) ;
 
-						if ($wordpress->post_type == "post") {
+						if (empty($wordpress->post_type) or $wordpress->post_type == "post") {
 							$status_translate = array("publish"    => "public",
 							                          "draft"      => "draft",
 							                          "private"    => "private",
@@ -46,12 +60,12 @@
 							$_POST['pinned']  = false;
 							$_POST['created_at'] = ($wordpress->post_date == "0000-00-00 00:00:00") ? datetime() : $wordpress->post_date ;
 
-							$data = $values = array("title" => $item->title, "body" => $content->encoded);
+							$data = $values = array("title" => (string) $item->title, "body" => (string) $content->encoded);
 							$post = Post::add($data, $clean, Post::check_url($clean));
 
 							$trigger->call("import_wordpress_post", array($item, $post));
 						} elseif ($wordpress->post_type == "page") {
-							$page = Page::add($item->title, $content->encoded, 0, true, 0, $clean, Page::check_url($clean));
+							$page = Page::add((string) $item->title, (string) $content->encoded, 0, true, 0, $clean, Page::check_url($clean));
 							$trigger->call("import_wordpress_page", array($item, $post));
 						}
 					}

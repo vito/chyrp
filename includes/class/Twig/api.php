@@ -157,7 +157,6 @@ class Twig_BaseLoader
 	{
 		$code = $this->compileTemplate($name, NULL, $fn);
 		#echo "<textarea rows=15 style=width:100%>".htmlspecialchars(print_r($code, true))."</textarea>";
-		echo $code;
 		eval('?>' . $code);
 	}
 }

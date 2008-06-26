@@ -2,10 +2,12 @@
 	class ReadMore extends Module {
 		public function __construct() {
 			$this->addAlias("markup_post_text", "makesafe", 8);
+
 			if (ADMIN)
 				$this->addAlias("markup_post_text", "read_more");
 		}
 		static function makesafe($text, $post) {
+			if (!is_string($text)) return;
 			if (!isset($post->id) or !strstr($text, "<!--more-->")) return $text;
 
 			# For the curious: e51b2b9a58824dd068d8777ec6e97e4d is a md5 of "replace me!"

@@ -115,7 +115,7 @@
 		 */
 		static function add($body, $author, $url, $email, $ip, $agent, $status, $signature, $timestamp, $post_id, $user_id) {
 			if (!empty($url)) # Add the http:// if it isn't there.
-				if (!parse_url($url, PHP_URL_SCHEME))
+				if (!@parse_url($url, PHP_URL_SCHEME))
 					$url = "http://".$url;
 
 			$sql = SQL::current();
