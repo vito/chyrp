@@ -47,7 +47,7 @@ class Twig_Compiler
 
 	public function string($value)
 	{
-		$this->format('"%s"', addcslashes($value, "\t\""));
+		$this->format('"%s"', addcslashes($value, "\t\"\n"));
 	}
 
 	public function repr($value)

@@ -255,7 +255,7 @@ class Twig_Lexer
 		                    NULL, $this->cursor)) {
 			$this->cursor += strlen($match[0]);
 			$this->lineno += substr_count($match[0], '\n');
-			$value = stripcslashes(substr($match[0], 1, strlen($match[0]) - 2));
+			$value = substr($match[0], 1, strlen($match[0]) - 2);
 			return Twig_Token::String($value, $this->lineno);
 		}
 
