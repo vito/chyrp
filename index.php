@@ -3,24 +3,24 @@
 
 	$trigger->call("top");
 
-	switch($action) {
+	switch($route->action) {
 		case "index": case "search": case "drafts": case "feather":
 			$context = array("posts" => $posts);
 
-			if ($action == "feather") {
+			if ($route->action == "feather") {
 				$theme->title = ucfirst($_GET['action']);
 				$context["feather"] = $_GET['action'];
-			} elseif ($action == "search") {
+			} elseif ($route->action == "search") {
 				$theme->title = fix(_f("Search results for \"%s\"", array(urldecode($_GET['query'])), "html"));
 				$context["search"] = urldecode($_GET['query']);
-			} elseif ($action == "drafts")
+			} elseif ($route->action == "drafts")
 				$theme->title = __("Drafts");
 
-			$theme->load(array("content/".$action, "content/index"), $context);
+			$theme->load(array("content/".$route->action, "content/index"), $context);
 
 			break;
 		case "view": case "id":
-			if ($action == "id")
+			if ($route->action == "id")
 				redirect($post->url());
 
 			if (!$post->theme_exists())
@@ -183,15 +183,15 @@
 
 			$page_exists = false;
 			foreach ($config->enabled_modules as $module)
-				if (file_exists(MODULES_DIR."/".$module."/pages/".$action.".php"))
-					$page_exists = require MODULES_DIR."/".$module."/pages/".$action.".php";
+				if (file_exists(MODULES_DIR."/".$module."/pages/".$route->action.".php"))
+					$page_exists = require MODULES_DIR."/".$module."/pages/".$route->action.".php";
 
 			foreach ($config->enabled_feathers as $feather)
-				if (file_exists(FEATHERS_DIR."/".$feather."/pages/".$action.".php"))
-					$page_exists = require FEATHERS_DIR."/".$feather."/pages/".$action.".php";
+				if (file_exists(FEATHERS_DIR."/".$feather."/pages/".$route->action.".php"))
+					$page_exists = require FEATHERS_DIR."/".$feather."/pages/".$route->action.".php";
 
-			if (file_exists(THEME_DIR."/pages/".$action.".twig"))
-				$page_exists = $theme->load("pages/".$action);
+			if (file_exists(THEME_DIR."/pages/".$route->action.".twig"))
+				$page_exists = $theme->load("pages/".$route->action);
 
 			if (!$page_exists)
 				show_404();

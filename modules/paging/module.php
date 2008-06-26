@@ -8,7 +8,6 @@
 			return str_replace("<!--page-->", "(((page)))", $text);
 		}
 		public function split($text, $post) {
-			global $action;
 			if (!strpos($text, "(((page)))"))
 				return $text;
 

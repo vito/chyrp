@@ -5,7 +5,6 @@
 	header("Content-Type: application/x-javascript");
 	header("Cache-Control: no-cache, must-revalidate");
 	header("Expires: Mon, 03 Jun 1991 05:30:00 GMT");
-	$action = $_GET['action'];
 	$page = fallback($_GET['page'], 1, true);
 	$more_options_string = (empty($_COOKIE['show_more_options'])) ? __("More Options &raquo;") : __("&laquo; Fewer Options") ;
 ?>

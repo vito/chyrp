@@ -43,7 +43,6 @@
 		 *     $home_text - Text for the "Home" link
 		 */
 		public function list_pages($home_link = true, $home_text = null, $main_class = "page_list", $list_class = "page_list_item", $show_order_fields = false) {
-			global $action;
 			fallback($home_text, __("Home"));
 
 			$this->page_list = '<ul class="'.$main_class.'">'."\n";
@@ -51,7 +50,7 @@
 			$this->pages = Page::find(array("where" => "`show_in_list` = 1", "order" => "`list_order` asc"));
 
 			if ($home_link)
-				$this->page_list.= $this->tabs.'<li class="'.$list_class.($action == "index" ? " selected" : "").'">'."\n".$this->tabs."\t".'<a href="'.Config::current()->url.'">'.$home_text.'</a>'."\n".$this->tabs.'</li>'."\n";
+				$this->page_list.= $this->tabs.'<li class="'.$list_class.(Route::current()->action == "index" ? " selected" : "").'">'."\n".$this->tabs."\t".'<a href="'.Config::current()->url.'">'.$home_text.'</a>'."\n".$this->tabs.'</li>'."\n";
 
 			foreach ($this->pages as $page)
 				if ($page->parent_id == 0)
@@ -74,9 +73,9 @@
 		 *     <list_pages>
 		 */
 		public function recurse_pages($page, $main_class = "page_list", $list_class = "page_list_item", $show_order_fields = false) {
-			global $pages, $action;
+			global $pages;
 
-			$selected = ($action == 'page' and $_GET['url'] == $page->url) ? ' selected' : '';
+			$selected = (Route::current()->action == 'page' and $_GET['url'] == $page->url) ? ' selected' : '';
 			$this->page_list.= sprintf($this->tabs.'<li class="%s" id="page_list_%s">'."\n".$this->tabs."\t".'<a href="%s">%s</a>', $list_class.$selected, $page->id, $page->url(), $page->title);
 
 			if ($show_order_fields)
@@ -203,12 +202,14 @@
 		 * Outputs the default JavaScript script references.
 		 */
 		public function javascripts() {
-			global $action, $posts;
+			global $posts;
+
+			$route = Route::current();
 
 			$args = "";
 			$i = 0;
 			foreach ($_GET as $val)
-				if (!empty($val) and $val != $action)
+				if (!empty($val) and $val != $route->action)
 					$args.= "&amp;arg".++$i."=".urlencode($val);
 
 			# if (isset($posts))
@@ -219,7 +220,7 @@
 
 			$javascripts = $trigger->filter("scripts", '<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".
 			                                           '<script src="'.$config->chyrp_url.'/includes/lib/gz.php?file=plugins.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".
-			                                           '<script src="'.$config->chyrp_url.'/includes/javascript.php?action='.$action.$args.'" type="text/javascript" charset="utf-8"></script>');
+			                                           '<script src="'.$config->chyrp_url.'/includes/javascript.php?action='.$route->action.$args.'" type="text/javascript" charset="utf-8"></script>');
 
 			if (file_exists(THEMES_DIR."/".$this->theme."/javascripts/")) {
 				foreach(glob(THEMES_DIR."/".$this->theme."/javascripts/*.js") as $file)
@@ -237,13 +238,13 @@
 		 * Outputs the Feed references.
 		 */
 		public function feeds() {
-			global $action, $pluralizations;
+			global $pluralizations;
 
 			$config = Config::current();
 			$request = ($config->clean_urls) ? rtrim(Route::current()->request, "/") : htmlspecialchars($_SERVER['REQUEST_URI']) ;
 			$append = ($config->clean_urls) ?
 			              "/feed" :
-			              ((count($_GET) == 1 and $action == "index") ?
+			              ((count($_GET) == 1 and Route::current()->action == "index") ?
 			                "/?feed" :
 			                  "&amp;feed") ;
 			$append.= ($config->clean_urls) ?
@@ -262,7 +263,7 @@
 		}
 
 		public function prepare($context) {
-			global $action, $modules, $feathers;
+			global $modules, $feathers;
 
 			$this->context = array_merge($context, $this->context);
 
@@ -277,7 +278,7 @@
 			$this->context["title"]        = $this->title;
 			$this->context["site"]         = $config;
 			$this->context["visitor"]      = $visitor;
-			$this->context["route"]        = array("action" => $action, "ajax" => AJAX);
+			$this->context["route"]        = Route::current();
 			$this->context["hide_admin"]   = isset($_SESSION["chyrp_hide_admin"]);
 			$this->context["version"]      = CHYRP_VERSION;
 			$this->context["now"]          = now();
@@ -312,8 +313,6 @@
 		 * Loads a theme's file and extracts the passed array into the scope.
 		 */
 		public function load($file, $context = array()) {
-			global $action;
-
 			if (is_array($file))
 				for ($i = 0; $i < count($file); $i++) {
 					$check = ($file[$i][0] == '/' or preg_match("/[a-zA-Z]:\\\/", $file[$i])) ? $file[$i] : $this->directory.$file[$i] ;

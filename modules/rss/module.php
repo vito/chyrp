@@ -7,8 +7,7 @@
 			$config->set("rss_feeds", array());
 		}
 		public function runtime() {
-			global $action;
-			if ($action != "index" or JAVASCRIPT or ADMIN) return;
+			if (Route::current()->action != "index" or JAVASCRIPT or ADMIN) return;
 
 			$config = Config::current();
 			if (time() - $config->rss_last_update >= 5) {

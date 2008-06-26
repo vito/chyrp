@@ -97,7 +97,7 @@
 		 * Views a post.
 		 */
 		public function view() {
-			global $action, $post;
+			global $post;
 
 			$config = Config::current();
 			$get = array_map("urldecode", $_GET);
@@ -123,17 +123,18 @@
 		 * Handles theme previewing.
 		 */
 		public function theme_preview() {
-			global $action;
 			$visitor = Visitor::current();
+
 			if (!$visitor->group()->can("change_settings")) {
 				$this->index();
-				return $action = "index";
+				return $route->action = "index";
 			}
+
 			if (empty($_GET['theme']))
 				error(__("Error"), __("Please specify a theme to preview."));
 
 			$this->index();
-			return $action = "index";
+			return $route->action = "index";
 		}
 
 		/**

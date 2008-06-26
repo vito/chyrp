@@ -9,7 +9,6 @@
 		}
 
 		static function __install() {
-			$visitor = Visitor::current();
 			$sql = SQL::current();
 			$sql->query("CREATE TABLE IF NOT EXISTS `__comments` (
 			                 `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -147,7 +146,7 @@
 			redirect("/admin/?action=manage_comments&spammed");
 		}
 
-		static function admin_approve_comment($action) {
+		static function admin_approve_comment() {
 			$comment = new Comment($_GET['id']);
 			if (!$comment->editable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this comment.", "comments"));
@@ -169,7 +168,7 @@
 			redirect("/admin/?action=manage_comments&denied");
 		}
 
-		static function admin_manage_spam($action) {
+		static function admin_manage_spam() {
 			if (!Comment::any_editable() and !Comment::any_deletable())
 				error(__("Access Denied"), __("You do not have sufficient privileges to manage any comments.", "comments"));
 
@@ -794,21 +793,20 @@ var Comment = {
 		}
 
 		static function view_feed() {
-			global $post, $action, $comments, $title;
+			global $post, $comments, $title;
 
 			$title = $post->title();
 			fallback($title, ucfirst($post->feather)." Post #".$post->id);
 
 			$title = _f("Comments on &#8220;%s&#8221;", array(htmlspecialchars($title)), "comments");
 
-			error_log(print_r($_SERVER, true));
 			$ids = array_reverse($post->comments->array[0]);
 
 			$comments = array();
 			for ($i = 0; $i < 20; $i++)
 				$comments[] = new Comment($ids[$i]);
 
-			$action = "comments_rss";
+			Route::current()->action = "comments_rss";
 		}
 
 		static function metaWeblog_getPost($struct, $post) {
@@ -826,14 +824,14 @@ var Comment = {
 		}
 
 		static function filter_post($post) {
-			global $action;
 			$sql = SQL::current();
 			$config = Config::current();
 			$trigger = Trigger::current();
 			$visitor = Visitor::current();
+			$route = Route::current();
 			$post->commentable = Comment::user_can($post);
 
-			if ($action == "view") {
+			if ($route->action == "view") {
 				$get_comments = $sql->select("comments", # table
 				                             "`__comments`.`id`", # fields
 				                             "`post_id` = :post_id and (

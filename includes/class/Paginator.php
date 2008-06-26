@@ -123,7 +123,6 @@
 		 *     $clean_urls - Whether to link with dirty or clean URLs.
 		 */
 		public function next_page_url($clean_urls = true) {
-			global $action;
 			$request = rtrim($_SERVER['REQUEST_URI'], "/");
 			$only_page = (count($_GET) == 1 and isset($_GET[$this->name]));
 
@@ -144,7 +143,6 @@
 		 *     $clean_urls - Whether to link with dirty or clean URLs.
 		 */
 		public function prev_page_url($clean_urls = true) {
-			global $action;
 			$request = rtrim($_SERVER['REQUEST_URI'], "/");
 			$only_page = (count($_GET) == 1 and isset($_GET[$this->name]));
 

@@ -33,7 +33,7 @@
 	if (!defined('TRACKBACK'))   define('TRACKBACK', false);
 
 	# Use GZip compression if available.
-	if (extension_loaded("zlib") and ini_get("zlib.output_compression") and in_array("gzip", explode(", ", $_SERVER['HTTP_ACCEPT_ENCODING']))) {
+	if (extension_loaded("zlib") and ini_get("zlib.output_compression") and substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip")) {
 		ob_start("ob_gzhandler");
 		header("Content-Encoding: gzip");
 	} else
@@ -270,8 +270,6 @@
 	#     <Theme>
 	require_once INCLUDES_DIR."/class/Theme.php";
 
-	$action =& $route->action;
-
 	# Load the translation engine
 	load_translator("chyrp", INCLUDES_DIR."/locale/".$config->locale.".mo");
 
@@ -280,7 +278,7 @@
 		load_translator("theme", THEME_DIR."/locale/".$config->locale.".mo");
 
 	if (!JAVASCRIPT and !XML_RPC) {
-		if (!$visitor->group()->can("view_site") and !in_array($action, array("process_login", "login", "logout", "process_registration", "register")))
+		if (!$visitor->group()->can("view_site") and !in_array($route->action, array("process_login", "login", "logout", "process_registration", "register")))
 			if ($trigger->exists("can_not_view_site"))
 				$trigger->call("can_not_view_site");
 			else
@@ -293,7 +291,7 @@
 			$statuses[] = "registered_only";
 		if ($visitor->group()->can("view_private"))
 			$statuses[] = "private";
-		if ($action == "view" and $visitor->group()->can("view_draft"))
+		if ($route->action == "view" and $visitor->group()->can("view_draft"))
 			$statuses[] = "draft";
 
 		Post::$private = "`__posts`.`status` in ('".implode("', '", $statuses)."')";
@@ -301,24 +299,24 @@
 
 		$trigger->call("runtime");
 
-		if (in_array($action, array_values($pluralizations["feathers"])))
-			$action = "feather";
+		if (in_array($route->action, array_values($pluralizations["feathers"])))
+			$route->action = "feather";
 
 		if (isset($_GET['feed']))
 			$config->posts_per_page = $config->feed_items;
 
-		if (!ADMIN and method_exists($main, $action))
-			$main->$action();
+		if (!ADMIN and method_exists($main, $route->action))
+			call_user_func(array($main, $route->action));
 
 		# Call any plugin route functions
 		if (!ADMIN)
-			$trigger->call("route_".$action);
+			$trigger->call("route_".$route->action);
 
 		if (isset($_GET['feed']))
-			if ($trigger->exists($action."_feed")) # What about custom feeds?
-				$trigger->call($action."_feed");
+			if ($trigger->exists($route->action."_feed")) # What about custom feeds?
+				$trigger->call($route->action."_feed");
 			elseif (isset($posts)) # Are there already posts to show?
-				$action = "feed";
+				$route->action = "feed";
 			else
 				redirect($route->url("feed/")); # Really? Nothing? Too bad. MAIN FEED 4 U.
 	}

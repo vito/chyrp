@@ -43,6 +43,12 @@
 		public $action = "";
 
 		/**
+		 * Boolean: $ajax
+		 * Shortcut to the AJAX constant (useful for Twig).
+		 */
+		public $ajax = AJAX;
+
+		/**
 		 * Function: __construct
 		 * Filters the key => val code so that modules may extend it.
 		 */
@@ -238,7 +244,7 @@
 			if (preg_match("/".$post_url."/", rtrim($this->request, "/"), $matches)) {
 				array_shift($matches);
 
-				$this->action = $this->action = "view";
+				$this->action = "view";
 
 				foreach ($parameters[1] as $index => $parameter)
 					if ($parameters[1][$index][0] == "(")

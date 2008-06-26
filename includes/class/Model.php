@@ -27,7 +27,7 @@
 		 *     read_from - An array to read from instead of performing another query.
 		 */
 		protected static function grab($model, $id, $options = array()) {
-			global $loaded_models, $action;
+			global $loaded_models;
 			$model_name = strtolower(get_class($model));
 
 			if ($model_name == "visitor")
@@ -48,7 +48,7 @@
 			$options["select"] = (array) $options["select"];
 
 			$trigger = Trigger::current();
-			$options = $trigger->filter($action."_".$model_name."_grab", $options);
+			$options = $trigger->filter(Route::current()->action."_".$model_name."_grab", $options);
 			$options = $trigger->filter($model_name."_grab", $options);
 
 			$sql = SQL::current();
@@ -101,8 +101,6 @@
 		 *     <Model.grab>
 		 */
 		protected static function search($model, $options = array(), $options_for_object = array()) {
-			global $action;
-
 			$model_name = strtolower($model);
 
 			if ($model_name == "visitor")
@@ -124,7 +122,7 @@
 			$options["select"] = (array) $options["select"];
 
 			$trigger = Trigger::current();
-			$options = $trigger->filter($action."_".pluralize($model_name)."_get", $options);
+			$options = $trigger->filter(Route::current()->action."_".pluralize($model_name)."_get", $options);
 			$options = $trigger->filter(pluralize($model_name)."_get", $options);
 
 			$grab = SQL::current()->select($options["from"], $options["select"], $options["where"], $options["order"], $options["params"], $options["limit"], $options["offset"], $options["group"], $options["left_join"]);
