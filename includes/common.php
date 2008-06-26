@@ -294,8 +294,8 @@
 		if ($route->action == "view" and $visitor->group()->can("view_draft"))
 			$statuses[] = "draft";
 
-		Post::$private = "`__posts`.`status` in ('".implode("', '", $statuses)."')";
-		Post::$enabled_feathers = " and `__posts`.`feather` in ('".implode("', '", $config->enabled_feathers)."')";
+		Post::$private = "`__posts`.`status` IN ('".implode("', '", $statuses)."')";
+		Post::$enabled_feathers = "`__posts`.`feather` IN ('".implode("', '", $config->enabled_feathers)."')";
 
 		$trigger->call("runtime");
 
