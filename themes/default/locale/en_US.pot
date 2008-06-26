@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-24 22:58-0500\n"
+"PO-Revision-Date: 2008-06-25 20:23-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -115,7 +115,7 @@ msgstr ""
 msgid "Archives"
 msgstr ""
 
-#: themes/default/content/post.twig:21
+#: themes/default/content/post.twig:22
 #, php-format
 msgid "%s Comment"
 msgid_plural "%s Comments"
@@ -161,7 +161,7 @@ msgstr ""
 msgid "Lost Password"
 msgstr ""
 
-#: themes/default/content/post.twig:2
+#: themes/default/content/post.twig:3
 msgid "This post is a draft."
 msgstr ""
 
@@ -279,7 +279,7 @@ msgstr ""
 msgid "There don't seem to be any posts in the timeframe you specified."
 msgstr ""
 
-#: themes/default/content/post.twig:30
+#: themes/default/content/post.twig:33
 #: themes/default/content/comment.twig:11
 msgid "Delete"
 msgstr ""
@@ -289,7 +289,7 @@ msgstr ""
 msgid "Logged in as %s"
 msgstr ""
 
-#: themes/default/content/post.twig:2
+#: themes/default/content/post.twig:3
 msgid "(click to hide)"
 msgstr ""
 
@@ -297,7 +297,7 @@ msgstr ""
 msgid "There aren't any tags yet. Such a shame."
 msgstr ""
 
-#: themes/default/content/post.twig:27
+#: themes/default/content/post.twig:30
 msgid "Trackback"
 msgstr ""
 
@@ -307,11 +307,11 @@ msgstr ""
 msgid "Log In"
 msgstr ""
 
-#: themes/default/content/post.twig:8
+#: themes/default/content/post.twig:7
 msgid "pinned"
 msgstr ""
 
-#: themes/default/content/post.twig:29
+#: themes/default/content/post.twig:32
 #: themes/default/content/comment.twig:10
 msgid "Edit"
 msgstr ""
