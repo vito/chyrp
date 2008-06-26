@@ -1,6 +1,6 @@
 name: Photo
 url: http://chyrp.net/
-version: 2
+version: 2.0.1
 description: A photo feather, allowing you to upload any type of picture, with a caption.
 author:
   name: Alex Suraci
