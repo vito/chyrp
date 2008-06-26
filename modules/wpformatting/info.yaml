@@ -6,7 +6,7 @@ author:
   name: Matt Mullenweg
   url: http://photomatt.net/
 conflicts:
-  - textile
+  - textilize
   - markdown
 
 # 2.0: Updated for Chyrp v2.0

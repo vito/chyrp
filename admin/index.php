@@ -3,7 +3,7 @@
 
 	require_once "../includes/common.php";
 
-	$action = ($_GET['action'] == "index") ? $admin->determine_action() : $_GET['action'];
+	$action = ($_GET['action'] == "index" or !isset($_GET['action'])) ? $admin->determine_action() : $_GET['action'];
 
 	class AdminTwig {
 		public function __construct() {
