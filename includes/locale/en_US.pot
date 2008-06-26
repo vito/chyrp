@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-25 20:23-0500\n"
+"PO-Revision-Date: 2008-06-26 18:48-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -66,8 +66,8 @@ msgstr ""
 #: index.php:116
 #: index.php:126
 #: index.php:134
-#: includes/helpers.php:925
-#: includes/helpers.php:927
+#: includes/helpers.php:932
+#: includes/helpers.php:934
 #: includes/controller/Main.php:134
 #: includes/controller/Main.php:162
 #: includes/controller/Main.php:165
@@ -109,7 +109,7 @@ msgstr ""
 msgid "User Settings"
 msgstr ""
 
-#: install.php:533
+#: install.php:532
 #: includes/bookmarklet.php:264
 msgid "Done!"
 msgstr ""
@@ -235,7 +235,7 @@ msgstr ""
 msgid "Lost Password Request"
 msgstr ""
 
-#: importers/wordpress.php:153
+#: importers/wordpress.php:169
 msgid "Please upload your WordPress eXtended RSS .xml file."
 msgstr ""
 
@@ -251,12 +251,8 @@ msgstr ""
 msgid "(ex. 12)"
 msgstr ""
 
-#: install.php:502
-msgid "h:i A \o\\n F jS, Y"
-msgstr ""
-
-#: includes/helpers.php:912
-#: includes/helpers.php:915
+#: includes/helpers.php:919
+#: includes/helpers.php:922
 #, php-format
 msgid "Only %s files are supported."
 msgstr ""
@@ -273,7 +269,7 @@ msgstr ""
 #: install.php:482
 #: includes/bookmarklet.php:188
 #: includes/ajax.php:30
-#: importers/wordpress.php:159
+#: importers/wordpress.php:175
 #: importers/textpattern.php:183
 #: admin/layout/partials/post_fields.twig:5
 #: admin/layout/pages/manage_export.twig:15
@@ -440,7 +436,7 @@ msgstr ""
 msgid "Body"
 msgstr ""
 
-#: importers/wordpress.php:177
+#: importers/wordpress.php:192
 #: importers/tumblr.php:215
 #: importers/textpattern.php:202
 #: importers/movabletype.php:149
@@ -581,8 +577,8 @@ msgid "Usually something like <code>http://example.com/images/</code>"
 msgstr ""
 
 #: install.php:474
-#: install.php:518
-#: install.php:522
+#: install.php:517
+#: install.php:521
 #: importers/textpattern.php:171
 msgid "Password"
 msgstr ""
@@ -595,7 +591,7 @@ msgstr ""
 msgid "Attempts to notify sites linked to from your posts. It'll slow down things a bit when you submit them, depending on how many links you've got in it."
 msgstr ""
 
-#: install.php:526
+#: install.php:525
 msgid "E-Mail Address"
 msgstr ""
 
@@ -614,7 +610,7 @@ msgstr ""
 msgid "Please enter a username for your account."
 msgstr ""
 
-#: install.php:535
+#: install.php:534
 msgid "Chyrp has been successfully installed."
 msgstr ""
 
@@ -661,7 +657,7 @@ msgstr ""
 msgid "(full path)"
 msgstr ""
 
-#: importers/wordpress.php:73
+#: importers/wordpress.php:89
 msgid "Chyrp: Import: WordPress"
 msgstr ""
 
@@ -674,7 +670,7 @@ msgstr ""
 msgid "Created"
 msgstr ""
 
-#: install.php:541
+#: install.php:540
 msgid "Install some Modules."
 msgstr ""
 
@@ -710,7 +706,7 @@ msgstr ""
 msgid "An ID is required to delete a post."
 msgstr ""
 
-#: importers/wordpress.php:60
+#: importers/wordpress.php:76
 msgid "File does not seem to be a valid WordPress export file."
 msgstr ""
 
@@ -900,7 +896,7 @@ msgstr[1] ""
 msgid "Cancel"
 msgstr ""
 
-#: install.php:522
+#: install.php:521
 msgid "(again)"
 msgstr ""
 
@@ -936,7 +932,7 @@ msgstr ""
 #: includes/controller/Admin.php:20
 #: includes/controller/Admin.php:35
 #: includes/bookmarklet.php:5
-#: importers/wordpress.php:8
+#: importers/wordpress.php:11
 #: importers/tumblr.php:8
 #: importers/textpattern.php:7
 #: importers/movabletype.php:8
@@ -973,7 +969,7 @@ msgstr ""
 msgid "You do not have sufficient privileges to create pages."
 msgstr ""
 
-#: importers/wordpress.php:162
+#: importers/wordpress.php:178
 msgid "Usually something like <code>http://example.com/wp-content/uploads/</code>"
 msgstr ""
 
@@ -1044,7 +1040,7 @@ msgstr ""
 msgid "Publish"
 msgstr ""
 
-#: importers/wordpress.php:155
+#: importers/wordpress.php:171
 msgid "eXtended .XML File"
 msgstr ""
 
@@ -1097,7 +1093,7 @@ msgstr ""
 msgid "Second submitted"
 msgstr ""
 
-#: install.php:540
+#: install.php:539
 msgid "Look for a translation for your language."
 msgstr ""
 
@@ -1169,7 +1165,7 @@ msgstr ""
 msgid "Archive"
 msgstr ""
 
-#: importers/wordpress.php:176
+#: importers/wordpress.php:191
 #: importers/tumblr.php:214
 #: importers/textpattern.php:201
 #: importers/movabletype.php:148
@@ -1215,7 +1211,7 @@ msgstr ""
 msgid "Timestamp"
 msgstr ""
 
-#: importers/wordpress.php:5
+#: importers/wordpress.php:8
 msgid "Importing from WordPress requires the Text feather to be installed and enabled."
 msgstr ""
 
@@ -1227,7 +1223,7 @@ msgstr ""
 msgid "All posts and pages have been successfully imported."
 msgstr ""
 
-#: includes/common.php:285
+#: includes/common.php:287
 msgid "You are not allowed to view this site."
 msgstr ""
 
@@ -1316,7 +1312,7 @@ msgid "Password cannot be blank."
 msgstr ""
 
 #: upgrade.php:520
-#: importers/wordpress.php:175
+#: importers/wordpress.php:190
 #: importers/tumblr.php:213
 #: importers/textpattern.php:200
 #: importers/movabletype.php:147
@@ -1332,7 +1328,7 @@ msgstr ""
 msgid "If the admin section looks ugly to you, refresh your browser or clear your cache. The admin area is completely redesigned in 2.0."
 msgstr ""
 
-#: importers/wordpress.php:152
+#: importers/wordpress.php:168
 msgid "Import WordPress"
 msgstr ""
 
@@ -1345,12 +1341,12 @@ msgstr ""
 msgid "There are many new and extended Group permissions with this release. If you are the administrator, you'll probably want to enable them for your group, under Manage > Groups."
 msgstr ""
 
-#: install.php:530
+#: install.php:529
 msgid "Install! &rarr;"
 msgstr ""
 
 #: upgrade.php:531
-#: install.php:545
+#: install.php:544
 msgid "Take me to my site! &rarr;"
 msgstr ""
 
@@ -1473,8 +1469,8 @@ msgstr ""
 msgid "Edit Group &#8220;%s&#8221;"
 msgstr ""
 
-#: includes/helpers.php:912
-#: includes/helpers.php:915
+#: includes/helpers.php:919
+#: includes/helpers.php:922
 msgid "Invalid Extension"
 msgstr ""
 
@@ -1514,7 +1510,7 @@ msgstr ""
 msgid "Fake post ID, or nonexistant post."
 msgstr ""
 
-#: importers/wordpress.php:168
+#: importers/wordpress.php:183
 #: importers/tumblr.php:206
 #: importers/textpattern.php:193
 #: importers/movabletype.php:140
@@ -1559,16 +1555,17 @@ msgstr ""
 msgid "Importing from TextPattern requires the Text feather to be installed and enabled."
 msgstr ""
 
+#: install.php:502
+#: admin/layout/pages/general_settings.twig:39
+msgid "%I:%M %p on %B %d, %Y"
+msgstr ""
+
 #: includes/xmlrpc.php:102
 msgid "There isn't a title on that page."
 msgstr ""
 
 #: admin/layout/pages/delete_page.twig:14
 msgid "Delete children?"
-msgstr ""
-
-#: admin/layout/pages/general_settings.twig:39
-msgid "h:i A \\o\\\\n F jS, Y"
 msgstr ""
 
 #: admin/layout/pages/manage_posts.twig:42
@@ -1584,7 +1581,7 @@ msgstr ""
 msgid "Show in pages list?"
 msgstr ""
 
-#: install.php:539
+#: install.php:538
 msgid "<strong>Delete install.php</strong>, you won't need it anymore."
 msgstr ""
 
@@ -1616,7 +1613,7 @@ msgstr ""
 #: includes/ajax.php:82
 #: admin/layout/pages/user_settings.twig:34
 #: admin/layout/pages/route_settings.twig:45
-#: admin/layout/pages/general_settings.twig:53
+#: admin/layout/pages/general_settings.twig:55
 #: admin/layout/pages/edit_user.twig:49
 #: admin/layout/pages/edit_group.twig:29
 #: admin/layout/pages/content_settings.twig:36
@@ -1703,13 +1700,13 @@ msgstr ""
 msgid "Default User Group"
 msgstr ""
 
-#: importers/wordpress.php:159
+#: importers/wordpress.php:175
 #: importers/textpattern.php:183
 msgid "What URL is used for attached/embedded media?"
 msgstr ""
 
 #: install.php:470
-#: install.php:514
+#: install.php:513
 #: importers/textpattern.php:167
 msgid "Username"
 msgstr ""
@@ -1743,7 +1740,7 @@ msgstr ""
 msgid "(none)"
 msgstr ""
 
-#: install.php:543
+#: install.php:542
 msgid "Read &#8220;Getting Started&#8221;"
 msgstr ""
 
@@ -1764,7 +1761,7 @@ msgstr ""
 msgid "filter:"
 msgstr ""
 
-#: includes/helpers.php:1063
+#: includes/helpers.php:1070
 msgid "Sorry, but you are looking for something that isn't here."
 msgstr ""
 
@@ -1790,7 +1787,7 @@ msgstr ""
 msgid "Add Group"
 msgstr ""
 
-#: install.php:542
+#: install.php:541
 msgid "Find some Feathers you want."
 msgstr ""
 
@@ -1820,14 +1817,14 @@ msgstr ""
 msgid "Posted"
 msgstr ""
 
-#: importers/wordpress.php:5
+#: importers/wordpress.php:8
 #: importers/tumblr.php:5
 #: importers/textpattern.php:5
 #: importers/movabletype.php:5
 msgid "Missing Feather"
 msgstr ""
 
-#: install.php:512
+#: install.php:511
 msgid "Admin Account"
 msgstr ""
 
@@ -1894,12 +1891,12 @@ msgstr ""
 #: includes/controller/Admin.php:1164
 #: includes/controller/Admin.php:1179
 #: includes/controller/Admin.php:1235
-#: includes/common.php:285
+#: includes/common.php:287
 #: includes/bookmarklet.php:5
 #: includes/ajax.php:13
 #: includes/ajax.php:93
 #: includes/ajax.php:123
-#: importers/wordpress.php:8
+#: importers/wordpress.php:11
 #: importers/tumblr.php:8
 #: importers/textpattern.php:7
 #: importers/movabletype.php:8

@@ -243,9 +243,6 @@
 		foreach (Spyc::YAMLLoad(FEATHERS_DIR."/".$feather."/info.yaml") as $key => $val)
 			$feathers[$feather]->$key = $val;
 	}
-	foreach ($feathers as $feather)
-		if (is_callable(array($feather, "__init")))
-			$feather->__init();
 
 	/**
 	 * Array: $modules
@@ -259,6 +256,11 @@
 		foreach (Spyc::YAMLLoad(MODULES_DIR."/".$module."/info.yaml") as $key => $val)
 			$modules[$module]->$key = $val;
 	}
+
+	# Now that they're all instantiated, call __init().
+	foreach ($feathers as $feather)
+		if (is_callable(array($feather, "__init")))
+			$feather->__init();
 	foreach ($modules as $module)
 		if (is_callable(array($module, "__init")))
 			$module->__init();
