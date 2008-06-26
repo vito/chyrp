@@ -61,12 +61,13 @@
 							$_POST['created_at'] = ($wordpress->post_date == "0000-00-00 00:00:00") ? datetime() : $wordpress->post_date ;
 							$_POST['feather'] = "text";
 
-							$data = array("title" => (string) $item->title, "body" => (string) $content->encoded);
+							$data = array("title" => trim($item->title), "body" => trim($content->encoded));
+
 							$post = Post::add($data, $clean, Post::check_url($clean));
 
 							$trigger->call("import_wordpress_post", array($item, $post));
 						} elseif ($wordpress->post_type == "page") {
-							$page = Page::add((string) $item->title, (string) $content->encoded, 0, true, 0, $clean, Page::check_url($clean));
+							$page = Page::add(trim($item->title), trim($content->encoded), 0, true, 0, $clean, Page::check_url($clean));
 							$trigger->call("import_wordpress_page", array($item, $post));
 						}
 					}
