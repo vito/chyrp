@@ -45,9 +45,8 @@
 						<select name="locale" id="locale">
 							{% for locale in locales %}
 							<option value="$locale.code"${ locale.code | option_selected(site.locale) }>$locale.name</option>
-							{% else %}
-							<option value="en_US">English (US)</option>
 							{% endfor %}
+							<option value="en_US">English (US)</option>
 						</select>
 					</p>
 
