@@ -1099,7 +1099,7 @@
 			$config->set("timezone", $_POST['timezone']);
 			$config->set("locale", $_POST['locale']);
 
-			$this->context["updated"] = true;
+			redirect("/admin/?action=general_settings&updated");
 		}
 
 		/**
@@ -1110,6 +1110,7 @@
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
+			$this->context["updated"] = isset($_GET['updated']);
 			$this->context["groups"] = Group::find(array("order" => "`__groups`.`id` desc"));
 
 			if (empty($_POST))
@@ -1123,7 +1124,7 @@
 			$config->set("default_group", $_POST['default_group']);
 			$config->set("guest_group", $_POST['guest_group']);
 
-			$this->context["updated"] = true;
+			redirect("/admin/?action=user_settings&updated");
 		}
 
 		/**
@@ -1133,6 +1134,8 @@
 		public function content_settings() {
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+
+			$this->context["updated"] = isset($_GET['updated']);
 
 			if (empty($_POST))
 				return;
@@ -1146,7 +1149,7 @@
 			$config->set("send_pingbacks", !empty($_POST['send_pingbacks']));
 			$config->set("posts_per_page", $_POST['posts_per_page']);
 
-			$this->context["updated"] = true;
+			redirect("/admin/?action=content_settings&updated");
 		}
 
 		/**
@@ -1156,6 +1159,8 @@
 		public function route_settings() {
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+
+			$this->context["updated"] = isset($_GET['updated']);
 
 			if (empty($_POST))
 				return;
@@ -1167,7 +1172,7 @@
 			$config->set("clean_urls", !empty($_POST['clean_urls']));
 			$config->set("post_url", $_POST['post_url']);
 
-			$this->context["updated"] = true;
+			redirect("/admin/?action=route_settings&updated");
 		}
 
 		/**

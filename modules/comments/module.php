@@ -303,6 +303,8 @@
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
+			$this->context["updated"] = isset($_GET['updated']);
+
 			if (empty($_POST))
 				return;
 
@@ -323,7 +325,7 @@
 					$config->set("defensio_api_key", $_POST['defensio_api_key']);
 			}
 
-			$admin->context["updated"] = true;
+			redirect("/admin/?action=comment_settings&updated");
 		}
 
 		static function settings_nav($navs) {
