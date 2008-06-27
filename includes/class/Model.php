@@ -36,8 +36,8 @@
 			fallback($options["select"], "__".pluralize($model_name).".*");
 			fallback($options["from"], ($model_name == "visitor" ? "users" : pluralize($model_name)));
 			fallback($options["left_join"], array());
-			fallback($options["where"], array("`__".pluralize($model_name)."`.`id` = :id"));
-			fallback($options["params"], array(":id" => $id));
+			fallback($options["where"], array());
+			fallback($options["params"], array());
 			fallback($options["group"], array());
 			fallback($options["order"], "`__".pluralize($model_name)."`.`id` DESC");
 			fallback($options["offset"], null);
@@ -46,6 +46,11 @@
 			$options["where"] = (array) $options["where"];
 			$options["from"] = (array) $options["from"];
 			$options["select"] = (array) $options["select"];
+
+			if (is_numeric($id)) {
+				$options["where"][] = "`__".pluralize($model_name)."`.`id` = :id";
+				$options["params"][":id"] = $id;
+			}
 
 			$trigger = Trigger::current();
 			$options = $trigger->filter(Route::current()->action."_".$model_name."_grab", $options);
