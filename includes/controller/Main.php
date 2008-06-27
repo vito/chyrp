@@ -124,6 +124,7 @@
 		 */
 		public function theme_preview() {
 			$visitor = Visitor::current();
+			$route = Route::current();
 
 			if (!$visitor->group()->can("change_settings")) {
 				$this->index();
