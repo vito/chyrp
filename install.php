@@ -10,6 +10,7 @@
 	ini_set('display_errors', true);
 
 	require_once INCLUDES_DIR."/class/QueryBuilder.php"; # SQL query builder
+	require_once INCLUDES_DIR."/class/Timestamp.php"; # A smarter DateTime class
 	require_once INCLUDES_DIR."/lib/spyc.php"; # YAML parser
 	require_once INCLUDES_DIR."/class/Trigger.php";
 	require_once INCLUDES_DIR."/class/Model.php";
@@ -37,8 +38,7 @@
 	$index = (parse_url($url, PHP_URL_PATH)) ? "/".trim(parse_url($url, PHP_URL_PATH), "/")."/" : "/" ;
 	$htaccess = "<IfModule mod_rewrite.c>\nRewriteEngine On\nRewriteBase ".str_replace("install.php", "", $index)."\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule ^.+$ index.php [L]\n</IfModule>";
 
-	if (file_exists(MAIN_DIR."/.htaccess"))
-		$htaccess_has_chyrp = preg_match("/".preg_quote($htaccess, "/")."/", file_get_contents(MAIN_DIR."/.htaccess"));
+	$htaccess_has_chyrp = (file_exists(MAIN_DIR."/.htaccess") and preg_match("/".preg_quote($htaccess, "/")."/", file_get_contents(MAIN_DIR."/.htaccess")));
 
 	$errors = array();
 	$installed = false;
@@ -270,19 +270,6 @@
 				                   ":group_id" => 1,
 				                   ":joined_at" => datetime()
 				             ));
-
-			session_set_save_handler(array("Session", "open"),
-			                         array("Session", "close"),
-			                         array("Session", "read"),
-			                         array("Session", "write"),
-			                         array("Session", "destroy"),
-			                         array("Session", "gc"));
-			session_set_cookie_params(60 * 60 * 24 * 30);
-			session_name(sanitize(camelize($config->name), false, true));
-			session_start();
-
-			$_SESSION['chyrp_login'] = $_POST['login'];
-			$_SESSION['chyrp_password'] = md5($_POST['password_1']);
 
 			$installed = true;
 		}
@@ -533,7 +520,7 @@
 			<p>
 				<?php echo __("Chyrp has been successfully installed."); ?>
 			</p>
-			<h2>So, what now?</h2>
+			<h2><?php echo __("So, what now?"); ?></h2>
 			<ol>
 				<li><?php echo __("<strong>Delete install.php</strong>, you won't need it anymore."); ?></li>
 				<li><a href="http://chyrp.net/extend/browse/translations"><?php echo __("Look for a translation for your language."); ?></a></li>
