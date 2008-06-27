@@ -237,7 +237,7 @@
 				$clean,
 				$url);
 
-			$trigger->call('metaWeblog_newPost', array($post, $args[3]), true);
+			$trigger->call('metaWeblog_newPost', array($args[3], $post), true);
 
 			# Send any and all pingbacks to URLs in the body
 			if (Config::current()->send_pingbacks)
