@@ -212,7 +212,16 @@ function extend_draggables() {
 		}
 	})
 	$(".info_link").click(function(){
-		$(this).parent().find(".description").toggle("blind", {}, null, function(){ draw_conflicts() })
+		$(this).parent().find(".description").toggle("blind", {}, null, function(){
+			draw_conflicts()
+			$("ul.extend").height("auto")
+			$("ul.extend").each(function(){
+				if ($(".enable ul.extend").height() > $(this).height())
+					$(this).height($(".enable ul.extend").height())
+				if ($(".disable ul.extend").height() > $(this).height())
+					$(this).height($(".disable ul.extend").height())
+			})
+		})
 		return false
 	})
 	$("ul.extend li").css("cursor", "move")
