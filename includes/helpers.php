@@ -1475,20 +1475,22 @@
 	}
 
 	/**
-	 * Function: utc_timezones
-	 * Returns every possible UTC timezone as array([offset], [valid PHP timezone], DateTime).
+	 * Function: timezones
+	 * Returns an array of timezones that have unique offsets. Doesn't count deprecated timezones.
 	 */
-	function utc_timezones($datetime = false) {
+	function timezones($datetime = false) {
+		$deprecated = array("Brazil/Acre", "Brazil/DeNoronha", "Brazil/East", "Brazil/West", "Canada/Atlantic", "Canada/Central", "Canada/East-Saskatchewan", "Canada/Eastern", "Canada/Mountain", "Canada/Newfoundland", "Canada/Pacific", "Canada/Saskatchewan", "Canada/Yukon", "CET", "Chile/Continental", "Chile/EasterIsland", "CST6CDT", "Cuba", "EET", "Egypt", "Eire", "EST", "EST5EDT", "Etc/GMT", "Etc/GMT+0", "Etc/GMT+1", "Etc/GMT+10", "Etc/GMT+11", "Etc/GMT+12", "Etc/GMT+2", "Etc/GMT+3", "Etc/GMT+4", "Etc/GMT+5", "Etc/GMT+6", "Etc/GMT+7", "Etc/GMT+8", "Etc/GMT+9", "Etc/GMT-0", "Etc/GMT-1", "Etc/GMT-10", "Etc/GMT-11", "Etc/GMT-12", "Etc/GMT-13", "Etc/GMT-14", "Etc/GMT-2", "Etc/GMT-3", "Etc/GMT-4", "Etc/GMT-5", "Etc/GMT-6", "Etc/GMT-7", "Etc/GMT-8", "Etc/GMT-9", "Etc/GMT0", "Etc/Greenwich", "Etc/UCT", "Etc/Universal", "Etc/UTC", "Etc/Zulu", "Factory", "GB", "GB-Eire", "GMT", "GMT+0", "GMT-0", "GMT0", "Greenwich", "Hongkong", "HST", "Iceland", "Iran", "Israel", "Jamaica", "Japan", "Kwajalein", "Libya", "MET", "Mexico/BajaNorte", "Mexico/BajaSur", "Mexico/General", "MST", "MST7MDT", "Navajo", "NZ", "NZ-CHAT", "Poland", "Portugal", "PRC", "PST8PDT", "ROC", "ROK", "Singapore", "Turkey", "UCT", "Universal", "US/Alaska", "US/Aleutian", "US/Arizona", "US/Central", "US/East-Indiana", "US/Eastern", "US/Hawaii", "US/Indiana-Starke", "US/Michigan", "US/Mountain", "US/Pacific", "US/Pacific-New", "US/Samoa", "UTC", "W-SU", "WET", "Zulu");
+
 		$zones = array();
 		$offsets = array();
 		foreach (DateTimeZone::listIdentifiers() as $timezone) {
+			if (in_array($timezone, $deprecated)) continue;
+
 			$dt = new DateTime("now", new DateTimeZone($timezone));
 			$offset = $dt->getTimezone()->getOffset($dt);
-			if (!in_array($offset, $offsets)) {
-				$zones[] = array("offset" => $offset / 3600,
+			if (!in_array($offset, $offsets))
+				$zones[] = array("offset" => ($offsets[] = $offset) / 3600,
 				                 "name" => $timezone);
-				$offsets[] = $offset;
-			}
 		}
 
 		foreach ($zones as $index => &$zone)

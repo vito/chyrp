@@ -484,7 +484,7 @@
 				<p id="timezone_field">
 					<label for="timezone"><?php echo __("What time is it?"); ?></label>
 					<select name="timezone" id="timezone">
-<?php foreach (utc_timezones() as $zone): ?>
+<?php foreach (timezones() as $zone): ?>
 						<option value="<?php echo $zone["name"]; ?>"<?php selected($zone["name"], fallback($_POST['timezone'], "Africa/Abidjan", true)); ?>>
 							<?php echo when(__("%I:%M %p on %B %d, %Y"), $zone["now"], true); ?>
 							(GMT<?php if ($zone["offset"] >= 0) echo "+"; ?><?php echo $zone["offset"]; ?>)
