@@ -293,7 +293,7 @@
 	 */
 	function when($formatting, $when, $strftime = false) {
 		if ($when instanceof DateTime)
-			$when = gmstrftime("%c", time() + $when->getTimezone()->getOffset($when));
+			$when = gmdate("Y-m-d H:i:s", time() + $when->getTimezone()->getOffset($when));
 
 		$time = (is_numeric($when)) ? $when : strtotime($when) ;
 
@@ -314,7 +314,7 @@
 		fallback($when, now()->format("c"));
 
 		if ($when instanceof DateTime)
-			$when = gmstrftime("%c", time() + $when->getTimezone()->getOffset($when));
+			$when = gmdate("Y-m-d H:i:s", time() + $when->getTimezone()->getOffset($when));
 
 		$time = (is_numeric($when)) ? $when : strtotime($when) ;
 
