@@ -523,6 +523,9 @@
 			<h2><?php echo __("So, what now?"); ?></h2>
 			<ol>
 				<li><?php echo __("<strong>Delete install.php</strong>, you won't need it anymore."); ?></li>
+<?php if (!is_writable(INCLUDES_DIR."/caches")): ?>
+				<li><?php echo __("CHMOD <code>/includes/caches</code> to 777."); ?></li>
+<?php endif; ?>
 				<li><a href="http://chyrp.net/extend/browse/translations"><?php echo __("Look for a translation for your language."); ?></a></li>
 				<li><a href="http://chyrp.net/extend/browse/modules"><?php echo __("Install some Modules."); ?></a></li>
 				<li><a href="http://chyrp.net/extend/browse/feathers"><?php echo __("Find some Feathers you want."); ?></a></li>
