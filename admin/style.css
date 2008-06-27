@@ -561,6 +561,7 @@ a.prev_page {
 	border: 1px solid #ccc;
 	border-top-color: #f1f1f1;
 	border-left-color: #f1f1f1;
+	border-bottom: 1px solid #ccc !important;
 	cursor: pointer;
 }
 .button {
@@ -599,9 +600,10 @@ button:active,
 a.next_page:active,
 a.prev_page:active {
 	background-color: #d7d7d7;
-    border-color: #d7d7d7;
-    border-left-color: #b1b1b1;
-    border-top-color: #b1b1b1;
+	border-color: #d7d7d7;
+	border-left-color: #b1b1b1;
+	border-top-color: #b1b1b1;
+	border-bottom-color: #d7d7d7 !important;
 }
 button.boo,
 .button.boo {
@@ -625,6 +627,7 @@ button.boo:active,
     border-color: #b30600;
     border-left-color: #7d0000;
     border-top-color: #7d0000;
+	border-bottom-color: #b30600 !important;
 }
 button.yay,
 .button.yay {
@@ -648,6 +651,7 @@ button.yay:active,
     border-color: #067000;
     border-left-color: #003d00;
     border-top-color: #003d00;
+	border-bottom-color: #067000 !important;
 }
 button img,
 .button img {
