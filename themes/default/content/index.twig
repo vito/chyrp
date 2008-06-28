@@ -3,7 +3,7 @@
 {% for post in posts.paginated %}
 {% include "content/post.twig" %}
 {% else %}
-					<h2>No Posts</h2>
-					<p>Nothing here yet!</p>
+					<h2>${ "No Posts" | translate }</h2>
+					<p>${ "Nothing here yet!" | translate }</p>
 {% endfor %}
 {% endblock %}

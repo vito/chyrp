@@ -91,9 +91,9 @@ $(function(){
 
 var Post = {
 	destroy: function(id) {
-		$("#post_"+id+" .target, #post_"+id+".target").loader()
+		$("#post_"+id).loader()
 		$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "delete_post", id: id }, function(response){
-			$("#post_"+id+" .target, #post_"+id+".target").loader(true)
+			$("#post_"+id).loader(true)
 			if (isError(response)) return
 			$("#post_"+id).animate({ height: "hide", opacity: "hide" }).remove()
 		})

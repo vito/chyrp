@@ -76,13 +76,13 @@
 				try {
 					new PDO($_POST['adapter'].":host=".$_POST['host'].";".((!empty($_POST['port'])) ? "port=".$_POST['port'].";" : "")."dbname=".$_POST['database'], $_POST['username'], $_POST['password']);
 				} catch(PDOException $e) {
-					$errors[] = __("Could not connect to the specified database.");
+					$errors[] = _f("Could not connect to the specified database:\n<pre>%s</pre>", array($e->getMessage()));
 				}
 			elseif ($_POST['adapter'] == "sqlite")
 				try {
 					new PDO("sqlite:".$_POST['database']);
 				} catch(PDOException $e) {
-					$errors[] = __("Could not connect to specified database.");
+					$errors[] = _f("Could not connect to the specified database:\n<pre>%s</pre>", array($e->getMessage()));
 				}
 
 		if (empty($_POST['name']))
