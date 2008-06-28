@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-26 19:24-0500\n"
+"PO-Revision-Date: 2008-06-27 20:21-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -147,6 +147,10 @@ msgstr ""
 #: themes/default/content/search.twig:4
 #, php-format
 msgid "Search results for &#8220;%s&#8221;"
+msgstr ""
+
+#: themes/default/content/post.twig:15
+msgid "%B %d @ %I:%M %p"
 msgstr ""
 
 #: themes/default/forms/user/lost_password.twig:10
@@ -299,6 +303,10 @@ msgstr ""
 
 #: themes/default/content/post.twig:30
 msgid "Trackback"
+msgstr ""
+
+#: themes/default/content/comment.twig:9
+msgid "%B %d, %Y, at %I:%M %p"
 msgstr ""
 
 #: themes/default/sidebar.twig:17
