@@ -30,7 +30,8 @@
 			$config->set("allowed_comment_html", array("strong", "em", "blockquote", "code", "pre", "a"));
 			$config->set("comments_per_page", 25);
 			$config->set("defensio_api_key", null);
-			$config->set("auto_reload_comments", 0);
+			$config->set("auto_reload_comments", 30);
+			$config->set("enable_reload_comments", false);
 
 			Group::add_permission("add_comment");
 			Group::add_permission("add_comment_private");
@@ -51,6 +52,7 @@
 			$config->remove("comments_per_page");
 			$config->remove("defensio_api_key");
 			$config->remove("auto_reload_comments");
+			$config->remove("enable_reload_comments");
 
 			Group::remove_permission("add_comment");
 			Group::remove_permission("add_comment_private");
@@ -315,6 +317,8 @@
 			$config->set("allowed_comment_html", explode(", ", $_POST['allowed_comment_html']));
 			$config->set("default_comment_status", $_POST['default_comment_status']);
 			$config->set("comments_per_page", $_POST['comments_per_page']);
+			$config->set("auto_reload_comments", $_POST['auto_reload_comments']);
+			$config->set("enable_reload_comments", isset($_POST['enable_reload_comments']));
 
 			if (!empty($_POST['defensio_api_key'])) {
 				$_POST['defensio_api_key'] = trim($_POST['defensio_api_key']);
@@ -487,7 +491,7 @@
 			$config = Config::current();
 ?>
 <!-- --><script>
-<?php if ($config->auto_reload_comments): ?>
+<?php if ($config->auto_reload_comments and $config->enable_reload_comments): ?>
 	if ($(".comments").size()) {
 		var updater = setInterval("Comment.reload()", <?php echo $config->auto_reload_comments * 1000; ?>);
 		$("#add_comment").append($(document.createElement("input")).attr({ type: "hidden", name: "ajax", value: "true", id: "ajax" }));
