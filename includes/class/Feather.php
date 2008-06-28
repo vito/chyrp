@@ -35,6 +35,17 @@
 		/**
 		 * Function: setField
 		 * Sets the feather's fields for creating/editing posts with that feather.
+		 *
+		 * Options:
+		 *     attr - The technical name for the field. Think $post->attr.
+		 *     type - The field type. (text, file, text_block, or select)
+		 *     label - The label for the field.
+		 *     preview - Is this field previewable? (Only use one per feather.)
+		 *     optional - Is this field optional?
+		 *     bookmarklet - What to fill this field by in the bookmarklet.
+		 *                   url or page_url - The URL of the page they're viewing when they open the bookmarklet.
+		 *                   title or page_title - The title of the page they're viewing when they open the bookmarklet.
+		 *                   selection - Their selection on the page they're viewing when they open the bookmarklet.
 		 */
 		protected function setField($options) {
 			fallback($options["classes"], array());
