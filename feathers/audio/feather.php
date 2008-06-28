@@ -107,7 +107,8 @@ var ap_clearID = setInterval( ap_registerPlayers, 100 );
 
 			$config = Config::current();
 			$length = filesize(MAIN_DIR.$config->uploads_path.$post->filename);
-			echo '			<enclosure url="'.$config->chyrp_url.$config->uploads_path.$post->filename.'" type="audio/mpeg" length="'.$length.'" />'."\n";
+
+			echo '			<link rel="enclosure" href="'.$config->chyrp_url.$config->uploads_path.$post->filename.'" type="audio/mpeg" title="MP3" length="'.$length.'" />'."\n";
 		}
 		public function flash_player_for($filename, $params = array(), $post) {
 			$vars = "";

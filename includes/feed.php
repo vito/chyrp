@@ -4,7 +4,9 @@
 ?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<title><?php echo htmlspecialchars($config->name.$title, ENT_NOQUOTES, "utf-8"); ?></title>
+<?php if (!empty($config->description)): ?>
 	<subtitle><?php echo htmlspecialchars($config->description, ENT_NOQUOTES, "utf-8"); ?></subtitle>
+<?php endif; ?>
 	<id><?php echo self_url() ?></id>
 	<updated><?php echo date("c", $latest_timestamp); ?></updated>
 	<link href="<?php echo self_url() ?>" rel="self" type="application/atom+xml" />

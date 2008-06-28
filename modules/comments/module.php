@@ -848,7 +848,7 @@ var Comment = {
 			$route = Route::current();
 			$post->commentable = Comment::user_can($post);
 
-			if ($route->action == "view") {
+			if (isset($route->action) and $route->action == "view") {
 				$get_comments = $sql->select("comments", # table
 				                             "`__comments`.`id`", # fields
 				                             array("`__comments`.`post_id` = :post_id",
