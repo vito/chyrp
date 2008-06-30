@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-30 19:51-0500\n"
+"PO-Revision-Date: 2008-06-30 19:55-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -221,6 +221,14 @@ msgstr ""
 #: admin/layout/pages/delete_post.twig:10
 #: admin/layout/pages/delete_page.twig:10
 msgid "Excerpt"
+msgstr ""
+
+#: admin/layout/pages/extend_modules.twig:16
+#: admin/layout/pages/extend_modules.twig:36
+#: admin/layout/pages/extend_feathers.twig:16
+#: admin/layout/pages/extend_feathers.twig:36
+#, php-format
+msgid "<a href=\"%s\">%s</a> v%s <span class=\"sub\">by %s</span>"
 msgstr ""
 
 #: admin/layout/pages/manage_posts.twig:22
@@ -1057,6 +1065,11 @@ msgstr ""
 #: install.php:477
 #: admin/layout/pages/general_settings.twig:13
 msgid "Site Name"
+msgstr ""
+
+#: admin/layout/pages/extend_themes.twig:16
+#, php-format
+msgid "v%s by %s"
 msgstr ""
 
 #: admin/layout/pages/general_settings.twig:25

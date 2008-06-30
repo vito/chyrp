@@ -13,7 +13,7 @@
 					<span>${ theme.info.name | translate(theme.name) | escape }</span>
 					<img src="$theme.screenshot" alt="${ ('"' ~ theme.info.name ~ '"') | escape } screenshot" class="screenshot" width="256" />
 				</a>
-				<br /><small>${ 'v%s by %s' | translate | format(theme.info.version, theme.info.author.link) }</small>
+				<br /><small>${ "v%s by %s" | translate | format(theme.info.version, theme.info.author.link) }</small>
 				<br />
 				<br />
 				{% if theme.name == site.theme %}

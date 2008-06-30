@@ -13,7 +13,7 @@
 						{% if module.help %}
 						<a href="{% admin "help&id="~module.help %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
 						{% endif %}
-						${ '<a href="%s">%s</a> v%s <span class="sub">by %s</span>' | translate | format(module.url, module.name | translate(safename), module.version, module.author.link) }
+						${ "<a href=\"%s\">%s</a> v%s <span class=\"sub\">by %s</span>" | translate | format(module.url, module.name | translate(safename), module.version, module.author.link) }
 						<div class="expand">
 							<div class="description">
 								$module.description {# translation is done in the controller #}
@@ -33,7 +33,7 @@
 						{% if module.help %}
 						<a href="{% admin "help&id="~module.help %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
 						{% endif %}
-						${ '<a href="%s">%s</a> v%s <span class="sub">by %s</span>' | translate | format(module.url, module.name | translate(safename), module.version, module.author.link) }
+						${ "<a href=\"%s\">%s</a> v%s <span class=\"sub\">by %s</span>" | translate | format(module.url, module.name | translate(safename), module.version, module.author.link) }
 						<div class="expand">
 							<div class="description">
 								$module.description {# translation is done in the controller #}

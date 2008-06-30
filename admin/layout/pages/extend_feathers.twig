@@ -13,7 +13,7 @@
 						{% if feather.help %}
 						<a href="{% admin "help&id="~feather.help %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
 						{% endif %}
-						${ '<a href="%s">%s</a> v%s <span class="sub">by %s</span>' | translate | format(feather.url, feather.name | translate(safename), feather.version, feather.author.link) }
+						${ "<a href=\"%s\">%s</a> v%s <span class=\"sub\">by %s</span>" | translate | format(feather.url, feather.name | translate(safename), feather.version, feather.author.link) }
 						<div class="expand">
 							<div class="description">
 								$feather.description {# translation is done in the controller #}
@@ -33,7 +33,7 @@
 						{% if feather.help %}
 						<a href="{% admin "help&id="~feather.help %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
 						{% endif %}
-						${ '<a href="%s">%s</a> v%s <span class="sub">by %s</span>' | translate | format(feather.url, feather.name | translate(safename), feather.version, feather.author.link) }
+						${ "<a href=\"%s\">%s</a> v%s <span class=\"sub\">by %s</span>" | translate | format(feather.url, feather.name | translate(safename), feather.version, feather.author.link) }
 						<div class="expand">
 							<div class="description">
 								$feather.description {# translation is done in the controller #}
