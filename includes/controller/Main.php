@@ -180,8 +180,6 @@
 			if (!eregi("^[[:alnum:]][a-z0-9_.-\+]*@[a-z0-9.-]+\.[a-z]{2,6}$",$_POST['email']))
 				error(__("Error"), __("Unsupported e-mail address."));
 
-			Trigger::current()->call('process_registration');
-
 			User::add($_POST['login'], $_POST['password1'], $_POST['email']);
 
 			$_SESSION['chyrp_login'] = $_POST['login'];

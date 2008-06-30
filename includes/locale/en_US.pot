@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-27 20:21-0500\n"
+"PO-Revision-Date: 2008-06-30 19:51-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -76,10 +76,10 @@ msgstr ""
 #: includes/controller/Main.php:177
 #: includes/controller/Main.php:179
 #: includes/controller/Main.php:181
+#: includes/controller/Main.php:198
 #: includes/controller/Main.php:200
-#: includes/controller/Main.php:202
-#: includes/controller/Main.php:216
-#: includes/controller/Main.php:230
+#: includes/controller/Main.php:214
+#: includes/controller/Main.php:228
 #: includes/controller/Admin.php:354
 #: includes/controller/Admin.php:359
 #: includes/controller/Admin.php:362
@@ -114,9 +114,9 @@ msgstr ""
 msgid "Done!"
 msgstr ""
 
-#: includes/controller/Admin.php:896
-#: includes/controller/Admin.php:1010
-#: includes/controller/Admin.php:1046
+#: includes/controller/Admin.php:897
+#: includes/controller/Admin.php:1012
+#: includes/controller/Admin.php:1048
 #: includes/ajax.php:148
 #: includes/ajax.php:193
 msgid "You do not have sufficient privileges to enable/disable feathers."
@@ -147,8 +147,8 @@ msgid "Full Name"
 msgstr ""
 
 #: includes/ajax.php:68
-#: admin/layout/partials/post_fields.twig:64
-#: admin/layout/partials/page_fields.twig:28
+#: admin/layout/partials/post_fields.twig:66
+#: admin/layout/partials/page_fields.twig:30
 msgid "Slug"
 msgstr ""
 
@@ -184,11 +184,11 @@ msgstr ""
 msgid "Chyrp requires PHP 5. Installation cannot continue."
 msgstr ""
 
-#: includes/controller/Admin.php:1071
-#: includes/controller/Admin.php:1111
-#: includes/controller/Admin.php:1136
-#: includes/controller/Admin.php:1161
-#: includes/controller/Admin.php:1184
+#: includes/controller/Admin.php:1073
+#: includes/controller/Admin.php:1113
+#: includes/controller/Admin.php:1138
+#: includes/controller/Admin.php:1163
+#: includes/controller/Admin.php:1186
 msgid "You do not have sufficient privileges to change settings."
 msgstr ""
 
@@ -271,7 +271,7 @@ msgstr ""
 #: includes/ajax.php:30
 #: importers/wordpress.php:175
 #: importers/textpattern.php:183
-#: admin/layout/partials/post_fields.twig:5
+#: admin/layout/partials/post_fields.twig:6
 #: admin/layout/pages/manage_export.twig:15
 #: admin/layout/pages/manage_export.twig:23
 #: admin/layout/pages/general_settings.twig:26
@@ -297,6 +297,12 @@ msgstr ""
 msgid "Already Installed"
 msgstr ""
 
+#: install.php:79
+#: install.php:85
+#, php-format
+msgid "Could not connect to the specified database:\n<pre>%s</pre>"
+msgstr ""
+
 #: install.php:475
 msgid "Website Setup"
 msgstr ""
@@ -309,12 +315,8 @@ msgstr ""
 msgid "Please enter a valid year and month."
 msgstr ""
 
-#: includes/controller/Admin.php:1186
+#: includes/controller/Admin.php:1188
 msgid "No Theme Specified"
-msgstr ""
-
-#: install.php:79
-msgid "Could not connect to the specified database."
 msgstr ""
 
 #: importers/chyrp.php:31
@@ -346,7 +348,7 @@ msgid "Chyrp's includes directory is not writable by the server. In order for th
 msgstr ""
 
 #: includes/ajax.php:58
-#: admin/layout/partials/post_fields.twig:54
+#: admin/layout/partials/post_fields.twig:56
 msgid "Private"
 msgstr ""
 
@@ -412,7 +414,7 @@ msgstr ""
 msgid "You do not have sufficient privileges to edit pages."
 msgstr ""
 
-#: admin/layout/partials/page_fields.twig:2
+#: admin/layout/partials/page_fields.twig:3
 #: admin/layout/pages/manage_posts.twig:39
 #: admin/layout/pages/manage_pages.twig:28
 msgid "Title"
@@ -428,18 +430,11 @@ msgstr ""
 msgid "Export"
 msgstr ""
 
-#: admin/layout/pages/user_settings.twig:8
-#: admin/layout/pages/route_settings.twig:8
-#: admin/layout/pages/general_settings.twig:8
-#: admin/layout/pages/content_settings.twig:8
-msgid "Settings updated."
-msgstr ""
-
 #: upgrade.php:540
 msgid "What are you upgrading from?"
 msgstr ""
 
-#: admin/layout/partials/page_fields.twig:6
+#: admin/layout/partials/page_fields.twig:7
 msgid "Body"
 msgstr ""
 
@@ -449,6 +444,13 @@ msgstr ""
 #: importers/movabletype.php:149
 #: importers/chyrp.php:163
 msgid "View Site &raquo;"
+msgstr ""
+
+#: admin/layout/pages/user_settings.twig:8
+#: admin/layout/pages/route_settings.twig:8
+#: admin/layout/pages/general_settings.twig:8
+#: admin/layout/pages/content_settings.twig:8
+msgid "Settings updated."
 msgstr ""
 
 #: install.php:440
@@ -516,7 +518,7 @@ msgid "Chyrp: Import: Tumblr"
 msgstr ""
 
 #: includes/ajax.php:54
-#: admin/layout/partials/post_fields.twig:48
+#: admin/layout/partials/post_fields.twig:50
 #: admin/layout/pages/manage_posts.twig:41
 msgid "Status"
 msgstr ""
@@ -541,7 +543,7 @@ msgstr ""
 #: index.php:116
 #: index.php:126
 #: includes/controller/Main.php:163
-#: includes/controller/Main.php:202
+#: includes/controller/Main.php:200
 msgid "You're already logged in."
 msgstr ""
 
@@ -604,7 +606,7 @@ msgid "You do not have sufficient privileges to edit users."
 msgstr ""
 
 #: includes/ajax.php:65
-#: admin/layout/partials/post_fields.twig:61
+#: admin/layout/partials/post_fields.twig:63
 msgid "(shows this post above all others)"
 msgstr ""
 
@@ -678,8 +680,8 @@ msgstr ""
 msgid "Install some Modules."
 msgstr ""
 
-#: includes/controller/Admin.php:884
-#: includes/controller/Admin.php:948
+#: includes/controller/Admin.php:885
+#: includes/controller/Admin.php:950
 #: includes/ajax.php:171
 #: importers/tumblr.php:18
 #, php-format
@@ -727,8 +729,8 @@ msgid "Group deleted."
 msgstr ""
 
 #: includes/controller/Admin.php:819
-#: includes/controller/Admin.php:1008
-#: includes/controller/Admin.php:1044
+#: includes/controller/Admin.php:1010
+#: includes/controller/Admin.php:1046
 #: includes/ajax.php:146
 #: includes/ajax.php:191
 msgid "You do not have sufficient privileges to enable/disable modules."
@@ -773,12 +775,12 @@ msgstr ""
 msgid "or wait 3 seconds."
 msgstr ""
 
-#: install.php:73
-msgid "SQLite database file could not be created. Please CHMOD your Chyrp directory to 777 and try again."
-msgstr ""
-
 #: includes/controller/Admin.php:50
 msgid "An ID is required to edit a post."
+msgstr ""
+
+#: install.php:73
+msgid "SQLite database file could not be created. Please CHMOD your Chyrp directory to 777 and try again."
 msgstr ""
 
 #: admin/layout/layout.twig:25
@@ -814,7 +816,7 @@ msgid "There doesn't seem to be a valid link in your request."
 msgstr ""
 
 #: includes/xmlrpc.php:484
-#: includes/controller/Main.php:200
+#: includes/controller/Main.php:198
 msgid "Login incorrect."
 msgstr ""
 
@@ -1010,7 +1012,7 @@ msgid "Drafts"
 msgstr ""
 
 #: index.php:134
-#: includes/controller/Main.php:230
+#: includes/controller/Main.php:228
 msgid "You must be logged in to access this area."
 msgstr ""
 
@@ -1043,8 +1045,8 @@ msgid "View Post &rarr;"
 msgstr ""
 
 #: includes/bookmarklet.php:211
-#: admin/layout/partials/post_fields.twig:30
-#: admin/layout/partials/page_fields.twig:13
+#: admin/layout/partials/post_fields.twig:32
+#: admin/layout/partials/page_fields.twig:15
 msgid "Publish"
 msgstr ""
 
@@ -1073,10 +1075,10 @@ msgstr ""
 #: includes/controller/Admin.php:516
 #: includes/controller/Admin.php:544
 #: includes/controller/Admin.php:586
-#: includes/controller/Admin.php:1091
-#: includes/controller/Admin.php:1120
-#: includes/controller/Admin.php:1144
-#: includes/controller/Admin.php:1169
+#: includes/controller/Admin.php:1093
+#: includes/controller/Admin.php:1122
+#: includes/controller/Admin.php:1146
+#: includes/controller/Admin.php:1171
 msgid "Invalid security key."
 msgstr ""
 
@@ -1084,7 +1086,7 @@ msgstr ""
 msgid "(usually ok as \"localhost\")"
 msgstr ""
 
-#: includes/controller/Admin.php:1240
+#: includes/controller/Admin.php:1242
 msgid "You do not have sufficient privileges to access this area."
 msgstr ""
 
@@ -1215,7 +1217,7 @@ msgid "Description"
 msgstr ""
 
 #: includes/ajax.php:72
-#: admin/layout/partials/post_fields.twig:68
+#: admin/layout/partials/post_fields.twig:70
 msgid "Timestamp"
 msgstr ""
 
@@ -1231,7 +1233,7 @@ msgstr ""
 msgid "All posts and pages have been successfully imported."
 msgstr ""
 
-#: includes/common.php:287
+#: includes/common.php:304
 msgid "You are not allowed to view this site."
 msgstr ""
 
@@ -1292,7 +1294,7 @@ msgstr ""
 msgid "Registration Disabled"
 msgstr ""
 
-#: includes/controller/Main.php:216
+#: includes/controller/Main.php:214
 msgid "You aren't logged in."
 msgstr ""
 
@@ -1341,7 +1343,7 @@ msgid "Import WordPress"
 msgstr ""
 
 #: includes/ajax.php:57
-#: admin/layout/partials/post_fields.twig:53
+#: admin/layout/partials/post_fields.twig:55
 msgid "Public"
 msgstr ""
 
@@ -1390,7 +1392,7 @@ msgstr ""
 msgid "Please enter a name for your website."
 msgstr ""
 
-#: includes/controller/Admin.php:1186
+#: includes/controller/Admin.php:1188
 msgid "You did not specify a theme to switch to."
 msgstr ""
 
@@ -1405,7 +1407,7 @@ msgid "%s,\n\nWe have received a request for a new password for your account at 
 msgstr ""
 
 #: includes/ajax.php:64
-#: admin/layout/partials/post_fields.twig:60
+#: admin/layout/partials/post_fields.twig:62
 msgid "Pinned?"
 msgstr ""
 
@@ -1448,9 +1450,9 @@ msgstr ""
 msgid "Allow people to register"
 msgstr ""
 
-#: admin/layout/partials/post_fields.twig:34
-#: admin/layout/partials/post_fields.twig:38
-#: admin/layout/partials/page_fields.twig:15
+#: admin/layout/partials/post_fields.twig:36
+#: admin/layout/partials/post_fields.twig:40
+#: admin/layout/partials/page_fields.twig:17
 msgid "Save"
 msgstr ""
 
@@ -1464,7 +1466,7 @@ msgid "That username is already in use."
 msgstr ""
 
 #: includes/ajax.php:59
-#: admin/layout/partials/post_fields.twig:55
+#: admin/layout/partials/post_fields.twig:57
 msgid "Registered Only"
 msgstr ""
 
@@ -1490,7 +1492,7 @@ msgstr ""
 msgid "Upgrade &rarr;"
 msgstr ""
 
-#: admin/layout/partials/page_fields.twig:32
+#: admin/layout/partials/page_fields.twig:34
 msgid "Parent"
 msgstr ""
 
@@ -1529,10 +1531,6 @@ msgstr ""
 #: admin/layout/pages/new_user.twig:25
 #: admin/layout/pages/edit_user.twig:25
 msgid "Login"
-msgstr ""
-
-#: install.php:85
-msgid "Could not connect to specified database."
 msgstr ""
 
 #: install.php:469
@@ -1585,7 +1583,7 @@ msgstr ""
 msgid "Syntax:"
 msgstr ""
 
-#: admin/layout/partials/page_fields.twig:24
+#: admin/layout/partials/page_fields.twig:26
 msgid "Show in pages list?"
 msgstr ""
 
@@ -1593,8 +1591,8 @@ msgstr ""
 msgid "<strong>Delete install.php</strong>, you won't need it anymore."
 msgstr ""
 
-#: includes/controller/Admin.php:886
-#: includes/controller/Admin.php:950
+#: includes/controller/Admin.php:887
+#: includes/controller/Admin.php:952
 #: includes/ajax.php:173
 #: importers/tumblr.php:20
 #, php-format
@@ -1629,7 +1627,7 @@ msgid "Update"
 msgstr ""
 
 #: includes/ajax.php:56
-#: admin/layout/partials/post_fields.twig:51
+#: admin/layout/partials/post_fields.twig:53
 msgid "Draft"
 msgstr ""
 
@@ -1884,22 +1882,22 @@ msgstr ""
 #: includes/controller/Admin.php:586
 #: includes/controller/Admin.php:610
 #: includes/controller/Admin.php:819
-#: includes/controller/Admin.php:896
-#: includes/controller/Admin.php:1008
+#: includes/controller/Admin.php:897
 #: includes/controller/Admin.php:1010
-#: includes/controller/Admin.php:1044
+#: includes/controller/Admin.php:1012
 #: includes/controller/Admin.php:1046
-#: includes/controller/Admin.php:1071
-#: includes/controller/Admin.php:1091
-#: includes/controller/Admin.php:1111
-#: includes/controller/Admin.php:1120
-#: includes/controller/Admin.php:1136
-#: includes/controller/Admin.php:1144
-#: includes/controller/Admin.php:1161
-#: includes/controller/Admin.php:1169
-#: includes/controller/Admin.php:1184
-#: includes/controller/Admin.php:1240
-#: includes/common.php:287
+#: includes/controller/Admin.php:1048
+#: includes/controller/Admin.php:1073
+#: includes/controller/Admin.php:1093
+#: includes/controller/Admin.php:1113
+#: includes/controller/Admin.php:1122
+#: includes/controller/Admin.php:1138
+#: includes/controller/Admin.php:1146
+#: includes/controller/Admin.php:1163
+#: includes/controller/Admin.php:1171
+#: includes/controller/Admin.php:1186
+#: includes/controller/Admin.php:1242
+#: includes/common.php:304
 #: includes/bookmarklet.php:5
 #: includes/ajax.php:13
 #: includes/ajax.php:93

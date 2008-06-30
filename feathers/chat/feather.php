@@ -84,7 +84,7 @@
 		}
 		static function help() {
 			global $title, $body;
-			$title = "Dialogue Formatting";
+			$title = __("Dialogue Formatting", "chat");
 			$body = "<p>".__("To give yourself a special CSS class, append \" (me)\" to your username, like so:", "chat")."</p>\n";
 			$body.= "<ul class=\"list\">\n";
 			$body.= "\t<li>&quot;&lt;Alex&gt;&quot; &rarr; &quot;&lt;Alex (me)&gt;&quot;</li>\n";

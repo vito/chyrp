@@ -22,25 +22,25 @@ ruby gettext.rb ./modules/wpformatting/ --domain=wpformatting > ./modules/wpform
 
 ruby gettext.rb ./themes/default/                             > ./themes/default/locale/en_US.pot # "theme" domain is automatically assumed in themes
 
-# msgfmt -v ./includes/locale/en_US.pot         -o ./includes/locale/en_US.mo
-#
-# msgfmt -v ./feathers/audio/locale/en_US.pot   -o ./feathers/audio/locale/en_US.mo
-# msgfmt -v ./feathers/chat/locale/en_US.pot    -o ./feathers/chat/locale/en_US.mo
-# msgfmt -v ./feathers/link/locale/en_US.pot    -o ./feathers/link/locale/en_US.mo
-# msgfmt -v ./feathers/photo/locale/en_US.pot   -o ./feathers/photo/locale/en_US.mo
-# msgfmt -v ./feathers/quote/locale/en_US.pot   -o ./feathers/quote/locale/en_US.mo
-# msgfmt -v ./feathers/text/locale/en_US.pot    -o ./feathers/text/locale/en_US.mo
-# msgfmt -v ./feathers/video/locale/en_US.pot   -o ./feathers/video/locale/en_US.mo
-#
-# msgfmt -v ./modules/cacher/locale/en_US.pot         -o ./modules/cacher/locale/en_US.mo
-# msgfmt -v ./modules/comments/locale/en_US.pot       -o ./modules/comments/locale/en_US.mo
-# msgfmt -v ./modules/markdown/locale/en_US.pot       -o ./modules/markdown/locale/en_US.mo
-# msgfmt -v ./modules/paging/locale/en_US.pot         -o ./modules/paging/locale/en_US.mo
-# msgfmt -v ./modules/read_more/locale/en_US.pot      -o ./modules/read_more/locale/en_US.mo
-# msgfmt -v ./modules/rss/locale/en_US.pot            -o ./modules/rss/locale/en_US.mo
-# msgfmt -v ./modules/smartypants/locale/en_US.pot    -o ./modules/smartypants/locale/en_US.mo
-# msgfmt -v ./modules/tags/locale/en_US.pot           -o ./modules/tags/locale/en_US.mo
-# msgfmt -v ./modules/textilize/locale/en_US.pot      -o ./modules/textilize/locale/en_US.mo
-# msgfmt -v ./modules/wpformatting/locale/en_US.pot   -o ./modules/wpformatting/locale/en_US.mo
-#
-# msgfmt -v ./themes/default/locale/en_US.pot   -o ./themes/default/locale/en_US.mo
+msgfmt -v ./includes/locale/en_US.pot         -o ./includes/locale/en_US.mo
+
+msgfmt -v ./feathers/audio/locale/en_US.pot   -o ./feathers/audio/locale/en_US.mo
+msgfmt -v ./feathers/chat/locale/en_US.pot    -o ./feathers/chat/locale/en_US.mo
+msgfmt -v ./feathers/link/locale/en_US.pot    -o ./feathers/link/locale/en_US.mo
+msgfmt -v ./feathers/photo/locale/en_US.pot   -o ./feathers/photo/locale/en_US.mo
+msgfmt -v ./feathers/quote/locale/en_US.pot   -o ./feathers/quote/locale/en_US.mo
+msgfmt -v ./feathers/text/locale/en_US.pot    -o ./feathers/text/locale/en_US.mo
+msgfmt -v ./feathers/video/locale/en_US.pot   -o ./feathers/video/locale/en_US.mo
+
+msgfmt -v ./modules/cacher/locale/en_US.pot         -o ./modules/cacher/locale/en_US.mo
+msgfmt -v ./modules/comments/locale/en_US.pot       -o ./modules/comments/locale/en_US.mo
+msgfmt -v ./modules/markdown/locale/en_US.pot       -o ./modules/markdown/locale/en_US.mo
+msgfmt -v ./modules/paging/locale/en_US.pot         -o ./modules/paging/locale/en_US.mo
+msgfmt -v ./modules/read_more/locale/en_US.pot      -o ./modules/read_more/locale/en_US.mo
+msgfmt -v ./modules/rss/locale/en_US.pot            -o ./modules/rss/locale/en_US.mo
+msgfmt -v ./modules/smartypants/locale/en_US.pot    -o ./modules/smartypants/locale/en_US.mo
+msgfmt -v ./modules/tags/locale/en_US.pot           -o ./modules/tags/locale/en_US.mo
+msgfmt -v ./modules/textilize/locale/en_US.pot      -o ./modules/textilize/locale/en_US.mo
+msgfmt -v ./modules/wpformatting/locale/en_US.pot   -o ./modules/wpformatting/locale/en_US.mo
+
+msgfmt -v ./themes/default/locale/en_US.pot   -o ./themes/default/locale/en_US.mo

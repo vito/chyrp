@@ -16,7 +16,7 @@
 						${ '<a href="%s">%s</a> v%s <span class="sub">by %s</span>' | translate | format(module.url, module.name | translate(safename), module.version, module.author.link) }
 						<div class="expand">
 							<div class="description">
-								${ module.description | translate(safename) }
+								$module.description {# translation is done in the controller #}
 							</div>
 							<noscript><a class="enable_button" href="{% admin "disable&module="~safename %}">${ "Disable" | translate }</a></noscript>
 						</div>
@@ -36,7 +36,7 @@
 						${ '<a href="%s">%s</a> v%s <span class="sub">by %s</span>' | translate | format(module.url, module.name | translate(safename), module.version, module.author.link) }
 						<div class="expand">
 							<div class="description">
-								${ module.description | translate(safename) }
+								$module.description {# translation is done in the controller #}
 							</div>
 							<noscript><a class="disable_button" href="{% admin "enable&module="~safename %}">${ "Enable" | translate }</a></noscript>
 						</div>

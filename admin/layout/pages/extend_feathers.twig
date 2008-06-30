@@ -16,7 +16,7 @@
 						${ '<a href="%s">%s</a> v%s <span class="sub">by %s</span>' | translate | format(feather.url, feather.name | translate(safename), feather.version, feather.author.link) }
 						<div class="expand">
 							<div class="description">
-								${ feather.description | translate(safename) }
+								$feather.description {# translation is done in the controller #}
 							</div>
 							<noscript><a class="enable_button" href="{% admin "disable&feather="~safename %}">${ "Disable" | translate }</a></noscript>
 						</div>
@@ -36,7 +36,7 @@
 						${ '<a href="%s">%s</a> v%s <span class="sub">by %s</span>' | translate | format(feather.url, feather.name | translate(safename), feather.version, feather.author.link) }
 						<div class="expand">
 							<div class="description">
-								${ feather.description | translate(safename) }
+								$feather.description {# translation is done in the controller #}
 							</div>
 							<noscript><a class="disable_button" href="{% admin "enable&feather="~safename %}">${ "Enable" | translate }</a></noscript>
 						</div>

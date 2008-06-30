@@ -848,6 +848,7 @@
 					fallback($info["author"], array("name" => "", "url" => ""));
 					fallback($info["help"]);
 
+					$info["description"] = __($info["description"], $folder);
 					$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
 					$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
 
@@ -915,6 +916,7 @@
 					fallback($info["author"], array("name" => "", "url" => ""));
 					fallback($info["help"]);
 
+					$info["description"] = __($info["description"], $folder);
 					$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
 					$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
 
