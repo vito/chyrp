@@ -137,7 +137,7 @@
 		$thumb_width = $thumb_size;
 		$factor = $image_width / $thumb_size;
 		$thumb_height = intval($image_height / $factor);
-		if ($thumb_height>$thumb_size) {
+		if ($thumb_height > $thumb_size) {
 			$thumb_height = $thumb_size;
 			$factor = $image_height / $thumb_size;
 			$thumb_width = intval($image_width / $factor);

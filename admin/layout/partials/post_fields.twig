@@ -1,3 +1,4 @@
+					${ trigger.call("before_post_fields") }
 					{% for field in feather.fields %}
 					<p>
 						<label for="$field.attr">
@@ -22,6 +23,7 @@
 						{% endif %}
 					</p>
 					{% endfor %}
+					${ trigger.call("after_post_fields") }
 
 					<div class="buttons">
 {% if route.action == "write_post" %}
