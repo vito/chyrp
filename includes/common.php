@@ -293,8 +293,7 @@
 			$statuses[] = "registered_only";
 		if ($visitor->group()->can("view_private"))
 			$statuses[] = "private";
-		if (($route->action == "view" or $route->action == "drafts" or ADMIN or AJAX) and
-		    $visitor->group()->can("view_draft"))
+		if (($route->action == "view" or $route->action == "drafts" or ADMIN or AJAX) and $visitor->group()->can("view_draft"))
 			$statuses[] = "draft";
 
 		Post::$private = "`__posts`.`status` IN ('".implode("', '", $statuses)."')";

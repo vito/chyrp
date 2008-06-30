@@ -9,9 +9,6 @@
 			$this->respondTo("filter_post", "filter_post");
 			$this->respondTo("new_post_options", "alt_text_field");
 			$this->respondTo("edit_post_options", "alt_text_field");
-
-			if (!file_exists(INCLUDES_DIR."/caches/phpthumb/"))
-				mkdir(INCLUDES_DIR."/caches/phpthumb/");
 		}
 		public function submit() {
 			$filename = "";
@@ -74,11 +71,11 @@
 			if ($post->feather != "photo") return;
 			$post->image = $this->image_tag_for($post);
 		}
-		public function image_tag_for($post, $max_width = 500, $max_height = null, $more_args = "q=100") {
+		public function image_tag_for($post, $max_width = 500, $max_height = null, $more_args = "quality=100") {
 			$filename = $post->filename;
 			$ext = pathinfo($filename, PATHINFO_EXTENSION);
 			$config = Config::current();
-			return '<a href="'.$config->chyrp_url.$config->uploads_path.$filename.'"><img src="'.$config->chyrp_url.'/feathers/photo/lib/phpThumb.php?src='.$config->chyrp_url.$config->uploads_path.urlencode($filename).'&amp;w='.$max_width.'&amp;h='.$max_height.'&amp;f='.$ext.'&amp;'.$more_args.'" alt="'.fallback($post->alt_text, $filename, true).'" /></a>';
+			return '<a href="'.$config->chyrp_url.$config->uploads_path.$filename.'"><img src="'.$config->chyrp_url.'/feathers/photo/thumb.php?file=../..'.$config->uploads_path.urlencode($filename).'&amp;sizex='.$max_width.'&amp;sizey='.$max_height.'&amp;'.$more_args.'" alt="'.fallback($post->alt_text, $filename, true).'" /></a>';
 		}
 		public function alt_text_field($post = null) {
 			if (isset($post) and $post->feather != "photo") return;
