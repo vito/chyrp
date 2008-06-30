@@ -106,7 +106,7 @@
 
 					$_POST['status'] = "public";
 					$_POST['pinned'] = false;
-					$_POST['created_at'] = datetime($arr_attr["unix-timestamp"]));
+					$_POST['created_at'] = datetime($arr_attr["unix-timestamp"]);
 					$_POST['feather'] = str_replace(array_keys($translate_types), array_values($translate_types), $post->attributes()->type);
 
 					$new_post = Post::add($values, $clean, Post::check_url($clean));

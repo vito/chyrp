@@ -1,35 +1,34 @@
 <?php
 	require_once "../../includes/common.php";
 
-/*
-		thumb.php v1.1
-		______________________________________________________________________
-		Modified by Alex Suraci
-		______________________________________________________________________
-		Copyright:
-			(C) 2003 Chris Tomlinson. christo@mightystuff.net
-			http://mightystuff.net
+    /*
+	thumb.php v1.1
+	----------------------------------------------------------------------
+	Modified by Alex Suraci
+	----------------------------------------------------------------------
+	Copyright:
+		(C) 2003 Chris Tomlinson. christo@mightystuff.net
+		http://mightystuff.net
 
-			This library is free software; you can redistribute it and/or
-			modify it under the terms of the GNU Lesser General Public
-			License as published by the Free Software Foundation; either
-			version 2.1 of the License, or (at your option) any later version.
+		This library is free software; you can redistribute it and/or
+		modify it under the terms of the GNU Lesser General Public
+		License as published by the Free Software Foundation; either
+		version 2.1 of the License, or (at your option) any later version.
 
-			This library is distributed in the hope that it will be useful,
-			but WITHOUT ANY WARRANTY; without even the implied warranty of
-			MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-			Lesser General Public License for more details.
+		This library is distributed in the hope that it will be useful,
+		but WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+		Lesser General Public License for more details.
 
-			http://www.gnu.org/copyleft/lesser.txt
-		______________________________________________________________________
-*/
+		http://www.gnu.org/copyleft/lesser.txt
+	----------------------------------------------------------------------
+    */
 
 	//script configuration
-	ini_set('memory_limit','64M');
-	$site_config['document_root'] = $_SERVER['DOCUMENT_ROOT'];
+	ini_set("memory_limit", "64M");
+
 	$thumb_size = 128; //all thumbnails are this maximum width or height if not specified via get
-	$site_config['absolute_uri'] = str_replace('///','//',str_replace('thumb.php?'.$_SERVER['QUERY_STRING'],'',$_SERVER['REQUEST_URI']));
-	$image_error = THEME_URL.'/images/icons/image_error.png';	// used if no image could be found, or a gif image is specified
+	$image_error = THEME_URL."/images/icons/image_error.png";	// used if no image could be found, or a gif image is specified
 
 	$thumb_size_x = 0;
 	$thumb_size_y = 0;
@@ -38,25 +37,14 @@
 	$quality = (isset($_GET["quality"])) ? $_GET["quality"] : 80 ;
 
 	# Define size of image (maximum width or height)- if specified via get.
-	$thumb_size = (isset($_GET['size'])) ? intval($_GET["size"]) : 0;
+	$thumb_size = (isset($_GET['size'])) ? (int) $_GET["size"] : 0;
 
-	if (isset($_GET['sizex']) and intval($_GET["sizex"]) > 0) {
-		$thumb_size_x = intval($_GET["sizex"]);
-
-		if (isset($_GET['sizey']) and intval($_GET["sizey"]) > 0)
-			$thumb_size_y = intval($_GET["sizey"]);
-		else
-			$thumb_size_y = $thumb_size_x;
+	if (isset($_GET['sizex']) and (int) $_GET["sizex"] > 0) {
+		$thumb_size_x = (int) $_GET["sizex"];
+		$thumb_size_y = (isset($_GET['sizey']) and (int) $_GET["sizey"] > 0) ? (int) $_GET["sizey"] : $thumb_size_x ;
 	}
 
-	if (file_exists($_GET['file']))
-		$filename = $_GET['file'];
-	else
-		$filename = str_replace('//','/',$site_config['document_root'].$site_config['absolute_uri'].'/'.$_GET["file"]);
-
-	# If calling an external image, remove document_root
-	if (substr_count($filename, "http://") > 0)
-		$filename = str_replace($site_config['document_root'].$site_config['absolute_uri'].'/','',$filename);
+	$filename = fallback($_GET['file'], $image_error, true);
 
 	$filename = str_replace("\'","'",$filename);
 	$filename = rtrim($filename);
@@ -69,16 +57,16 @@
 	if (isset($_GET['nocache']) and $_GET['nocache'] == 1 and file_exists($cache_file))
 		unlink($cache_file);
 
-	if ((file_exists($cache_file)) && (filemtime($cache_file) > filemtime($filename))) {
+	if (file_exists($cache_file) and filemtime($cache_file) > filemtime($filename)) {
 		header('Content-type: image/'.$fileextension);
 		header("Expires: Mon, 26 Jul 2030 05:00:00 GMT");
-		header('Content-Disposition: inline; filename='.str_replace('/','',md5($filename.$thumb_size.$thumb_size_x.$thumb_size_y.$quality).'.'.$fileextension));
+		header('Content-Disposition: inline; filename='.str_replace("/", "", md5($filename.$thumb_size.$thumb_size_x.$thumb_size_y.$quality).".".$fileextension));
 		readfile($cache_file);
 		exit; # no need to create thumbnail - it already exists in the cache
 	}
 
 	# determine php and gd versions
-	$ver = intval(str_replace(".","",phpversion()));
+	$ver = (int) str_replace(".", "", phpversion());
 	if ($ver >= 430)
 		$gd_version = gd_info();
 
@@ -87,7 +75,7 @@
 		header('Content-type: image/png');
 
 		if (isset($_GET['noerror']) and !$_GET['noerror'])
-			readfile($site_config['document_root'].$image_error);
+			readfile($image_error);
 
 		exit;
 	}
