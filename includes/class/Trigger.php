@@ -87,14 +87,13 @@
 				}
 			}
 
-			$config = Config::current();
-			foreach ($config->enabled_modules as $module)
-				if (!in_array(array($modules[$module], $name), $this->called[$name]) and is_callable(array($modules[$module], $name)))
+			foreach ($modules as $module)
+				if (!in_array(array($module, $name), $this->called[$name]) and is_callable(array($module, $name)))
 					if (!empty($arguments)) {
 						$params = array_merge(array($this->modified($name, $target)), $arguments);
-						$this->modified[$name] = call_user_func_array(array($modules[$module], $name), $params);
+						$this->modified[$name] = call_user_func_array(array($module, $name), $params);
 					} else
-						$this->modified[$name] = call_user_func(array($modules[$module], $name), $this->modified($name, $target));
+						$this->modified[$name] = call_user_func(array($module, $name), $this->modified($name, $target));
 
 			$final = $this->modified($name, $target);
 

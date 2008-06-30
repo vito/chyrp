@@ -190,7 +190,13 @@
 
 	set_locale($config->locale);
 
-	foreach ($config->enabled_feathers as $feather) {
+	# Require feathers/modules and load their translations.
+	foreach ($config->enabled_feathers as $index => $feather) {
+		if (!file_exists(FEATHERS_DIR."/".$feather."/feather.php")) {
+			unset($config->enabled_feathers[$index]);
+			continue;
+		}
+
 		if (file_exists(FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo"))
 			load_translator($feather, FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo");
 
@@ -200,7 +206,12 @@
 		$pluralizations[$feather] = $pluralizations["feathers"][$feather] = fallback($info["plural"], pluralize($feather), true);
 	}
 
-	foreach ($config->enabled_modules as $module) {
+	foreach ($config->enabled_modules as $index => $module) {
+		if (!file_exists(MODULES_DIR."/".$module."/module.php")) {
+			unset($config->enabled_modules[$index]);
+			continue;
+		}
+
 		if (file_exists(MODULES_DIR."/".$module."/locale/".$config->locale.".mo"))
 			load_translator($module, MODULES_DIR."/".$module."/locale/".$config->locale.".mo");
 
@@ -238,8 +249,11 @@
 	$feathers = array();
 	foreach ($config->enabled_feathers as $feather) {
 		$camelized = camelize($feather);
+		if (!class_exists($camelized)) continue;
+
 		$feathers[$feather] = new $camelized;
 		$feathers[$feather]->safename = $feather;
+
 		foreach (Spyc::YAMLLoad(FEATHERS_DIR."/".$feather."/info.yaml") as $key => $val)
 			$feathers[$feather]->$key = $val;
 	}
@@ -251,8 +265,11 @@
 	$modules = array();
 	foreach ($config->enabled_modules as $module) {
 		$camelized = camelize($module);
-		$modules[$module] = new $camelized();
+		if (!class_exists($camelized)) continue;
+
+		$modules[$module] = new $camelized;
 		$modules[$module]->safename = $module;
+
 		foreach (Spyc::YAMLLoad(MODULES_DIR."/".$module."/info.yaml") as $key => $val)
 			$modules[$module]->$key = $val;
 	}
