@@ -1,53 +1,57 @@
 <?php
 	class Chat extends Feather {
 		public function __construct() {
-			$this->setField(array("attr" => "title", "type" => "text", "label" => __("Title", "chat"), "optional" => true));
-			$this->setField(array("attr" => "dialogue", "type" => "text_block", "label" => __("Dialogue", "chat"), "preview" => true, "help" => "chat_dialogue", "bookmarklet" => "selection"));
+			$this->setField(array("attr" => "title",
+			                      "type" => "text",
+			                      "label" => __("Title", "chat"),
+			                      "optional" => true));
+			$this->setField(array("attr" => "dialogue",
+			                      "type" => "text_block",
+			                      "label" => __("Dialogue", "chat"),
+			                      "preview" => true,
+			                      "help" => "chat_dialogue",
+			                      "bookmarklet" => "selection"));
+
 			$this->customFilter("dialogue", "format_dialogue");
 			$this->setFilter("dialogue", "markup_post_text");
 			$this->respondTo("preview_chat", "format_dialogue");
 			$this->respondTo("help_chat_dialogue", "help");
 		}
-		static function submit() {
+		public function submit() {
 			if (empty($_POST['dialogue']))
 				error(__("Error"), __("Dialogue can't be blank."));
 
-			$values = array("title" => $_POST['title'], "dialogue" => $_POST['dialogue']);
-			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : sanitize($_POST['title']) ;
-			$url = Post::check_url($clean);
+			fallback($_POST['slug'], sanitize($_POST['title']));
 
-			$post = Post::add($values, $clean, $url);
+			$post = Post::add(array("title" => $_POST['title'],
+			                        "dialogue" => $_POST['dialogue']),
+			                  $_POST['slug'],
+			                  Post::check_url($_POST['slug']));
 
-			$route = Route::current();
-			if (isset($_POST['bookmarklet']))
-				redirect($route->url("bookmarklet/done/"));
-			else
-				redirect($post->url());
+			redirect($post->redirect);
 		}
-		static function update() {
+		public function update() {
+			if (empty($_POST['dialogue']))
+				error(__("Error"), __("Dialogue can't be blank."));
+
 			$post = new Post($_POST['id']);
-
-			if (empty($_POST['dialogue']))
-				error(__("Error"), __("Dialogue can't be blank."));
-
-			$values = array("title" => $_POST['title'], "dialogue" => $_POST['dialogue']);
-
-			$post->update($values);
+			$post->update(array("title" => $_POST['title'],
+			                    "dialogue" => $_POST['dialogue']));
 		}
-		static function title($post) {
+		public function title($post) {
 			$dialogue = explode("\n", $post->dialogue);
 			$line = preg_replace("/[ ]?[\[|\(]?[0-9]{1,2}:[0-9]{2}(:[0-9]{2})?[ ]?(pm|am)?[\]|\)]?[ ]?/i", "", $dialogue[0]);
 			$first_line = preg_replace("/([<]?)([^:|>]+)( \(me\)?)(:|>) (.+)/i", "\\1\\2\\4 \\5", $dialogue[0]);
 
 			return fallback($post->title, $first_line, true);
 		}
-		static function excerpt($post) {
+		public function excerpt($post) {
 			return $post->dialogue;
 		}
-		static function feed_content($post) {
+		public function feed_content($post) {
 			return $post->dialogue;
 		}
-		static function format_dialogue($text) {
+		public function format_dialogue($text) {
 			$split = explode("\n", $text);
 			$return = '<ul class="dialogue">';
 			$count = 0;
@@ -76,7 +80,7 @@
 
 			return $return;
 		}
-		static function help() {
+		public function help() {
 			global $title, $body;
 			$title = __("Dialogue Formatting", "chat");
 			$body = "<p>".__("To give yourself a special CSS class, append \" (me)\" to your username, like so:", "chat")."</p>\n";

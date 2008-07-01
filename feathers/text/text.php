@@ -1,43 +1,47 @@
 <?php
 	class Text extends Feather {
 		public function __construct() {
-			$this->setField(array("attr" => "title", "type" => "text", "label" => __("Title", "text"), "optional" => true, "bookmarklet" => "title"));
-			$this->setField(array("attr" => "body", "type" => "text_block", "label" => __("Body", "text"), "preview" => true, "bookmarklet" => "selection"));
+			$this->setField(array("attr" => "title",
+			                      "type" => "text",
+			                      "label" => __("Title", "text"),
+			                      "optional" => true,
+			                      "bookmarklet" => "title"));
+			$this->setField(array("attr" => "body",
+			                      "type" => "text_block",
+			                      "label" => __("Body", "text"),
+			                      "preview" => true,
+			                      "bookmarklet" => "selection"));
+
 			$this->setFilter("body", "markup_post_text");
 		}
-		static function submit() {
+		public function submit() {
 			if (empty($_POST['body']))
 				error(__("Error"), __("Body can't be blank."));
 
-			$values = array("title" => $_POST['title'], "body" => $_POST['body']);
-			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : sanitize($_POST['title']) ;
-			$url = Post::check_url($clean);
+			fallback($_POST['slug'], sanitize($_POST['title']));
 
-			$post = Post::add($values, $clean, $url);
+			$post = Post::add(array("title" => $_POST['title'],
+			                        "body" => $_POST['body']),
+			                  $_POST['slug'],
+			                  Post::check_url($_POST['slug']));
 
-			$route = Route::current();
-			if (isset($_POST['bookmarklet']))
-				redirect($route->url("bookmarklet/done/"));
-			else
-				redirect($post->url());
+			redirect($post->redirect);
 		}
-		static function update() {
+		public function update() {
+			if (empty($_POST['body']))
+				error(__("Error"), __("Body can't be blank."));
+
 			$post = new Post($_POST['id']);
-
-			if (empty($_POST['body']))
-				error(__("Error"), __("Body can't be blank."));
-
-			$values = array("title" => $_POST['title'], "body" => $_POST['body']);
-
-			$post->update($values);
+			$post->update(array("title" => $_POST['title'],
+			                    "body" => $_POST['body']));
 		}
-		static function title($post) {
+		public function title($post) {
 			return fallback($post->title, $post->title_from_excerpt(), true);
 		}
-		static function excerpt($post) {
+		public function excerpt($post) {
 			return $post->body;
 		}
-		static function feed_content($post) {
+		public function feed_content($post) {
 			return $post->body;
 		}
 	}

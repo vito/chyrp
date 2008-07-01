@@ -206,6 +206,7 @@
 				</p>
 <?php endforeach; ?>
 				<input type="hidden" name="feather" value="<?php echo $the_feather; ?>" id="feather" />
+				<input type="hidden" name="slug" value="" id="slug" />
 				<input type="hidden" name="bookmarklet" value="true" id="bookmarklet" />
 				<input type="hidden" name="hash" value="<?php echo $config->secure_hashkey; ?>" id="hash" />
 				<input type="submit" value="<?php echo __("Publish"); ?>" />

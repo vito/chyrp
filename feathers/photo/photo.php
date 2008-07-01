@@ -1,9 +1,21 @@
 <?php
 	class Photo extends Feather {
 		public function __construct() {
-			$this->setField(array("attr" => "photo", "type" => "file", "label" => __("Photo", "photo")));
-			$this->setField(array("attr" => "from_url", "type" => "text", "label" => __("From URL?", "photo"), "optional" => true, "no_value" => true));
-			$this->setField(array("attr" => "caption", "type" => "text_block", "label" => __("Caption", "photo"), "optional" => true, "preview" => true, "bookmarklet" => "selection"));
+			$this->setField(array("attr" => "photo",
+			                      "type" => "file",
+			                      "label" => __("Photo", "photo")));
+			$this->setField(array("attr" => "from_url",
+			                      "type" => "text",
+			                      "label" => __("From URL?", "photo"),
+			                      "optional" => true,
+			                      "no_value" => true));
+			$this->setField(array("attr" => "caption",
+			                      "type" => "text_block",
+			                      "label" => __("Caption", "photo"),
+			                      "optional" => true,
+			                      "preview" => true,
+			                      "bookmarklet" => "selection"));
+
 			$this->setFilter("caption", "markup_post_text");
 			$this->respondTo("delete_post", "delete_file");
 			$this->respondTo("filter_post", "filter_post");
@@ -23,30 +35,23 @@
 			} else
 				error(__("Error"), __("Couldn't upload photo."));
 
-			$values = array("filename" => $filename, "caption" => $_POST['caption']);
-			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : "" ;
-			$url = Post::check_url($clean);
+			$post = Post::add(array("filename" => $filename,
+			                        "caption" => $_POST['caption']),
+			                  $_POST['slug'],
+			                  Post::check_url($_POST['slug']));
 
-			$post = Post::add($values, $clean, $url);
-
-			$route = Route::current();
-			if (isset($_POST['bookmarklet']))
-				redirect($route->url("bookmarklet/done/"));
-			else
-				redirect($post->url());
+			redirect($post->redirect);
 		}
 		public function update() {
-			$post = new Post($_POST['id']);
-
 			if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0) {
 				$this->delete_file($post);
 				$filename = upload($_FILES['photo']);
 			} else
 				$filename = $post->filename;
 
-			$values = array("filename" => $filename, "caption" => $_POST['caption']);
-
-			$post->update($values);
+			$post = new Post($_POST['id']);
+			$post->update(array("filename" => $filename,
+			                    "caption" => $_POST['caption']));
 		}
 		public function title($post) {
 			$caption = $post->title_from_excerpt();

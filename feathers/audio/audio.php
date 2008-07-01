@@ -1,9 +1,21 @@
 <?php
 	class Audio extends Feather {
 		public function __construct() {
-			$this->setField(array("attr" => "audio", "type" => "file", "label" => __("MP3 File", "audio")));
-			$this->setField(array("attr" => "from_url", "type" => "text", "label" => __("From URL?", "audio"), "optional" => true, "no_value" => true));
-			$this->setField(array("attr" => "description", "type" => "text_block", "label" => __("Description", "audio"), "optional" => true, "preview" => true, "bookmarklet" => "selection"));
+			$this->setField(array("attr" => "audio",
+			                      "type" => "file",
+			                      "label" => __("MP3 File", "audio")));
+			$this->setField(array("attr" => "from_url",
+			                      "type" => "text",
+			                      "label" => __("From URL?", "audio"),
+			                      "optional" => true,
+			                      "no_value" => true));
+			$this->setField(array("attr" => "description",
+			                      "type" => "text_block",
+			                      "label" => __("Description", "audio"),
+			                      "optional" => true,
+			                      "preview" => true,
+			                      "bookmarklet" => "selection"));
+
 			$this->setFilter("description", "markup_post_text");
 			$this->respondTo("delete_post", "delete_file");
 			$this->respondTo("javascript", "player_js");
@@ -23,30 +35,23 @@
 			} else
 				error(__("Error"), __("Couldn't upload audio file."));
 
-			$values = array("filename" => $filename, "description" => $_POST['description']);
-			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : "" ;
-			$url = Post::check_url($clean);
+			$post = Post::add(array("filename" => $filename,
+			                        "description" => $_POST['description']),
+			                  $_POST['slug'],
+			                  Post::check_url($_POST['slug']));
 
-			$post = Post::add($values, $clean, $url);
-
-			$route = Route::current();
-			if (isset($_POST['bookmarklet']))
-				redirect($route->url("bookmarklet/done/"));
-			else
-				redirect($post->url());
+			redirect($post->redirect);
 		}
 		public function update() {
-			$post = new Post($_POST['id']);
-
 			if (isset($_FILES['audio']) and $_FILES['audio']['error'] == 0) {
 				$this->delete_file($post);
 				$filename = upload($_FILES['audio'], "mp3");
 			} else
 				$filename = $post->filename;
 
-			$values = array("filename" => $filename, "description" => $_POST['description']);
-
-			$post->update($values);
+			$post = new Post($_POST['id']);
+			$post->update(array("filename" => $filename,
+			                    "description" => $_POST['description']));
 		}
 		public function title($post) {
 			return fallback($post->title, $post->title_from_excerpt(), true);
@@ -67,7 +72,7 @@
 		}
 		public function player_js() {
 ?>
-//<script>
+<!-- --><script>
 var ap_instances = new Array();
 
 function ap_stopAll(playerID) {
@@ -93,7 +98,7 @@ function ap_registerPlayers() {
 }
 
 var ap_clearID = setInterval( ap_registerPlayers, 100 );
-//</script>
+<!-- --></script>
 <?php
 		}
 		public function enclose_mp3($id) {

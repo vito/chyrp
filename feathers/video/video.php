@@ -1,34 +1,40 @@
 <?php
 	class Video extends Feather {
 		public function __construct() {
-			$this->setField(array("attr" => "video", "type" => "text_block", "rows" => 4, "label" => __("Video", "video")));
-			$this->setField(array("attr" => "caption", "type" => "text_block", "rows" => 4, "label" => __("Caption", "video"), "optional" => true, "preview" => true, "bookmarklet" => "selection"));
+			$this->setField(array("attr" => "video",
+			                      "type" => "text_block",
+			                      "rows" => 4,
+			                      "label" => __("Video", "video")));
+			$this->setField(array("attr" => "caption",
+			                      "type" => "text_block",
+			                      "rows" => 4,
+			                      "label" => __("Caption", "video"),
+			                      "optional" => true,
+			                      "preview" => true,
+			                      "bookmarklet" => "selection"));
+
 			$this->setFilter("caption", "markup_post_text");
 		}
 		public function submit() {
 			if (empty($_POST['video']))
 				error(__("Error"), __("Video can't be blank."));
 
-			$values = array("embed" => $this->embed_tag($_POST['video']), "video" => $_POST['video'], "caption" => $_POST['caption']);
-			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : "" ;
+			$post = Post::add(array("embed" => $this->embed_tag($_POST['video']),
+			                        "video" => $_POST['video'],
+			                        "caption" => $_POST['caption']),
+			                  $_POST['slug'],
+			                  Post::check_url($_POST['slug']));
 
-			$post = Post::add($values, $clean, Post::check_url($clean));
-
-			$route = Route::current();
-			if (isset($_POST['bookmarklet']))
-				redirect($route->url("bookmarklet/done/"));
-			else
-				redirect($post->url());
+			redirect($post->redirect);
 		}
 		public function update() {
-			$post = new Post($_POST['id']);
-
 			if (empty($_POST['video']))
 				error(__("Error"), __("Video can't be blank."));
 
-			$values = array("embed" => $this->embed_tag($_POST['video']), "video" => $_POST['video'], "caption" => $_POST['caption']);
-
-			$post->update($values);
+			$post = new Post($_POST['id']);
+			$post->update(array("embed" => $this->embed_tag($_POST['video']),
+			                    "video" => $_POST['video'],
+			                    "caption" => $_POST['caption']));
 		}
 		public function title($post) {
 			return $post->title_from_excerpt();
