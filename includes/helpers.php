@@ -1062,8 +1062,8 @@
 		global $theme;
 		header("HTTP/1.1 404 Not Found");
 		$theme->title = "404";
-		if ($theme->file_exists("content/404"))
-			$theme->load("content/404");
+		if ($theme->file_exists("pages/404"))
+			$theme->load("pages/404");
 		else {
 ?>
 		<h1><?php echo __("Not Found", "theme"); ?></h1>

@@ -20,7 +20,7 @@
 	<h2>${ "Archive of %s" | translate | format(archive.timestamp | strftime("%B %Y")) }</h2>
 {% endif %}
 	{% for post in posts.paginated %}
-	{% include "content/post.twig" %}
+	{% include "feathers/" ~ post.feather ~ ".twig" %}
 	{% endfor %}
 {% endif %}
 

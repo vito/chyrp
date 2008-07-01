@@ -34,6 +34,6 @@
 			                   "clean" => $tag2clean[$tag],
 			                   "url" => $route->url("tag/".$tag2clean[$tag]."/"));
 
-		$theme->load("content/tags", array("tag_cloud" => $context));
+		$theme->load("pages/tags", array("tag_cloud" => $context));
 	}
 ?>

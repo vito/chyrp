@@ -16,7 +16,7 @@
 			} elseif ($route->action == "drafts")
 				$theme->title = __("Drafts");
 
-			$theme->load(array("content/".$route->action, "content/index"), $context);
+			$theme->load(array("pages/".$route->action, "pages/index"), $context);
 
 			break;
 		case "view": case "id":
@@ -30,7 +30,7 @@
 
 			$post->date_shown = true;
 
-			$theme->load(array("content/view", "content/id", "content/index"), array("post" => $post, "posts" => array($post)));
+			$theme->load(array("pages/view", "pages/id", "pages/index"), array("post" => $post, "posts" => array($post)));
 			break;
 		case "page":
 			fallback($page, new Page(null, array("where" => "`url` = :url", "params" => array(":url" => $_GET['url']))));
@@ -40,10 +40,10 @@
 
 				$page->body = $trigger->filter("markup_page_text", $page->body);
 
-				if (file_exists(THEME_DIR."/content/pages/$page->url.twig"))
-					$theme->load("content/pages/$page->url", array("page" => $page));
+				if ($theme->file_exists("pages/".$page->url))
+					$theme->load("pages/".$page->url, array("page" => $page));
 				else if (file_exists(THEME_DIR."/content/$page->url.twig"))
-					$theme->load("content/$page->url", array("page" => $page));
+					$theme->load("content/".$page->url, array("page" => $page));
 				else
 					$theme->load("content/page", array("page" => $page));
 			} else
@@ -93,7 +93,7 @@
 					                                                  "params" => array(":created_at" => when("Y-m", $time->created_at)."%")));
 				}
 
-				$theme->load("content/archive", array("archives" => $archives));
+				$theme->load("pages/archive", array("archives" => $archives));
 			} else {
 				if (!is_numeric($_GET['year']) or !is_numeric($_GET['month']))
 					error(__("Error"), __("Please enter a valid year and month."));
@@ -101,14 +101,14 @@
 				$timestamp = mktime(0, 0, 0, $_GET['month'], fallback($_GET['day'], "1", true), $_GET['year']);
 				$theme->title = _f("Archive of %s", array(strftime("%B %Y", $timestamp)));
 
-				$theme->load("content/archive", array("posts" => $posts,
-				                                      "archive" => array("year" => $_GET['year'],
-				                                                         "month" => strftime("%B", $timestamp),
-				                                                         "day" => strftime("%d", $timestamp),
-				                                                         "timestamp" => $timestamp,
-				                                                         "depth" => isset($_GET['day']) ? "day" : (isset($_GET['month']) ? "month" : (isset($_GET['year']) ? "year" : ""))
-				                                                   )
-				                                ));
+				$depth = isset($_GET['day']) ? "day" : (isset($_GET['month']) ? "month" : (isset($_GET['year']) ? "year" : ""));
+				$theme->load("pages/archive", array("posts" => $posts,
+				                                    "archive" => array("year" => $_GET['year'],
+				                                                       "month" => strftime("%B", $timestamp),
+				                                                       "day" => strftime("%d", $timestamp),
+				                                                       "timestamp" => $timestamp,
+				                                                       "depth" => $depth)
+				                              ));
 			}
 			break;
 		case "login":
@@ -190,7 +190,7 @@
 				if (file_exists(FEATHERS_DIR."/".$feather."/pages/".$route->action.".php"))
 					$page_exists = require FEATHERS_DIR."/".$feather."/pages/".$route->action.".php";
 
-			if (file_exists(THEME_DIR."/pages/".$route->action.".twig"))
+			if ($theme->file_exists("pages/".$route->action))
 				$page_exists = $theme->load("pages/".$route->action);
 
 			if (!$page_exists)

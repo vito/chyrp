@@ -98,7 +98,6 @@
 			fallback($_POST['offset'], 0);
 			fallback($_POST['context']);
 
-			$id = (isset($_POST['id'])) ? "`__posts`.`id` = :id" : false ;
 			$reason = (isset($_POST['reason'])) ? $_POST['reason'] : "" ;
 
 			if (isset($_POST['id']))
@@ -110,7 +109,7 @@
 				exit;
 			}
 
-			$theme->load("content/post", array("post" => $post, "ajax_reason" => $reason));
+			$theme->load("feathers/".$post->feather, array("post" => $post, "ajax_reason" => $reason));
 			break;
 		case "preview":
 			$content = ($trigger->exists("preview_".$_POST['feather'])) ?
