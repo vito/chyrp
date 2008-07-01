@@ -42,6 +42,13 @@
 							${ "Attempts to notify sites linked to from your posts. It'll slow down things a bit when you submit them, depending on how many links you've got in it." | translate }
 						</small>
 					</p>
+					<p>
+						<label for="enable_xmlrpc">${ "Enable XML-RPC Support" | translate }</label>
+						<input class="checkbox" type="checkbox" name="enable_xmlrpc" id="enable_xmlrpc"${ site.enable_xmlrpc | checked } />
+						<small>
+							${ "XML-RPC support allows for remote access to your site. This allows you to use remote clients (e.g., <a href=\"http://www.red-sweater.com/marsedit/\">MarsEdit</a> or <a href=\"http://flickr.com/help/blogging/\">Flickr</a>) to create/edit content on your site." | translate }
+						</small>
+					</p>
 
 					<p class="buttons">
 						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Update" | translate }</button>

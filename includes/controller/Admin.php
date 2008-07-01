@@ -1151,6 +1151,7 @@
 			$config->set("enable_trackbacking", !empty($_POST['enable_trackbacking']));
 			$config->set("send_pingbacks", !empty($_POST['send_pingbacks']));
 			$config->set("posts_per_page", $_POST['posts_per_page']);
+			$config->set("enable_xmlrpc", !empty($_POST['enable_xmlrpc']));
 
 			redirect("/admin/?action=content_settings&updated");
 		}

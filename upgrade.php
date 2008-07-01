@@ -114,6 +114,7 @@
 	function to_2000() {
 		global $config, $sql, $misc;
 		$sql->adapter = null;
+		$config->set("enable_xmlrpc", true);
 		$config->set("uploads_path", "/uploads/");
 		$config->set("chyrp_url", $config->url);
 		$config->set("feed_items", $config->rss_posts);

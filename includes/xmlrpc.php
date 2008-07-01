@@ -469,6 +469,9 @@
 		 * Authenticates a given login and password, and checks for appropriate permission
 		 */
 		private function auth($login, $password, $do = 'add') {
+			if (!Config::current()->enable_xmlrpc)
+				throw new Exception(__("XML-RPC support is disabled for this site."));
+
 			global $user;
 			$user = new User(
 				null,

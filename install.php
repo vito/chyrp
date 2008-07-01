@@ -247,6 +247,7 @@
 			$config->set("guest_group", 5);
 			$config->set("enable_trackbacking", true);
 			$config->set("send_pingbacks", false);
+			$config->set("enable_xmlrpc", true);
 			$config->set("secure_hashkey", md5(random(32, true)));
 			$config->set("uploads_path", "/uploads/");
 			$config->set("enabled_modules", array());
