@@ -43,14 +43,19 @@
 
 		public function bookmarklet_submit($stuff) {
 			$values =& $stuff[0];
-			foreach ($values as &$value)
-				if (preg_match_all("/([^\\\\]|^)#([^ \n#]+)([^\\\\]#)?/", $value, $tags)) {
-					$_POST['tags'] = implode(", ", $tags[2]);
-
-					$value = preg_replace("/([^\\\\]|^)#([^ \n#]+)([^\\\\])#/", "\\1\\2\\3", $value);
-					$value = preg_replace("/([^\\\\]|^)#([^ \n#]+)/", "\\1\\2", $value);
-					$value = preg_replace("/\\\\#/", "#", $value);
+			$tags = array();
+			foreach ($values as &$value) {
+				if (preg_match_all("/(?!\\\\)#([a-zA-Z0-9 ]+)(?!\\\\)#/", $value, $double)) {
+					$tags = array_merge($double[1], $tags);
+					$value = preg_replace("/(?!\\\\)#([a-zA-Z0-9 ]+)(?!\\\\)#/", "", $value);
 				}
+				if (preg_match_all("/[^\\\\]#([a-zA-Z0-9]+)(?!\\\\#)/", $value, $single)) {
+					$tags = array_merge($single[1], $tags);
+					$value = preg_replace("/([^\\\\]|^)#([a-zA-Z0-9]+)(?!\\\\#)/", "\\1\\2", $value);
+				}
+				$_POST['tags'] = implode(", ", $tags);
+				$value = str_replace("\\#", "#", $value);
+			}
 		}
 
 		static function add_post($post) {
