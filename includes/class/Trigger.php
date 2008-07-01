@@ -38,7 +38,7 @@
 				usort($this->priorities[$name], array($this, "cmp"));
 
 				foreach ($this->priorities[$name] as $action) {
-					$caller($action["function"], $arg);
+					$caller($action["function"], &$arg);
 					$this->called[$name][] = $action["function"];
 				}
 			}
@@ -46,7 +46,7 @@
 			$config = Config::current();
 			foreach ($config->enabled_modules as $module)
 				if (!in_array(array($modules[$module], $name), $this->called[$name]) and is_callable(array($modules[$module], $name)))
-					$caller(array($modules[$module], $name), $arg);
+					$caller(array($modules[$module], $name), &$arg);
 		}
 
 		/**
@@ -99,7 +99,7 @@
 
 			$this->modified[$name] = null;
 
-			return $final;
+			return $target = $final;
 		}
 
 		/**
