@@ -73,12 +73,12 @@
 			                 ":url" => $url,
 			                 ":created_at" => datetime()
 			             ));
-			$id = $sql->db->lastInsertId();
 
-			$trigger = Trigger::current();
-			$trigger->call("add_page", $id);
+			$page = new self($sql->db->lastInsertId());
 
-			return new self($id);
+			Trigger::current()->call("add_page", $page);
+
+			return $page;
 		}
 
 		/**

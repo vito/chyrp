@@ -30,7 +30,7 @@
 
 			$post->date_shown = true;
 
-			$theme->load(array("content/view", "content/index"), array("post" => $post, "posts" => array($post)));
+			$theme->load(array("content/view", "content/id", "content/index"), array("post" => $post, "posts" => array($post)));
 			break;
 		case "page":
 			fallback($page, new Page(null, array("where" => "`url` = :url", "params" => array(":url" => $_GET['url']))));

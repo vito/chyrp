@@ -75,9 +75,11 @@
 			$sql->insert("groups", array("name" => ":name", "permissions" => ":permissions"),
 			                       array(":name"  => $name,   ":permissions"  => Spyc::YAMLDump($permissions)));
 
-			$id = $sql->db->lastInsertId();
-			Trigger::current()->call("add_group", array($id, $name, $permissions));
-			return new self($id);
+			$group = new self($sql->db->lastInsertId());
+
+			Trigger::current()->call("add_group", $group);
+
+			return $group;
 		}
 
 		/**

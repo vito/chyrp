@@ -28,7 +28,9 @@
 	ini_set("memory_limit", "64M");
 
 	$thumb_size = 128; //all thumbnails are this maximum width or height if not specified via get
-	$image_error = THEME_URL."/images/icons/image_error.png";	// used if no image could be found, or a gif image is specified
+	$image_error = (file_exists(THEME_URL."/images/icons/image_error.png")) ?
+	               THEME_URL."/images/icons/image_error.png" :
+	               THEME_URL."/img/icons/image_error.png" ;	// used if no image could be found, or a gif image is specified
 
 	$thumb_size_x = 0;
 	$thumb_size_y = 0;

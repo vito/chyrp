@@ -160,8 +160,7 @@
 
 			$post = new self($id);
 
-			$trigger = Trigger::current();
-			$trigger->call("add_post", array($post, $options));
+			Trigger::current()->call("add_post", array($post, $options));
 
 			return $post;
 		}

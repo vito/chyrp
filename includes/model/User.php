@@ -82,9 +82,11 @@
 			                 ":joined_at" => datetime()
 			            ));
 
-			$id = $sql->db->lastInsertId();
-			Trigger::current()->call("add_user", $id);
-			return new self($id);
+			$user = new self($sql->db->lastInsertId());
+
+			Trigger::current()->call("add_user", $user);
+
+			return $user;
 		}
 
 		/**
