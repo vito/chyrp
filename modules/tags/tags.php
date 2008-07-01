@@ -45,9 +45,9 @@
 			$values =& $stuff[0];
 			$tags = array();
 			foreach ($values as &$value) {
-				if (preg_match_all("/(?!\\\\)#([a-zA-Z0-9 ]+)(?!\\\\)#/", $value, $double)) {
-					$tags = array_merge($double[1], $tags);
-					$value = preg_replace("/(?!\\\\)#([a-zA-Z0-9 ]+)(?!\\\\)#/", "", $value);
+				if (preg_match_all("/([^\\\\]|^)#([a-zA-Z0-9 ]+)(?!\\\\)#/", $value, $double)) {
+					$tags = array_merge($double[2], $tags);
+					$value = preg_replace("/([^\\\\]|^)#([a-zA-Z0-9 ]+)(?!\\\\)#/", "\\1", $value);
 				}
 				if (preg_match_all("/[^\\\\]#([a-zA-Z0-9]+)(?!\\\\#)/", $value, $single)) {
 					$tags = array_merge($single[1], $tags);
