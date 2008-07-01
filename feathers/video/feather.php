@@ -14,11 +14,6 @@
 
 			$post = Post::add($values, $clean, Post::check_url($clean));
 
-			# Send any and all pingbacks to URLs in the caption
-			$config = Config::current();
-			if ($config->send_pingbacks)
-				send_pingbacks($_POST['caption'], $post->id);
-
 			$route = Route::current();
 			if (isset($_POST['bookmarklet']))
 				redirect($route->url("bookmarklet/done/"));

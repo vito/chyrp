@@ -16,13 +16,6 @@
 
 			$post = Post::add($values, $clean, $url);
 
-			# Send any and all pingbacks to URLs in the quote and source
-			$config = Config::current();
-			if ($config->send_pingbacks) {
-				send_pingbacks($_POST['quote'], $post->id);
-				send_pingbacks($_POST['source'], $post->id);
-			}
-
 			$route = Route::current();
 			if (isset($_POST['bookmarklet']))
 				redirect($route->url("bookmarklet/done/"));

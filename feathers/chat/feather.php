@@ -9,8 +9,6 @@
 			$this->respondTo("help_chat_dialogue", "help");
 		}
 		static function submit() {
-			$config = Config::current();
-
 			if (empty($_POST['dialogue']))
 				error(__("Error"), __("Dialogue can't be blank."));
 
@@ -19,10 +17,6 @@
 			$url = Post::check_url($clean);
 
 			$post = Post::add($values, $clean, $url);
-
-			# Send any and all pingbacks to URLs in the dialogue
-			if ($config->send_pingbacks)
-				send_pingbacks($_POST['dialogue'], $post->id);
 
 			$route = Route::current();
 			if (isset($_POST['bookmarklet']))

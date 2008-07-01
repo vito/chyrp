@@ -160,6 +160,9 @@
 
 			$post = new self($id);
 
+			foreach ($values as $value)
+				send_pingbacks($value, $post->id);
+
 			Trigger::current()->call("add_post", array($post, $options));
 
 			return $post;
