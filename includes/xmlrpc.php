@@ -35,7 +35,7 @@
 				'mt.supportedTextFilters'   => 'this:mt_supportedTextFilters',
 				'mt.supportedMethods'       => 'this:listMethods');
 
-			$methods = Trigger::current()->filter("xmlrpc_methods", $methods);
+			Trigger::current()->filter("xmlrpc_methods", &$methods);
 
 			$this->IXR_Server($methods);
 		}

@@ -125,7 +125,7 @@
 			foreach ($trigger->filter("extend_nav_pages", array_keys($subnav["extend"])) as $extend)
 				$subnav[$extend] =& $subnav["extend"];
 
-			$subnav = Trigger::current()->filter("admin_subnav", $subnav);
+			Trigger::current()->filter("admin_subnav", &$subnav);
 		}
 	}
 

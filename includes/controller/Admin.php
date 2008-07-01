@@ -707,7 +707,7 @@
 					foreach (array("feather", "clean", "url", "pinned", "status", "created_at", "updated_at") as $attr)
 						$posts_atom.= '		<chyrp:'.$attr.'>'.fix($post->$attr, false).'</chyrp:'.$attr.'>'."\r";
 
-					$posts_atom = $trigger->filter("posts_export", $posts_atom, $post);
+					$trigger->filter("posts_export", &$posts_atom, $post);
 
 					$posts_atom.= '	</entry>'."\r";
 
@@ -782,7 +782,7 @@
 						$pages_atom.= '		<chyrp:'.$attr.'>'.fix($page->$attr, false).'</chyrp:'.$attr.'>'."\r";
 
 
-					$pages_atom = $trigger->filter("pages_export", $pages_atom, $post);
+					$trigger->filter("pages_export", &$pages_atom, $post);
 
 					$pages_atom.= '	</entry>'."\r";
 				}
@@ -791,7 +791,7 @@
 				$exports["pages.atom"] = $pages_atom;
 			}
 
-			$exports = $trigger->filter("export", $exports);
+			$trigger->filter("export", &$exports);
 
 			require INCLUDES_DIR."/lib/zip.php";
 
