@@ -23,16 +23,11 @@
 			$this->respondTo("edit_post_options", "alt_text_field");
 		}
 		public function submit() {
-			$filename = "";
 			if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0)
 				$filename = upload($_FILES['photo'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp"));
-			elseif (!empty($_POST['from_url'])) {
-				$file = tempnam(sys_get_temp_dir(), "chyrp");
-				file_put_contents($file, get_remote($_POST['from_url']));
-				$fake_file = array("name" => basename(parse_url($_POST['from_url'], PHP_URL_PATH)),
-				                   "tmp_name" => $file);
-				$filename = upload($fake_file, array("jpg", "jpeg", "png", "gif", "tiff", "bmp"), "", true);
-			} else
+			elseif (!empty($_POST['from_url']))
+				$filename = upload_from_url($_POST['from_url'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp"));
+			else
 				error(__("Error"), __("Couldn't upload photo."));
 
 			$post = Post::add(array("filename" => $filename,
@@ -45,7 +40,10 @@
 		public function update() {
 			if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0) {
 				$this->delete_file($post);
-				$filename = upload($_FILES['photo']);
+				$filename = upload($_FILES['photo'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp"));
+			} elseif (!empty($_POST['from_url'])) {
+				$this->delete_file($post);
+				$filename = upload_from_url($_POST['from_url'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp"));
 			} else
 				$filename = $post->filename;
 

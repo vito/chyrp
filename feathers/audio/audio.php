@@ -23,16 +23,11 @@
 			$this->respondTo("filter_post", "filter_post");
 		}
 		public function submit() {
-			$filename = "";
 			if (isset($_FILES['audio']) and $_FILES['audio']['error'] == 0)
 				$filename = upload($_FILES['audio'], "mp3");
-			elseif (!empty($_POST['from_url'])) {
-				$file = tempnam(sys_get_temp_dir(), "chyrp");
-				file_put_contents($file, get_remote($_POST['from_url']));
-				$fake_file = array("name" => basename(parse_url($_POST['from_url'], PHP_URL_PATH)),
-				                   "tmp_name" => $file);
-				$filename = upload($fake_file, "mp3", "", true);
-			} else
+			elseif (!empty($_POST['from_url']))
+				$filename = upload_from_url($_POST['from_url'], "mp3");
+			else
 				error(__("Error"), __("Couldn't upload audio file."));
 
 			$post = Post::add(array("filename" => $filename,
@@ -46,6 +41,9 @@
 			if (isset($_FILES['audio']) and $_FILES['audio']['error'] == 0) {
 				$this->delete_file($post);
 				$filename = upload($_FILES['audio'], "mp3");
+			} elseif (!empty($_POST['from_url'])) {
+				$this->delete_file($post);
+				$filename = upload_from_url($_POST['from_url'], "mp3");
 			} else
 				$filename = $post->filename;
 

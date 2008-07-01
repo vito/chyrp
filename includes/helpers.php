@@ -881,6 +881,7 @@
 	 *     $file - The $_FILES value.
 	 *     $extension - An array of valid extensions (case-insensitive).
 	 *     $path - A sub-folder in the uploads directory (optional).
+	 *     $put - Use copy() instead of move_uploaded_file()?
 	 *
 	 * Returns:
 	 *     $filename - The resulting filename from the upload.
@@ -929,6 +930,28 @@
 			error(__("Error"), $message);
 
 		return $filename;
+	}
+
+	/**
+	 * Function: upload_from_url
+	 * Copy a file from a specified URL to their upload directory.
+	 *
+	 * Parameters:
+	 *     $url - The URL to copy.
+	 *     $extension - An array of valid extensions (case-insensitive).
+	 *     $path - A sub-folder in the uploads directory (optional).
+	 *
+	 * See Also:
+	 *     <upload>
+	 */
+	function upload_from_url($url, $extension = null, $path = "") {
+		$file = tempnam(sys_get_temp_dir(), "chyrp");
+		file_put_contents($file, get_remote($url));
+
+		$fake_file = array("name" => basename(parse_url($url, PHP_URL_PATH)),
+		                   "tmp_name" => $file);
+
+		return upload($fake_file, $extension, $path, true);
 	}
 
 	/**
