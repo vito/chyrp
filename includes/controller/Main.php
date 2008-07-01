@@ -89,7 +89,7 @@
 		 */
 		public function rss() {
 			header("HTTP/1.1 301 Moved Permanently");
-			redirect(Route::current()->url("feed/"));
+			redirect(fallback(Config::current()->feed_url, Route::current()->url("feed/"), true));
 		}
 
 		/**

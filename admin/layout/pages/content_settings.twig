@@ -14,6 +14,17 @@
 						<input class="text nowidth" type="text" name="posts_per_page" value="${ site.posts_per_page | escape }" size="2" id="posts_per_page" />
 					</p>
 					<p>
+						<label for="feed_url">${ "Feed URL" | translate }</label>
+						<input class="text" type="text" name="feed_url" value="${ site.feed_url | escape }" id="feed_url" />
+						<small>
+							{% if site.clean_urls %}
+							${ "Allows you to set an alternative URL for <code>/feed/</code>, e.g. your feed on FeedBurner." | translate }
+							{% else %}
+							${ "Allows you to set an alternative URL for <code>/?feed</code>, e.g. your feed on FeedBurner." | translate }
+							{% endif %}
+						</small>
+					</p>
+					<p>
 						<label for="feed_items">${ "Feed Posts Limit" | translate }</label>
 						<input class="text nowidth" type="text" name="feed_items" value="${ site.feed_items | escape }" size="2" id="feed_items" />
 					</p>

@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-30 19:55-0500\n"
+"PO-Revision-Date: 2008-06-30 20:40-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -187,8 +187,8 @@ msgstr ""
 #: includes/controller/Admin.php:1073
 #: includes/controller/Admin.php:1113
 #: includes/controller/Admin.php:1138
-#: includes/controller/Admin.php:1163
-#: includes/controller/Admin.php:1186
+#: includes/controller/Admin.php:1164
+#: includes/controller/Admin.php:1187
 msgid "You do not have sufficient privileges to change settings."
 msgstr ""
 
@@ -206,7 +206,7 @@ msgstr ""
 msgid "STOP! Before you go any further, you must create a .htaccess file in Chyrp's install directory and put this in it:\n<pre>%s</pre>"
 msgstr ""
 
-#: admin/layout/pages/content_settings.twig:21
+#: admin/layout/pages/content_settings.twig:32
 msgid "Enable Trackbacking"
 msgstr ""
 
@@ -323,7 +323,7 @@ msgstr ""
 msgid "Please enter a valid year and month."
 msgstr ""
 
-#: includes/controller/Admin.php:1188
+#: includes/controller/Admin.php:1189
 msgid "No Theme Specified"
 msgstr ""
 
@@ -499,6 +499,10 @@ msgstr ""
 msgid "Content"
 msgstr ""
 
+#: admin/layout/pages/content_settings.twig:17
+msgid "Feed URL"
+msgstr ""
+
 #: admin/layout/pages/manage_users.twig:11
 msgid "User deleted."
 msgstr ""
@@ -601,7 +605,7 @@ msgstr ""
 msgid "Post has been saved as a draft."
 msgstr ""
 
-#: admin/layout/pages/content_settings.twig:31
+#: admin/layout/pages/content_settings.twig:42
 msgid "Attempts to notify sites linked to from your posts. It'll slow down things a bit when you submit them, depending on how many links you've got in it."
 msgstr ""
 
@@ -1091,7 +1095,7 @@ msgstr ""
 #: includes/controller/Admin.php:1093
 #: includes/controller/Admin.php:1122
 #: includes/controller/Admin.php:1146
-#: includes/controller/Admin.php:1171
+#: includes/controller/Admin.php:1172
 msgid "Invalid security key."
 msgstr ""
 
@@ -1099,7 +1103,7 @@ msgstr ""
 msgid "(usually ok as \"localhost\")"
 msgstr ""
 
-#: includes/controller/Admin.php:1242
+#: includes/controller/Admin.php:1243
 msgid "You do not have sufficient privileges to access this area."
 msgstr ""
 
@@ -1236,6 +1240,14 @@ msgstr ""
 
 #: importers/wordpress.php:8
 msgid "Importing from WordPress requires the Text feather to be installed and enabled."
+msgstr ""
+
+#: admin/layout/pages/content_settings.twig:23
+msgid "Allows you to set an alternative URL for <code>/?feed</code>, e.g. your feed on FeedBurner."
+msgstr ""
+
+#: admin/layout/pages/content_settings.twig:21
+msgid "Allows you to set an alternative URL for <code>/feed/</code>, e.g. your feed on FeedBurner."
 msgstr ""
 
 #: install.php:478
@@ -1377,7 +1389,7 @@ msgstr ""
 msgid "Extend"
 msgstr ""
 
-#: admin/layout/pages/content_settings.twig:17
+#: admin/layout/pages/content_settings.twig:28
 msgid "Feed Posts Limit"
 msgstr ""
 
@@ -1405,7 +1417,7 @@ msgstr ""
 msgid "Please enter a name for your website."
 msgstr ""
 
-#: includes/controller/Admin.php:1188
+#: includes/controller/Admin.php:1189
 msgid "You did not specify a theme to switch to."
 msgstr ""
 
@@ -1551,7 +1563,7 @@ msgstr ""
 msgid "Table Prefix"
 msgstr ""
 
-#: admin/layout/pages/content_settings.twig:24
+#: admin/layout/pages/content_settings.twig:35
 msgid "Trackbacking allows sites to notify you when they write a new entry, usually because they link to or reference yours."
 msgstr ""
 
@@ -1635,7 +1647,7 @@ msgstr ""
 #: admin/layout/pages/general_settings.twig:54
 #: admin/layout/pages/edit_user.twig:49
 #: admin/layout/pages/edit_group.twig:29
-#: admin/layout/pages/content_settings.twig:36
+#: admin/layout/pages/content_settings.twig:47
 msgid "Update"
 msgstr ""
 
@@ -1771,7 +1783,7 @@ msgstr ""
 msgid "Lost Password"
 msgstr ""
 
-#: admin/layout/pages/content_settings.twig:28
+#: admin/layout/pages/content_settings.twig:39
 msgid "Send Pingbacks"
 msgstr ""
 
@@ -1906,10 +1918,10 @@ msgstr ""
 #: includes/controller/Admin.php:1122
 #: includes/controller/Admin.php:1138
 #: includes/controller/Admin.php:1146
-#: includes/controller/Admin.php:1163
-#: includes/controller/Admin.php:1171
-#: includes/controller/Admin.php:1186
-#: includes/controller/Admin.php:1242
+#: includes/controller/Admin.php:1164
+#: includes/controller/Admin.php:1172
+#: includes/controller/Admin.php:1187
+#: includes/controller/Admin.php:1243
 #: includes/common.php:304
 #: includes/bookmarklet.php:5
 #: includes/ajax.php:13

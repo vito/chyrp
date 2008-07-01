@@ -1147,6 +1147,7 @@
 
 			$config = Config::current();
 			$config->set("feed_items", $_POST['feed_items']);
+			$config->set("feed_url", $_POST['feed_url']);
 			$config->set("enable_trackbacking", !empty($_POST['enable_trackbacking']));
 			$config->set("send_pingbacks", !empty($_POST['send_pingbacks']));
 			$config->set("posts_per_page", $_POST['posts_per_page']);
