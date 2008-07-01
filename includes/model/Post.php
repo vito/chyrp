@@ -100,7 +100,7 @@
 			$options = (isset($_POST['option'])) ? $_POST['option'] : array() ;
 
 			if (isset($_POST['bookmarklet']))
-				$trigger->filter("bookmarklet_submit", array(&$values, &$options));
+				Trigger::current()->filter("bookmarklet_submit", array(&$values, &$options));
 
 			foreach ($values as $name => &$value)
 				$value = self::makesafe($value);

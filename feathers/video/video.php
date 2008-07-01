@@ -4,7 +4,8 @@
 			$this->setField(array("attr" => "video",
 			                      "type" => "text_block",
 			                      "rows" => 4,
-			                      "label" => __("Video", "video")));
+			                      "label" => __("Video", "video"),
+			                      "bookmarklet" => (isset($_GET['url']) and strpos($_GET['url'], "youtube")) ? "url" : ""));
 			$this->setField(array("attr" => "caption",
 			                      "type" => "text_block",
 			                      "rows" => 4,

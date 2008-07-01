@@ -41,6 +41,18 @@
 <?php
 		}
 
+		public function bookmarklet_submit($stuff) {
+			$values =& $stuff[0];
+			foreach ($values as &$value)
+				if (preg_match_all("/([^\\\\]|^)#([^ \n#]+)([^\\\\]#)?/", $value, $tags)) {
+					$_POST['tags'] = implode(", ", $tags[2]);
+
+					$value = preg_replace("/([^\\\\]|^)#([^ \n#]+)([^\\\\])#/", "\\1\\2\\3", $value);
+					$value = preg_replace("/([^\\\\]|^)#([^ \n#]+)/", "\\1\\2", $value);
+					$value = preg_replace("/\\\\#/", "#", $value);
+				}
+		}
+
 		static function add_post($post) {
 			if (empty($_POST['tags'])) return;
 
