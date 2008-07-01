@@ -241,7 +241,7 @@
 
 			# Send any and all pingbacks to URLs in the body
 			if (Config::current()->send_pingbacks)
-				send_pingbacks($args[3]['description'], $post->id);
+				send_pingbacks($args[3]['description'], $post);
 
 			return $post->id;
 		}

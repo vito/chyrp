@@ -591,13 +591,11 @@
 	 * Sends a trackback request.
 	 *
 	 * Parameters:
-	 *     $post_id - The post we're sending from.
+	 *     $post - The post we're sending from.
 	 *     $target - The URL we're sending to.
 	 */
-	function trackback_send($post_id, $target) {
-		if (empty($post_id) or empty($target)) return false;
-
-		$post = new Post($post_id);
+	function trackback_send($post, $target) {
+		if (empty($target)) return false;
 
 		$target = parse_url($target);
 		$title = $post->title();
@@ -611,7 +609,7 @@
 		if (!$connect) return false;
 
 		$config = Config::current();
-		$query = "url=".rawurlencode($post->url($post_id))."&title=".rawurlencode($title)."&blog_name=".rawurlencode($config->name)."&excerpt=".rawurlencode($excerpt);
+		$query = "url=".rawurlencode($post->url())."&title=".rawurlencode($title)."&blog_name=".rawurlencode($config->name)."&excerpt=".rawurlencode($excerpt);
 
 		fwrite($connect, "POST ".$target["path"].$target["query"]." HTTP/1.1\n");
 		fwrite($connect, "Host: ".$target["host"]."\n");
@@ -631,12 +629,10 @@
 	 *
 	 * Parameters:
 	 *     $string - The string to crawl for pingback URLs.
-	 *     $post_id - The post ID we're sending from.
+	 *     $post - The post we're sending from.
 	 */
-	function send_pingbacks($string, $post_id) {
-		$post = new Post($post_id);
-
-		foreach (grab_urls($string) as $url) {
+	function send_pingbacks($string, $post) {
+		foreach (grab_urls($string) as $url)
 			if ($ping_url = pingback_url($url)) {
 				if (!class_exists("IXR_Client"))
 					require INCLUDES_DIR."/lib/ixr.php";
@@ -646,7 +642,6 @@
 				$client->useragent.= " -- Chyrp/".CHYRP_VERSION;
 				$client->query("pingback.ping", $post->url(), $url);
 			}
-		}
 	}
 
 	/**

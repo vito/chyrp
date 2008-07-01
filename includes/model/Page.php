@@ -12,7 +12,7 @@
 		 * See Also:
 		 *     <Model::grab>
 		 */
-		public function __construct($page_id = null, $options = array()) {
+		public function __construct($page_id, $options = array()) {
 			if (!isset($page_id) and empty($options)) return;
 			parent::grab($this, $page_id, $options);
 			$this->slug =& $this->url;
@@ -86,7 +86,6 @@
 		 * Updates the given page.
 		 *
 		 * Parameters:
-		 *     $page_id - The page to update.
 		 *     $title - The new Title.
 		 *     $body - The new Bod.
 		 *     $parent_id - The new parent ID.

@@ -1,6 +1,4 @@
 <?php
-	$temp_id = null;
-
 	/**
 	 * Class: Post
 	 * The Post model.
@@ -161,7 +159,7 @@
 			$post = new self($id);
 
 			foreach ($values as $value)
-				send_pingbacks($value, $post->id);
+				send_pingbacks($value, $post);
 
 			Trigger::current()->call("add_post", array($post, $options));
 

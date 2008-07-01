@@ -75,7 +75,7 @@
 			                $_POST['email'],
 			                $_POST['url'],
 			                $_POST['body'],
-			                $_POST['post_id']);
+			                $post);
 		}
 
 		static function admin_update_comment() {
@@ -272,7 +272,7 @@
 			                "",
 			                $_POST["url"],
 			                '<strong><a href="'.fix($url).'">'.fix($title).'</a></strong>'."\n".$excerpt,
-			                $_GET["id"],
+			                new Post($_GET["id"]),
 			                "trackback");
 		}
 
@@ -291,7 +291,7 @@
 			                "",
 			                $from,
 			                $excerpt,
-			                $id,
+			                new Post($id),
 			                "pingback");
 		}
 
@@ -773,18 +773,18 @@ var Comment = {
 				             (isset($comment->comment_approved) && $comment->comment_approved == "1" ? "approved" : "denied"),
 				             "",
 				             $comment->comment_date,
-				             $post->id,
+				             $post,
 				             0);
 			}
 		}
 
-		static function import_movabletype_post($item, $id) {
+		static function import_movabletype_post($item, $post) {
 			global $comment;
 			preg_match_all("/COMMENT:\nAUTHOR: (.*?)\nEMAIL: (.*?)\nIP: (.*?)\nURL: (.*?)\nDATE: (.*?)\n(.*?)\n-----/", $data, $comments);
 			array_shift($comments);
 
 			for ($i = 0; $i < count($comments[0]); $i++)
-				Comment::add($comments[5][$i], $comments[0][$i], $comments[3][$i], $comments[1][$i], $comments[2][$i], "", "approved", $comments[4][$i], $id, 0);
+				Comment::add($comments[5][$i], $comments[0][$i], $comments[3][$i], $comments[1][$i], $comments[2][$i], "", "approved", $comments[4][$i], $post, 0);
 		}
 
 		static function import_textpattern_generate_array($array) {
@@ -805,7 +805,7 @@ var Comment = {
 				$translate_status = array(-1 => "spam", 0 => "denied", 1 => "approved");
 				$status = str_replace(array_keys($translate_status), array_values($translate_status), $comment["visible"]);
 
-				Comment::add($comment["message"], $comment["name"], $comment["web"], $comment["email"], $comment["ip"], "", $status, "", $comment["posted"], $post->id, 0);
+				Comment::add($comment["message"], $comment["name"], $comment["web"], $comment["email"], $comment["ip"], "", $status, "", $comment["posted"], $post, 0);
 			}
 		}
 
