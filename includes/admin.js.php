@@ -42,8 +42,8 @@ $(function(){
 	$(".js_enabled").css("display", "block")
 
 	$("textarea").keyup(function(event){
-		if ($(this).val().match(/\\ct/gm))
-			$(this).val($(this).val().replace(/\\ct/gm, "	"))
+		if ($(this).val().match(/([^\\]|^)\\ct/gm))
+			$(this).val($(this).val().replace(/([^\\]|^)\\ct/gm, "	"))
 	})
 
 	// Automated PNG fixing.
