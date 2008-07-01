@@ -192,7 +192,7 @@
 
 	# Require feathers/modules and load their translations.
 	foreach ($config->enabled_feathers as $index => $feather) {
-		if (!file_exists(FEATHERS_DIR."/".$feather."/feather.php")) {
+		if (!file_exists(FEATHERS_DIR."/".$feather."/".$feather.".php")) {
 			unset($config->enabled_feathers[$index]);
 			continue;
 		}
@@ -200,14 +200,14 @@
 		if (file_exists(FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo"))
 			load_translator($feather, FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo");
 
-		require FEATHERS_DIR."/".$feather."/feather.php";
+		require FEATHERS_DIR."/".$feather."/".$feather.".php";
 
 		$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$feather."/info.yaml");
 		$pluralizations[$feather] = $pluralizations["feathers"][$feather] = fallback($info["plural"], pluralize($feather), true);
 	}
 
 	foreach ($config->enabled_modules as $index => $module) {
-		if (!file_exists(MODULES_DIR."/".$module."/module.php")) {
+		if (!file_exists(MODULES_DIR."/".$module."/".$module.".php")) {
 			unset($config->enabled_modules[$index]);
 			continue;
 		}
@@ -215,7 +215,7 @@
 		if (file_exists(MODULES_DIR."/".$module."/locale/".$config->locale.".mo"))
 			load_translator($module, MODULES_DIR."/".$module."/locale/".$config->locale.".mo");
 
-		require MODULES_DIR."/".$module."/module.php";
+		require MODULES_DIR."/".$module."/".$module.".php";
 	}
 
 	# Load the /clean/urls into their correct $_GET values.

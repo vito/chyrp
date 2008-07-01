@@ -160,9 +160,7 @@
 			                      "id",
 			                      "`__pages`.`id` = :id",
 			                      "id",
-			                      array(
-			                          ":id" => $page_id
-			                      ));
+			                      array(":id" => $page_id));
 			return $check->rowCount();
 		}
 

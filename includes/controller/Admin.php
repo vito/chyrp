@@ -825,7 +825,7 @@
 			$issues = array();
 			if ($open = opendir(MODULES_DIR)) {
 				while (($folder = readdir($open)) !== false) {
-					if (!file_exists(MODULES_DIR."/".$folder."/module.php") or !file_exists(MODULES_DIR."/".$folder."/info.yaml")) continue;
+					if (!file_exists(MODULES_DIR."/".$folder."/".$folder.".php") or !file_exists(MODULES_DIR."/".$folder."/info.yaml")) continue;
 
 					if (file_exists(MODULES_DIR."/".$folder."/locale/".$config->locale.".mo"))
 						load_translator($folder, MODULES_DIR."/".$folder."/locale/".$config->locale.".mo");
@@ -836,7 +836,7 @@
 
 					if (!empty($info["conflicts"]))
 						foreach ($info["conflicts"] as $conflict)
-							if (file_exists(MODULES_DIR."/".$conflict."/module.php")) {
+							if (file_exists(MODULES_DIR."/".$conflict."/".$conflict.".php")) {
 								$issues[$folder] = true;
 								$info["conflicts_true"][] = $conflict;
 							}
@@ -902,7 +902,7 @@
 
 			if ($open = opendir(FEATHERS_DIR)) {
 				while (($folder = readdir($open)) !== false) {
-					if (!file_exists(FEATHERS_DIR."/".$folder."/feather.php") or !file_exists(FEATHERS_DIR."/".$folder."/info.yaml")) continue;
+					if (!file_exists(FEATHERS_DIR."/".$folder."/".$folder.".php") or !file_exists(FEATHERS_DIR."/".$folder."/info.yaml")) continue;
 
 					if (file_exists(FEATHERS_DIR."/".$folder."/locale/".$config->locale.".mo"))
 						load_translator($folder, FEATHERS_DIR."/".$folder."/locale/".$config->locale.".mo");
