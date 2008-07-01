@@ -168,10 +168,12 @@
 			$trigger = Trigger::current();
 
 			$stylesheets = "";
-			if (file_exists(THEMES_DIR."/".$this->theme."/stylesheets/")) {
+			if (file_exists(THEMES_DIR."/".$this->theme."/stylesheets/") or file_exists(THEMES_DIR."/".$this->theme."/css/")) {
 				$count = 1;
-				$glob = glob(THEMES_DIR."/".$this->theme."/stylesheets/*.css*");
+				$glob = glob(THEMES_DIR."/".$this->theme."/{stylesheets,css}/*.css*", GLOB_BRACE);
+
 				foreach($glob as $file) {
+					$path = preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file);
 					$file = basename($file);
 
 					if ($file == "ie.css")
@@ -181,7 +183,7 @@
 					elseif (preg_match("/(lt|gt)ie([0-9\.]+)\.css/", $file, $matches))
 					    $stylesheets.= "<!--[if ".$matches[1]." IE ".$matches[2]."]>";
 
-					$stylesheets.= '<link rel="stylesheet" href="'.$config->chyrp_url.'/themes/'.$this->theme.'/stylesheets/'.$file.'" type="text/css" media="'.($file == "print.css" ? "print" : "screen").'" charset="utf-8" />';
+					$stylesheets.= '<link rel="stylesheet" href="'.$config->chyrp_url.$path.'" type="text/css" media="'.($file == "print.css" ? "print" : "screen").'" charset="utf-8" />';
 
 					if ($file == "ie.css" or preg_match("/(lt|gt)?ie([0-9\.]+)\.css/", $file))
 						$stylesheets.= "<![endif]-->";
@@ -222,12 +224,12 @@
 			                                           '<script src="'.$config->chyrp_url.'/includes/lib/gz.php?file=plugins.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".
 			                                           '<script src="'.$config->chyrp_url.'/includes/javascript.php?action='.$route->action.$args.'" type="text/javascript" charset="utf-8"></script>');
 
-			if (file_exists(THEMES_DIR."/".$this->theme."/javascripts/")) {
-				foreach(glob(THEMES_DIR."/".$this->theme."/javascripts/*.js") as $file)
-					$javascripts.= "\n\t\t".'<script src="'.$config->chyrp_url.'/includes/lib/gz.php?file=theme/'.basename($file).'" type="text/javascript" charset="utf-8"></script>';
+			if (file_exists(THEMES_DIR."/".$this->theme."/javascripts/") or file_exists(THEMES_DIR."/".$this->theme."/js/")) {
+				foreach(glob(THEMES_DIR."/".$this->theme."/{javascripts,js}/*.js", GLOB_BRACE) as $file)
+					$javascripts.= "\n\t\t".'<script src="'.$config->chyrp_url.'/includes/lib/gz.php?file='.preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file).'" type="text/javascript" charset="utf-8"></script>';
 
-				foreach(glob(THEMES_DIR."/".$this->theme."/javascripts/*.js.php") as $file)
-					$javascripts.= "\n\t\t".'<script src="'.THEME_URL.'/javascripts/'.basename($file).'" type="text/javascript" charset="utf-8"></script>';
+				foreach(glob(THEMES_DIR."/".$this->theme."/{javascripts,js}/*.js.php", GLOB_BRACE) as $file)
+					$javascripts.= "\n\t\t".'<script src="'.$config->chyrp_url.preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file).'" type="text/javascript" charset="utf-8"></script>';
 			}
 
 			return $javascripts;
