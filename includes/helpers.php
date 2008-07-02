@@ -1030,8 +1030,10 @@
 
 			$content = "";
 			while (!feof($connect)) {
-				$line = fgets($connect, 4096);
-				$content.= trim($line)."\n";
+				$line = fgets($connect, 128);
+				if (preg_match("/\r\n/", $line)) continue;
+
+				$content.= $line;
 			}
 
 			fclose($connect);
