@@ -16,7 +16,7 @@
 		 *     $query - Query to execute.
 		 *     $params - An associative array of parameters used in the query.
 		 */
-		public function __construct($query, $params = array()) {
+		public function __construct($query, $params = array(), $throw_exceptions = false) {
 			$this->db =& SQL::current()->db;
 			$this->interface =& SQL::current()->interface;
 

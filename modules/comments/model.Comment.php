@@ -85,12 +85,15 @@
 					$comment = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, $signature, datetime(), $post, $visitor);
 					if (isset($_POST['ajax']))
 						exit("{ comment_id: ".$comment->id." }");
+
 					redirect($post->url()."#comment_".$comment->id);
 				}
 			} else {
 				$comment = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, "", datetime(), $post, $visitor);
+
 				if (isset($_POST['ajax']))
 					exit("{ comment_id: ".$comment->id." }");
+
 				redirect($post->url()."#comment_".$comment->id);
 			}
 		}
@@ -117,6 +120,10 @@
 				if (!@parse_url($url, PHP_URL_SCHEME))
 					$url = "http://".$url;
 
+			$ip = ip2long($ip);
+			if ($ip === false)
+				$ip = 0;
+
 			$sql = SQL::current();
 			$sql->insert("comments",
 			             array("body" => ":body",
@@ -134,7 +141,7 @@
 			                   ":author" => strip_tags($author),
 			                   ":author_url" => strip_tags($url),
 			                   ":author_email" => strip_tags($email),
-			                   ":author_ip" => ip2long($ip),
+			                   ":author_ip" => $ip,
 			                   ":author_agent" => $agent,
 			                   ":status" => $status,
 			                   ":signature" => $signature,
@@ -146,6 +153,36 @@
 
 			Trigger::current()->call("add_comment", $new);
 			return $new;
+		}
+
+		public function update($author, $author_email, $author_url, $body, $status, $timestamp) {
+			$sql = SQL::current();
+			$sql->update("comments",
+			             "`__comments`.`id` = :id",
+			             array("body" => ":body",
+			                   "author" => ":author",
+			                   "author_email" => ":author_email",
+			                   "author_url" => ":author_url",
+			                   "status" => ":status",
+			                   "created_at" => ":created_at"),
+			             array(":body" => $body,
+			                   ":author" => strip_tags($author),
+			                   ":author_email" => strip_tags($author_email),
+			                   ":author_url" => strip_tags($author_url),
+			                   ":status" => $status,
+			                   ":created_at" => $timestamp,
+			                   ":id" => $this->id
+			             ));
+
+			Trigger::current()->call("update_comment", $this);
+		}
+
+		static function delete($comment_id) {
+			$trigger = Trigger::current();
+			if ($trigger->exists("delete_comment"))
+				$trigger->call("delete_comment", new self($comment_id));
+
+			SQL::current()->delete("comments", "`id` = :id", array(":id" => $comment_id));
 		}
 
 		public function editable() {
@@ -217,36 +254,6 @@
 				return '<a href="'.$this->author_url.'">'.$this->author.'</a>';
 			else # If not, just return their name
 				return $this->author;
-		}
-
-		public function update($author, $author_email, $author_url, $body, $status, $timestamp) {
-			$sql = SQL::current();
-			$sql->update("comments",
-			             "`__comments`.`id` = :id",
-			             array("body" => ":body",
-			                   "author" => ":author",
-			                   "author_email" => ":author_email",
-			                   "author_url" => ":author_url",
-			                   "status" => ":status",
-			                   "created_at" => ":created_at"),
-			             array(":body" => $body,
-			                   ":author" => strip_tags($author),
-			                   ":author_email" => strip_tags($author_email),
-			                   ":author_url" => strip_tags($author_url),
-			                   ":status" => $status,
-			                   ":created_at" => $timestamp,
-			                   ":id" => $this->id
-			             ));
-
-			Trigger::current()->call("update_comment", $this);
-		}
-
-		static function delete($comment_id) {
-			$trigger = Trigger::current();
-			if ($trigger->exists("delete_comment"))
-				$trigger->call("delete_comment", new self($comment_id));
-
-			SQL::current()->delete("comments", "`id` = :id", array(":id" => $comment_id));
 		}
 
 		static function user_can($post) {

@@ -850,7 +850,7 @@ var Comment = {
 
 			if (isset($route->action) and $route->action == "view") {
 				$get_comments = $sql->select("comments", # table
-				                             "`__comments`.`id`", # fields
+				                             "*", # fields
 				                             array("`__comments`.`post_id` = :post_id",
 				                                   "`__comments`.`status` != 'spam'",
 				                                   "`__comments`.`status` != 'denied' OR (
@@ -873,7 +873,7 @@ var Comment = {
 
 				$post->comments = array();
 				foreach ($get_comments->fetchAll() as $comment)
-					$post->comments[] = $comment["id"];
+					$post->comments[] = $comment;
 
 				$post->comments = new Paginator(array($post->comments, "Comment"), $config->comments_per_page, "comments_page");
 
