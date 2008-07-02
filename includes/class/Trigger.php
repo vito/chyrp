@@ -31,6 +31,8 @@
 		 */
 		public function call($name, $arg = null, $array = true) {
 			global $modules;
+			if (!isset($modules)) return;
+
 			$caller = (is_array($arg) and $array) ? "call_user_func_array" : "call_user_func" ;
 
 			$this->called[$name] = array();
@@ -43,10 +45,9 @@
 				}
 			}
 
-			$config = Config::current();
-			foreach ($config->enabled_modules as $module)
-				if (!in_array(array($modules[$module], $name), $this->called[$name]) and is_callable(array($modules[$module], $name)))
-					$caller(array($modules[$module], $name), &$arg);
+			foreach ($modules as $module)
+				if (!in_array(array($module, $name), $this->called[$name]) and is_callable(array($module, $name)))
+					$caller(array($module, $name), &$arg);
 		}
 
 		/**
@@ -64,10 +65,9 @@
 		 *     $target, filtered through any/all actions for the trigger $name.
 		 */
 		public function filter($name, $target = array(), $arguments = null) {
-			if ((isset($this->exists[$name]) and !$this->exists[$name]) or !$this->exists($name))
-				return $target;
-
 			global $modules;
+			if (!isset($modules) or (isset($this->exists[$name]) and !$this->exists[$name]) or !$this->exists($name))
+				return $target;
 
 			if (!is_array($arguments))
 				$arguments = array($arguments);

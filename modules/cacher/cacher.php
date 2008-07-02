@@ -16,8 +16,6 @@
 
 			# Remove all expired files.
 			$this->remove_expired();
-
-			$this->addAlias("change_setting", "regenerate");
 		}
 
 		static function __install() {
@@ -28,6 +26,10 @@
 		static function __uninstall() {
 			$config = Config::current();
 			$config->remove("cache_expire");
+		}
+
+		public function do_gzip() {
+			return false;
 		}
 
 		public function runtime() {
@@ -57,11 +59,14 @@
 		public function prepare_cache_updaters() {
 			$regenerate = array("add_post",    "add_page",
 			                    "update_post", "update_page",
-			                    "delete_post", "delete_page");
+			                    "delete_post", "delete_page",
+			                    "change_setting");
+
+			Trigger::current()->filter("cacher_regenerate_triggers", &$regenerate);
 			foreach ($regenerate as $action)
 				$this->addAlias($action, "regenerate");
 
-			foreach (array("add_comment", "update_comment", "delete_comment") as $action)
+			foreach (Trigger::current()->filter("cacher_regenerate_posts_triggers", array()) as $action)
 				$this->addAlias($action, "remove_post_cache");
 		}
 
@@ -101,8 +106,8 @@
 				unlink($file);
 		}
 
-		public function remove_post_cache($comment) {
-			$this->remove_caches_for($comment->post()->url());
+		public function remove_post_cache($thing) {
+			$this->remove_caches_for($thing->post()->url());
 		}
 
 		public function update_user($user) {

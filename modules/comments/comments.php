@@ -919,4 +919,9 @@ var Comment = {
 
 			return $options;
 		}
+
+		public function cacher_regenerate_posts_triggers($array) {
+			$array = array_merge($array, array("add_comment", "update_comment", "delete_comment"));
+			return $array;
+		}
 	}
