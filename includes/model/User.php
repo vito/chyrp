@@ -82,7 +82,7 @@
 			                 ":joined_at" => datetime()
 			            ));
 
-			$user = new self($sql->db->lastInsertId());
+			$user = new self($sql->latest());
 
 			Trigger::current()->call("add_user", $user);
 

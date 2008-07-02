@@ -37,7 +37,7 @@
 			$this->result = array();
 			for ($i = $this->offset; $i < ($this->offset + $this->per_page); $i++)
 				if (isset($array[$i]))
-					$this->result[] = ($model) ? new $model_name($array[$i]) : $array[$i] ;
+					$this->result[] = ($model) ? new $model_name(null, array("read_from" => $array[$i])) : $array[$i] ;
 
 			$shown_dates = array();
 			if ($model)

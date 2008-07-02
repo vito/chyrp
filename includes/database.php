@@ -12,7 +12,13 @@
 		# Number of queries it takes to load the page.
 		public $queries = 0;
 
+		# Variable: $db
+		# Holds the currently running database.
 		public $db;
+
+		# String: $interface
+		# What method to use for interacting with the database.
+		public $interface = "";
 
 		/**
 		 * Function: __construct
@@ -20,6 +26,13 @@
 		 */
 		private function __construct() {
 			$this->connected = false;
+
+			if (class_exists("PDO") and (in_array("mysql", PDO::getAvailableDrivers()) or in_array("sqlite", PDO::getAvailableDrivers())))
+				$this->interface = "pdo";
+			elseif (class_exists("MySQLi"))
+				$this->interface = "mysqli";
+			else
+				$this->interface = "mysql";
 		}
 
 		/**
@@ -43,6 +56,7 @@
 		 * Parameters:
 		 *     $setting - The setting name.
 		 *     $value - The new value. Can be boolean, numeric, an array, a string, etc.
+		 *     $overwrite - If the setting exists and is the same value, should it be overwritten?
 		 */
 		public function set($setting, $value, $overwrite = true) {
 			global $errors;
@@ -68,38 +82,66 @@
 		/**
 		 * Function: connect
 		 * Connects to the SQL database.
+		 *
+		 * Parameters:
+		 *     $checking - Return a boolean of whether or not it could connect, instead of showing an error.
 		 */
 		public function connect($checking = false) {
 			$this->load(INCLUDES_DIR."/database.yaml.php");
 			if ($this->connected)
 				return true;
-			try {
-				if ($this->adapter == "sqlite") {
-					$this->db = new PDO("sqlite:".$this->database, null, null, array(PDO::ATTR_PERSISTENT => true));
 
-					$this->db->sqliteCreateFunction("YEAR", "year_from_datetime", 1);
-					$this->db->sqliteCreateFunction("MONTH", "month_from_datetime", 1);
-					$this->db->sqliteCreateFunction("DAY", "day_from_datetime", 1);
-				} else
-					$this->db = new PDO($this->adapter.":host=".$this->host.";".((isset($this->port)) ? "port=".$this->port.";" : "")."dbname=".$this->database,
-					                    $this->username,
-					                    $this->password,
-					                    array(PDO::ATTR_PERSISTENT => true));
-				$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-				if ($this->adapter == "mysql")
-					$this->db->query("set names 'utf8';");
-				$this->connected = true;
-				return true;
-			} catch (PDOException $error) {
-				$message = preg_replace("/SQLSTATE\[.*?\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
-				return ($checking) ? false : error(__("Database Error"), $message) ;
+			switch($this->interface) {
+				case "pdo":
+					try {
+						if ($this->adapter == "sqlite") {
+							$this->db = new PDO("sqlite:".$this->database, null, null, array(PDO::ATTR_PERSISTENT => true));
+
+							$this->db->sqliteCreateFunction("YEAR", "year_from_datetime", 1);
+							$this->db->sqliteCreateFunction("MONTH", "month_from_datetime", 1);
+							$this->db->sqliteCreateFunction("DAY", "day_from_datetime", 1);
+						} else
+							$this->db = new PDO($this->adapter.":host=".$this->host.";".((isset($this->port)) ? "port=".$this->port.";" : "")."dbname=".$this->database,
+							                    $this->username,
+							                    $this->password,
+							                    array(PDO::ATTR_PERSISTENT => true));
+						$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+					} catch (PDOException $error) {
+						$message = preg_replace("/SQLSTATE\[.*?\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
+						return ($checking) ? false : error(__("Database Error"), $message) ;
+					}
+					break;
+				case "mysqli":
+					$this->db = new MySQLi($this->host, $this->username, $this->password, $this->database);
+
+					if (mysqli_connect_errno())
+						return ($checking) ? false : error(__("Database Error", mysqli_connect_error())) ;
+
+					break;
+				case "mysql":
+					$this->db = @mysql_connect($this->host, $this->username, $this->password);
+
+					if (!$this->db or !@mysql_select_db($this->database))
+						return ($checking) ? false : error(__("Database Error", mysql_error())) ;
+
+					break;
 			}
+
+			if ($this->adapter == "mysql")
+				new Query("SET NAMES 'utf8'");
+
+			return $this->connected = true;
 		}
 
 		/**
 		 * Function: query
 		 * Executes a query and increases <SQL->$queries>.
 		 * If the query results in an error, it will die and show the error.
+		 *
+		 * Parameters:
+		 *     $query - Query to execute.
+		 *     $params - An associative array of parameters used in the query.
+		 *     $throw_exceptions - Should an exception be thrown if the query fails?
 		 */
 		public function query($query, $params = array(), $throw_exceptions = false) {
 			# Ensure that every param in $params exists in the query.
@@ -108,56 +150,43 @@
 				if (!strpos($query, $name))
 					unset($params[$name]);
 
-			try {
-				$query = str_replace("`", "", str_replace("__", $this->prefix, $query));
+			$query = str_replace("`", "", str_replace("__", $this->prefix, $query));
 
-				if ($this->adapter == "sqlite")
-					$query = preg_replace("/ DEFAULT CHARSET=utf8/i", "", preg_replace("/AUTO_INCREMENT/i", "AUTOINCREMENT", $query));
-
-				$q = $this->db->prepare($query);
-				$result = $q->execute($params);
-				$q->setFetchMode(PDO::FETCH_ASSOC);
-				if (defined('DEBUG') and DEBUG) {
-					#echo '<pre class="sql_query" style="position: relative; z-index: 1000"><span style="background: rgba(0,0,0,.5); padding: 0 1px; border: 1px solid rgba(0,0,0,.25); color: white; font: 9px/14px normal \'Monaco\', monospace;">'.$query.'</span></pre>';
-					$trace = debug_backtrace();
-					$target = $trace[$index = 0];
-
-					while (strpos($target["file"], "database.php")) # Getting a traceback from this file is pretty
-						$target = $trace[$index++];                 # useless (mostly when using $sql->select() and such)
-
-					$debug = $this->debug[count($this->debug)] = array("number" => $this->queries, "file" => str_replace(MAIN_DIR."/", "", $target["file"]), "line" => $target["line"], "query" => normalize(str_replace(array_keys($params), array_values($params), $query)));
-					#error_log("\n\t".$debug["number"].". ".$debug["query"]."\n\n\tCalled from ".$debug["file"]." on line ".$target["line"].".");
-				}
-				if (!$result) throw new PDOException;
-			} catch (PDOException $error) {
-				$message = preg_replace("/SQLSTATE\[.*?\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
-
-				if (XML_RPC or $throw_exceptions)
-					throw new Exception($message);
-
-				if (DEBUG)
-					$message.= "\n\n".$query."\n\n<pre>".print_r($params, true)."</pre>\n\n<pre>".$error->getTraceAsString()."</pre>";
-
-				$this->db = null;
-
-				error(__("Database Error"), $message);
-			}
+			if ($this->adapter == "sqlite")
+				$query = str_ireplace(" DEFAULT CHARSET=utf8", "", str_ireplace("AUTO_INCREMENT", "AUTOINCREMENT", $query));
 
 			++$this->queries;
-			return $q;
+
+			return new Query($query, $params, $throw_exceptions);
 		}
 
 		/**
 		 * Function: count
 		 * Performs a counting query and returns the number of matching rows.
+		 *
+		 * Parameters:
+		 *     $tables - An array (or string) of tables to count results on.
+		 *     $conds - An array (or string) of conditions to match.
+		 *     $params - An associative array of parameters used in the query.
 		 */
-		public function count($tables, $conds = null, $params = array(), $left_join = null) {
-			return $this->query(QueryBuilder::build_count($tables, $conds, $left_join), $params)->fetchColumn();
+		public function count($tables, $conds = null, $params = array()) {
+			return $this->query(QueryBuilder::build_count($tables, $conds), $params)->fetchColumn();
 		}
 
 		/**
 		 * Function: select
 		 * Performs a SELECT with given criteria and returns the query result object.
+		 *
+		 * Parameters:
+		 *     $tables - An array (or string) of tables to grab results from.
+		 *     $fields - Fields to select.
+		 *     $conds - An array (or string) of conditions to match.
+		 *     $order - ORDER BY statement. Can be an array.
+		 *     $params - An associative array of parameters used in the query.
+		 *     $limit - Limit for results.
+		 *     $offset - Offset for the select statement.
+		 *     $group - GROUP BY statement. Can be an array.
+		 *     $left_join - An array of additional LEFT JOINs.
 		 */
 		public function select($tables, $fields = "*", $conds = null, $order = null, $params = array(), $limit = null, $offset = null, $group = null, $left_join = null) {
 			return $this->query(QueryBuilder::build_select($tables, $fields, $conds, $order, $limit, $offset, $group, $left_join), $params);
@@ -166,6 +195,11 @@
 		/**
 		 * Function: insert
 		 * Performs an INSERT with given data.
+		 *
+		 * Parameters:
+		 *     $table - Table to insert to.
+		 *     $data - An associative array of data to insert.
+		 *     $params - An associative array of parameters used in the query.
 		 */
 		public function insert($table, $data, $params = array()) {
 			return $this->query(QueryBuilder::build_insert($table, $data), $params);
@@ -174,6 +208,12 @@
 		/**
 		 * Function: update
 		 * Performs an UDATE with given criteria and data.
+		 *
+		 * Parameters:
+		 *     $table - Table to update.
+		 *     $conds - Rows to update.
+		 *     $data - An associative array of data to update.
+		 *     $params - An associative array of parameters used in the query.
 		 */
 		public function update($table, $conds, $data, $params = array()) {
 			return $this->query(QueryBuilder::build_update($table, $conds, $data), $params);
@@ -182,9 +222,32 @@
 		/**
 		 * Function: delete
 		 * Performs a DELETE with given criteria.
+		 *
+		 * Parameters:
+		 *     $table - Table to delete from.
+		 *     $conds - Rows to delete..
+		 *     $params - An associative array of parameters used in the query.
 		 */
 		public function delete($table, $conds, $params = array()) {
 			return $this->query(QueryBuilder::build_delete($table, $conds), $params);
+		}
+
+		/**
+		 * Function: latest
+		 * Returns the last inserted ID.
+		 */
+		public function latest() {
+			switch($this->interface) {
+				case "pdo":
+					return $this->db->lastInsertId();
+					break;
+				case "mysqli":
+					return $this->db->insert_id;
+					break;
+				case "mysql":
+					return @mysql_insert_id();
+					break;
+			}
 		}
 
 		/**

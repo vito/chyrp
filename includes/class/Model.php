@@ -55,7 +55,6 @@
 			$trigger = Trigger::current();
 			$options = $trigger->filter(Route::current()->action."_".$model_name."_grab", $options);
 			$options = $trigger->filter($model_name."_grab", $options);
-
 			$sql = SQL::current();
 			if (!empty($options["read_from"]))
 				$read = $options["read_from"];
@@ -75,9 +74,10 @@
 			if (!count($read) or !$read)
 				return $model->no_results = true;
 
-			foreach ($read as $key => $val)
+			foreach ($read as $key => $val) {
 				if (!is_int($key))
 					$model->$key = $loaded_models[$model_name][$read["id"]][$key] = $val;
+			}
 
 			if (isset($model->updated_at))
 				$model->updated = $model->updated_at != "0000-00-00 00:00:00";
@@ -136,7 +136,7 @@
 			$results = array();
 			foreach ($grab->fetchAll() as $result) {
 				if ($options["placeholders"]) {
-					$results[] = $result["id"];
+					$results[] = $result;
 					continue;
 				}
 

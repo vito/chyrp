@@ -38,16 +38,14 @@
 			$functions = func_get_args();
 
 			# OR comparison
-			if (end($functions) !== true)
-			{
+			if (end($functions) !== true) {
 				foreach ($functions as $function)
 					if (in_array($function, $this->permissions)) return true;
 
 				return false;
 			}
 			# AND comparison
-			else
-			{
+			else {
 				array_pop($functions);
 
 				foreach ($functions as $function)
@@ -75,7 +73,7 @@
 			$sql->insert("groups", array("name" => ":name", "permissions" => ":permissions"),
 			                       array(":name"  => $name,   ":permissions"  => Spyc::YAMLDump($permissions)));
 
-			$group = new self($sql->db->lastInsertId());
+			$group = new self($sql->latest());
 
 			Trigger::current()->call("add_group", $group);
 

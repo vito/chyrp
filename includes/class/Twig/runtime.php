@@ -27,7 +27,8 @@ $twig_filters = array(
 	'escape' =>           'htmlspecialchars',
 	'e' =>                'htmlspecialchars',
 	'urlencode' =>        'twig_urlencode_filter',
-	'quotes' =>           'addslashes',
+	'quotes' =>           'twig_quotes_filter',
+	'slashes' =>          'addslashes',
 
 	// string filters
 	'title' =>            'twig_title_string_filter',
@@ -399,4 +400,8 @@ function twig_pluralize_string_filter($string, $number = null) {
 		return $string;
 	else
 		return pluralize($string);
- }
+}
+
+function twig_quotes_filter($string) {
+	return str_replace(array('"', "'"), array('\"', "\\'"), $string);
+}

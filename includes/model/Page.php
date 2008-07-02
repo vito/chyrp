@@ -74,7 +74,7 @@
 			                 ":created_at" => datetime()
 			             ));
 
-			$page = new self($sql->db->lastInsertId());
+			$page = new self($sql->latest());
 
 			Trigger::current()->call("add_page", $page);
 
@@ -155,13 +155,7 @@
 		 *     true - if a page with that ID is in the database.
 		 */
 		static function exists($page_id) {
-			$sql = SQL::current();
-			$check = $sql->select("pages",
-			                      "id",
-			                      "`__pages`.`id` = :id",
-			                      "id",
-			                      array(":id" => $page_id));
-			return $check->rowCount();
+			return SQL::current()->count("pages", "`__pages`.`id` = :id", array(":id" => $post_id));
 		}
 
 		/**
@@ -176,15 +170,11 @@
 		 */
 		static function check_url($clean) {
 			$sql = SQL::current();
-			$check_url = $sql->select("pages",
-			                          "id",
-			                          "`clean` = :clean",
-			                          "id",
-			                          array(
-			                              ':clean' => $clean
-			                          ));
-			$count = $check_url->rowCount() + 1;
-			return ($count == 1 or empty($clean)) ? $clean : $clean."_".$count ;
+			$count = $sql->count("pages",
+			                     "`clean` = :clean",
+			                     array(":clean" => $clean));
+
+			return (!$count or empty($clean)) ? $clean : $clean."_".$count ;
 		}
 
 		/**

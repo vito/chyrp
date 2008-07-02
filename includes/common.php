@@ -70,6 +70,7 @@
 	if (!file_exists(INCLUDES_DIR."/config.yaml.php") or !file_exists(INCLUDES_DIR."/database.yaml.php"))
 		redirect("install.php");
 
+	require_once INCLUDES_DIR."/class/Query.php"; # SQL query handler
 	require_once INCLUDES_DIR."/class/QueryBuilder.php"; # SQL query builder
 	require_once INCLUDES_DIR."/class/Timestamp.php"; # A smarter DateTime class
 	require_once INCLUDES_DIR."/lib/spyc.php"; # YAML parser

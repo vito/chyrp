@@ -136,7 +136,7 @@
 			                 ":created_at" => $timestamp,
 			                 ":updated_at" => $updated,
 			             ));
-			$id = $sql->db->lastInsertId();
+			$id = $sql->latest();
 
 			if (empty($clean) or empty($url))
 				$sql->update("posts",
@@ -350,15 +350,11 @@
 		 */
 		static function check_url($clean) {
 			$sql = SQL::current();
-			$check_url = $sql->select("posts",
-			                          "id",
-			                          "`clean` = :clean",
-			                          "id",
-			                          array(
-			                              ':clean' => $clean
-			                          ));
-			$count = $check_url->rowCount() + 1;
-			return ($count == 1 or empty($clean)) ? $clean : $clean."_".$count ;
+			$count = $sql->count("posts",
+			                     "`clean` = :clean",
+			                     array(":clean" => $clean));
+
+			return (!$count or empty($clean)) ? $clean : $clean."_".$count ;
 		}
 
 		/**
@@ -474,7 +470,8 @@
 		 * Checks if the current post's feather theme file exists.
 		 */
 		public function theme_exists() {
-			return file_exists(THEME_DIR."/content/feathers/".$this->feather.".twig");
+			global $theme;
+			return $theme->file_exists("feathers/".$this->feather);
 		}
 
 		/**

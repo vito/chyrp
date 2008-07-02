@@ -263,8 +263,7 @@
 			                     array("`post_id` = :id",
 			                           "`author_url` = :url"),
 			                     array(":id" => $_GET['id'],
-			                           ":url" => $_POST['url']
-			                     ));
+			                           ":url" => $_POST['url']));
 			if ($count)
 				trackback_respond(true, __("A ping from that URL is already registered.", "comments"));
 
@@ -280,10 +279,11 @@
 			global $comment;
 
 			$sql = SQL::current();
-			$count = $sql->count("comments", array("`post_id` = :id", "`author_url` = :url"), array(
-			                        ":id" => $id,
-			                        ":url" => $from
-			                    ));
+			$count = $sql->count("comments",
+			                     array("`post_id` = :id",
+			                           "`author_url` = :url"),
+			                     array(":id" => $id,
+			                           ":url" => $from));
 			if ($count)
 				return new IXR_Error(48, __("A ping from that URL is already registered.", "comments"));
 
