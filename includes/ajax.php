@@ -62,7 +62,8 @@
 <?php endif; ?>
 		<p>
 			<label for="pinned"><?php echo __("Pinned?"); ?></label>
-			<input type="checkbox" name="pinned" id="pinned"<?php checked($post->pinned); ?> />&nbsp;<span class="sub"> <?php echo __("(shows this post above all others)"); ?></span>
+			<input type="checkbox" name="pinned" id="pinned"<?php checked($post->pinned); ?> />&nbsp;
+			<span class="sub"> <?php echo __("(shows this post above all others)"); ?></span>
 		</p>
 		<p>
 			<label for="slug"><?php echo __("Slug"); ?></label>
@@ -71,6 +72,10 @@
 		<p>
 			<label for="created_at"><?php echo __("Timestamp"); ?></label>
 			<input class="text" type="text" name="created_at" value="<?php echo when("F jS, Y H:i:s", $post->created_at); ?>" id="created_at" />
+		</p>
+		<p>
+			<label for="trackbacks"><?php echo __("Trackbacks"); ?></label>
+			<input class="text" type="text" name="trackbacks" value="" id="trackbacks" />
 		</p>
 		<?php $trigger->call("edit_post_options", $post);?>
 		<div class="clear"></div>
