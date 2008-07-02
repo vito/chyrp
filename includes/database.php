@@ -12,7 +12,13 @@
 		# Number of queries it takes to load the page.
 		public $queries = 0;
 
+		# Variable: $db
+		# Holds the currently running database.
 		public $db;
+
+		# String: $interface
+		# What method to use for interacting with the database.
+		public $interface = "";
 
 		/**
 		 * Function: __construct
@@ -27,8 +33,6 @@
 				$this->interface = "mysqli";
 			else
 				$this->interface = "mysql";
-
-			$this->interface = "mysql";
 		}
 
 		/**
@@ -52,6 +56,7 @@
 		 * Parameters:
 		 *     $setting - The setting name.
 		 *     $value - The new value. Can be boolean, numeric, an array, a string, etc.
+		 *     $overwrite - If the setting exists and is the same value, should it be overwritten?
 		 */
 		public function set($setting, $value, $overwrite = true) {
 			global $errors;
@@ -77,6 +82,9 @@
 		/**
 		 * Function: connect
 		 * Connects to the SQL database.
+		 *
+		 * Parameters:
+		 *     $checking - Return a boolean of whether or not it could connect, instead of showing an error.
 		 */
 		public function connect($checking = false) {
 			$this->load(INCLUDES_DIR."/database.yaml.php");
@@ -121,6 +129,11 @@
 		 * Function: query
 		 * Executes a query and increases <SQL->$queries>.
 		 * If the query results in an error, it will die and show the error.
+		 *
+		 * Parameters:
+		 *     $query - Query to execute.
+		 *     $params - An associative array of parameters used in the query.
+		 *     $throw_exceptions - Should an exception be thrown if the query fails?
 		 */
 		public function query($query, $params = array(), $throw_exceptions = false) {
 			# Ensure that every param in $params exists in the query.
@@ -132,24 +145,40 @@
 			$query = str_replace("`", "", str_replace("__", $this->prefix, $query));
 
 			if ($this->adapter == "sqlite")
-				$query = preg_replace("/ DEFAULT CHARSET=utf8/i", "", preg_replace("/AUTO_INCREMENT/i", "AUTOINCREMENT", $query));
+				$query = str_ireplace(" DEFAULT CHARSET=utf8", "", str_ireplace("AUTO_INCREMENT", "AUTOINCREMENT", $query));
 
 			++$this->queries;
 
-			return new Query($query, $params);
+			return new Query($query, $params, $throw_exceptions);
 		}
 
 		/**
 		 * Function: count
 		 * Performs a counting query and returns the number of matching rows.
+		 *
+		 * Parameters:
+		 *     $tables - An array (or string) of tables to count results on.
+		 *     $conds - An array (or string) of conditions to match.
+		 *     $params - An associative array of parameters used in the query.
 		 */
-		public function count($tables, $conds = null, $params = array(), $left_join = null) {
+		public function count($tables, $conds = null, $params = array()) {
 			return $this->query(QueryBuilder::build_count($tables, $conds, $left_join), $params)->fetchColumn();
 		}
 
 		/**
 		 * Function: select
 		 * Performs a SELECT with given criteria and returns the query result object.
+		 *
+		 * Parameters:
+		 *     $tables - An array (or string) of tables to grab results from.
+		 *     $fields - Fields to select.
+		 *     $conds - An array (or string) of conditions to match.
+		 *     $order - ORDER BY statement. Can be an array.
+		 *     $params - An associative array of parameters used in the query.
+		 *     $limit - Limit for results.
+		 *     $offset - Offset for the select statement.
+		 *     $group - GROUP BY statement. Can be an array.
+		 *     $left_join - An array of additional LEFT JOINs.
 		 */
 		public function select($tables, $fields = "*", $conds = null, $order = null, $params = array(), $limit = null, $offset = null, $group = null, $left_join = null) {
 			return $this->query(QueryBuilder::build_select($tables, $fields, $conds, $order, $limit, $offset, $group, $left_join), $params);
@@ -158,6 +187,11 @@
 		/**
 		 * Function: insert
 		 * Performs an INSERT with given data.
+		 *
+		 * Parameters:
+		 *     $table - Table to insert to.
+		 *     $data - An associative array of data to insert.
+		 *     $params - An associative array of parameters used in the query.
 		 */
 		public function insert($table, $data, $params = array()) {
 			return $this->query(QueryBuilder::build_insert($table, $data), $params);
@@ -166,6 +200,12 @@
 		/**
 		 * Function: update
 		 * Performs an UDATE with given criteria and data.
+		 *
+		 * Parameters:
+		 *     $table - Table to update.
+		 *     $conds - Rows to update.
+		 *     $data - An associative array of data to update.
+		 *     $params - An associative array of parameters used in the query.
 		 */
 		public function update($table, $conds, $data, $params = array()) {
 			return $this->query(QueryBuilder::build_update($table, $conds, $data), $params);
@@ -174,6 +214,11 @@
 		/**
 		 * Function: delete
 		 * Performs a DELETE with given criteria.
+		 *
+		 * Parameters:
+		 *     $table - Table to delete from.
+		 *     $conds - Rows to delete..
+		 *     $params - An associative array of parameters used in the query.
 		 */
 		public function delete($table, $conds, $params = array()) {
 			return $this->query(QueryBuilder::build_delete($table, $conds), $params);

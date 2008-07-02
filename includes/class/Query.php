@@ -1,7 +1,21 @@
 <?php
+	/**
+	 * Class: Query
+	 * Handles a query based on the <SQL.interface>.
+	 */
 	class Query {
+		# Variable: $query
+		# Holds the current query.
 		public $query = "";
 
+		/**
+		 * Function: __construct
+		 * Creates a query based on the <SQL.interface>.
+		 *
+		 * Parameters:
+		 *     $query - Query to execute.
+		 *     $params - An associative array of parameters used in the query.
+		 */
 		public function __construct($query, $params = array()) {
 			$this->db =& SQL::current()->db;
 			$this->interface =& SQL::current()->interface;
@@ -40,6 +54,13 @@
 			}
 		}
 
+		/**
+		 * Function: fetchColumn
+		 * Fetches a column of the first row.
+		 *
+		 * Parameters:
+		 *     $column - The offset of the column to grab. Default 0.
+		 */
 		public function fetchColumn($column = 0) {
 			switch($this->interface) {
 				case "pdo":
@@ -53,10 +74,14 @@
 			}
 		}
 
-		public function fetch($style = null, $orientation = null, $offset = null) {
+		/**
+		 * Function: fetch
+		 * Returns the first row as an array.
+		 */
+		public function fetch() {
 			switch($this->interface) {
 				case "pdo":
-					return $this->query->fetch($style, $orientation, $offset);
+					return $this->query->fetch();
 				case "mysqli":
 					return $this->query->fetch_array();
 				case "mysql":
@@ -64,10 +89,14 @@
 			}
 		}
 
-		public function fetchObject($style = null, $orientation = null, $offset = null) {
+		/**
+		 * Function: fetchObject
+		 * Returns the first row as an object.
+		 */
+		public function fetchObject() {
 			switch($this->interface) {
 				case "pdo":
-					return $this->query->fetchObject($style, $orientation, $offset);
+					return $this->query->fetchObject();
 				case "mysqli":
 					return $this->query->fetch_object();
 				case "mysql":
@@ -75,10 +104,14 @@
 			}
 		}
 
-		public function fetchAll() {
+		/**
+		 * Function: fetchAll
+		 * Returns an array of every result.
+		 */
+		public function fetchAll($style = null) {
 			switch($this->interface) {
 				case "pdo":
-					return $this->query->fetchAll($style, $column_index, $ctor_args);
+					return $this->query->fetchAll($style);
 				case "mysqli":
 					$results = array();
 					while ($row = $this->query->fetch_assoc())
