@@ -51,6 +51,11 @@ ${ trigger.call("head") }
 			</div>
 			{% include "content/sidebar.twig" %}
 		</div>
+		{# <script type="text/javascript">
+{% for debug in sql_debug %}
+			console.log("$debug.number: ${ debug.query | quotes | strip } (Called from $debug.file on line $debug.line\.)")
+{% endfor %}
+		</script> #}
 ${ trigger.call("end_content") }
 	</body>
 </html>

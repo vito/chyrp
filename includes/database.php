@@ -162,7 +162,7 @@
 		 *     $params - An associative array of parameters used in the query.
 		 */
 		public function count($tables, $conds = null, $params = array()) {
-			return $this->query(QueryBuilder::build_count($tables, $conds, $left_join), $params)->fetchColumn();
+			return $this->query(QueryBuilder::build_count($tables, $conds), $params)->fetchColumn();
 		}
 
 		/**

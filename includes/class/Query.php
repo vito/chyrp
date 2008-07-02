@@ -20,6 +20,21 @@
 			$this->db =& SQL::current()->db;
 			$this->interface =& SQL::current()->interface;
 
+			if (defined('DEBUG') and DEBUG) {
+				$trace = debug_backtrace();
+				$target = $trace[$index = 0];
+
+				# Getting a traceback from these files doesn't help much.
+				while (match(array("/database\.php/", "/Model\.php/"), $target["file"]))
+					$target = $trace[$index++];
+
+				SQL::current()->debug[] = array("number" => SQL::current()->queries,
+				                                "file" => str_replace(MAIN_DIR."/", "", $target["file"]),
+				                                "line" => $target["line"],
+				                                "query" => str_replace("\n", "\\n", str_replace(array_keys($params), array_values($params), $query)));
+				#error_log("\n\t".$debug["number"].". ".$debug["query"]."\n\n\tCalled from ".$debug["file"]." on line ".$target["line"].".");
+			}
+
 			switch($this->interface) {
 				case "pdo":
 					try {
