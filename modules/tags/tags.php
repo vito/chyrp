@@ -175,7 +175,7 @@
 		}
 
 		public function posts_get($options) {
-			$options["select"][] = "__tags.tags AS `tags`";
+			$options["select"][] = "__tags.tags AS `unclean_tags`";
 			$options["select"][] = "__tags.clean AS `clean_tags`";
 
 			$options["left_join"][] = array("table" => "tags",
@@ -216,20 +216,20 @@
 			if (!isset($post->tags))
 				return $post->tags = array("unlinked" => array(), "linked" => array());
 
-			$post->tags = array("unlinked" => self::unlinked_tags($post->tags),
-			                    "linked"   => self::linked_tags($post->tags, $post->clean_tags));
+			$post->tags = array("unlinked" => self::unlinked_tags($post->unclean_tags),
+			                    "linked"   => self::linked_tags($post->unclean_tags, $post->clean_tags));
 		}
 
-		static function sort_tags_name_asc($a, $b) {
+		public function sort_tags_name_asc($a, $b) {
 			return strcmp($a["name"], $b["name"]);
 		}
-		static function sort_tags_name_desc($a, $b) {
+		public function sort_tags_name_desc($a, $b) {
 			return strcmp($b["name"], $a["name"]);
 		}
-		static function sort_tags_popularity_asc($a, $b) {
+		public function sort_tags_popularity_asc($a, $b) {
 			return $a["popularity"] > $b["popularity"];
 		}
-		static function sort_tags_popularity_desc($a, $b) {
+		public function sort_tags_popularity_desc($a, $b) {
 			return $a["popularity"] < $b["popularity"];
 		}
 
@@ -239,8 +239,9 @@
 			$clean = array();
 
 			foreach(Post::find() as $post) {
-				$tags[] = $post->tags;
-				$clean[] = $post->cleaned_tags;
+				if (!isset($post->unclean_tags)) continue;
+				$tags[] = $post->unclean_tags;
+				$clean[] = $post->clean_tags;
 			}
 
 			if (!count($tags))
@@ -254,7 +255,7 @@
 			foreach ($tags as $name => $popularity)
 				$tags[$name] = array("name" => $name, "popularity" => $popularity, "url" => $tag2clean[$name]);
 
-			usort($tags, array(self, "sort_tags_".$order_by."_".$order));
+			usort($tags, array($this, "sort_tags_".$order_by."_".$order));
 
 			$count = 0;
 			$return = array();

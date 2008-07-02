@@ -33,7 +33,7 @@
 	if (!defined('TRACKBACK'))   define('TRACKBACK', false);
 
 	# Use GZip compression if available.
-	if (extension_loaded("zlib") and ini_get("zlib.output_compression") and substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip")) {
+	if (extension_loaded("zlib") and !ini_get("zlib.output_compression") and substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip")) {
 		ob_start("ob_gzhandler");
 		header("Content-Encoding: gzip");
 	} else

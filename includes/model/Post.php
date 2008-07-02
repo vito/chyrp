@@ -470,8 +470,7 @@
 		 * Checks if the current post's feather theme file exists.
 		 */
 		public function theme_exists() {
-			global $theme;
-			return $theme->file_exists("feathers/".$this->feather);
+			return Theme::current()->file_exists("feathers/".$this->feather);
 		}
 
 		/**
