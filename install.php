@@ -118,7 +118,7 @@
 			# Posts table
 			$sql->query("CREATE TABLE IF NOT EXISTS `__posts` (
 			                 `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
-			                 `xml` LONGTEXT DEFAULT '',
+			                 `xml` LONGTEXT,
 			                 `feather` VARCHAR(32) DEFAULT '',
 			                 `clean` VARCHAR(128) DEFAULT '',
 			                 `url` VARCHAR(128) DEFAULT '',
@@ -133,7 +133,7 @@
 			$sql->query("CREATE TABLE IF NOT EXISTS `__pages` (
 			                 `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
 			                 `title` VARCHAR(250) DEFAULT '',
-			                 `body` LONGTEXT DEFAULT '',
+			                 `body` LONGTEXT,
 			                 `show_in_list` TINYINT(1) DEFAULT '1',
 			                 `list_order` INTEGER DEFAULT '0',
 			                 `clean` VARCHAR(128) DEFAULT '',
@@ -161,7 +161,7 @@
 			$sql->query("CREATE TABLE IF NOT EXISTS `__groups` (
 			                 `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
 			                 `name` VARCHAR(100) DEFAULT '',
-		                     `permissions` LONGTEXT DEFAULT '',
+		                     `permissions` LONGTEXT,
 			                 UNIQUE (`name`)
 			             ) DEFAULT CHARSET=utf8");
 
@@ -175,7 +175,7 @@
 			# Sessions table
 			$sql->query("CREATE TABLE IF NOT EXISTS `__sessions` (
 			                 `id` VARCHAR(32) DEFAULT '',
-			                 `data` LONGTEXT DEFAULT '',
+			                 `data` LONGTEXT,
 			                 `user_id` VARCHAR(16) DEFAULT '0',
 			                 `created_at` DATETIME DEFAULT '0000-00-00 00:00:00',
 			                 `updated_at` DATETIME DEFAULT '0000-00-00 00:00:00',

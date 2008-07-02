@@ -91,13 +91,13 @@
 		 */
 		static function add($values, $clean = "", $url = "") {
 			$pinned = (int) !empty($_POST['pinned']);
-			$status = (isset($_POST['draft'])) ? "draft" : ((!empty($_POST['status'])) ? $_POST['status'] : "public") ;
+			$status = (isset($_POST['draft'])) ? "draft" : fallback($_POST['status'], "public") ;
 			$timestamp = (!empty($_POST['created_at']) and (!isset($_POST['original_time']) or $_POST['created_at'] != $_POST['original_time'])) ?
 			             when("Y-m-d H:i:s", $_POST['created_at']) :
 			             datetime() ;
-			$updated = (!empty($_POST['updated_at'])) ? $_POST['updated_at'] : 0 ;
-			$trackbacks = (!empty($_POST['trackbacks'])) ? $_POST['trackbacks'] : "" ;
-			$options = (isset($_POST['option'])) ? $_POST['option'] : array() ;
+			$updated = fallback($_POST['updated_at'], "0000-00-00 00:00:00");
+			$trackbacks = fallback($_POST['trackbacks'], "");
+			$options = fallback($_POST['option'], array());
 
 			if (isset($_POST['bookmarklet']))
 				Trigger::current()->filter("bookmarklet_submit", array(&$values, &$options));
