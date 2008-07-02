@@ -21,6 +21,7 @@
 	 *     $body - The message for the error dialog.
 	 */
 	function error($title, $body) {
+		ob_end_clean();
 		require (defined('THEME_DIR') and file_exists(THEME_DIR."/content/error.php")) ? THEME_DIR."/content/error.php" : INCLUDES_DIR."/error.php" ;
 		exit;
 	}
