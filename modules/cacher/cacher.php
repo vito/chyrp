@@ -16,6 +16,8 @@
 
 			# Remove all expired files.
 			$this->remove_expired();
+
+			$this->addAlias("change_setting", "regenerate");
 		}
 
 		static function __install() {

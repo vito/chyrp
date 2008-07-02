@@ -58,6 +58,9 @@
 			if (isset($this->yaml['<?php header("Status']))
 				unset($this->yaml['<?php header("Status']);
 
+			if (class_exists("Trigger"))
+				Trigger::current()->call("change_setting", array($setting, $value, $overwrite));
+
 			# Generate the new YAML settings
 			$contents.= Spyc::YAMLDump($this->yaml, 2, 60);
 
