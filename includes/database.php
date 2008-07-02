@@ -106,10 +106,6 @@
 							                    $this->password,
 							                    array(PDO::ATTR_PERSISTENT => true));
 						$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-						if ($this->adapter == "mysql")
-							$this->db->query("set names 'utf8';");
-						$this->connected = true;
-						return true;
 					} catch (PDOException $error) {
 						$message = preg_replace("/SQLSTATE\[.*?\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
 						return ($checking) ? false : error(__("Database Error"), $message) ;
@@ -117,12 +113,24 @@
 					break;
 				case "mysqli":
 					$this->db = new MySQLi($this->host, $this->username, $this->password, $this->database);
+
+					if (mysqli_connect_errno())
+						return ($checking) ? false : error(__("Database Error", mysqli_connect_error())) ;
+
 					break;
 				case "mysql":
 					$this->db = @mysql_connect($this->host, $this->username, $this->password);
-					@mysql_select_db($this->database);
+
+					if (!$this->db or !@mysql_select_db($this->database))
+						return ($checking) ? false : error(__("Database Error", mysql_error())) ;
+
 					break;
 			}
+
+			if ($this->adapter == "mysql")
+				new Query("SET NAMES 'utf8'");
+
+			return $this->connected = true;
 		}
 
 		/**

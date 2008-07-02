@@ -32,7 +32,6 @@
 				                                "file" => str_replace(MAIN_DIR."/", "", $target["file"]),
 				                                "line" => $target["line"],
 				                                "query" => str_replace("\n", "\\n", str_replace(array_keys($params), array_values($params), $query)));
-				#error_log("\n\t".$debug["number"].". ".$debug["query"]."\n\n\tCalled from ".$debug["file"]." on line ".$target["line"].".");
 			}
 
 			switch($this->interface) {
@@ -59,12 +58,18 @@
 				case "mysqli":
 					foreach ($params as $name => $val)
 						$query = str_replace($name, "'".$this->db->escape_string($val)."'", $query);
-					$this->query = $this->db->query($query);
+
+					if (!$this->query = $this->db->query($query))
+						return error(__("Database Error", $this->db->error));
+
 					break;
 				case "mysql":
 					foreach ($params as $name => $val)
 						$query = str_replace($name, "'".@mysql_real_escape_string($val)."'", $query);
-					$this->query = @mysql_query($query);
+
+					if (!$this->query = @mysql_query($query))
+						return error(__("Database Error", mysql_error()));
+
 					break;
 			}
 		}
@@ -129,13 +134,17 @@
 					return $this->query->fetchAll($style);
 				case "mysqli":
 					$results = array();
+
 					while ($row = $this->query->fetch_assoc())
 						$results[] = $row;
+
 					return $results;
 				case "mysql":
 					$results = array();
+
 					while ($row = @mysql_fetch_assoc($this->query))
 						$results[] = $row;
+
 					return $results;
 			}
 		}
