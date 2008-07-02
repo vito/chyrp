@@ -163,7 +163,7 @@
 			foreach ($info["notifications"] as &$notification)
 				$notification = addslashes(__($notification, $_POST["extension"]));
 
-			require $folder."/".$_POST["extension"]."/".$type.".php";
+			require $folder."/".$_POST["extension"]."/".$_POST["extension"].".php";
 
 			if ($info["uploader"])
 				if (!file_exists(MAIN_DIR.$config->uploads_path))
