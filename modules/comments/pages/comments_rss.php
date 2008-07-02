@@ -2,7 +2,10 @@
 	$config = Config::current();
 	$split_locale = explode("_", $config->locale);
 
-	fallback($comments, Comment::find(array("limit" => 20)));
+	fallback($comments, Comment::find(array("limit" => 20,
+	                                        "where" => array("`__comments`.`status` != 'spam'",
+			                                                 "`__comments`.`status` != 'denied'"))));
+
 	fallback($title, _f("Comments at &#8220;%s&#8221;", array(htmlspecialchars($config->name)), "comments"));
 
 	$latest_timestamp = 0;
