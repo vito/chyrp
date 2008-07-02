@@ -20,7 +20,7 @@
 		 * Function: __construct
 		 * Loads the Twig parser into <Theme>.
 		 */
-		public function __construct() {
+		private function __construct() {
 			$visitor = Visitor::current();
 			$config = Config::current();
 
@@ -332,5 +332,13 @@
 			$template = $this->twig->getTemplate($file.".twig");
 			return $template->display($this->context);
 		}
+
+		/**
+		 * Function: current
+		 * Returns a singleton reference to the current connection.
+		 */
+		public static function & current() {
+			static $instance = null;
+			return $instance = (empty($instance)) ? new self() : $instance ;
+		}
 	}
-	$theme = new Theme();

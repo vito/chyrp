@@ -49,7 +49,7 @@
 		 * See Also:
 		 *     <Model::search>
 		 */
-		static function find($options = array(), $options_for_object = array()) {
+		static function find($options = array(), $options_for_object = array(), $debug = false) {
 			if (isset($options["where"]) and !is_array($options["where"]))
 				$options["where"] = array($options["where"]);
 			elseif (!isset($options["where"]))

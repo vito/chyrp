@@ -147,6 +147,11 @@
 		session_start();
 	}
 
+	# File: Theme
+	# See Also:
+	#     <Theme>
+	require_once INCLUDES_DIR."/class/Theme.php";
+
 	# File: Trigger
 	# See Also:
 	#     <Trigger>
@@ -190,6 +195,38 @@
 
 	set_locale($config->locale);
 
+	# Variable: $visitor
+	# Holds the current user and their group.
+	$visitor = Visitor::current();
+
+	$config->theme = ($visitor->group()->can("change_settings") and
+	                      !empty($_GET['action']) and
+	                      $_GET['action'] == "theme_preview" and
+	                      !empty($_GET['theme'])) ?
+	                 $_GET['theme'] :
+	                 $config->theme;
+
+	# Constant: THEME_DIR
+	# Absolute path to /themes/(current theme)
+	define('THEME_DIR', MAIN_DIR."/themes/".$config->theme);
+
+	# Constant: THEME_URL
+	# URL to /themes/(current theme)
+	define('THEME_URL', $config->chyrp_url."/themes/".$config->theme);
+
+	# Array: $statuses
+	# An array of post statuses that <Visitor> can view.
+	$statuses = array("public");
+	if (logged_in())
+		$statuses[] = "registered_only";
+	if ($visitor->group()->can("view_private"))
+		$statuses[] = "private";
+	if (($route->action == "view" or $route->action == "drafts" or ADMIN or AJAX) and $visitor->group()->can("view_draft"))
+		$statuses[] = "draft";
+
+	Post::$private = "`__posts`.`status` IN ('".implode("', '", $statuses)."')";
+	Post::$enabled_feathers = "`__posts`.`feather` IN ('".implode("', '", $config->enabled_feathers)."')";
+
 	# Require feathers/modules and load their translations.
 	foreach ($config->enabled_feathers as $index => $feather) {
 		if (!file_exists(FEATHERS_DIR."/".$feather."/".$feather.".php")) {
@@ -220,25 +257,6 @@
 
 	# Load the /clean/urls into their correct $_GET values.
 	$route->determine_action();
-
-	# Variable: $visitor
-	# Holds the current user and their group.
-	$visitor = Visitor::current();
-
-	$config->theme = ($visitor->group()->can("change_settings") and
-	                      !empty($_GET['action']) and
-	                      $_GET['action'] == "theme_preview" and
-	                      !empty($_GET['theme'])) ?
-	                 $_GET['theme'] :
-	                 $config->theme;
-
-	# Constant: THEME_DIR
-	# Absolute path to /themes/(current theme)
-	define('THEME_DIR', MAIN_DIR."/themes/".$config->theme);
-
-	# Constant: THEME_URL
-	# URL to /themes/(current theme)
-	define('THEME_URL', $config->chyrp_url."/themes/".$config->theme);
 
 	# These are down here so that the modules are
 	# initialized after the $_GET values are filled.
@@ -284,11 +302,6 @@
 
 	$route->check_viewing_post();
 
-	# File: Theme
-	# See Also:
-	#     <Theme>
-	require_once INCLUDES_DIR."/class/Theme.php";
-
 	# Load the translation engine
 	load_translator("chyrp", INCLUDES_DIR."/locale/".$config->locale.".mo");
 
@@ -302,19 +315,6 @@
 				$trigger->call("can_not_view_site");
 			else
 				error(__("Access Denied"), __("You are not allowed to view this site."));
-
-		# Array: $statuses
-		# An array of post statuses that <Visitor> can view.
-		$statuses = array("public");
-		if (logged_in())
-			$statuses[] = "registered_only";
-		if ($visitor->group()->can("view_private"))
-			$statuses[] = "private";
-		if (($route->action == "view" or $route->action == "drafts" or ADMIN or AJAX) and $visitor->group()->can("view_draft"))
-			$statuses[] = "draft";
-
-		Post::$private = "`__posts`.`status` IN ('".implode("', '", $statuses)."')";
-		Post::$enabled_feathers = "`__posts`.`feather` IN ('".implode("', '", $config->enabled_feathers)."')";
 
 		$trigger->call("runtime");
 
@@ -335,4 +335,6 @@
 				$route->action = "feed";
 			else
 				redirect(fallback($config->feed_url, $route->url("feed/"), true)); # Really? Nothing? Too bad. MAIN FEED 4 U.
+
+		$theme = Theme::current();
 	}
