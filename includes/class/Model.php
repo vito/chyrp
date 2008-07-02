@@ -136,7 +136,7 @@
 			$results = array();
 			foreach ($grab->fetchAll() as $result) {
 				if ($options["placeholders"]) {
-					$results[] = $result["id"];
+					$results[] = $result;
 					continue;
 				}
 
