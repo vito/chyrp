@@ -20,6 +20,15 @@
 		 */
 		private function __construct() {
 			$this->connected = false;
+
+			if (class_exists("PDO") and (in_array("mysql", PDO::getAvailableDrivers()) or in_array("sqlite", PDO::getAvailableDrivers())))
+				$this->interface = "pdo";
+			elseif (class_exists("MySQLi"))
+				$this->interface = "mysqli";
+			else
+				$this->interface = "mysql";
+
+			$this->interface = "mysqli";
 		}
 
 		/**
@@ -73,26 +82,38 @@
 			$this->load(INCLUDES_DIR."/database.yaml.php");
 			if ($this->connected)
 				return true;
-			try {
-				if ($this->adapter == "sqlite") {
-					$this->db = new PDO("sqlite:".$this->database, null, null, array(PDO::ATTR_PERSISTENT => true));
 
-					$this->db->sqliteCreateFunction("YEAR", "year_from_datetime", 1);
-					$this->db->sqliteCreateFunction("MONTH", "month_from_datetime", 1);
-					$this->db->sqliteCreateFunction("DAY", "day_from_datetime", 1);
-				} else
-					$this->db = new PDO($this->adapter.":host=".$this->host.";".((isset($this->port)) ? "port=".$this->port.";" : "")."dbname=".$this->database,
-					                    $this->username,
-					                    $this->password,
-					                    array(PDO::ATTR_PERSISTENT => true));
-				$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-				if ($this->adapter == "mysql")
-					$this->db->query("set names 'utf8';");
-				$this->connected = true;
-				return true;
-			} catch (PDOException $error) {
-				$message = preg_replace("/SQLSTATE\[.*?\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
-				return ($checking) ? false : error(__("Database Error"), $message) ;
+			switch($this->interface) {
+				case "pdo":
+					try {
+						if ($this->adapter == "sqlite") {
+							$this->db = new PDO("sqlite:".$this->database, null, null, array(PDO::ATTR_PERSISTENT => true));
+
+							$this->db->sqliteCreateFunction("YEAR", "year_from_datetime", 1);
+							$this->db->sqliteCreateFunction("MONTH", "month_from_datetime", 1);
+							$this->db->sqliteCreateFunction("DAY", "day_from_datetime", 1);
+						} else
+							$this->db = new PDO($this->adapter.":host=".$this->host.";".((isset($this->port)) ? "port=".$this->port.";" : "")."dbname=".$this->database,
+							                    $this->username,
+							                    $this->password,
+							                    array(PDO::ATTR_PERSISTENT => true));
+						$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+						if ($this->adapter == "mysql")
+							$this->db->query("set names 'utf8';");
+						$this->connected = true;
+						return true;
+					} catch (PDOException $error) {
+						$message = preg_replace("/SQLSTATE\[.*?\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
+						return ($checking) ? false : error(__("Database Error"), $message) ;
+					}
+					break;
+				case "mysqli":
+					$this->db = new MySQLi($this->host, $this->username, $this->password, $this->database);
+					break;
+				case "mysql":
+					$this->db = @mysql_connect($this->host, $this->username, $this->password);
+					@mysql_select_db($this->database);
+					break;
 			}
 		}
 
@@ -108,43 +129,14 @@
 				if (!strpos($query, $name))
 					unset($params[$name]);
 
-			try {
-				$query = str_replace("`", "", str_replace("__", $this->prefix, $query));
+			$query = str_replace("`", "", str_replace("__", $this->prefix, $query));
 
-				if ($this->adapter == "sqlite")
-					$query = preg_replace("/ DEFAULT CHARSET=utf8/i", "", preg_replace("/AUTO_INCREMENT/i", "AUTOINCREMENT", $query));
-
-				$q = $this->db->prepare($query);
-				$result = $q->execute($params);
-				$q->setFetchMode(PDO::FETCH_ASSOC);
-				if (defined('DEBUG') and DEBUG) {
-					#echo '<pre class="sql_query" style="position: relative; z-index: 1000"><span style="background: rgba(0,0,0,.5); padding: 0 1px; border: 1px solid rgba(0,0,0,.25); color: white; font: 9px/14px normal \'Monaco\', monospace;">'.$query.'</span></pre>';
-					$trace = debug_backtrace();
-					$target = $trace[$index = 0];
-
-					while (strpos($target["file"], "database.php")) # Getting a traceback from this file is pretty
-						$target = $trace[$index++];                 # useless (mostly when using $sql->select() and such)
-
-					$debug = $this->debug[count($this->debug)] = array("number" => $this->queries, "file" => str_replace(MAIN_DIR."/", "", $target["file"]), "line" => $target["line"], "query" => normalize(str_replace(array_keys($params), array_values($params), $query)));
-					#error_log("\n\t".$debug["number"].". ".$debug["query"]."\n\n\tCalled from ".$debug["file"]." on line ".$target["line"].".");
-				}
-				if (!$result) throw new PDOException;
-			} catch (PDOException $error) {
-				$message = preg_replace("/SQLSTATE\[.*?\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
-
-				if (XML_RPC or $throw_exceptions)
-					throw new Exception($message);
-
-				if (DEBUG)
-					$message.= "\n\n".$query."\n\n<pre>".print_r($params, true)."</pre>\n\n<pre>".$error->getTraceAsString()."</pre>";
-
-				$this->db = null;
-
-				error(__("Database Error"), $message);
-			}
+			if ($this->adapter == "sqlite")
+				$query = preg_replace("/ DEFAULT CHARSET=utf8/i", "", preg_replace("/AUTO_INCREMENT/i", "AUTOINCREMENT", $query));
 
 			++$this->queries;
-			return $q;
+
+			return new Query($query, $params);
 		}
 
 		/**
@@ -185,6 +177,24 @@
 		 */
 		public function delete($table, $conds, $params = array()) {
 			return $this->query(QueryBuilder::build_delete($table, $conds), $params);
+		}
+
+		/**
+		 * Function: latest
+		 * Returns the last inserted ID.
+		 */
+		public function latest() {
+			switch($this->interface) {
+				case "pdo":
+					return $this->db->lastInsertId();
+					break;
+				case "mysqli":
+					return $this->db->insert_id;
+					break;
+				case "mysql":
+					return @mysql_insert_id();
+					break;
+			}
 		}
 
 		/**

@@ -136,7 +136,7 @@
 			                 ":created_at" => $timestamp,
 			                 ":updated_at" => $updated,
 			             ));
-			$id = $sql->db->lastInsertId();
+			$id = $sql->latest();
 
 			if (empty($clean) or empty($url))
 				$sql->update("posts",

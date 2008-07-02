@@ -142,7 +142,7 @@
 			                   ":post_id" => $post->id,
 			                   ":user_id"=> $user->id
 			             ));
-			$new = new self($sql->db->lastInsertId());;
+			$new = new self($sql->latest());;
 
 			Trigger::current()->call("add_comment", $new);
 			return $new;

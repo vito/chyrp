@@ -74,7 +74,7 @@
 			                 ":created_at" => datetime()
 			             ));
 
-			$page = new self($sql->db->lastInsertId());
+			$page = new self($sql->latest());
 
 			Trigger::current()->call("add_page", $page);
 
