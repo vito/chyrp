@@ -189,11 +189,11 @@
 		 */
 		public function update($values, $pinned = null, $status = null, $slug = null, $timestamp = null, $update_timestamp = true) {
 			fallback($pinned, (int) !empty($_POST['pinned']));
-			fallback($status, (isset($_POST['draft'])) ? "draft" : ((!empty($_POST['status'])) ? $_POST['status'] : $this->status));
-			fallback($slug, (!empty($_POST['slug'])) ? $_POST['slug'] : $this->feather.".".$this->id);
+			fallback($status, (isset($_POST['draft'])) ? "draft" : fallback($_POST['status'], $this->status));
+			fallback($slug, fallback($_POST['slug'], $this->feather.".".$this->id));
 			fallback($timestamp, (!empty($_POST['created_at'])) ? when("Y-m-d H:i:s", $_POST['created_at']) : $this->created_at);
 
-			$options = (isset($_POST['option'])) ? $_POST['option'] : array() ;
+			$options = fallback($_POST['option'], array());
 
 			foreach ($values as $name => &$value)
 				$value = self::makesafe($value);
