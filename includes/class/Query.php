@@ -32,6 +32,11 @@
 						$query = str_replace($name, "'".$this->db->escape_string($val)."'", $query);
 					$this->query = $this->db->query($query);
 					break;
+				case "mysql":
+					foreach ($params as $name => $val)
+						$query = str_replace($name, "'".@mysql_real_escape_string($val)."'", $query);
+					$this->query = @mysql_query($query);
+					break;
 			}
 		}
 
@@ -39,11 +44,12 @@
 			switch($this->interface) {
 				case "pdo":
 					return $this->query->fetchColumn($column);
-					break;
 				case "mysqli":
 					$result = $this->query->fetch_array();
 					return $result[$column];
-					break;
+				case "mysql":
+					$result = @mysql_fetch_array($this->query);
+					return $result[$column];
 			}
 		}
 
@@ -53,6 +59,8 @@
 					return $this->query->fetch($style, $orientation, $offset);
 				case "mysqli":
 					return $this->query->fetch_array();
+				case "mysql":
+					return @mysql_fetch_array($this->query);
 			}
 		}
 
@@ -62,6 +70,8 @@
 					return $this->query->fetchObject($style, $orientation, $offset);
 				case "mysqli":
 					return $this->query->fetch_object();
+				case "mysql":
+					return @mysql_fetch_object($this->query);
 			}
 		}
 
@@ -72,6 +82,11 @@
 				case "mysqli":
 					$results = array();
 					while ($row = $this->query->fetch_assoc())
+						$results[] = $row;
+					return $results;
+				case "mysql":
+					$results = array();
+					while ($row = @mysql_fetch_assoc($this->query))
 						$results[] = $row;
 					return $results;
 			}

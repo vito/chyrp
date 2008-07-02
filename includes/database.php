@@ -28,7 +28,7 @@
 			else
 				$this->interface = "mysql";
 
-			$this->interface = "mysqli";
+			$this->interface = "mysql";
 		}
 
 		/**
