@@ -117,9 +117,9 @@
 			$theme->load("feathers/".$post->feather, array("post" => $post, "ajax_reason" => $reason));
 			break;
 		case "preview":
-			$content = ($trigger->exists("preview_".$_POST['feather'])) ?
-			            $trigger->filter("preview_".$_POST['feather'], urldecode($_POST['content'])) :
-			            $trigger->filter("markup_post_text", urldecode($_POST['content'])) ;
+			$content = urldecode($_POST['content']);
+			$trigger->filter($content, array("preview_".$_POST['feather'], "markup_post_text", "preview"));
+
 			echo "<h2 class=\"preview-header\">".__("Preview")."</h2>\n<div class=\"preview-content\">".$content."</div>";
 			break;
 		case "check_confirm":

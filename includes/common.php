@@ -304,8 +304,7 @@
 		load_translator("theme", THEME_DIR."/locale/".$config->locale.".mo");
 
 	# Use GZip compression if available.
-	if (extension_loaded("zlib") and !ini_get("zlib.output_compression") and
-	    substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip") and $trigger->filter("do_gzip", true)) {
+	if (extension_loaded("zlib") and !ini_get("zlib.output_compression") and substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip")) {
 		ob_start("ob_gzhandler");
 		header("Content-Encoding: gzip");
 	} else

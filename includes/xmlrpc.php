@@ -35,7 +35,7 @@
 				'mt.supportedTextFilters'   => 'this:mt_supportedTextFilters',
 				'mt.supportedMethods'       => 'this:listMethods');
 
-			Trigger::current()->filter("xmlrpc_methods", &$methods);
+			Trigger::current()->filter($methods, "xmlrpc_methods");
 
 			$this->IXR_Server($methods);
 		}
@@ -141,7 +141,7 @@
 					'mt_basename'       => $post->url,
 					'mt_allow_pings'    => (int) $config->enable_trackbacking);
 
-				$result[] = $trigger->filter('metaWeblog_getPost', $struct, $post);
+				$result[] = $trigger->filter($struct, 'metaWeblog_getPost', $post);
 			}
 
 			return $result;
@@ -155,7 +155,7 @@
 			$this->auth($args[1], $args[2]);
 
 			$categories = array();
-			return Trigger::current()->filter('metaWeblog_getCategories', $categories);
+			return Trigger::current()->filter($categories, 'metaWeblog_getCategories');
 		}
 
 		/**
@@ -173,7 +173,7 @@
 				return new IXR_Error(500, __('Failed to write file.'));
 
 			$url = $config->chyrp_url.$config->uploads_path.str_replace('+', '%20', urlencode($file));
-			$url = Trigger::current()->filter('metaWeblog_newMediaObject', $url, $path);
+			Trigger::current()->filter($url, 'metaWeblog_newMediaObject', $path);
 
 			return array('url' => $url);
 		}
@@ -197,7 +197,7 @@
 				'mt_basename'       => $post->url,
 				'mt_allow_pings'    => (int) Config::current()->enable_trackbacking);
 
-			return array(Trigger::current()->filter('metaWeblog_getPost', $struct, $post));
+			return array(Trigger::current()->filter($struct, 'metaWeblog_getPost', $post));
 		}
 
 		/**
@@ -275,7 +275,7 @@
 			if (!$post->editable($user))
 				return new IXR_Error(500, __("You don't have permission to edit this post."));
 
-			# Enforce post status when necessary 
+			# Enforce post status when necessary
 			if (!$args[4] and !$user->group()->can('edit_own_post', 'edit_post'))
 				$status = 'draft';
 			else if ($post->status != 'public' and $post->status != 'draft')
@@ -376,7 +376,7 @@
 			$this->auth($args[1], $args[2]);
 
 			$categories = array();
-			return Trigger::current()->filter('mt_getCategoryList', $categories);
+			return Trigger::current()->filter($categories, 'mt_getCategoryList');
 		}
 
 		/**
@@ -392,7 +392,7 @@
 			$post = new Post($args[0], array('filter' => false));
 
 			$categories = array();
-			return Trigger::current()->filter('mt_getPostCategories', $categories, $post);
+			return Trigger::current()->filter($categories, 'mt_getPostCategories', $post);
 		}
 
 		/**

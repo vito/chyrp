@@ -53,8 +53,8 @@
 			}
 
 			$trigger = Trigger::current();
-			$options = $trigger->filter(Route::current()->action."_".$model_name."_grab", $options);
-			$options = $trigger->filter($model_name."_grab", $options);
+			$trigger->filter($options, array(Route::current()->action."_".$model_name."_grab", $model_name."_grab"));
+
 			$sql = SQL::current();
 			if (!empty($options["read_from"]))
 				$read = $options["read_from"];
@@ -126,8 +126,7 @@
 			$options["select"] = (array) $options["select"];
 
 			$trigger = Trigger::current();
-			$options = $trigger->filter(Route::current()->action."_".pluralize($model_name)."_get", $options);
-			$options = $trigger->filter(pluralize($model_name)."_get", $options);
+			$trigger->filter($options, array(Route::current()->action."_".$model_name."_get", $model_name."_get"));
 
 			$grab = SQL::current()->select($options["from"], $options["select"], $options["where"], $options["order"], $options["params"], $options["limit"], $options["offset"], $options["group"], $options["left_join"]);
 

@@ -216,8 +216,8 @@ class Defensio extends DefensioObject {
 	 * Set instance variables, connect to Defensio, and check API key
 	 *
 	 * @param	String	$blogUrl	The URL to your own blog
-	 * @param 	String	$apiKey		Your Defensio API key
-	 * @param 	String[]	$comment	A formatted comment array to be examined by the Defensio service
+	 * @param     String	$apiKey		Your Defensio API key
+	 * @param     String[]	$comment	A formatted comment array to be examined by the Defensio service
 	 */
 	function Defensio($blogUrl, $apiKey) {
 		$this->blogUrl = $blogUrl;

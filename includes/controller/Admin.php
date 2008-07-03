@@ -686,12 +686,13 @@
 					array_shift($split);
 					$post->xml = implode("\n", $split);
 
+					$url = html_entity_decode($post->url());
 					$posts_atom.= '	<entry xml:base="'.fix($post->url()).'">'."\r";
 					$posts_atom.= '		<title type="html">'.$title.'</title>'."\r";
 					$posts_atom.= '		<id>tag:'.$tagged.'</id>'."\r";
 					$posts_atom.= '		<updated>'.when("c", $updated).'</updated>'."\r";
 					$posts_atom.= '		<published>'.when("c", $post->created_at).'</published>'."\r";
-					$posts_atom.= '		<link href="'.fix($trigger->filter("feed_url", html_entity_decode($post->url())), false).'" />'."\r";
+					$posts_atom.= '		<link href="'.fix($trigger->filter($url, "feed_url"), false).'" />'."\r";
 					$posts_atom.= '		<author chyrp:user_id="'.$post->user_id.'">'."\r";
 					$posts_atom.= '			<name>'.fix(fallback($post->user()->full_name, $post->user()->login, true), false).'</name>'."\r";
 
@@ -707,7 +708,7 @@
 					foreach (array("feather", "clean", "url", "pinned", "status", "created_at", "updated_at") as $attr)
 						$posts_atom.= '		<chyrp:'.$attr.'>'.fix($post->$attr, false).'</chyrp:'.$attr.'>'."\r";
 
-					$trigger->filter("posts_export", &$posts_atom, $post);
+					$trigger->filter($posts_atom, "posts_export", $post);
 
 					$posts_atom.= '	</entry>'."\r";
 
@@ -762,12 +763,13 @@
 					$tagged = str_replace("#", "/", $tagged);
 					$tagged = preg_replace("/(".preg_quote(parse_url($page->url(), PHP_URL_HOST)).")/", "\\1,".when("Y-m-d", $updated).":", $tagged, 1);
 
+					$url = html_entity_decode($page->url());
 					$pages_atom.= '	<entry xml:base="'.fix($page->url()).'" chyrp:parent_id="'.$page->parent_id.'">'."\r";
 					$pages_atom.= '		<title type="html">'.fix($page->title, false).'</title>'."\r";
 					$pages_atom.= '		<id>tag:'.$tagged.'</id>'."\r";
 					$pages_atom.= '		<updated>'.when("c", $updated).'</updated>'."\r";
 					$pages_atom.= '		<published>'.when("c", $page->created_at).'</published>'."\r";
-					$pages_atom.= '		<link href="'.fix($trigger->filter("feed_url", html_entity_decode($page->url())), false).'" />'."\r";
+					$pages_atom.= '		<link href="'.fix($trigger->filter($url, "feed_url"), false).'" />'."\r";
 					$pages_atom.= '		<author chyrp:user_id="'.fix($page->user_id).'">'."\r";
 					$pages_atom.= '			<name>'.fix(fallback($page->user()->full_name, $page->user()->login, true), false).'</name>'."\r";
 
@@ -782,7 +784,7 @@
 						$pages_atom.= '		<chyrp:'.$attr.'>'.fix($page->$attr, false).'</chyrp:'.$attr.'>'."\r";
 
 
-					$trigger->filter("pages_export", &$pages_atom, $post);
+					$trigger->filter($pages_atom, "pages_export", $page);
 
 					$pages_atom.= '	</entry>'."\r";
 				}
@@ -791,7 +793,7 @@
 				$exports["pages.atom"] = $pages_atom;
 			}
 
-			$trigger->filter("export", &$exports);
+			$trigger->filter($exports, "export");
 
 			require INCLUDES_DIR."/lib/zip.php";
 

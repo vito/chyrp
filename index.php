@@ -38,7 +38,7 @@
 			if (!$page->no_results) {
 				$theme->title = $page->title;
 
-				$page->body = $trigger->filter("markup_page_text", $page->body);
+				$trigger->filter($page->body, "markup_page_text");
 
 				if ($theme->file_exists("pages/".$page->url))
 					$theme->load("pages/".$page->url, array("page" => $page));

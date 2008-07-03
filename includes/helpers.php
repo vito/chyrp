@@ -26,7 +26,7 @@
 
 		# Since the header might already be set to gzip, start output buffering again.
 		if (extension_loaded("zlib") and !ini_get("zlib.output_compression") and
-		    substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip") and (class_exists("Trigger") and Trigger::current()->filter("do_gzip", true))) {
+		    substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip")) {
 			ob_start("ob_gzhandler");
 			header("Content-Encoding: gzip");
 		} else
@@ -670,8 +670,8 @@
 	 *     $matches[] - An array of all URLs found in the string.
 	 */
 	function grab_urls($string) {
-		$trigger = Trigger::current();
-		preg_match_all($trigger->filter("link_regexp", "/<a[^>]+href=[\"|']([^\"]+)[\"|']>[^<]+<\/a>/"), stripslashes($string), $matches);
+		$string = stripslashes($string);
+		preg_match_all(Trigger::current()->filter($string, "link_regexp", "/<a[^>]+href=[\"|']([^\"]+)[\"|']>[^<]+<\/a>/"), $matches);
 		$matches = $matches[1];
 		return $matches;
 	}

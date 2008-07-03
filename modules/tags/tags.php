@@ -36,7 +36,7 @@
 ?>
 					<p>
 						<label for="tags"><?php echo __("Tags", "tags"); ?> <span class="sub"><?php echo __("(comma separated)", "tags"); ?></span></label>
-						<input class="text" type="text" name="tags" value="<?php echo implode(", ", self::unlinked_tags($post->tags)) ?>" id="tags" />
+						<input class="text" type="text" name="tags" value="<?php echo implode(", ", self::unlinked_tags($post->unclean_tags)) ?>" id="tags" />
 					</p>
 <?php
 		}
@@ -152,10 +152,10 @@
 		}
 
 		public function metaWeblog_getPost($struct, $post) {
-			if (!isset($post->tags))
+			if (!isset($post->unclean_tags))
 				$struct['mt_tags'] = "";
 			else
-				$struct['mt_tags'] = implode(", ", self::unlinked_tags($post->tags));
+				$struct['mt_tags'] = implode(", ", self::unlinked_tags($post->unclean_tags));
 
 			return $struct;
 		}
@@ -164,7 +164,7 @@
 			if (isset($struct['mt_tags']))
 				$_POST['tags'] = $struct['mt_tags'];
 			else if (isset($post->tags))
-				$_POST['tags'] = $post->tags;
+				$_POST['tags'] = $post->tags["unlinked"];
 			else
 				$_POST['tags'] = '';
 		}

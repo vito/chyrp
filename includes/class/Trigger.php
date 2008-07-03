@@ -40,14 +40,14 @@
 				usort($this->priorities[$name], array($this, "cmp"));
 
 				foreach ($this->priorities[$name] as $action) {
-					$caller($action["function"], &$arg);
+					$caller($action["function"], $arg);
 					$this->called[$name][] = $action["function"];
 				}
 			}
 
 			foreach ($modules as $module)
 				if (!in_array(array($module, $name), $this->called[$name]) and is_callable(array($module, $name)))
-					$caller(array($module, $name), &$arg);
+					$caller(array($module, $name), $arg);
 		}
 
 		/**
@@ -64,42 +64,41 @@
 		 * Returns:
 		 *     $target, filtered through any/all actions for the trigger $name.
 		 */
-		public function filter($name, $target = array(), $arguments = null) {
+		public function filter(&$target, $name) {
+			if (is_array($name)) {
+				foreach ($name as $filter)
+					$this->filter($target, $filter);
+
+				return;
+			}
+
 			global $modules;
 			if (!isset($modules) or (isset($this->exists[$name]) and !$this->exists[$name]) or !$this->exists($name))
 				return $target;
 
-			if (!is_array($arguments))
-				$arguments = array($arguments);
+			$arguments = func_get_args();
+			array_shift($arguments);
+			array_shift($arguments);
+			array_unshift($arguments, $target);
 
 			$this->called[$name] = array();
 
 			if (isset($this->priorities[$name])) { # Predefined priorities?
 				usort($this->priorities[$name], array($this, "cmp"));
-				foreach ($this->priorities[$name] as $action) {
-					if (!empty($arguments)) {
-						$params = array_merge(array($this->modified($name, $target)), $arguments);
-						$this->modified[$name] = call_user_func_array($action["function"], $params);
-					} else
-						$this->modified[$name] = call_user_func($action["function"], $this->modified($name, $target));
 
+				foreach ($this->priorities[$name] as $action) {
+					$this->modified[$name] = call_user_func_array($action["function"], $arguments);
 					$this->called[$name][] = $action["function"];
 				}
 			}
 
 			foreach ($modules as $module)
 				if (!in_array(array($module, $name), $this->called[$name]) and is_callable(array($module, $name)))
-					if (!empty($arguments)) {
-						$params = array_merge(array($this->modified($name, $target)), $arguments);
-						$this->modified[$name] = call_user_func_array(array($module, $name), $params);
-					} else
-						$this->modified[$name] = call_user_func(array($module, $name), $this->modified($name, $target));
-
-			$final = $this->modified($name, $target);
+					$this->modified[$name] = call_user_func_array(array($module, $name), $arguments);
 
 			$this->modified[$name] = null;
 
-			return $target = $final;
+			return $target = $this->modified($name, $target);
 		}
 
 		/**

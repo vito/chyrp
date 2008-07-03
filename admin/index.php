@@ -15,10 +15,10 @@
 
 			# Are there any extension-added pages?
 			$trigger = Trigger::current();
-			$write    = $trigger->filter("write_pages", array());
-			$manage   = $trigger->filter("manage_pages", array());
-			$settings = $trigger->filter("settings_pages", array());
-			$extend   = $trigger->filter("extend_pages", array());
+			foreach (array("write", "manage", "settings", "extend") as $main_nav) {
+				$$main_nav = array();
+				$trigger->filter($$main_nav, $main_nav."_pages");
+			}
 
 			$admin->context["theme"]        = $theme;
 			$admin->context["trigger"]      = $trigger;
@@ -49,7 +49,7 @@
 
 			$this->subnav_context();
 
-			$admin->context["selected"] = $trigger->filter("nav_selected", $admin->context["selected"]);
+			$trigger->filter($admin->context["selected"], "nav_selected");
 
 			$admin->context["bookmarklet"] = "javascript:var%20d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f='".$admin->context["site"]->url."/includes/bookmarklet.php',l=d.location,e=encodeURIComponent,p='?url='+e(l.href)+'&title='+e(d.title)+'&selection='+e(s),u=f+p;a=function(){if(!w.open(u,'t','toolbar=0,resizable=0,status=1,width=450,height=430'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0)";
 
@@ -85,6 +85,8 @@
 			$subnav =& $admin->context["subnav"];
 
 			$subnav["write"] = array();
+			$pages = array("manage" => array())
+
 			foreach (Config::current()->enabled_feathers as $index => $feather) {
 				$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$feather."/info.yaml");
 				$subnav["write"]["write_post&feather=".$feather] = array("title" => __($info["name"], $feather),
@@ -92,40 +94,43 @@
 				                                                         "selected" => (isset($_GET['feather']) and $_GET['feather'] == $feather) or
 				                                                                       (!isset($_GET['feather']) and $action == "write_post" and !$index));
 			}
+
+			# Write navs
 			$subnav["write"]["write_page"] = array("title" => __("Page"));
-			$subnav["write"] = $trigger->filter("admin_write_nav", $subnav["write"]);
-			$subnav["write"] = $trigger->filter("write_nav", $subnav["write"]);
-			foreach (array("write_post", "write_page") as $write)
-				$subnav[$write] = $subnav["write"];
+			$trigger->filter($subnav["write"], array("admin_write_nav", "write_nav"));
+			$pages["write"] = array_merge(array("write_post"), array_keys($subnav["write"]));;
 
-			$subnav["manage"] = $trigger->filter("manage_nav",
-			                                     array("manage_posts"  => array("title" => __("Posts"), "selected" => array("edit_post", "delete_post")),
-			                                           "manage_pages"  => array("title" => __("Pages"), "selected" => array("edit_page", "delete_page")),
-			                                           "manage_users"  => array("title" => __("Users"), "selected" => array("edit_user", "delete_user")),
-			                                           "manage_groups" => array("title" => __("Groups"), "selected" => array("edit_group", "delete_group"))));
-			foreach ($trigger->filter("manage_nav_pages",
-			                          array("manage_posts", "edit_post", "delete_post",
-			                                "manage_pages", "edit_page", "delete_page",
-			                                "manage_users", "edit_user", "delete_user", "new_user",
-			                                "manage_groups", "edit_group", "delete_group", "new_group")) as $manage)
-				$subnav[$manage] =& $subnav["manage"];
+			# Manage navs
+			$subnav["manage"] = array("manage_posts"  => array("title" => __("Posts"), "selected" => array("edit_post", "delete_post")),
+			                          "manage_pages"  => array("title" => __("Pages"), "selected" => array("edit_page", "delete_page")),
+			                          "manage_users"  => array("title" => __("Users"), "selected" => array("edit_user", "delete_user")),
+			                          "manage_groups" => array("title" => __("Groups"), "selected" => array("edit_group", "delete_group")));
+			$trigger->filter($subnav["manage"], "manage_nav");
+			foreach (array_keys($subnav["manage"]) as $manage)
+				$pages["manage"] = array_merge($pages["manage"], array($manage,
+				                                                       str_replace("manage_", "edit_", $manage),
+				                                                       str_replace("manage_", "delete_", $manage)));
 
-			$subnav["settings"] = $trigger->filter("settings_nav",
-			                                       array("general_settings" => array("title" => __("General")),
-			                                             "content_settings" => array("title" => __("Content")),
-			                                             "user_settings"    => array("title" => __("Users")),
-			                                             "route_settings"   => array("title" => __("Routes"))));
-			foreach ($trigger->filter("settings_nav_pages", array_keys($subnav["settings"])) as $settings)
-				$subnav[$settings] =& $subnav["settings"];
+			# Settings navs
+			$subnav["settings"] = array("general_settings" => array("title" => __("General")),
+			                            "content_settings" => array("title" => __("Content")),
+			                            "user_settings"    => array("title" => __("Users")),
+			                            "route_settings"   => array("title" => __("Routes")));
+			$trigger->filter($subnav["settings"], "settings_nav");
+			$pages["settings"] = array_keys($settings_nav);
 
-			$subnav["extend"] = $trigger->filter("extend_nav",
-			                                     array("extend_modules"  => array("title" => __("Modules")),
-			                                           "extend_feathers" => array("title" => __("Feathers")),
-			                                           "extend_themes"   => array("title" => __("Themes"))));
-			foreach ($trigger->filter("extend_nav_pages", array_keys($subnav["extend"])) as $extend)
-				$subnav[$extend] =& $subnav["extend"];
+			# Extend navs
+			$subnav["extend"] = array("extend_modules"  => array("title" => __("Modules")),
+			                          "extend_feathers" => array("title" => __("Feathers")),
+			                          "extend_themes"   => array("title" => __("Themes")));
+			$trigger->filter($subnav["extend"], "extend_nav");
+			$pages["extend"] = array_keys($subnav["extend"]);
 
-			Trigger::current()->filter("admin_subnav", &$subnav);
+			foreach (array("write", "manage", "settings", "extend") as $main_nav)
+				foreach ($trigger->filter($pages[$main_nav], $main_nav."_nav_pages") as $extend)
+					$subnav[$$main_nav] =& $subnav[$main_nav];
+
+			$trigger->filter($subnav, "admin_subnav");
 		}
 	}
 

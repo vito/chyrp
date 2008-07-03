@@ -78,7 +78,8 @@
 				       $config->url."/".rtrim($url, "/") ;
 			}
 
-			$urls = Trigger::current()->filter("parse_urls", $this->urls);
+			$urls = $this->urls;
+			Trigger::current()->filter($urls, "parse_urls");
 
 			foreach (array_diff_assoc($urls, $this->urls) as $key => $value)
 				$urls[substr($key, 0, -1)."feed\//"] = "/".$value."&amp;feed";
@@ -102,7 +103,8 @@
 		 *     $regexp - $key values replaced with their regular expressions from <Routes->$code>.
 		 */
 		private function key_regexp($key) {
-			$this->code = Trigger::current()->filter("url_code", $this->code);
+			Trigger::current()->filter($this->code, "url_code");
+
 			$replace = str_replace("/", "\\/", $key);
 			$replace = str_replace(array_keys($this->code), array_values($this->code), $replace);
 

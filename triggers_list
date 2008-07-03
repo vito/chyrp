@@ -1,7 +1,7 @@
 tags_top:
-	
+
 admin_manage_nav:
-	
+
 rss_comment:
 	$comment->id
 comments_rss_item:
@@ -11,13 +11,13 @@ show_comment:
 delete_comment:
 	new self($comment_id)
 top:
-	
+
 bottom:
-	
+
 pingback:
 	array($id, $linked_to, $linked_from, $title, $excerpt)
 trackback_receive:
-	
+
 add_post:
 	array($post, $options)
 update_post:
@@ -29,25 +29,25 @@ add_page:
 update_page:
 	$this->id
 javascript_domready:
-	
+
 ajax_post_edit_form_javascript:
-	
+
 javascript:
-	
+
 feed_item:
 	$post->id
 can_not_view_site:
-	
+
 runtime:
-	
+
 edit_post_options:
 	$post
 not_found:
-	
+
 ajax:
-	
+
 admin_javascript:
-	
+
 import_wordpress_post:
 	array($item, $post)
 import_wordpress_page:
@@ -65,4 +65,4 @@ import_chyrp_page:
 chyrp_import:
 	array(&$errors, &$step)
 chyrp_import_fields:
-	
+
