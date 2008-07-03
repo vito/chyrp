@@ -21,13 +21,15 @@
 		$tagged = substr(strstr($route->url("id/".$post->id."/"), "//"), 2);
 		$tagged = str_replace("#", "/", $tagged);
 		$tagged = preg_replace("/(".preg_quote(parse_url($post->url(), PHP_URL_HOST)).")/", "\\1,".when("Y-m-d", $updated).":", $tagged, 1);
+
+		$url = html_entity_decode($post->url());
 ?>
 	<entry xml:base="<?php echo htmlspecialchars($post->url(), ENT_QUOTES, "utf-8"); ?>">
 		<title type="html"><?php echo $title; ?></title>
 		<id>tag:<?php echo $tagged; ?></id>
 		<updated><?php echo when("c", $updated); ?></updated>
 		<published><?php echo when("c", $post->created_at); ?></published>
-		<link href="<?php echo htmlspecialchars($trigger->filter("feed_url", html_entity_decode($post->url()), $post), ENT_NOQUOTES, "utf-8"); ?>" />
+		<link href="<?php echo htmlspecialchars($trigger->filter($url, "feed_url", $post), ENT_NOQUOTES, "utf-8"); ?>" />
 		<author>
 			<name><?php echo htmlspecialchars(fallback($post->user()->full_name, $post->user()->login, true), ENT_NOQUOTES, "utf-8"); ?></name>
 <?php if (!empty($author_uri)): ?>

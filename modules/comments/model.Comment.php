@@ -21,7 +21,7 @@
 					$this->body = strip_tags($this->body, "<".join("><", Config::current()->allowed_comment_html).">");
 
 				$this->body_unfiltered = $this->body;
-				$this->body = Trigger::current()->filter("markup_comment_text", $this->body);
+				Trigger::current()->filter($this->body, "markup_comment_text");
 			}
 
 			Trigger::current()->call("filter_comment", $this);

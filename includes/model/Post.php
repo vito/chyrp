@@ -99,8 +99,10 @@
 			$trackbacks = fallback($_POST['trackbacks'], "");
 			$options = fallback($_POST['option'], array());
 
-			if (isset($_POST['bookmarklet']))
-				Trigger::current()->filter("bookmarklet_submit", array(&$values, &$options));
+			if (isset($_POST['bookmarklet'])) {
+				Trigger::current()->filter($values, "bookmarklet_submit_values");
+				Trigger::current()->filter($options, "bookmarklet_submit_options");
+			}
 
 			foreach ($values as $name => &$value)
 				$value = self::makesafe($value);
@@ -378,7 +380,8 @@
 				              urlencode($this->url),
 				              urlencode($this->feather),
 				              urlencode(pluralize($this->feather)));
-				Trigger::current()->filter("url_vals", &$vals, $this->id);
+
+				Trigger::current()->filter($vals, "url_vals", $this->id);
 				return $config->url."/".str_replace(array_keys(Route::current()->code), $vals, $config->post_url);
 			} else
 				return $config->url."/?action=view&url=".urlencode($this->url);
@@ -403,8 +406,9 @@
 			global $feathers;
 			if (!isset($this->id)) return false;
 
-			$trigger = Trigger::current();
-			$excerpt = $trigger->filter("title_from_excerpt", $this->excerpt());
+			$excerpt = $this->excerpt();
+			Trigger::current()->filter($excerpt, "title_from_excerpt");
+
 			$stripped = strip_tags($excerpt); # Strip all HTML
 			$truncated = truncate($stripped, 75); # Truncate the excerpt to 75 characters
 			$normalized = normalize($truncated); # Trim and normalize whitespace
@@ -418,7 +422,8 @@
 		 */
 		public function title() {
 			global $feathers;
-			return Trigger::current()->filter("title", $feathers[$this->feather]->title($this));
+			$title = $feathers[$this->feather]->title($this);
+			return Trigger::current()->filter($title, "title");
 		}
 
 
@@ -428,7 +433,8 @@
 		 */
 		public function excerpt() {
 			global $feathers;
-			return Trigger::current()->filter("excerpt", $feathers[$this->feather]->excerpt($this));
+			$excerpt = $feathers[$this->feather]->excerpt($this);
+			return Trigger::current()->filter($excerpt, "excerpt");
 		}
 
 
@@ -624,7 +630,8 @@
 					$where[] = "`__posts`.`feather` = :feather";
 					$params[':feather'] = depluralize($get['feathers']);
 				} else {
-					list($where, $params, $attr) = Trigger::current()->filter("post_url_token", array($where, $params, $attr));
+					Trigger::current()->filter($tokens = array($where, $params, $attr), "post_url_token");
+					list($where, $params, $attr) = $tokens;
 
 					if ($attr !== null) {
 						$where[] = "`__posts`.`".$attr."` = :attr".$attr;

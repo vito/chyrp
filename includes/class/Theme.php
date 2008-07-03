@@ -56,7 +56,7 @@
 				if ($page->parent_id == 0)
 					$this->recurse_pages($page, $main_class, $list_class, $show_order_fields);
 
-			$this->page_list = Trigger::current()->filter('list_pages', $this->page_list);
+			Trigger::current()->filter($this->page_list, "list_pages");
 
 			$this->page_list.= "</ul>\n";
 			return $this->page_list;
@@ -215,14 +215,19 @@
 					$args.= "&amp;arg".++$i."=".urlencode($val);
 
 			# if (isset($posts))
-			# 	$args.= "&amp;next_post=".$posts->next()->paginated[0]->id;
+			#     $args.= "&amp;next_post=".$posts->next()->paginated[0]->id;
 
 			$config = Config::current();
 			$trigger = Trigger::current();
 
-			$javascripts = $trigger->filter("scripts", '<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".
-			                                           '<script src="'.$config->chyrp_url.'/includes/lib/gz.php?file=plugins.js" type="text/javascript" charset="utf-8"></script>'."\n\t\t".
-			                                           '<script src="'.$config->chyrp_url.'/includes/javascript.php?action='.$route->action.$args.'" type="text/javascript" charset="utf-8"></script>');
+			$javascripts = array("http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js",
+			                     $config->chyrp_url."/includes/lib/gz.php?file=plugins.js",
+			                     $config->chyrp_url.'/includes/javascript.php?action='.$route->action.$args);
+			Trigger::current()->filter($javascripts, "scripts");
+
+			$javascripts = '<script src="'.
+			               implode('" type="text/javascript" charset="utf-8"></script>'."\n\t\t".'<script src="', $javascripts).
+			               '" type="text/javascript" charset="utf-8"></script>';
 
 			if (file_exists(THEMES_DIR."/".$this->theme."/javascripts/") or file_exists(THEMES_DIR."/".$this->theme."/js/")) {
 				foreach(glob(THEMES_DIR."/".$this->theme."/{javascripts,js}/*.js", GLOB_BRACE) as $file)
@@ -288,8 +293,7 @@
 			$this->context["GET"]          = $_GET;
 
 			$this->context["visitor"]->logged_in = logged_in();
-			$this->context = $trigger->filter("twig_global_context", $this->context);
-			$this->context = $trigger->filter(str_replace("/", "_", $this->file), $this->context);
+			$trigger->filter($this->context, array("twig_global_context", "twig_context_".str_replace("/", "_", $this->file)));
 
 			$this->context["enabled_modules"] = array();
 			foreach ($config->enabled_modules as $module)

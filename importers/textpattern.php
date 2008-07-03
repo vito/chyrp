@@ -32,7 +32,7 @@
 						foreach ($post as $key => $val)
 							$posts[$post["ID"]][$key] = $val;
 
-						$posts[$post["ID"]] = $trigger->filter("import_textpattern_generate_array", $posts[$post["ID"]]);
+						$trigger->filter($posts[$post["ID"]], "import_textpattern_generate_array");
 					}
 
 					mysql_close($link);

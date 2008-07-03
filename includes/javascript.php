@@ -198,23 +198,23 @@ function appendNextPost() {
 <?php if (!empty($_GET['next_post'])): ?>
 	// if ($("#posts").length == 0) return;
 	// $.ajax({ type: "post", url: "<?php echo $config->chyrp_url; ?>/includes/ajax.php", data: { action: "view_post", id: <?php echo $_GET['next_post']; ?> }, success: function(data) {
-	// 	$("#posts").append(data)
-	// 	$("#posts .post:last").hide().fadeIn("slow")
-	// 	var id = $("#posts .post:last").attr("id").replace(/post_/, "")
+	//     $("#posts").append(data)
+	//     $("#posts .post:last").hide().fadeIn("slow")
+	//     var id = $("#posts .post:last").attr("id").replace(/post_/, "")
 	//
-	// 	$("#post_edit_"+id).click(function(){
-	// 		Post.edit(id)
-	// 		return false
-	// 	})
+	//     $("#post_edit_"+id).click(function(){
+	//     	Post.edit(id)
+	//     	return false
+	//     })
 	//
-	// 	$("#post_delete_"+id).click(function(){
-	// 		if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
-	// 		Post.destroy(id)
-	// 		return false
-	// 	})
+	//     $("#post_delete_"+id).click(function(){
+	//     	if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
+	//     	Post.destroy(id)
+	//     	return false
+	//     })
 	// }, error: function(request){
-	// 	if (request.status == 404)
-	// 		$("#next_page_page").fadeOut("fast");
+	//     if (request.status == 404)
+	//     	$("#next_page_page").fadeOut("fast");
 	// } });
 <?php endif; ?>
 }

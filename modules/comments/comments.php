@@ -686,7 +686,7 @@ var Comment = {
 					if (($comment->status != "pingback" and !$comment->status != "trackback") and !$group->can("code_in_comments"))
 						$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
 
-					$comment->body = $trigger->filter("markup_comment_text", $comment->body);
+					$trigger->filter($comment->body, "markup_comment_text");
 					$theme->load("content/comment", array("comment" => $comment));
 					break;
 				case "delete_comment":
@@ -887,7 +887,7 @@ var Comment = {
 					if (($comment->status != "pingback" and $comment->status != "trackback") and !$group->can("code_in_comments"))
 						$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
 
-					$comment->body = $trigger->filter("markup_comment_text", $comment->body);
+					$trigger->filter($comment->body, "markup_comment_text");
 					$comment->is_author = ($post->user_id == $comment->user_id);
 				}
 			}

@@ -58,11 +58,11 @@
 			                    "delete_post", "delete_page",
 			                    "change_setting");
 
-			Trigger::current()->filter("cacher_regenerate_triggers", &$regenerate);
+			Trigger::current()->filter($regenerate, "cacher_regenerate_triggers");
 			foreach ($regenerate as $action)
 				$this->addAlias($action, "regenerate");
 
-			foreach (Trigger::current()->filter("cacher_regenerate_posts_triggers", array()) as $action)
+			foreach (Trigger::current()->filter($post_triggers = array(), "cacher_regenerate_posts_triggers") as $action)
 				$this->addAlias($action, "remove_post_cache");
 		}
 
