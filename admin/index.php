@@ -6,8 +6,13 @@
 	$action = ($_GET['action'] == "index" or !isset($_GET['action'])) ? $admin->determine_action() : $_GET['action'];
 
 	class AdminTwig {
+		private $theme_path = 'default';
+
 		public function __construct() {
-			$this->twig = new Twig_Loader(MAIN_DIR."/admin/layout", (is_writable(INCLUDES_DIR."/caches") and !DEBUG) ? INCLUDES_DIR."/caches" : null);
+			if (isset($_GET['format']) and is_dir(MAIN_DIR."/admin/layouts/".$_GET['format']))
+				$this->theme_path = $_GET['format'];
+
+			$this->twig = new Twig_Loader(MAIN_DIR."/admin/layouts/".$this->theme_path, (is_writable(INCLUDES_DIR."/caches") and !DEBUG) ? INCLUDES_DIR."/caches" : null);
 		}
 
 		public function load($action) {
@@ -60,7 +65,7 @@
 
 			$admin->context["sql_debug"]  = SQL::current()->debug;
 
-			$template = MAIN_DIR."/admin/layout/pages/".$action.".twig";
+			$template = MAIN_DIR."/admin/layouts/".$this->theme_path."/pages/".$action.".twig";
 
 			$config = Config::current();
 			if (!file_exists($template)) {
@@ -70,7 +75,7 @@
 							$template = $path."/".$extension."/pages/admin/".$action.".twig";
 
 				if (!file_exists($template))
-					error(__("Template Missing"), _f("Couldn't load template:<br /><br />%s", array("pages/".$action.".twig")));
+					error(__("Template Missing"), _f("Couldn't load template:<br /><br />%s", array($theme_path."/pages/".$action.".twig")));
 			}
 
 			return $this->twig->getTemplate($template)->display($admin->context);
