@@ -1,57 +1,73 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-		<title>$site.name: {% block title %}$title{% endblock %}</title>
-		<link rel="stylesheet" href="stylesheets/mobile.css" type="text/css" media="screen" title="no title" charset="utf-8" />
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript" charset="utf-8"></script>
-		<script src="$site.chyrp_url/includes/lib/gz.php?file=plugins.js" type="text/javascript" charset="utf-8"></script>
-		<script src="$site.chyrp_url/includes/admin.js.php?action=$route.action" type="text/javascript" charset="utf-8"></script>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<title>$site.name: {% block title %}$title{% endblock %}</title>
+	<link rel="stylesheet" href="layouts/mobile/mobile.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+	<meta name="viewport" content="width=device-width, user-scalable=no" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="$site.chyrp_url/includes/lib/gz.php?file=plugins.js" type="text/javascript" charset="utf-8"></script>
+	<script src="$site.chyrp_url/includes/admin.js.php?action=$route.action" type="text/javascript" charset="utf-8"></script>
 ${ trigger.call("admin_head") }
-	</head>
-	<body>
-		<div id="header">
-			<div class="column">
-				<ul id="navigation">
-{% block navigation %}
-{% if visitor.group.can("add_draft", "add_post") %}
-					<li class="first $selected.write"><a href="{% admin "write_post" %}">${ "Write" | translate }</a></li>
-{% endif %}
-{% if visitor.group.can("view_own_draft", "view_draft", "edit_own_draft", "edit_own_post", "edit_post", "delete_own_draft", "delete_own_post", "delete_post") %}
-					<li class="second $selected.manage"><a href="{% admin "manage_posts" %}">${ "Manage" | translate }</a></li>
-{% endif %}
-{% if visitor.group.can("change_settings") %}
-					<li class="third $selected.settings"><a href="{% admin "general_settings" %}">${ "Settings" | translate }</a></li>
-{% endif %}
-{% if visitor.group.can("toggle_extensions") %}
-					<li class="fourth $selected.extend"><a href="{% admin "extend_modules" %}">${ "Extend" | translate }</a></li>
+</head>
+<body>
+	<div id="header">
+		<h1>{% block header_title %}{% endblock %}</h1>
+
+{% block subnav %}
+{% if subnav[route.action] %}
+		<form class="subnav">
+			<select>
+				<optgroup label="${ "Feathers" | translate }">
+{% for action, nav in subnav[route.action] | items %}
+					<option value="{% admin action %}">$nav.title</li>
+{% endfor %}
+				</optgroup>
+			</select>
+		</form>
 {% endif %}
 {% endblock %}
-				</ul>
-				<h1>$site.name</h1>
-			</div>
-		</div>
-		<div id="welcome">
+
+	</div>
+
+
+		<!-- <div id="welcome">
 			<div class="column">
 				<a href="$site.url" class="right">${ "View Site &rsaquo;" | translate }</a>
 				${ "Hello, %s!" | translate | format(visitor.full_name | split | first | fallback(visitor.login | fallback("guest" | translate))) }
 				<a href="{% url "logout/" %}">${ "Log Out &rsaquo;" | translate }</a>
 			</div>
-		</div>
+		</div> -->
 		<ul class="column ${ route.action }_nav" id="sub-nav">
-{% block subnav %}
-{% if subnav[route.action] %}
-{% for action, nav in subnav[route.action] | items %}
-			<li${ route.action | selected(nav.selected, action) }$nav.attributes><a href="{% admin action %}">$nav.title</a></li>
-{% endfor %}
-{% endif %}
-{% endblock %}
+
 		</ul>
 		<div class="clear"></div>
 		<div class="column" id="content">
 {% block content %}{% endblock %}
 			<div class="clear"></div>
 		</div>
-	</body>
+
+				<!-- <div id="header">
+					<div class="column">
+						<ul id="navigation">
+		{% block navigation %}
+		{% if visitor.group.can("add_draft", "add_post") %}
+							<li class="first $selected.write"><a href="{% admin "write_post" %}">${ "Write" | translate }</a></li>
+		{% endif %}
+		{% if visitor.group.can("view_own_draft", "view_draft", "edit_own_draft", "edit_own_post", "edit_post", "delete_own_draft", "delete_own_post", "delete_post") %}
+							<li class="second $selected.manage"><a href="{% admin "manage_posts" %}">${ "Manage" | translate }</a></li>
+		{% endif %}
+		{% if visitor.group.can("change_settings") %}
+							<li class="third $selected.settings"><a href="{% admin "general_settings" %}">${ "Settings" | translate }</a></li>
+		{% endif %}
+		{% if visitor.group.can("toggle_extensions") %}
+							<li class="fourth $selected.extend"><a href="{% admin "extend_modules" %}">${ "Extend" | translate }</a></li>
+		{% endif %}
+		{% endblock %}
+						</ul>
+						<h1>$site.name</h1>
+					</div>
+				</div> -->
+</body>
 </html>

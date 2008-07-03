@@ -1,0 +1,38 @@
+@import 'default.css';
+/*@import 'iui.css';*/
+
+li.bookmarklet { display: none; }
+
+form.subnav { float: right; }
+
+div#header > h1 {
+    position: absolute;
+    overflow: hidden;
+    left: 50%;
+    margin: 1px 0 0 -75px;
+    height: 45px;
+    font-size: 20px;
+    width: 150px;
+    font-weight: bold;
+    text-shadow: rgba(0, 0, 0, 0.4) 0px -1px 0;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #FFFFFF;
+}
+
+body[orient="landscape"] > div#header > h1 {
+    margin-left: -125px;
+    width: 250px;
+}
+
+div#header {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    border-bottom: 1px solid #2d3642;
+    border-top: 1px solid #6d84a2;
+    padding: 10px;
+    height: 45px;
+    background: url("../../images/iui/toolbar.png") #6d84a2 repeat-x;
+}
