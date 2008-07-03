@@ -85,7 +85,7 @@
 			$subnav =& $admin->context["subnav"];
 
 			$subnav["write"] = array();
-			$pages = array("manage" => array())
+			$pages = array("manage" => array());
 
 			foreach (Config::current()->enabled_feathers as $index => $feather) {
 				$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$feather."/info.yaml");
