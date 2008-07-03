@@ -32,6 +32,7 @@
 				padding: 2em;
 				margin: 5em auto 0;
 				-webkit-border-radius: 2em;
+				-moz-border-radius: 2em;
 			}
 			h1 {
 				color: #ccc;
@@ -70,6 +71,7 @@
 				font: 1em normal "Lucida Grande", "Verdana", Helvetica, Arial, sans-serif;
 				text-decoration: none;
 				-webkit-border-radius: .5em;
+				-moz-border-radius: .5em;
 			}
 			a.big:hover {
 				background: #f5f5f5;

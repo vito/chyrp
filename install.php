@@ -9,6 +9,9 @@
 	ini_set('error_reporting', E_ALL);
 	ini_set('display_errors', true);
 
+	ob_start();
+
+	require_once INCLUDES_DIR."/class/Query.php"; # SQL query handler
 	require_once INCLUDES_DIR."/class/QueryBuilder.php"; # SQL query builder
 	require_once INCLUDES_DIR."/class/Timestamp.php"; # A smarter DateTime class
 	require_once INCLUDES_DIR."/lib/spyc.php"; # YAML parser
@@ -194,7 +197,7 @@
 			                     "toggle_extensions");
 
 			foreach ($permissions as $permission)
-				$sql->insert("permissions", array("name" => ":permission"), array(":permission" => $permission));
+				$sql->replace("permissions", array("name" => ":permission"), array(":permission" => $permission));
 
 			$groups = array(
 				"admin" => Spyc::YAMLDump($permissions),
@@ -206,7 +209,7 @@
 
 			# Insert the default groups (see above)
 			foreach($groups as $name => $permissions)
-				$sql->insert("groups", array("name" => ":name", "permissions" => ":permissions"), array(":name" => ucfirst($name), ":permissions" => $permissions));
+				$sql->replace("groups", array("name" => ":name", "permissions" => ":permissions"), array(":name" => ucfirst($name), ":permissions" => $permissions));
 
 			if (!file_exists(MAIN_DIR."/.htaccess"))
 				if (!@file_put_contents(MAIN_DIR."/.htaccess", $htaccess))
@@ -282,6 +285,12 @@
 				padding: .3em;
 				border: .1em solid #ddd;
 			}
+			textarea {
+				width: 97.75%;
+			}
+			select {
+				width: 100%;
+			}
 			form hr {
 				border: 0;
 				padding-bottom: 1em;
@@ -331,6 +340,7 @@
 				padding: 2em;
 				margin: 5em auto 0;
 				-webkit-border-radius: 2em;
+				-moz-border-radius: 2em;
 			}
 			h1 {
 				color: #ccc;
@@ -374,6 +384,7 @@
 				border: 0;
 				cursor: pointer;
 				-webkit-border-radius: .5em;
+				-moz-border-radius: .5em;
 			}
 			button {
 				width: 100%;
@@ -428,10 +439,10 @@
 					<label for="adapter"><?php echo __("Adapter"); ?></label>
 					<select name="adapter" id="adapter">
 						<?php if (in_array("mysql", PDO::getAvailableDrivers())): ?>
-						<option value="mysql" selected="selected">MySQL</option>
+						<option value="mysql"<?php selected("mysql", fallback($_POST['adapter'], "mysql")); ?>>MySQL</option>
 						<?php endif; ?>
 						<?php if (in_array("sqlite", PDO::getAvailableDrivers())): ?>
-						<option value="sqlite">SQLite 3</option>
+						<option value="sqlite"<?php selected("sqlite", fallback($_POST['adapter'], "mysql")); ?>>SQLite 3</option>
 						<?php endif; ?>
 					</select>
 				</p>

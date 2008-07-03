@@ -37,7 +37,7 @@
 
 	# Constant: MAIN_DIR
 	# Absolute path to the Chyrp root
-	define('MAIN_DIR', pathinfo(dirname(__FILE__), PATHINFO_DIRNAME));
+	define('MAIN_DIR', dirname(dirname(__FILE__)));
 
 	# Constant: INCLUDES_DIR
 	# Absolute path to /includes

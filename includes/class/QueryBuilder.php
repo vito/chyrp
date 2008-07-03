@@ -43,9 +43,21 @@
 		 * Creates a full insert query.
 		 */
 		public static function build_insert($table, $data) {
-			$sql = SQL::current();
 			return "
 				INSERT INTO `__$table`
+				".self::build_insert_header($data)."
+				VALUES
+				".self::build_insert_values($data)."
+			";
+		}
+
+		/**
+		 * Function: build_replace
+		 * Creates a full replace query.
+		 */
+		public static function build_replace($table, $data) {
+			return "
+				REPLACE INTO `__$table`
 				".self::build_insert_header($data)."
 				VALUES
 				".self::build_insert_values($data)."
@@ -57,7 +69,6 @@
 		 * Creates a full update query.
 		 */
 		public static function build_update($table, $conds, $data) {
-			$sql = SQL::current();
 			return "
 				UPDATE `__$table`
 				SET ".self::build_update_values($data)."
@@ -70,7 +81,6 @@
 		 * Creates a full delete query.
 		 */
 		public static function build_delete($table, $conds) {
-			$sql = SQL::current();
 			return "
 				DELETE FROM `__$table`
 				".($conds ? "WHERE ".self::build_where($conds) : "")."
