@@ -125,9 +125,12 @@ function twig_missing_filter($name)
 	$text = $args[0];
 	array_shift($args);
 
+	array_unshift($args, $name);
+	array_unshift($args, $text);
+
 	$trigger = Trigger::current();
 	if ($trigger->exists($name))
-		return $trigger->filter($name, $text, $args);
+		return call_user_func_array(array($trigger, "filter"), $args);
 
 	return $text;
 }

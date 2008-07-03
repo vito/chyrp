@@ -498,11 +498,11 @@
 
 				if (isset(Feather::$custom_filters[$class])) # Run through feather-specified filters, first.
 					foreach (Feather::$custom_filters[$class] as $custom_filter)
-						$this->$custom_filter["field"] = call_user_func_array(array($class, $custom_filter["name"]), array($this->$custom_filter["field"], $this));
+						call_user_func_array($this->$custom_filter["field"], array($class, $custom_filter["name"]), $this);
 
 				if (isset(Feather::$filters[$class])) # Now actually filter it.
 					foreach (Feather::$filters[$class] as $filter)
-						$this->$filter["field"] = $trigger->filter($filter["name"], $this->$filter["field"], $this);
+						$trigger->filter($this->$filter["field"], $filter["name"], $this);
 			}
 		}
 

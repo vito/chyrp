@@ -595,7 +595,7 @@ a.next_page:hover,
 a.prev_page:hover {
 	background: #f7f7f7;
 	border-color: #f7f7f7;
-	border-bottom-color: #d1d1d1;
+	border-bottom-color: #d1d1d1 !important;
 	border-right-color: #d1d1d1;
 }
 button:active,
@@ -621,7 +621,7 @@ button.boo:hover,
 	background: #d51800;
 	color: #fff;
 	border-color: #d51800;
-	border-bottom-color: #9f1000;
+	border-bottom-color: #9f1000 !important;
 	border-right-color: #9f1000;
 }
 button.boo:active,
@@ -645,7 +645,7 @@ button.yay:hover,
 	background: #189100;
 	color: #fff;
 	border-color: #189100;
-	border-bottom-color: #105f00;
+	border-bottom-color: #105f00 !important;
 	border-right-color: #105f00;
 }
 button.yay:active,
