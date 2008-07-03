@@ -28,10 +28,6 @@
 			$config->remove("cache_expire");
 		}
 
-		public function do_gzip() {
-			return false;
-		}
-
 		public function runtime() {
 			if (!file_exists($this->file))
 				return;
