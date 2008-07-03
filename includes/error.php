@@ -8,7 +8,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<title>Chyrp: <?php echo $title; ?></title>
-		<meta name="viewport" content="initial-scale=0.7, user-scalable=yes" />
+		<meta name="viewport" content="initial-scale=0.7, user-scalable=no" />
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 		<style type="text/css" media="screen and (min-device-width: 481px)">
 			html, body, ul, ol, li,
