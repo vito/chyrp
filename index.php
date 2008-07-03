@@ -181,17 +181,16 @@
 			#     2. Feather-provided pages.
 			#     3. Theme-provided pages.
 
-			$page_exists = false;
 			foreach ($config->enabled_modules as $module)
 				if (file_exists(MODULES_DIR."/".$module."/pages/".$route->action.".php"))
-					$page_exists = require MODULES_DIR."/".$module."/pages/".$route->action.".php";
+					return require MODULES_DIR."/".$module."/pages/".$route->action.".php";
 
 			foreach ($config->enabled_feathers as $feather)
 				if (file_exists(FEATHERS_DIR."/".$feather."/pages/".$route->action.".php"))
-					$page_exists = require FEATHERS_DIR."/".$feather."/pages/".$route->action.".php";
+					return require FEATHERS_DIR."/".$feather."/pages/".$route->action.".php";
 
 			if ($theme->file_exists("pages/".$route->action))
-				$page_exists = $theme->load("pages/".$route->action);
+				return $theme->load("pages/".$route->action);
 
 			if (!$page_exists)
 				show_404();
