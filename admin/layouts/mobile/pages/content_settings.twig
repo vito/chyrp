@@ -1,0 +1,60 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Content Settings" | translate }{% endblock %}
+
+{% block content %}
+			<h1>${ "Content Settings" | translate }</h1>
+			{% if updated %}
+			<p class="message yay">${ "Settings updated." | translate }</p>
+			{% endif %}
+			<form id="content_settings" class="split" action="{% admin "content_settings" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+				<fieldset>
+					<p>
+						<label for="posts_per_page">${ "Posts Per Page" | translate }</label>
+						<input class="text nowidth" type="text" name="posts_per_page" value="${ site.posts_per_page | escape }" size="2" id="posts_per_page" />
+					</p>
+					<p>
+						<label for="feed_url">${ "Feed URL" | translate }</label>
+						<input class="text" type="text" name="feed_url" value="${ site.feed_url | escape }" id="feed_url" />
+						<small>
+							{% if site.clean_urls %}
+							${ "Allows you to set an alternative URL for <code>/feed/</code>, e.g. your feed on FeedBurner." | translate }
+							{% else %}
+							${ "Allows you to set an alternative URL for <code>/?feed</code>, e.g. your feed on FeedBurner." | translate }
+							{% endif %}
+						</small>
+					</p>
+					<p>
+						<label for="feed_items">${ "Feed Posts Limit" | translate }</label>
+						<input class="text nowidth" type="text" name="feed_items" value="${ site.feed_items | escape }" size="2" id="feed_items" />
+					</p>
+					<p>
+						<label for="enable_trackbacking">${ "Enable Trackbacking" | translate }</label>
+						<input class="checkbox" type="checkbox" name="enable_trackbacking" id="enable_trackbacking"${ site.enable_trackbacking | checked } />
+						<small>
+							${ "Trackbacking allows sites to notify you when they write a new entry, usually because they link to or reference yours." | translate }
+						</small>
+					</p>
+					<p>
+						<label for="send_pingbacks">${ "Send Pingbacks" | translate }</label>
+						<input class="checkbox" type="checkbox" name="send_pingbacks" id="send_pingbacks"${ site.send_pingbacks | checked } />
+						<small>
+							${ "Attempts to notify sites linked to from your posts. It'll slow down things a bit when you submit them, depending on how many links you've got in it." | translate }
+						</small>
+					</p>
+					<p>
+						<label for="enable_xmlrpc">${ "Enable XML-RPC Support" | translate }</label>
+						<input class="checkbox" type="checkbox" name="enable_xmlrpc" id="enable_xmlrpc"${ site.enable_xmlrpc | checked } />
+						<small>
+							${ "XML-RPC support allows for remote access to your site. This allows you to use remote clients (e.g., <a href=\"http://www.red-sweater.com/marsedit/\">MarsEdit</a> or <a href=\"http://flickr.com/help/blogging/\">Flickr</a>) to create/edit content on your site." | translate }
+						</small>
+					</p>
+
+					<p class="buttons">
+						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Update" | translate }</button>
+					</p>
+
+					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+				</fieldset>
+			</form>
+{% endblock %}

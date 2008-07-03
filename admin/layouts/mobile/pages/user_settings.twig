@@ -1,0 +1,41 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "User Settings" | translate }{% endblock %}
+
+{% block content %}
+			<h1>${ "User Settings" | translate }</h1>
+			{% if updated %}
+			<p class="message yay">${ "Settings updated." | translate }</p>
+			{% endif %}
+			<form id="user_settings" class="split" action="{% admin "user_settings" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+				<fieldset>
+					<p>
+						<label for="can_register">${ "Registration" | translate }</label>
+						<input class="checkbox" type="checkbox" name="can_register" id="can_register"${ site.can_register | checked } />
+						${ "Allow people to register" | translate }
+					</p>
+					<p>
+						<label for="default_group">${ "Default User Group" | translate }</label>
+						<select name="default_group" id="default_group">
+							{% for group in groups %}
+							<option value="$group.id"${ group.id | option_selected(site.default_group) }>$group.name</option>
+							{% endfor %}
+						</select>
+					</p>
+					<p>
+						<label for="guest_group">${ "&#8220;Guest&#8221; Group" | translate }</label>
+						<select name="guest_group" id="guest_group">
+							{% for group in groups %}
+							<option value="$group.id"${ group.id | option_selected(site.guest_group) }>$group.name</option>
+							{% endfor %}
+						</select>
+					</p>
+
+					<p class="buttons">
+						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Update" | translate }</button>
+					</p>
+
+					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+				</fieldset>
+			</form>
+{% endblock %}

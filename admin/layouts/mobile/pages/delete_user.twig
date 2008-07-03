@@ -1,0 +1,33 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Delete User &#8220;%s&#8221;?" | translate | format(user.login | escape) }{% endblock %}
+
+{% block content %}
+			<h1>${ "Are you sure you want to delete user &#8220;%s&#8221;?" | translate | format(user.login | escape) }</h1>
+			<form class="delete" action="{% admin "destroy_user" %}" method="post" accept-charset="utf-8">
+				<fieldset>
+					<blockquote class="noitalic">
+						<h2>${ "Information" | translate }</h2>
+						<ul>
+							{% if user.full_name %}
+							<li><strong>${ "Full Name:" | translate }</strong> $user.full_name</li>
+							{% endif %}
+							<li><strong>${ "E-Mail:" | translate }</strong> $user.email</li>
+							{% if user.website %}
+							<li><strong>${ "Website:" | translate }</strong> <a href="$user.website">$user.website</a></li>
+							{% endif %}
+							<li><strong>${ "Group:" | translate }</strong> $user.group.name</li>
+						</ul>
+					</blockquote>
+					<br />
+
+					<div class="center">
+						<button name="destroy" value="indubitably" class="center boo">${ "DESTROY!" | translate }</button>
+						<button name="destroy" value="bollocks" type="submit" class="yay">${ "Cancel" | translate }</button>
+					</div>
+
+					<input type="hidden" name="id" value="$user.id" id="id" />
+					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+				</fieldset>
+			</form>
+{% endblock %}

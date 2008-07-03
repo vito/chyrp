@@ -1,0 +1,35 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "New Group" | translate }{% endblock %}
+
+{% block content %}
+			<h1>${ "New Group" | translate }</h1>
+			<form id="new_group" class="split" action="{% admin "add_group" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+				<fieldset>
+					<p>
+						<label for="name">${ "Name" | translate }</label>
+						<input class="text" type="text" name="name" value="" id="name" />
+					</p>
+
+					<h2>Permissions</h2>
+					<p id="toggler">
+
+					</p>
+					<hr class="js_enabled" />
+					{% for permission in permissions %}
+					<p>
+						<label for="permission_$permission.name">${ permission.name | camelize(true) }</label>
+						<input class="checkbox" type="checkbox" name="permissions[$permission.name]" id="permission_$permission.name" />
+					</p>
+					{% endfor %}
+					<br />
+
+					<p>
+						<label for="done"></label>
+						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Add Group" | translate }</button>
+					</p>
+
+					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+				</fieldset>
+			</form>
+{% endblock %}
