@@ -117,7 +117,7 @@
 			                            "user_settings"    => array("title" => __("Users")),
 			                            "route_settings"   => array("title" => __("Routes")));
 			$trigger->filter($subnav["settings"], "settings_nav");
-			$pages["settings"] = array_keys($settings_nav);
+			$pages["settings"] = array_keys($subnav["settings"]);
 
 			# Extend navs
 			$subnav["extend"] = array("extend_modules"  => array("title" => __("Modules")),
@@ -128,7 +128,7 @@
 
 			foreach (array("write", "manage", "settings", "extend") as $main_nav)
 				foreach ($trigger->filter($pages[$main_nav], $main_nav."_nav_pages") as $extend)
-					$subnav[$$main_nav] =& $subnav[$main_nav];
+					$subnav[$extend] =& $subnav[$main_nav];
 
 			$trigger->filter($subnav, "admin_subnav");
 		}
