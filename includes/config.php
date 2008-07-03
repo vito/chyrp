@@ -46,7 +46,7 @@
 		 */
 		public function set($setting, $value, $overwrite = true) {
 			global $errors;
-			if (isset($this->$setting) and ($this->$setting == $value or !$overwrite))
+			if (isset($this->$setting) and $this->$setting == $value and !$overwrite)
 				return false;
 
 			# Add the PHP protection!

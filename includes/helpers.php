@@ -26,9 +26,10 @@
 
 		# Since the header might already be set to gzip, start output buffering again.
 		if (extension_loaded("zlib") and !ini_get("zlib.output_compression") and
-		    substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip") and Trigger::current()->filter("do_gzip", true))
+		    substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip") and (class_exists("Trigger") and Trigger::current()->filter("do_gzip", true))) {
 			ob_start("ob_gzhandler");
-		else
+			header("Content-Encoding: gzip");
+		} else
 			ob_start();
 
 		# Display the error.
@@ -825,9 +826,12 @@
 		if (is_bool($variable))
 			return $variable;
 
-		return ($return) ?
-		           ((!isset($variable) or (is_string($variable) and trim($variable) == "") or empty($variable)) ? $fallback : $variable) :
-		           ((!isset($variable) or (is_string($variable) and trim($variable) == "") or empty($variable)) ? $variable = $fallback : false) ;
+		$set = (!isset($variable) or empty($variable) or (is_string($variable) and trim($variable) == ""));
+
+		if (!$return and $set)
+			$variable = $fallback;
+
+		return $set ? $fallback : $variable ;
 	}
 
 	/**

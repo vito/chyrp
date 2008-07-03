@@ -60,7 +60,7 @@
 		 */
 		public function set($setting, $value, $overwrite = true) {
 			global $errors;
-			if (isset($this->$setting) and ($this->$setting == $value or !$overwrite))
+			if (isset($this->$setting) and $this->$setting == $value and !$overwrite)
 				return false;
 
 			# Add the PHP protection!
@@ -94,6 +94,9 @@
 			switch($this->interface) {
 				case "pdo":
 					try {
+						if (empty($this->database))
+							throw new PDOException("No database specified.");
+
 						if ($this->adapter == "sqlite") {
 							$this->db = new PDO("sqlite:".$this->database, null, null, array(PDO::ATTR_PERSISTENT => true));
 
@@ -105,24 +108,27 @@
 							                    $this->username,
 							                    $this->password,
 							                    array(PDO::ATTR_PERSISTENT => true));
+
 						$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 					} catch (PDOException $error) {
-						$message = preg_replace("/SQLSTATE\[.*?\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
-						return ($checking) ? false : error(__("Database Error"), $message) ;
+						$this->error = preg_replace("/SQLSTATE\[.*?\].+([A-Z])(.*?)/", "\\1\\2", $error->getMessage());
+						return ($checking) ? false : error(__("Database Error"), $this->error) ;
 					}
 					break;
 				case "mysqli":
 					$this->db = new MySQLi($this->host, $this->username, $this->password, $this->database);
+					$this->error = mysqli_connect_error();
 
 					if (mysqli_connect_errno())
-						return ($checking) ? false : error(__("Database Error", mysqli_connect_error())) ;
+						return ($checking) ? false : error(__("Database Error", $this->error)) ;
 
 					break;
 				case "mysql":
 					$this->db = @mysql_connect($this->host, $this->username, $this->password);
+					$this->error = mysql_error();
 
 					if (!$this->db or !@mysql_select_db($this->database))
-						return ($checking) ? false : error(__("Database Error", mysql_error())) ;
+						return ($checking) ? false : error(__("Database Error", $this->error)) ;
 
 					break;
 			}
@@ -203,6 +209,19 @@
 		 */
 		public function insert($table, $data, $params = array()) {
 			return $this->query(QueryBuilder::build_insert($table, $data), $params);
+		}
+
+		/**
+		 * Function: replace
+		 * Performs a REPLACE with given data.
+		 *
+		 * Parameters:
+		 *     $table - Table to insert to.
+		 *     $data - An associative array of data to insert.
+		 *     $params - An associative array of parameters used in the query.
+		 */
+		public function replace($table, $data, $params = array()) {
+			return $this->query(QueryBuilder::build_replace($table, $data), $params);
 		}
 
 		/**

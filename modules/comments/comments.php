@@ -12,7 +12,7 @@
 			$sql = SQL::current();
 			$sql->query("CREATE TABLE IF NOT EXISTS `__comments` (
 			                 `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
-			                 `body` LONGTEXT DEFAULT '',
+			                 `body` LONGTEXT,
 			                 `author` VARCHAR(250) DEFAULT '',
 			                 `author_url` VARCHAR(128) DEFAULT '',
 			                 `author_email` VARCHAR(128) DEFAULT '',

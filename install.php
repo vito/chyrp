@@ -9,6 +9,9 @@
 	ini_set('error_reporting', E_ALL);
 	ini_set('display_errors', true);
 
+	ob_start();
+
+	require_once INCLUDES_DIR."/class/Query.php"; # SQL query handler
 	require_once INCLUDES_DIR."/class/QueryBuilder.php"; # SQL query builder
 	require_once INCLUDES_DIR."/class/Timestamp.php"; # A smarter DateTime class
 	require_once INCLUDES_DIR."/lib/spyc.php"; # YAML parser
@@ -44,12 +47,9 @@
 	$installed = false;
 
 	# TODO: Determine exact PHP version that is required for Chyrp
-	# Note (from Alex): Minimum requirement for PDO::prepare is 5.1.0
+	# Note from Alex: Minimum requirement for the DateTime class is 5.1.0
 	if (version_compare(PHP_VERSION, "5.1.0", "<"))
 		$errors[] = __("Chyrp requires PHP 5. Installation cannot continue.");
-
-	if (!class_exists("PDO") or (!in_array("mysql", PDO::getAvailableDrivers()) and !in_array("sqlite", PDO::getAvailableDrivers())))
-		$errors[] = __("Chyrp requires either the SQLite or the MySQL PDO driver. Installation cannot continue.");
 
 	if (file_exists(INCLUDES_DIR."/config.yaml.php") and file_exists(INCLUDES_DIR."/database.yaml.php") and file_exists(MAIN_DIR."/.htaccess")) {
 		$sql->load(INCLUDES_DIR."/database.yaml.php");
@@ -69,21 +69,15 @@
 	}
 
 	if (!empty($_POST)) {
-		if ($_POST['adapter'] == "sqlite" and !is_writable(MAIN_DIR))
-			$errors[] = __("SQLite database file could not be created. Please CHMOD your Chyrp directory to 777 and try again.");
-		else
-			if ($_POST['adapter'] == "mysql")
-				try {
-					new PDO($_POST['adapter'].":host=".$_POST['host'].";".((!empty($_POST['port'])) ? "port=".$_POST['port'].";" : "")."dbname=".$_POST['database'], $_POST['username'], $_POST['password']);
-				} catch(PDOException $e) {
-					$errors[] = _f("Could not connect to the specified database:\n<pre>%s</pre>", array($e->getMessage()));
-				}
-			elseif ($_POST['adapter'] == "sqlite")
-				try {
-					new PDO("sqlite:".$_POST['database']);
-				} catch(PDOException $e) {
-					$errors[] = _f("Could not connect to the specified database:\n<pre>%s</pre>", array($e->getMessage()));
-				}
+		if ($_POST['adapter'] == "sqlite" and !is_writable(dirname($_POST['database'])))
+			$errors[] = __("SQLite database file could not be created. Please make sure your server has write permissions to the location for the database.");
+		else {
+			foreach (array("host", "username", "password", "database", "prefix", "adapter") as $field)
+				$sql->$field = $_POST[$field];
+
+			if (!$sql->connect(true))
+				$errors[] = _f("Could not connect to the specified database:\n<pre>%s</pre>", array($sql->error));
+		}
 
 		if (empty($_POST['name']))
 			$errors[] = __("Please enter a name for your website.");
@@ -104,14 +98,8 @@
 			$errors[] = __("E-Mail address cannot be blank.");
 
 		if (empty($errors)) {
-			$sql->set("host", $_POST['host']);
-			$sql->set("username", $_POST['username']);
-			$sql->set("password", $_POST['password']);
-			$sql->set("database", $_POST['database']);
-			$sql->set("prefix", $_POST['prefix']);
-			$sql->set("adapter", $_POST['adapter']);
-
-			$sql->prefix = $_POST['prefix'];
+			foreach (array("host", "username", "password", "database", "prefix", "adapter") as $field)
+				$sql->set($field, $_POST[$field], true);
 
 			$sql->connect();
 
@@ -209,7 +197,7 @@
 			                     "toggle_extensions");
 
 			foreach ($permissions as $permission)
-				$sql->insert("permissions", array("name" => ":permission"), array(":permission" => $permission));
+				$sql->replace("permissions", array("name" => ":permission"), array(":permission" => $permission));
 
 			$groups = array(
 				"admin" => Spyc::YAMLDump($permissions),
@@ -221,7 +209,7 @@
 
 			# Insert the default groups (see above)
 			foreach($groups as $name => $permissions)
-				$sql->insert("groups", array("name" => ":name", "permissions" => ":permissions"), array(":name" => ucfirst($name), ":permissions" => $permissions));
+				$sql->replace("groups", array("name" => ":name", "permissions" => ":permissions"), array(":name" => ucfirst($name), ":permissions" => $permissions));
 
 			if (!file_exists(MAIN_DIR."/.htaccess"))
 				if (!@file_put_contents(MAIN_DIR."/.htaccess", $htaccess))
@@ -297,6 +285,12 @@
 				padding: .3em;
 				border: .1em solid #ddd;
 			}
+			textarea {
+				width: 97.75%;
+			}
+			select {
+				width: 100%;
+			}
 			form hr {
 				border: 0;
 				padding-bottom: 1em;
@@ -346,6 +340,7 @@
 				padding: 2em;
 				margin: 5em auto 0;
 				-webkit-border-radius: 2em;
+				-moz-border-radius: 2em;
 			}
 			h1 {
 				color: #ccc;
@@ -389,6 +384,7 @@
 				border: 0;
 				cursor: pointer;
 				-webkit-border-radius: .5em;
+				-moz-border-radius: .5em;
 			}
 			button {
 				width: 100%;
@@ -443,10 +439,10 @@
 					<label for="adapter"><?php echo __("Adapter"); ?></label>
 					<select name="adapter" id="adapter">
 						<?php if (in_array("mysql", PDO::getAvailableDrivers())): ?>
-						<option value="mysql" selected="selected">MySQL</option>
+						<option value="mysql"<?php selected("mysql", fallback($_POST['adapter'], "mysql")); ?>>MySQL</option>
 						<?php endif; ?>
 						<?php if (in_array("sqlite", PDO::getAvailableDrivers())): ?>
-						<option value="sqlite">SQLite 3</option>
+						<option value="sqlite"<?php selected("sqlite", fallback($_POST['adapter'], "mysql")); ?>>SQLite 3</option>
 						<?php endif; ?>
 					</select>
 				</p>

@@ -5,7 +5,7 @@
 			$this->addAlias("post_grab", "posts_get");
 		}
 
-		public function __install() {
+		static function __install() {
 			$sql = SQL::current();
 			$sql->query("CREATE TABLE IF NOT EXISTS `__tags` (
 			              `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -16,7 +16,7 @@
 			Route::current()->add("tag/(name)/");
 		}
 
-		public function __uninstall($confirm) {
+		static function __uninstall($confirm) {
 			if ($confirm)
 				SQL::current()->query("DROP TABLE `__tags`");
 
@@ -213,7 +213,7 @@
 		}
 
 		public function filter_post($post) {
-			if (!isset($post->tags))
+			if (!isset($post->unclean_tags))
 				return $post->tags = array("unlinked" => array(), "linked" => array());
 
 			$post->tags = array("unlinked" => self::unlinked_tags($post->unclean_tags),
