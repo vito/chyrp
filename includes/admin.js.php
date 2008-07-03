@@ -107,10 +107,10 @@ function prepare_write_bling() {
 	// Auto-expand text fields & auto-grow textareas.
 	$("input.text").each(function(){
 		if ($(this).parent().parent().attr("class") == "more_options") return
-		$(this).css("min-width", $(this).width()).Autoexpand()
+		$(this).css("min-width", $(this).outerWidth()).Autoexpand()
 	})
 	$("textarea").each(function(){
-		$(this).css("min-height", $(this).height()).autogrow()
+		$(this).css("min-height", $(this).outerHeight()).autogrow()
 	})
 
 	// Make the Feathers sortable
