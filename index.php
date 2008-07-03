@@ -192,8 +192,7 @@
 			if ($theme->file_exists("pages/".$route->action))
 				return $theme->load("pages/".$route->action);
 
-			if (!$page_exists)
-				show_404();
+			show_404();
 
 			break;
 	}
