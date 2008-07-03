@@ -44,12 +44,9 @@
 	$installed = false;
 
 	# TODO: Determine exact PHP version that is required for Chyrp
-	# Note (from Alex): Minimum requirement for PDO::prepare is 5.1.0
+	# Note from Alex: Minimum requirement for the DateTime class is 5.1.0
 	if (version_compare(PHP_VERSION, "5.1.0", "<"))
 		$errors[] = __("Chyrp requires PHP 5. Installation cannot continue.");
-
-	if (!class_exists("PDO") or (!in_array("mysql", PDO::getAvailableDrivers()) and !in_array("sqlite", PDO::getAvailableDrivers())))
-		$errors[] = __("Chyrp requires either the SQLite or the MySQL PDO driver. Installation cannot continue.");
 
 	if (file_exists(INCLUDES_DIR."/config.yaml.php") and file_exists(INCLUDES_DIR."/database.yaml.php") and file_exists(MAIN_DIR."/.htaccess")) {
 		$sql->load(INCLUDES_DIR."/database.yaml.php");
@@ -69,21 +66,15 @@
 	}
 
 	if (!empty($_POST)) {
-		if ($_POST['adapter'] == "sqlite" and !is_writable(MAIN_DIR))
-			$errors[] = __("SQLite database file could not be created. Please CHMOD your Chyrp directory to 777 and try again.");
-		else
-			if ($_POST['adapter'] == "mysql")
-				try {
-					new PDO($_POST['adapter'].":host=".$_POST['host'].";".((!empty($_POST['port'])) ? "port=".$_POST['port'].";" : "")."dbname=".$_POST['database'], $_POST['username'], $_POST['password']);
-				} catch(PDOException $e) {
-					$errors[] = _f("Could not connect to the specified database:\n<pre>%s</pre>", array($e->getMessage()));
-				}
-			elseif ($_POST['adapter'] == "sqlite")
-				try {
-					new PDO("sqlite:".$_POST['database']);
-				} catch(PDOException $e) {
-					$errors[] = _f("Could not connect to the specified database:\n<pre>%s</pre>", array($e->getMessage()));
-				}
+		if ($_POST['adapter'] == "sqlite" and !is_writable(dirname($_POST['database'])))
+			$errors[] = __("SQLite database file could not be created. Please make sure your server has write permissions to the location for the database.");
+		else {
+			foreach (array("host", "username", "password", "database", "prefix", "adapter") as $field)
+				$sql->$field = $_POST[$field];
+
+			if (!$sql->connect(true))
+				$errors[] = _f("Could not connect to the specified database:\n<pre>%s</pre>", array($sql->error));
+		}
 
 		if (empty($_POST['name']))
 			$errors[] = __("Please enter a name for your website.");
@@ -104,14 +95,8 @@
 			$errors[] = __("E-Mail address cannot be blank.");
 
 		if (empty($errors)) {
-			$sql->set("host", $_POST['host']);
-			$sql->set("username", $_POST['username']);
-			$sql->set("password", $_POST['password']);
-			$sql->set("database", $_POST['database']);
-			$sql->set("prefix", $_POST['prefix']);
-			$sql->set("adapter", $_POST['adapter']);
-
-			$sql->prefix = $_POST['prefix'];
+			foreach (array("host", "username", "password", "database", "prefix", "adapter") as $field)
+				$sql->set($field, $_POST[$field], true);
 
 			$sql->connect();
 

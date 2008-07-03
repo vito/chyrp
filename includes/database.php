@@ -107,22 +107,24 @@
 							                    array(PDO::ATTR_PERSISTENT => true));
 						$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 					} catch (PDOException $error) {
-						$message = preg_replace("/SQLSTATE\[.*?\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
-						return ($checking) ? false : error(__("Database Error"), $message) ;
+						$this->error = preg_replace("/SQLSTATE\[.*?\]: .+ [0-9]+ (.*?)/", "\\1", $error->getMessage());
+						return ($checking) ? false : error(__("Database Error"), $this->error) ;
 					}
 					break;
 				case "mysqli":
 					$this->db = new MySQLi($this->host, $this->username, $this->password, $this->database);
+					$this->error = mysqli_connect_error();
 
 					if (mysqli_connect_errno())
-						return ($checking) ? false : error(__("Database Error", mysqli_connect_error())) ;
+						return ($checking) ? false : error(__("Database Error", $this->error)) ;
 
 					break;
 				case "mysql":
 					$this->db = @mysql_connect($this->host, $this->username, $this->password);
+					$this->error = mysql_error();
 
 					if (!$this->db or !@mysql_select_db($this->database))
-						return ($checking) ? false : error(__("Database Error", mysql_error())) ;
+						return ($checking) ? false : error(__("Database Error", $this->error)) ;
 
 					break;
 			}
