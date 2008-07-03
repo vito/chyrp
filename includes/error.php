@@ -8,8 +8,9 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<title>Chyrp: <?php echo $title; ?></title>
+		<meta name="viewport" content="initial-scale=0.7, user-scalable=yes" />
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript" charset="utf-8"></script>
-		<style type="text/css">
+		<style type="text/css" media="screen and (min-device-width: 481px)">
 			html, body, ul, ol, li,
 			h1, h2, h3, h4, h5, h6,
 			form, fieldset, a, p {
@@ -80,11 +81,33 @@
 				background: #e0e0e0;
 			}
 		</style>
+		<style type="text/css" media="only screen and (max-device-width: 480px)">
+			html, body, ul, ol, li,
+			h1, h2, h3, h4, h5, h6,
+			form, fieldset, a, p {
+				margin: 0;
+				padding: 0;
+				border: 0;
+			}
+			body {
+				font-family: Verdana, Helvetica, Arial, sans-serif;
+				background: #e8e8e8;
+			}
+			h1 {
+				font-size: 1.5em;
+				margin: 0.5em 0 1em 0;
+				text-align: center;
+			}
+			div.message { padding: 0 1em; }
+			p.footer { display: none; }
+		</style>
+<?php if (!isset($_GET['format']) or $_GET['format'] !== 'mobile'): ?>
 		<script type="text/javascript" charset="utf-8">
 			$(function(){
-				$(".message").append('<a class="big" href="javascript:history.back()">&larr; Back</a>')
+				$(".message").append('<br/><a class="big" href="javascript:history.back()">&larr; Back</a>')
 			})
 		</script>
+<?php endif; ?>
 	</head>
 	<body>
 		<div class="window">
