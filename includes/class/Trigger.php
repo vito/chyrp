@@ -97,10 +97,6 @@
 
 			$final = $this->modified($name, $target);
 
-			// if ($name == "markup_post_text") {
-			// 	var_dump($this->modified[$name], $this->priorities[$name]);
-			// }
-
 			$this->modified[$name] = null;
 
 			return $target = $final;
