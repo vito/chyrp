@@ -668,6 +668,9 @@
 			$route = Route::current();
 			$post->commentable = Comment::user_can($post);
 
+			# With 0 comments, MySQL seems to return NULL instead of 0.
+			fallback($post->comment_count, 0);
+
 			if (isset($route->action) and $route->action == "view") {
 				$get_comments = $sql->select("comments", # table
 				                             "*", # fields
