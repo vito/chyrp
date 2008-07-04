@@ -79,7 +79,6 @@
 			$arguments = func_get_args();
 			array_shift($arguments);
 			array_shift($arguments);
-			array_unshift($arguments, $target);
 
 			$this->called[$name] = array();
 
@@ -87,18 +86,24 @@
 				usort($this->priorities[$name], array($this, "cmp"));
 
 				foreach ($this->priorities[$name] as $action) {
-					$this->modified[$name] = call_user_func_array($action["function"], $arguments);
+					$this->modified[$name] = call_user_func_array($action["function"], array_merge(array($this->modified($name, $target)), $arguments));
 					$this->called[$name][] = $action["function"];
 				}
 			}
 
 			foreach ($modules as $module)
 				if (!in_array(array($module, $name), $this->called[$name]) and is_callable(array($module, $name)))
-					$this->modified[$name] = call_user_func_array(array($module, $name), $arguments);
+					$this->modified[$name] = call_user_func_array(array($module, $name), array_merge(array($this->modified($name, $target)), $arguments));
+
+			$final = $this->modified($name, $target);
+
+			// if ($name == "markup_post_text") {
+			// 	var_dump($this->modified[$name], $this->priorities[$name]);
+			// }
 
 			$this->modified[$name] = null;
 
-			return $target = $this->modified($name, $target);
+			return $target = $final;
 		}
 
 		/**

@@ -494,11 +494,11 @@
 				$class = camelize($this->feather);
 
 				$trigger = Trigger::current();
-				$trigger->call("filter_post", $this);
+				$trigger->filter($this, "filter_post");
 
 				if (isset(Feather::$custom_filters[$class])) # Run through feather-specified filters, first.
 					foreach (Feather::$custom_filters[$class] as $custom_filter)
-						call_user_func_array($this->$custom_filter["field"], array($class, $custom_filter["name"]), $this);
+						call_user_func_array(array($class, $custom_filter["name"]), array($this->$custom_filter["field"], $this));
 
 				if (isset(Feather::$filters[$class])) # Now actually filter it.
 					foreach (Feather::$filters[$class] as $filter)
@@ -630,7 +630,8 @@
 					$where[] = "`__posts`.`feather` = :feather";
 					$params[':feather'] = depluralize($get['feathers']);
 				} else {
-					Trigger::current()->filter($tokens = array($where, $params, $attr), "post_url_token");
+					$tokens = array($where, $params, $attr);
+					Trigger::current()->filter($tokens, "post_url_token");
 					list($where, $params, $attr) = $tokens;
 
 					if ($attr !== null) {
