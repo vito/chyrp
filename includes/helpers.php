@@ -670,8 +670,8 @@
 	 *     $matches[] - An array of all URLs found in the string.
 	 */
 	function grab_urls($string) {
-		$string = stripslashes($string);
-		preg_match_all(Trigger::current()->filter($string, "link_regexp", "/<a[^>]+href=[\"|']([^\"]+)[\"|']>[^<]+<\/a>/"), $matches);
+		$regexp = "/<a[^>]+href=[\"|']([^\"]+)[\"|']>[^<]+<\/a>/";
+		preg_match_all(Trigger::current()->filter($regexp, "link_regexp"), stripslashes($string), $matches);
 		$matches = $matches[1];
 		return $matches;
 	}

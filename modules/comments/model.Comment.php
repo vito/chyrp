@@ -24,7 +24,7 @@
 				Trigger::current()->filter($this->body, "markup_comment_text");
 			}
 
-			Trigger::current()->call("filter_comment", $this);
+			Trigger::current()->filter($this, "filter_comment");
 		}
 
 		/**

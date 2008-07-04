@@ -34,17 +34,17 @@
 				</span>
 				<?php endif; ?>
 			</label>
-			<?php if ($field["type"] == "text" or $field["type"] == "file"): ?>
+<?php if ($field["type"] == "text" or $field["type"] == "file"): ?>
 			<input class="<?php echo $field["type"]; ?><?php if (isset($field["classes"])): ?> <?php echo join(" ", $field["classes"]); ?><?php endif; ?>" type="<?php echo $field["type"]; ?>" name="<?php echo $field["attr"]; ?>" value="<?php echo ((isset($field["no_value"]) and $field["no_value"]) or $field["type"] == "file") ? "" : fix($post->$field["attr"]) ; ?>" id="<?php echo $field["attr"]; ?>" />
-			<?php elseif ($field["type"] == "text_block"): ?>
+<?php elseif ($field["type"] == "text_block"): ?>
 			<textarea class="wide<?php if (isset($field["classes"])): ?> <?php echo join(" ", $field["classes"]); ?><?php endif; ?>" rows="<?php echo fallback($field["rows"], 12, true); ?>" name="<?php echo $field["attr"]; ?>" id="<?php echo $field["attr"]; ?>" cols="50"><?php echo (isset($field["no_value"]) and $field["no_value"]) ? "" : fix($post->$field["attr"]) ; ?></textarea>
-			<?php elseif ($field["type"] == "select"): ?>
+<?php elseif ($field["type"] == "select"): ?>
 			<select name="<?php echo $field["attr"]; ?>" id="<?php echo $field["attr"]; ?>"<?php if (isset($field["classes"])): ?> class="<?php echo join(" ", $field["classes"]); ?>"<?php endif; ?>>
-				<?php foreach ($field["options"] as $value => $name): ?>
+	<?php foreach ($field["options"] as $value => $name): ?>
 				<option value="<?php echo fix($value); ?>"<?php if (!isset($field["no_value"]) or !$field["no_value"]): selected($value, $post->$field["attr"]); endif; ?>><?php echo fix($name); ?></option>
-				<?php endforeach; ?>
+	<?php endforeach; ?>
 			</select>
-			<?php endif; ?>
+<?php endif; ?>
 		</p>
 <?php endforeach; ?>
 	<a id="more_options_link_<?php echo $post->id; ?>" href="javascript:void(0)" class="more_options_link"><?php echo __("More Options &raquo;"); ?></a>

@@ -8,7 +8,7 @@
 	$action = $_GET['action'];
 	$page = fallback($_GET['page'], 1, true);
 ?>
-//<script type="text/javascript"> (This is so TextMate gives me nice JS highlighting.)
+<!-- --><script type="text/javascript"> (This is so TextMate gives me nice JS highlighting.)
 $(function(){
 	// Scan AJAX responses for errors.
 	$(document).ajaxComplete(function(imconfused, request){
@@ -41,10 +41,13 @@ $(function(){
 		return false
 	})
 <?php $trigger->call("javascript_domready"); ?>
+
 })
 
 var Post = {
-  edit: function(id) {
+	delete_animations: { height: "hide", opacity: "hide" },
+	delete_wrap: "<div></div>",
+	edit: function(id) {
 		$("#post_"+id).loader()
 		$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "edit_post", id: id }, function(data) {
 			$("#post_"+id).loader(true).fadeOut("fast", function(){
@@ -122,9 +125,16 @@ var Post = {
 		$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "delete_post", id: id }, function(response){
 			$("#post_"+id).loader(true)
 			if (isError(response)) return
-			$("#post_"+id).animate({ height: "hide", opacity: "hide" }, function(){
-				$(this).remove()
-			})
+
+			if (Post.delete_wrap != "")
+				$("#post_"+id).wrap(Post.delete_wrap).parent().animate(Post.delete_animations, function(){
+					$(this).remove()
+				})
+			else
+				$("#post_"+id).animate(Post.delete_animations, function(){
+					$(this).remove()
+				})
+
 			appendNextPost()
 		})
 <?php if ($_GET['action'] == "view"): ?>
@@ -224,4 +234,4 @@ function isError(text) {
 }
 
 <?php $trigger->call("javascript"); ?>
-//</script>
+<!-- --></script>

@@ -489,150 +489,12 @@
 
 		static function javascript_domready() {
 			$config = Config::current();
-?>
-<!-- --><script>
-<?php if ($config->auto_reload_comments and $config->enable_reload_comments): ?>
-	if ($(".comments").size()) {
-		var updater = setInterval("Comment.reload()", <?php echo $config->auto_reload_comments * 1000; ?>);
-		$("#add_comment").append($(document.createElement("input")).attr({ type: "hidden", name: "ajax", value: "true", id: "ajax" }));
-		$("#add_comment").ajaxForm({ dataType: "json", resetForm: true, beforeSubmit: function(){
-			$("#add_comment").loader();
-		}, success: function(json){
-			$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "show_comment", comment_id: json.comment_id, reason: "added" }, function(data) {
-				if ($(".comment_count").size() && $(".comment_plural").size()) {
-					var count = parseInt($(".comment_count:first").text())
-					count++
-					$(".comment_count").text(count)
-					var plural = (count == 1) ? "" : "s"
-					$(".comment_plural").text(plural)
-				}
-				$("#last_comment").val(json.comment_id)
-				$(data).appendTo(".comments").hide().fadeIn("slow")
-				$("#comment_delete_"+json.comment_id).click(function(){
-					if (!confirm("<?php echo __("Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this.", "comments"); ?>")) return false
-					Comment.destroy(json.comment_id)
-					return false
-				})
-			})
-		}, complete: function(){
-			$("#add_comment").loader(true)
-		} })
-	}
-<?php endif; ?>
-	$(".comment_edit_link").click(function(){
-		var id = $(this).attr("id").replace(/comment_edit_/, "")
-		Comment.edit(id)
-		return false
-	})
-	$(".comment_delete_link").click(function(){
-		if (!confirm("<?php echo __("Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this.", "comments"); ?>")) return false
-		var id = $(this).attr("id").replace(/comment_delete_/, "")
-		Comment.destroy(id)
-		return false
-	})
-<!-- --></script>
-<?php
+			require "javascript_domready.php";
 		}
 
-		static function javascript() {
-			$config = Config::current();
-?>
-<!-- --><script>
-var editing = 0
-var notice = 0
-var Comment = {
-	reload: function() {
-		if ($(".comments").attr("id") == undefined) return;
-		var id = $(".comments").attr("id").replace(/comments_/, "")
-		if (editing == 0 && notice == 0 && $(".comments").children().size() < <?php echo $config->comments_per_page; ?>) {
-			$.ajax({ type: "post", dataType: "json", url: "<?php echo $config->chyrp_url; ?>/includes/ajax.php", data: "action=reload_comments&post_id="+id+"&last_comment="+$("#last_comment").val(), success: function(json) {
-				$.each(json.comment_ids, function(i, id) {
-					$("#last_comment").val(id)
-					$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "show_comment", comment_id: id }, function(data){
-						$(data).appendTo(".comments").hide().fadeIn("slow")
-					})
-				})
-			} })
-		}
-	},
-	edit: function(id) {
-		editing++
-		$("#comment_"+id).loader()
-		$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "edit_comment", comment_id: id }, function(data) {
-			if (isError(data)) return $("#comment_"+id).loader(true)
-			$("#comment_"+id).loader(true).fadeOut("fast", function(){ $(this).html(data).fadeIn("fast", function(){
-				$("#more_options_link_"+id).click(function(){
-					if ($("#more_options_"+id).css("display") == "none") {
-						$(this).html("<?php echo __("&laquo; Fewer Options"); ?>")
-						$("#more_options_"+id).slideDown("slow");
-					} else {
-						$(this).html("<?php echo __("More Options &raquo;"); ?>")
-						$("#more_options_"+id).slideUp("slow");
-					}
-					return false;
-				})
-				$("#comment_cancel_edit_"+id).click(function(){
-					$("#comment_"+id).loader()
-					$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "show_comment", comment_id: id }, function(data){
-						$("#comment_"+id).replaceWith(data)
-						$("#comment_"+id).loader(true)
-						$("#comment_edit_"+id).click(function(){
-							Comment.edit(id)
-							return false
-						})
-						$("#comment_delete_"+id).click(function(){
-							notice++
-							if (!confirm("<?php echo __("Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this.", "comments"); ?>")) return notice--
-							Comment.destroy(id)
-							return false
-						})
-					})
-				})
-				$("#comment_edit_"+id).ajaxForm({ beforeSubmit: function(){
-					$("#comment_"+id).loader()
-				}, success: function(response){
-					editing--
-					if (isError(response)) return $("#comment_"+id).loader(true)
-					$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "show_comment", comment_id: id, reason: "edited" }, function(data) {
-						if (isError(data)) return $("#comment_"+id).loader(true)
-						$("#comment_"+id).loader(true)
-						$("#comment_"+id).fadeOut("fast", function(){ $(this).replaceWith(data).fadeIn("fast", function(){
-							$("#comment_edit_"+id).click(function(){
-								Comment.edit(id)
-								return false
-							})
-							$("#comment_delete_"+id).click(function(){
-								notice++
-								if (!confirm("<?php echo __("Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this.", "comments"); ?>")) return notice--
-								Comment.destroy(id)
-								return false
-							})
-						}) })
-					})
-				} })
-			}) })
-		})
-	},
-	destroy: function(id) {
-		notice--
-		$("#comment_"+id).loader()
-		$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "delete_comment", id: id }, function(response){
-			$("#comment_"+id).loader(true)
-			if (isError(response)) return
-			$("#comment_"+id).animate({ height: "hide", opacity: "hide" })
-
-			if ($(".comment_count").size() && $(".comment_plural").size()) {
-				var count = parseInt($(".comment_count:first").text())
-				count--
-				$(".comment_count").text(count)
-				var plural = (count == 1) ? "" : "s"
-				$(".comment_plural").text(plural)
-			}
-		})
-	}
-}
-<!-- --></script>
-<?php
+		static function scripts(&$scripts) {
+			$scripts[] = Config::current()->chyrp_url."/modules/comments/javascript.php";
+			return $scripts;
 		}
 
 		static function ajax() {
@@ -703,51 +565,9 @@ var Comment = {
 
 					if ($theme->file_exists("forms/comment/edit"))
 						$theme->load("forms/comment/edit", array("comment" => $comment));
-					else {
-?>
-<form id="comment_edit_<?php echo $comment->id; ?>" class="inline_edit comment_edit" action="<?php echo $config->chyrp_url."/admin/?action=update_comment"; ?>" method="post" accept-charset="utf-8">
-	<p>
-		<label for="body"><?php echo __("Body", "comments"); ?></label>
-		<textarea name="body" rows="8" cols="40" class="wide"><?php echo fix($comment->body, "html"); ?></textarea>
-	</p>
-	<a id="more_options_link_<?php echo $comment->id; ?>" href="javascript:void(0)" class="more_options_link"><?php echo __("More Options &raquo;"); ?></a>
-	<div id="more_options_<?php echo $comment->id; ?>" class="more_options" style="display: none">
-		<p>
-			<label for="author"><?php echo __("Author"); ?></label>
-			<input class="text" type="text" name="author" value="<?php echo fix($comment->author, "html"); ?>" id="author" />
-		</p>
-		<p>
-			<label for="author_url"><?php echo __("Author URL", "comments"); ?></label>
-			<input class="text" type="text" name="author_url" value="<?php echo fix($comment->author_url, "html"); ?>" id="author_url" />
-		</p>
-		<p>
-			<label for="author_email"><?php echo __("Author E-Mail", "comments"); ?></label>
-			<input class="text" type="text" name="author_email" value="<?php echo fix($comment->author_email, "html"); ?>" id="author_email" />
-		</p>
-		<p>
-			<label for="status"><?php echo __("Status"); ?></label>
-			<select name="status" id="status">
-				<option value="approved"<?php selected($comment->status, "approved"); ?>><?php echo __("Approved", "comments"); ?></option>
-				<option value="denied"<?php selected($comment->status, "denied"); ?>><?php echo __("Denied", "comments"); ?></option>
-				<option value="spam"<?php selected($comment->status, "spam"); ?>><?php echo __("Spam", "comments"); ?></option>
-			</select>
-		</p>
-		<p>
-			<label for="created_at"><?php echo __("Timestamp"); ?></label>
-			<input class="text" type="text" name="created_at" value="<?php echo when("F jS, Y H:i:s", $comment->created_at); ?>" id="created_at" />
-		</p>
-		<div class="clear"></div>
-	</div>
-	<br />
-	<input type="hidden" name="id" value="<?php echo fix($comment->id, "html"); ?>" id="id" />
-	<input type="hidden" name="ajax" value="true" id="ajax" />
-	<div class="buttons">
-		<input type="submit" value="<?php echo __("Update"); ?>" accesskey="s" /> <?php echo __("or"); ?>
-		<a href="javascript:void(0)" id="comment_cancel_edit_<?php echo $comment->id; ?>" class="cancel"><?php echo __("Cancel"); ?></a>
-	</div>
-</form>
-<?php
-					}
+					else
+						require "edit_form.php";
+
 					break;
 			}
 		}

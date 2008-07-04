@@ -41,8 +41,7 @@
 <?php
 		}
 
-		public function bookmarklet_submit($stuff) {
-			$values =& $stuff[0];
+		public function bookmarklet_submit_values($values) {
 			$tags = array();
 			foreach ($values as &$value) {
 				if (preg_match_all("/([^\\\\]|^)#([a-zA-Z0-9 ]+)(?!\\\\)#/", $value, $double)) {
@@ -214,10 +213,10 @@
 
 		public function filter_post($post) {
 			if (!isset($post->unclean_tags))
-				return $post->tags = array("unlinked" => array(), "linked" => array());
-
-			$post->tags = array("unlinked" => self::unlinked_tags($post->unclean_tags),
-			                    "linked"   => self::linked_tags($post->unclean_tags, $post->clean_tags));
+				$post->tags = array("unlinked" => array(), "linked" => array());
+			else
+				$post->tags = array("unlinked" => self::unlinked_tags($post->unclean_tags),
+				                    "linked"   => self::linked_tags($post->unclean_tags, $post->clean_tags));
 		}
 
 		public function sort_tags_name_asc($a, $b) {

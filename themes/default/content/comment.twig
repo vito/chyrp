@@ -3,7 +3,7 @@
 			<em>${ "Your comment is awaiting moderation." | translate }</em>
 {% endif %}
 			<blockquote>
-				<p>$comment.body</p>
+				$comment.body
 			</blockquote>
 			<cite>
 				${ "<strong>%s</strong> on %s" | translate | format(comment.author_link, comment.created_at | strftime("%B %d, %Y, at %I:%M %p" | translate)) }
