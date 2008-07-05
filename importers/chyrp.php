@@ -54,7 +54,7 @@
 						$errors[] = __("Pages file does not seem to be a valid Chyrp export file.");
 				}
 
-				$trigger->call("chyrp_import", array(&$errors, &$step));
+				$trigger->call("chyrp_import", array(&$errors, $step));
 
 				break;
 		}

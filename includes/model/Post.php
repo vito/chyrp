@@ -505,20 +505,28 @@
 			foreach (self::xml2arr(simplexml_load_string($this->xml)) as $key => $val)
 				$this->$key = codepoint2name($val);
 
-			if ($filter) {
-				$class = camelize($this->feather);
+			if (!$filter)
+				return;
 
-				$trigger = Trigger::current();
-				$trigger->filter($this, "filter_post");
+			$class = camelize($this->feather);
 
-				if (isset(Feather::$custom_filters[$class])) # Run through feather-specified filters, first.
-					foreach (Feather::$custom_filters[$class] as $custom_filter)
-						call_user_func_array(array($class, $custom_filter["name"]), array($this->$custom_filter["field"], $this));
+			$trigger = Trigger::current();
+			$trigger->filter($this, "filter_post");
 
-				if (isset(Feather::$filters[$class])) # Now actually filter it.
-					foreach (Feather::$filters[$class] as $filter)
-						$trigger->filter($this->$filter["field"], $filter["name"], $this);
-			}
+			if (isset(Feather::$custom_filters[$class])) # Run through feather-specified filters, first.
+				foreach (Feather::$custom_filters[$class] as $custom_filter) {
+					$varname = $custom_filter["field"]."_unfiltered";
+					$this->$varname = $this->$custom_filter["field"];
+					$this->$custom_filter["field"] = call_user_func_array(array($class, $custom_filter["name"]),
+					                                                      array($this->$custom_filter["field"], $this));
+				}
+
+			if (isset(Feather::$filters[$class])) # Now actually filter it.
+				foreach (Feather::$filters[$class] as $filter) {
+					$varname = $filter["field"]."_unfiltered";
+					$this->$varname = $this->$filter["field"];
+					$trigger->filter($this->$filter["field"], $filter["name"], $this);
+				}
 		}
 
 		/**
