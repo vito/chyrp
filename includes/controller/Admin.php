@@ -622,9 +622,11 @@
 
 		/**
 		 * Function: export
-		 * Export posts, pages, groups, users, etc.
+		 * Export posts, pages, etc.
 		 */
 		public function export() {
+			if (empty($_POST)) return;
+
 			$config = Config::current();
 			$trigger = Trigger::current();
 			$route = Route::current();
@@ -810,6 +812,97 @@
 			echo $zip_contents;
 
 			exit;
+		}
+
+		/**
+		 * Function: import
+		 * Importing content from other systems.
+		 */
+		public function import() {
+			if (!Visitor::current()->group()->can("add_post"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+
+			foreach (array("success_wordpress", "invalid_wordpress") as $message)
+				$this->context[$message] = isset($_GET[$message]);
+		}
+
+		/**
+		 * Function: import_wordpress
+		 * WordPress importing.
+		 */
+		public function import_wordpress() {
+			$trigger = Trigger::current();
+
+			if (empty($_POST))
+				redirect("/admin/?action=import");
+
+			if (!in_array("text", Config::current()->enabled_feathers))
+				error(__("Missing Feather"), __("Importing from WordPress requires the Text feather to be installed and enabled."));
+
+			if (ini_get("memory_limit") < 20) # Some imports are relatively large.
+				ini_set("memory_limit", "20M");
+
+			$stupid_xml = file_get_contents($_FILES['xml_file']['tmp_name']);
+			$sane_xml = preg_replace(array("/<wp:comment_content>/", "/<\/wp:comment_content>/"),
+			                         array("<wp:comment_content><![CDATA[", "]]></wp:comment_content>"),
+			                         $stupid_xml);
+
+			$sane_xml = str_replace(array("<![CDATA[<![CDATA[", "]]>]]>"),
+			                        array("<![CDATA[", "]]>"),
+			                        $sane_xml);
+
+			$fix_amps_count = 1;
+			while ($fix_amps_count)
+				$sane_xml = preg_replace("/<wp:meta_value>(.+)&(?!amp;)(.+)<\/wp:meta_value>/m",
+				                         "<wp:meta_value>\\1&amp;\\2</wp:meta_value>",
+				                         $sane_xml, -1, $fix_amps_count);
+
+			$xml = simplexml_load_string($sane_xml, "SimpleXMLElement", LIBXML_NOCDATA);
+
+			if ($xml and strpos($xml->channel->generator, "wordpress.org")) {
+				foreach ($xml->channel->item as $item) {
+					$wordpress = $item->children("http://wordpress.org/export/1.0/");
+					$content   = $item->children("http://purl.org/rss/1.0/modules/content/");
+					if ($wordpress->status == "attachment" or $item->title == "zz_placeholder")
+						continue;
+
+					if (!empty($_POST['media_url']) and preg_match_all("/".preg_quote($_POST['media_url'], "/")."([^ \t\"]+)/", $content->encoded, $media))
+						foreach ($media[0] as $matched_url) {
+							$filename = upload_from_url($matched_url);
+							$content->encoded = str_replace($matched_url, $config->url.$config->uploads_path.$filename, $content->encoded);
+						}
+
+					$clean = (isset($wordpress->post_name)) ? $wordpress->post_name : sanitize($item->title) ;
+
+					if (empty($wordpress->post_type) or $wordpress->post_type == "post") {
+						$status_translate = array("publish" => "public",
+						                          "draft"   => "draft",
+						                          "private" => "private",
+						                          "static"  => "public",
+						                          "object"  => "public",
+						                          "inherit" => "public",
+						                          "future"  => "draft",
+						                          "pending" => "draft");
+
+						$_POST['status']  = str_replace(array_keys($status_translate), array_values($status_translate), $wordpress->status);
+						$_POST['pinned']  = false;
+						$_POST['created_at'] = ($wordpress->post_date == "0000-00-00 00:00:00") ? datetime() : $wordpress->post_date ;
+						$_POST['feather'] = "text";
+
+						$data = array("title" => trim($item->title), "body" => trim($content->encoded));
+
+						$post = Post::add($data, $clean, Post::check_url($clean));
+
+						$trigger->call("import_wordpress_post", array($item, $post));
+					} elseif ($wordpress->post_type == "page") {
+						$page = Page::add(trim($item->title), trim($content->encoded), 0, true, 0, $clean, Page::check_url($clean));
+						$trigger->call("import_wordpress_page", array($item, $post));
+					}
+				}
+
+				redirect("/admin/?action=import&success_wordpress");
+			} else
+				redirect("/admin/?action=import&invalid_wordpress");
 		}
 
 		/**

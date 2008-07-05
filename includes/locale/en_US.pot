@@ -127,7 +127,7 @@ msgstr ""
 msgid "Hello, %s!"
 msgstr ""
 
-#: admin/layout/pages/manage_export.twig:7
+#: admin/layout/pages/export.twig:7
 msgid "What would you like to export?"
 msgstr ""
 
@@ -280,8 +280,8 @@ msgstr ""
 #: importers/wordpress.php:175
 #: importers/textpattern.php:183
 #: admin/layout/partials/post_fields.twig:6
-#: admin/layout/pages/manage_export.twig:15
-#: admin/layout/pages/manage_export.twig:23
+#: admin/layout/pages/export.twig:15
+#: admin/layout/pages/export.twig:23
 #: admin/layout/pages/general_settings.twig:26
 msgid "(optional)"
 msgstr ""
@@ -432,9 +432,9 @@ msgstr ""
 msgid "Please specify a theme to preview."
 msgstr ""
 
-#: admin/layout/pages/manage_export.twig:3
-#: admin/layout/pages/manage_export.twig:6
-#: admin/layout/pages/manage_export.twig:30
+#: admin/layout/pages/export.twig:3
+#: admin/layout/pages/export.twig:6
+#: admin/layout/pages/export.twig:30
 msgid "Export"
 msgstr ""
 
@@ -481,7 +481,7 @@ msgstr ""
 msgid "Theme changed."
 msgstr ""
 
-#: admin/layout/pages/manage_export.twig:11
+#: admin/layout/pages/export.twig:11
 #: admin/index.php:102
 msgid "Posts"
 msgstr ""
@@ -1571,7 +1571,7 @@ msgstr ""
 msgid "Full Name:"
 msgstr ""
 
-#: admin/layout/pages/manage_export.twig:19
+#: admin/layout/pages/export.twig:19
 #: admin/index.php:103
 msgid "Pages"
 msgstr ""
@@ -1787,8 +1787,8 @@ msgstr ""
 msgid "Send Pingbacks"
 msgstr ""
 
-#: admin/layout/pages/manage_export.twig:14
-#: admin/layout/pages/manage_export.twig:22
+#: admin/layout/pages/export.twig:14
+#: admin/layout/pages/export.twig:22
 msgid "filter:"
 msgstr ""
 
