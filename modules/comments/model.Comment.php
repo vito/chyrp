@@ -79,17 +79,17 @@
 				list($spam, $spaminess, $signature) = $defensio->auditComment($comment);
 
 				if ($spam) {
-					self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], "spam", $signature, datetime(), $post, $visitor);
+					self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], "spam", $signature, datetime(), $post, $visitor->id);
 					error(__("Spam Comment"), __("Your comment has been marked as spam. It will have to be approved before it will show up.", "comments"));
 				} else {
-					$comment = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, $signature, datetime(), $post, $visitor);
+					$comment = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, $signature, datetime(), $post, $visitor->id);
 					if (isset($_POST['ajax']))
 						exit("{ comment_id: ".$comment->id." }");
 
 					redirect($post->url()."#comment_".$comment->id);
 				}
 			} else {
-				$comment = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, "", datetime(), $post, $visitor);
+				$comment = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, "", datetime(), $post, $visitor->id);
 
 				if (isset($_POST['ajax']))
 					exit("{ comment_id: ".$comment->id." }");
@@ -112,10 +112,10 @@
 		 *     $status - The new comment's status.
 		 *     $timestamp - The new comment's timestamp of creation.
 		 *     $post - The <Post> they're commenting on.
-		 *     $user - The <User> this comment was made by.
+		 *     $user_id - The ID of this <User> this comment was made by.
 		 *     $signature - Defensio's data signature of the comment, generated when it is checked if it's spam in <Comment.create>. Optional.
 		 */
-		static function add($body, $author, $url, $email, $ip, $agent, $status, $signature, $timestamp, $post, $user) {
+		static function add($body, $author, $url, $email, $ip, $agent, $status, $signature, $timestamp, $post, $user_id) {
 			if (!empty($url)) # Add the http:// if it isn't there.
 				if (!@parse_url($url, PHP_URL_SCHEME))
 					$url = "http://".$url;
@@ -147,7 +147,7 @@
 			                   ":signature" => $signature,
 			                   ":created_at" => $timestamp,
 			                   ":post_id" => $post->id,
-			                   ":user_id"=> $user->id
+			                   ":user_id"=> $user_id
 			             ));
 			$new = new self($sql->latest());;
 

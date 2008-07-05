@@ -14,10 +14,14 @@
 	if (!empty($_POST)) {
 		switch($_POST['step']) {
 			case "1":
-				$stupid_xml = utf8_encode(file_get_contents($_FILES['xml_file']['tmp_name']));
-				$sane_xml = preg_replace(array("/<wp:comment_content>(?!<!\[CDATA\[)/", "/(?!\]\]>)<\/wp:comment_content>/"),
+				$stupid_xml = file_get_contents($_FILES['xml_file']['tmp_name']);
+				$sane_xml = preg_replace(array("/<wp:comment_content>/", "/<\/wp:comment_content>/"),
 				                         array("<wp:comment_content><![CDATA[", "]]></wp:comment_content>"),
 				                         $stupid_xml);
+
+				$sane_xml = str_replace(array("<![CDATA[<![CDATA[", "]]>]]>"),
+				                        array("<![CDATA[", "]]>"),
+				                        $sane_xml);
 
 				$fix_amps_count = 1;
 				while ($fix_amps_count)

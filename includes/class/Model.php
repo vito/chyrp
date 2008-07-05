@@ -126,7 +126,7 @@
 			$options["select"] = (array) $options["select"];
 
 			$trigger = Trigger::current();
-			$trigger->filter($options, array(Route::current()->action."_".$model_name."s_get", $model_name."s_get"));
+			$trigger->filter($options, array(Route::current()->action."_".pluralize($model_name)."_get", pluralize($model_name)."_get"));
 
 			$grab = SQL::current()->select($options["from"],
 			                               $options["select"],

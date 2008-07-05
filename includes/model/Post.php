@@ -190,6 +190,8 @@
 		 *     <add>
 		 */
 		public function update($values, $pinned = null, $status = null, $slug = null, $timestamp = null, $update_timestamp = true) {
+			if ($this->no_results) return false;
+
 			fallback($pinned, (int) !empty($_POST['pinned']));
 			fallback($status, (isset($_POST['draft'])) ? "draft" : fallback($_POST['status'], $this->status));
 			fallback($slug, fallback($_POST['slug'], $this->feather.".".$this->id));
@@ -245,6 +247,8 @@
 		 * Checks if the <User> can delete the post.
 		 */
 		public function deletable($user = null) {
+			if ($this->no_results) return false;
+
 			fallback($user, Visitor::current());
 			if ($user->group()->can("delete_post"))
 				return true;
@@ -259,6 +263,8 @@
 		 * Checks if the <User> can edit the post.
 		 */
 		public function editable($user = null) {
+			if ($this->no_results) return false;
+
 			fallback($user, Visitor::current());
 			if ($user->group()->can("edit_post"))
 				return true;
@@ -364,6 +370,8 @@
 		 * Returns a post's URL.
 		 */
 		public function url() {
+			if ($this->no_results) return false;
+
 			$config = Config::current();
 			$visitor = Visitor::current();
 			if ($config->clean_urls) {
@@ -392,6 +400,7 @@
 		 * Returns a post's user. Example: $post->user()->login
 		 */
 		public function user() {
+			if ($this->no_results) return false;
 			return new User($this->user_id);
 		}
 
@@ -403,8 +412,9 @@
 		 *     $normalized - The post's excerpt. filtered -> tags stripped -> truncated to 75 characters -> normalized.
 		 */
 		public function title_from_excerpt() {
+			if ($this->no_results) return false;
+
 			global $feathers;
-			if (!isset($this->id)) return false;
 
 			$excerpt = $this->excerpt();
 			Trigger::current()->filter($excerpt, "title_from_excerpt");
@@ -421,6 +431,7 @@
 		 * Returns the given post's title, provided by its Feather.
 		 */
 		public function title() {
+			if ($this->no_results) return false;
 			global $feathers;
 			$title = $feathers[$this->feather]->title($this);
 			return Trigger::current()->filter($title, "title");
@@ -432,6 +443,7 @@
 		 * Returns the given post's excerpt, provided by its Feather.
 		 */
 		public function excerpt() {
+			if ($this->no_results) return false;
 			global $feathers;
 			$excerpt = $feathers[$this->feather]->excerpt($this);
 			return Trigger::current()->filter($excerpt, "excerpt");
@@ -443,6 +455,7 @@
 		 * Returns the given post's Feed content, provided by its Feather.
 		 */
 		public function feed_content() {
+			if ($this->no_results) return false;
 			global $feathers;
 			return call_user_func(array($feathers[$this->feather], "feed_content"), $this);
 		}
@@ -453,6 +466,7 @@
 		 *     The next post (the post made after this one).
 		 */
 		public function next() {
+			if ($this->no_results) return false;
 			return new self(null, array("where" => "__posts.created_at > :created_at OR __posts.id > :id",
 			                            "order" => "__posts.created_at ASC, __posts.id ASC",
 			                            "params" => array(":created_at" => $this->created_at,
@@ -465,6 +479,7 @@
 		 *     The next post (the post made after this one).
 		 */
 		public function prev() {
+			if ($this->no_results) return false;
 			return new self(null, array("where" => "__posts.created_at < :created_at OR __posts.id < :id",
 			                            "order" => "__posts.created_at DESC, __posts.id DESC",
 			                            "params" => array(":created_at" => $this->created_at,
@@ -476,7 +491,7 @@
 		 * Checks if the current post's feather theme file exists.
 		 */
 		public function theme_exists() {
-			return Theme::current()->file_exists("feathers/".$this->feather);
+			return !$this->no_results and Theme::current()->file_exists("feathers/".$this->feather);
 		}
 
 		/**
@@ -545,6 +560,7 @@
 		 * Returns the posts trackback URL.
 		 */
 		public function trackback_url() {
+			if ($this->no_results) return false;
 			return Config::current()->chyrp_url."/includes/trackback.php?id=".$this->id;
 		}
 
