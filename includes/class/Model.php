@@ -121,14 +121,22 @@
 			fallback($options["limit"], null);
 			fallback($options["placeholders"], false);
 
-			$options["where"] = (array) $options["where"];
-			$options["from"] = (array) $options["from"];
+			$options["where"]  = (array) $options["where"];
+			$options["from"]   = (array) $options["from"];
 			$options["select"] = (array) $options["select"];
 
 			$trigger = Trigger::current();
-			$trigger->filter($options, array(Route::current()->action."_".$model_name."_get", $model_name."_get"));
+			$trigger->filter($options, array(Route::current()->action."_".$model_name."s_get", $model_name."s_get"));
 
-			$grab = SQL::current()->select($options["from"], $options["select"], $options["where"], $options["order"], $options["params"], $options["limit"], $options["offset"], $options["group"], $options["left_join"]);
+			$grab = SQL::current()->select($options["from"],
+			                               $options["select"],
+			                               $options["where"],
+			                               $options["order"],
+			                               $options["params"],
+			                               $options["limit"],
+			                               $options["offset"],
+			                               $options["group"],
+			                               $options["left_join"]);
 
 			$shown_dates = array();
 			$results = array();

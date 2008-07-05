@@ -62,7 +62,8 @@
 			foreach ($regenerate as $action)
 				$this->addAlias($action, "regenerate");
 
-			foreach (Trigger::current()->filter($post_triggers = array(), "cacher_regenerate_posts_triggers") as $action)
+			$post_triggers = array();
+			foreach (Trigger::current()->filter($post_triggers, "cacher_regenerate_posts_triggers") as $action)
 				$this->addAlias($action, "remove_post_cache");
 		}
 

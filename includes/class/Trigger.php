@@ -65,14 +65,15 @@
 		 *     $target, filtered through any/all actions for the trigger $name.
 		 */
 		public function filter(&$target, $name) {
-			if (is_array($name)) {
-				foreach ($name as $filter)
-					$this->filter($target, $filter);
-
-				return;
-			}
-
 			global $modules;
+
+			if (is_array($name))
+				foreach ($name as $index => $filter)
+					if ($index + 1 == count($name))
+						return $this->filter($target, $filter);
+					else
+						$this->filter($target, $filter);
+
 			if (!isset($modules) or (isset($this->exists[$name]) and !$this->exists[$name]) or !$this->exists($name))
 				return $target;
 
@@ -82,22 +83,19 @@
 
 			$this->called[$name] = array();
 
-			if (isset($this->priorities[$name])) { # Predefined priorities?
-				usort($this->priorities[$name], array($this, "cmp"));
-
-				foreach ($this->priorities[$name] as $action) {
-					$this->modified[$name] = call_user_func_array($action["function"], array_merge(array($this->modified($name, $target)), $arguments));
-					$this->called[$name][] = $action["function"];
-				}
-			}
+			if (isset($this->priorities[$name]) and usort($this->priorities[$name], array($this, "cmp"))) # Predefined priorities?
+				foreach ($this->priorities[$name] as $action)
+					$this->modified[$name] = call_user_func_array($this->called[$name][] = $action["function"],
+					                                              array_merge(array($this->modified($name, $target)), $arguments));
 
 			foreach ($modules as $module)
 				if (!in_array(array($module, $name), $this->called[$name]) and is_callable(array($module, $name)))
-					$this->modified[$name] = call_user_func_array(array($module, $name), array_merge(array($this->modified($name, $target)), $arguments));
+					$this->modified[$name] = call_user_func_array(array($module, $name),
+					                                              array_merge(array($this->modified($name, $target)),
+					                                                          $arguments));
 
 			$final = $this->modified($name, $target);
-
-			$this->modified[$name] = null;
+			unset($this->modified[$name]);
 
 			return $target = $final;
 		}
