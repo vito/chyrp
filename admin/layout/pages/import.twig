@@ -4,12 +4,53 @@
 
 {% block content %}
 			{% if success_wordpress %}
-			<p class="message yay">${ "Wordpress content successfully imported!" | translate }</p>
+			<p class="message yay">${ "WordPress content successfully imported!" | translate }</p>
 			{% endif %}
 			{% if invalid_wordpress %}
 			<p class="message boo">${ "File does not seem to be a valid WordPress export file." | translate }</p>
 			{% endif %}
+			{% if success_chyrp %}
+			<p class="message yay">${ "Chyrp content successfully imported!" | translate }</p>
+			{% endif %}
+			{% if invalid_chyrp_posts %}
+			<p class="message boo">${ "Posts file does not seem to be a valid Chyrp export file." | translate }</p>
+			{% endif %}
+			{% if invalid_chyrp_pages %}
+			<p class="message boo">${ "Pages file does not seem to be a valid Chyrp export file." | translate }</p>
+			{% endif %}
 			<h1>${ "Import" | translate }</h1>
+			<h2>${ "Chyrp" | translate }</h2>
+			<form id="import_chyrp_form" class="split" action="{% admin "import_chyrp" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+				<fieldset>
+					<p>
+						<label for="posts_file">${ "Posts .atom File" | translate }</label>
+						<input type="file" name="posts_file" value="" id="posts_file" />
+					</p>
+					<p>
+						<label for="pages_file">${ "Pages .atom File" | translate }</label>
+						<input type="file" name="pages_file" value="" id="pages_file" />
+					</p>
+					<p>
+						<label for="media_url">${ "What URL is used for embedded media?" | translate }</label>
+						<input class="text" type="text" name="media_url" value="$POST.media_url" id="media_url" />
+						<span class="sub">${ "(optional)" | translate }</span>
+						<small>
+							${ "Usually something like <code>http://example.com/uploads/</code>" | translate }
+						</small>
+					</p>
+
+					${ trigger.call("import_choose") }
+
+					<p class="buttons">
+						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Import" | translate }</button>
+					</p>
+
+					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+				</fieldset>
+			</form>
+			<br />
+			<hr />
+			<br />
 			<h2>${ "WordPress" | translate }</h2>
 			<form id="import_wordpress_form" class="split" action="{% admin "import_wordpress" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 				<fieldset>

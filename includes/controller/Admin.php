@@ -694,7 +694,7 @@
 					$posts_atom.= '		<id>tag:'.$tagged.'</id>'."\r";
 					$posts_atom.= '		<updated>'.when("c", $updated).'</updated>'."\r";
 					$posts_atom.= '		<published>'.when("c", $post->created_at).'</published>'."\r";
-					$posts_atom.= '		<link href="'.fix($trigger->filter($url, "feed_url"), false).'" />'."\r";
+					$posts_atom.= '		<link href="'.fix($trigger->filter($url, "post_export_url", $post), false).'" />'."\r";
 					$posts_atom.= '		<author chyrp:user_id="'.$post->user_id.'">'."\r";
 					$posts_atom.= '			<name>'.fix(fallback($post->user()->full_name, $post->user()->login, true), false).'</name>'."\r";
 
@@ -771,7 +771,7 @@
 					$pages_atom.= '		<id>tag:'.$tagged.'</id>'."\r";
 					$pages_atom.= '		<updated>'.when("c", $updated).'</updated>'."\r";
 					$pages_atom.= '		<published>'.when("c", $page->created_at).'</published>'."\r";
-					$pages_atom.= '		<link href="'.fix($trigger->filter($url, "feed_url"), false).'" />'."\r";
+					$pages_atom.= '		<link href="'.fix($trigger->filter($url, "page_export_url", $page), false).'" />'."\r";
 					$pages_atom.= '		<author chyrp:user_id="'.fix($page->user_id).'">'."\r";
 					$pages_atom.= '			<name>'.fix(fallback($page->user()->full_name, $page->user()->login, true), false).'</name>'."\r";
 
@@ -805,8 +805,9 @@
 
 			$zip_contents = $zip->file();
 
+			$filename = sanitize(camelize($config->name), false, true)."_Export_".now()->format("Y-m-d");
 			header("Content-type: application/octet-stream");
-			header("Content-Disposition: attachment; filename=\"".sanitize(camelize($config->name), false, true)."_Export_".now()->format("Y-m-d").".zip\"");
+			header("Content-Disposition: attachment; filename=\"".$filename.".zip\"");
 			header("Content-length: ".strlen($zip_contents)."\n\n");
 
 			echo $zip_contents;
@@ -822,8 +823,67 @@
 			if (!Visitor::current()->group()->can("add_post"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
 
-			foreach (array("success_wordpress", "invalid_wordpress") as $message)
+			foreach (array("success_wordpress",
+			               "invalid_wordpress",
+			               "success_chyrp",
+			               "invalid_chyrp_posts",
+			               "invalid_chyrp_pages") as $message)
 				$this->context[$message] = isset($_GET[$message]);
+		}
+
+		/**
+		 * Function: import_chyrp
+		 * Chyrp importing.
+		 */
+		public function import_chyrp() {
+			$trigger = Trigger::current();
+
+			if (isset($_FILES['posts_file']) and $_FILES['posts_file']['error'] == 0) {
+				$posts = simplexml_load_file($_FILES['posts_file']['tmp_name']);
+
+				if (!$posts or $posts->generator != "Chyrp")
+					redirect("/admin/?action=import&invalid_chyrp_posts");
+			}
+
+			if (isset($_FILES['pages_file']) and $_FILES['pages_file']['error'] == 0) {
+				$pages = simplexml_load_string(file_get_contents($_FILES['pages_file']['tmp_name']));
+
+				if (!$pages or $pages->generator != "Chyrp")
+					redirect("/admin/?action=import&invalid_chyrp_pages");
+			}
+
+			if (isset($_FILES['posts_file']) and $_FILES['posts_file']['error'] == 0)
+				foreach ($posts->entry as $entry) {
+					$chyrp = $entry->children("http://chyrp.net/export/1.0/");
+
+					$_POST['feather'] = $chyrp->feather;
+					$_POST['status']  = $chyrp->status;
+					$_POST['pinned']  = (bool) (int) $chyrp->pinned;
+					$_POST['created_at'] = $chyrp->created_at;
+					$_POST['updated_at'] = $chyrp->updated_at;
+
+					$data = Post::xml2arr($entry->content->post);
+					$post = Post::add($data, $chyrp->clean, Post::check_url($chyrp->url));
+
+					$trigger->call("import_chyrp_post", $entry, $post);
+				}
+
+			if (isset($_FILES['pages_file']) and $_FILES['pages_file']['error'] == 0)
+				foreach ($pages->entry as $entry) {
+					$chyrp = $entry->children("http://chyrp.net/export/1.0/");
+					$attr  = $entry->attributes("http://chyrp.net/export/1.0/");
+					$page = Page::add($entry->title,
+					                  $entry->content,
+					                  $attr->parent_id,
+					                  (bool) (int) $chyrp->show_in_list,
+					                  $chyrp->list_order,
+					                  $chyrp->clean,
+					                  Page::check_url($chyrp->url));
+
+					$trigger->call("import_chyrp_page", $entry, $page);
+				}
+
+			redirect("/admin/?action=import&success_chyrp");
 		}
 
 		/**
@@ -832,11 +892,12 @@
 		 */
 		public function import_wordpress() {
 			$trigger = Trigger::current();
+			$config = Config::current();
 
 			if (empty($_POST))
 				redirect("/admin/?action=import");
 
-			if (!in_array("text", Config::current()->enabled_feathers))
+			if (!in_array("text", $config->enabled_feathers))
 				error(__("Missing Feather"), __("Importing from WordPress requires the Text feather to be installed and enabled."));
 
 			if (ini_get("memory_limit") < 20) # Some imports are relatively large.
