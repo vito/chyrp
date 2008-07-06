@@ -26,11 +26,11 @@
 	error_reporting(E_ALL | E_STRICT);
 
 	# Fallback all these definitions.
-	if (!defined('JAVASCRIPT'))  define('JAVASCRIPT', false);
-	if (!defined('ADMIN'))       define('ADMIN', false);
-	if (!defined('AJAX'))        define('AJAX', false);
-	if (!defined('XML_RPC'))     define('XML_RPC', false);
-	if (!defined('TRACKBACK'))   define('TRACKBACK', false);
+	if (!defined('JAVASCRIPT')) define('JAVASCRIPT', false);
+	if (!defined('ADMIN'))      define('ADMIN', false);
+	if (!defined('AJAX'))       define('AJAX', false);
+	if (!defined('XML_RPC'))    define('XML_RPC', false);
+	if (!defined('TRACKBACK'))  define('TRACKBACK', false);
 
 	if (!JAVASCRIPT and !XML_RPC)
 		header("Content-type: text/html; charset=UTF-8");

@@ -29,10 +29,12 @@
 
 			if (class_exists("PDO") and (in_array("mysql", PDO::getAvailableDrivers()) or in_array("sqlite", PDO::getAvailableDrivers())))
 				$this->interface = "pdo";
-			elseif (class_exists("MySQLi"))
+			elseif ($this->adapter == "mysql" class_exists("MySQLi"))
 				$this->interface = "mysqli";
-			else
+			elseif ($this->adapter == "mysql")
 				$this->interface = "mysql";
+			elseif ($this->adapter == "sqlite" and function_exists("sqlite_query"))
+				$this->interface = "sqlite";
 		}
 
 		/**
@@ -120,7 +122,7 @@
 					$this->error = mysqli_connect_error();
 
 					if (mysqli_connect_errno())
-						return ($checking) ? false : error(__("Database Error", $this->error)) ;
+						return ($checking) ? false : error(__("Database Error"), $this->error) ;
 
 					break;
 				case "mysql":
@@ -128,7 +130,12 @@
 					$this->error = mysql_error();
 
 					if (!$this->db or !@mysql_select_db($this->database))
-						return ($checking) ? false : error(__("Database Error", $this->error)) ;
+						return ($checking) ? false : error(__("Database Error"), $this->error) ;
+
+					break;
+				case "sqlite":
+					if (!$this->db = new SQLiteDatabase($this->database, 0666, $this->error))
+						return ($checking) ? false : error(__("Database Error"), $this->error) ;
 
 					break;
 			}
@@ -265,6 +272,9 @@
 					break;
 				case "mysql":
 					return @mysql_insert_id();
+					break;
+				case "sqlite":
+					return $this->db->lastInsertRowid();
 					break;
 			}
 		}

@@ -60,15 +60,23 @@
 						$query = str_replace($name, "'".$this->db->escape_string($val)."'", $query);
 
 					if (!$this->query = $this->db->query($query))
-						return error(__("Database Error", $this->db->error));
+						return error(__("Database Error"), $this->db->error);
 
 					break;
 				case "mysql":
 					foreach ($params as $name => $val)
-						$query = str_replace($name, "'".@mysql_real_escape_string($val)."'", $query);
+						$query = str_replace($name, "'".mysql_real_escape_string($val)."'", $query);
 
 					if (!$this->query = @mysql_query($query))
-						return error(__("Database Error", mysql_error()));
+						return error(__("Database Error"), mysql_error());
+
+					break;
+				case "sqlite":
+					foreach ($params as $name => $val)
+						$query = str_replace($name, "'".sqlite_escape_string($val)."'", $query);
+
+					if (!$this->query = @$this->db->query($query, SQLITE_BOTH, $this->error))
+						return error(__("Database Error"), $this->error);
 
 					break;
 			}
@@ -89,7 +97,10 @@
 					$result = $this->query->fetch_array();
 					return $result[$column];
 				case "mysql":
-					$result = @mysql_fetch_array($this->query);
+					$result = mysql_fetch_array($this->query);
+					return $result[$column];
+				case "sqlite":
+					$result = $this->query->fetch();
 					return $result[$column];
 			}
 		}
@@ -105,7 +116,9 @@
 				case "mysqli":
 					return $this->query->fetch_array();
 				case "mysql":
-					return @mysql_fetch_array($this->query);
+					return mysql_fetch_array($this->query);
+				case "sqlite":
+					return $this->query->fetch();
 			}
 		}
 
@@ -120,7 +133,9 @@
 				case "mysqli":
 					return $this->query->fetch_object();
 				case "mysql":
-					return @mysql_fetch_object($this->query);
+					return mysql_fetch_object($this->query);
+				case "sqlite":
+					return $this->query->fetchObject();
 			}
 		}
 
@@ -142,7 +157,14 @@
 				case "mysql":
 					$results = array();
 
-					while ($row = @mysql_fetch_assoc($this->query))
+					while ($row = mysql_fetch_assoc($this->query))
+						$results[] = $row;
+
+					return $results;
+				case "sqlite":
+					$results = array();
+
+					while ($row = $this->query->fetch())
 						$results[] = $row;
 
 					return $results;
