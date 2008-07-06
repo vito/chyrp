@@ -180,7 +180,6 @@ exit;
 		imagestring($thumbnail, $font, 2, $thumb_height-10, $string, $white);
 	}
 
-	error_log($filename);
 	header('Last-Modified: '.gmdate('D, d M Y H:i:s', @filemtime($filename)).' GMT');
 
 	switch ($image_type) {
