@@ -22,7 +22,8 @@
 			                 `signature` VARCHAR(32) DEFAULT '',
 			                 `post_id` INTEGER DEFAULT '0',
 			                 `user_id` INTEGER DEFAULT '0',
-			                 `created_at` DATETIME DEFAULT '0000-00-00 00:00:00'
+			                 `created_at` DATETIME DEFAULT '0000-00-00 00:00:00',
+			                 `updated_at` DATETIME DEFAULT '0000-00-00 00:00:00'
 			             ) default charset=utf8");
 
 			$config = Config::current();
@@ -743,5 +744,37 @@
 		public function cacher_regenerate_posts_triggers($array) {
 			$array = array_merge($array, array("add_comment", "update_comment", "delete_comment"));
 			return $array;
+		}
+
+		public function posts_export(&$atom, $post) {
+			$comments = Comment::find(array("where" => "__comments.post_id = :post_id",
+			                                "params" => array(":post_id" => $post->id)),
+			                          array("filter" => false));
+
+			foreach ($comments as $comment) {
+				$updated = ($comment->updated) ? $comment->updated_at : $comment->created_at ;
+
+				$atom.= "		<chyrp:comment>\r";
+				$atom.= '			<updated>'.when("c", $updated).'</updated>'."\r";
+				$atom.= '			<published>'.when("c", $comment->created_at).'</published>'."\r";
+				$atom.= '			<author chyrp:user_id="'.$comment->user_id.'">'."\r";
+				$atom.= "				<name>".safe($comment->author)."</name>\r";
+				if (!empty($comment->author_url))
+					$atom.= "				<uri>".safe($comment->author_url)."</uri>\r";
+				$atom.= "				<email>".safe($comment->author_email)."</email>\r";
+				$atom.= "				<chyrp:ip>".safe($comment->author_ip)."</chyrp:ip>\r";
+				$atom.= "				<chyrp:agent>".safe($comment->author_agent)."</chyrp:agent>\r";
+				$atom.= "			</author>\r";
+				$atom.= "			<content>\r";
+				$atom.= "				".safe($comment->body)."\r";
+				$atom.= "			</content>\r";
+
+				foreach (array("status", "signature") as $attr)
+					$atom.= "			<chyrp:".$attr.">".safe($comment->$attr)."</chyrp:".$attr.">\r";
+
+				$atom.= "		</chyrp:comment>\r";
+			}
+
+			return $atom;
 		}
 	}

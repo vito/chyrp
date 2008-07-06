@@ -16,13 +16,15 @@
 
 			$this->body_unfiltered = $this->body;
 			$group = ($this->user_id) ? $this->user()->group() : new Group(Config::current()->guest_group) ;
-			if (!isset($options["filter"]) or $options["filter"]) {
-				if (($this->status != "pingback" and !$this->status != "trackback") and !$group->can("code_in_comments"))
-					$this->body = strip_tags($this->body, "<".join("><", Config::current()->allowed_comment_html).">");
 
-				$this->body_unfiltered = $this->body;
-				Trigger::current()->filter($this->body, "markup_comment_text");
-			}
+			if (isset($options["filter"]) and !$options["filter"])
+				return;
+
+			if (($this->status != "pingback" and !$this->status != "trackback") and !$group->can("code_in_comments"))
+				$this->body = strip_tags($this->body, "<".join("><", Config::current()->allowed_comment_html).">");
+
+			$this->body_unfiltered = $this->body;
+			Trigger::current()->filter($this->body, "markup_comment_text");
 
 			Trigger::current()->filter($this, "filter_comment");
 		}
@@ -155,7 +157,7 @@
 			return $new;
 		}
 
-		public function update($author, $author_email, $author_url, $body, $status, $timestamp) {
+		public function update($author, $author_email, $author_url, $body, $status, $timestamp, $update_timestamp = true) {
 			$sql = SQL::current();
 			$sql->update("comments",
 			             "`__comments`.`id` = :id",
@@ -164,17 +166,18 @@
 			                   "author_email" => ":author_email",
 			                   "author_url" => ":author_url",
 			                   "status" => ":status",
-			                   "created_at" => ":created_at"),
+			                   "created_at" => ":created_at",
+			                   "updated_at" => ":updated_at"),
 			             array(":body" => $body,
 			                   ":author" => strip_tags($author),
 			                   ":author_email" => strip_tags($author_email),
 			                   ":author_url" => strip_tags($author_url),
 			                   ":status" => $status,
 			                   ":created_at" => $timestamp,
-			                   ":id" => $this->id
-			             ));
+			                   ":updated_at" => ($update_timestamp) ? datetime() : $this->updated_at,
+			                   ":id" => $this->id));
 
-			Trigger::current()->call("update_comment", $this);
+			Trigger::current()->call("update_comment", $this, $author, $author_email, $author_url, $body, $status, $timestamp, $update_timestamp);
 		}
 
 		static function delete($comment_id) {

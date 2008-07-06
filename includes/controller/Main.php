@@ -194,8 +194,16 @@
 		 * Process logging in. If the username and password are incorrect or if the user is already logged in, it will error.
 		 */
 		public function process_login() {
+			fallback($_POST['login']);
+			fallback($_POST['password']);
+
 			if (!User::authenticate($_POST['login'], md5($_POST['password'])))
-				error(__("Error"), __("Login incorrect."));
+				if (!count(User::find(array("where" => "__users.login = :login",
+				                           "params" => array(":login" => $_POST['login'])))))
+					error(__("Error"), __("There is no user with that login name."));
+				else
+					error(__("Error"), __("Password incorrect."));
+
 			if (logged_in())
 				error(__("Error"), __("You're already logged in."));
 

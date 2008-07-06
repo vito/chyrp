@@ -13,7 +13,7 @@
 	<generator uri="http://chyrp.net/" version="<?php echo CHYRP_VERSION; ?>">Chyrp</generator>
 <?php
 	foreach ($posts->paginated as $post) {
-		$title = htmlspecialchars($post->title(), ENT_NOQUOTES, "utf-8");
+		$title = safe($post->title());
 		fallback($title, ucfirst($post->feather)." Post #".$post->id);
 
 		$updated = ($post->updated) ? $post->updated_at : $post->created_at ;
@@ -22,22 +22,22 @@
 		$tagged = str_replace("#", "/", $tagged);
 		$tagged = preg_replace("/(".preg_quote(parse_url($post->url(), PHP_URL_HOST)).")/", "\\1,".when("Y-m-d", $updated).":", $tagged, 1);
 
-		$url = html_entity_decode($post->url());
+		$url = $post->url();
 ?>
-	<entry xml:base="<?php echo htmlspecialchars($post->url(), ENT_QUOTES, "utf-8"); ?>">
+	<entry xml:base="<?php echo fix($post->url(), true); ?>">
 		<title type="html"><?php echo $title; ?></title>
 		<id>tag:<?php echo $tagged; ?></id>
 		<updated><?php echo when("c", $updated); ?></updated>
 		<published><?php echo when("c", $post->created_at); ?></published>
-		<link href="<?php echo htmlspecialchars($trigger->filter($url, "feed_url", $post), ENT_NOQUOTES, "utf-8"); ?>" />
+		<link href="<?php echo fix($trigger->filter($url, "feed_url", $post), true); ?>" />
 		<author>
-			<name><?php echo htmlspecialchars(fallback($post->user()->full_name, $post->user()->login, true), ENT_NOQUOTES, "utf-8"); ?></name>
+			<name><?php echo safe(fallback($post->user()->full_name, $post->user()->login, true)); ?></name>
 <?php if (!empty($author_uri)): ?>
-			<uri><?php echo $post->user()->website; ?></uri>
+			<uri><?php echo safe($post->user()->website); ?></uri>
 <?php endif; ?>
 		</author>
 		<content type="html">
-			<?php echo htmlspecialchars($post->feed_content(), ENT_NOQUOTES, "utf-8"); ?>
+			<?php echo safe($post->feed_content()); ?>
 		</content>
 <?php $trigger->call("feed_item", $post->id); ?>
 	</entry>

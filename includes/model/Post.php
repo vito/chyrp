@@ -105,9 +105,9 @@
 			}
 
 			foreach ($values as $name => &$value)
-				$value = self::makesafe($value);
+				$value = safe($value);
 			foreach ($options as $name => &$option)
-				$option = self::makesafe($option);
+				$option = safe($option);
 
 			$xml = new SimpleXMLElement("<post></post>");
 			self::arr2xml($xml, $values);
@@ -200,9 +200,9 @@
 			$options = fallback($_POST['option'], array());
 
 			foreach ($values as $name => &$value)
-				$value = self::makesafe($value);
+				$value = safe($value);
 			foreach ($options as $name => &$option)
-				$option = self::makesafe($option);
+				$option = safe($option);
 
 			$xml = new SimpleXMLElement("<post></post>");
 			self::arr2xml($xml, $values);
@@ -631,17 +631,6 @@
 					$val = self::xml2arr($val);
 
 			return $parse;
-		}
-
-		/**
-		 * Function: makesafe
-		 * Makes a block of text safe to have in SimpleXML.
-		 */
-		static function makesafe($text) {
-			#return preg_replace("/&(?!(lt|gt|amp|quot))/", "&amp;", $text);
-			#return name2codepoint(htmlentities($text, ENT_NOQUOTES, "UTF-8", false));
-			$text = html_entity_decode($text, ENT_QUOTES, "UTF-8");
-			return name2codepoint(htmlentities($text, ENT_NOQUOTES, "UTF-8"));
 		}
 
 		/**

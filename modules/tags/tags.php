@@ -296,4 +296,12 @@
 
 			return $tag2clean[$unclean_tag];
 		}
+
+		public function posts_export($atom, $post) {
+			$tags = SQL::current()->select("tags", "tags", "__tags.post_id = :post_id", "__tags.id DESC", array(":post_id" => $post->id))->fetchColumn();
+			if (empty($tags)) return;
+
+			$atom.= "		<chyrp:tags>".implode(", ", self::unlinked_tags($tags))."</chyrp:tags>\r";
+			return $atom;
+		}
 	}

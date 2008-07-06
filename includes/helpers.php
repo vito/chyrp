@@ -346,6 +346,23 @@
 	}
 
 	/**
+	 * Function: safe
+	 * Returns a HTML-sanitized version of a string.
+	 */
+	function safe($string) {
+		$string = html_entity_decode($string, ENT_QUOTES, "utf-8");
+		return name2codepoint(htmlentities($string, ENT_NOQUOTES, "utf-8"));
+	}
+
+	/**
+	 * Function: unsafe
+	 * Returns the reverse of safe().
+	 */
+	function unsafe($string) {
+		return codepoint2name(html_entity_decode($string, ENT_QUOTES, "utf-8"));
+	}
+
+	/**
 	 * Function: lang_code
 	 * Returns the passed language code (e.g. en_US) to the human-readable text (e.g. English (US))
 	 *

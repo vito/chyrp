@@ -103,13 +103,8 @@
 		 *     $show_in_list - Whether or not to show it in the pages list.
 		 *     $url - The new page URL.
 		 */
-		public function update($title, $body, $parent_id, $show_in_list, $list_order, $url) {
+		public function update($title, $body, $parent_id, $show_in_list, $list_order, $url, $update_timestamp = true) {
 			if (!isset($this->id)) return;
-
-			if ($title != $this->title or $body != $this->body)
-				$updated = datetime();
-			else
-				$updated = "0000-00-00 00:00:00";
 
 			$sql = SQL::current();
 			$sql->update("pages",
@@ -129,13 +124,13 @@
 			                 ":parent_id" => $parent_id,
 			                 ":show_in_list" => $show_in_list,
 			                 ":list_order" => $list_order,
-			                 ":updated_at" => $updated,
+			                 ":updated_at" => ($update_timestamp) ? datetime() : $this->updated_at,
 			                 ":url" => $url,
 			                 ":id" => $this->id
 			             ));
 
 			$trigger = Trigger::current();
-			$trigger->call("update_page", $this->id);
+			$trigger->call("update_page", $this, $title, $body, $parent_id, $show_in_list, $list_order, $url, $update_timestamp);
 		}
 
 		/**
