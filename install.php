@@ -22,8 +22,8 @@
 	require_once INCLUDES_DIR."/class/Session.php"; # Session handler
 
 	# Configuration files
-	require INCLUDES_DIR."/config.php";
-	require INCLUDES_DIR."/database.php";
+	require INCLUDES_DIR."/class/Config.php";
+	require INCLUDES_DIR."/class/SQL.php";
 
 	# Translation stuff
 	require INCLUDES_DIR."/lib/gettext/gettext.php";

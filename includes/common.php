@@ -68,8 +68,8 @@
 	require_once INCLUDES_DIR."/class/Timestamp.php"; # A smarter DateTime class
 	require_once INCLUDES_DIR."/lib/spyc.php"; # YAML parser
 
-	require_once INCLUDES_DIR."/config.php"; # Configuration
-	require_once INCLUDES_DIR."/database.php"; # Database/SQL jazz
+	require_once INCLUDES_DIR."/class/Config.php"; # Configuration
+	require_once INCLUDES_DIR."/class/SQL.php"; # Database/SQL jazz
 
 	# Translation stuff
 	require_once INCLUDES_DIR."/lib/gettext/gettext.php";
