@@ -23,8 +23,9 @@
 			$this->filtered = !isset($options["filter"]) or $options["filter"];
 
 			if ($this->filtered) {
-				$trigger->filter($page->body, "markup_page_text");
-				$trigger->filter($page->title, "markup_page_title");
+				$trigger = Trigger::current();
+				$trigger->filter($this->body, "markup_page_text");
+				$trigger->filter($this->title, "markup_page_title");
 			}
 		}
 
