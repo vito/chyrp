@@ -731,8 +731,9 @@ button.lite img,
 .page_list {
 	padding: 0 2em;
 }
-.page_list li {
-	xdisplay: block;
+.page_list li a:link,
+.page_list li a:visited {
+	text-decoration: none;
 }
 ul.sort_pages {
 	padding: 0;

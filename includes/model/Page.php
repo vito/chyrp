@@ -185,7 +185,7 @@
 			                     "`clean` = :clean",
 			                     array(":clean" => $clean));
 
-			return (!$count or empty($clean)) ? $clean : $clean."_".$count ;
+			return (!$count or empty($clean)) ? $clean : $clean."-".($count + 1) ;
 		}
 
 		/**
