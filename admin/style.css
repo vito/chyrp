@@ -528,6 +528,9 @@ h1.preview-header {
 	text-decoration: underline;
 	color: #222;
 }
+.preview-content hr {
+	margin: 2em 0;
+}
 /* @end */
 
 /* @group Messages */

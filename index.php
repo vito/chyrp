@@ -38,8 +38,6 @@
 			if (!$page->no_results) {
 				$theme->title = $page->title;
 
-				$trigger->filter($page->body, "markup_page_text");
-
 				if ($theme->file_exists("pages/".$page->url))
 					$theme->load("pages/".$page->url, array("page" => $page));
 				else if (file_exists(THEME_DIR."/content/$page->url.twig"))

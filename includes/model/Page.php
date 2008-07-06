@@ -19,6 +19,13 @@
 			if (!isset($page_id) and empty($options)) return;
 			parent::grab($this, $page_id, $options);
 			$this->slug =& $this->url;
+
+			$this->filtered = !isset($options["filter"]) or $options["filter"];
+
+			if ($this->filtered) {
+				$trigger->filter($page->body, "markup_page_text");
+				$trigger->filter($page->title, "markup_page_title");
+			}
 		}
 
 		/**

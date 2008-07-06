@@ -13,7 +13,10 @@
 			                      "bookmarklet" => "selection"));
 
 			$this->customFilter("dialogue", "format_dialogue");
+
 			$this->setFilter("dialogue", "markup_post_text");
+			$this->setFilter("title", "markup_post_title");
+
 			$this->respondTo("preview_chat", "format_dialogue");
 			$this->respondTo("help_chat_dialogue", "help");
 		}

@@ -13,6 +13,7 @@
 			                      "bookmarklet" => "selection"));
 
 			$this->setFilter("body", "markup_post_text");
+			$this->setFilter("title", "markup_post_title");
 		}
 		public function submit() {
 			if (empty($_POST['body']))

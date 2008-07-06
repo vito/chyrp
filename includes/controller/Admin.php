@@ -213,7 +213,7 @@
 			if (empty($_GET['id']))
 				error(__("No ID Specified"), __("An ID is required to edit a page."));
 
-			$this->context["page"] = new Page($_GET['id']);
+			$this->context["page"] = new Page($_GET['id'], array("filter" => false));
 			$this->context["pages"] = Page::find(array("where" => "`__pages`.`id` != :id", "params" => array(":id" => $_GET['id'])));
 		}
 
