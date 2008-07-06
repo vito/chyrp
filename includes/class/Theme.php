@@ -170,7 +170,7 @@
 			$stylesheets = "";
 			if (file_exists(THEMES_DIR."/".$this->theme."/stylesheets/") or file_exists(THEMES_DIR."/".$this->theme."/css/")) {
 				$count = 1;
-				$glob = glob(THEMES_DIR."/".$this->theme."/{stylesheets,css}/*.css*", GLOB_BRACE);
+				$glob = glob(THEMES_DIR."/".$this->theme."/{stylesheets,css}/*.{css,css.php}", GLOB_BRACE);
 
 				foreach($glob as $file) {
 					$path = preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file);
