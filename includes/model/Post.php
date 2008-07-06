@@ -2,22 +2,20 @@
 	/**
 	 * Class: Post
 	 * The Post model.
+	 * See Also:
+	 *     <Model>
 	 */
 	class Post extends Model {
+		# Boolean: $no_results
+		# Was a result found?
 		public $no_results = false;
 
-		public $id = 0;
-
-		/**
-		 * String: $private
-		 * SQL "where" text for which posts the current user can view.
-		 */
+		# String: $private
+		# SQL "where" text for which posts the current user can view.
 		static $private;
 
-	    /**
-		 * String: $enabled_feathers
-		 * SQL "where" text for each of the feathers. Prevents posts of a disabled Feather from showing.
-		 */
+		# String: $enabled_feathers
+		# SQL "where" text for each of the feathers. Prevents posts of a disabled Feather from showing.
 		static $enabled_feathers;
 
 		/**
@@ -40,8 +38,10 @@
 			if ($this->no_results)
 				return;
 
+			$this->filtered = !isset($options["filter"]) or $options["filter"];
 			$this->slug =& $this->url;
-			$this->parse(!isset($options["filter"]) or $options["filter"]);
+
+			$this->parse();
 		}
 
 		/**
@@ -409,14 +409,18 @@
 		 * Generates an acceptable Title from the post's excerpt.
 		 *
 		 * Returns:
-		 *     $normalized - The post's excerpt. filtered -> tags stripped -> truncated to 75 characters -> normalized.
+		 *     The post's excerpt. iltered -> first line -> ftags stripped -> truncated to 75 characters -> normalized.
 		 */
 		public function title_from_excerpt() {
 			if ($this->no_results) return false;
 
 			global $feathers;
 
-			$excerpt = $this->excerpt();
+			# Excerpts are likely to have some sort of markup module applied to them;
+			# if the current instantiation is not filtered, make one that is.
+			$post = ($this->filtered) ? $this : new Post($this->id) ;
+
+			$excerpt = $post->excerpt();
 			Trigger::current()->filter($excerpt, "title_from_excerpt");
 
 			$split_lines = explode("\n", $excerpt);
@@ -436,8 +440,13 @@
 		public function title() {
 			if ($this->no_results) return false;
 			global $feathers;
-			$title = $feathers[$this->feather]->title($this);
-			return Trigger::current()->filter($title, "title");
+
+			# Excerpts are likely to have some sort of markup module applied to them;
+			# if the current instantiation is not filtered, make one that is.
+			$post = ($this->filtered) ? $this : new Post($this->id) ;
+
+			$title = $feathers[$this->feather]->title($post);
+			return Trigger::current()->filter($title, "title", $post);
 		}
 
 
@@ -448,8 +457,13 @@
 		public function excerpt() {
 			if ($this->no_results) return false;
 			global $feathers;
-			$excerpt = $feathers[$this->feather]->excerpt($this);
-			return Trigger::current()->filter($excerpt, "excerpt");
+
+			# Excerpts are likely to have some sort of markup module applied to them;
+			# if the current instantiation is not filtered, make one that is.
+			$post = ($this->filtered) ? $this : new Post($this->id) ;
+
+			$excerpt = $feathers[$this->feather]->excerpt($post);
+			return Trigger::current()->filter($excerpt, "excerpt", $post);
 		}
 
 
@@ -460,7 +474,13 @@
 		public function feed_content() {
 			if ($this->no_results) return false;
 			global $feathers;
-			return call_user_func(array($feathers[$this->feather], "feed_content"), $this);
+
+			# Excerpts are likely to have some sort of markup module applied to them;
+			# if the current instantiation is not filtered, make one that is.
+			$post = ($this->filtered) ? $this : new Post($this->id) ;
+
+			$feed_content = $feathers[$this->feather]->feed_content($post);
+			return Trigger::current()->filter($feed_content, "feed_content", $post);
 		}
 
 		/**
@@ -500,15 +520,12 @@
 		/**
 		 * Function: parse
 		 * Parses the passed XML and loads the tags and values into <Post>.
-		 *
-		 * Parameters:
-		 *     $filter - Should the data be run through any triggers?
 		 */
-		private function parse($filter = false) {
+		private function parse() {
 			foreach (self::xml2arr(simplexml_load_string($this->xml)) as $key => $val)
 				$this->$key = codepoint2name($val);
 
-			if (!$filter)
+			if (!$this->filtered)
 				return;
 
 			$class = camelize($this->feather);

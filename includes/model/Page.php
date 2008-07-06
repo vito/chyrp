@@ -2,10 +2,13 @@
 	/**
 	 * Class: Page
 	 * The Page model.
+	 * See Also:
+	 *     <Model>
 	 */
 	class Page extends Model {
+		# Boolean: $no_results
+		# Was a result found?
 		public $no_results = false;
-		public $id = 0;
 
 		/**
 		 * Function: __construct

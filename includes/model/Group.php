@@ -2,6 +2,8 @@
 	/**
 	 * Class: Group
 	 * The Group model.
+	 * See Also:
+	 *     <Model>
 	 */
 	class Group extends Model {
 		public $no_results = false;

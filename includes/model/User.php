@@ -2,10 +2,13 @@
 	/**
 	 * Class: User
 	 * The User model.
+	 * See Also:
+	 *     <Model>
 	 */
 	class User extends Model {
+		# Boolean: $no_results
+		# Was a result found?
 		public $no_results = false;
-		public $can = array();
 
 		/**
 		 * Function: __construct
