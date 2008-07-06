@@ -149,13 +149,13 @@ This is useful to dynamically get attributes from objects::
     foo[bar]
 
 The underlaying implementation is free to specify on it's own what an attribute
-lookup means.  The PHP reference implementation for example performs those
+lookup means.  The PHP reference implementation for example performs these
 actions on ``foo.bar``:
 
 -   try ``$foo['bar']``
--   try ``$foo->bar()``
+-   try ``$foo->bar()`` (if they're using ``foo.bar`` and not ``foo[bar]``)
 -   try ``$foo->bar``
--   try ``$foo->getBar()``
+-   try ``$foo->getBar()`` (if they're using ``foo.bar`` and not ``foo[bar]``)
 
 The first match returns the object, attribute access to nonexisting attributes
 returns `none`.

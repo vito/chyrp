@@ -419,7 +419,10 @@
 			$excerpt = $this->excerpt();
 			Trigger::current()->filter($excerpt, "title_from_excerpt");
 
-			$stripped = strip_tags($excerpt); # Strip all HTML
+			$split_lines = explode("\n", $excerpt);
+			$first_line = $split_lines[0];
+
+			$stripped = strip_tags($first_line); # Strip all HTML
 			$truncated = truncate($stripped, 75); # Truncate the excerpt to 75 characters
 			$normalized = normalize($truncated); # Trim and normalize whitespace
 

@@ -135,20 +135,20 @@ function twig_missing_filter($name)
 	return $text;
 }
 
-function twig_get_attribute($obj, $item)
+function twig_get_attribute($obj, $item, $function = true)
 {
 	if (is_array($obj) && isset($obj[$item]))
 		return $obj[$item];
 	if (!is_object($obj))
 		return NULL;
-	if (method_exists($obj, $item))
+	if ($function and method_exists($obj, $item))
 		return call_user_func(array($obj, $item));
 	if (property_exists($obj, $item)) {
 		$tmp = get_object_vars($obj);
 		return $tmp[$item];
 	}
 	$method = 'get' . ucfirst($item);
-	if (method_exists($obj, $method))
+	if ($function and method_exists($obj, $method))
 		return call_user_func(array($obj, $method));
 	return NULL;
 }

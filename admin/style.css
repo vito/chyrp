@@ -39,14 +39,7 @@ p {
 }
 a:link,
 a:visited {
-	text-decoration: none;
-	border-bottom: 1px solid rgba(255,255,255,.5);
-}
-a:visited {
-	border-bottom-style: dotted;
-}
-a:hover {
-	border-bottom-color: rgba(255,255,255,.75);
+	text-decoration: underline;
 }
 /* @end */
 
@@ -525,6 +518,15 @@ h1.preview-header {
 .preview-content ul,
 .preview-content ol {
 	margin: 0 0 1em 2em;
+	list-style: square;
+}
+.preview-content ol li {
+	list-style: decimal;
+}
+.preview-content a:link,
+.preview-content a:visited {
+	text-decoration: underline;
+	color: #222;
 }
 /* @end */
 

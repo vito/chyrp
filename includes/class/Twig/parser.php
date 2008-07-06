@@ -434,7 +434,7 @@ class Twig_Parser
 		}
 
 		if (!$this->stream->test(Twig_Token::OPERATOR_TYPE, '('))
-			return new Twig_GetAttrExpression($node, $arg, $lineno);
+			return new Twig_GetAttrExpression($node, $arg, $lineno, $token->value);
 
 		/* sounds like something wants to call a member with some
 		   arguments.  Let's parse the parameters */

@@ -607,11 +607,12 @@ class Twig_GetAttrExpression extends Twig_Expression
 	public $node;
 	public $attr;
 
-	public function __construct($node, $attr, $lineno)
+	public function __construct($node, $attr, $lineno, $token_value)
 	{
 		parent::__construct($lineno);
 		$this->node = $node;
 		$this->attr = $attr;
+		$this->token_value = $token_value;
 	}
 
 	public function compile($compiler)
@@ -620,6 +621,8 @@ class Twig_GetAttrExpression extends Twig_Expression
 		$this->node->compile($compiler);
 		$compiler->raw(', ');
 		$this->attr->compile($compiler);
+		if ($this->token_value == "[") # Don't look for functions if they're using foo[bar]
+			$compiler->raw(', false');
 		$compiler->raw(')');
 	}
 }

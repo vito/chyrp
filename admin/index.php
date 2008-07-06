@@ -110,8 +110,12 @@
 			$trigger->filter($subnav["manage"], "manage_nav");
 			foreach (array_keys($subnav["manage"]) as $manage)
 				$pages["manage"] = array_merge($pages["manage"], array($manage,
-				                                                       str_replace("manage_", "edit_", $manage),
-				                                                       str_replace("manage_", "delete_", $manage)));
+				                                                       preg_replace("/manage_(.+)/e",
+				                                                                    "'edit_'.depluralize('\\1')",
+				                                                                    $manage),
+				                                                       preg_replace("/manage_(.+)/e",
+				                                                                    "'delete_'.depluralize('\\1')",
+				                                                                    $manage)));
 
 			# Settings navs
 			$subnav["settings"] = array("general_settings" => array("title" => __("General")),

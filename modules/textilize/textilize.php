@@ -4,11 +4,13 @@
 	class Textilize extends Module {
 		public function __construct() {
 			$this->textile = new Textile();
-			$this->setPriority("markup_post_text", 9);
-			$this->addAlias("markup_page_text", "markup_post_text");
-			$this->addAlias("markup_comment_text", "markup_post_text");
+			$this->setPriority("textilize", 9);
+			$this->addAlias("markup_post_text", "textilize");
+			$this->addAlias("markup_page_text", "textilize");
+			$this->addAlias("markup_comment_text", "textilize");
+			$this->addAlias("preview", "textilize");
 		}
-		public function markup_post_text($text) {
+		public function textilize($text) {
 			return $this->textile->TextileThis($text);
 		}
 	}

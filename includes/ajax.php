@@ -118,7 +118,9 @@
 			break;
 		case "preview":
 			$content = urldecode($_POST['content']);
-			$trigger->filter($content, array("preview_".$_POST['feather'], "markup_post_text", "preview"));
+			if (empty($content)) break;
+
+			$trigger->filter($content, array("preview_".$_POST['feather'], "preview"));
 
 			echo "<h2 class=\"preview-header\">".__("Preview")."</h2>\n<div class=\"preview-content\">".$content."</div>";
 			break;

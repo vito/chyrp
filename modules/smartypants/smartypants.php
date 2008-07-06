@@ -3,11 +3,12 @@
 
 	class Smartypants extends Module {
 		public function __construct() {
-			$this->setPriority("markup_post_text", 9);
-			$this->addAlias("markup_page_text", "markup_post_text");
-			$this->addAlias("markup_comment_text", "markup_post_text");
+			$this->addAlias("markup_post_text", "smartify");
+			$this->addAlias("markup_page_text", "smartify");
+			$this->addAlias("markup_comment_text", "smartify");
+			$this->addAlias("preview", "smartify");
 		}
-		static function markup_post_text($text) {
+		static function smartify($text) {
 			return Smartypants($text);
 		}
 	}
