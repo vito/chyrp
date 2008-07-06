@@ -265,7 +265,7 @@
 			return $return;
 		}
 
-		public function clean2tag($clean_tag) {
+		static function clean2tag($clean_tag) {
 			$tags = array();
 			$clean = array();
 			foreach(SQL::current()->select("tags")->fetchAll() as $tag) {
@@ -281,7 +281,7 @@
 			return $clean2tag[$clean_tag];
 		}
 
-		public function tag2clean($unclean_tag) {
+		static function tag2clean($unclean_tag) {
 			$tags = array();
 			$clean = array();
 			foreach(SQL::current()->select("tags")->fetchAll() as $tag) {
