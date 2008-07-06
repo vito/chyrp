@@ -528,6 +528,8 @@
 			if (!$this->filtered)
 				return;
 
+			global $feathers;
+
 			$class = camelize($this->feather);
 
 			$trigger = Trigger::current();
@@ -537,7 +539,7 @@
 				foreach (Feather::$custom_filters[$class] as $custom_filter) {
 					$varname = $custom_filter["field"]."_unfiltered";
 					$this->$varname = $this->$custom_filter["field"];
-					$this->$custom_filter["field"] = call_user_func_array(array($class, $custom_filter["name"]),
+					$this->$custom_filter["field"] = call_user_func_array(array($feathers[$this->feather], $custom_filter["name"]),
 					                                                      array($this->$custom_filter["field"], $this));
 				}
 

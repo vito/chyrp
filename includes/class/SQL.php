@@ -45,7 +45,7 @@
 		 *     $file - The YAML file to load into <SQL>.
 		 */
 		public function load($file) {
-			$this->yaml = Spyc::YAMLLoad($file);
+			$this->yaml = Horde_Yaml::loadFile($file);
 			foreach ($this->yaml as $setting => $value)
 				if (!is_int($setting)) # Don't load the "---"
 					$this->$setting = $value;
@@ -75,7 +75,7 @@
 				unset($this->yaml['<?php header("Status']);
 
 			# Generate the new YAML settings
-			$contents.= Spyc::YAMLDump($this->yaml, false, 0);
+			$contents.= Horde_Yaml::dump($this->yaml, false, 0);
 
 			if (!@file_put_contents(INCLUDES_DIR."/database.yaml.php", $contents) and is_array($errors))
 				$errors[] = _f("Could not set \"<code>%s</code>\" database setting because <code>%s</code> is not writable.", array($setting, "/includes/database.yaml.php"));

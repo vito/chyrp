@@ -60,13 +60,14 @@
 		unlink($cache_file);
 
 	if (file_exists($cache_file) and filemtime($cache_file) > filemtime($filename)) {
-		header('Content-type: image/'.$fileextension);
+		header('Last-Modified: '.gmdate('D, d M Y H:i:s', @filemtime($cache_file)).' GMT');
+		header('Content-type: image/'.($fileextension == "jpg" ? "jpeg" : $fileextension));
 		header("Expires: Mon, 26 Jul 2030 05:00:00 GMT");
 		header('Content-Disposition: inline; filename='.str_replace("/", "", md5($filename.$thumb_size.$thumb_size_x.$thumb_size_y.$quality).".".$fileextension));
 		readfile($cache_file);
 		exit; # no need to create thumbnail - it already exists in the cache
 	}
-
+exit;
 	# determine php and gd versions
 	$ver = (int) str_replace(".", "", phpversion());
 	if ($ver >= 430)
@@ -179,17 +180,20 @@
 		imagestring($thumbnail, $font, 2, $thumb_height-10, $string, $white);
 	}
 
+	error_log($filename);
+	header('Last-Modified: '.gmdate('D, d M Y H:i:s', @filemtime($filename)).' GMT');
+
 	switch ($image_type) {
 		case 2: # JPG
 			header('Content-type: image/jpeg');
-			header('Content-Disposition: inline; filename='.str_replace('/','',md5($filename.$thumb_size.$thumb_size_x.$thumb_size_y.$quality).'.jpeg'));
+			header('Content-Disposition: inline; filename='.md5($filename.$thumb_size.$thumb_size_x.$thumb_size_y.$quality).'.jpeg');
 			imagejpeg($thumbnail, $cache_file, $quality);
 			imagejpeg($thumbnail, "", $quality);
 
 			break;
 		case 3: # PNG
 			header('Content-type: image/png');
-			header('Content-Disposition: inline; filename='.str_replace('/','',md5($filename.$thumb_size.$thumb_size_x.$thumb_size_y.$quality).'.png'));
+			header('Content-Disposition: inline; filename='.md5($filename.$thumb_size.$thumb_size_x.$thumb_size_y.$quality).'.png');
 			imagepng($thumbnail, $cache_file);
 			imagepng($thumbnail);
 			break;
@@ -197,12 +201,12 @@
 		case 1: # GIF
 			if (function_exists('imagegif')) {
 				header('Content-type: image/gif');
-				header('Content-Disposition: inline; filename='.str_replace('/','',md5($filename.$thumb_size.$thumb_size_x.$thumb_size_y.$quality).'.gif'));
+				header('Content-Disposition: inline; filename='.md5($filename.$thumb_size.$thumb_size_x.$thumb_size_y.$quality).'.gif');
 				imagegif($thumbnail, $cache_file);
 				imagegif($thumbnail);
 			} else {
 				header('Content-type: image/jpeg');
-				header('Content-Disposition: inline; filename='.str_replace('/','',md5($filename.$thumb_size.$thumb_size_x.$thumb_size_y.$quality).'.jpg'));
+				header('Content-Disposition: inline; filename='.md5($filename.$thumb_size.$thumb_size_x.$thumb_size_y.$quality).'.jpg');
 				imagejpeg($thumbnail, $cache_file);
 				imagejpeg($thumbnail);
 			}

@@ -25,7 +25,7 @@
 		 *     $file - The YAML file to load into <Config>.
 		 */
 		public function load($file) {
-			$this->yaml = Spyc::YAMLLoad($file);
+			$this->yaml = Horde_Yaml::loadFile($file);
 			$arrays = array("enabled_modules", "enabled_feathers", "routes");
 			foreach ($this->yaml as $setting => $value)
 				if (in_array($setting, $arrays) and empty($value))
@@ -62,7 +62,7 @@
 				Trigger::current()->call("change_setting", $setting, $value, $overwrite);
 
 			# Generate the new YAML settings
-			$contents.= Spyc::YAMLDump($this->yaml, 2, 60);
+			$contents.= Horde_Yaml::dump($this->yaml, 2, 60);
 
 			if (!@file_put_contents(INCLUDES_DIR."/config.yaml.php", $contents) and is_array($errors))
 				$errors[] = _f("Could not set \"<code>%s</code>\" configuration setting because <code>%s</code> is not writable.", array($setting, "/includes/config.yaml.php"));
@@ -86,7 +86,7 @@
 				unset($this->yaml[0]);
 
 			# Generate the new YAML settings
-			$contents.= Spyc::YAMLDump($this->yaml, 2, 60);
+			$contents.= Horde_Yaml::dump($this->yaml, 2, 60);
 
 			file_put_contents(INCLUDES_DIR."/config.yaml.php", $contents);
 		}

@@ -255,31 +255,40 @@
 
 		public function list_tags($limit = 10, $order_by = "popularity", $order = "desc") {
 			$sql = SQL::current();
-			$tags = array();
-			$clean = array();
 
-			foreach(Post::find() as $post) {
-				if (!isset($post->unclean_tags)) continue;
-				$tags[] = $post->unclean_tags;
-				$clean[] = $post->clean_tags;
+			$tags = $sql->select("posts",
+			                      "__tags.*",
+			                      array(Post::$private, Post::$enabled_feathers),
+			                      null,
+			                      array(),
+			                      null, null, null,
+			                      array(array("table" => "tags",
+			                                  "where" => "`__tags`.`post_id` = `__posts`.`id`")));
+
+			$unclean = array();
+			$clean = array();
+			while ($tag = $tags->fetchObject()) {
+				if (!isset($tag->id)) continue;
+				$unclean[] = $tag->tags;
+				$clean[] = $tag->clean;
 			}
 
-			if (!count($tags))
+			if (!count($unclean))
 				return array();
 
 			# array("{{foo}},{{bar}}", "{{foo}}") to "{{foo}},{{bar}},{{foo}}" to array("foo", "bar", "foo") to array("foo" => 2, "bar" => 1)
-			$tags = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $tags))));
+			$unclean = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $unclean))));
 			$clean = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $clean))));
-			$tag2clean = array_combine(array_keys($tags), array_keys($clean));
+			$tag2clean = array_combine(array_keys($unclean), array_keys($clean));
 
-			foreach ($tags as $name => $popularity)
-				$tags[$name] = array("name" => $name, "popularity" => $popularity, "url" => $tag2clean[$name]);
+			foreach ($unclean as $name => $popularity)
+				$unclean[$name] = array("name" => $name, "popularity" => $popularity, "url" => $tag2clean[$name]);
 
-			usort($tags, array($this, "sort_tags_".$order_by."_".$order));
+			usort($unclean, array($this, "sort_tags_".$order_by."_".$order));
 
 			$count = 0;
 			$return = array();
-			foreach ($tags as $tag)
+			foreach ($unclean as $tag)
 				if ($count++ < $limit)
 					$return[] = $tag;
 

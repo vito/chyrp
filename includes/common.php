@@ -66,7 +66,7 @@
 	require_once INCLUDES_DIR."/class/Query.php"; # SQL query handler
 	require_once INCLUDES_DIR."/class/QueryBuilder.php"; # SQL query builder
 	require_once INCLUDES_DIR."/class/Timestamp.php"; # A smarter DateTime class
-	require_once INCLUDES_DIR."/lib/spyc.php"; # YAML parser
+	require_once INCLUDES_DIR."/lib/Yaml.php"; # YAML parser
 
 	require_once INCLUDES_DIR."/class/Config.php"; # Configuration
 	require_once INCLUDES_DIR."/class/SQL.php"; # Database/SQL jazz
@@ -201,7 +201,7 @@
 
 		require FEATHERS_DIR."/".$feather."/".$feather.".php";
 
-		$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$feather."/info.yaml");
+		$info = Horde_Yaml::loadFile(FEATHERS_DIR."/".$feather."/info.yaml");
 		$pluralizations[$feather] = $pluralizations["feathers"][$feather] = fallback($info["plural"], pluralize($feather), true);
 	}
 
@@ -234,7 +234,7 @@
 		$feathers[$feather] = new $camelized;
 		$feathers[$feather]->safename = $feather;
 
-		foreach (Spyc::YAMLLoad(FEATHERS_DIR."/".$feather."/info.yaml") as $key => $val)
+		foreach (Horde_Yaml::loadFile(FEATHERS_DIR."/".$feather."/info.yaml") as $key => $val)
 			$feathers[$feather]->$key = $val;
 	}
 
@@ -250,7 +250,7 @@
 		$modules[$module] = new $camelized;
 		$modules[$module]->safename = $module;
 
-		foreach (Spyc::YAMLLoad(MODULES_DIR."/".$module."/info.yaml") as $key => $val)
+		foreach (Horde_Yaml::loadFile(MODULES_DIR."/".$module."/info.yaml") as $key => $val)
 			$modules[$module]->$key = $val;
 	}
 

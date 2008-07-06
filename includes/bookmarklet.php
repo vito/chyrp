@@ -159,7 +159,7 @@
 		if (file_exists(FEATHERS_DIR."/".$the_feather."/locale/".$config->locale.".mo"))
 			load_translator($the_feather, FEATHERS_DIR."/".$the_feather."/locale/".$config->locale.".mo");
 
-		$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$the_feather."/info.yaml");
+		$info = Horde_Yaml::loadFile(FEATHERS_DIR."/".$the_feather."/info.yaml");
 ?>
 			<li id="list_feathers[<?php echo $the_feather; ?>]" class="nav_<?php echo $the_feather; ?><?php if ($feather == $the_feather) echo ' selected'; ?>">
 				<a href="javascript:activate_nav_tab('<?php echo $the_feather; ?>')"><?php echo $info["name"]; ?></a>
@@ -178,7 +178,7 @@
 		if (file_exists(FEATHERS_DIR."/".$the_feather."/locale/".$config->locale.".mo"))
 			load_translator($the_feather, FEATHERS_DIR."/".$the_feather."/locale/".$config->locale.".mo");
 
-		$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$the_feather."/info.yaml");
+		$info = Horde_Yaml::loadFile(FEATHERS_DIR."/".$the_feather."/info.yaml");
 ?>
 			<form action="<?php echo $config->chyrp_url."/admin/?action=add_post"; ?>" id="<?php echo $the_feather; ?>_form" style="display: <?php echo $style; ?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 <?php foreach ($feathers[$the_feather]->fields as $field): ?>

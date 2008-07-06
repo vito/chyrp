@@ -122,6 +122,9 @@ a:visited {
 #sub-nav {
 	margin-top: 1em;
 }
+#sub-nav li {
+	float: left;
+}
 #sub-nav li a:link,
 #sub-nav li a:visited {
 	float: left;
@@ -706,6 +709,7 @@ button.lite img,
 	color: #999;
 	border-bottom: 1px solid #ddd;
 	display: block;
+	text-decoration: none !important;
 }
 .more_options_link:hover {
 	color: #666;

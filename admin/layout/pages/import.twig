@@ -3,12 +3,6 @@
 {% block title %}${ "Import" | translate }{% endblock %}
 
 {% block content %}
-			{% if success_wordpress %}
-			<p class="message yay">${ "WordPress content successfully imported!" | translate }</p>
-			{% endif %}
-			{% if invalid_wordpress %}
-			<p class="message boo">${ "File does not seem to be a valid WordPress export file." | translate }</p>
-			{% endif %}
 			{% if success_chyrp %}
 			<p class="message yay">${ "Chyrp content successfully imported!" | translate }</p>
 			{% endif %}
@@ -18,8 +12,20 @@
 			{% if invalid_chyrp_pages %}
 			<p class="message boo">${ "Pages file does not seem to be a valid Chyrp export file." | translate }</p>
 			{% endif %}
+			{% if success_wordpress %}
+			<p class="message yay">${ "WordPress content successfully imported!" | translate }</p>
+			{% endif %}
+			{% if invalid_wordpress %}
+			<p class="message boo">${ "File does not seem to be a valid WordPress export file." | translate }</p>
+			{% endif %}
+			{% if success_tumblr %}
+			<p class="message yay">${ "Tumblr content successfully imported!" | translate }</p>
+			{% endif %}
+			{% if invalid_tumblr %}
+			<p class="message boo">${ "URL does not seem to be a valid Tumblr site." | translate }</p>
+			{% endif %}
 			<h1>${ "Import" | translate }</h1>
-			<h2>${ "Chyrp" | translate }</h2>
+			<h2>Chyrp</h2>
 			<form id="import_chyrp_form" class="split" action="{% admin "import_chyrp" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 				<fieldset>
 					<p>
@@ -32,10 +38,10 @@
 					</p>
 					<p>
 						<label for="media_url">${ "What URL is used for embedded media?" | translate }</label>
-						<input class="text" type="text" name="media_url" value="$POST.media_url" id="media_url" />
+						<input class="text" type="text" name="media_url" value="" id="media_url" />
 						<span class="sub">${ "(optional)" | translate }</span>
 						<small>
-							${ "Usually something like <code>http://example.com/uploads/</code>" | translate }
+							${ "Usually something like <code>http://example.com/uploads/</code>." | translate }
 						</small>
 					</p>
 
@@ -51,7 +57,7 @@
 			<br />
 			<hr />
 			<br />
-			<h2>${ "WordPress" | translate }</h2>
+			<h2>WordPress</h2>
 			<form id="import_wordpress_form" class="split" action="{% admin "import_wordpress" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 				<fieldset>
 					<p>
@@ -60,14 +66,12 @@
 					</p>
 					<p>
 						<label for="media_url">${ "What URL is used for embedded media?" | translate }</label>
-						<input class="text" type="text" name="media_url" value="$POST.media_url" id="media_url" />
+						<input class="text" type="text" name="media_url" value="" id="media_url" />
 						<span class="sub">${ "(optional)" | translate }</span>
 						<small>
-							${ "Usually something like <code>http://example.com/wp-content/uploads/</code>" | translate }
+							${ "Usually something like <code>http://example.com/wp-content/uploads/</code>." | translate }
 						</small>
 					</p>
-
-					${ trigger.call("import_choose") }
 
 					<p class="buttons">
 						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Import" | translate }</button>
@@ -76,4 +80,24 @@
 					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
 				</fieldset>
 			</form>
+			<br />
+			<hr />
+			<br />
+			<h2>Tumblr</h2>
+			<form id="import_tumblr_form" class="split" action="{% admin "import_tumblr" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+				<fieldset>
+					<p>
+						<label for="tumblr_url">${ "Your Tumblr URL" | translate }</label>
+						<input class="text" type="text" name="tumblr_url" value="" id="tumblr_url" />
+						<small>${ "Note: Audio tumbles cannot be imported." | translate }</small>
+					</p>
+
+					<p class="buttons">
+						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Import" | translate }</button>
+					</p>
+
+					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+				</fieldset>
+			</form>
+			${ trigger.call("import_choose") }
 {% endblock %}

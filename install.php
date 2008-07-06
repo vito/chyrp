@@ -14,7 +14,7 @@
 	require_once INCLUDES_DIR."/class/Query.php"; # SQL query handler
 	require_once INCLUDES_DIR."/class/QueryBuilder.php"; # SQL query builder
 	require_once INCLUDES_DIR."/class/Timestamp.php"; # A smarter DateTime class
-	require_once INCLUDES_DIR."/lib/spyc.php"; # YAML parser
+	require_once INCLUDES_DIR."/lib/Yaml.php"; # YAML parser
 	require_once INCLUDES_DIR."/class/Trigger.php";
 	require_once INCLUDES_DIR."/class/Model.php";
 	require_once INCLUDES_DIR."/model/User.php";
@@ -200,11 +200,11 @@
 				$sql->replace("permissions", array("name" => ":permission"), array(":permission" => $permission));
 
 			$groups = array(
-				"admin" => Spyc::YAMLDump($permissions),
-				"member" => Spyc::YAMLDump(array("view_site")),
-				"friend" => Spyc::YAMLDump(array("view_site", "view_private")),
-				"banned" => Spyc::YAMLDump(array()),
-				"guest" => Spyc::YAMLDump(array("view_site"))
+				"admin" => Horde_Yaml::dump($permissions),
+				"member" => Horde_Yaml::dump(array("view_site")),
+				"friend" => Horde_Yaml::dump(array("view_site", "view_private")),
+				"banned" => Horde_Yaml::dump(array()),
+				"guest" => Horde_Yaml::dump(array("view_site"))
 			);
 
 			# Insert the default groups (see above)

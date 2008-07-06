@@ -129,7 +129,7 @@
 				error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable extensions."));
 
 			$dir = ($_POST['type'] == "module") ? MODULES_DIR : FEATHERS_DIR ;
-			$info = Spyc::YAMLLoad($dir."/".$_POST['check']."/info.yaml");
+			$info = Horde_Yaml::loadFile($dir."/".$_POST['check']."/info.yaml");
 			fallback($info["confirm"], "");
 
 			if (!empty($info["confirm"]))
@@ -163,7 +163,7 @@
 			if (file_exists($folder."/".$_POST["extension"]."/locale/".$config->locale.".mo"))
 				load_translator($_POST["extension"], $folder."/".$_POST["extension"]."/locale/".$config->locale.".mo");
 
-			$info = Spyc::YAMLLoad($folder."/".$_POST["extension"]."/info.yaml");
+			$info = Horde_Yaml::loadFile($folder."/".$_POST["extension"]."/info.yaml");
 			fallback($info["uploader"], false);
 			fallback($info["notifications"], array());
 

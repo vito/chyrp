@@ -830,11 +830,13 @@
 			if (!Visitor::current()->group()->can("add_post"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
 
-			foreach (array("success_wordpress",
-			               "invalid_wordpress",
-			               "success_chyrp",
+			foreach (array("success_chyrp",
 			               "invalid_chyrp_posts",
-			               "invalid_chyrp_pages") as $message)
+			               "invalid_chyrp_pages",
+			               "success_wordpress",
+			               "invalid_wordpress",
+			               "success_tumblr",
+			               "invalid_tumblr") as $message)
 				$this->context[$message] = isset($_GET[$message]);
 		}
 
@@ -843,21 +845,24 @@
 		 * Chyrp importing.
 		 */
 		public function import_chyrp() {
+			if (empty($_POST))
+				redirect("/admin/?action=import");
+
+			if (!Visitor::current()->group()->can("add_post"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+
 			$trigger = Trigger::current();
 
-			if (isset($_FILES['posts_file']) and $_FILES['posts_file']['error'] == 0) {
-				$posts = simplexml_load_file($_FILES['posts_file']['tmp_name']);
-
-				if (!$posts or $posts->generator != "Chyrp")
+			if (isset($_FILES['posts_file']) and $_FILES['posts_file']['error'] == 0)
+				if (!$posts = simplexml_load_file($_FILES['posts_file']['tmp_name']) or $posts->generator != "Chyrp")
 					redirect("/admin/?action=import&invalid_chyrp_posts");
-			}
 
-			if (isset($_FILES['pages_file']) and $_FILES['pages_file']['error'] == 0) {
-				$pages = simplexml_load_string(file_get_contents($_FILES['pages_file']['tmp_name']));
-
-				if (!$pages or $pages->generator != "Chyrp")
+			if (isset($_FILES['pages_file']) and $_FILES['pages_file']['error'] == 0)
+				if (!$pages = simplexml_load_file($_FILES['pages_file']['tmp_name']) or $pages->generator != "Chyrp")
 					redirect("/admin/?action=import&invalid_chyrp_pages");
-			}
+
+			if (ini_get("memory_limit") < 20)
+				ini_set("memory_limit", "20M");
 
 			if (isset($_FILES['posts_file']) and $_FILES['posts_file']['error'] == 0)
 				foreach ($posts->entry as $entry) {
@@ -900,17 +905,21 @@
 		 * WordPress importing.
 		 */
 		public function import_wordpress() {
-			$trigger = Trigger::current();
-			$config = Config::current();
-
 			if (empty($_POST))
 				redirect("/admin/?action=import");
+
+			if (!Visitor::current()->group()->can("add_post"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+
+			$config = Config::current();
 
 			if (!in_array("text", $config->enabled_feathers))
 				error(__("Missing Feather"), __("Importing from WordPress requires the Text feather to be installed and enabled."));
 
-			if (ini_get("memory_limit") < 20) # Some imports are relatively large.
+			if (ini_get("memory_limit") < 20)
 				ini_set("memory_limit", "20M");
+
+			$trigger = Trigger::current();
 
 			$stupid_xml = file_get_contents($_FILES['xml_file']['tmp_name']);
 			$sane_xml = preg_replace(array("/<wp:comment_content>/", "/<\/wp:comment_content>/"),
@@ -976,6 +985,132 @@
 		}
 
 		/**
+		 * Function: import_tumblr
+		 * Tumblr importing.
+		 */
+		public function import_tumblr() {
+			if (empty($_POST))
+				redirect("/admin/?action=import");
+
+			if (!Visitor::current()->group()->can("add_post"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+
+			$config = Config::current();
+			if (!in_array("text", $config->enabled_feathers) or
+			    !in_array("video", $config->enabled_feathers) or
+			    !in_array("audio", $config->enabled_feathers) or
+			    !in_array("chat", $config->enabled_feathers) or
+			    !in_array("photo", $config->enabled_feathers) or
+			    !in_array("quote", $config->enabled_feathers) or
+			    !in_array("link", $config->enabled_feathers))
+				error(__("Missing Feather"), __("Importing from Tumblr requires the Text, Video, Audio, Chat, Photo, Quote, and Link feathers to be installed and enabled."));
+
+			if (ini_get("memory_limit") < 20)
+				ini_set("memory_limit", "20M");
+
+			if (!parse_url($_POST['tumblr_url'], PHP_URL_SCHEME))
+				$_POST['tumblr_url'] = "http://".$_POST['tumblr_url'];
+
+			set_time_limit(3600);
+			$url = rtrim($_POST['tumblr_url'], "/")."/api/read?num=50";
+			$api = preg_replace("/<(\/?)([^\-]+)\-([^ >]+)/", "<\\1\\2_\\3", get_remote($url));
+			$api = preg_replace("/ ([a-z]+)\-([a-z]+)=/", " \\1_\\2=", $api);
+			$xml = simplexml_load_string($api);
+
+			if (!isset($xml->tumblelog))
+				redirect("/admin/?action=import&invalid_tumblr");
+
+			$already_in = $posts = array();
+			foreach ($xml->posts->post as $post) {
+				$posts[] = $post;
+				$already_in[] = $post->attributes()->id;
+			}
+
+			while ($xml->posts->attributes()->total > count($posts)) {
+				set_time_limit(3600);
+				$api = preg_replace("/<(\/?)([a-z]+)\-([a-z]+)/", "<\\1\\2_\\3", get_remote($url."&start=".count($posts)));
+				$api = preg_replace("/ ([a-z]+)\-([a-z]+)=/", " \\1_\\2=", $api);
+				$xml = simplexml_load_string($api, "SimpleXMLElement", LIBXML_NOCDATA);
+				foreach ($xml->posts->post as $post)
+					if (!in_array($post->attributes()->id, $already_in)) {
+						$posts[] = $post;
+						$already_in[] = $post->attributes()->id;
+					}
+			}
+
+			function reverse($a, $b) {
+				if (empty($a) or empty($b)) return 0;
+				return (strtotime($a->attributes()->date) < strtotime($b->attributes()->date)) ? -1 : 1 ;
+			}
+
+			set_time_limit(3600);
+			usort($posts, "reverse");
+
+			foreach ($posts as $key => $post) {
+				set_time_limit(3600);
+				if ($post->attributes()->type == "audio")
+					continue; # Can't import Audio posts since Tumblr has the files locked in to Amazon.
+
+				$translate_types = array("regular" => "text", "conversation" => "chat");
+
+				$clean = "";
+				switch($post->attributes()->type) {
+					case "regular":
+						$title = fallback($post->regular_title);
+						$values = array("title" => $title,
+						                "body" => $post->regular_body);
+						$clean = sanitize($title);
+						break;
+					case "video":
+						$values = array("embed" => $post->video_player,
+						                "caption" => fallback($post->video_caption));
+						break;
+					case "conversation":
+						$title = fallback($post->conversation_title);
+
+						$lines = array();
+						foreach ($post->conversation_line as $line)
+							$lines[] = $line->attributes()->label." ".$line;
+
+						$values = array("title" => $title,
+						                "dialogue" => implode("\n", $lines));
+						$clean = sanitize($title);
+						break;
+					case "photo":
+						$values = array("filename" => upload_from_url($post->photo_url[0]),
+						                "caption" => fallback($post->photo_caption));
+						break;
+					case "quote":
+						$values = array("quote" => $post->quote_text,
+						                "source" => preg_replace("/^&mdash; /", "",
+						                                         fallback($post->quote_source)));
+						break;
+					case "link":
+						$name = fallback($post->link_text);
+						$values = array("name" => $name,
+						                "source" => $post->link_url,
+						                "description" => fallback($post->link_description));
+						$clean = sanitize($name);
+						break;
+				}
+
+
+				$_POST['status'] = "public";
+				$_POST['pinned'] = false;
+				$_POST['created_at'] = datetime((int) $post->attributes()->unix_timestamp);
+				$_POST['feather'] = str_replace(array_keys($translate_types),
+				                                array_values($translate_types),
+				                                $post->attributes()->type);
+
+				$new_post = Post::add($values, $clean, Post::check_url($clean));
+
+				Trigger::current()->call("import_tumble", $post, $new_post);
+			}
+
+			redirect("/admin/?action=import&success_tumblr");
+		}
+
+		/**
 		 * Function: extend_modules
 		 * Module enabling/disabling.
 		 */
@@ -995,7 +1130,7 @@
 					if (file_exists(MODULES_DIR."/".$folder."/locale/".$config->locale.".mo"))
 						load_translator($folder, MODULES_DIR."/".$folder."/locale/".$config->locale.".mo");
 
-					$info = Spyc::YAMLLoad(MODULES_DIR."/".$folder."/info.yaml");
+					$info = Horde_Yaml::loadFile(MODULES_DIR."/".$folder."/info.yaml");
 
 					$info["conflicts_true"] = array();
 
@@ -1038,7 +1173,7 @@
 				if (file_exists(MODULES_DIR."/".$_GET['enabled']."/locale/".$config->locale.".mo"))
 					load_translator($_GET['enabled'], MODULES_DIR."/".$_GET['enabled']."/locale/".$config->locale.".mo");
 
-				$info = Spyc::YAMLLoad(MODULES_DIR."/".$_GET['enabled']."/info.yaml");
+				$info = Horde_Yaml::loadFile(MODULES_DIR."/".$_GET['enabled']."/info.yaml");
 				fallback($info["uploader"], false);
 				fallback($info["notifications"], array());
 
@@ -1074,7 +1209,7 @@
 					if (file_exists(FEATHERS_DIR."/".$folder."/locale/".$config->locale.".mo"))
 						load_translator($folder, FEATHERS_DIR."/".$folder."/locale/".$config->locale.".mo");
 
-					$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$folder."/info.yaml");
+					$info = Horde_Yaml::loadFile(FEATHERS_DIR."/".$folder."/info.yaml");
 
 					fallback($info["name"], $folder);
 					fallback($info["version"], "0");
@@ -1105,7 +1240,7 @@
 				if (file_exists(FEATHERS_DIR."/".$_GET['enabled']."/locale/".$config->locale.".mo"))
 					load_translator($_GET['enabled'], FEATHERS_DIR."/".$_GET['enabled']."/locale/".$config->locale.".mo");
 
-				$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$_GET['enabled']."/info.yaml");
+				$info = Horde_Yaml::loadFile(FEATHERS_DIR."/".$_GET['enabled']."/info.yaml");
 				fallback($info["uploader"], false);
 				fallback($info["notifications"], array());
 
@@ -1140,7 +1275,7 @@
 					if (file_exists(THEMES_DIR."/".$folder."/locale/".$config->locale.".mo"))
 						load_translator($folder, THEMES_DIR."/".$folder."/locale/".$config->locale.".mo");
 
-					$info = Spyc::YAMLLoad(THEMES_DIR."/".$folder."/info.yaml");
+					$info = Horde_Yaml::loadFile(THEMES_DIR."/".$folder."/info.yaml");
 
 					fallback($info["name"], $folder);
 					fallback($info["version"], "0");

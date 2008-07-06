@@ -88,7 +88,7 @@
 			$pages = array("manage" => array());
 
 			foreach (Config::current()->enabled_feathers as $index => $feather) {
-				$info = Spyc::YAMLLoad(FEATHERS_DIR."/".$feather."/info.yaml");
+				$info = Horde_Yaml::loadFile(FEATHERS_DIR."/".$feather."/info.yaml");
 				$subnav["write"]["write_post&feather=".$feather] = array("title" => __($info["name"], $feather),
 				                                                         "attributes" => ' id="list_feathers['.$feather.']"',
 				                                                         "selected" => (isset($_GET['feather']) and $_GET['feather'] == $feather) or
