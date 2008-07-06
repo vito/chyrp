@@ -130,6 +130,27 @@
 			                       Config::current()->posts_per_page);
 		}
 
+		public function import_chyrp_post($entry, $post) {
+			$chyrp = $entry->children("http://chyrp.net/export/1.0/");
+			if (!isset($chyrp->tags)) return;
+
+			$tags = $cleaned = "";
+			foreach (explode(", ", $chyrp->tags) as $tag)
+				if (!empty($tag)) {
+					$tags.=    "{{".strip_tags(trim($tag))."}},";
+					$cleaned.= "{{".sanitize(strip_tags(trim($tag)))."}},";
+				}
+
+			if (!empty($tags) and !empty($cleaned))
+				SQL::current()->insert("tags",
+				                       array("tags"     => ":tags",
+				                             "clean"    => ":clean",
+				                             "post_id"  => ":post_id"),
+				                       array(":tags"    => rtrim($tags, ","),
+				                             ":clean"   => rtrim($cleaned, ","),
+				                             ":post_id" => $post->id));
+		}
+
 		public function import_wordpress_post($item, $post) {
 			if (!isset($item->category)) return;
 
@@ -301,7 +322,7 @@
 			$tags = SQL::current()->select("tags", "tags", "__tags.post_id = :post_id", "__tags.id DESC", array(":post_id" => $post->id))->fetchColumn();
 			if (empty($tags)) return;
 
-			$atom.= "		<chyrp:tags>".implode(", ", self::unlinked_tags($tags))."</chyrp:tags>\r";
+			$atom.= "		<chyrp:tags>".safe(implode(", ", self::unlinked_tags($tags)))."</chyrp:tags>\r";
 			return $atom;
 		}
 	}

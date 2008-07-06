@@ -695,12 +695,12 @@
 					$content = str_replace("><", ">\n\t\t\t<", $content);
 
 					$url = $post->url();
-					$posts_atom.= '	<entry xml:base="'.safe($url).'">'."\r";
+					$posts_atom.= '	<entry xml:base="'.fix($url).'">'."\r";
 					$posts_atom.= '		<title type="html">'.$title.'</title>'."\r";
 					$posts_atom.= '		<id>tag:'.$tagged.'</id>'."\r";
 					$posts_atom.= '		<updated>'.when("c", $updated).'</updated>'."\r";
 					$posts_atom.= '		<published>'.when("c", $post->created_at).'</published>'."\r";
-					$posts_atom.= '		<link href="'.safe($trigger->filter($url, "post_export_url", $post)).'" />'."\r";
+					$posts_atom.= '		<link href="'.fix($trigger->filter($url, "post_export_url", $post)).'" />'."\r";
 					$posts_atom.= '		<author chyrp:user_id="'.$post->user_id.'">'."\r";
 					$posts_atom.= '			<name>'.safe(fallback($post->user()->full_name, $post->user()->login, true)).'</name>'."\r";
 
@@ -713,7 +713,7 @@
 					$posts_atom.= '			'.$content;
 					$posts_atom.= '		</content>'."\r";
 
-					foreach (array("feather", "clean", "url", "pinned", "status", "created_at", "updated_at") as $attr)
+					foreach (array("feather", "clean", "url", "pinned", "status") as $attr)
 						$posts_atom.= '		<chyrp:'.$attr.'>'.safe($post->$attr).'</chyrp:'.$attr.'>'."\r";
 
 					$trigger->filter($posts_atom, "posts_export", $post);
@@ -773,12 +773,12 @@
 					$tagged = preg_replace("/(".preg_quote(parse_url($page->url(), PHP_URL_HOST)).")/", "\\1,".when("Y-m-d", $updated).":", $tagged, 1);
 
 					$url = $page->url();
-					$pages_atom.= '	<entry xml:base="'.safe($url).'" chyrp:parent_id="'.$page->parent_id.'">'."\r";
+					$pages_atom.= '	<entry xml:base="'.fix($url).'" chyrp:parent_id="'.$page->parent_id.'">'."\r";
 					$pages_atom.= '		<title type="html">'.safe($page->title).'</title>'."\r";
 					$pages_atom.= '		<id>tag:'.$tagged.'</id>'."\r";
 					$pages_atom.= '		<updated>'.when("c", $updated).'</updated>'."\r";
 					$pages_atom.= '		<published>'.when("c", $page->created_at).'</published>'."\r";
-					$pages_atom.= '		<link href="'.safe($trigger->filter($url, "page_export_url", $page)).'" />'."\r";
+					$pages_atom.= '		<link href="'.fix($trigger->filter($url, "page_export_url", $page)).'" />'."\r";
 					$pages_atom.= '		<author chyrp:user_id="'.fix($page->user_id).'">'."\r";
 					$pages_atom.= '			<name>'.safe(fallback($page->user()->full_name, $page->user()->login, true)).'</name>'."\r";
 
@@ -789,7 +789,7 @@
 					$pages_atom.= '		</author>'."\r";
 					$pages_atom.= '		<content type="html">'.safe($page->body).'</content>'."\r";
 
-					foreach (array("show_in_list", "list_order", "clean", "url", "created_at", "updated_at") as $attr)
+					foreach (array("show_in_list", "list_order", "clean", "url") as $attr)
 						$pages_atom.= '		<chyrp:'.$attr.'>'.safe($page->$attr).'</chyrp:'.$attr.'>'."\r";
 
 
@@ -866,10 +866,12 @@
 					$_POST['feather'] = $chyrp->feather;
 					$_POST['status']  = $chyrp->status;
 					$_POST['pinned']  = (bool) (int) $chyrp->pinned;
-					$_POST['created_at'] = $chyrp->created_at;
-					$_POST['updated_at'] = $chyrp->updated_at;
+					$_POST['created_at'] = datetime($entry->published);
+					$_POST['updated_at'] = ($entry->updated == $entry->published) ?
+					                       "0000-00-00 00:00:00" :
+					                       datetime($entry->updated) ;
 
-					$data = Post::xml2arr($entry->content->post);
+					$data = Post::xml2arr($entry->content);
 					$post = Post::add($data, $chyrp->clean, Post::check_url($chyrp->url));
 
 					$trigger->call("import_chyrp_post", $entry, $post);

@@ -112,12 +112,14 @@
 		 *     $ip - The commenter's IP address.
 		 *     $agent - The commenter's user agent.
 		 *     $status - The new comment's status.
-		 *     $timestamp - The new comment's timestamp of creation.
+		 *     $signature - Defensio's data signature of the comment, generated when it is checked
+		 *                  if it's spam in <Comment.create>. Optional.
+		 *     $timestamp - The new comment's "created" timestamp.
 		 *     $post - The <Post> they're commenting on.
 		 *     $user_id - The ID of this <User> this comment was made by.
-		 *     $signature - Defensio's data signature of the comment, generated when it is checked if it's spam in <Comment.create>. Optional.
+		 *     $updated_at - The new comment's "last updated" timestamp.
 		 */
-		static function add($body, $author, $url, $email, $ip, $agent, $status, $signature, $timestamp, $post, $user_id) {
+		static function add($body, $author, $url, $email, $ip, $agent, $status, $signature, $timestamp, $post, $user_id, $updated_at = null) {
 			if (!empty($url)) # Add the http:// if it isn't there.
 				if (!@parse_url($url, PHP_URL_SCHEME))
 					$url = "http://".$url;
@@ -138,7 +140,8 @@
 			                   "signature" => ":signature",
 			                   "post_id" => ":post_id",
 			                   "user_id" => ":user_id",
-			                   "created_at" => ":created_at"),
+			                   "created_at" => ":created_at",
+			                   "updated_at" => ":updated_at"),
 			             array(":body" => $body,
 			                   ":author" => strip_tags($author),
 			                   ":author_url" => strip_tags($url),
@@ -147,9 +150,10 @@
 			                   ":author_agent" => $agent,
 			                   ":status" => $status,
 			                   ":signature" => $signature,
-			                   ":created_at" => $timestamp,
 			                   ":post_id" => $post->id,
-			                   ":user_id"=> $user_id
+			                   ":user_id"=> $user_id,
+			                   ":created_at" => $timestamp,
+			                   ":updated_at" => fallback($updated_at, "0000-00-00 00:00:00")
 			             ));
 			$new = new self($sql->latest());;
 

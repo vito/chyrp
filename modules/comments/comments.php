@@ -573,6 +573,29 @@
 			}
 		}
 
+		public function import_chyrp_post($entry, $post) {
+			$chyrp = $entry->children("http://chyrp.net/export/1.0/");
+			if (!isset($chyrp->comment)) return;
+
+			foreach ($chyrp->comment as $comment) {
+				$chyrp = $comment->children("http://chyrp.net/export/1.0/");
+				$comment = $comment->children("http://www.w3.org/2005/Atom");
+
+				Comment::add(unsafe($comment->content),
+				             unsafe($comment->author->name),
+				             unsafe($comment->author->uri),
+				             unsafe($comment->author->email),
+				             $chyrp->author->ip,
+				             unsafe($chyrp->author->agent),
+				             $chyrp->status,
+				             $chyrp->signature,
+				             datetime($comment->published),
+				             $post,
+				             $comment->author->children("http://chyrp.net/export/1.0/")->attributes()->user_id,
+				             ($comment->published == $comment->updated) ? "0000-00-00 00:00:00" : datetime($comment->updated));
+			}
+		}
+
 		static function import_wordpress_post($item, $post) {
 			$wordpress = $item->children("http://wordpress.org/export/1.0/");
 			if (!isset($wordpress->comment)) return;
@@ -583,13 +606,13 @@
 				fallback($comment->comment_author, "");
 				fallback($comment->comment_author_url, "");
 				fallback($comment->comment_author_email, "");
-				fallback($comment->comment_author_ip, "");
+				fallback($comment->comment_author_IP, "");
 
 				Comment::add($comment->comment_content,
 				             $comment->comment_author,
 				             $comment->comment_author_url,
 				             $comment->comment_author_email,
-				             $comment->comment_author_ip,
+				             $comment->comment_author_IP,
 				             "",
 				             (isset($comment->comment_approved) && $comment->comment_approved == "1" ? "approved" : "denied"),
 				             "",
@@ -762,12 +785,10 @@
 				if (!empty($comment->author_url))
 					$atom.= "				<uri>".safe($comment->author_url)."</uri>\r";
 				$atom.= "				<email>".safe($comment->author_email)."</email>\r";
-				$atom.= "				<chyrp:ip>".safe($comment->author_ip)."</chyrp:ip>\r";
+				$atom.= "				<chyrp:ip>".long2ip($comment->author_ip)."</chyrp:ip>\r";
 				$atom.= "				<chyrp:agent>".safe($comment->author_agent)."</chyrp:agent>\r";
 				$atom.= "			</author>\r";
-				$atom.= "			<content>\r";
-				$atom.= "				".safe($comment->body)."\r";
-				$atom.= "			</content>\r";
+				$atom.= "			<content>".safe($comment->body)."</content>\r";
 
 				foreach (array("status", "signature") as $attr)
 					$atom.= "			<chyrp:".$attr.">".safe($comment->$attr)."</chyrp:".$attr.">\r";
