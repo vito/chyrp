@@ -168,7 +168,7 @@
 
 			$post->redirect = (isset($_POST['bookmarklet'])) ? Route::current()->url("bookmarklet/done/") : $post->url() ;
 
-			Trigger::current()->call("add_post", array($post, $options));
+			Trigger::current()->call("add_post", $post, $options);
 
 			return $post;
 		}
@@ -230,7 +230,7 @@
 			             ));
 
 			$trigger = Trigger::current();
-			$trigger->call("update_post", array($this, $options));
+			$trigger->call("update_post", $this, $values, $pinned, $status, $slug, $timestamp, $update_timestamp, $options);
 		}
 
 		/**

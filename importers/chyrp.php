@@ -24,7 +24,7 @@
 							$data = Post::xml2arr($entry->content->post);
 							$post = Post::add($data, $chyrp->clean, Post::check_url($chyrp->url));
 
-							$trigger->call("import_chyrp_post", array($entry, $post));
+							$trigger->call("import_chyrp_post", $entry, $post);
 						}
 						$step = "2";
 					} else
@@ -46,7 +46,7 @@
 							                  $chyrp->clean,
 							                  Page::check_url($chyrp->url));
 
-							$trigger->call("import_chyrp_page", array($entry, $page));
+							$trigger->call("import_chyrp_page", $entry, $page);
 						}
 
 						$step = "2";
@@ -54,7 +54,7 @@
 						$errors[] = __("Pages file does not seem to be a valid Chyrp export file.");
 				}
 
-				$trigger->call("chyrp_import", array(&$errors, $step));
+				$trigger->filter($errors, "chyrp_import");
 
 				break;
 		}

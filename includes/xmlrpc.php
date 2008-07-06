@@ -113,7 +113,7 @@
 
 			$linked_to = str_replace('&', '&amp;', $linked_to);
 			$trigger = Trigger::current();
-			$trigger->call("pingback", array($id, $linked_to, $linked_from, $title, $excerpt));
+			$trigger->call("pingback", $id, $linked_to, $linked_from, $title, $excerpt);
 
 			return _f("Pingback from %s to %s registered!", array($linked_from, $linked_to));
 		}
@@ -227,7 +227,7 @@
 			if (!$args[4] or !$user->group()->can('edit_own_post', 'edit_post')) $_POST['draft'] = true;
 
 			$trigger = Trigger::current();
-			$trigger->call('metaWeblog_newPost_preQuery', array($args[3]), true);
+			$trigger->call('metaWeblog_newPost_preQuery', $args[3]);
 
 			$post = Post::add(
 				array(
@@ -237,7 +237,7 @@
 				$clean,
 				$url);
 
-			$trigger->call('metaWeblog_newPost', array($args[3], $post), true);
+			$trigger->call('metaWeblog_newPost', $args[3], $post);
 
 			# Send any and all pingbacks to URLs in the body
 			if (Config::current()->send_pingbacks)
@@ -284,7 +284,7 @@
 				$status = ($args[4]) ? 'public' : 'draft';
 
 			$trigger = Trigger::current();
-			$trigger->call('metaWeblog_editPost_preQuery', array($args[3], $post));
+			$trigger->call('metaWeblog_editPost_preQuery', $args[3], $post);
 
 			$post->update(
 				array('title' => $args[3]['title'], 'body' => $body ),
@@ -293,7 +293,7 @@
 				sanitize(fallback($args[3]['mt_basename'], $args[3]['title'], true)),
 				fallback($this->convertFromDateCreated($args[3]), $post->created_at, true));
 
-			$trigger->call('metaWeblog_editPost', array($args[3], $post));
+			$trigger->call('metaWeblog_editPost', $args[3], $post);
 
 			return true;
 		}
@@ -410,7 +410,7 @@
 			else if (!$post->deletable($user))
 				return new IXR_Error(500, __("You don't have permission to edit this post."));
 
-			Trigger::current()->call('mt_setPostCategories', array($args[3], $post));
+			Trigger::current()->call('mt_setPostCategories', $args[3], $post);
 			return true;
 		}
 

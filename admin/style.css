@@ -512,7 +512,7 @@ table tbody tr td.controls {
 }
 table tbody tr td.controls img {
 	margin-bottom: -3px;
-	margin-right: -1px;
+	margin-right: 1px;
 }
 table tbody tr td.main a:link,
 table tbody tr td.main a:visited,
@@ -728,19 +728,16 @@ button.lite img,
 /* @end */
 
 /* @group Page Reordering */
-.page_list {
-	padding: 0 2em;
-}
-.page_list li a:link,
-.page_list li a:visited {
-	text-decoration: none;
-}
 ul.sort_pages {
 	padding: 0;
 	margin: 0 0 0 2em;
 }
 ul.sort_pages li {
 	list-style: square;
+}
+ul.sort_pages li a:link,
+ul.sort_pages li a:visited {
+	text-decoration: none !important;
 }
 ul.sort_pages input {
 	margin-left: 2em;
@@ -794,6 +791,7 @@ hr {
 .box h1 span.right a:link,
 .box h1 span.right a:visited {
 	margin-left: 1em;
+	text-decoration: none;
 }
 .box h1 span.right a img {
 	margin-bottom: -3px;

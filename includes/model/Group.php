@@ -97,7 +97,7 @@
 			             array("name" => ":name", "permissions" => ":permissions"),
 			             array(":name" => $name, ":permissions" => Spyc::YAMLDump($permissions), ":id" => $this->id));
 
-			Trigger::current()->call("update_group", array($this, $name, $permissions));
+			Trigger::current()->call("update_group", $this, $name, $permissions);
 		}
 
 		/**

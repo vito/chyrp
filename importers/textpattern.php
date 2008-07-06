@@ -62,7 +62,7 @@
 						$_POST['created_at'] = $post["Posted"];
 						$new_post = Post::add($values, $clean, $url);
 
-						$trigger->call("import_textpattern_post", array($post, $new_post));
+						$trigger->call("import_textpattern_post", $post, $new_post);
 
 						$step = "2";
 					}

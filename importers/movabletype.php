@@ -42,7 +42,7 @@
 					$_POST['created_at'] = $timestamp;
 					$id = Post::add($values, $clean, $url);
 
-					$trigger->call("import_movabletype_post", array($the_post, $id));
+					$trigger->call("import_movabletype_post", $the_post, $id);
 				}
 
 				$step = "2";

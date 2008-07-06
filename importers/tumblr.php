@@ -110,7 +110,7 @@
 					$_POST['feather'] = str_replace(array_keys($translate_types), array_values($translate_types), $post->attributes()->type);
 
 					$new_post = Post::add($values, $clean, Post::check_url($clean));
-					$trigger->call("import_tumble", array($post, $new_post));
+					$trigger->call("import_tumble", $post, $new_post);
 				}
 
 				$step = "2";

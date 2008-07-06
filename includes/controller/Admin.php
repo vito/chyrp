@@ -893,10 +893,10 @@
 
 						$post = Post::add($data, $clean, Post::check_url($clean));
 
-						$trigger->call("import_wordpress_post", array($item, $post));
+						$trigger->call("import_wordpress_post", $item, $post);
 					} elseif ($wordpress->post_type == "page") {
 						$page = Page::add(trim($item->title), trim($content->encoded), 0, true, 0, $clean, Page::check_url($clean));
-						$trigger->call("import_wordpress_page", array($item, $post));
+						$trigger->call("import_wordpress_page", $item, $post);
 					}
 				}
 

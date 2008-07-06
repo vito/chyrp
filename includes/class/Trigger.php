@@ -21,45 +21,43 @@
 
 		/**
 		 * Function: call
-		 * Calls a trigger, passing the $arg to any actions for it.
-		 * If $arg is an array, the actions are called with call_user_func_array.
+		 * Calls a trigger, passing any additional arguments to it.
 		 *
 		 * Parameters:
 		 *     $name - The name of the trigger.
-		 *     $arg - Arguments to pass to the actions.
-		 *     $array - If $arg is an array, should it be passed as multiple values or a single array?
 		 */
-		public function call($name, $arg = null, $array = true) {
+		public function call($name) {
 			global $modules;
 			if (!isset($modules)) return;
 
-			$caller = (is_array($arg) and $array) ? "call_user_func_array" : "call_user_func" ;
+			$arguments = func_get_args();
+			array_shift($arguments);
 
 			$this->called[$name] = array();
 			if (isset($this->priorities[$name])) { # Predefined priorities?
 				usort($this->priorities[$name], array($this, "cmp"));
 
 				foreach ($this->priorities[$name] as $action) {
-					$caller($action["function"], $arg);
+					call_user_func_array($action["function"], $arguments);
 					$this->called[$name][] = $action["function"];
 				}
 			}
 
 			foreach ($modules as $module)
 				if (!in_array(array($module, $name), $this->called[$name]) and is_callable(array($module, $name)))
-					$caller(array($module, $name), $arg);
+					call_user_func_array(array($module, $name), $arguments);
 		}
 
 		/**
 		 * Function: filter
-		 * Filters a string or array through a trigger's actions.
-		 * Similar to <call>, except this is stackable and is intended to
+		 * Filters a variable through a trigger's actions. Similar to <call>, except this is stackable and is intended to
 		 * modify something instead of inject code.
 		 *
+		 * Any additional arguments passed to this function are passed to the function being called.
+		 *
 		 * Parameters:
+		 *     $target - The variable to filter.
 		 *     $name - The name of the trigger.
-		 *     $target - Arguments to pass to the actions.
-		 *     $arguments - Argument(s) to pass to the filter function.
 		 *
 		 * Returns:
 		 *     $target, filtered through any/all actions for the trigger $name.
