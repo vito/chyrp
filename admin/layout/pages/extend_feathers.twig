@@ -3,6 +3,9 @@
 {% block title %}${ "Feathers" | translate }{% endblock %}
 
 {% block content %}
+			{% for notification in notifications %}
+			<p class="message">$notification</p>
+			{% endfor %}
 			<h1>${ "Feathers" | translate }</h1>
 			<div class="enable feather left">
 				<h2>${ "Enabled" | translate }</h2>

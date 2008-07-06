@@ -45,17 +45,18 @@ a:visited {
 
 /* @group Header */
 #header {
-	background: #3e3e3e url('images/header.gif') repeat-x;
-	padding: 3.3em 0;
+	background: #353535 url('images/header.gif') repeat-x;
+	padding: 2.5em 0;
 	color: #fff;
 }
 #header h1 {
 	font-size: 3em;
+	line-height: 1.25em;
 	text-shadow: #000 0 1px 1px;
 }
 #header #navigation {
 	float: right;
-	margin-top: .25em;
+	margin-top: 1em;
 }
 #header #navigation li {
 	display: inline;
@@ -87,8 +88,11 @@ a:visited {
 #welcome a:visited {
 	text-decoration: none;
 	background: rgba(0,0,0,.0625);
-	padding: 1em 1em .8em;
+	padding: 1em;
 	margin: -1em 0 -.8em;
+}
+#welcome .right {
+	padding-bottom: .8em !important;
 }
 #welcome a:hover {
 	background: rgba(0,0,0,.03125);

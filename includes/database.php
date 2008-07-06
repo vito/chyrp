@@ -29,11 +29,11 @@
 
 			if (class_exists("PDO") and (in_array("mysql", PDO::getAvailableDrivers()) or in_array("sqlite", PDO::getAvailableDrivers())))
 				$this->interface = "pdo";
-			elseif ($this->adapter == "mysql" class_exists("MySQLi"))
+			elseif ($this->adapter == "mysql" and class_exists("MySQLi"))
 				$this->interface = "mysqli";
 			elseif ($this->adapter == "mysql")
 				$this->interface = "mysql";
-			elseif ($this->adapter == "sqlite" and function_exists("sqlite_query"))
+			elseif ($this->adapter == "sqlite" and class_exists("SQLiteDatabase"))
 				$this->interface = "sqlite";
 		}
 

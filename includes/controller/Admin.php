@@ -980,6 +980,8 @@
 						$info["notifications"][] = _f("Please create the <code>%s</code> directory at your Chyrp install's root and CHMOD it to 777.", array($config->uploads_path));
 					elseif (!is_writable(MAIN_DIR.$config->uploads_path))
 						$info["notifications"][] = _f("Please CHMOD <code>%s</code> to 777.", array($config->uploads_path));
+
+				$this->context["notifications"] = $info["notifications"];
 			}
 		}
 
@@ -1045,6 +1047,8 @@
 						$info["notifications"][] = _f("Please create the <code>%s</code> directory at your Chyrp install's root and CHMOD it to 777.", array($config->uploads_path));
 					elseif (!is_writable(MAIN_DIR.$config->uploads_path))
 						$info["notifications"][] = _f("Please CHMOD <code>%s</code> to 777.", array($config->uploads_path));
+
+				$this->context["notifications"] = $info["notifications"];
 			}
 		}
 
