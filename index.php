@@ -31,7 +31,7 @@
 			if ($post->status == "draft")
 				Flash::message(__("This post is a draft."));
 
-			$theme->load(array("pages/view", "pages/id", "pages/index"), array("post" => $post, "posts" => array($post)));
+			$theme->load(array("pages/view", "pages/index"), array("post" => $post, "posts" => array($post)));
 			break;
 		case "page":
 			fallback($page, new Page(null, array("where" => "`url` = :url", "params" => array(":url" => $_GET['url']))));

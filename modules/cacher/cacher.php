@@ -132,8 +132,6 @@
 
 			Config::current()->set("cache_expire", $_POST['cache_expire']);
 
-			Flash::notice(__("Settings updated."));
-
-			redirect("/admin/?action=cache_settings");
+			Flash::notice(__("Settings updated."), "/admin/?action=cache_settings");
 		}
 	}

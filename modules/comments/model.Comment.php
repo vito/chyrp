@@ -85,10 +85,11 @@
 					error(__("Spam Comment"), __("Your comment has been marked as spam. It will have to be approved before it will show up.", "comments"));
 				} else {
 					$comment = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, $signature, datetime(), $post, $visitor->id);
+
 					if (isset($_POST['ajax']))
 						exit("{ comment_id: ".$comment->id." }");
 
-					redirect($post->url()."#comment_".$comment->id);
+					Flash::notice(__("Comment added."), $post->url()."#comment_".$comment->id);
 				}
 			} else {
 				$comment = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, "", datetime(), $post, $visitor->id);
@@ -96,7 +97,7 @@
 				if (isset($_POST['ajax']))
 					exit("{ comment_id: ".$comment->id." }");
 
-				redirect($post->url()."#comment_".$comment->id);
+				Flash::notice(__("Comment added."), $post->url()."#comment_".$comment->id);
 			}
 		}
 
