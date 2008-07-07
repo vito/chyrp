@@ -13,6 +13,22 @@
 	$pluralizations = array("feathers" => array());
 
 	/**
+	 * Function: session
+	 * Begins Chyrp's custom session storage whatnots.
+	 */
+	function session() {
+		session_set_save_handler(array("Session", "open"),
+		                         array("Session", "close"),
+		                         array("Session", "read"),
+		                         array("Session", "write"),
+		                         array("Session", "destroy"),
+		                         array("Session", "gc"));
+		session_set_cookie_params(60 * 60 * 24 * 30);
+		session_name(sanitize(camelize(Config::current()->name)."ChyrpSession", false, true));
+		session_start();
+	}
+
+	/**
 	 * Function: error
 	 * Shows an error message.
 	 *

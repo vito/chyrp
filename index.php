@@ -111,19 +111,11 @@
 			}
 			break;
 		case "login":
-			if (logged_in())
-				error(__("Error"), __("You're already logged in."));
-
 			$theme->title = __("Log In");
 			$theme->load("forms/user/login", array("incorrect" => isset($_GET['incorrect'])));
 
 			break;
 		case "register":
-			if (!$config->can_register)
-				error(__("Registration Disabled"), __("I'm sorry, but this site is not allowing registration."));
-			if (logged_in())
-				error(__("Error"), __("You're already logged in."));
-
 			$theme->title = __("Register");
 			$theme->load("forms/user/register");
 
@@ -137,22 +129,8 @@
 
 			break;
 		case "lost_password":
-			$sent = false;
-			$invalid_user = false;
-			if (isset($_POST['login'])) {
-				$user = new User(null, array("where" => "`login` = :login", "params" => array(":login" => $_POST['login'])));
-				if ($user->no_results)
-					$invalid_user = true;
-				else {
-					$new_password = random(16);
-					$user->update($user->login, md5($new_password), $user->full_name, $user->email, $user->website, $user->group_id);
-					$sent = @mail($user->email, __("Lost Password Request"), _f("%s,\n\nWe have received a request for a new password for your account at %s.\n\nPlease log in with the following password, and feel free to change it once you've successfully logged in:\n\t%s", array($user->login, $config->name, $new_password)));
-				}
-			}
-
 			$theme->title = __("Lost Password");
-			$theme->load("forms/user/lost_password", array("sent" => $sent, "invalid_user" => $invalid_user));
-
+			$theme->load("forms/user/lost_password");
 			break;
 		case "feed":
 			if (!isset($posts)) exit;

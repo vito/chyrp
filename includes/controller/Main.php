@@ -126,10 +126,8 @@
 			$visitor = Visitor::current();
 			$route = Route::current();
 
-			if (!$visitor->group()->can("change_settings")) {
-				$this->index();
-				return $route->action = "index";
-			}
+			if (!$visitor->group()->can("change_settings"))
+				redirect("/");
 
 			if (empty($_GET['theme']))
 				error(__("Error"), __("Please specify a theme to preview."));
@@ -152,65 +150,78 @@
 		}
 
 		/**
-		 * Function: process_registration
+		 * Function: register
 		 * Process registration. If registration is disabled or if the user is already logged in, it will error.
 		 */
-		public function process_registration() {
+		public function register() {
 			$config = Config::current();
 			if (!$config->can_register)
 				error(__("Registration Disabled"), __("I'm sorry, but this site is not allowing registration."));
+
 			if (logged_in())
 				error(__("Error"), __("You're already logged in."));
 
+			if (empty($_POST))
+				return;
+
+			$route = Route::current();
+
 			if (empty($_POST['login']))
-				error(__("Error"), __("Please enter a username for your account."));
+				return Flash::warning(__("Please enter a username for your account."));
 
+			if (count(User::find(array("where" => "`login` = :login",
+			                           "params" => array(":login" => $_POST['login'])))))
+				Flash::warning(__("That username is already in use."));
 
-			$check_user = User::find(array("where" => "`login` = :login",
-			                               "params" => array(":login" => $_POST['login'])));
-			if (count($check_user))
-				error(__("Error"), __("That username is already in use."));
+			if (empty($_POST['password1']) and empty($_POST['password2']))
+				Flash::warning(__("Password cannot be blank."));
+			elseif ($_POST['password1'] != $_POST['password2'])
+				Flash::warning(__("Passwords do not match."));
 
-			if (empty($_POST['password1']) or empty($_POST['password2']))
-				error(__("Error"), __("Password cannot be blank."));
 			if (empty($_POST['email']))
-				error(__("Error"), __("E-mail address cannot be blank."));
-			if ($_POST['password1'] != $_POST['password2'])
-				error(__("Error"), __("Passwords do not match."));
-			if (!eregi("^[[:alnum:]][a-z0-9_.-\+]*@[a-z0-9.-]+\.[a-z]{2,6}$",$_POST['email']))
-				error(__("Error"), __("Unsupported e-mail address."));
+				Flash::warning(__("E-mail address cannot be blank."));
+			elseif (!eregi("^[[:alnum:]][a-z0-9_.-\+]*@[a-z0-9.-]+\.[a-z]{2,6}$",$_POST['email']))
+				Flash::warning(__("Unsupported e-mail address."));
+
+			if (Flash::exists("warning"))
+				return;
 
 			User::add($_POST['login'], $_POST['password1'], $_POST['email']);
 
 			$_SESSION['chyrp_login'] = $_POST['login'];
 			$_SESSION['chyrp_password'] = md5($_POST['password1']);
 
-			$route = Route::current();
-			redirect('/');
+			Flash::notice(__("Registration successful."), "/");
 		}
 
 		/**
-		 * Function: process_login
+		 * Function: login
 		 * Process logging in. If the username and password are incorrect or if the user is already logged in, it will error.
 		 */
-		public function process_login() {
+		public function login() {
+			if (logged_in())
+				error(__("Error"), __("You're already logged in."));
+
+			if (empty($_POST))
+				return;
+
 			fallback($_POST['login']);
 			fallback($_POST['password']);
 
 			if (!User::authenticate($_POST['login'], md5($_POST['password'])))
 				if (!count(User::find(array("where" => "__users.login = :login",
 				                           "params" => array(":login" => $_POST['login'])))))
-					error(__("Error"), __("There is no user with that login name."));
+					Flash::warning(__("There is no user with that login name."));
 				else
-					error(__("Error"), __("Password incorrect."));
+					Flash::warning(__("Password incorrect."));
 
-			if (logged_in())
-				error(__("Error"), __("You're already logged in."));
+			if (Flash::exists("warning"))
+				return;
 
 			$_SESSION['chyrp_login'] = $_POST['login'];
 			$_SESSION['chyrp_password'] = md5($_POST['password']);
 
-			redirect("/");
+			Flash::notice(__("Login successful."), "/");
 		}
 
 		/**
@@ -223,7 +234,9 @@
 
 			session_destroy();
 
-			redirect("/");
+			session();
+
+			Flash::notice(__("Logged out."), "/");
 		}
 
 		/**
@@ -231,7 +244,9 @@
 		 * Updates the current user when the form is submitted. Shows an error if they aren't logged in.
 		 */
 		public function update_self() {
-			if (empty($_POST)) return;
+			if (empty($_POST))
+				return;
+
 			if (!logged_in())
 				error(__("Error"), __("You must be logged in to access this area."));
 
@@ -241,11 +256,55 @@
 			            md5($_POST['new_password1']) :
 			            $visitor->password ;
 
-			$visitor->update($visitor->login, $password, $_POST['full_name'], $_POST['email'], $_POST['website'], $visitor->group()->id);
+			$visitor->update($visitor->login,
+			                 $password,
+			                 $_POST['full_name'],
+			                 $_POST['email'],
+			                 $_POST['website'],
+			                 $visitor->group()->id);
 
 			$_SESSION['chyrp_password'] = $password;
 
-			redirect("/");
+			Flash::notice(__("Your profile has been updated."), "/");
+		}
+
+		/**
+		 * Function: lost_password
+		 * Handles e-mailing lost passwords to a user's email address.
+		 */
+		public function lost_password() {
+			if (empty($_POST))
+				return;
+
+			$user = new User(null, array("where" => "`login` = :login", "params" => array(":login" => $_POST['login'])));
+			if ($user->no_results)
+				return Flash::warning(__("Invalid user specified."));
+
+			$new_password = random(16);
+
+			$user->update($user->login,
+			              md5($new_password),
+			              $user->full_name,
+			              $user->email,
+			              $user->website,
+			              $user->group_id);
+
+			$sent = @mail($user->email,
+				          __("Lost Password Request"),
+				          _f("%s,\n\nWe have received a request for a new password for your account at %s.\n\nPlease log in with the following password, and feel free to change it once you've successfully logged in:\n\t%s",
+				             array($user->login, $config->name, $new_password)));
+
+			if ($sent)
+				return Flash::warning(_f("An e-mail has been sent to your e-mail address that contains a new password. Once you have logged in with it, feel free to change it at <a href=\"%s\">User Controls</a>.",
+				                         array(Route::current()->url("controls/"))));
+
+			$user->update($user->login,
+			              $user->password,
+			              $user->full_name,
+			              $user->email,
+			              $user->website,
+			              $user->group_id);
+			Flash::warning(__("E-Mail could not be sent. Password change cancelled."));
 		}
 	}
 	$main = new MainController();

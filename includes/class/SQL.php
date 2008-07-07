@@ -113,7 +113,7 @@
 
 						$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 					} catch (PDOException $error) {
-						$this->error = preg_replace("/SQLSTATE\[.*?\].+([A-Z])(.*?)/", "\\1\\2", $error->getMessage());
+						$this->error = $error->getMessage();
 						return ($checking) ? false : error(__("Database Error"), $this->error) ;
 					}
 					break;

@@ -42,7 +42,7 @@
 						$this->query->setFetchMode(PDO::FETCH_ASSOC);
 						if (!$result) throw new PDOException;
 					} catch (PDOException $error) {
-						$message = preg_replace("/SQLSTATE.+([A-Z])(.*?)/", "\\1\\2", $error->getMessage());
+						$message = $error->getMessage();
 
 						if (XML_RPC or $throw_exceptions)
 							throw new Exception($message);

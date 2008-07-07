@@ -2,14 +2,14 @@
 {% block content %}
 	<h2>${ "Log In" | translate }</h2>
 	<br />
-	<form action="{% url "process_login/" %}" method="post">
+	<form action="{% url "login/" %}" method="post">
 		<p>
 			<label for="login">${ "Username" | translate }</label>
-			<input type="text" name="login" value="" id="login" />
+			<input type="text" name="login" value="$POST.login" id="login" />
 		</p>
 		<p>
 			<label for="password">${ "Password" | translate }</label>
-			<input type="password" name="password" value="" id="password" />
+			<input type="password" name="password" value="$POST.password" id="password" />
 		</p>
 
 		<p><input name="submit" type="submit" id="submit" value="${ "Log In" | translate }"></p>

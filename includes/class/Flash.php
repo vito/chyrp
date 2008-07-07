@@ -130,6 +130,22 @@
 		}
 
 		/**
+		 * Function: exists
+		 * Checks for flash messages.
+		 *
+		 * Parameters:
+		 *     $type - message, notice, or warning.
+		 */
+		static function exists($type = null) {
+			if (isset($type))
+				return !empty($_SESSION['flash'][pluralize($type)]);
+			else
+				foreach ($_SESSION['flash'] as $flash)
+					if (!empty($flash))
+						return true;
+		}
+
+		/**
 		 * Function: current
 		 * Returns a singleton reference to the current class.
 		 */

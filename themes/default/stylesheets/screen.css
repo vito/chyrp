@@ -243,7 +243,7 @@ ol {
 	float: right;
 }
 div.success, div.notice, div.failure {
-	margin: .5em 0 1em 0;
+	margin: .5em 0 2em 0;
 	padding: 3px 6px 2px 26px;
 	cursor: pointer;
 }

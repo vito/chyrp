@@ -130,17 +130,8 @@
 	#     <Session>
 	require_once INCLUDES_DIR."/class/Session.php";
 
-	if (!JAVASCRIPT) {
-		session_set_save_handler(array("Session", "open"),
-		                         array("Session", "close"),
-		                         array("Session", "read"),
-		                         array("Session", "write"),
-		                         array("Session", "destroy"),
-		                         array("Session", "gc"));
-		session_set_cookie_params(60 * 60 * 24 * 30);
-		session_name(sanitize(camelize($config->name)."ChyrpSession", false, true));
-		session_start();
-	}
+	if (!JAVASCRIPT)
+		session();
 
 	# File: Theme
 	# See Also:
