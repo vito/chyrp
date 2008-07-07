@@ -29,7 +29,7 @@
 		 *     $redirect_to - URL to redirect to after the message is stored.
 		 */
 		static function message($message, $redirect_to = null) {
-			$_SESSION['flash']['messages'][] = Trigger::current()->filter($message, "flash_message")
+			$_SESSION['flash']['messages'][] = Trigger::current()->filter($message, "flash_message");
 
 			if (isset($redirect_to))
 				redirect($redirect_to);
@@ -59,7 +59,7 @@
 		 *     $redirect_to - URL to redirect to after the message is stored.
 		 */
 		static function warning($message, $redirect_to = null) {
-			$_SESSION['flash']['warnings'][] = Trigger::current()->filter($message, "flash_warning_message")
+			$_SESSION['flash']['warnings'][] = Trigger::current()->filter($message, "flash_warning_message");
 
 			if (isset($redirect_to))
 				redirect($redirect_to);
