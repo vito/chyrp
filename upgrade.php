@@ -511,7 +511,8 @@
 	}
 
 	function make_xml_safe($text) { # Upgrade to 2.0
-		return name2codepoint(htmlentities($text, ENT_NOQUOTES, "utf-8", false));
+		$text = html_entity_decode($text, ENT_QUOTES, "utf-8");
+		return name2codepoint(htmlentities($text, ENT_NOQUOTES, "utf-8"));
 	}
 
 	if (!empty($_POST)) {
