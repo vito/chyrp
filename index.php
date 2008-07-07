@@ -28,7 +28,8 @@
 
 			$theme->title = $post->title();
 
-			$post->date_shown = true;
+			if ($post->status == "draft")
+				Flash::message(__("This post is a draft."));
 
 			$theme->load(array("pages/view", "pages/id", "pages/index"), array("post" => $post, "posts" => array($post)));
 			break;

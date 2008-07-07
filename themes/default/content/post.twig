@@ -1,8 +1,3 @@
-					{% if route.action == "view" and post.status == "draft" %}
-					<div class="notice" onClick="$$(this).fadeOut('fast')">
-						${ "This post is a draft." | translate }<span class="sub">${ "(click to hide)" | translate }</span>
-					</div>
-					{% endif %}
 					<div class="post $post.feather{% if post.pinned %} pinned{% endif %}" id="post_$post.id">
 						{% if post.pinned %}<span class="pinned_text">${ "pinned" | translate }</span>{% endif %}
 
