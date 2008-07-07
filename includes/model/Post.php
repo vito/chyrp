@@ -40,6 +40,7 @@
 
 			$this->filtered = !isset($options["filter"]) or $options["filter"];
 			$this->slug =& $this->url;
+			fallback($this->clean, $this->url);
 
 			$this->parse();
 		}

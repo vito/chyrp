@@ -152,7 +152,7 @@
 
 		/**
 		 * Function: current
-		 * Returns a singleton reference to the current connection.
+		 * Returns a singleton reference to the current class.
 		 */
 		public static function & current() {
 			static $instance = null;

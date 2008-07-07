@@ -124,8 +124,6 @@
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
-			$admin->context["updated"] = isset($_GET['updated']);
-
 			if (empty($_POST))
 				return;
 
@@ -134,6 +132,8 @@
 
 			Config::current()->set("cache_expire", $_POST['cache_expire']);
 
-			redirect("/admin/?action=cache_settings&updated");
+			Flash::notice(__("Settings updated."));
+
+			redirect("/admin/?action=cache_settings");
 		}
 	}

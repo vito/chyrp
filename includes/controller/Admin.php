@@ -38,7 +38,10 @@
 				error(__("Access Denied"), __("Invalid security key."));
 
 			global $feathers;
-			$feathers[$_POST['feather']]->submit();
+
+			$post = $feathers[$_POST['feather']]->submit();
+
+			Flash::notice(__("Post created!"), $post->redirect);
 		}
 
 		/**
@@ -64,6 +67,10 @@
 		 */
 		public function update_post() {
 			$post = new Post($_POST['id']);
+
+			if ($post->no_results)
+				Flash::warning(__("Post not found."), "/admin/?action=manage_posts");
+
 			if (!$post->editable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this post."));
 
@@ -74,7 +81,9 @@
 			$feathers[$post->feather]->update();
 
 			if (!isset($_POST['ajax']))
-				redirect("/admin/?action=manage_posts&updated=".$_POST['id']);
+				Flash::notice(_f("Post updated. <a href=\"%s\">View Post &rarr;</a>",
+				                 array($post->url())),
+				              "/admin/?action=manage_posts");
 			else
 				exit((string) $_POST['id']);
 		}
@@ -110,7 +119,7 @@
 
 			Post::delete($_POST['id']);
 
-			redirect("/admin/?action=manage_posts&deleted=".$_POST['id']);
+			Flash::notice(__("Post deleted."), "/admin/?action=manage_posts");
 		}
 
 		/**
@@ -164,11 +173,6 @@
 			}
 
 			$this->context["posts"] = new Paginator(Post::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
-
-			if (!empty($_GET['updated']))
-				$this->context["updated"] = new Post($_GET['updated']);
-
-			$this->context["deleted"] = isset($_GET['deleted']);
 		}
 
 		/**
@@ -199,7 +203,7 @@
 
 			$page = Page::add($_POST['title'], $_POST['body'], $_POST['parent_id'], $show_in_list, 0, $clean, $url);
 
-			redirect($page->url());
+			Flash::notice(__("Page created!"), $page->url());
 		}
 
 		/**
@@ -229,10 +233,29 @@
 				error(__("Access Denied"), __("Invalid security key."));
 
 			$page = new Page($_POST['id']);
+
+			if ($page->no_results)
+				Flash::warning(__("Page not found."), "/admin/?action=manage_pages");
+
 			$page->update($_POST['title'], $_POST['body'], $_POST['parent_id'], !empty($_POST['show_in_list']), $page->list_order, $_POST['slug']);
 
 			if (!isset($_POST['ajax']))
-				redirect("/admin/?action=manage_pages&updated=".$_POST['id']);
+				Flash::notice(_f("Page updated. <a href=\"%s\">View Page &rarr;</a>",
+				                 array($page->url())),
+				              "/admin/?action=manage_pages");
+		}
+
+		/**
+		 * Function: reorder_pages
+		 * Reorders pages.
+		 */
+		public function reorder_pages() {
+			foreach ($_POST['list_order'] as $id => $order) {
+				$page = new Page($id);
+				$page->update($page->title, $page->body, $page->parent_id, $page->show_in_list, $order, $page->url);
+			}
+
+			Flash::notice(__("Pages reordered."), "/admin/?action=manage_pages");
 		}
 
 		/**
@@ -272,7 +295,7 @@
 
 			Page::delete($_POST['id']);
 
-			redirect("/admin/?action=manage_pages&deleted=".$_POST['id']);
+			Flash::notice(__("Page deleted."), "/admin/?action=manage_pages");
 		}
 
 		/**
@@ -316,11 +339,6 @@
 			}
 
 			$this->context["pages"] = new Paginator(Page::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
-
-			if (!empty($_GET['updated']))
-				$this->context["updated"] = new Page($_GET['updated']);
-
-			$this->context["deleted"] = isset($_GET['deleted']);
 		}
 
 		/**
@@ -369,7 +387,7 @@
 
 			User::add($_POST['login'], $_POST['password1'], $_POST['email'], $_POST['full_name'], $_POST['website'], $_POST['group']);
 
-			redirect("/admin/?action=manage_users&added");
+			Flash::notice(__("User added."), "/admin/?action=manage_users");
 		}
 
 		/**
@@ -406,6 +424,10 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit users."));
 
 			$user = new User($_POST['id']);
+
+			if ($user->no_results)
+				Flash::warning(__("User not found."), "/admin/?action=manage_user");
+
 			$password = (!empty($_POST['new_password1']) and $_POST['new_password1'] == $_POST['new_password2']) ?
 			            md5($_POST['new_password1']) :
 			            $user->password ;
@@ -415,7 +437,7 @@
 			if ($_POST['id'] == $visitor->id)
 				$_SESSION['chyrp_password'] = $password;
 
-			redirect("/admin/?action=manage_users&updated");
+			Flash::notice(__("User updated."), "/admin/?action=manage_users");
 		}
 
 		/**
@@ -448,7 +470,7 @@
 
 			User::delete($_POST['id']);
 
-			redirect("/admin/?action=manage_users&deleted");
+			Flash::notice(__("User deleted."), "/admin/?action=manage_users");
 		}
 
 		/**
@@ -487,10 +509,6 @@
 			}
 
 			$this->context["users"] = new Paginator(User::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
-
-			$this->context["updated"] = isset($_GET['updated']);
-			$this->context["deleted"] = isset($_GET['deleted']);
-			$this->context["added"]   = isset($_GET['added']);
 		}
 
 		/**
@@ -517,7 +535,7 @@
 
 			Group::add($_POST['name'], array_keys($_POST['permissions']));
 
-			redirect("/admin/?action=manage_groups&added");
+			Flash::notice(__("Group added."), "/admin/?action=manage_groups");
 		}
 
 		/**
@@ -548,10 +566,11 @@
 			$group = new Group($_POST['id']);
 
 			if ($group->no_results)
-				redirect("/admin/?action=manage_groups ");
+				Flash::warning(__("Group not found."), "/admin/?action=manage_groups");
 
 			$group->update($_POST['name'], $permissions);
-			redirect("/admin/?action=manage_groups&updated");
+
+			Flash::notice(__("Group updated."), "/admin/?action=manage_groups");
 		}
 
 		/**
@@ -597,7 +616,7 @@
 
 			Group::delete($_POST['id']);
 
-			redirect("/admin/?action=manage_groups&deleted");
+			Flash::notice(__("Group deleted."), "/admin/?action=manage_groups");
 		}
 
 		/**
@@ -614,10 +633,6 @@
 				$this->context["groups"] = array($user->group());
 			} else
 				$this->context["groups"] = new Paginator(Group::find(array("placeholders" => true, "order" => "`__groups`.`id` asc")), 10);
-
-			$this->context["updated"] = isset($_GET['updated']);
-			$this->context["deleted"] = isset($_GET['deleted']);
-			$this->context["added"]   = isset($_GET['added']);
 		}
 
 		/**
@@ -829,15 +844,6 @@
 		public function import() {
 			if (!Visitor::current()->group()->can("add_post"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
-
-			foreach (array("success_chyrp",
-			               "invalid_chyrp_posts",
-			               "invalid_chyrp_pages",
-			               "success_wordpress",
-			               "invalid_wordpress",
-			               "success_tumblr",
-			               "invalid_tumblr") as $message)
-				$this->context[$message] = isset($_GET[$message]);
 		}
 
 		/**
@@ -855,11 +861,11 @@
 
 			if (isset($_FILES['posts_file']) and $_FILES['posts_file']['error'] == 0)
 				if (!$posts = simplexml_load_file($_FILES['posts_file']['tmp_name']) or $posts->generator != "Chyrp")
-					redirect("/admin/?action=import&invalid_chyrp_posts");
+					Flash::warning(__("Chyrp Posts export file is invalid."), "/admin/?action=import");
 
 			if (isset($_FILES['pages_file']) and $_FILES['pages_file']['error'] == 0)
 				if (!$pages = simplexml_load_file($_FILES['pages_file']['tmp_name']) or $pages->generator != "Chyrp")
-					redirect("/admin/?action=import&invalid_chyrp_pages");
+					Flash::warning(__("Chyrp Pages export file is invalid."), "/admin/?action=import");
 
 			if (ini_get("memory_limit") < 20)
 				ini_set("memory_limit", "20M");
@@ -897,7 +903,7 @@
 					$trigger->call("import_chyrp_page", $entry, $page);
 				}
 
-			redirect("/admin/?action=import&success_chyrp");
+			Flash::notice(__("Chyrp content successfully imported!"), "/admin/?action=import&success_chyrp");
 		}
 
 		/**
@@ -938,50 +944,51 @@
 
 			$xml = simplexml_load_string($sane_xml, "SimpleXMLElement", LIBXML_NOCDATA);
 
-			if ($xml and strpos($xml->channel->generator, "wordpress.org")) {
-				foreach ($xml->channel->item as $item) {
-					$wordpress = $item->children("http://wordpress.org/export/1.0/");
-					$content   = $item->children("http://purl.org/rss/1.0/modules/content/");
-					if ($wordpress->status == "attachment" or $item->title == "zz_placeholder")
-						continue;
+			if (!$xml or !strpos($xml->channel->generator, "wordpress.org"))
+				Flash::warning(__("File does not seem to be a valid WordPress export file."),
+				               "/admin/?action=import&invalid_wordpress");
 
-					if (!empty($_POST['media_url']) and preg_match_all("/".preg_quote($_POST['media_url'], "/")."([^ \t\"]+)/", $content->encoded, $media))
-						foreach ($media[0] as $matched_url) {
-							$filename = upload_from_url($matched_url);
-							$content->encoded = str_replace($matched_url, $config->url.$config->uploads_path.$filename, $content->encoded);
-						}
+			foreach ($xml->channel->item as $item) {
+				$wordpress = $item->children("http://wordpress.org/export/1.0/");
+				$content   = $item->children("http://purl.org/rss/1.0/modules/content/");
+				if ($wordpress->status == "attachment" or $item->title == "zz_placeholder")
+					continue;
 
-					$clean = (isset($wordpress->post_name)) ? $wordpress->post_name : sanitize($item->title) ;
-
-					if (empty($wordpress->post_type) or $wordpress->post_type == "post") {
-						$status_translate = array("publish" => "public",
-						                          "draft"   => "draft",
-						                          "private" => "private",
-						                          "static"  => "public",
-						                          "object"  => "public",
-						                          "inherit" => "public",
-						                          "future"  => "draft",
-						                          "pending" => "draft");
-
-						$_POST['status']  = str_replace(array_keys($status_translate), array_values($status_translate), $wordpress->status);
-						$_POST['pinned']  = false;
-						$_POST['created_at'] = ($wordpress->post_date == "0000-00-00 00:00:00") ? datetime() : $wordpress->post_date ;
-						$_POST['feather'] = "text";
-
-						$data = array("title" => trim($item->title), "body" => trim($content->encoded));
-
-						$post = Post::add($data, $clean, Post::check_url($clean));
-
-						$trigger->call("import_wordpress_post", $item, $post);
-					} elseif ($wordpress->post_type == "page") {
-						$page = Page::add(trim($item->title), trim($content->encoded), 0, true, 0, $clean, Page::check_url($clean));
-						$trigger->call("import_wordpress_page", $item, $post);
+				if (!empty($_POST['media_url']) and preg_match_all("/".preg_quote($_POST['media_url'], "/")."([^ \t\"]+)/", $content->encoded, $media))
+					foreach ($media[0] as $matched_url) {
+						$filename = upload_from_url($matched_url);
+						$content->encoded = str_replace($matched_url, $config->url.$config->uploads_path.$filename, $content->encoded);
 					}
-				}
 
-				redirect("/admin/?action=import&success_wordpress");
-			} else
-				redirect("/admin/?action=import&invalid_wordpress");
+				$clean = (isset($wordpress->post_name)) ? $wordpress->post_name : sanitize($item->title) ;
+
+				if (empty($wordpress->post_type) or $wordpress->post_type == "post") {
+					$status_translate = array("publish" => "public",
+					                          "draft"   => "draft",
+					                          "private" => "private",
+					                          "static"  => "public",
+					                          "object"  => "public",
+					                          "inherit" => "public",
+					                          "future"  => "draft",
+					                          "pending" => "draft");
+
+					$_POST['status']  = str_replace(array_keys($status_translate), array_values($status_translate), $wordpress->status);
+					$_POST['pinned']  = false;
+					$_POST['created_at'] = ($wordpress->post_date == "0000-00-00 00:00:00") ? datetime() : $wordpress->post_date ;
+					$_POST['feather'] = "text";
+
+					$data = array("title" => trim($item->title), "body" => trim($content->encoded));
+
+					$post = Post::add($data, $clean, Post::check_url($clean));
+
+					$trigger->call("import_wordpress_post", $item, $post);
+				} elseif ($wordpress->post_type == "page") {
+					$page = Page::add(trim($item->title), trim($content->encoded), 0, true, 0, $clean, Page::check_url($clean));
+					$trigger->call("import_wordpress_page", $item, $post);
+				}
+			}
+
+			Flash::notice(__("WordPress content successfully imported!"), "/admin/?action=import&success_wordpress");
 		}
 
 		/**
@@ -1018,7 +1025,8 @@
 			$xml = simplexml_load_string($api);
 
 			if (!isset($xml->tumblelog))
-				redirect("/admin/?action=import&invalid_tumblr");
+				Flash::warning(__("The URL you specified does not seem to be a valid Tumblr site."),
+				               "/admin/?action=import&invalid_tumblr");
 
 			$already_in = $posts = array();
 			foreach ($xml->posts->post as $post) {
@@ -1107,7 +1115,72 @@
 				Trigger::current()->call("import_tumble", $post, $new_post);
 			}
 
-			redirect("/admin/?action=import&success_tumblr");
+			Flash::notice(__("Tumblr content successfully imported!"), "/admin/?action=import&success_tumblr");
+		}
+
+		/**
+		 * Function: import_textpattern
+		 * TextPattern importing.
+		 */
+		public function import_textpattern() {
+			if (empty($_POST))
+				redirect("/admin/?action=import");
+
+			if (!Visitor::current()->group()->can("add_post"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+
+			$config = Config::current();
+			$trigger = Trigger::current();
+
+			$dbcon = $dbsel = false;
+			if (!$link = @mysql_connect($_POST['host'], $_POST['username'], $_POST['password']))
+				$errors[] = "Could not connect to the MySQL server: ".mysql_error();
+			else {
+				$dbcon = true;
+				$dbsel = @mysql_select_db($_POST['database'], $link);
+			}
+
+			if (!$dbcon or !$dbsel)
+				Flash::warning(__("Could not connect to the specified TextPattern database."),
+				               "/admin/?action=import&invalid_textpattern");
+
+			$get_posts = mysql_query("SELECT * FROM `{$_POST['prefix']}textpattern` ORDER BY `ID` ASC", $link) or die(mysql_error());
+			$posts = array();
+			while ($post = mysql_fetch_array($get_posts)) {
+				$posts[$post["ID"]] = $post;
+				$trigger->filter($posts[$post["ID"]], "import_textpattern_generate_array", $link);
+			}
+
+			mysql_close($link);
+
+			foreach ($posts as $post) {
+				if (!empty($_POST['media_url']) and
+				    preg_match_all("/".preg_quote($_POST['media_url'], "/")."([^ \t\"!\)]+)/", $post["Body"], $media))
+					foreach ($media[0] as $matched_url) {
+						$filename = upload_from_url($matched_url);
+						$post["Body"] = str_replace($matched_url, $config->url.$config->uploads_path.$filename, $post["Body"]);
+					}
+
+				$status_translate = array(1 => "draft",
+				                          2 => "private",
+				                          3 => "draft",
+				                          4 => "public",
+				                          5 => "public");
+
+				$clean = fallback($post["url_title"], sanitize($post["Title"]));
+
+				$_POST['status'] = $status_translate[$post["Status"]];
+				$_POST['pinned'] = ($post["Status"] == "5");
+				$_POST['created_at'] = $post["Posted"];
+				$_POST['feather'] = "text";
+
+				$new_post = Post::add(array("title" => $post["Title"],
+				                            "body" => $post["Body"]), $clean, Post::check_url($clean));
+
+				$trigger->call("import_textpattern_post", $post, $new_post);
+			}
+
+			Flash::notice(__("TextPattern content successfully imported!"), "/admin/?action=import&success_textpattern");
 		}
 
 		/**
@@ -1186,7 +1259,8 @@
 					elseif (!is_writable(MAIN_DIR.$config->uploads_path))
 						$info["notifications"][] = _f("Please CHMOD <code>%s</code> to 777.", array($config->uploads_path));
 
-				$this->context["notifications"] = $info["notifications"];
+				foreach ($info["notifications"] as $message)
+					Flash::message($message);
 			}
 		}
 
@@ -1253,7 +1327,8 @@
 					elseif (!is_writable(MAIN_DIR.$config->uploads_path))
 						$info["notifications"][] = _f("Please CHMOD <code>%s</code> to 777.", array($config->uploads_path));
 
-				$this->context["notifications"] = $info["notifications"];
+				foreach ($info["notifications"] as $message)
+					Flash::message($message);
 			}
 		}
 
@@ -1265,7 +1340,6 @@
 			$config = Config::current();
 
 			$this->context["themes"] = array();
-			$this->context["changed"] = isset($_GET['changed']);
 
 			if ($open = opendir(THEMES_DIR)) {
 			     while (($folder = readdir($open)) !== false) {
@@ -1315,14 +1389,16 @@
 				else
 					show_403(__("Access Denied"), __("You do not have sufficient privileges to enable/disable feathers."));
 
-			if (($type == "module" and module_enabled($_GET[$type])) or
-			    ($type == "feather" and feather_enabled($_GET[$type])))
-				redirect("/admin/?action=extend_modules");
+			if ($type == "module" and module_enabled($_GET[$type]))
+				Flash::warning(__("Module already enabled."), "/admin/?action=extend_modules");
+
+			if ($type == "feather" and feather_enabled($_GET[$type]))
+				Flash::warning(__("Feather already enabled."), "/admin/?action=extend_feathers");
 
 			$enabled_array = ($type == "module") ? "enabled_modules" : "enabled_feathers" ;
 			$folder        = ($type == "module") ? MODULES_DIR : FEATHERS_DIR ;
 
-			require $folder."/".$_GET[$type]."/".$type.".php";
+			require $folder."/".$_GET[$type]."/".$_GET[$type].".php";
 
 			$class_name = camelize($_GET[$type]);
 			if (method_exists($class_name, "__install"))
@@ -1332,7 +1408,15 @@
 			array_push($new, $_GET[$type]);
 			$config->set($enabled_array, $new);
 
-			redirect("/admin/?action=extend_".$type."s&enabled=".$_GET[$type]);
+			$info = Horde_Yaml::loadFile($folder."/".$_GET[$type]."/info.yaml");
+			if ($type == "module")
+				Flash::notice(_f("&#8220;%s&#8221; module enabled.",
+				                 array($info["name"])),
+				              "/admin/?action=extend_".pluralize($type));
+			elseif ($type == "feather")
+				Flash::notice(_f("&#8220;%s&#8221; feather enabled.",
+				                 array($info["name"])),
+				              "/admin/?action=extend_".pluralize($type));
 		}
 
 		/**
@@ -1351,9 +1435,11 @@
 				else
 					show_403(__("Access Denied"), __("You do not have sufficient privileges to enable/disable feathers."));
 
-			if (($type == "module" and !module_enabled($_GET[$type])) or
-			    ($type == "feather" and !feather_enabled($_GET[$type])))
-				redirect("/admin/?action=extend_modules");
+			if ($type == "module" and !module_enabled($_GET[$type]))
+				Flash::warning(__("Module already disabled."), "/admin/?action=extend_modules");
+
+			if ($type == "feather" and !feather_enabled($_GET[$type]))
+				Flash::warning(__("Feather already disabled."), "/admin/?action=extend_feathers");
 
 			$enabled_array = ($type == "module") ? "enabled_modules" : "enabled_feathers" ;
 			$folder        = ($type == "module") ? MODULES_DIR : FEATHERS_DIR ;
@@ -1365,7 +1451,15 @@
 			$config->set(($type == "module" ? "enabled_modules" : "enabled_feathers"),
 			             array_diff($config->$enabled_array, array($_GET[$type])));
 
-			redirect("/admin/?action=extend_".$type."s&enabled=".$_GET[$type]);
+			$info = Horde_Yaml::loadFile($folder."/".$_GET[$type]."/info.yaml");
+			if ($type == "module")
+				Flash::notice(_f("&#8220;%s&#8221; module disabled.",
+				                 array($info["name"])),
+				              "/admin/?action=extend_".pluralize($type));
+			elseif ($type == "feather")
+				Flash::notice(_f("&#8220;%s&#8221; feather disabled.",
+				                 array($info["name"])),
+				              "/admin/?action=extend_".pluralize($type));
 		}
 
 		/**
@@ -1376,7 +1470,6 @@
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
-			$this->context["updated"] = isset($_GET['updated']);
 			$this->context["locales"] = array();
 
 			if ($open = opendir(INCLUDES_DIR."/locale/")) {
@@ -1405,7 +1498,7 @@
 			$config->set("timezone", $_POST['timezone']);
 			$config->set("locale", $_POST['locale']);
 
-			redirect("/admin/?action=general_settings&updated");
+			Flash::notice(__("Settings updated."), "/admin/?action=general_settings");
 		}
 
 		/**
@@ -1416,7 +1509,6 @@
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
-			$this->context["updated"] = isset($_GET['updated']);
 			$this->context["groups"] = Group::find(array("order" => "`__groups`.`id` desc"));
 
 			if (empty($_POST))
@@ -1430,7 +1522,7 @@
 			$config->set("default_group", $_POST['default_group']);
 			$config->set("guest_group", $_POST['guest_group']);
 
-			redirect("/admin/?action=user_settings&updated");
+			Flash::notice(__("Settings updated."), "/admin/?action=user_settings");
 		}
 
 		/**
@@ -1440,8 +1532,6 @@
 		public function content_settings() {
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
-
-			$this->context["updated"] = isset($_GET['updated']);
 
 			if (empty($_POST))
 				return;
@@ -1457,7 +1547,7 @@
 			$config->set("posts_per_page", $_POST['posts_per_page']);
 			$config->set("enable_xmlrpc", !empty($_POST['enable_xmlrpc']));
 
-			redirect("/admin/?action=content_settings&updated");
+			Flash::notice(__("Settings updated."), "/admin/?action=content_settings");
 		}
 
 		/**
@@ -1467,8 +1557,6 @@
 		public function route_settings() {
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
-
-			$this->context["updated"] = isset($_GET['updated']);
 
 			if (empty($_POST))
 				return;
@@ -1480,7 +1568,7 @@
 			$config->set("clean_urls", !empty($_POST['clean_urls']));
 			$config->set("post_url", $_POST['post_url']);
 
-			redirect("/admin/?action=route_settings&updated");
+			Flash::notice(__("Settings updated."), "/admin/?action=route_settings");
 		}
 
 		/**
@@ -1495,19 +1583,7 @@
 
 			Config::current()->set("theme", $_GET['theme']);
 
-			redirect("/admin/?action=extend_themes&changed");
-		}
-
-		/**
-		 * Function: reorder_pages
-		 * Reorders pages.
-		 */
-		public function reorder_pages() {
-			foreach ($_POST['list_order'] as $id => $order) {
-				$page = new Page($id);
-				$page->update($page->title, $page->body, $page->parent_id, $page->show_in_list, $order, $page->url);
-			}
-			redirect("/admin/?action=manage_pages&reordered");
+			Flash::notice(__("Theme changed."), "/admin/?action=extend_themes");
 		}
 
 		/**

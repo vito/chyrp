@@ -4,9 +4,6 @@
 
 {% block content %}
 			<h1>${ "Themes" | translate }</h1>
-			{% if changed %}
-			<p class="message yay">${ "Theme changed." | translate }</p>
-			{% endif %}
 			{% for theme in themes %}
 			<div class="theme {% if theme.name == site.theme %}current {% endif %}box left">
 				<a href="{% admin "change_theme&theme=" ~ theme.name %}" class="link">

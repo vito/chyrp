@@ -50,6 +50,15 @@ ${ trigger.call("admin_head") }
 		</ul>
 		<div class="clear"></div>
 		<div class="column" id="content">
+			{% for notice in flash.notices %}
+			<p class="message yay">$notice</p>
+			{% endfor %}
+			{% for warning in flash.warnings %}
+			<p class="message boo">$warning</p>
+			{% endfor %}
+			{% for message in flash.messages %}
+			<p class="message">$message</p>
+			{% endfor %}
 {% block content %}{% endblock %}
 			<div class="clear"></div>
 		</div>

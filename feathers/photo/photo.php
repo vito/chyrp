@@ -30,12 +30,10 @@
 			else
 				error(__("Error"), __("Couldn't upload photo."));
 
-			$post = Post::add(array("filename" => $filename,
+			return Post::add(array("filename" => $filename,
 			                        "caption" => $_POST['caption']),
-			                  $_POST['slug'],
-			                  Post::check_url($_POST['slug']));
-
-			redirect($post->redirect);
+			                 $_POST['slug'],
+			                 Post::check_url($_POST['slug']));
 		}
 		public function update() {
 			if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0) {

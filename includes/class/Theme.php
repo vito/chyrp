@@ -279,6 +279,7 @@
 			$config = Config::current();
 
 			$this->context["theme"]        = $this;
+			$this->context["flash"]        = Flash::current();
 			$this->context["trigger"]      = $trigger;
 			$this->context["modules"]      = $modules;
 			$this->context["feathers"]     = $feathers;
@@ -326,7 +327,7 @@
 						return $this->load($file[$i], $context);
 				}
 
-			$file = ($file[0] == '/' or preg_match("/[a-zA-Z]:\\\/", $file)) ? $file : $this->directory.$file ;
+			$file = ($file[0] == "/" or preg_match("/[a-zA-Z]:\\\/", $file)) ? $file : $this->directory.$file ;
 			if (!file_exists($file.".twig"))
 				error(__("Template Missing"), _f("Couldn't load template: <code>%s</code>", array($file.".twig")));
 
@@ -339,7 +340,7 @@
 
 		/**
 		 * Function: current
-		 * Returns a singleton reference to the current connection.
+		 * Returns a singleton reference to the current class.
 		 */
 		public static function & current() {
 			static $instance = null;

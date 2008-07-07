@@ -20,19 +20,20 @@
 				$trigger->filter($$main_nav, $main_nav."_pages");
 			}
 
-			$admin->context["theme"]        = $theme;
-			$admin->context["trigger"]      = $trigger;
-			$admin->context["title"]        = camelize($action, true);
-			$admin->context["site"]         = Config::current();
-			$admin->context["visitor"]      = Visitor::current();
-			$admin->context["logged_in"]    = logged_in();
-			$admin->context["route"]        = array("action" => $action);
-			$admin->context["hide_admin"]   = isset($_SESSION["chyrp_hide_admin"]);
-			$admin->context["now"]          = now();
-			$admin->context["now_server"]   = time();
-			$admin->context["version"]      = CHYRP_VERSION;
-			$admin->context["POST"]         = $_POST;
-			$admin->context["GET"]          = $_GET;
+			$admin->context["theme"]       = $theme;
+			$admin->context["flash"]       = Flash::current();
+			$admin->context["trigger"]     = $trigger;
+			$admin->context["title"]       = camelize($action, true);
+			$admin->context["site"]        = Config::current();
+			$admin->context["visitor"]     = Visitor::current();
+			$admin->context["logged_in"]   = logged_in();
+			$admin->context["route"]       = array("action" => $action);
+			$admin->context["hide_admin"]  = isset($_SESSION["chyrp_hide_admin"]);
+			$admin->context["now"]         = now();
+			$admin->context["now_server"]  = time();
+			$admin->context["version"]     = CHYRP_VERSION;
+			$admin->context["POST"]        = $_POST;
+			$admin->context["GET"]         = $_GET;
 
 			$admin->context["selected"]   = array("write"    => (in_array($action, $write) or match("/^write_/", $action)) ?
 			                                                    "selected" :

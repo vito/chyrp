@@ -28,13 +28,11 @@
 
 			fallback($_POST['slug'], sanitize($_POST['name']));
 
-			$post = Post::add(array("name" => $_POST['name'],
+			return Post::add(array("name" => $_POST['name'],
 			                        "source" => $_POST['source'],
 			                        "description" => $_POST['description']),
-			                  $_POST['slug'],
-			                  Post::check_url($_POST['slug']));
-
-			redirect($post->redirect);
+			                 $_POST['slug'],
+			                 Post::check_url($_POST['slug']));
 		}
 		public function update() {
 			if (empty($_POST['source']))

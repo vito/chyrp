@@ -4,7 +4,7 @@
 	 * Handles their session.
 	 */
 	class Session {
-		static $data = null;
+		static $data = "";
 
 		/**
 		 * Function: open
@@ -17,10 +17,9 @@
 
 		/**
 		 * Function: close
-		 * Closes the database. This is the very last action performed by Chyrp.
+		 * This is the very last action performed by Chyrp.
 		 */
 		static function close() {
-			SQL::current()->db = null; # Close the database.
 			return true;
 		}
 
@@ -29,8 +28,13 @@
 		 * Reads their session from the database.
 		 */
 		static function read($id) {
-			self::$data = SQL::current()->select("sessions", "data", "`__sessions`.`id` = :id", "id", array(":id" => $id))->fetchColumn();
-			return fallback(self::$data, "", true);
+			self::$data = SQL::current()->select("sessions",
+			                                     "data",
+			                                     "`__sessions`.`id` = :id",
+			                                     "id",
+			                                     array(":id" => $id))->fetchColumn();
+
+			return fallback(self::$data, "");
 		}
 
 		/**

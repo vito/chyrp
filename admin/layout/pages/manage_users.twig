@@ -4,15 +4,6 @@
 
 {% block content %}
 			<h1>${ "Manage Users" | translate }</h1>
-			{% if updated %}
-			<p class="message yay">${ "User updated." | translate }</p>
-			{% endif %}
-			{% if deleted %}
-			<p class="message yay">${ "User deleted." | translate }</p>
-			{% endif %}
-			{% if added %}
-			<p class="message yay">${ "User added." | translate }</p>
-			{% endif %}
 			<h2>${ "Need more detail?" | translate }</h2>
 			<form class="detail" action="index.php" method="get" accept-charset="utf-8">
 				<fieldset>

@@ -66,6 +66,7 @@
 	require_once INCLUDES_DIR."/class/Query.php"; # SQL query handler
 	require_once INCLUDES_DIR."/class/QueryBuilder.php"; # SQL query builder
 	require_once INCLUDES_DIR."/class/Timestamp.php"; # A smarter DateTime class
+	require_once INCLUDES_DIR."/class/Flash.php"; # Message handler
 	require_once INCLUDES_DIR."/lib/Yaml.php"; # YAML parser
 
 	require_once INCLUDES_DIR."/class/Config.php"; # Configuration
@@ -187,6 +188,8 @@
 
 	timer_start();
 
+	$flash = Flash::current();
+
 	set_locale($config->locale);
 
 	# Require feathers/modules and load their translations.
@@ -307,7 +310,10 @@
 		load_translator("theme", THEME_DIR."/locale/".$config->locale.".mo");
 
 	# Use GZip compression if available.
-	if (extension_loaded("zlib") and !ini_get("zlib.output_compression") and substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip")) {
+	if (extension_loaded("zlib") and
+	    !ini_get("zlib.output_compression") and
+	    isset($_SERVER['HTTP_ACCEPT_ENCODING']) and
+	    substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip")) {
 		ob_start("ob_gzhandler");
 		header("Content-Encoding: gzip");
 	} else

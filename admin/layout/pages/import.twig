@@ -3,27 +3,6 @@
 {% block title %}${ "Import" | translate }{% endblock %}
 
 {% block content %}
-			{% if success_chyrp %}
-			<p class="message yay">${ "Chyrp content successfully imported!" | translate }</p>
-			{% endif %}
-			{% if invalid_chyrp_posts %}
-			<p class="message boo">${ "Posts file does not seem to be a valid Chyrp export file." | translate }</p>
-			{% endif %}
-			{% if invalid_chyrp_pages %}
-			<p class="message boo">${ "Pages file does not seem to be a valid Chyrp export file." | translate }</p>
-			{% endif %}
-			{% if success_wordpress %}
-			<p class="message yay">${ "WordPress content successfully imported!" | translate }</p>
-			{% endif %}
-			{% if invalid_wordpress %}
-			<p class="message boo">${ "File does not seem to be a valid WordPress export file." | translate }</p>
-			{% endif %}
-			{% if success_tumblr %}
-			<p class="message yay">${ "Tumblr content successfully imported!" | translate }</p>
-			{% endif %}
-			{% if invalid_tumblr %}
-			<p class="message boo">${ "URL does not seem to be a valid Tumblr site." | translate }</p>
-			{% endif %}
 			<h1>${ "Import" | translate }</h1>
 			<h2>Chyrp</h2>
 			<form id="import_chyrp_form" class="split" action="{% admin "import_chyrp" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
@@ -84,7 +63,7 @@
 			<hr />
 			<br />
 			<h2>Tumblr</h2>
-			<form id="import_tumblr_form" class="split" action="{% admin "import_tumblr" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+			<form id="import_tumblr_form" class="split" action="{% admin "import_tumblr" %}" method="post" accept-charset="utf-8">
 				<fieldset>
 					<p>
 						<label for="tumblr_url">${ "Your Tumblr URL" | translate }</label>
@@ -92,6 +71,48 @@
 						<small>${ "Note: Audio tumbles cannot be imported." | translate }</small>
 					</p>
 
+					<p class="buttons">
+						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Import" | translate }</button>
+					</p>
+
+					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+				</fieldset>
+			</form>
+			<br />
+			<hr />
+			<br />
+			<h2>TextPattern</h2>
+			<form id="import_textpattern_form" class="split" action="{% admin "import_textpattern" %}" method="post" accept-charset="utf-8">
+				<fieldset>
+					<p>
+						<label for="host">${ "Host" | translate }</label>
+						<input class="text" type="text" name="host" value="" id="host" />
+					</p>
+					<p>
+						<label for="username">${ "Username" | translate }</label>
+						<input class="text" type="text" name="username" value="" id="username" />
+					</p>
+					<p>
+						<label for="password">${ "Password" | translate }</label>
+						<input class="text" type="password" name="password" value="" id="password" />
+					</p>
+					<p>
+						<label for="database">${ "Database" | translate }</label>
+						<input class="text" type="text" name="database" value="" id="database" />
+					</p>
+					<p>
+						<label for="prefix">${ "Table Prefix" | translate }</label>
+						<input class="text" type="text" name="prefix" value="" id="prefix" />
+						<span class="sub">${ "(if any)" | translate }</span>
+					</p>
+					<p>
+						<label for="media_url">${ "What URL is used for embedded media?" | translate }</label>
+						<input class="text" type="text" name="media_url" value="" id="media_url" />
+						<span class="sub">${ "(optional)" | translate }</span>
+						<small>
+							${ "Usually something like <code>http://example.com/images/</code>." | translate }
+						</small>
+					</p>
 					<p class="buttons">
 						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Import" | translate }</button>
 					</p>

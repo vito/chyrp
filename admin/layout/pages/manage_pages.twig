@@ -4,12 +4,6 @@
 
 {% block content %}
 			<h1>${ "Manage Pages" | translate }</h1>
-			{% if updated %}
-			<p class="message yay">${ "Page updated." | translate } <a href="$updated.url">${ "View Page &rarr;" | translate }</a></p>
-			{% endif %}
-			{% if deleted %}
-			<p class="message yay">${ "Page deleted." | translate }</p>
-			{% endif %}
 			<h2>${ "Need more detail?" | translate }</h2>
 			<form class="detail" action="index.php" method="get" accept-charset="utf-8">
 				<fieldset>

@@ -4,12 +4,6 @@
 
 {% block content %}
 			<h1>${ "Comment Settings" | translate("comments") }</h1>
-			{% if updated %}
-			<p class="message yay">${ "Settings updated." | translate }</p>
-			{% endif %}
-			{% if invalid_defensio %}
-			<p class="message boo">${ "Invalid Defensio API key." | translate("comments") }</p>
-			{% endif %}
 			<form id="comment_settings" class="split" action="{% admin "comment_settings" %}" method="post">
 				<fieldset>
 					<p>

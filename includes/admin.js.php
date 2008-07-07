@@ -87,6 +87,15 @@ $(function(){
 		draw_conflicts()
 	})
 <?php endif; ?>
+
+	if ($.browser.safari) {
+		$("code").each(function(){
+			$(this).css({
+				fontFamily: "Monaco, monospace",
+				fontSize: "9px"
+			})
+		})
+	}
 })
 
 var Post = {
@@ -114,7 +123,6 @@ function prepare_write_bling() {
 	})
 
 	// Make the Feathers sortable
-	$("#sub-nav li").css("float", "left")
 	$("#sub-nav").sortable({
 		axis: "x",
 		containment: "#sub-nav",

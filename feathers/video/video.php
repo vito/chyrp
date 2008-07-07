@@ -20,13 +20,11 @@
 			if (empty($_POST['video']))
 				error(__("Error"), __("Video can't be blank."));
 
-			$post = Post::add(array("embed" => $this->embed_tag($_POST['video']),
+			return Post::add(array("embed" => $this->embed_tag($_POST['video']),
 			                        "video" => $_POST['video'],
 			                        "caption" => $_POST['caption']),
-			                  $_POST['slug'],
-			                  Post::check_url($_POST['slug']));
-
-			redirect($post->redirect);
+			                 $_POST['slug'],
+			                 Post::check_url($_POST['slug']));
 		}
 		public function update() {
 			if (empty($_POST['video']))

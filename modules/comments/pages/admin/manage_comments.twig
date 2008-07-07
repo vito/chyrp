@@ -4,27 +4,6 @@
 
 {% block content %}
 			<h1>${ "Manage Comments" | translate("comments") }</h1>
-			{% if updated %}
-			<p class="message yay">
-				${ "Comment updated." | translate("comments") }
-				<a href="$updated.post.url#comment_$updated.id">${ "View Comment &rarr;" | translate("comments") }</a>
-			</p>
-			{% endif %}
-			{% if deleted %}
-			<p class="message yay">${ "Comment deleted." | translate("comments") }</p>
-			{% endif %}
-			{% if bulk_deleted %}
-			<p class="message yay">${ "Selected comments deleted." | translate("comments") }</p>
-			{% endif %}
-			{% if bulk_approved %}
-			<p class="message yay">${ "Selected comments approved." | translate("comments") }</p>
-			{% endif %}
-			{% if bulk_denied %}
-			<p class="message yay">${ "Selected comments denied." | translate("comments") }</p>
-			{% endif %}
-			{% if bulk_spammed %}
-			<p class="message yay">${ "Selected comments marked as spam." | translate("comments") }</p>
-			{% endif %}
 			<h2>${ "Need more detail?" | translate }</h2>
 			<form class="detail" action="index.php" method="get" accept-charset="utf-8">
 				<fieldset>

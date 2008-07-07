@@ -4,9 +4,6 @@
 
 {% block content %}
 			<h1>${ "Cache Settings" | translate("cacher") }</h1>
-			{% if updated %}
-			<p class="message yay">${ "Settings updated." | translate }</p>
-			{% endif %}
 			<form id="cache_settings" class="split" action="{% admin "cache_settings" %}" method="post">
 				<fieldset>
 					<p>

@@ -62,7 +62,7 @@
 				Trigger::current()->call("change_setting", $setting, $value, $overwrite);
 
 			# Generate the new YAML settings
-			$contents.= Horde_Yaml::dump($this->yaml, 2, 60);
+			$contents.= Horde_Yaml::dump($this->yaml);
 
 			if (!@file_put_contents(INCLUDES_DIR."/config.yaml.php", $contents) and is_array($errors))
 				$errors[] = _f("Could not set \"<code>%s</code>\" configuration setting because <code>%s</code> is not writable.", array($setting, "/includes/config.yaml.php"));
@@ -86,7 +86,7 @@
 				unset($this->yaml[0]);
 
 			# Generate the new YAML settings
-			$contents.= Horde_Yaml::dump($this->yaml, 2, 60);
+			$contents.= Horde_Yaml::dump($this->yaml);
 
 			file_put_contents(INCLUDES_DIR."/config.yaml.php", $contents);
 		}
