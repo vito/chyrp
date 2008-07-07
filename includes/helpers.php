@@ -71,10 +71,10 @@
 
 	/**
 	 * Function: logged_in
-	 * Returns whether or not they are logged in.
+	 * Returns whether or not they are logged in by returning the <Visitor.$id> (which defaults to 0).
 	 */
 	function logged_in() {
-		return !Visitor::current()->no_results;
+		return Visitor::current()->id;
 	}
 
 	/**
@@ -146,8 +146,7 @@
 			$url = (ADMIN or $use_chyrp_url) ?
 				Config::current()->chyrp_url.$url :
 				Config::current()->url.$url;
-
-		if (class_exists("Route") and !substr_count($url, "."))
+		elseif (class_exists("Route") and !substr_count($url, "."))
 			$url = Route::current()->url($url);
 
 		header("Location: ".html_entity_decode($url));

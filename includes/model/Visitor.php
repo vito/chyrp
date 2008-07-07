@@ -6,6 +6,8 @@
 	 *     <User>
 	 */
 	class Visitor extends User {
+		public $id = 0;
+
 		/**
 		 * Function: __construct
 		 * Checks if a valid user is logged in.
