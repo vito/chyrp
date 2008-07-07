@@ -20,7 +20,7 @@ ruby gettext.rb ./modules/tags/         --domain=tags         > ./modules/tags/l
 ruby gettext.rb ./modules/textilize/    --domain=textilize    > ./modules/textilize/locale/en_US.pot
 ruby gettext.rb ./modules/wpformatting/ --domain=wpformatting > ./modules/wpformatting/locale/en_US.pot
 
-ruby gettext.rb ./themes/default/                             > ./themes/default/locale/en_US.pot # "theme" domain is automatically assumed in themes
+ruby gettext.rb ./themes/default/ --domain=theme > ./themes/default/locale/en_US.pot
 
 # msgfmt -v ./includes/locale/en_US.pot         -o ./includes/locale/en_US.mo
 #

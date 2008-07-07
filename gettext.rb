@@ -42,7 +42,7 @@ class Gettext
     @start, @files, @translations = start, [], {}
 
     @domain = OPTIONS[:domain].nil? ? "" : ', "'+OPTIONS[:domain]+'"'
-    @twig_domain = OPTIONS[:domain].nil? ? "" : '\("'+OPTIONS[:domain]+'"\)'
+    @twig_domain = OPTIONS[:domain].nil? or OPTIONS[:domain] == "theme" ? "" : '\("'+OPTIONS[:domain]+'"\)'
 
     prepare_files
     do_scan

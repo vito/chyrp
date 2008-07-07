@@ -40,13 +40,13 @@ ${ trigger.call("head") }
 				</div>
 				<div id="posts">
 				{% for notice in flash.notices %}
-				<p class="message yay">$notice</p>
+				<div class="success">$notice</div>
 				{% endfor %}
 				{% for warning in flash.warnings %}
-				<p class="message boo">$warning</p>
+				<div class="failure">$warning</div>
 				{% endfor %}
 				{% for message in flash.messages %}
-				<p class="message">$message</p>
+				<div class="notice">$message</div>
 				{% endfor %}
 {% block content %}{% endblock %}
 				</div>
