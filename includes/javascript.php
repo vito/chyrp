@@ -75,6 +75,11 @@ var Post = {
 							$("#post_edit_form_"+id).loader(true).fadeOut("fast")
 							alert("<?php echo __("Post has been saved as a draft."); ?>")
 						} else {
+<?php elseif ($action == "drafts"): ?>
+						if ($("#post_edit_form_"+id+" select#status").val() != "draft") {
+							$("#post_edit_form_"+id).loader(true).fadeOut("fast")
+							alert("<?php echo __("Post has been published."); ?>")
+						} else {
 <?php endif; ?>
 							$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "view_post", context: "all", id: id, reason: "edited" }, function(data) {
 								$("#post_edit_form_"+id).loader(true).fadeOut("fast", function(){
@@ -92,7 +97,7 @@ var Post = {
 									})
 								})
 							})
-<?php if ($action != "drafts" and $action != "view"): ?>
+<?php if (($action != "drafts" and $action != "view") or $action == "drafts"): ?>
 						}
 <?php endif; ?>
 					}

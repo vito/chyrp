@@ -60,7 +60,7 @@ class Horde_Yaml
     {
         if (!is_string($yaml) || !strlen($yaml)) {
             $msg = 'YAML to parse must be a string and cannot be empty.';
-            throw new InvalidArgumentException($msg);
+            throw new Exception($msg);
         }
 
         if (is_callable(self::$loadfunc)) {
@@ -96,7 +96,7 @@ class Horde_Yaml
     {
         if (!is_string($filename) || !strlen($filename)) {
             $msg = 'Filename must be a string and cannot be empty';
-            throw new InvalidArgumentException($msg);
+            throw new Exception($msg);
         }
 
         $stream = @fopen($filename, 'rb');
@@ -116,7 +116,7 @@ class Horde_Yaml
     public static function loadStream($stream)
     {
         if (! is_resource($stream) || get_resource_type($stream) != 'stream') {
-            throw new InvalidArgumentException('Stream must be a stream resource');
+            throw new Exception('Stream must be a stream resource');
         }
 
         if (is_callable(self::$loadfunc)) {

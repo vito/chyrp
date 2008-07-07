@@ -44,7 +44,7 @@ class Horde_Yaml_Dumper
     {
         // validate & merge default options
         if (!is_array($options)) {
-            throw new InvalidArgumentException('Options must be an array');
+            throw new Exception('Options must be an array');
         }
 
         $defaults = array('indent'   => 2,
@@ -52,11 +52,11 @@ class Horde_Yaml_Dumper
         $this->_options = array_merge($defaults, $options);
 
         if (! is_int($this->_options['indent'])) {
-            throw new InvalidArgumentException('Indent must be an integer');
+            throw new Exception('Indent must be an integer');
         }
 
         if (! is_int($this->_options['wordwrap'])) {
-            throw new InvalidArgumentException('Wordwrap column must be an integer');
+            throw new Exception('Wordwrap column must be an integer');
         }
 
         // new YAML document
