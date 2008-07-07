@@ -18,7 +18,6 @@ ruby gettext.rb ./modules/rss/          --domain=rss          > ./modules/rss/lo
 ruby gettext.rb ./modules/smartypants/  --domain=smartypants  > ./modules/smartypants/locale/en_US.pot
 ruby gettext.rb ./modules/tags/         --domain=tags         > ./modules/tags/locale/en_US.pot
 ruby gettext.rb ./modules/textilize/    --domain=textilize    > ./modules/textilize/locale/en_US.pot
-ruby gettext.rb ./modules/wpformatting/ --domain=wpformatting > ./modules/wpformatting/locale/en_US.pot
 
 ruby gettext.rb ./themes/default/ --domain=theme > ./themes/default/locale/en_US.pot
 

@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-30 20:40-0500\n"
+"PO-Revision-Date: 2008-07-07 01:38-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -28,15 +28,15 @@ msgstr ""
 msgid "Audio"
 msgstr ""
 
-#: feathers/audio/feather.php:4
+#: feathers/audio/audio.php:6
 msgid "MP3 File"
 msgstr ""
 
-#: feathers/audio/feather.php:6
+#: feathers/audio/audio.php:14
 msgid "Description"
 msgstr ""
 
-#: feathers/audio/feather.php:5
+#: feathers/audio/audio.php:9
 msgid "From URL?"
 msgstr ""
 

@@ -42,7 +42,7 @@ class Gettext
     @start, @files, @translations = start, [], {}
 
     @domain = OPTIONS[:domain].nil? ? "" : ', "'+OPTIONS[:domain]+'"'
-    @twig_domain = OPTIONS[:domain].nil? or OPTIONS[:domain] == "theme" ? "" : '\("'+OPTIONS[:domain]+'"\)'
+    @twig_domain = (OPTIONS[:domain].nil? or OPTIONS[:domain] == "theme") ? "" : '\("'+OPTIONS[:domain]+'"\)'
 
     prepare_files
     do_scan
@@ -176,7 +176,7 @@ class Gettext
           @translations[val] = { :places => [clean_filename + ":" + counter.to_s],
                                  :filter => false,
                                  :plural => false }
-        elsif not @translations[$1][:places].include?(clean_filename + ":" + counter.to_s)
+        elsif not @translations[val][:places].include?(clean_filename + ":" + counter.to_s)
           @translations[val][:places] << clean_filename + ":" + counter.to_s
         end
       end
@@ -187,7 +187,7 @@ class Gettext
             @translations[val] = { :places => [clean_filename + ":" + counter.to_s],
                                    :filter => false,
                                    :plural => false }
-          elsif not @translations[$1][:places].include?(clean_filename + ":" + counter.to_s)
+          elsif not @translations[val][:places].include?(clean_filename + ":" + counter.to_s)
             @translations[val][:places] << clean_filename + ":" + counter.to_s
           end
           counter += 1
