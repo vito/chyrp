@@ -52,6 +52,9 @@
 		 *     $file - The YAML file to load into <SQL>.
 		 */
 		public function load($file) {
+			if (!file_exists($file))
+				return false;
+
 			$this->yaml = Horde_Yaml::loadFile($file);
 			foreach ($this->yaml as $setting => $value)
 				if (!is_int($setting)) # Don't load the "---"
@@ -82,7 +85,7 @@
 				unset($this->yaml['<?php header("Status']);
 
 			# Generate the new YAML settings
-			$contents.= Horde_Yaml::dump($this->yaml, false, 0);
+			$contents.= Horde_Yaml::dump($this->yaml);
 
 			if (!@file_put_contents(INCLUDES_DIR."/database.yaml.php", $contents) and is_array($errors))
 				$errors[] = _f("Could not set \"<code>%s</code>\" database setting because <code>%s</code> is not writable.", array($setting, "/includes/database.yaml.php"));
@@ -143,6 +146,10 @@
 				case "sqlite":
 					if (!$this->db = new SQLiteDatabase($this->database, 0666, $this->error))
 						return ($checking) ? false : error(__("Database Error"), $this->error) ;
+
+					$this->db->createFunction("YEAR", "year_from_datetime", 1);
+					$this->db->createFunction("MONTH", "month_from_datetime", 1);
+					$this->db->createFunction("DAY", "day_from_datetime", 1);
 
 					break;
 			}
