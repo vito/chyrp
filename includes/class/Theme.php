@@ -220,7 +220,7 @@
 			$config = Config::current();
 			$trigger = Trigger::current();
 
-			$javascripts = array("http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js",
+			$javascripts = array($config->chyrp_url."/includes/lib/gz.php?file=jquery.js",
 			                     $config->chyrp_url."/includes/lib/gz.php?file=plugins.js",
 			                     $config->chyrp_url.'/includes/javascript.php?action='.$route->action.$args);
 			Trigger::current()->filter($javascripts, "scripts");

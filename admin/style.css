@@ -152,9 +152,11 @@ a:visited {
 	color: #444;
 }
 .feathers_sort {
-	background: #dfdfdf;
-	border-top: .2em solid #e8e8e8;
+	background: #eee;
+	margin-top: .2em;
 	height: 2.3em !important;
+	border-left: .1em dashed #ccc;
+	border-right: .1em dashed #ccc;
 }
 /* @end */
 

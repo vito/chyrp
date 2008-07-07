@@ -417,7 +417,7 @@
 				text-align: center;
 			}
 		</style>
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="includes/lib/jquery.js" type="text/javascript" charset="utf-8"></script>
 		<script src="includes/lib/plugins.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			$(function(){

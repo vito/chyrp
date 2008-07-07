@@ -123,7 +123,7 @@
 				display: none;
 			}
 		</style>
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="<?php echo $config->chyrp_url; ?>/includes/lib/gz.php?file=jquery.js" type="text/javascript" charset="utf-8"></script>
 		<script src="<?php echo $config->chyrp_url; ?>/includes/lib/gz.php?file=plugins.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			function activate_nav_tab(id) {

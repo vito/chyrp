@@ -8,7 +8,7 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<title>Chyrp: <?php echo $title; ?></title>
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="<?php echo $config->chyrp_url; ?>/includes/lib/gz.php?file=jquery.js" type="text/javascript" charset="utf-8"></script>
 		<style type="text/css">
 			html, body, ul, ol, li,
 			h1, h2, h3, h4, h5, h6,

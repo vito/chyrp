@@ -124,7 +124,6 @@ function prepare_write_bling() {
 	// Make the Feathers sortable
 	$("#sub-nav").sortable({
 		axis: "x",
-		containment: "#sub-nav",
 		placeholder: "feathers_sort",
 		opacity: 0.8,
 		delay: 1,
