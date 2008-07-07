@@ -858,8 +858,6 @@
 			if (!Visitor::current()->group()->can("add_post"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
 
-			$trigger = Trigger::current();
-
 			if (isset($_FILES['posts_file']) and $_FILES['posts_file']['error'] == 0)
 				if (!$posts = simplexml_load_file($_FILES['posts_file']['tmp_name']) or $posts->generator != "Chyrp")
 					Flash::warning(__("Chyrp Posts export file is invalid."), "/admin/?action=import");
@@ -870,6 +868,19 @@
 
 			if (ini_get("memory_limit") < 20)
 				ini_set("memory_limit", "20M");
+
+			$trigger = Trigger::current();
+
+			function media_url_scan(&$value) {
+				$config = Config::current();
+
+				$regexp_url = preg_quote($_POST['media_url'], "/");
+				if (preg_match_all("/{$regexp_url}([^\.\!,\?;\"\'<>\(\)\[\]\{\}\s\t ]+)\.([a-zA-Z0-9]+)/", $value, $media))
+					foreach ($media[0] as $matched_url) {
+						$filename = upload_from_url($matched_url);
+						$value = str_replace($matched_url, $config->url.$config->uploads_path.$filename, $value);
+					}
+			}
 
 			if (isset($_FILES['posts_file']) and $_FILES['posts_file']['error'] == 0)
 				foreach ($posts->entry as $entry) {
@@ -884,6 +895,10 @@
 					                       datetime($entry->updated) ;
 
 					$data = Post::xml2arr($entry->content);
+
+					if (!empty($_POST['media_url']))
+						array_walk_recursive($data, "media_url_scan");
+
 					$post = Post::add($data, $chyrp->clean, Post::check_url($chyrp->url));
 
 					$trigger->call("import_chyrp_post", $entry, $post);
@@ -955,7 +970,11 @@
 				if ($wordpress->status == "attachment" or $item->title == "zz_placeholder")
 					continue;
 
-				if (!empty($_POST['media_url']) and preg_match_all("/".preg_quote($_POST['media_url'], "/")."([^ \t\"]+)/", $content->encoded, $media))
+				$regexp_url = preg_quote($_POST['media_url'], "/");
+				if (!empty($_POST['media_url']) and
+				    preg_match_all("/{$regexp_url}([^\.\!,\?;\"\'<>\(\)\[\]\{\}\s\t ]+)\.([a-zA-Z0-9]+)/",
+				                   $content->encoded,
+				                   $media))
 					foreach ($media[0] as $matched_url) {
 						$filename = upload_from_url($matched_url);
 						$content->encoded = str_replace($matched_url, $config->url.$config->uploads_path.$filename, $content->encoded);
@@ -1155,8 +1174,11 @@
 			mysql_close($link);
 
 			foreach ($posts as $post) {
+				$regexp_url = preg_quote($_POST['media_url'], "/");
 				if (!empty($_POST['media_url']) and
-				    preg_match_all("/".preg_quote($_POST['media_url'], "/")."([^ \t\"!\)]+)/", $post["Body"], $media))
+				    preg_match_all("/{$regexp_url}([^\.\!,\?;\"\'<>\(\)\[\]\{\}\s\t ]+)\.([a-zA-Z0-9]+)/",
+				                   $post["Body"],
+				                   $media))
 					foreach ($media[0] as $matched_url) {
 						$filename = upload_from_url($matched_url);
 						$post["Body"] = str_replace($matched_url, $config->url.$config->uploads_path.$filename, $post["Body"]);
