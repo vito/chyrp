@@ -147,6 +147,9 @@
 				Config::current()->chyrp_url.$url :
 				Config::current()->url.$url;
 
+		if (class_exists("Route") and !substr_count($url, "."))
+			$url = Route::current()->url($url);
+
 		header("Location: ".html_entity_decode($url));
 		exit;
 	}

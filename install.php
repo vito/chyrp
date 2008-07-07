@@ -438,10 +438,12 @@
 				<p id="adapter_field">
 					<label for="adapter"><?php echo __("Adapter"); ?></label>
 					<select name="adapter" id="adapter">
-						<?php if (in_array("mysql", PDO::getAvailableDrivers()) or class_exists("MySQLi") or function_exists("mysql_query")): ?>
+						<?php if ((class_exists("PDO") and in_array("mysql", PDO::getAvailableDrivers())) or
+						          class_exists("MySQLi") or function_exists("mysql_query")): ?>
 						<option value="mysql"<?php selected("mysql", fallback($_POST['adapter'], "mysql")); ?>>MySQL</option>
 						<?php endif; ?>
-						<?php if (in_array("sqlite", PDO::getAvailableDrivers()) or class_exists("SQLiteDatabase")): ?>
+						<?php if ((class_exists("PDO") and in_array("sqlite", PDO::getAvailableDrivers())) or
+						          class_exists("SQLiteDatabase")): ?>
 						<option value="sqlite"<?php selected("sqlite", fallback($_POST['adapter'], "mysql")); ?>>SQLite 3</option>
 						<?php endif; ?>
 					</select>
