@@ -15,8 +15,11 @@
 
 			# Are there any extension-added pages?
 			$trigger = Trigger::current();
-			foreach (array("write", "manage", "settings", "extend") as $main_nav) {
-				$$main_nav = array();
+			foreach (array("write" => array(),
+			               "manage" => array(),
+			               "settings" => array(),
+			               "extend" => array("modules", "feathers", "themes")) as $main_nav => $val) {
+				$$main_nav = $val;
 				$trigger->filter($$main_nav, $main_nav."_pages");
 			}
 
@@ -44,7 +47,7 @@
 			                                      "settings" => (in_array($action, $settings) or match("/_settings$/", $action)) ?
 			                                                    "selected" :
 			                                                    "deselected",
-			                                      "extend"   => (in_array($action, $extend) or match("/^extend_/", $action)) ?
+			                                      "extend"   => (in_array($action, $extend)) ?
 			                                                    "selected" :
 			                                                    "deselected");
 
@@ -127,9 +130,9 @@
 			$pages["settings"] = array_keys($subnav["settings"]);
 
 			# Extend navs
-			$subnav["extend"] = array("extend_modules"  => array("title" => __("Modules")),
-			                          "extend_feathers" => array("title" => __("Feathers")),
-			                          "extend_themes"   => array("title" => __("Themes")));
+			$subnav["extend"] = array("modules"  => array("title" => __("Modules")),
+			                          "feathers" => array("title" => __("Feathers")),
+			                          "themes"   => array("title" => __("Themes")));
 			$trigger->filter($subnav["extend"], "extend_nav");
 			$pages["extend"] = array_keys($subnav["extend"]);
 

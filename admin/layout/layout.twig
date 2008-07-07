@@ -25,7 +25,7 @@ ${ trigger.call("admin_head") }
 					<li class="third $selected.settings"><a href="{% admin "general_settings" %}">${ "Settings" | translate }</a></li>
 {% endif %}
 {% if visitor.group.can("toggle_extensions") %}
-					<li class="fourth $selected.extend"><a href="{% admin "extend_modules" %}">${ "Extend" | translate }</a></li>
+					<li class="fourth $selected.extend"><a href="{% admin "modules" %}">${ "Extend" | translate }</a></li>
 {% endif %}
 {% endblock %}
 				</ul>

@@ -1185,10 +1185,10 @@
 		}
 
 		/**
-		 * Function: extend_modules
+		 * Function: modules
 		 * Module enabling/disabling.
 		 */
-		public function extend_modules() {
+		public function modules() {
 			if (!Visitor::current()->group()->can("toggle_extensions"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to enable/disable modules."));
 
@@ -1198,7 +1198,7 @@
 
 			$issues = array();
 
-			if (!$open = opendir(MODULES_DIR))
+			if (!$open = @opendir(MODULES_DIR))
 				return Flash::warning(__("Could not read modules directory."));
 
 			while (($folder = readdir($open)) !== false) {
@@ -1247,10 +1247,10 @@
 		}
 
 		/**
-		 * Function: extend_feathers
+		 * Function: feathers
 		 * Feather enabling/disabling.
 		 */
-		public function extend_feathers() {
+		public function feathers() {
 			if (!Visitor::current()->group()->can("toggle_extensions"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to enable/disable feathers."));
 
@@ -1258,7 +1258,7 @@
 
 			$this->context["enabled_feathers"] = $this->context["disabled_feathers"] = array();
 
-			if (!$open = opendir(FEATHERS))
+			if (!$open = @opendir(FEATHERS_DIR))
 				return Flash::warning(__("Could not read feathers directory."));
 
 			while (($folder = readdir($open)) !== false) {
@@ -1295,15 +1295,15 @@
 		}
 
 		/**
-		 * Function: extend_themes
+		 * Function: themes
 		 * Theme switching/previewing.
 		 */
-		public function extend_themes() {
+		public function themes() {
 			$config = Config::current();
 
 			$this->context["themes"] = array();
 
-			if (!$open = opendir(THEMES_DIR))
+			if (!$open = @opendir(THEMES_DIR))
 				return Flash::warning(__("Could not read themes directory."));
 
 		     while (($folder = readdir($open)) !== false) {
@@ -1358,10 +1358,10 @@
 					show_403(__("Access Denied"), __("You do not have sufficient privileges to enable/disable feathers."));
 
 			if ($type == "module" and module_enabled($_GET[$type]))
-				Flash::warning(__("Module already enabled."), "/admin/?action=extend_modules");
+				Flash::warning(__("Module already enabled."), "/admin/?action=modules");
 
 			if ($type == "feather" and feather_enabled($_GET[$type]))
-				Flash::warning(__("Feather already enabled."), "/admin/?action=extend_feathers");
+				Flash::warning(__("Feather already enabled."), "/admin/?action=feathers");
 
 			$enabled_array = ($type == "module") ? "enabled_modules" : "enabled_feathers" ;
 			$folder        = ($type == "module") ? MODULES_DIR : FEATHERS_DIR ;
@@ -1398,11 +1398,11 @@
 			if ($type == "module")
 				Flash::notice(_f("&#8220;%s&#8221; module enabled.",
 				                 array($info["name"])),
-				              "/admin/?action=extend_".pluralize($type));
+				              "/admin/?action=".pluralize($type));
 			elseif ($type == "feather")
 				Flash::notice(_f("&#8220;%s&#8221; feather enabled.",
 				                 array($info["name"])),
-				              "/admin/?action=extend_".pluralize($type));
+				              "/admin/?action=".pluralize($type));
 		}
 
 		/**
@@ -1422,10 +1422,10 @@
 					show_403(__("Access Denied"), __("You do not have sufficient privileges to enable/disable feathers."));
 
 			if ($type == "module" and !module_enabled($_GET[$type]))
-				Flash::warning(__("Module already disabled."), "/admin/?action=extend_modules");
+				Flash::warning(__("Module already disabled."), "/admin/?action=modules");
 
 			if ($type == "feather" and !feather_enabled($_GET[$type]))
-				Flash::warning(__("Feather already disabled."), "/admin/?action=extend_feathers");
+				Flash::warning(__("Feather already disabled."), "/admin/?action=feathers");
 
 			$enabled_array = ($type == "module") ? "enabled_modules" : "enabled_feathers" ;
 			$folder        = ($type == "module") ? MODULES_DIR : FEATHERS_DIR ;
@@ -1441,11 +1441,11 @@
 			if ($type == "module")
 				Flash::notice(_f("&#8220;%s&#8221; module disabled.",
 				                 array($info["name"])),
-				              "/admin/?action=extend_".pluralize($type));
+				              "/admin/?action=".pluralize($type));
 			elseif ($type == "feather")
 				Flash::notice(_f("&#8220;%s&#8221; feather disabled.",
 				                 array($info["name"])),
-				              "/admin/?action=extend_".pluralize($type));
+				              "/admin/?action=".pluralize($type));
 		}
 
 		/**
@@ -1474,7 +1474,7 @@
 			foreach ($info["notifications"] as $message)
 				Flash::message($message);
 
-			Flash::notice(_f("Theme changed to &#8220;%s&#8221;.", array($info["name"])), "/admin/?action=extend_themes");
+			Flash::notice(_f("Theme changed to &#8220;%s&#8221;.", array($info["name"])), "/admin/?action=themes");
 		}
 
 		/**

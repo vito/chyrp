@@ -80,7 +80,7 @@ $(function(){
 	// Extension enabling/disabling (drag'n'drop)
 	extend_draggables()
 
-<?php if ($_GET['action'] == "extend_modules" or $_GET['action'] == "extend_feathers"): ?>
+<?php if ($_GET['action'] == "modules" or $_GET['action'] == "feathers"): ?>
 	draw_conflicts()
 
 	$(window).resize(function(){
