@@ -140,8 +140,8 @@
 
 			global $modules;
 
-			foreach (Config::current()->enabled_modules as $module)
-				if (is_callable(array($modules[$module], $name)))
+			foreach ($modules as $module)
+				if (is_callable(array($module, $name)))
 					return $this->exists[$name] = true;
 
 			if (isset($this->priorities[$name]))

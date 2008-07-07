@@ -643,7 +643,8 @@
 			if (!Visitor::current()->group()->can("add_post"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to export content."));
 
-			if (empty($_POST)) return;
+			if (empty($_POST))
+				return;
 
 			$config = Config::current();
 			$trigger = Trigger::current();
@@ -1196,71 +1197,52 @@
 			$this->context["enabled_modules"] = $this->context["disabled_modules"] = array();
 
 			$issues = array();
-			if ($open = opendir(MODULES_DIR)) {
-				while (($folder = readdir($open)) !== false) {
-					if (!file_exists(MODULES_DIR."/".$folder."/".$folder.".php") or !file_exists(MODULES_DIR."/".$folder."/info.yaml")) continue;
 
-					if (file_exists(MODULES_DIR."/".$folder."/locale/".$config->locale.".mo"))
-						load_translator($folder, MODULES_DIR."/".$folder."/locale/".$config->locale.".mo");
+			if (!$open = opendir(MODULES_DIR))
+				return Flash::warning(__("Could not read modules directory."));
 
-					$info = Horde_Yaml::loadFile(MODULES_DIR."/".$folder."/info.yaml");
+			while (($folder = readdir($open)) !== false) {
+				if (!file_exists(MODULES_DIR."/".$folder."/".$folder.".php") or !file_exists(MODULES_DIR."/".$folder."/info.yaml")) continue;
 
-					$info["conflicts_true"] = array();
+				if (file_exists(MODULES_DIR."/".$folder."/locale/".$config->locale.".mo"))
+					load_translator($folder, MODULES_DIR."/".$folder."/locale/".$config->locale.".mo");
 
-					if (!empty($info["conflicts"]))
-						foreach ($info["conflicts"] as $conflict)
-							if (file_exists(MODULES_DIR."/".$conflict."/".$conflict.".php")) {
-								$issues[$folder] = true;
-								$info["conflicts_true"][] = $conflict;
-							}
+				$info = Horde_Yaml::loadFile(MODULES_DIR."/".$folder."/info.yaml");
 
-					fallback($info["name"], $folder);
-					fallback($info["version"], "0");
-					fallback($info["url"]);
-					fallback($info["description"]);
-					fallback($info["author"], array("name" => "", "url" => ""));
-					fallback($info["help"]);
+				$info["conflicts_true"] = array();
 
-					$info["description"] = __($info["description"], $folder);
-					$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
-					$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
+				if (!empty($info["conflicts"]))
+					foreach ($info["conflicts"] as $conflict)
+						if (file_exists(MODULES_DIR."/".$conflict."/".$conflict.".php")) {
+							$issues[$folder] = true;
+							$info["conflicts_true"][] = $conflict;
+						}
 
-					$info["author"]["link"] = (!empty($info["author"]["url"])) ?
-					                              '<a href="'.htmlspecialchars($info["author"]["url"]).'">'.htmlspecialchars($info["author"]["name"]).'</a>' :
-					                              $info["author"]["name"] ;
+				fallback($info["name"], $folder);
+				fallback($info["version"], "0");
+				fallback($info["url"]);
+				fallback($info["description"]);
+				fallback($info["author"], array("name" => "", "url" => ""));
+				fallback($info["help"]);
 
-					$category = (module_enabled($folder)) ? "enabled_modules" : "disabled_modules" ;
-					$this->context[$category][$folder] = array("name" => $info["name"],
-					                                           "version" => $info["version"],
-					                                           "url" => $info["url"],
-					                                           "description" => $info["description"],
-					                                           "author" => $info["author"],
-					                                           "help" => $info["help"],
-					                                           "conflict" => isset($issues[$folder]),
-					                                           "conflicts" => $info["conflicts_true"],
-					                                           "conflicts_class" => (isset($issues[$folder])) ? " conflict conflict_".join(" conflict_", $info["conflicts_true"]) : "");
-				}
-			}
+				$info["description"] = __($info["description"], $folder);
+				$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
+				$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
 
-			if (isset($_GET['enabled'])) {
-				if (file_exists(MODULES_DIR."/".$_GET['enabled']."/locale/".$config->locale.".mo"))
-					load_translator($_GET['enabled'], MODULES_DIR."/".$_GET['enabled']."/locale/".$config->locale.".mo");
+				$info["author"]["link"] = (!empty($info["author"]["url"])) ?
+				                              '<a href="'.htmlspecialchars($info["author"]["url"]).'">'.htmlspecialchars($info["author"]["name"]).'</a>' :
+				                              $info["author"]["name"] ;
 
-				$info = Horde_Yaml::loadFile(MODULES_DIR."/".$_GET['enabled']."/info.yaml");
-				fallback($info["uploader"], false);
-				fallback($info["notifications"], array());
-
-				foreach ($info["notifications"] as &$notification)
-					$notification = addslashes(__($notification, $_GET['enabled']));
-
-				if ($info["uploader"])
-					if (!file_exists(MAIN_DIR.$config->uploads_path))
-						$info["notifications"][] = _f("Please create the <code>%s</code> directory at your Chyrp install's root and CHMOD it to 777.", array($config->uploads_path));
-					elseif (!is_writable(MAIN_DIR.$config->uploads_path))
-						$info["notifications"][] = _f("Please CHMOD <code>%s</code> to 777.", array($config->uploads_path));
-
-				foreach ($info["notifications"] as $message)
-					Flash::message($message);
+				$category = (module_enabled($folder)) ? "enabled_modules" : "disabled_modules" ;
+				$this->context[$category][$folder] = array("name" => $info["name"],
+				                                           "version" => $info["version"],
+				                                           "url" => $info["url"],
+				                                           "description" => $info["description"],
+				                                           "author" => $info["author"],
+				                                           "help" => $info["help"],
+				                                           "conflict" => isset($issues[$folder]),
+				                                           "conflicts" => $info["conflicts_true"],
+				                                           "conflicts_class" => (isset($issues[$folder])) ? " conflict conflict_".join(" conflict_", $info["conflicts_true"]) : "");
 			}
 		}
 
@@ -1276,59 +1258,39 @@
 
 			$this->context["enabled_feathers"] = $this->context["disabled_feathers"] = array();
 
-			if ($open = opendir(FEATHERS_DIR)) {
-				while (($folder = readdir($open)) !== false) {
-					if (!file_exists(FEATHERS_DIR."/".$folder."/".$folder.".php") or !file_exists(FEATHERS_DIR."/".$folder."/info.yaml")) continue;
+			if (!$open = opendir(FEATHERS))
+				return Flash::warning(__("Could not read feathers directory."));
 
-					if (file_exists(FEATHERS_DIR."/".$folder."/locale/".$config->locale.".mo"))
-						load_translator($folder, FEATHERS_DIR."/".$folder."/locale/".$config->locale.".mo");
+			while (($folder = readdir($open)) !== false) {
+				if (!file_exists(FEATHERS_DIR."/".$folder."/".$folder.".php") or !file_exists(FEATHERS_DIR."/".$folder."/info.yaml")) continue;
 
-					$info = Horde_Yaml::loadFile(FEATHERS_DIR."/".$folder."/info.yaml");
+				if (file_exists(FEATHERS_DIR."/".$folder."/locale/".$config->locale.".mo"))
+					load_translator($folder, FEATHERS_DIR."/".$folder."/locale/".$config->locale.".mo");
 
-					fallback($info["name"], $folder);
-					fallback($info["version"], "0");
-					fallback($info["url"]);
-					fallback($info["description"]);
-					fallback($info["author"], array("name" => "", "url" => ""));
-					fallback($info["help"]);
+				$info = Horde_Yaml::loadFile(FEATHERS_DIR."/".$folder."/info.yaml");
 
-					$info["description"] = __($info["description"], $folder);
-					$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
-					$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
+				fallback($info["name"], $folder);
+				fallback($info["version"], "0");
+				fallback($info["url"]);
+				fallback($info["description"]);
+				fallback($info["author"], array("name" => "", "url" => ""));
+				fallback($info["help"]);
 
-					$info["author"]["link"] = (!empty($info["author"]["url"])) ?
-					                              '<a href="'.htmlspecialchars($info["author"]["url"]).'">'.htmlspecialchars($info["author"]["name"]).'</a>' :
-					                              $info["author"]["name"] ;
+				$info["description"] = __($info["description"], $folder);
+				$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
+				$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
 
-					$category = (feather_enabled($folder)) ? "enabled_feathers" : "disabled_feathers" ;
-					$this->context[$category][$folder] = array("name" => $info["name"],
-					                                           "version" => $info["version"],
-					                                           "url" => $info["url"],
-					                                           "description" => $info["description"],
-					                                           "author" => $info["author"],
-					                                           "help" => $info["help"]);
-				}
-			}
+				$info["author"]["link"] = (!empty($info["author"]["url"])) ?
+				                              '<a href="'.htmlspecialchars($info["author"]["url"]).'">'.htmlspecialchars($info["author"]["name"]).'</a>' :
+				                              $info["author"]["name"] ;
 
-			if (isset($_GET['enabled'])) {
-				if (file_exists(FEATHERS_DIR."/".$_GET['enabled']."/locale/".$config->locale.".mo"))
-					load_translator($_GET['enabled'], FEATHERS_DIR."/".$_GET['enabled']."/locale/".$config->locale.".mo");
-
-				$info = Horde_Yaml::loadFile(FEATHERS_DIR."/".$_GET['enabled']."/info.yaml");
-				fallback($info["uploader"], false);
-				fallback($info["notifications"], array());
-
-				foreach ($info["notifications"] as &$notification)
-					$notification = addslashes(__($notification, $_GET['enabled']));
-
-				if ($info["uploader"])
-					if (!file_exists(MAIN_DIR.$config->uploads_path))
-						$info["notifications"][] = _f("Please create the <code>%s</code> directory at your Chyrp install's root and CHMOD it to 777.", array($config->uploads_path));
-					elseif (!is_writable(MAIN_DIR.$config->uploads_path))
-						$info["notifications"][] = _f("Please CHMOD <code>%s</code> to 777.", array($config->uploads_path));
-
-				foreach ($info["notifications"] as $message)
-					Flash::message($message);
+				$category = (feather_enabled($folder)) ? "enabled_feathers" : "disabled_feathers" ;
+				$this->context[$category][$folder] = array("name" => $info["name"],
+				                                           "version" => $info["version"],
+				                                           "url" => $info["url"],
+				                                           "description" => $info["description"],
+				                                           "author" => $info["author"],
+				                                           "help" => $info["help"]);
 			}
 		}
 
@@ -1341,36 +1303,42 @@
 
 			$this->context["themes"] = array();
 
-			if ($open = opendir(THEMES_DIR)) {
-			     while (($folder = readdir($open)) !== false) {
-					if (!file_exists(THEMES_DIR."/".$folder."/info.yaml"))
-						continue;
+			if (!$open = opendir(THEMES_DIR))
+				return Flash::warning(__("Could not read themes directory."));
 
-					if (file_exists(THEMES_DIR."/".$folder."/locale/".$config->locale.".mo"))
-						load_translator($folder, THEMES_DIR."/".$folder."/locale/".$config->locale.".mo");
+		     while (($folder = readdir($open)) !== false) {
+				if (!file_exists(THEMES_DIR."/".$folder."/info.yaml"))
+					continue;
 
-					$info = Horde_Yaml::loadFile(THEMES_DIR."/".$folder."/info.yaml");
+				if (file_exists(THEMES_DIR."/".$folder."/locale/".$config->locale.".mo"))
+					load_translator($folder, THEMES_DIR."/".$folder."/locale/".$config->locale.".mo");
 
-					fallback($info["name"], $folder);
-					fallback($info["version"], "0");
-					fallback($info["url"]);
-					fallback($info["description"]);
-					fallback($info["author"], array("name" => "", "url" => ""));
+				$info = Horde_Yaml::loadFile(THEMES_DIR."/".$folder."/info.yaml");
 
-					$info["author"]["link"] = (!empty($info["author"]["url"])) ?
-					                              '<a href="'.$info["author"]["url"].'">'.$info["author"]["name"].'</a>' :
-					                              $info["author"]["name"] ;
-					$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
-					$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
+				fallback($info["name"], $folder);
+				fallback($info["version"], "0");
+				fallback($info["url"]);
+				fallback($info["description"]);
+				fallback($info["author"], array("name" => "", "url" => ""));
 
-					$this->context["themes"][] = array("name" => $folder,
-					                                   "screenshot" => (file_exists(THEMES_DIR."/".$folder."/screenshot.png") ?
-					                                                       $config->chyrp_url."/themes/".$folder."/screenshot.png" :
-					                                                       $config->chyrp_url."/admin/images/noscreenshot.png"),
-					                                   "info" => $info);
-				}
-				closedir($open);
+				$info["author"]["link"] = (!empty($info["author"]["url"])) ?
+				                              '<a href="'.$info["author"]["url"].'">'.$info["author"]["name"].'</a>' :
+				                              $info["author"]["name"] ;
+				$info["description"] = preg_replace("/<code>(.+)<\/code>/se",
+				                                    "'<code>'.htmlspecialchars('\\1').'</code>'",
+				                                    $info["description"]);
+
+				$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se",
+				                                    "'<pre>'.htmlspecialchars('\\1').'</pre>'",
+				                                    $info["description"]);
+
+				$this->context["themes"][] = array("name" => $folder,
+				                                   "screenshot" => (file_exists(THEMES_DIR."/".$folder."/screenshot.png") ?
+				                                                       $config->chyrp_url."/themes/".$folder."/screenshot.png" :
+				                                                       $config->chyrp_url."/admin/images/noscreenshot.png"),
+				                                   "info" => $info);
 			}
+			closedir($open);
 		}
 
 		/**
@@ -1408,7 +1376,25 @@
 			array_push($new, $_GET[$type]);
 			$config->set($enabled_array, $new);
 
+			if (file_exists($folder."/".$_GET[$type]."/locale/".$config->locale.".mo"))
+				load_translator($_GET[$type], $folder."/".$_GET[$type]."/locale/".$config->locale.".mo");
+
 			$info = Horde_Yaml::loadFile($folder."/".$_GET[$type]."/info.yaml");
+			fallback($info["uploader"], false);
+			fallback($info["notifications"], array());
+
+			foreach ($info["notifications"] as &$notification)
+				$notification = __($notification, $_GET[$type]);
+
+			if ($info["uploader"])
+				if (!file_exists(MAIN_DIR.$config->uploads_path))
+					$info["notifications"][] = _f("Please create the <code>%s</code> directory at your Chyrp install's root and CHMOD it to 777.", array($config->uploads_path));
+				elseif (!is_writable(MAIN_DIR.$config->uploads_path))
+					$info["notifications"][] = _f("Please CHMOD <code>%s</code> to 777.", array($config->uploads_path));
+
+			foreach ($info["notifications"] as $message)
+				Flash::message($message);
+
 			if ($type == "module")
 				Flash::notice(_f("&#8220;%s&#8221; module enabled.",
 				                 array($info["name"])),
@@ -1460,6 +1446,35 @@
 				Flash::notice(_f("&#8220;%s&#8221; feather disabled.",
 				                 array($info["name"])),
 				              "/admin/?action=extend_".pluralize($type));
+		}
+
+		/**
+		 * Function: change_theme
+		 * Changes the theme. Shows an error if the user lacks permissions.
+		 */
+		public function change_theme() {
+			if (!Visitor::current()->group()->can("change_settings"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+			if (empty($_GET['theme']))
+				error(__("No Theme Specified"), __("You did not specify a theme to switch to."));
+
+			$config = Config::current();
+
+			$config->set("theme", $_GET['theme']);
+
+			if (file_exists(THEMES_DIR."/".$_GET['theme']."/locale/".$config->locale.".mo"))
+				load_translator($_GET['theme'], THEMES_DIR."/".$_GET['theme']."/locale/".$config->locale.".mo");
+
+			$info = Horde_Yaml::loadFile(THEMES_DIR."/".$_GET['theme']."/info.yaml");
+			fallback($info["notifications"], array());
+
+			foreach ($info["notifications"] as &$notification)
+				$notification = __($notification, $_GET['theme']);
+
+			foreach ($info["notifications"] as $message)
+				Flash::message($message);
+
+			Flash::notice(_f("Theme changed to &#8220;%s&#8221;.", array($info["name"])), "/admin/?action=extend_themes");
 		}
 
 		/**
@@ -1569,21 +1584,6 @@
 			$config->set("post_url", $_POST['post_url']);
 
 			Flash::notice(__("Settings updated."), "/admin/?action=route_settings");
-		}
-
-		/**
-		 * Function: change_theme
-		 * Changes the theme. Shows an error if the user lacks permissions.
-		 */
-		public function change_theme() {
-			if (!Visitor::current()->group()->can("change_settings"))
-				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
-			if (empty($_GET['theme']))
-				error(__("No Theme Specified"), __("You did not specify a theme to switch to."));
-
-			Config::current()->set("theme", $_GET['theme']);
-
-			Flash::notice(__("Theme changed."), "/admin/?action=extend_themes");
 		}
 
 		/**

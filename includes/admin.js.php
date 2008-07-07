@@ -88,14 +88,13 @@ $(function(){
 	})
 <?php endif; ?>
 
-	if ($.browser.safari) {
+	if ($.browser.safari)
 		$("code").each(function(){
 			$(this).css({
 				fontFamily: "Monaco, monospace",
 				fontSize: "9px"
 			})
 		})
-	}
 })
 
 var Post = {

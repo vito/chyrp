@@ -335,6 +335,7 @@ ul.extend .expand {
 .theme .link {
 	font-weight: bold;
 	text-align: center;
+	text-decoration: none;
 }
 .theme .link span {
 	display: block;
