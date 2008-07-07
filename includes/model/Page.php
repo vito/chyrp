@@ -18,6 +18,10 @@
 		public function __construct($page_id, $options = array()) {
 			if (!isset($page_id) and empty($options)) return;
 			parent::grab($this, $page_id, $options);
+
+			if ($this->no_results)
+				return false;
+
 			$this->slug =& $this->url;
 
 			$this->filtered = !isset($options["filter"]) or $options["filter"];
@@ -104,7 +108,8 @@
 		 *     $url - The new page URL.
 		 */
 		public function update($title, $body, $parent_id, $show_in_list, $list_order, $url, $update_timestamp = true) {
-			if (!isset($this->id)) return;
+			if ($this->no_results)
+				return false;
 
 			$sql = SQL::current();
 			$sql->update("pages",
@@ -188,7 +193,10 @@
 		 * Returns a page's URL.
 		 */
 		public function url() {
-			$url = array('', $this->url);
+			if ($this->no_results)
+				return false;
+
+			$url = array("", $this->url);
 			$page = $this;
 
 			while (isset($page->parent_id) and $page->parent_id) {
@@ -204,7 +212,9 @@
 		 * Returns a page's parent. Example: $page->parent()->parent()->title
 		 */
 		public function parent() {
-			if (!$this->parent_id) return;
+			if ($this->no_results or !$this->parent_id)
+				return false;
+
 			return new self($this->parent_id);
 		}
 
@@ -213,6 +223,9 @@
 		 * Returns a page's children.
 		 */
 		public function children() {
+			if ($this->no_results)
+				return false;
+
 			return self::find(array("where" => "`parent_id` = :id", "params" => array(":id" => $this->id)));
 		}
 
@@ -221,6 +234,9 @@
 		 * Returns a page's creator. Example: $page->user()->full_name
 		 */
 		public function user() {
+			if ($this->no_results)
+				return false;
+
 			return new User($this->user_id);
 		}
 
@@ -234,12 +250,12 @@
 		 *     $after - If the link can be shown, show this after it.
 		 */
 		public function edit_link($text = null, $before = null, $after = null){
-			$visitor = Visitor::current();
-			if (!isset($this->id) or !$visitor->group()->can("edit_page")) return false;
+			if ($this->no_results or !Visitor::current()->group()->can("edit_page"))
+				return false;
 
 			fallback($text, __("Edit"));
-			$config = Config::current();
-			echo $before.'<a href="'.$config->chyrp_url.'/admin/?action=edit_page&amp;id='.$this->id.'" title="Edit" class="page_edit_link edit_link" id="page_edit_'.$this->id.'">'.$text.'</a>'.$after;
+
+			echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=edit_page&amp;id='.$this->id.'" title="Edit" class="page_edit_link edit_link" id="page_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
 		/**
@@ -252,11 +268,11 @@
 		 *     $after - If the link can be shown, show this after it.
 		 */
 		public function delete_link($text = null, $before = null, $after = null){
-			$visitor = Visitor::current();
-			if (!isset($this->id) or !$visitor->group()->can("delete_page")) return false;
+			if ($this->no_results or !Visitor::current()->group()->can("delete_page"))
+				return false;
 
 			fallback($text, __("Delete"));
-			$config = Config::current();
-			echo $before.'<a href="'.$config->chyrp_url.'/admin/?action=delete_page&amp;id='.$this->id.'" title="Delete" class="page_delete_link delete_link" id="page_delete_'.$this->id.'">'.$text.'</a>'.$after;
+
+			echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=delete_page&amp;id='.$this->id.'" title="Delete" class="page_delete_link delete_link" id="page_delete_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 	}

@@ -37,6 +37,9 @@
 		 * Checks if the group can perform the specified functions.
 		 */
 		public function can() {
+			if ($this->no_results)
+				return false;
+
 			$functions = func_get_args();
 
 			# OR comparison
@@ -92,6 +95,9 @@
 		 *     $permissions - An array of the new permissions to set.
 		 */
 		public function update($name, $permissions) {
+			if ($this->no_results)
+				return false;
+
 			$sql = SQL::current();
 			$sql->update("groups", "`__groups`.`id` = :id",
 			             array("name" => ":name", "permissions" => ":permissions"),
@@ -144,7 +150,13 @@
 		 * Returns the amount of users in the.
 		 */
 		public function size() {
-			return (isset($this->size)) ? $this->size : $this->size = SQL::current()->count("users", "`group_id` = :group_id", array(":group_id" => $this->id)) ;
+			if ($this->no_results)
+				return false;
+
+			return (isset($this->size)) ? $this->size :
+			       $this->size = SQL::current()->count("users",
+			                                           "__users.group_id = :group_id",
+			                                           array(":group_id" => $this->id)) ;
 		}
 
 		/**
@@ -152,6 +164,9 @@
 		 * Returns all the members of the group.
 		 */
 		public function members() {
+			if ($this->no_results)
+				return false;
+
 			return User::find(array("where" => "`group_id` = :group_id",
 			                        "params" => array(":group_id" => $this->id)));
 		}
@@ -165,12 +180,13 @@
 		 *     $before - If the link can be shown, show this before it.
 		 *     $after - If the link can be shown, show this after it.
 		 */
-		public function edit_link($text = null, $before = null, $after = null){
-			$visitor = Visitor::current();
-			if (!$visitor->group()->can("edit_group")) return;
+		public function edit_link($text = null, $before = null, $after = null) {
+			if ($this->no_results or !Visitor::current()->group()->can("edit_group"))
+				return false;
+
 			fallback($text, __("Edit"));
-			$config = Config::current();
-			echo $before.'<a href="'.$config->chyrp_url.'/admin/?action=edit_group&amp;id='.$this->id.'" title="Edit" class="group_edit_link edit_link" id="group_edit_'.$this->id.'">'.$text.'</a>'.$after;
+
+			echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=edit_group&amp;id='.$this->id.'" title="Edit" class="group_edit_link edit_link" id="group_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
 		/**
@@ -183,10 +199,11 @@
 		 *     $after - If the link can be shown, show this after it.
 		 */
 		public function delete_link($text = null, $before = null, $after = null){
-			$visitor = Visitor::current();
-			if (!$visitor->group()->can("delete_group")) return;
+			if ($this->no_results or !Visitor::current()->group()->can("delete_group"))
+				return false;
+
 			fallback($text, __("Delete"));
-			$config = Config::current();
-			echo $before.'<a href="'.$config->chyrp_url.'/admin/?action=delete_group&amp;id='.$this->id.'" title="Delete" class="group_delete_link delete_link" id="group_delete_'.$this->id.'">'.$text.'</a>'.$after;
+
+			echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=delete_group&amp;id='.$this->id.'" title="Delete" class="group_delete_link delete_link" id="group_delete_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 	}

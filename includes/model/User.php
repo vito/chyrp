@@ -17,6 +17,10 @@
 		 */
 		public function __construct($user_id, $options = array()) {
 			parent::grab($this, $user_id, $options);
+
+			if ($this->no_results)
+				return false;
+
 			Trigger::current()->call("filter_user", $this);
 		}
 
@@ -110,6 +114,9 @@
 		 *     <add>
 		 */
 		public function update($login, $password, $full_name, $email, $website, $group_id) {
+			if ($this->no_results)
+				return false;
+
 			$sql = SQL::current();
 			$sql->update("users",
 			             "`__users`.`id` = :id",
@@ -149,6 +156,9 @@
 		 * Returns a user's group. Example: $user->group()->can("do_something")
 		 */
 		public function group() {
+			if ($this->no_results)
+				return false;
+
 			return new Group($this->group_id);
 		}
 
@@ -162,9 +172,12 @@
 		 *     $after - If the link can be shown, show this after it.
 		 */
 		public function edit_link($text = null, $before = null, $after = null) {
+			if ($this->no_results or !Visitor::current()->group()->can("edit_user"))
+				return false;
+
 			fallback($text, __("Edit"));
-			$config = Config::current();
-			echo $before.'<a href="'.$config->chyrp_url.'/admin/?action=edit_user&amp;id='.$this->id.'" title="Edit" class="user_edit_link edit_link" id="user_edit_'.$this->id.'">'.$text.'</a>'.$after;
+
+			echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=edit_user&amp;id='.$this->id.'" title="Edit" class="user_edit_link edit_link" id="user_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
 		/**
@@ -177,8 +190,11 @@
 		 *     $after - If the link can be shown, show this after it.
 		 */
 		public function delete_link($text = null, $before = null, $after = null) {
+			if ($this->no_results or !Visitor::current()->group()->can("delete_user"))
+				return false;
+
 			fallback($text, __("Delete"));
-			$config = Config::current();
-			echo $before.'<a href="'.$config->chyrp_url.'/admin/?action=delete_user&amp;id='.$this->id.'" title="Delete" class="user_delete_link delete_link" id="user_delete_'.$this->id.'">'.$text.'</a>'.$after;
+
+			echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=delete_user&amp;id='.$this->id.'" title="Delete" class="user_delete_link delete_link" id="user_delete_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 	}

@@ -36,7 +36,7 @@
 			parent::grab($this, $post_id, $options);
 
 			if ($this->no_results)
-				return;
+				return false;
 
 			$this->filtered = !isset($options["filter"]) or $options["filter"];
 			$this->slug =& $this->url;
@@ -191,7 +191,8 @@
 		 *     <add>
 		 */
 		public function update($values, $pinned = null, $status = null, $slug = null, $timestamp = null, $update_timestamp = true) {
-			if ($this->no_results) return false;
+			if ($this->no_results)
+				return false;
 
 			fallback($pinned, (int) !empty($_POST['pinned']));
 			fallback($status, (isset($_POST['draft'])) ? "draft" : fallback($_POST['status'], $this->status));
@@ -248,7 +249,8 @@
 		 * Checks if the <User> can delete the post.
 		 */
 		public function deletable($user = null) {
-			if ($this->no_results) return false;
+			if ($this->no_results)
+				return false;
 
 			fallback($user, Visitor::current());
 			if ($user->group()->can("delete_post"))
@@ -264,7 +266,8 @@
 		 * Checks if the <User> can edit the post.
 		 */
 		public function editable($user = null) {
-			if ($this->no_results) return false;
+			if ($this->no_results)
+				return false;
 
 			fallback($user, Visitor::current());
 			if ($user->group()->can("edit_post"))
@@ -371,7 +374,8 @@
 		 * Returns a post's URL.
 		 */
 		public function url() {
-			if ($this->no_results) return false;
+			if ($this->no_results)
+				return false;
 
 			$config = Config::current();
 			$visitor = Visitor::current();
@@ -401,7 +405,9 @@
 		 * Returns a post's user. Example: $post->user()->login
 		 */
 		public function user() {
-			if ($this->no_results) return false;
+			if ($this->no_results)
+				return false;
+
 			return new User($this->user_id);
 		}
 
@@ -413,7 +419,8 @@
 		 *     The post's excerpt. iltered -> first line -> ftags stripped -> truncated to 75 characters -> normalized.
 		 */
 		public function title_from_excerpt() {
-			if ($this->no_results) return false;
+			if ($this->no_results)
+				return false;
 
 			global $feathers;
 
@@ -439,7 +446,9 @@
 		 * Returns the given post's title, provided by its Feather.
 		 */
 		public function title() {
-			if ($this->no_results) return false;
+			if ($this->no_results)
+				return false;
+
 			global $feathers;
 
 			# Excerpts are likely to have some sort of markup module applied to them;
@@ -456,7 +465,9 @@
 		 * Returns the given post's excerpt, provided by its Feather.
 		 */
 		public function excerpt() {
-			if ($this->no_results) return false;
+			if ($this->no_results)
+				return false;
+
 			global $feathers;
 
 			# Excerpts are likely to have some sort of markup module applied to them;
@@ -473,7 +484,9 @@
 		 * Returns the given post's Feed content, provided by its Feather.
 		 */
 		public function feed_content() {
-			if ($this->no_results) return false;
+			if ($this->no_results)
+				return false;
+
 			global $feathers;
 
 			# Excerpts are likely to have some sort of markup module applied to them;
@@ -490,7 +503,9 @@
 		 *     The next post (the post made after this one).
 		 */
 		public function next() {
-			if ($this->no_results) return false;
+			if ($this->no_results)
+				return false;
+
 			return new self(null, array("where" => "__posts.created_at > :created_at OR __posts.id > :id",
 			                            "order" => "__posts.created_at ASC, __posts.id ASC",
 			                            "params" => array(":created_at" => $this->created_at,
@@ -503,7 +518,9 @@
 		 *     The next post (the post made after this one).
 		 */
 		public function prev() {
-			if ($this->no_results) return false;
+			if ($this->no_results)
+				return false;
+
 			return new self(null, array("where" => "__posts.created_at < :created_at OR __posts.id < :id",
 			                            "order" => "__posts.created_at DESC, __posts.id DESC",
 			                            "params" => array(":created_at" => $this->created_at,
@@ -562,11 +579,12 @@
 		 *     $after - If the link can be shown, show this after it.
 		 */
 		public function edit_link($text = null, $before = null, $after = null){
-			if (!$this->editable()) return false;
+			if (!$this->editable())
+				return false;
 
 			fallback($text, __("Edit"));
-			$config = Config::current();
-			echo $before.'<a href="'.$config->chyrp_url.'/admin/?action=edit_post&amp;id='.$this->id.'" title="Edit" class="post_edit_link edit_link" id="post_edit_'.$this->id.'">'.$text.'</a>'.$after;
+
+			echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=edit_post&amp;id='.$this->id.'" title="Edit" class="post_edit_link edit_link" id="post_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
 		/**
@@ -579,11 +597,12 @@
 		 *     $after - If the link can be shown, show this after it.
 		 */
 		public function delete_link($text = null, $before = null, $after = null){
-			if (!$this->deletable()) return false;
+			if (!$this->deletable())
+				return false;
 
 			fallback($text, __("Delete"));
-			$config = Config::current();
-			echo $before.'<a href="'.$config->chyrp_url.'/admin/?action=delete_post&amp;id='.$this->id.'" title="Delete" class="post_delete_link delete_link" id="post_delete_'.$this->id.'">'.$text.'</a>'.$after;
+
+			echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=delete_post&amp;id='.$this->id.'" title="Delete" class="post_delete_link delete_link" id="post_delete_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
 		/**
@@ -591,7 +610,9 @@
 		 * Returns the posts trackback URL.
 		 */
 		public function trackback_url() {
-			if ($this->no_results) return false;
+			if ($this->no_results) return
+				false;
+
 			return Config::current()->chyrp_url."/includes/trackback.php?id=".$this->id;
 		}
 
