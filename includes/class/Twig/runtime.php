@@ -340,9 +340,12 @@ function twig_translate_plural_string_filter($single, $plural, $number, $domain 
 }
 
 function twig_inspect_filter($thing) {
-	return '<pre class="chyrp_inspect"><code>' .
-	       htmlspecialchars(var_export($thing, true)) .
-	       '</code></pre>';
+	if (ini_get("xdebug.var_display_max_depth") == -1)
+		return var_dump($thing);
+	else
+		return '<pre class="chyrp_inspect"><code>' .
+		       htmlspecialchars(var_export($thing, true)) .
+		       '</code></pre>';
 }
 
 function twig_split_filter($string, $cut = " ") {

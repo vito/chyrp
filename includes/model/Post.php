@@ -31,7 +31,14 @@
 			elseif (!isset($options["where"]))
 				$options["where"] = array();
 
-			$options["where"] = array_merge($options["where"], array(self::$enabled_feathers, self::$private));
+			$has_status = false;
+			foreach ($options["where"] as $where)
+				if (substr_count($where, "status"))
+					$has_status = true;
+
+			$options["where"][] = self::$enabled_feathers;
+			if (!$has_status)
+				$options["where"][] = self::$private;
 
 			parent::grab($this, $post_id, $options);
 
@@ -506,7 +513,14 @@
 			if ($this->no_results)
 				return false;
 
-			return new self(null, array("where" => "__posts.created_at > :created_at OR __posts.id > :id",
+			$where = array("(__posts.created_at > :created_at OR __posts.id > :id)");
+
+			if ($this->status != "draft")
+				$where[] = "__posts.status != 'draft'";
+			elseif ($this->status == "draft")
+				$where[] = "__posts.status = 'draft'";
+
+			return new self(null, array("where" => $where,
 			                            "order" => "__posts.created_at ASC, __posts.id ASC",
 			                            "params" => array(":created_at" => $this->created_at,
 			                                              ":id" => $this->id)));
@@ -521,7 +535,14 @@
 			if ($this->no_results)
 				return false;
 
-			return new self(null, array("where" => "__posts.created_at < :created_at OR __posts.id < :id",
+			$where = array("(__posts.created_at < :created_at OR __posts.id < :id)");
+
+			if ($this->status != "draft")
+				$where[] = "__posts.status != 'draft'";
+			elseif ($this->status == "draft")
+				$where[] = "__posts.status = 'draft'";
+
+			return new self(null, array("where" => $where,
 			                            "order" => "__posts.created_at DESC, __posts.id DESC",
 			                            "params" => array(":created_at" => $this->created_at,
 			                                              ":id" => $this->id)));

@@ -4,11 +4,9 @@
 	 * Holds information for URLs, redirecting, etc.
 	 */
 	class Route {
-		/**
-		 * Array: $code
-		 * The translation array of the post URL setting to regular expressions.
-		 * Passed through the route_code filter.
-		 */
+		# Array: $code
+		# The translation array of the post URL setting to regular expressions.
+		# Passed through the route_code filter.
 		public $code = array('(year)'     => '([0-9]{4})',
 		                     '(month)'    => '([0-9]{1,2})',
 		                     '(day)'      => '([0-9]{1,2})',
@@ -22,10 +20,8 @@
 		                     '(feather)'  => '([^\/]+)',
 		                     '(feathers)' => '([^\/]+)');
 
-		/**
-		 * Function: $urls
-		 * An array of clean URL => dirty URL translations.
-		 */
+		# Function: $urls
+		# An array of clean URL => dirty URL translations.
 		public $urls = array('/\/id\/([0-9]+)\//'                => '/?action=view&amp;id=$1',
 		                     '/\/page\/(([^\/]+)\/)+/'           => '/?action=page&amp;url=$2',
 		                     '/\/search\//'                      => '/?action=search',
@@ -36,17 +32,17 @@
 		                     '/\/([^\/]+)\/feed\/([^\/]+)\//'    => '/?action=$1&amp;feed&amp;title=$2',
 		                     '/\/([^\/]+)\/feed\//'              => '/?action=$1&amp;feed');
 
-		/**
-		 * String: $action
-		 * The current action.
-		 */
+		# String: $action
+		# The current action.
 		public $action = "";
 
-		/**
-		 * Boolean: $ajax
-		 * Shortcut to the AJAX constant (useful for Twig).
-		 */
+		# Boolean: $ajax
+		# Shortcut to the AJAX constant (useful for Twig).
 		public $ajax = AJAX;
+
+		# Array: $post_url_attrs
+		# Contains an associative array of URL key to value arguments if we're viewing a post.
+		public $post_url_attrs = array();
 
 		/**
 		 * Function: __construct
@@ -251,21 +247,16 @@
 			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls or isset($this->action))
 				return;
 
-			$attr = array();
 			$post_url = $this->key_regexp(rtrim($config->post_url, "/"));
 			preg_match_all("/([^\/]+)(\/|$)/", $config->post_url, $parameters);
 			if (preg_match("/".$post_url."/", rtrim($this->request, "/"), $matches)) {
 				array_shift($matches);
 
-				$this->action = "view";
-
 				foreach ($parameters[1] as $index => $parameter)
 					if ($parameters[1][$index][0] == "(")
-						$attr[rtrim(ltrim($parameter, "("), ")")] = urldecode($this->arg[$index]);
+						$this->post_url_attrs[rtrim(ltrim($parameter, "("), ")")] = urldecode($this->arg[$index]);
 
-				$post = Post::from_url($attr);
-				if (!$post->no_results)
-					return;
+				return $this->action = "view";
 			}
 
 			return $this->action = (empty($this->arg[0])) ? "index" : $this->arg[0] ;

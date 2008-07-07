@@ -28,18 +28,8 @@ $(function(){
 		return false
 	})
 
-	$(".post_edit_link").click(function(){
-		var id = $(this).attr("id").replace(/post_edit_/, "")
-		Post.edit(id)
-		return false
-	})
+	prepare_ajax_links();
 
-	$(".post_delete_link").click(function(){
-		if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
-		var id = $(this).attr("id").replace(/post_delete_/, "")
-		Post.destroy(id)
-		return false
-	})
 <?php $trigger->call("javascript_domready"); ?>
 
 })
@@ -85,15 +75,7 @@ var Post = {
 								$("#post_edit_form_"+id).loader(true).fadeOut("fast", function(){
 									$(this).replaceWith(data)
 									$("#post_"+id).hide().fadeIn("fast", function(){
-										$("#post_edit_"+id).click(function(){
-											Post.edit(id)
-											return false
-										})
-										$("#post_delete_"+id).click(function(){
-											if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
-											Post.destroy(id)
-											return false
-										})
+										prepare_ajax_links(id)
 									})
 								})
 							})
@@ -108,15 +90,7 @@ var Post = {
 						$("#post_edit_form_"+id).loader(true).fadeOut("fast", function(){
 							$(this).replaceWith(data)
 							$(this).hide().fadeIn("fast", function(){
-								$("#post_edit_"+id).click(function(){
-									Post.edit(id)
-									return false
-								})
-								$("#post_delete_"+id).click(function(){
-									if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
-									Post.destroy(id)
-									return false
-								})
+								prepare_ajax_links(id)
 							})
 						})
 					})
@@ -139,12 +113,37 @@ var Post = {
 				$("#post_"+id).animate(Post.delete_animations, function(){
 					$(this).remove()
 				})
-
-			appendNextPost()
 		})
 <?php if ($_GET['action'] == "view"): ?>
 		window.location = "<?php echo $config->url; ?>"
 <?php endif; ?>
+	}
+}
+
+function prepare_ajax_links(id) {
+	if (id != null) {
+		$("#post_edit_"+id).click(function(){
+			Post.edit(id)
+			return false
+		})
+		$("#post_delete_"+id).click(function(){
+			if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
+			Post.destroy(id)
+			return false
+		})
+	} else {
+		$(".post_edit_link").click(function(){
+			var id = $(this).attr("id").replace(/post_edit_/, "")
+			Post.edit(id)
+			return false
+		})
+
+		$(".post_delete_link").click(function(){
+			if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
+			var id = $(this).attr("id").replace(/post_delete_/, "")
+			Post.destroy(id)
+			return false
+		})
 	}
 }
 
@@ -207,31 +206,6 @@ var Cookie = {
 	destroy: function(name) {
 		document.cookie = name+"=;path=/;expires=Thu, 01-Jan-1970 00:00:01 GMT"
 	}
-}
-
-function appendNextPost() {
-<?php if (!empty($_GET['next_post'])): ?>
-	// if ($("#posts").length == 0) return;
-	// $.ajax({ type: "post", url: "<?php echo $config->chyrp_url; ?>/includes/ajax.php", data: { action: "view_post", id: <?php echo $_GET['next_post']; ?> }, success: function(data) {
-	//     $("#posts").append(data)
-	//     $("#posts .post:last").hide().fadeIn("slow")
-	//     var id = $("#posts .post:last").attr("id").replace(/post_/, "")
-	//
-	//     $("#post_edit_"+id).click(function(){
-	//     	Post.edit(id)
-	//     	return false
-	//     })
-	//
-	//     $("#post_delete_"+id).click(function(){
-	//     	if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
-	//     	Post.destroy(id)
-	//     	return false
-	//     })
-	// }, error: function(request){
-	//     if (request.status == 404)
-	//     	$("#next_page_page").fadeOut("fast");
-	// } });
-<?php endif; ?>
 }
 
 function isError(text) {

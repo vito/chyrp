@@ -60,8 +60,8 @@
 				$read = $options["read_from"];
 			elseif (isset($loaded_models[$model_name][$id]))
 				$read = $loaded_models[$model_name][$id];
-			else
-				$read = $sql->select($options["from"],
+			else {
+				$query = $sql->select($options["from"],
 				                     $options["select"],
 				                     $options["where"],
 				                     $options["order"],
@@ -69,7 +69,9 @@
 				                     1,
 				                     $options["offset"],
 				                     $options["group"],
-				                     $options["left_join"])->fetch();
+				                     $options["left_join"]);
+				$read = $query->fetch();
+			}
 
 			if (!count($read) or !$read)
 				return $model->no_results = true;
@@ -77,6 +79,9 @@
 			foreach ($read as $key => $val)
 				if (!is_int($key))
 					$model->$key = $loaded_models[$model_name][$read["id"]][$key] = $val;
+
+			if (isset($query))
+				$model->queryString = $query->query->queryString;
 
 			if (isset($model->updated_at))
 				$model->updated = $model->updated_at != "0000-00-00 00:00:00";

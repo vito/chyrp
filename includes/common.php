@@ -272,21 +272,6 @@
 	# Holds the current user and their group.
 	$visitor = Visitor::current();
 
-	$config->theme = ($visitor->group()->can("change_settings") and
-	                      !empty($_GET['action']) and
-	                      $_GET['action'] == "theme_preview" and
-	                      !empty($_GET['theme'])) ?
-	                 $_GET['theme'] :
-	                 $config->theme;
-
-	# Constant: THEME_DIR
-	# Absolute path to /themes/(current theme)
-	define('THEME_DIR', MAIN_DIR."/themes/".$config->theme);
-
-	# Constant: THEME_URL
-	# URL to /themes/(current theme)
-	define('THEME_URL', $config->chyrp_url."/themes/".$config->theme);
-
 	# Array: $statuses
 	# An array of post statuses that <Visitor> can view.
 	$statuses = array("public");
@@ -302,6 +287,21 @@
 
 	Post::$private = "`__posts`.`status` IN ('".implode("', '", $statuses)."')";
 	Post::$enabled_feathers = "`__posts`.`feather` IN ('".implode("', '", $config->enabled_feathers)."')";
+
+	$config->theme = ($visitor->group()->can("change_settings") and
+	                      !empty($_GET['action']) and
+	                      $_GET['action'] == "theme_preview" and
+	                      !empty($_GET['theme'])) ?
+	                 $_GET['theme'] :
+	                 $config->theme;
+
+	# Constant: THEME_DIR
+	# Absolute path to /themes/(current theme)
+	define('THEME_DIR', MAIN_DIR."/themes/".$config->theme);
+
+	# Constant: THEME_URL
+	# URL to /themes/(current theme)
+	define('THEME_URL', $config->chyrp_url."/themes/".$config->theme);
 
 	# Load the translation engine
 	load_translator("chyrp", INCLUDES_DIR."/locale/".$config->locale.".mo");

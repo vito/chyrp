@@ -103,7 +103,10 @@
 			$get = array_map("urldecode", $_GET);
 
 			if (!$config->clean_urls)
-				return $post = new Post(null, array("where" => "`__posts`.`url` = :url", "params" => array(":url" => $get['url'])));
+				return $post = new Post(null, array("where" => "`__posts`.`url` = :url",
+				                                    "params" => array(":url" => $get['url'])));
+			else
+				return $post = Post::from_url(Route::current()->post_url_attrs);
 
 			if ($post->no_results)
 				show_404();
