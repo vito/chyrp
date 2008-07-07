@@ -6,8 +6,6 @@
 	 *     <User>
 	 */
 	class Visitor extends User {
-		public $id = 0;
-
 		/**
 		 * Function: __construct
 		 * Checks if a valid user is logged in.
@@ -25,7 +23,7 @@
 		 * Returns the user's <Group> or the "Guest Group".
 		 */
 		public function group() {
-			if (!$this->id)
+			if (!isset($this->group_id))
 				return new Group(Config::current()->guest_group);
 			else
 				return new Group($this->group_id);

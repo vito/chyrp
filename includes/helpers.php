@@ -71,10 +71,10 @@
 
 	/**
 	 * Function: logged_in
-	 * Returns whether or not $visitor->id is 0.
+	 * Returns whether or not they are logged in.
 	 */
 	function logged_in() {
-		return Visitor::current()->id;
+		return !Visitor::current()->no_results;
 	}
 
 	/**

@@ -30,14 +30,14 @@
 			if (class_exists("PDO") and (in_array("mysql", PDO::getAvailableDrivers()) or in_array("sqlite", PDO::getAvailableDrivers())))
 				return $this->interface = "pdo";
 
-			if (isset($this->adapter))
+			if (isset($this->adapter)) {
 				if ($this->adapter == "mysql" and class_exists("MySQLi"))
 					$this->interface = "mysqli";
 				elseif ($this->adapter == "mysql")
 					$this->interface = "mysql";
 				elseif ($this->adapter == "sqlite" and class_exists("SQLiteDatabase"))
 					$this->interface = "sqlite";
-			else
+			} else
 				if (class_exists("MySQLi"))
 					$this->interface = "mysqli";
 				else
@@ -128,7 +128,7 @@
 					}
 					break;
 				case "mysqli":
-					$this->db = new MySQLi($this->host, $this->username, $this->password, $this->database);
+					$this->db = @new MySQLi($this->host, $this->username, $this->password, $this->database);
 					$this->error = mysqli_connect_error();
 
 					if (mysqli_connect_errno())

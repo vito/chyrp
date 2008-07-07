@@ -22,6 +22,16 @@
 	# Should Chyrp use debugging processes?
 	define('DEBUG', true);
 
+	# Use GZip compression if available.
+	if (extension_loaded("zlib") and
+	    !ini_get("zlib.output_compression") and
+	    isset($_SERVER['HTTP_ACCEPT_ENCODING']) and
+	    substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip")) {
+		ob_start("ob_gzhandler");
+		header("Content-Encoding: gzip");
+	} else
+		ob_start();
+
 	# Make sure E_STRICT is on so Chyrp remains errorless.
 	error_reporting(E_ALL | E_STRICT);
 
@@ -299,16 +309,6 @@
 	# Load the theme translator
 	if (file_exists(THEME_DIR."/locale/".$config->locale.".mo"))
 		load_translator("theme", THEME_DIR."/locale/".$config->locale.".mo");
-
-	# Use GZip compression if available.
-	if (extension_loaded("zlib") and
-	    !ini_get("zlib.output_compression") and
-	    isset($_SERVER['HTTP_ACCEPT_ENCODING']) and
-	    substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip")) {
-		ob_start("ob_gzhandler");
-		header("Content-Encoding: gzip");
-	} else
-		ob_start();
 
 	if (!JAVASCRIPT and !XML_RPC) {
 		if (!$visitor->group()->can("view_site") and !in_array($route->action, array("process_login", "login", "logout", "process_registration", "register")))

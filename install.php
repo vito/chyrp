@@ -208,8 +208,14 @@
 			);
 
 			# Insert the default groups (see above)
-			foreach($groups as $name => $permissions)
-				$sql->replace("groups", array("name" => ":name", "permissions" => ":permissions"), array(":name" => ucfirst($name), ":permissions" => $permissions));
+			$group_id = array();
+			foreach($groups as $name => $permissions) {
+				$sql->replace("groups",
+				              array("name" => ":name", "permissions" => ":permissions"),
+				              array(":name" => ucfirst($name), ":permissions" => $permissions));
+
+				$group_id[$name] = $sql->latest();
+			}
 
 			if (!file_exists(MAIN_DIR."/.htaccess"))
 				if (!@file_put_contents(MAIN_DIR."/.htaccess", $htaccess))
@@ -231,8 +237,8 @@
 			$config->set("post_url", "(year)/(month)/(day)/(url)/");
 			$config->set("timezone", $_POST['timezone']);
 			$config->set("can_register", true);
-			$config->set("default_group", 2);
-			$config->set("guest_group", 5);
+			$config->set("default_group", $group_id["member"]);
+			$config->set("guest_group", $group_id["guest"]);
 			$config->set("enable_trackbacking", true);
 			$config->set("send_pingbacks", false);
 			$config->set("enable_xmlrpc", true);
@@ -256,7 +262,7 @@
 				                   ":password" => md5($_POST['password_1']),
 				                   ":email" => $_POST['email'],
 				                   ":website" => $config->url,
-				                   ":group_id" => 1,
+				                   ":group_id" => $group_id["admin"],
 				                   ":joined_at" => datetime()
 				             ));
 
