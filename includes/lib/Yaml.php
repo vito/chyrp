@@ -14,10 +14,10 @@
  * @package  Horde_Yaml
  */
 
-require "Yaml/Dumper.php";
 require "Yaml/Exception.php";
-require "Yaml/Loader.php";
 require "Yaml/Node.php";
+require "Yaml/Dumper.php";
+require "Yaml/Loader.php";
 
 /**
  * Horde YAML parser.

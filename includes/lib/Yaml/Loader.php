@@ -371,8 +371,6 @@ class Horde_Yaml_Loader
             $value = INF;
         } elseif ($lower_value == '-.inf') {
             $value = -INF;
-        } elseif (ctype_digit($value)) {
-            $value = (int)$value;
         } elseif (in_array($lower_value,
                            array('true', 'on', '+', 'yes', 'y'))) {
             $value = true;
