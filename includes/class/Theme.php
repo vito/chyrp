@@ -141,7 +141,7 @@
 				$archives[] = array("month" => $date->month,
 				                    "year"  => $date->year,
 				                    "when"  => $date->created_at,
-				                    "url"   => Route::current()->url("archive/".when("Y/m/", $date->created_at)),
+				                    "url"   => url("archive/".when("Y/m/", $date->created_at)),
 				                    "count" => $date->posts);
 
 			return $archives;
@@ -259,10 +259,10 @@
 			             '&amp;title='.urlencode($this->title) ;
 
 			$route = Route::current();
-			$feeds = '<link rel="alternate" type="application/atom+xml" title="'.$config->name.' Feed" href="'.fallback($config->feed_url, $route->url("feed/"), true).'" />'."\n";
+			$feeds = '<link rel="alternate" type="application/atom+xml" title="'.$config->name.' Feed" href="'.fallback($config->feed_url, url("feed/"), true).'" />'."\n";
 
 			foreach ($pluralizations["feathers"] as $normal => $plural) {
-				$feeds.= "\t\t".'<link rel="alternate" type="application/atom+xml" title="'.ucfirst($plural).' Feed" href="'.$route->url($plural."/feed/".urlencode(ucfirst($plural))."/").'" />'."\n";
+				$feeds.= "\t\t".'<link rel="alternate" type="application/atom+xml" title="'.ucfirst($plural).' Feed" href="'.url($plural."/feed/".urlencode(ucfirst($plural))."/").'" />'."\n";
 			}
 
 			$feeds.= "\t\t".'<link rel="alternate" type="application/atom+xml" title="Current Page (if applicable)" href="'.$config->url.$request.$append.'" />';

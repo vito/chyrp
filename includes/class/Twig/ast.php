@@ -322,7 +322,7 @@ class Twig_URL extends Twig_Node
 	public function compile($compiler)
 	{
 		$compiler->addDebugInfo($this);
-		$compiler->raw('echo Route::current()->url(');
+		$compiler->raw('echo url(');
 		$this->expr->compile($compiler);
 		$compiler->raw(');'."\n");
 	}

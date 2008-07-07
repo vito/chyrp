@@ -147,10 +147,18 @@
 				Config::current()->chyrp_url.$url :
 				Config::current()->url.$url;
 		elseif (class_exists("Route") and !substr_count($url, "://"))
-			$url = Route::current()->url($url);
+			$url = url($url);
 
 		header("Location: ".html_entity_decode($url));
 		exit;
+	}
+
+	/**
+	 * Function: url
+	 * Mask for Route->url().
+	 */
+	function url($url) {
+		return Route::current()->url($url);
 	}
 
 	/**

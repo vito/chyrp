@@ -204,7 +204,7 @@
 				$page = $page->parent();
 			}
 
-			return Route::current()->url("page/".implode('/', array_reverse($url)));
+			return url("page/".implode('/', array_reverse($url)));
 		}
 
 		/**

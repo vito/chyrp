@@ -167,7 +167,7 @@
 			foreach ($values as $value)
 				send_pingbacks($value, $post);
 
-			$post->redirect = (isset($_POST['bookmarklet'])) ? Route::current()->url("bookmarklet/done/") : $post->url() ;
+			$post->redirect = (isset($_POST['bookmarklet'])) ? url("bookmarklet/done/") : $post->url() ;
 
 			Trigger::current()->call("add_post", $post, $options);
 

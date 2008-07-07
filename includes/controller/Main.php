@@ -89,7 +89,7 @@
 		 */
 		public function rss() {
 			header("HTTP/1.1 301 Moved Permanently");
-			redirect(fallback(Config::current()->feed_url, Route::current()->url("feed/"), true));
+			redirect(fallback(Config::current()->feed_url, url("feed/"), true));
 		}
 
 		/**
@@ -296,7 +296,7 @@
 
 			if ($sent)
 				return Flash::warning(_f("An e-mail has been sent to your e-mail address that contains a new password. Once you have logged in with it, feel free to change it at <a href=\"%s\">User Controls</a>.",
-				                         array(Route::current()->url("controls/"))));
+				                         array(url("controls/"))));
 
 			$user->update($user->login,
 			              $user->password,

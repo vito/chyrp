@@ -188,7 +188,7 @@
 						<?php if (isset($field["optional"]) and $field["optional"]): ?><span class="sub"><?php echo __("(optional)"); ?></span><?php endif; ?>
 						<?php if (isset($field["help"]) and $field["help"]): ?>
 						<span class="sub">
-							<a href="<?php echo $route->url("/admin/?action=help&id=".$field["help"]); ?>" class="help emblem"><img src="<?php echo $config->chyrp_url; ?>/admin/images/icons/help.png" alt="help" /></a>
+							<a href="<?php echo url("/admin/?action=help&id=".$field["help"]); ?>" class="help emblem"><img src="<?php echo $config->chyrp_url; ?>/admin/images/icons/help.png" alt="help" /></a>
 						</span>
 						<?php endif; ?>
 					</label>

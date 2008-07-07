@@ -335,7 +335,7 @@
 			elseif (isset($posts)) # Are there already posts to show?
 				$route->action = "feed";
 			else
-				redirect(fallback($config->feed_url, $route->url("feed/"), true)); # Really? Nothing? Too bad. MAIN FEED 4 U.
+				redirect(fallback($config->feed_url, url("feed/"), true)); # Really? Nothing? Too bad. MAIN FEED 4 U.
 
 		$theme = Theme::current();
 	}

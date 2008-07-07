@@ -86,7 +86,7 @@
 					                              "year" => $time->year,
 					                              "month" => strftime("%B", $timestamp),
 					                              "timestamp" => $timestamp,
-					                              "url" => $route->url("archive/".when("Y/m/", $time->created_at)));
+					                              "url" => url("archive/".when("Y/m/", $time->created_at)));
 
 					$archives[$timestamp]["posts"] = Post::find(array("where" => "`__posts`.`created_at` like :created_at",
 					                                                  "params" => array(":created_at" => when("Y-m", $time->created_at)."%")));

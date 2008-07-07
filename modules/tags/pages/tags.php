@@ -32,7 +32,7 @@
 			                   "name" => $tag,
 			                   "title" => sprintf(_p("%s post tagged with &quot;%s&quot;", "%s posts tagged with &quot;%s&quot;", $count), $count, $tag),
 			                   "clean" => $tag2clean[$tag],
-			                   "url" => $route->url("tag/".$tag2clean[$tag]."/"));
+			                   "url" => url("tag/".$tag2clean[$tag]."/"));
 
 		$theme->load("pages/tags", array("tag_cloud" => $context));
 	}

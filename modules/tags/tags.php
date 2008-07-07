@@ -220,7 +220,7 @@
 
 			$linked = array();
 			foreach ($tags as $clean => $tag)
-				$linked[] = '<a href="'.Route::current()->url("tag/".$clean."/").'" rel="tag">'.$tag.'</a>';
+				$linked[] = '<a href="'.url("tag/".$clean."/").'" rel="tag">'.$tag.'</a>';
 
 			return $linked;
 		}
