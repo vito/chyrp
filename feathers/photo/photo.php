@@ -36,6 +36,8 @@
 			                 Post::check_url($_POST['slug']));
 		}
 		public function update() {
+			$post = new Post($_POST['id']);
+
 			if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0) {
 				$this->delete_file($post);
 				$filename = upload($_FILES['photo'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp"));
@@ -45,7 +47,6 @@
 			} else
 				$filename = $post->filename;
 
-			$post = new Post($_POST['id']);
 			$post->update(array("filename" => $filename,
 			                    "caption" => $_POST['caption']));
 		}

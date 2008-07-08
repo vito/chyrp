@@ -18,11 +18,11 @@ $(function(){
 	})
 
 	$(".toggle_admin").click(function(){
-		if (!$("#admin_bar:visible").size()) {
-			$("#admin_bar").slideDown()
+		if (!$("#admin_bar:visible, #controls:visible").size()) {
+			$("#admin_bar, #controls").slideDown()
 			Cookie.destroy("chyrp_hide_admin")
 		} else {
-			$("#admin_bar").slideUp()
+			$("#admin_bar, #controls").slideUp()
 			Cookie.set("chyrp_hide_admin", "true", 30)
 		}
 		return false

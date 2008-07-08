@@ -36,6 +36,8 @@
 			                 Post::check_url($_POST['slug']));
 		}
 		public function update() {
+			$post = new Post($_POST['id']);
+
 			if (isset($_FILES['audio']) and $_FILES['audio']['error'] == 0) {
 				$this->delete_file($post);
 				$filename = upload($_FILES['audio'], "mp3");
@@ -45,7 +47,6 @@
 			} else
 				$filename = $post->filename;
 
-			$post = new Post($_POST['id']);
 			$post->update(array("filename" => $filename,
 			                    "description" => $_POST['description']));
 		}
