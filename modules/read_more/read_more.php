@@ -9,7 +9,7 @@
 			if (isset($_GET['feed']))
 				return str_replace("<!--more-->", "", $text);
 
-			$url = (isset($post) and !$post->no_results) ? $post->url() : "#" ;
+			$url = (isset($post) and !$post->no_results) ? fix($post->url()) : "#" ;
 
 			# For the curious: e51b2b9a58824dd068d8777ec6e97e4d is a md5 of "replace me!"
 			return str_replace("<!--more-->", '<a class="read_more" href="'.$url.'">e51b2b9a58824dd068d8777ec6e97e4d</a>(((more)))', $text);
@@ -31,7 +31,7 @@
 			return str_replace("e51b2b9a58824dd068d8777ec6e97e4d", $string, $split_read[0]);
 		}
 		static function title_from_excerpt($text) {
-			$text = preg_replace("/(<p>)?<a class=\"read_more\" href=\"([^\"]+)\">e51b2b9a58824dd068d8777ec6e97e4d<\/a>(<\/p>|<br \/>)?/", "<!--more-->", $text);
+			$text = preg_replace("/(<p>)?<a class=\"read_more\" href=\"([^\"]+)\">e51b2b9a58824dd068d8777ec6e97e4d<\/a>(<\/p>(\n\n<\/p>(\n\n)?)?|<br \/>)?/", "<!--more-->", $text);
 			$split = explode("<!--more-->", $text);
 			return $split[0];
 		}

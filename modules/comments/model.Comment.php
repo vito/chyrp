@@ -241,7 +241,7 @@
 			return false;
 		}
 
-		public function edit_link($text = null, $before = null, $after = null){
+		public function edit_link($text = null, $before = null, $after = null) {
 			$visitor = Visitor::current();
 			if (!$this->editable()) return;
 			fallback($text, __("Edit"));
@@ -249,7 +249,7 @@
 			echo $before.'<a href="'.$config->chyrp_url.'/admin/?action=edit_comment&amp;id='.$this->id.'" title="Edit" class="comment_edit_link edit_link" id="comment_edit_'.$this->id.'">'.$text.'</a>'.$after;
 		}
 
-		public function delete_link($text = null, $before = null, $after = null){
+		public function delete_link($text = null, $before = null, $after = null) {
 			$visitor = Visitor::current();
 			if (!$this->deletable()) return;
 			fallback($text, __("Delete"));

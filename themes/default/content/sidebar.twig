@@ -11,11 +11,13 @@
 						{% if item.has_children %}<ul>{% endif %}
 					{% if not item.has_children %}</li>{% endif %}
 
-						{% for ul, li in item.end_tags %}
+					{% for ul, li in item.end_tags %}
 						$ul
 					$li
-						{% endfor %}
+					{% endfor %}
 				{% endfor %}
+				</ul>
+
 				<h1>${ "Welcome, %s!" | translate | format(visitor.login | fallback("Guest" | translate)) }</h1>
 				<ul>
 {% if visitor.logged_in %}
