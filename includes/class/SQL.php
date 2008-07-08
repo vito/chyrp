@@ -55,7 +55,11 @@
 			if (!file_exists($file))
 				return false;
 
-			$this->yaml = Horde_Yaml::loadFile($file);
+			$contents = str_replace("<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n",
+			                        "",
+			                        file_get_contents($file));
+
+			$this->yaml = Horde_Yaml::load($contents);
 			foreach ($this->yaml as $setting => $value)
 				if (!is_int($setting)) # Don't load the "---"
 					$this->$setting = $value;
@@ -80,9 +84,6 @@
 
 			# Add the setting
 			$this->yaml[$setting] = $value;
-
-			if (isset($this->yaml['<?php header("Status']))
-				unset($this->yaml['<?php header("Status']);
 
 			# Generate the new YAML settings
 			$contents.= Horde_Yaml::dump($this->yaml);

@@ -25,7 +25,15 @@
 		 *     $file - The YAML file to load into <Config>.
 		 */
 		public function load($file) {
-			$this->yaml = Horde_Yaml::loadFile($file);
+			if (!file_exists($file))
+				return false;
+
+			$contents = str_replace("<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n",
+			                        "",
+			                        file_get_contents($file));
+
+			$this->yaml = Horde_Yaml::load($contents);
+
 			$arrays = array("enabled_modules", "enabled_feathers", "routes");
 			foreach ($this->yaml as $setting => $value)
 				if (in_array($setting, $arrays) and empty($value))
@@ -55,9 +63,6 @@
 			# Add the setting
 			$this->yaml[$setting] = $this->$setting = $value;
 
-			if (isset($this->yaml['<?php header("Status']))
-				unset($this->yaml['<?php header("Status']);
-
 			if (class_exists("Trigger"))
 				Trigger::current()->call("change_setting", $setting, $value, $overwrite);
 
@@ -81,9 +86,6 @@
 
 			# Add the setting
 			unset($this->yaml[$setting]);
-
-			if (isset($this->yaml[0]) and $this->yaml[0] == "--")
-				unset($this->yaml[0]);
 
 			# Generate the new YAML settings
 			$contents.= Horde_Yaml::dump($this->yaml);
