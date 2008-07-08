@@ -67,7 +67,7 @@
 		readfile($cache_file);
 		exit; # no need to create thumbnail - it already exists in the cache
 	}
-exit;
+
 	# determine php and gd versions
 	$ver = (int) str_replace(".", "", phpversion());
 	if ($ver >= 430)

@@ -7,6 +7,7 @@
 		private $notices = array();
 		private $warnings = array();
 		private $messages = array();
+
 		private $all = array();
 
 		/**
