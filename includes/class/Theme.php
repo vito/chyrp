@@ -96,7 +96,7 @@
 		}
 
 		/**
-		 * Function: get_last_linear_child
+		 * Function: recurse_pages
 		 * Helper function to <Theme.pages_list>
 		 */
 		public function recurse_pages($page) {
