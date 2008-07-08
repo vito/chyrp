@@ -53,7 +53,12 @@
 	$filename = str_replace("//","/",$filename);
 	$fileextension = substr($filename, strrpos($filename, ".") + 1);
 
-	$cache_file = INCLUDES_DIR."/caches/thumb_".md5($filename.$thumb_size.$thumb_size_x.$thumb_size_y.$quality).'.'.$fileextension;
+	$cache_file = INCLUDES_DIR."/caches/thumb_".
+	              md5($filename.$thumb_size.$thumb_size_x.$thumb_size_y.$quality).'.'.$fileextension;
+
+	list($original_width, $original_height, $type, $attr) = getimagesize($filename);
+	if ($original_width < $thumb_size_x and $original_height < $thumb_size_y)
+		header("Location: ".$filename);
 
 	# remove cache thumbnail?
 	if (isset($_GET['nocache']) and $_GET['nocache'] == 1 and file_exists($cache_file))
@@ -99,7 +104,7 @@
 			if (!$image = imagecreatefrompng($filename)) {
 				# not a valid png file
 				$image = imagecreatefrompng($image_error);
-				$file_type="png";
+				$file_type = "png";
 				if (file_exists($cache_file)) # remove the cached thumbnail
 					unlink($cache_file);
 			}
@@ -109,7 +114,7 @@
 			if (!$image = imagecreatefromgif($filename)) {
 				# not a valid gif file
 				$image = imagecreatefrompng($image_error);
-				$file_type="png";
+				$file_type = "png";
 				if (file_exists($cache_file)) # remove the cached thumbnail
 					unlink($cache_file);
 			}

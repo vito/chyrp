@@ -26,7 +26,10 @@
 
 				# Getting a traceback from these files doesn't help much.
 				while (match(array("/SQL\.php/", "/Model\.php/", "/\/model\//"), $target["file"]))
-					$target = $trace[$index++];
+					if (isset($trace[$index + 1]["file"]))
+						$target = $trace[$index++];
+					else
+						break;
 
 				SQL::current()->debug[] = array("number" => SQL::current()->queries,
 				                                "file" => str_replace(MAIN_DIR."/", "", $target["file"]),
