@@ -919,7 +919,7 @@
 					$trigger->call("import_chyrp_page", $entry, $page);
 				}
 
-			Flash::notice(__("Chyrp content successfully imported!"), "/admin/?action=import&success_chyrp");
+			Flash::notice(__("Chyrp content successfully imported!"), "/admin/?action=import");
 		}
 
 		/**
@@ -962,7 +962,7 @@
 
 			if (!$xml or !strpos($xml->channel->generator, "wordpress.org"))
 				Flash::warning(__("File does not seem to be a valid WordPress export file."),
-				               "/admin/?action=import&invalid_wordpress");
+				               "/admin/?action=import");
 
 			foreach ($xml->channel->item as $item) {
 				$wordpress = $item->children("http://wordpress.org/export/1.0/");
@@ -1008,7 +1008,7 @@
 				}
 			}
 
-			Flash::notice(__("WordPress content successfully imported!"), "/admin/?action=import&success_wordpress");
+			Flash::notice(__("WordPress content successfully imported!"), "/admin/?action=import");
 		}
 
 		/**
@@ -1046,7 +1046,7 @@
 
 			if (!isset($xml->tumblelog))
 				Flash::warning(__("The URL you specified does not seem to be a valid Tumblr site."),
-				               "/admin/?action=import&invalid_tumblr");
+				               "/admin/?action=import");
 
 			$already_in = $posts = array();
 			foreach ($xml->posts->post as $post) {
@@ -1135,7 +1135,7 @@
 				Trigger::current()->call("import_tumble", $post, $new_post);
 			}
 
-			Flash::notice(__("Tumblr content successfully imported!"), "/admin/?action=import&success_tumblr");
+			Flash::notice(__("Tumblr content successfully imported!"), "/admin/?action=import");
 		}
 
 		/**
@@ -1162,16 +1162,12 @@
 
 			if (!$dbcon or !$dbsel)
 				Flash::warning(__("Could not connect to the specified TextPattern database."),
-				               "/admin/?action=import&invalid_textpattern");
+				               "/admin/?action=import");
 
-			$get_posts = mysql_query("SELECT * FROM `{$_POST['prefix']}textpattern` ORDER BY `ID` ASC", $link) or die(mysql_error());
+			$get_posts = mysql_query("SELECT * FROM `{$_POST['prefix']}textpattern` ORDER BY `ID` ASC", $link) or error(__("Database Error"), mysql_error());
 			$posts = array();
-			while ($post = mysql_fetch_array($get_posts)) {
+			while ($post = mysql_fetch_array($get_posts))
 				$posts[$post["ID"]] = $post;
-				$trigger->filter($posts[$post["ID"]], "import_textpattern_generate_array", $link);
-			}
-
-			mysql_close($link);
 
 			foreach ($posts as $post) {
 				$regexp_url = preg_quote($_POST['media_url'], "/");
@@ -1203,7 +1199,84 @@
 				$trigger->call("import_textpattern_post", $post, $new_post);
 			}
 
-			Flash::notice(__("TextPattern content successfully imported!"), "/admin/?action=import&success_textpattern");
+			mysql_close($link);
+
+			Flash::notice(__("TextPattern content successfully imported!"), "/admin/?action=import");
+		}
+
+		/**
+		 * Function: import_movabletype
+		 * MovableType importing.
+		 */
+		public function import_movabletype() {
+			if (empty($_POST))
+				redirect("/admin/?action=import");
+
+			if (!Visitor::current()->group()->can("add_post"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+
+			$config = Config::current();
+			$trigger = Trigger::current();
+
+			$dbcon = $dbsel = false;
+			if (!$link = @mysql_connect($_POST['host'], $_POST['username'], $_POST['password']))
+				$errors[] = "Could not connect to the MySQL server: ".mysql_error();
+			else {
+				$dbcon = true;
+				$dbsel = @mysql_select_db($_POST['database'], $link);
+			}
+
+			if (!$dbcon or !$dbsel)
+				Flash::warning(__("Could not connect to the specified MovableType database."),
+				               "/admin/?action=import");
+
+			$get_posts = mysql_query("SELECT * FROM `mt_entry` ORDER BY `entry_id` ASC", $link) or error(__("Database Error"), mysql_error());
+			$posts = array();
+			while ($post = mysql_fetch_array($get_posts))
+				$posts[$post["entry_id"]] = $post;
+
+			foreach ($posts as $post) {
+				$body = $post["entry_text"];
+
+				if (!empty($post["entry_text_more"]))
+					$body.= "\n\n<!--more-->\n\n".$post["entry_text_more"];
+
+				$regexp_url = preg_quote($_POST['media_url'], "/");
+				if (!empty($_POST['media_url']) and
+				    preg_match_all("/{$regexp_url}([^\.\!,\?;\"\'<>\(\)\[\]\{\}\s\t ]+)\.([a-zA-Z0-9]+)/",
+				                   $body,
+				                   $media))
+					foreach ($media[0] as $matched_url) {
+						$filename = upload_from_url($matched_url);
+						$body = str_replace($matched_url, $config->url.$config->uploads_path.$filename, $body);
+					}
+
+				$status_translate = array(1 => "draft",
+				                          2 => "public",
+				                          3 => "draft",
+				                          4 => "draft");
+
+				$clean = fallback($post["entry_basename"], sanitize($post["entry_title"]));
+
+				$_POST['status'] = $status_translate[$post["entry_status"]];
+				$_POST['pinned'] = false;
+				$_POST['created_at'] = $post["entry_authored_on"];
+				$_POST['updated_at'] = $post["entry_modified_on"];
+				$_POST['feather'] = "text";
+
+				if ($post["entry_class"] == "entry") {
+					$new_post = Post::add(array("title" => $post["entry_title"],
+					                            "body" => $body), $clean, Post::check_url($clean));
+					$trigger->call("import_movabletype_post", $post, $new_post, $link);
+				} elseif ($post["entry_class"] == "page") {
+					$new_page = Page::add($post["entry_title"], $body, 0, true, 0, $clean, Page::check_url($clean));
+					$trigger->call("import_movabletype_page", $post, $new_page, $link);
+				}
+			}
+
+			mysql_close($link);
+
+			Flash::notice(__("MovableType content successfully imported!"), "/admin/?action=import");
 		}
 
 		/**

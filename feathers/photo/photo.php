@@ -69,7 +69,6 @@
 		}
 		public function image_tag_for($post, $max_width = 500, $max_height = null, $more_args = "quality=100") {
 			$filename = $post->filename;
-			$ext = pathinfo($filename, PATHINFO_EXTENSION);
 			$config = Config::current();
 			return '<a href="'.$config->chyrp_url.$config->uploads_path.$filename.'"><img src="'.$config->chyrp_url.'/feathers/photo/thumb.php?file=../..'.$config->uploads_path.urlencode($filename).'&amp;sizex='.$max_width.'&amp;sizey='.$max_height.'&amp;'.$more_args.'" alt="'.fallback($post->alt_text, $filename, true).'" /></a>';
 		}

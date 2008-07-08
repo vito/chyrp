@@ -571,34 +571,45 @@
 			}
 		}
 
-		static function import_movabletype_post($item, $post) {
-			global $comment;
-			preg_match_all("/COMMENT:\nAUTHOR: (.*?)\nEMAIL: (.*?)\nIP: (.*?)\nURL: (.*?)\nDATE: (.*?)\n(.*?)\n-----/", $data, $comments);
-			array_shift($comments);
+		static function import_textpattern_post($array, $post, $link) {
+			$get_comments = mysql_query("SELECT * FROM `{$_POST['prefix']}txp_discuss` WHERE `parentid` = {$array["ID"]} ORDER BY `discussid` ASC", $link) or error(__("Database Error"), mysql_error());
 
-			for ($i = 0; $i < count($comments[0]); $i++)
-				Comment::add($comments[5][$i], $comments[0][$i], $comments[3][$i], $comments[1][$i], $comments[2][$i], "", "approved", $comments[4][$i], $post, 0);
-		}
-
-		static function import_textpattern_generate_array($array, $link) {
-			$get_comments = mysql_query("select * from `".$_POST['prefix']."txp_discuss` where `parentid` = ".fix($array["ID"])." order by `discussid` asc", $link) or die(mysql_error());
-
-			while ($comment = mysql_fetch_array($get_comments))
-				foreach ($comment as $key => $val)
-					$array["comments"][$comment["discussid"]][$key] = $val;
-
-			return $array;
-		}
-
-		static function import_textpattern_post($array, $post) {
-			global $comment;
-			if (!isset($array["comments"])) return;
-			foreach ($array["comments"] as $comment) {
-				$translate_status = array(-1 => "spam", 0 => "denied", 1 => "approved");
+			while ($comment = mysql_fetch_array($get_comments)) {
+				$translate_status = array(-1 => "spam",
+				                          0 => "denied",
+				                          1 => "approved");
 				$status = str_replace(array_keys($translate_status), array_values($translate_status), $comment["visible"]);
 
-				Comment::add($comment["message"], $comment["name"], $comment["web"], $comment["email"], $comment["ip"], "", $status, "", $comment["posted"], $post, 0);
+				Comment::add($comment["message"],
+				             $comment["name"],
+				             $comment["web"],
+				             $comment["email"],
+				             $comment["ip"],
+				             "",
+				             $status,
+				             "",
+				             $comment["posted"],
+				             $post,
+				             0);
 			}
+		}
+
+		static function import_movabletype_post($array, $post, $link) {
+			$get_comments = mysql_query("SELECT * FROM `mt_comment` WHERE `comment_entry_id` = {$array["entry_id"]} ORDER BY `comment_id` ASC", $link) or error(__("Database Error"), mysql_error());
+
+			while ($comment = mysql_fetch_array($get_comments))
+				Comment::add($comment["comment_text"],
+				             $comment["comment_author"],
+				             $comment["comment_url"],
+				             $comment["comment_email"],
+				             $comment["comment_ip"],
+				             "",
+				             ($comment["comment_visible"] ? "approved" : denied),
+				             "",
+				             $comment["comment_created_on"],
+				             $post,
+				             0,
+				             $comment["comment_modified_on"]);
 		}
 
 		static function view_feed() {

@@ -26,7 +26,7 @@
 			$split_read[0].= @$ending_tag[1];
 
 			if (Route::current()->action == "view")
-				return preg_replace('/<a class="read_more" href="([^"]+)">e51b2b9a58824dd068d8777ec6e97e4d<\/a>/', "", implode("\n\n", $split_read));
+				return preg_replace('/(<p>)?<a class="read_more" href="([^"]+)">e51b2b9a58824dd068d8777ec6e97e4d<\/a>(<\/p>(\n\n<\/p>(\n\n)?)?)?/', "", implode("\n\n", $split_read));
 
 			return str_replace("e51b2b9a58824dd068d8777ec6e97e4d", $string, $split_read[0]);
 		}

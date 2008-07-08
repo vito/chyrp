@@ -120,5 +120,42 @@
 					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
 				</fieldset>
 			</form>
+			<br />
+			<hr />
+			<br />
+			<h2>MovableType</h2>
+			<form id="import_movabletype_form" class="split" action="{% admin "import_movabletype" %}" method="post" accept-charset="utf-8">
+				<fieldset>
+					<p>
+						<label for="host">${ "Host" | translate }</label>
+						<input class="text" type="text" name="host" value="localhost" id="host" />
+					</p>
+					<p>
+						<label for="username">${ "Username" | translate }</label>
+						<input class="text" type="text" name="username" value="" id="username" />
+					</p>
+					<p>
+						<label for="password">${ "Password" | translate }</label>
+						<input class="text" type="password" name="password" value="" id="password" />
+					</p>
+					<p>
+						<label for="database">${ "Database" | translate }</label>
+						<input class="text" type="text" name="database" value="" id="database" />
+					</p>
+					<p>
+						<label for="media_url">${ "What URL is used for embedded media?" | translate }</label>
+						<input class="text" type="text" name="media_url" value="" id="media_url" />
+						<span class="sub">${ "(optional)" | translate }</span>
+						<small>
+							${ "Usually something like <code>http://example.com/images/</code>." | translate }
+						</small>
+					</p>
+					<p class="buttons">
+						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Import" | translate }</button>
+					</p>
+
+					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+				</fieldset>
+			</form>
 			${ trigger.call("import_choose") }
 {% endblock %}
