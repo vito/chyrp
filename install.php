@@ -217,10 +217,10 @@
 				$group_id[$name] = $sql->latest();
 			}
 
-			if (!file_exists(MAIN_DIR."/.htaccess"))
+			if (!file_exists(MAIN_DIR."/.htaccess")) {
 				if (!@file_put_contents(MAIN_DIR."/.htaccess", $htaccess))
 					$errors[] = _f("Could not generate .htaccess file. Clean URLs will not be available unless you create it and put this in it:\n<pre>%s</pre>", array(htmlspecialchars($htaccess)));
-			elseif (!$htaccess_has_chyrp)
+			} elseif (!$htaccess_has_chyrp)
 				if (!@file_put_contents(MAIN_DIR."/.htaccess", "\n\n".$htaccess, FILE_APPEND))
 					$errors[] = _f("Could not generate .htaccess file. Clean URLs will not be available unless you create it and put this in it:\n<pre>%s</pre>", array(htmlspecialchars($htaccess)));
 
