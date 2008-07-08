@@ -13,7 +13,6 @@
 		private $directory;
 		private $pages = array();
 		private $context = array();
-		private $page_list = "";
 
 		/**
 		 * Function: __construct
@@ -34,74 +33,82 @@
 		}
 
 		/**
-		 * Function: list_pages
-		 * Generates a recursive list of pages and their children. Outputs it as a <ul> list.
-		 *
-		 * Parameters:
-		 *     $home_link - Whether or not to show the "Home" link
-		 *     $home_text - Text for the "Home" link
+		 * Function: pages_list
+		 * Returns a simple array of list items to be used by the theme to generate a recursive array of pages.
 		 */
-		public function list_pages($home_link = true, $home_text = null, $main_class = "page_list", $list_class = "page_list_item", $show_order_fields = false) {
-			fallback($home_text, __("Home"));
+		public function pages_list() {
+			$this->pages_dirty = Page::find(array("where" => "`show_in_list` = 1", "order" => "`list_order` asc"));
 
-			$this->page_list = '<ul class="'.$main_class.'">'."\n";
-
-			$this->pages = Page::find(array("where" => "`show_in_list` = 1", "order" => "`list_order` asc"));
-
-			if ($home_link)
-				$this->page_list.= '<li class="'.$list_class.(Route::current()->action == "index" ? " selected" : "").'">'."\n".'<a href="'.Config::current()->url.'">'.$home_text.'</a>'."\n".'</li>'."\n";
+			foreach ($this->pages_dirty as $page)
+				$this->pages[$page->id] = $page;
 
 			foreach ($this->pages as $page)
 				if ($page->parent_id == 0)
-					$this->recurse_pages($page, $main_class, $list_class, $show_order_fields);
+					$this->recurse_pages($page);
 
-			Trigger::current()->filter($this->page_list, "list_pages");
+			$array = array();
 
-			$this->page_list.= "</ul>\n";
-			return $this->page_list;
+			foreach ($this->pages_flat as $page) {
+				$this->end_tags_for[$page->id] = array();
+
+				fallback($this->children[$page->parent_id], array());
+				if ($page->parent_id)
+					$this->children[$page->parent_id][] = $page;
+			}
+
+			foreach ($this->pages_flat as $page) {
+				$array[$page->id] = array();
+				$my_array =& $array[$page->id];
+
+				$my_array["has_children"] = !empty($this->children[$page->id]);
+
+				if ($my_array["has_children"])
+					$this->end_tags_for[$this->get_last_linear_child($page->id)][] = array("</ul>", "</li>");
+
+				$my_array["end_tags"] =& $this->end_tags_for[$page->id];
+				$my_array["page"] = $page;
+			}
+
+			return $array;
 		}
 
 		/**
-		 * Function: recurse_pages
-		 * Performs all of the recursion for generating the page lists. Used by <list_pages>.
-		 *
-		 * Parameters:
-		 *     $id - The page ID to start at.
-		 *
-		 * See Also:
-		 *     <list_pages>
+		 * Function: get_last_linear_child
+		 * Helper function to <Theme.pages_list>
 		 */
-		public function recurse_pages($page, $main_class = "page_list", $list_class = "page_list_item", $show_order_fields = false) {
-			global $pages;
+		public function get_last_linear_child($page, $origin = null) {
+			if ($page === 0) {
+				$return = end($this->pages_flat);
+				return $return->id;
+			}
 
-			$selected = (Route::current()->action == 'page' and $_GET['url'] == $page->url) ? ' selected' : '';
-			$this->page_list.= sprintf('<li class="%s" id="page_list_%s">'."\n".'<a href="%s">%s</a>', $list_class.$selected, $page->id, $page->url(), $page->title);
+			fallback($origin, $page);
 
-			if ($show_order_fields)
-				$this->page_list.= ' <input type="text" size="2" name="list_order['.$page->id.']" value="'.$page->list_order.'" />';
+			fallback($this->linear_children[$origin], array());
 
-			$count = 1;
+			$this->linear_children[$origin][] = (int) $page;
+
+			if (isset($this->children[$page]))
+				foreach ($this->children[$page] as $child)
+					$this->get_last_linear_child($child->id, $origin);
+
+			return end($this->linear_children[$origin]);
+		}
+
+		/**
+		 * Function: get_last_linear_child
+		 * Helper function to <Theme.pages_list>
+		 */
+		public function recurse_pages($page) {
+			$this->pages_flat[] = $page;
+
 			$children = array();
 			foreach ($this->pages as $child)
 				if ($child->parent_id == $page->id)
 					$children[] = $child;
 
-			foreach ($children as $child) {
-				if ($count == 1)
-					$this->page_list.= "\n".'<ul class="'.$main_class.'">'."\n";
-
-				$this->recurse_pages($child, $main_class, $list_class, $show_order_fields);
-
-				if ($count == count($children))
-					$this->page_list.= "</ul>\n";
-
-				$count++;
-			}
-
-			if (count($children) == 0)
-				$this->page_list.= "\n";
-
-			$this->page_list.= "</li>\n";
+			foreach ($children as $child)
+				$this->recurse_pages($child);
 		}
 
 		/**

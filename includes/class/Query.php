@@ -25,7 +25,7 @@
 				$target = $trace[$index = 0];
 
 				# Getting a traceback from these files doesn't help much.
-				while (match(array("/database\.php/", "/Model\.php/"), $target["file"]))
+				while (match(array("/SQL\.php/", "/Model\.php/", "/\/model\//"), $target["file"]))
 					$target = $trace[$index++];
 
 				SQL::current()->debug[] = array("number" => SQL::current()->queries,
