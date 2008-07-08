@@ -47,6 +47,7 @@ $twig_filters = array(
 	'camelize' =>         'camelize',
 	'strip_tags' =>       'strip_tags',
 	'pluralize' =>        'twig_pluralize_string_filter',
+	'depluralize' =>        'twig_depluralize_string_filter',
 	'sanitize' =>         'sanitize',
 
 	// array helpers
@@ -406,6 +407,10 @@ function twig_pluralize_string_filter($string, $number = null) {
 		return $string;
 	else
 		return pluralize($string);
+}
+
+function twig_depluralize_string_filter($string) {
+	return depluralize($string);
 }
 
 function twig_quotes_filter($string) {
