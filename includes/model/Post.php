@@ -404,7 +404,7 @@
 				Trigger::current()->filter($vals, "url_vals", $this->id);
 				return $config->url."/".str_replace(array_keys(Route::current()->code), $vals, $config->post_url);
 			} else
-				return $config->url."/?action=view&url=".urlencode($this->url);
+				return $config->url."/?action=view&amp;url=".urlencode($this->url);
 		}
 
 		/**
