@@ -13,7 +13,6 @@
 		private $directory;
 		private $pages = array();
 		private $context = array();
-		private $tabs = "\t";
 		private $page_list = "";
 
 		/**
@@ -50,7 +49,7 @@
 			$this->pages = Page::find(array("where" => "`show_in_list` = 1", "order" => "`list_order` asc"));
 
 			if ($home_link)
-				$this->page_list.= $this->tabs.'<li class="'.$list_class.(Route::current()->action == "index" ? " selected" : "").'">'."\n".$this->tabs."\t".'<a href="'.Config::current()->url.'">'.$home_text.'</a>'."\n".$this->tabs.'</li>'."\n";
+				$this->page_list.= '<li class="'.$list_class.(Route::current()->action == "index" ? " selected" : "").'">'."\n".'<a href="'.Config::current()->url.'">'.$home_text.'</a>'."\n".'</li>'."\n";
 
 			foreach ($this->pages as $page)
 				if ($page->parent_id == 0)
@@ -76,7 +75,7 @@
 			global $pages;
 
 			$selected = (Route::current()->action == 'page' and $_GET['url'] == $page->url) ? ' selected' : '';
-			$this->page_list.= sprintf($this->tabs.'<li class="%s" id="page_list_%s">'."\n".$this->tabs."\t".'<a href="%s">%s</a>', $list_class.$selected, $page->id, $page->url(), $page->title);
+			$this->page_list.= sprintf('<li class="%s" id="page_list_%s">'."\n".'<a href="%s">%s</a>', $list_class.$selected, $page->id, $page->url(), $page->title);
 
 			if ($show_order_fields)
 				$this->page_list.= ' <input type="text" size="2" name="list_order['.$page->id.']" value="'.$page->list_order.'" />';
@@ -88,16 +87,13 @@
 					$children[] = $child;
 
 			foreach ($children as $child) {
-				for ($i = 0; $i < $count; $i++)
-					$this->tabs.= "\t";
-
 				if ($count == 1)
-					$this->page_list.= "\n".$this->tabs.'<ul class="'.$main_class.'">'."\n";
-				$this->tabs .= "\t";
+					$this->page_list.= "\n".'<ul class="'.$main_class.'">'."\n";
+
 				$this->recurse_pages($child, $main_class, $list_class, $show_order_fields);
 
 				if ($count == count($children))
-					$this->page_list.= "\t".$this->tabs."</ul>\n";
+					$this->page_list.= "</ul>\n";
 
 				$count++;
 			}
@@ -105,12 +101,7 @@
 			if (count($children) == 0)
 				$this->page_list.= "\n";
 
-			$this->tabs = substr($this->tabs, 0, -2);
-
-			$this->page_list.= ((isset($this->last_recursion) and $this->last_recursion) ? "\t" : "\t\t").$this->tabs."</li>\n";
-
-			if (strlen($this->tabs) == 1)
-				$this->last_recursion.= !isset($this->last_recursion);
+			$this->page_list.= "</li>\n";
 		}
 
 		/**

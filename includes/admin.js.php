@@ -244,7 +244,7 @@ function extend_draggables() {
 			bottom: "-1em",
 			display: "block",
 			textAlign: "center"
-		}).insertBefore(".tip_before_me")
+		}).appendTo(".tip_before_me")
 }
 
 function get_parent_hash() {
