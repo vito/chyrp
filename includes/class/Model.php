@@ -80,7 +80,7 @@
 				if (!is_int($key))
 					$model->$key = $loaded_models[$model_name][$read["id"]][$key] = $val;
 
-			if (isset($query))
+			if (isset($query) and isset($query->query->queryString))
 				$model->queryString = $query->query->queryString;
 
 			if (isset($model->updated_at))
