@@ -1164,6 +1164,8 @@
 				Flash::warning(__("Could not connect to the specified TextPattern database."),
 				               "/admin/?action=import");
 
+			mysql_query("SET NAMES 'utf8'");
+
 			$get_posts = mysql_query("SELECT * FROM `{$_POST['prefix']}textpattern` ORDER BY `ID` ASC", $link) or error(__("Database Error"), mysql_error());
 			$posts = array();
 			while ($post = mysql_fetch_array($get_posts))
@@ -1229,6 +1231,8 @@
 			if (!$dbcon or !$dbsel)
 				Flash::warning(__("Could not connect to the specified MovableType database."),
 				               "/admin/?action=import");
+
+			mysql_query("SET NAMES 'utf8'");
 
 			$get_posts = mysql_query("SELECT * FROM `mt_entry` ORDER BY `entry_id` ASC", $link) or error(__("Database Error"), mysql_error());
 			$posts = array();
