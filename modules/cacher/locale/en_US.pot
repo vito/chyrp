@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-07-07 01:38-0500\n"
+"PO-Revision-Date: 2008-07-08 20:44-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -20,13 +20,13 @@ msgstr ""
 msgid "(seconds)"
 msgstr ""
 
-#: modules/cacher/info.yaml:6
-msgid "Please make sure that /modules/cacher/cache is writable by the server. If you are not certain whether it is or not, CHMOD it to 777."
-msgstr ""
-
 #: modules/cacher/pages/admin/cache_settings.twig:3
 #: modules/cacher/pages/admin/cache_settings.twig:6
 msgid "Cache Settings"
+msgstr ""
+
+#: modules/cacher/info.yaml:6
+msgid "Please make sure that /includes/cache is writable by the server. If you are not certain whether it is or not, CHMOD it to 777."
 msgstr ""
 
 #: modules/cacher/info.yaml:4

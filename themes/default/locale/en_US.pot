@@ -9,14 +9,14 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-07-07 01:38-0500\n"
+"PO-Revision-Date: 2008-07-08 20:44-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: themes/default/content/sidebar.twig:45
+#: themes/default/content/sidebar.twig:58
 msgid "Load time:"
 msgstr ""
 
@@ -30,7 +30,7 @@ msgstr ""
 msgid "Your search did not return any results."
 msgstr ""
 
-#: themes/default/content/sidebar.twig:44
+#: themes/default/content/sidebar.twig:57
 msgid "Queries:"
 msgstr ""
 
@@ -43,15 +43,11 @@ msgstr ""
 msgid "Controls"
 msgstr ""
 
-#: themes/default/forms/user/lost_password.twig:7
-msgid "You have specified a user that does not exist."
-msgstr ""
-
 #: themes/default/pages/feather.twig:10
 msgid "There don't seem to be any posts as the Feather you specified."
 msgstr ""
 
-#: themes/default/forms/user/lost_password.twig:18
+#: themes/default/forms/user/lost_password.twig:12
 msgid "Submit"
 msgstr ""
 
@@ -79,7 +75,7 @@ msgstr ""
 
 #: themes/default/forms/user/register.twig:3
 #: themes/default/forms/user/register.twig:24
-#: themes/default/content/sidebar.twig:19
+#: themes/default/content/sidebar.twig:32
 msgid "Register"
 msgstr ""
 
@@ -107,24 +103,24 @@ msgstr ""
 msgid "Add Page"
 msgstr ""
 
-#: themes/default/content/sidebar.twig:35
+#: themes/default/content/sidebar.twig:48
 msgid "Archives"
 msgstr ""
 
-#: themes/default/content/sidebar.twig:8
+#: themes/default/content/sidebar.twig:21
 msgid "Guest"
 msgstr ""
 
-#: themes/default/content/sidebar.twig:8
+#: themes/default/content/sidebar.twig:21
 #, php-format
 msgid "Welcome, %s!"
 msgstr ""
 
-#: themes/default/content/sidebar.twig:11
+#: themes/default/content/sidebar.twig:24
 msgid "User Controls"
 msgstr ""
 
-#: themes/default/content/post.twig:19
+#: themes/default/content/post.twig:14
 msgid "%B %d @ %I:%M %p"
 msgstr ""
 
@@ -140,14 +136,6 @@ msgstr ""
 #: themes/default/pages/search.twig:4
 #, php-format
 msgid "Search results for &#8220;%s&#8221;"
-msgstr ""
-
-#: themes/default/content/post.twig:3
-msgid "This post is a draft."
-msgstr ""
-
-#: themes/default/forms/user/lost_password.twig:10
-msgid "E-mail sent!"
 msgstr ""
 
 #: themes/default/forms/user/register.twig:15
@@ -175,7 +163,7 @@ msgstr ""
 msgid "Admin"
 msgstr ""
 
-#: themes/default/forms/user/lost_password.twig:12
+#: themes/default/forms/user/lost_password.twig:6
 msgid "Please enter your username below and we will e-mail you a new password for your account."
 msgstr ""
 
@@ -195,11 +183,11 @@ msgstr ""
 msgid "Your E-Mail"
 msgstr ""
 
-#: themes/default/content/sidebar.twig:13
+#: themes/default/content/sidebar.twig:26
 msgid "Toggle Admin Bar"
 msgstr ""
 
-#: themes/default/content/sidebar.twig:26
+#: themes/default/content/sidebar.twig:39
 msgid "Tags"
 msgstr ""
 
@@ -235,12 +223,12 @@ msgstr ""
 msgid "Website"
 msgstr ""
 
-#: themes/default/content/sidebar.twig:31
+#: themes/default/content/sidebar.twig:44
 msgid "All &rarr;"
 msgstr ""
 
 #: themes/default/forms/user/register.twig:7
-#: themes/default/forms/user/lost_password.twig:14
+#: themes/default/forms/user/lost_password.twig:8
 #: themes/default/forms/user/login.twig:7
 msgid "Username"
 msgstr ""
@@ -253,7 +241,7 @@ msgstr ""
 msgid "Sorry, but you are looking for something that isn't here."
 msgstr ""
 
-#: themes/default/content/sidebar.twig:20
+#: themes/default/content/sidebar.twig:33
 msgid "Lost Password?"
 msgstr ""
 
@@ -273,17 +261,16 @@ msgstr ""
 msgid "Pages"
 msgstr ""
 
-#: themes/default/content/post.twig:37
+#: themes/default/content/post.twig:32
 #: themes/default/content/comment.twig:11
 msgid "Delete"
 msgstr ""
 
-#: themes/default/content/post.twig:34
+#: themes/default/content/post.twig:29
 msgid "Trackback"
 msgstr ""
 
 #: themes/default/javascripts/flashes.js.php:10
-#: themes/default/content/post.twig:3
 msgid "(click to hide)"
 msgstr ""
 
@@ -306,16 +293,16 @@ msgstr ""
 
 #: themes/default/forms/user/login.twig:3
 #: themes/default/forms/user/login.twig:15
-#: themes/default/content/sidebar.twig:17
+#: themes/default/content/sidebar.twig:30
 msgid "Log In"
 msgstr ""
 
-#: themes/default/content/post.twig:36
+#: themes/default/content/post.twig:31
 #: themes/default/content/comment.twig:10
 msgid "Edit"
 msgstr ""
 
-#: themes/default/content/post.twig:7
+#: themes/default/content/post.twig:2
 msgid "pinned"
 msgstr ""
 
@@ -327,7 +314,7 @@ msgstr ""
 msgid "No Drafts"
 msgstr ""
 
-#: themes/default/content/sidebar.twig:15
+#: themes/default/content/sidebar.twig:28
 msgid "Log Out"
 msgstr ""
 
@@ -335,7 +322,7 @@ msgstr ""
 msgid "No Results"
 msgstr ""
 
-#: themes/default/content/sidebar.twig:42
+#: themes/default/content/sidebar.twig:55
 msgid "Stats"
 msgstr ""
 

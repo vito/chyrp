@@ -47,7 +47,7 @@ $twig_filters = array(
 	'camelize' =>         'camelize',
 	'strip_tags' =>       'strip_tags',
 	'pluralize' =>        'twig_pluralize_string_filter',
-	'depluralize' =>        'twig_depluralize_string_filter',
+	'depluralize' =>      'twig_depluralize_string_filter',
 	'sanitize' =>         'sanitize',
 
 	// array helpers
