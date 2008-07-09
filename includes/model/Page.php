@@ -6,10 +6,6 @@
 	 *     <Model>
 	 */
 	class Page extends Model {
-		# Boolean: $no_results
-		# Was a result found?
-		public $no_results = false;
-
 		/**
 		 * Function: __construct
 		 * See Also:
@@ -196,15 +192,19 @@
 			if ($this->no_results)
 				return false;
 
-			$url = array("", $this->url);
-			$page = $this;
+			$config = Config::current();
+			if (!$config->clean_urls)
+				return $config->url."/?action=page&amp;url=".urlencode($this->url);
 
+			$url = array("", $this->url);
+
+			$page = $this;
 			while (isset($page->parent_id) and $page->parent_id) {
 				$url[] = $page->parent()->url;
 				$page = $page->parent();
 			}
 
-			return url("page/".implode('/', array_reverse($url)));
+			return url("page/".implode("/", array_reverse($url)));
 		}
 
 		/**

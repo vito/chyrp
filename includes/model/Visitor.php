@@ -6,6 +6,8 @@
 	 *     <User>
 	 */
 	class Visitor extends User {
+		# Integer: $id
+		# The ID of the currently visiting "user". 0 if not logged in.
 		public $id = 0;
 
 		/**

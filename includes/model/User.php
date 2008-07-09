@@ -6,10 +6,6 @@
 	 *     <Model>
 	 */
 	class User extends Model {
-		# Boolean: $no_results
-		# Was a result found?
-		public $no_results = false;
-
 		/**
 		 * Function: __construct
 		 * See Also:

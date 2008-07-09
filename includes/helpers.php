@@ -74,7 +74,7 @@
 	 * Returns whether or not they are logged in by returning the <Visitor.$id> (which defaults to 0).
 	 */
 	function logged_in() {
-		return Visitor::current()->id;
+		return Visitor::current()->id != 0;
 	}
 
 	/**
@@ -334,7 +334,7 @@
 	 */
 	function when($formatting, $when, $strftime = false) {
 		if ($when instanceof DateTime)
-			$when = gmdate("Y-m-d H:i:s", time() + $when->getTimezone()->getOffset($when));
+			$when = gmdate("Y-m-d H:i:s", $when->format("U") + $when->getTimezone()->getOffset($when));
 
 		$time = (is_numeric($when)) ? $when : strtotime($when) ;
 
@@ -355,7 +355,7 @@
 		fallback($when, now()->format("c"));
 
 		if ($when instanceof DateTime)
-			$when = gmdate("Y-m-d H:i:s", time() + $when->getTimezone()->getOffset($when));
+			$when = gmdate("Y-m-d H:i:s", $when->format("U") + $when->getTimezone()->getOffset($when));
 
 		$time = (is_numeric($when)) ? $when : strtotime($when) ;
 
@@ -1034,17 +1034,16 @@
 	 *     $precision - Number of decimals places to round to.
 	 *
 	 * Returns:
-	 *     $formatted - A formatted number with the given $precision.
+	 *     A formatted number with the given $precision.
 	 */
 	function timer_stop($precision = 3) {
 		global $time_start;
 		$mtime = microtime();
-		$mtime = explode(' ',$mtime);
+		$mtime = explode(" ", $mtime);
 		$mtime = $mtime[1] + $mtime[0];
 		$time_end = $mtime;
 		$time_total = $time_end - $time_start;
-		$formatted = (function_exists("number_format_i18n")) ? number_format_i18n($time_total, $precision) : number_format($time_total, $precision);
-		return $formatted;
+		return number_format($time_total, $precision);
 	}
 
 	/**

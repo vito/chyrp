@@ -75,6 +75,8 @@
 
 			if (!count($read) or !$read)
 				return $model->no_results = true;
+			else
+				$model->no_results = false;
 
 			foreach ($read as $key => $val)
 				if (!is_int($key))

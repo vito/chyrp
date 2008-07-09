@@ -6,9 +6,6 @@
 	 *     <Model>
 	 */
 	class Group extends Model {
-		public $no_results = false;
-		public $has = array();
-
 		/**
 		 * Function: __construct
 		 * See Also:

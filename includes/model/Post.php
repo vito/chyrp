@@ -6,10 +6,6 @@
 	 *     <Model>
 	 */
 	class Post extends Model {
-		# Boolean: $no_results
-		# Was a result found?
-		public $no_results = false;
-
 		# String: $private
 		# SQL "where" text for which posts the current user can view.
 		static $private;
@@ -386,25 +382,26 @@
 
 			$config = Config::current();
 			$visitor = Visitor::current();
-			if ($config->clean_urls) {
-				$login = (strpos($config->post_url, "(author)") !== false) ? $this->user()->login : null ;
-				$vals = array(when("Y", $this->created_at),
-				              when("m", $this->created_at),
-				              when("d", $this->created_at),
-				              when("H", $this->created_at),
-				              when("i", $this->created_at),
-				              when("s", $this->created_at),
-				              $this->id,
-				              urlencode($login),
-				              urlencode($this->clean),
-				              urlencode($this->url),
-				              urlencode($this->feather),
-				              urlencode(pluralize($this->feather)));
 
-				Trigger::current()->filter($vals, "url_vals", $this->id);
-				return $config->url."/".str_replace(array_keys(Route::current()->code), $vals, $config->post_url);
-			} else
+			if (!$config->clean_urls)
 				return $config->url."/?action=view&amp;url=".urlencode($this->url);
+
+			$login = (strpos($config->post_url, "(author)") !== false) ? $this->user()->login : null ;
+			$vals = array(when("Y", $this->created_at),
+			              when("m", $this->created_at),
+			              when("d", $this->created_at),
+			              when("H", $this->created_at),
+			              when("i", $this->created_at),
+			              when("s", $this->created_at),
+			              $this->id,
+			              urlencode($login),
+			              urlencode($this->clean),
+			              urlencode($this->url),
+			              urlencode($this->feather),
+			              urlencode(pluralize($this->feather)));
+
+			Trigger::current()->filter($vals, "url_vals", $this->id);
+			return $config->url."/".str_replace(array_keys(Route::current()->code), $vals, $config->post_url);
 		}
 
 		/**

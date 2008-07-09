@@ -16,9 +16,9 @@
 		 */
 		private function __construct() {
 			fallback($_SESSION['flash'], array());
-			fallback($_SESSION['flash']['notice'], array());
-			fallback($_SESSION['flash']['warning'], array());
-			fallback($_SESSION['flash']['message'], array());
+			fallback($_SESSION['flash']['notices'], array());
+			fallback($_SESSION['flash']['warnings'], array());
+			fallback($_SESSION['flash']['messages'], array());
 		}
 
 		/**
@@ -76,7 +76,7 @@
 		public function messages() {
 			if (isset($_SESSION['flash']['messages'])) {
 				$this->messages = $_SESSION['flash']['messages'];
-				unset($_SESSION['flash']['messages']);
+				$_SESSION['flash']['messages'] = array();
 			}
 
 			return $this->messages;
@@ -92,7 +92,7 @@
 		public function notices() {
 			if (isset($_SESSION['flash']['notices'])) {
 				$this->notices = $_SESSION['flash']['notices'];
-				unset($_SESSION['flash']['notices']);
+				$_SESSION['flash']['notices'] = array();
 			}
 
 			return $this->notices;
@@ -108,7 +108,7 @@
 		public function warnings() {
 			if (isset($_SESSION['flash']['warnings'])) {
 				$this->warnings = $_SESSION['flash']['warnings'];
-				unset($_SESSION['flash']['warnings']);
+				$_SESSION['flash']['warnings'] = array();
 			}
 
 			return $this->warnings;
@@ -124,7 +124,7 @@
 		public function all() {
 			if (isset($_SESSION['flash'])) {
 				$this->all = $_SESSION['flash'];
-				unset($_SESSION['flash']);
+				$_SESSION['flash'] = array("notices" => array(), "warnings" => array(), "messages" => array());
 			}
 
 			return $this->all;
