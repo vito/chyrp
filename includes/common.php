@@ -338,4 +338,8 @@
 				redirect(fallback($config->feed_url, url("feed/"), true)); # Really? Nothing? Too bad. MAIN FEED 4 U.
 
 		$theme = Theme::current();
+
+		# If the URL is invalid, show a 404.
+		if (!ADMIN and count($_GET) == 1 and $_GET['action'] == "index" and !empty($route->arg[0]) and $route->arg[0] != "index")
+				show_404();
 	}

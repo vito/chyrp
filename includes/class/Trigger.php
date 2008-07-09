@@ -81,28 +81,29 @@
 
 			$this->called[$name] = array();
 
-			if (isset($this->priorities[$name]) and usort($this->priorities[$name], array($this, "cmp"))) # Predefined priorities?
-				foreach ($this->priorities[$name] as $action)
-					$this->modified[$name] = call_user_func_array($this->called[$name][] = $action["function"],
-					                                              array_merge(array($this->modified($name, $target)), $arguments));
+			if (isset($this->priorities[$name]) and usort($this->priorities[$name], array($this, "cmp")))
+				foreach ($this->priorities[$name] as $action) {
+					$call = call_user_func_array($this->called[$name][] = $action["function"],
+					                             array_merge(array($target), $arguments));
+					$target = fallback($call, $target);
+				}
 
 			foreach ($modules as $module)
-				if (!in_array(array($module, $name), $this->called[$name]) and is_callable(array($module, $name)))
-					$this->modified[$name] = call_user_func_array(array($module, $name),
-					                                              array_merge(array($this->modified($name, $target)),
-					                                                          $arguments));
+				if (!in_array(array($module, $name), $this->called[$name]) and is_callable(array($module, $name))) {
+					$call = call_user_func_array(array($module, $name),
+					                             array_merge(array($target),
+					                                         $arguments));
+					$target = fallback($call, $target);
+				}
 
-			$final = $this->modified($name, $target);
-			unset($this->modified[$name]);
-
-			return $target = $final;
+			return $target;
 		}
 
 		/**
 		 * Function: modified
 		 * A little helper function for <filter>.
 		 */
-		function modified($name, $target) {
+		function modified($name, &$target) {
 			return (!isset($this->modified[$name])) ? $target : $this->modified[$name] ;
 		}
 

@@ -442,7 +442,7 @@
 			require "javascript_domready.php";
 		}
 
-		static function scripts(&$scripts) {
+		static function scripts($scripts) {
 			$scripts[] = Config::current()->chyrp_url."/modules/comments/javascript.php";
 			return $scripts;
 		}
@@ -728,7 +728,7 @@
 			return $array;
 		}
 
-		public function posts_export(&$atom, $post) {
+		public function posts_export($atom, $post) {
 			$comments = Comment::find(array("where" => "__comments.post_id = :post_id",
 			                                "params" => array(":post_id" => $post->id)),
 			                          array("filter" => false));

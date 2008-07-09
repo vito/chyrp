@@ -39,6 +39,9 @@
 		 * Returns a simple array of list items to be used by the theme to generate a recursive array of pages.
 		 */
 		public function pages_list() {
+			if (isset($this->pages_list))
+				return $this->pages_list;
+
 			$this->pages = Page::find(array("where" => "`show_in_list` = 1", "order" => "`list_order` asc"));
 
 			foreach ($this->pages as $page)
@@ -67,7 +70,7 @@
 				$my_array["page"] = $page;
 			}
 
-			return $array;
+			return $this->pages_list = $array;
 		}
 
 		/**
@@ -108,6 +111,9 @@
 		 *     $archives - The array. Each entry as "month", "year", and "url" values, stored as an array.
 		 */
 		public function archives_list($limit = 0, $order_by = "created_at", $order = "desc") {
+			if (isset($this->archives_list["$limit,$order_by,$order"]))
+				return $this->archives_list["$limit,$order_by,$order"];
+
 			$sql = SQL::current();
 			$dates = $sql->select("posts",
 			                       "DISTINCT YEAR(`created_at`) AS `year`, MONTH(`created_at`) AS `month`, `created_at`, COUNT(`id`) AS `posts`",
@@ -126,7 +132,7 @@
 				                    "url"   => url("archive/".when("Y/m/", $date->created_at)),
 				                    "count" => $date->posts);
 
-			return $archives;
+			return $this->archives_list["$limit,$order_by,$order"] = $archives;
 		}
 
 		/**
@@ -272,9 +278,10 @@
 			$this->context["hide_admin"]   = isset($_COOKIE["chyrp_hide_admin"]);
 			$this->context["version"]      = CHYRP_VERSION;
 			$this->context["now"]          = now();
-			$admin->context["debug"]       = DEBUG;
+			$this->context["debug"]        = DEBUG;
 			$this->context["POST"]         = $_POST;
 			$this->context["GET"]          = $_GET;
+			$this->context["sql_queries"]  =& SQL::current()->queries;
 
 			$this->context["visitor"]->logged_in = logged_in();
 			$trigger->filter($this->context, array("twig_global_context", "twig_context_".str_replace("/", "_", $this->file)));
@@ -287,11 +294,7 @@
 			foreach ($config->enabled_feathers as $feather)
 				$this->context["enabled_feathers"][$feather] = true;
 
-			$this->context["sql_debug"] = SQL::current()->debug;
-		}
-
-		public function sql_queries() {
-			return SQL::current()->queries;
+			$this->context["sql_debug"] =& SQL::current()->debug;
 		}
 
 		public function load_time() {

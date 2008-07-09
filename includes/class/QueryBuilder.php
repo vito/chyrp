@@ -179,6 +179,9 @@
 		 * Creates a full SELECT query.
 		 */
 		public static function build_select($tables, $fields, $conds, $order = null, $limit = null, $offset = null, $group = null, $left_join = null) {
+			if (is_array($order))
+				$order = implode(", ", $order);
+
 			$query = "
 				SELECT ".self::build_select_header($fields)."
 				FROM ".self::build_from($tables);

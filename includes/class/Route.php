@@ -126,9 +126,6 @@
 				$this->action = "feather";
 			}
 
-			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls)
-				return;
-
 			# Parse the current URL and extract information.
 			$parse = parse_url($config->url);
 			fallback($parse["path"]);
@@ -136,6 +133,9 @@
 			$this->safe_path = str_replace("/", "\\/", $parse["path"]);
 			$this->request = preg_replace("/".$this->safe_path."/", "", $_SERVER['REQUEST_URI'], 1);
 			$this->arg = explode("/", trim($this->request, "/"));
+
+			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls)
+				return;
 
 			if (empty($this->arg[0])) return $this->action = "index"; # If they're just at /, don't bother with all this.
 
