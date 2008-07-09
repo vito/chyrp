@@ -232,8 +232,8 @@
 		 * Logs the current user out. If they are not logged in, it will error.
 		 */
 		public function logout() {
-			// if (!logged_in())
-			// 	error(__("Error"), __("You aren't logged in."));
+			if (!logged_in())
+				error(__("Error"), __("You aren't logged in."));
 
 			session_destroy();
 
