@@ -53,12 +53,13 @@
 				display: block;
 				padding: .25em 1em;
 				background: #f0f0f0;
-				margin: 0 -1em;
+				margin: 0 -1em 1em;
 			}
-			.body ul {
+			.body ul,
+			.body ol {
 				margin: 0 0 1em 2em;
 			}
-			.body ul li {
+			.body li {
 				margin: 0;
 			}
 			a:link, a:visited {
@@ -80,7 +81,7 @@
 	<body>
 		<div class="title"><?php echo $title; ?></div>
 		<div class="body">
-			<?php echo nl2br($body); ?>
+			<?php echo $body; ?>
 		</div>
 	</body>
 </html>
