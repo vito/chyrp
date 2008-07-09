@@ -108,10 +108,12 @@
 			$subnav["manage"] = array("manage_posts"  => array("title" => __("Posts"), "selected" => array("edit_post", "delete_post")),
 			                          "manage_pages"  => array("title" => __("Pages"), "selected" => array("edit_page", "delete_page")),
 			                          "manage_users"  => array("title" => __("Users"), "selected" => array("edit_user", "delete_user")),
-			                          "manage_groups" => array("title" => __("Groups"), "selected" => array("edit_group", "delete_group")),
-			                          "export" => array("title" => __("Export")),
-			                          "import" => array("title" => __("Import")));
+			                          "manage_groups" => array("title" => __("Groups"), "selected" => array("edit_group", "delete_group")));
 			$trigger->filter($subnav["manage"], "manage_nav");
+
+			$subnav["manage"]["import"] = array("title" => __("Import"));
+			$subnav["manage"]["export"] = array("title" => __("Export"));
+
 			foreach (array_keys($subnav["manage"]) as $manage)
 				$pages["manage"] = array_merge($pages["manage"], array($manage,
 				                                                       preg_replace("/manage_(.+)/e",
