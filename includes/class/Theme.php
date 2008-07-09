@@ -37,24 +37,20 @@
 		 * Returns a simple array of list items to be used by the theme to generate a recursive array of pages.
 		 */
 		public function pages_list() {
-			$this->pages_dirty = Page::find(array("where" => "`show_in_list` = 1", "order" => "`list_order` asc"));
+			$this->pages = Page::find(array("where" => "`show_in_list` = 1", "order" => "`list_order` asc"));
 
-			foreach ($this->pages_dirty as $page)
-				$this->pages[$page->id] = $page;
+			foreach ($this->pages as $page)
+				$this->end_tags_for[$page->id] = $this->children[$page->id] = array();
+
+			foreach ($this->pages as $page)
+				if ($page->parent_id != 0)
+					$this->children[$page->parent_id][] = $page;
 
 			foreach ($this->pages as $page)
 				if ($page->parent_id == 0)
 					$this->recurse_pages($page);
 
 			$array = array();
-
-			foreach ($this->pages_flat as $page) {
-				$this->end_tags_for[$page->id] = array();
-
-				fallback($this->children[$page->parent_id], array());
-				if ($page->parent_id)
-					$this->children[$page->parent_id][] = $page;
-			}
 
 			foreach ($this->pages_flat as $page) {
 				$array[$page->id] = array();
@@ -77,22 +73,13 @@
 		 * Helper function to <Theme.pages_list>
 		 */
 		public function get_last_linear_child($page, $origin = null) {
-			if ($page === 0) {
-				$return = end($this->pages_flat);
-				return $return->id;
-			}
-
 			fallback($origin, $page);
 
-			fallback($this->linear_children[$origin], array());
+			$this->linear_children[$origin] = $page;
+			foreach ($this->children[$page] as $child)
+				$this->get_last_linear_child($child->id, $origin);
 
-			$this->linear_children[$origin][] = (int) $page;
-
-			if (isset($this->children[$page]))
-				foreach ($this->children[$page] as $child)
-					$this->get_last_linear_child($child->id, $origin);
-
-			return end($this->linear_children[$origin]);
+			return $this->linear_children[$origin];
 		}
 
 		/**
@@ -102,12 +89,7 @@
 		public function recurse_pages($page) {
 			$this->pages_flat[] = $page;
 
-			$children = array();
-			foreach ($this->pages as $child)
-				if ($child->parent_id == $page->id)
-					$children[] = $child;
-
-			foreach ($children as $child)
+			foreach ($this->children[$page->id] as $child)
 				$this->recurse_pages($child);
 		}
 

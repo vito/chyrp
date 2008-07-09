@@ -11,14 +11,15 @@ var Comment = {
 	delete_animations: { height: "hide", opacity: "hide" },
 	delete_wrap: "",
 	reload: function() {
-		if ($(".comments").attr("id") == undefined) return;
-		var id = $(".comments").attr("id").replace(/comments_/, "")
-		if (editing == 0 && notice == 0 && $(".comments").children().size() < <?php echo $config->comments_per_page; ?>) {
+		if ($(".comments:not(:header)").attr("id") == undefined) return;
+
+		var id = $(".comments:not(:header)").attr("id").replace(/comments_/, "")
+		if (editing == 0 && notice == 0 && $(".comments:not(:header)").children().size() < <?php echo $config->comments_per_page; ?>) {
 			$.ajax({ type: "post", dataType: "json", url: "<?php echo $config->chyrp_url; ?>/includes/ajax.php", data: "action=reload_comments&post_id="+id+"&last_comment="+$("#last_comment").val(), success: function(json) {
 				$.each(json.comment_ids, function(i, id) {
 					$("#last_comment").val(id)
 					$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "show_comment", comment_id: id }, function(data){
-						$(data).appendTo(".comments").hide().fadeIn("slow")
+						$(data).appendTo(".comments:not(:header)").hide().fadeIn("slow")
 					})
 				})
 			} })

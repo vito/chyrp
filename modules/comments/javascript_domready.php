@@ -1,5 +1,5 @@
 <!-- --><script>
-	if ($(".comments").size()) {
+	if ($(".comments:not(:header)").size()) {
 <?php if ($config->auto_reload_comments and $config->enable_reload_comments): ?>
 		var updater = setInterval("Comment.reload()", <?php echo $config->auto_reload_comments * 1000; ?>);
 <?php endif; ?>
@@ -16,7 +16,7 @@
 					$(".comment_plural").text(plural)
 				}
 				$("#last_comment").val(json.comment_id)
-				$(data).appendTo(".comments").hide().fadeIn("slow")
+				$(data).appendTo(".comments:not(:header)").hide().fadeIn("slow")
 				$("#comment_delete_"+json.comment_id).click(function(){
 					if (!confirm("<?php echo __("Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this.", "comments"); ?>")) return false
 					Comment.destroy(json.comment_id)

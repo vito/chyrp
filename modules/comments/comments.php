@@ -24,7 +24,7 @@
 			                 `user_id` INTEGER DEFAULT '0',
 			                 `created_at` DATETIME DEFAULT '0000-00-00 00:00:00',
 			                 `updated_at` DATETIME DEFAULT '0000-00-00 00:00:00'
-			             ) default charset=utf8");
+			             ) DEFAULT CHARSET=utf8");
 
 			$config = Config::current();
 			$config->set("default_comment_status", "denied");
