@@ -26,7 +26,8 @@
 				font: 1.25em/1.5em normal "Verdana", Helvetica, Arial, sans-serif;
 				color: #626262;
 				background: #fff;
-				padding: 1em 0 5em;
+				padding: 1em 0 1em;
+				overflow: auto;
 			}
 			code {
 				color: #06B;

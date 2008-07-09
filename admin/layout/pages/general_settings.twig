@@ -19,8 +19,12 @@
 						<input class="text" type="text" name="chyrp_url" value="${ site.chyrp_url | escape }" id="chyrp_url" />
 					</p>
 					<p>
-						<label for="url">${ "Alternate URL" | translate }</label>
-						<input class="text" type="text" name="url" value="{% if site.url != site.chyrp_url %}${ site.url | escape }{% endif %}" id="url" /> <span class="sub">${ "(optional)" | translate }</span>
+						<label for="url">
+							${ "Alternate URL" | translate }
+							<span class="sub">${ "(optional)" | translate }</span>
+						</label>
+						<input class="text" type="text" name="url" value="{% if site.url != site.chyrp_url %}${ site.url | escape }{% endif %}" id="url" />
+						<a href="{% admin "help&id=alternate_urls" %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
 						<small>
 							${ "Enter an alternate address here if you want your homepage URL to be different from the URL where Chyrp is normally available." | translate }
 						</small>

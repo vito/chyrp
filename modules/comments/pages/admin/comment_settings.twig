@@ -13,7 +13,7 @@
 					</p>
 					<p>
 						<label for="allowed_comment_html">${ "Allowed HTML Tags" | translate("comments") }</label>
-						<input class="text code" type="text" name="allowed_comment_html" value="${ site.allowed_comment_html | join(", ") | escape }" id="allowed_comment_html" />
+						<input class="text code" type="text" name="allowed_comment_html" value="${ site.allowed_comment_html | join(", ") | escape }" id="allowed_comment_html" size="23" />
 						<small>${ "Format: <code>strong, blockquote, em</code>" | translate("comments") }</small>
 					</p>
 					<p>

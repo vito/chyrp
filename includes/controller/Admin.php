@@ -1748,6 +1748,14 @@
 					$title = __("Trackbacks");
 					$body = __("Trackbacks are special urls to posts from other blogs that your post is related to or references. The other blog will be notified of your post, and in some cases a comment will automatically be added to the post in question linking back to your post. It's basically a way to network between blogs via posts.");
 					break;
+				case "alternate_urls":
+					$title = __("Alternate URL");
+					$body = "<p>".__("An alternate URL will allow you to keep Chyrp in its own directory, while having your site URLs point to someplace else. For example, you could have Chyrp in a <code>/chyrp</code> directory, and have your site at <code>/</code>. There are two requirements for this to work.")."</p>\n\n";
+					$body.= "<ol>\n\t<li>".__("Create an <code>index.php</code> file in your destination directory with the following in it:")."\n\n";
+					$body.= "<pre><code>&lt;?php
+    require \"path/to/chyrp/index.php\";
+?&gt;</code></pre>";
+					$body.= "</li>\n\t<li>".__("Move the .htaccess file from the original Chyrp directory, and change the <code>RewriteBase</code> line to reflect the new website location.")."</li>\n</ol>";
 			}
 		}
 	}

@@ -395,11 +395,14 @@ form.split label {
 	padding: 4px 2% 5px;
 	color: #999;
 }
+form.split label .sub {
+	display: block;
+}
 form.split label input {
 	margin: -.5em 0;
 }
 form.split select {
-	margin: 3px 0 1em;
+	margin: 3px 0 .5em;
 }
 form.split small,
 form.split .small {
@@ -443,7 +446,7 @@ textarea {
 	margin-bottom: .25em;
 }
 input.checkbox {
-	margin: 6px 5px 0 0;
+	margin: .6em .5em .75em 0;
 }
 span.checkbox {
 	position: relative;

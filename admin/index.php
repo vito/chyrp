@@ -16,7 +16,7 @@
 			# Are there any extension-added pages?
 			$trigger = Trigger::current();
 			foreach (array("write" => array(),
-			               "manage" => array(),
+			               "manage" => array("import", "export"),
 			               "settings" => array(),
 			               "extend" => array("modules", "feathers", "themes")) as $main_nav => $val) {
 				$$main_nav = $val;
