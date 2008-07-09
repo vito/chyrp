@@ -40,7 +40,9 @@
 			                    "dialogue" => $_POST['dialogue']));
 		}
 		public function title($post) {
-			$dialogue = explode("\n", $post->dialogue);
+			$dialogue = fallback($post->dialogue_unformatted, $post->dialogue);
+
+			$dialogue = explode("\n", $dialogue);
 			$line = preg_replace("/[ ]?[\[|\(]?[0-9]{1,2}:[0-9]{2}(:[0-9]{2})?[ ]?(pm|am)?[\]|\)]?[ ]?/i", "", $dialogue[0]);
 			$first_line = preg_replace("/([<]?)([^:|>]+)( \(me\)?)(:|>) (.+)/i", "\\1\\2\\4 \\5", $dialogue[0]);
 
@@ -52,7 +54,9 @@
 		public function feed_content($post) {
 			return $post->dialogue;
 		}
-		public function format_dialogue($text) {
+		public function format_dialogue($text, $post) {
+			$post->dialogue_unformatted = $text;
+
 			$split = explode("\n", $text);
 			$return = '<ul class="dialogue">';
 			$count = 0;

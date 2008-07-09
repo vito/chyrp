@@ -35,6 +35,7 @@
 			$admin->context["now"]         = now();
 			$admin->context["now_server"]  = time();
 			$admin->context["version"]     = CHYRP_VERSION;
+			$admin->context["debug"]       = DEBUG;
 			$admin->context["POST"]        = $_POST;
 			$admin->context["GET"]         = $_GET;
 

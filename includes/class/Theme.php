@@ -272,6 +272,7 @@
 			$this->context["hide_admin"]   = isset($_COOKIE["chyrp_hide_admin"]);
 			$this->context["version"]      = CHYRP_VERSION;
 			$this->context["now"]          = now();
+			$admin->context["debug"]       = DEBUG;
 			$this->context["POST"]         = $_POST;
 			$this->context["GET"]          = $_GET;
 
