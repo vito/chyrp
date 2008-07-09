@@ -10,7 +10,10 @@
 					<a class="button boo right" href="{% admin "purge_spam" %}"><img src="images/icons/deny.png" alt="deny" />${ "Delete All" | translate }</a>
 					<input type="hidden" name="action" value="manage_comments" />
 					<div class="left pad">
-						<h3>${ "Search&hellip;" | translate }</h3>
+						<h3>
+							${ "Search&hellip;" | translate }
+							<a href="{% admin "help&id=filtering_results" %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
+						</h3>
 						<input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" />
 						<button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
 					</div>

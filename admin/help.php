@@ -1,7 +1,9 @@
 <?php
 	$title = "Title";
 	$body = "Body";
+
 	$trigger->call("help_".$_GET['id']);
+	$admin->help($_GET['id']);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -21,30 +23,37 @@
 				font-size: 62.5%;
 			}
 			body {
-				background: #FFF;
-				margin: 0;
-				padding: 0;
 				font: 1.25em/1.5em normal "Verdana", Helvetica, Arial, sans-serif;
-				color: #777;
-			}
-			h1 {
-				display: block;
-				padding: .5em;
-				font-size: 1.75em;
-				text-shadow: 5px 0;
-				color: #0096ff;
-				background: #000;
-				font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Trebuchet MS", Helvetica, Arial, sans-serif;
+				color: #626262;
+				background: #fff;
+				padding: 1em 0 5em;
 			}
 			code {
-				color: #6B0;
-				font-family: Consolas, Monaco, monospace;
+				color: #06B;
+				font-family: Monaco, monospace;
+			}
+			h2 {
+				margin-bottom: .75em;
+			}
+			.title {
+				color: #aaa;
+				font-size: 2em;
+				font-weight: bold;
+				margin: .25em 0 .5em;
+				text-align: center;
 			}
 			.body {
 				padding: 1em;
 			}
 			.body p {
 				margin: 0 0 1em;
+			}
+			.body cite {
+				font-style: normal;
+				display: block;
+				padding: .25em 1em;
+				background: #f0f0f0;
+				margin: 0 -1em;
 			}
 			.body ul {
 				margin: 0 0 1em 2em;
@@ -53,7 +62,10 @@
 				margin: 0;
 			}
 			a:link, a:visited {
-				text-decoration: none;
+				color: #6B0;
+			}
+			a:hover {
+				text-decoration: underline;
 			}
 			a.big {
 				font-size: 16px;
@@ -66,9 +78,9 @@
 		</style>
 	</head>
 	<body>
-		<h1><?php echo $title; ?></h1>
+		<div class="title"><?php echo $title; ?></div>
 		<div class="body">
-			<?php echo $body; ?>
+			<?php echo nl2br($body); ?>
 		</div>
 	</body>
 </html>

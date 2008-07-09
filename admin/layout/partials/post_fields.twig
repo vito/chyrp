@@ -64,7 +64,10 @@
 							<small>${ "(shows this post above all others)" | translate }</small>
 						</p>
 						<p>
-							<label for="slug">${ "Slug" | translate }</label>
+							<label for="slug">
+								${ "Slug" | translate }
+								<a href="{% admin "help&id=slugs" %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
+							</label>
 							<input class="text" type="text" name="slug" value="${ post.slug | escape }" id="slug" />
 						</p>
 						<p>
@@ -73,7 +76,11 @@
 							<input type="hidden" name="original_time" value="${ post.created_at | fallback(now.format("r")) | strftime }" />
 						</p>
 						<p>
-							<label for="trackbacks">${ "Trackbacks" | translate }</label>
+							<label for="trackbacks">
+								${ "Trackbacks" | translate }
+								<a href="{% admin "help&id=trackbacks" %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
+							</label>
+
 							<input class="text" type="text" name="trackbacks" value="" id="trackbacks" />
 						</p>
 {% if route.action == "write_post" %}

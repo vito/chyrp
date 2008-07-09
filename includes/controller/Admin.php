@@ -1718,5 +1718,33 @@
 
 			show_403(__("Access Denied"), __("You do not have sufficient privileges to access this area."));
 		}
+
+		/**
+		 * Function: help
+		 * Sets the $title and $body for various help IDs.
+		 */
+		public function help($id = null) {
+			if (!isset($id))
+				redirect("/admin/");
+
+			global $title, $body;
+
+			switch($id) {
+				case "filtering_results":
+					$title = __("Filtering Results");
+					$body = "<p>".__("Use this to search for specific items. You can either enter plain text to match the item with, or use keywords:")."</pre>";
+					$body.= "<h2>Keywords</h2>";
+					$body.= "<cite><strong>".__("Usage")."</strong>: <code>attr:val</code></cite>\n".__("Use this syntax to quickly match specific results. Keywords will modify the query to match items where <code>attr</code> is equal to <code>val</code> (case insensitive).");
+					break;
+				case "slugs":
+					$title = __("Post Slugs");
+					$body = __("Post slugs are strings to use for the URL of a post. They are directly respondible for the <code>(url)</code> attribute in a post's clean URL, or the <code>/?action=view&amp;url=<strong>foo</strong></code> in a post's dirty URL. A post slug should not contain any special characters other than hyphens.");
+					break;
+				case "trackbacks":
+					$title = __("Trackbacks");
+					$body = __("Trackbacks are special urls to posts from other blogs that your post is related to or references. The other blog will be notified of your post, and in some cases a comment will automatically be added to the post in question linking back to your post. It's basically a way to network between blogs via posts.");
+					break;
+			}
+		}
 	}
 	$admin = new AdminController();

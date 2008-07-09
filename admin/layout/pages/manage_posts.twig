@@ -9,7 +9,10 @@
 				<fieldset>
 					<input type="hidden" name="action" value="manage_posts" />
 					<div class="left pad margin-right">
-						<h3>${ "Search&hellip;" | translate }</h3>
+						<h3>
+							${ "Search&hellip;" | translate }
+							<a href="{% admin "help&id=filtering_results" %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
+						</h3>
 						<input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" /> <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
 					</div>
 					<div class="left pad">

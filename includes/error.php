@@ -59,7 +59,6 @@
 				font-size: 12px;
 			}
 			a:link, a:visited {
-				xtext-decoration: none;
 				color: #6B0;
 			}
 			a:hover {
@@ -94,7 +93,7 @@
 		<div class="window">
 			<h1><?php echo $title; ?></h1>
 			<div class="message">
-				<?php echo nl2br($body); ?>
+				<?php echo $body; ?>
 			</div>
 		</div>
 <?php if (defined("CHYRP_VERSION")): ?>
