@@ -270,7 +270,7 @@ function reorder_pages() {
 	})
 
 	$(".page-item").css("cursor", "move")
-	$("#content > .sort_pages").attr("id", "sort_pages").NestedSortable({
+	$("ul.sort_pages").attr("id", "sort_pages").NestedSortable({
 		accept: "page-item",
 		opacity: 0.8,
 		nestingPxSpace: 5,
@@ -278,13 +278,14 @@ function reorder_pages() {
 			var serialize = $.SortSerialize("sort_pages")
 			var parent_hash = get_parent_hash()
 
-			$("#content > .sort_pages").loader()
+			$("#content > form > ul.sort_pages").loader()
 			$.post("<?php echo $config->url; ?>/includes/ajax.php", "action=organize_pages&"+serialize.hash+parent_hash, function(){
-				$("#content > .sort_pages").loader(true)
+				$("#content > form > ul.sort_pages").loader(true)
 			})
 		}
 	})
 	$(".sort_pages input").remove()
+	$("form#reorder_pages .buttons").remove()
 }
 
 function remove_from_array(value, array) {

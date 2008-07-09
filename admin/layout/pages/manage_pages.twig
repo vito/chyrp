@@ -54,5 +54,26 @@
 			$pages.prev_link
 			<br />
 			<h2>${ "Reorder Pages" | translate }</h2>
-			${ theme.list_pages(false, null, "sort_pages", "page-item", true) }
+			<form id="reorder_pages" action="{% admin "reorder_pages" %}" method="post">
+				<ul class="sort_pages">
+				{% for item in theme.pages_list %}
+					<li class="page-item" id="page_list_$item.page.id">
+						<input type="text" size="2" name="list_order[$item.page.id]" value="$item.page.list_order" class="center" />
+						<a href="$item.page.url">$item.page.title</a>
+
+						{% if item.has_children %}<ul class="sort_pages">{% endif %}
+					{% if not item.has_children %}</li>{% endif %}
+
+					{% for ul, li in item.end_tags %}
+						$ul
+					$li
+					{% endfor %}
+				{% endfor %}
+				</ul>
+				<div class="buttons">
+					<button type="submit" class="yay">
+						<img src="images/icons/success.png" alt="success" />${ "Reorder" | translate }
+					</button>
+				</div>
+			</form>
 {% endblock %}
