@@ -14,6 +14,8 @@
 		private $pages = array();
 		private $context = array();
 
+		public $pages_flat = array();
+
 		/**
 		 * Function: __construct
 		 * Loads the Twig parser into <Theme>.
