@@ -259,13 +259,13 @@
 				if (in_array($string, $uncountable))
 					break;
 
-				$replaced = preg_replace($key, $val, $string);
+				$replaced = preg_replace($key, $val, $string, 1);
 
 				if ($replaced != $string)
 					break;
 			}
 
-			if ($replaced == $string and !in_array($string, $uncountable))
+			if ($replaced == $string and !in_array($string, $uncountable) and substr($string, -1) == "s")
 				return substr($string, 0, -1);
 			else
 				return $replaced;

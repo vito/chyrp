@@ -75,10 +75,10 @@ a:visited {
 #header #navigation li a:hover {
 	opacity: 1;
 }
-#header #navigation li.first a  { border-color: #ef4646; }
-#header #navigation li.second a { border-color: #e19a2c; }
-#header #navigation li.third a  { border-color: #16d907; }
-#header #navigation li.fourth a { border-color: #0096ff; }
+#header #navigation li.write a  { border-color: #ef4646; }
+#header #navigation li.manage a { border-color: #e19a2c; }
+#header #navigation li.settings a  { border-color: #16d907; }
+#header #navigation li.extend a { border-color: #0096ff; }
 
 #welcome {
 	background: #dfdfdf url('images/welcome.gif') repeat-x;

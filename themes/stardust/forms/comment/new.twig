@@ -8,14 +8,22 @@
 	<input type="hidden" name="email" value="$visitor.email" id="email" />
 	<input type="hidden" name="url" value="$visitor.website" id="url" />
 {% else %}
-	<label for="author">${ "Your Name" | translate }</label>
-	<input type="text" name="author" value="" id="author" /><br />
-	<label for="email">${ "Your E-Mail" | translate }</label>
-	<input type="text" name="email" value="" id="email" /><br />
-	<label for="url">${ "Your Website" | translate }</label>
-	<input type="text" name="url" value="" id="url" /><br />
+	<p>
+		<label for="author">${ "Your Name" | translate }</label>
+		<input type="text" name="author" value="" id="author" />
+	</p>
+	<p>
+		<label for="email">${ "Your E-Mail" | translate }</label>
+		<input type="text" name="email" value="" id="email" />
+	</p>
+	<p>
+		<label for="url">${ "Your Website" | translate }</label>
+		<input type="text" name="url" value="" id="url" />
+	</p>
 {% endif %}
-	<textarea name="body" rows="8" cols="40" class="wide"></textarea>
+	<p>
+		<textarea name="body" rows="8" cols="40" class="wide"></textarea>
+	</p>
 
 	<input type="hidden" name="post_id" value="$post.id" id="post_id" />
 	<button type="submit">${ "Speak" | translate }</button>

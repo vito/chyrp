@@ -298,15 +298,17 @@
 				             array($user->login, $config->name, $new_password)));
 
 			if ($sent)
-				return Flash::warning(_f("An e-mail has been sent to your e-mail address that contains a new password. Once you have logged in with it, feel free to change it at <a href=\"%s\">User Controls</a>.",
+				return Flash::notice(_f("An e-mail has been sent to your e-mail address that contains a new password. Once you have logged in, you can change it at <a href=\"%s\">User Controls</a>.",
 				                         array(url("controls/"))));
 
+			# Set their password back to what it was originally.
 			$user->update($user->login,
 			              $user->password,
 			              $user->full_name,
 			              $user->email,
 			              $user->website,
 			              $user->group_id);
+
 			Flash::warning(__("E-Mail could not be sent. Password change cancelled."));
 		}
 	}

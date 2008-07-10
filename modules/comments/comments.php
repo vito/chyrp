@@ -141,7 +141,7 @@
 		}
 
 		static function admin_manage_spam() {
-			if (!Comment::any_editable() and !Comment::any_deletable())
+			if (!Visitor::current()->group()->can("edit_comment", "delete_comment", true))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage any comments.", "comments"));
 
 			global $admin;
@@ -299,8 +299,12 @@
 			if (!Comment::any_editable() and !Comment::any_deletable())
 				return $navs;
 
-			$navs["manage_comments"] = array("title" => __("Comments", "comments"), "selected" => array("edit_comment", "delete_comment"));
-			$navs["manage_spam"]     = array("title" => __("Spam", "comments"));
+			$navs["manage_comments"] = array("title" => __("Comments", "comments"),
+			                                 "selected" => array("edit_comment", "delete_comment"));
+
+			if (Visitor::current()->group()->can("edit_comment", "delete_comment"))
+				$navs["manage_spam"]     = array("title" => __("Spam", "comments"));
+
 			return $navs;
 		}
 
@@ -352,6 +356,12 @@
 				$params[":query"] = "%".$search."%";
 			}
 
+			$visitor = Visitor::current();
+			if (!$visitor->group()->can("edit_comment", "delete_comment", true)) {
+				$where[] = "__comments.user_id = :user_id";
+				$params[":user_id"] = $visitor->id;
+			}
+
 			$admin->context["comments"] = new Paginator(Comment::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
 		}
 
@@ -364,8 +374,11 @@
 			$comments = array_keys($_POST['comment']);
 
 			if (isset($_POST['delete'])) {
-				foreach ($comments as $comment)
-					Comment::delete($comment);
+				foreach ($comments as $comment) {
+					$comment = new Comment($comment);
+					if ($comment->deletable())
+						Comment::delete($comment);
+				}
 
 				Flash::notice(__("Selected comments deleted.", "comments"));
 			}
@@ -756,5 +769,17 @@
 			}
 
 			return $atom;
+		}
+
+		public function manage_nav_show($possibilities) {
+			$possibilities[] = (Comment::any_editable() or Comment::any_deletable());
+			return $possibilities;
+		}
+
+		public function determine_action($action) {
+			if ($action != "manage") return;
+
+			if (Comment::any_editable() or Comment::any_deletable())
+				return "manage_comments";
 		}
 	}

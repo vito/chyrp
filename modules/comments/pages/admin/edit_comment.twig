@@ -32,6 +32,7 @@
 							<label for="author_url">${ "Author Website" | translate }</label>
 							<input class="text" type="text" name="author_url" value="${ comment.author_url | escape }" id="author_url" />
 						</p>
+{% if visitor.group.can("edit_comment") %}
 						<p>
 							<label for="status">${ "Status" | translate }</label>
 							<select name="status" id="status">
@@ -42,6 +43,7 @@
 								<option value="trackback"${ comment.status | option_selected("trackback") }>${ "Trackback" | translate }</option>
 							</select>
 						</p>
+{% endif %}
 						<p>
 							<label for="created_at">${ "Timestamp" | translate }</label>
 							<input class="text" type="text" name="created_at" value="${ comment.created_at | strftime }" id="created_at" />

@@ -15,18 +15,11 @@ ${ trigger.call("admin_head") }
 			<div class="column">
 				<ul id="navigation">
 {% block navigation %}
-{% if visitor.group.can("add_draft", "add_post") %}
-					<li class="first $selected.write"><a href="{% admin "write_post" %}">${ "Write" | translate }</a></li>
-{% endif %}
-{% if visitor.group.can("view_own_draft", "view_draft", "edit_own_draft", "edit_own_post", "edit_post", "delete_own_draft", "delete_own_post", "delete_post") %}
-					<li class="second $selected.manage"><a href="{% admin "manage_posts" %}">${ "Manage" | translate }</a></li>
-{% endif %}
-{% if visitor.group.can("change_settings") %}
-					<li class="third $selected.settings"><a href="{% admin "general_settings" %}">${ "Settings" | translate }</a></li>
-{% endif %}
-{% if visitor.group.can("toggle_extensions") %}
-					<li class="fourth $selected.extend"><a href="{% admin "modules" %}">${ "Extend" | translate }</a></li>
-{% endif %}
+{% for action, nav in navigation | items %}
+					{% if nav.show %}
+					<li class="$action{% if nav.selected %} selected{% endif %}"$nav.attributes><a href="{% admin action %}">$nav.title</a></li>
+					{% endif %}
+{% endfor %}
 {% endblock %}
 				</ul>
 				<h1>$site.name</h1>
@@ -43,7 +36,9 @@ ${ trigger.call("admin_head") }
 {% block subnav %}
 {% if subnav[route.action] %}
 {% for action, nav in subnav[route.action] | items %}
+			{% if nav.show %}
 			<li${ route.action | selected(nav.selected, action) }$nav.attributes><a href="{% admin action %}">$nav.title</a></li>
+			{% endif %}
 {% endfor %}
 {% endif %}
 {% endblock %}

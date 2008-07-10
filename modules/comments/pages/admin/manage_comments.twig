@@ -21,6 +21,7 @@
 			</form>
 			<br />
 			<form action="{% admin "bulk_comments" %}" method="post">
+{% if visitor.group.can("edit_comment", "delete_comment") %}
 				<div class="controls right">
 					<h4>${ "With selected:" | translate("comments") }</h4>
 					<button class="lite" name="deny">
@@ -36,6 +37,7 @@
 						<img src="images/icons/delete.png" alt="delete" /> ${ "delete" | translate("comments") }
 					</button>
 				</div>
+{% endif %}
 				<h2>${ "Last 25 Comments" | translate("comments") }</h2>
 				<table border="0" cellspacing="0" cellpadding="0" class="wide">
 					<thead>
@@ -82,6 +84,7 @@
 					{% endfor %}
 					</tbody>
 				</table>
+{% if visitor.group.can("edit_comment", "delete_comment") %}
 				<br />
 				<div class="controls">
 					<h4>${ "With selected:" | translate("comments") }</h4>
@@ -98,6 +101,7 @@
 						<img src="images/icons/delete.png" alt="delete" /> ${ "delete" | translate("comments") }
 					</button>
 				</div>
+{% endif %}
 			</form>
 			<br />
 			$comments.next_link

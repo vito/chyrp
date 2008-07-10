@@ -1,6 +1,6 @@
 		<li id="comment_$comment.id">
 {% if comment.status == "denied" %}
-			<em>${ "Your comment is awaiting moderation." | translate }</em>
+			<span class="waiting">${ "Your comment is awaiting moderation." | translate }</span>
 {% endif %}
 			<blockquote>
 				$comment.body

@@ -1689,38 +1689,66 @@
 		 * Function: determine_action
 		 * Determines through simple logic which page should be shown as the default when browsing to /admin/.
 		 */
-		public function determine_action() {
+		public function determine_action($action = null) {
 			$visitor = Visitor::current();
 
-			# "Write > Post", if they can add posts or drafts.
-			if ($visitor->group()->can("add_post") or $visitor->group()->can("add_draft"))
-				return "write_post";
+			if (!isset($action) or $action == "write") {
+				# "Write > Post", if they can add posts or drafts.
+				if ($visitor->group()->can("add_post") or $visitor->group()->can("add_draft"))
+					return "write_post";
 
-			# "Write > Page", if they can add pages.
-			if ($visitor->group()->can("add_page"))
-				return "write_page";
+				# "Write > Page", if they can add pages.
+				if ($visitor->group()->can("add_page"))
+					return "write_page";
+			}
 
-			# "Manage > Posts", if they can manage any posts.
-			if (Post::any_editable() or Post::any_deletable())
-				return "manage_posts";
+			if (!isset($action) or $action == "manage") {
+				# "Manage > Posts", if they can manage any posts.
+				if (Post::any_editable() or Post::any_deletable())
+					return "manage_posts";
 
-			# "Manage > Pages", if they can manage pages.
-			if ($visitor->group()->can("edit_page") or $visitor->group()->can("delete_page"))
-				return "manage_pages";
+				# "Manage > Pages", if they can manage pages.
+				if ($visitor->group()->can("edit_page") or $visitor->group()->can("delete_page"))
+					return "manage_pages";
 
-			# "Manage > Users", if they can manage users.
-			if ($visitor->group()->can("edit_user") or $visitor->group()->can("delete_user"))
-				return "manage_users";
+				# "Manage > Users", if they can manage users.
+				if ($visitor->group()->can("edit_user") or $visitor->group()->can("delete_user"))
+					return "manage_users";
 
-			# "Manage > Groups", if they can manage groups.
-			if ($visitor->group()->can("edit_group") or $visitor->group()->can("delete_group"))
-				return "manage_groups";
+				# "Manage > Groups", if they can manage groups.
+				if ($visitor->group()->can("edit_group") or $visitor->group()->can("delete_group"))
+					return "manage_groups";
+			}
 
-			# "Settings", if they can configure the installation.
-			if ($visitor->group()->can("change_settings"))
-				return "settings";
+			if (!isset($action) or $action == "settings") {
+				# "General Settings", if they can configure the installation.
+				if ($visitor->group()->can("change_settings"))
+					return "general_settings";
+			}
 
-			show_403(__("Access Denied"), __("You do not have sufficient privileges to access this area."));
+			if (!isset($action) or $action == "extend") {
+				# "Modules", if they can configure the installation.
+				if ($visitor->group()->can("toggle_extensions"))
+					return "modules";
+			}
+
+			$extended = $action;
+			Trigger::current()->filter($extended, "determine_action");
+			if ($extended != $action)
+				return $extended;
+
+			if (!isset($action))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to access this area."));
+		}
+
+		public function handle_redirects($action) {
+			$redirectable = array("write", "manage", "settings", "extend");
+			Trigger::current()->filter($redirectable, "admin_redirectables");
+			if (!in_array($action, $redirectable)) return;
+
+			$redirect = $this->determine_action($action);
+			if (!empty($redirect))
+				redirect("/admin/?action=".$redirect);
 		}
 
 		/**

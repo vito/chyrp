@@ -1,7 +1,6 @@
 {% extends "layouts/default.twig" %}
 {% block content %}
 	<h2>${ "Log In" | translate }</h2>
-	<br />
 	<form action="{% url "login/" %}" method="post">
 		<p>
 			<label for="login">${ "Username" | translate }</label>

@@ -369,6 +369,10 @@ ol.comments ol li {
 	list-style-type: decimal;
 }
 
+#add_comment {
+	margin-top: 3em;
+}
+
 div.post {
 	margin: 0 0 3em;
 	word-wrap: break-word;
@@ -609,7 +613,8 @@ span.pages {
 	font-weight: bold;
 	padding: 0 0.3em;
 }
-span.who {
+span.who,
+span.waiting {
 	background-color: #e2e2e2;
 	font-weight: bold;
 	display: block;
