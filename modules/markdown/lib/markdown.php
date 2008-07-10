@@ -428,9 +428,9 @@ class Markdown_Parser {
 
 		# First, look for nested blocks, e.g.:
 		#     <div>
-		#     	<div>
-		#     	tags for inner block must be indented.
-		#     	</div>
+		#         <div>
+		#         tags for inner block must be indented.
+		#         </div>
 		#     </div>
 		#
 		# The outermost tags must start at the left margin for this to match, and
@@ -2458,7 +2458,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				[:][ ]+						# definition mark (colon)
 			)
 			((?s:.+?))						# definition text = $3
-			(?= \n+     					# stop at next definition mark,
+			(?= \n+             			# stop at next definition mark,
 				(?:							# next term or end of text
 					[ ]{0,'.$less_than_tab.'} [:][ ]	|
 					<dt> | \z

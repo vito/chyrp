@@ -230,7 +230,7 @@
 			$config->set("chyrp_url", $url);
 			$config->set("email", $_POST['email']);
 			$config->set("locale", "en_US");
-			$config->set("theme", "default");
+			$config->set("theme", "stardust");
 			$config->set("posts_per_page", 5);
 			$config->set("feed_items", 20);
 			$config->set("clean_urls", false);

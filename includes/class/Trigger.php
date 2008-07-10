@@ -91,20 +91,11 @@
 			foreach ($modules as $module)
 				if (!in_array(array($module, $name), $this->called[$name]) and is_callable(array($module, $name))) {
 					$call = call_user_func_array(array($module, $name),
-					                             array_merge(array($target),
-					                                         $arguments));
+					                             array_merge(array($target), $arguments));
 					$target = fallback($call, $target);
 				}
 
 			return $target;
-		}
-
-		/**
-		 * Function: modified
-		 * A little helper function for <filter>.
-		 */
-		function modified($name, &$target) {
-			return (!isset($this->modified[$name])) ? $target : $this->modified[$name] ;
 		}
 
 		/**

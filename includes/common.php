@@ -340,6 +340,6 @@
 		$theme = Theme::current();
 
 		# If the URL is invalid, show a 404.
-		if (!ADMIN and count($_GET) == 1 and $_GET['action'] == "index" and !empty($route->arg[0]) and $route->arg[0] != "index")
+		if (!ADMIN and !AJAX and !JAVASCRIPT and count($_GET) == 1 and $_GET['action'] == "index" and !empty($route->arg[0]) and $route->arg[0] != "index")
 				show_404();
 	}

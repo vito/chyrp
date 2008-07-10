@@ -19,5 +19,6 @@ def walk(filename):
 walk("*.php")
 walk("*.rb")
 walk("*.js")
+walk("*.css")
 walk("*.twig")
 walk("triggers_list")
