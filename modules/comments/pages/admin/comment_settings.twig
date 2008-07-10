@@ -19,8 +19,8 @@
 					<p>
 						<label for="default_comment_status">${ "Default Comment Status" | translate("comments") }</label>
 						<select name="default_comment_status">
-							<option value="approved">${ "Approved" | translate("comments") }</option>
-							<option value="denied">${ "Denied" | translate("comments") }</option>
+							<option value="approved"${ "approved" | option_selected(site.default_comment_status) }>${ "Approved" | translate("comments") }</option>
+							<option value="denied"${ "denied" | option_selected(site.default_comment_status) }>${ "Denied" | translate("comments") }</option>
 						</select>
 					</p>
 					<p>
