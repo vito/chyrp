@@ -1765,7 +1765,7 @@
 				case "filtering_results":
 					$title = __("Filtering Results");
 					$body = "<p>".__("Use this to search for specific items. You can either enter plain text to match the item with, or use keywords:")."</pre>";
-					$body.= "<h2>Keywords</h2>";
+					$body.= "<h2>".__("Keywords")."</h2>";
 					$body.= "<cite><strong>".__("Usage")."</strong>: <code>attr:val</code></cite>\n".__("Use this syntax to quickly match specific results. Keywords will modify the query to match items where <code>attr</code> is equal to <code>val</code> (case insensitive).");
 					break;
 				case "slugs":

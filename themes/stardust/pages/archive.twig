@@ -10,13 +10,13 @@
 {% endif %}
 	{% for archive in archives %}
 	{% if archives | length == 1 %}
-	<h2><a href="$archive.url">${ archive.timestamp | strftime("%B") }</a></h2>
+	<h2><a href="$archive.url">${ archive.timestamp | strftime("%B" | translate) }</a></h2>
 	{% else %}
-	<h2><a href="$archive.url">${ archive.timestamp | strftime("%B %Y") }</a></h2>
+	<h2><a href="$archive.url">${ archive.timestamp | strftime("%B %Y" | translate) }</a></h2>
 	{% endif %}
 	<ul>
 		{% for post in archive.posts %}
-		<li>${ post.created_at | strftime("%d") }: <a href="$post.url">${ post.title | normalize | truncate(70) }</a></li>
+		<li>${ post.created_at | strftime("%d" | translate) }: <a href="$post.url">${ post.title | normalize | truncate(70) }</a></li>
 		{% endfor %}
 	</ul>
 	<br />
@@ -25,10 +25,10 @@
 
 {% if posts.paginated %} {# Posts? (For daily/monthly archives) #}
 	{% if archive.depth == "day" %}
-	<h1>${ "Archive of %s" | translate | format(archive.timestamp | strftime("%B %d, %Y")) }</h1>
+	<h1>${ "Archive of %s" | translate | format(archive.timestamp | strftime("%B %e, %Y" | translate)) }</h1>
 	{% endif %}
 	{% if archive.depth == "month" %}
-	<h1>${ "Archive of %s" | translate | format(archive.timestamp | strftime("%B %Y")) }</h1>
+	<h1>${ "Archive of %s" | translate | format(archive.timestamp | strftime("%B %Y" | translate)) }</h1>
 	{% endif %}
 	{% for post in posts.paginated %}
 	{% include "feathers/" ~ post.feather ~ ".twig" %}

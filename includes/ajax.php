@@ -71,7 +71,7 @@
 		</p>
 		<p>
 			<label for="created_at"><?php echo __("Timestamp"); ?></label>
-			<input class="text" type="text" name="created_at" value="<?php echo when("F jS, Y H:i:s", $post->created_at); ?>" id="created_at" />
+			<input class="text" type="text" name="created_at" value="<?php echo when(__("F jS, Y H:i:s"), $post->created_at); ?>" id="created_at" />
 		</p>
 		<p>
 			<label for="trackbacks"><?php echo __("Trackbacks"); ?></label>

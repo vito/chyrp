@@ -15,7 +15,7 @@ $(function(){
 
 	if ($.browser.safari)
 		$("input#search").attr({
-			placeholder: "Search..."
+			placeholder: "<?php echo __("Search...", "theme"); ?>"
 		})
 })
 <!-- --></script>

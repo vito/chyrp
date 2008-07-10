@@ -104,7 +104,7 @@
 				$theme->load("pages/archive", array("posts" => $posts,
 				                                    "archive" => array("year" => $_GET['year'],
 				                                                       "month" => strftime("%B", $timestamp),
-				                                                       "day" => strftime("%d", $timestamp),
+				                                                       "day" => strftime("%e", $timestamp),
 				                                                       "timestamp" => $timestamp,
 				                                                       "depth" => $depth)
 				                              ));

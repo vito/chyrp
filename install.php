@@ -41,7 +41,8 @@
 	$index = (parse_url($url, PHP_URL_PATH)) ? "/".trim(parse_url($url, PHP_URL_PATH), "/")."/" : "/" ;
 	$htaccess = "<IfModule mod_rewrite.c>\nRewriteEngine On\nRewriteBase ".str_replace("install.php", "", $index)."\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule ^.+$ index.php [L]\n</IfModule>";
 
-	$htaccess_has_chyrp = (file_exists(MAIN_DIR."/.htaccess") and preg_match("/".preg_quote($htaccess, "/")."/", file_get_contents(MAIN_DIR."/.htaccess")));
+	$path = preg_quote(str_replace("install.php", "", $index), "/");
+	$htaccess_has_chyrp = (file_exists(MAIN_DIR."/.htaccess") and preg_match("/<IfModule mod_rewrite.c>\n([\s]*)RewriteEngine On\n([\s]*)RewriteBase {$path}\n([\s]*)RewriteCond %{REQUEST_FILENAME} !-f\n([\s]*)RewriteCond %{REQUEST_FILENAME} !-d\n([\s]*)RewriteRule ^.+$ index.php [L]\n([\s]*)<\/IfModule>/", file_get_contents(MAIN_DIR."/.htaccess")));
 
 	$errors = array();
 	$installed = false;
@@ -491,7 +492,7 @@
 					<select name="timezone" id="timezone">
 <?php foreach (timezones() as $zone): ?>
 						<option value="<?php echo $zone["name"]; ?>"<?php selected($zone["name"], fallback($_POST['timezone'], "Africa/Abidjan", true)); ?>>
-							<?php echo when(__("%I:%M %p on %B %d, %Y"), $zone["now"], true); ?>
+							<?php echo when(__("%I:%M %p on %B %e, %Y"), $zone["now"], true); ?>
 							(GMT<?php if ($zone["offset"] >= 0) echo "+"; ?><?php echo $zone["offset"]; ?>)
 						</option>
 <?php endforeach; ?>

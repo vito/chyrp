@@ -19,7 +19,7 @@ ruby gettext.rb ./modules/smartypants/  --domain=smartypants  > ./modules/smarty
 ruby gettext.rb ./modules/tags/         --domain=tags         > ./modules/tags/locale/en_US.pot
 ruby gettext.rb ./modules/textilize/    --domain=textilize    > ./modules/textilize/locale/en_US.pot
 
-ruby gettext.rb ./themes/default/ --domain=theme > ./themes/default/locale/en_US.pot
+ruby gettext.rb ./themes/stardust/ --domain=theme > ./themes/stardust/locale/en_US.pot
 
 # msgfmt -v ./includes/locale/en_US.pot         -o ./includes/locale/en_US.mo
 #
