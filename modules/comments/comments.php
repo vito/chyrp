@@ -121,7 +121,7 @@
 				redirect("/admin/?action=manage_comments");
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
+				show_403(__("Access Denied"), __("Invalid security key."));
 
 			$comment = new Comment($_POST['id']);
 			if (!$comment->deletable())
@@ -142,7 +142,7 @@
 
 		static function admin_manage_spam() {
 			if (!Comment::any_editable() and !Comment::any_deletable())
-				error(__("Access Denied"), __("You do not have sufficient privileges to manage any comments.", "comments"));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage any comments.", "comments"));
 
 			global $admin;
 
@@ -267,7 +267,7 @@
 				return;
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
+				show_403(__("Access Denied"), __("Invalid security key."));
 
 			$config = Config::current();
 			$config->set("allowed_comment_html", explode(", ", $_POST['allowed_comment_html']));
@@ -322,7 +322,7 @@
 
 		static function admin_manage_comments() {
 			if (!Comment::any_editable() and !Comment::any_deletable())
-				error(__("Access Denied"), __("You do not have sufficient privileges to manage any comments.", "comments"));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage any comments.", "comments"));
 
 			global $admin;
 

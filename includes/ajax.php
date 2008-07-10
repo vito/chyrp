@@ -10,7 +10,7 @@
 			$post = new Post($_POST['id'], array("filter" => false));
 
 			if (!$post->editable())
-				error(__("Access Denied"), __("You do not have sufficient privileges to edit posts."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit posts."));
 
 			$title = $post->title();
 			$theme_file = THEME_DIR."/forms/feathers/".$post->feather.".php";
@@ -95,7 +95,7 @@
 		case "delete_post":
 			$post = new Post($_POST['id']);
 			if (!$post->deletable())
-				error(__("Access Denied"), __("You do not have sufficient privileges to delete this post."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this post."));
 
 			Post::delete($_POST['id']);
 			break;
@@ -126,7 +126,7 @@
 			break;
 		case "check_confirm":
 			if (!$visitor->group()->can("toggle_extensions"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to enable/disable extensions."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to enable/disable extensions."));
 
 			$dir = ($_POST['type'] == "module") ? MODULES_DIR : FEATHERS_DIR ;
 			$info = Horde_Yaml::loadFile($dir."/".$_POST['check']."/info.yaml");

@@ -53,7 +53,7 @@
 		public function drafts() {
 			$visitor = Visitor::current();
 			if (!$visitor->group()->can("view_own_draft", "view_draft"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to view drafts."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to view drafts."));
 
 			global $posts;
 			$posts = new Paginator(Post::find(array("placeholders" => true,

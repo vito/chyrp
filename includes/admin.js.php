@@ -95,6 +95,8 @@ $(function(){
 				fontSize: "9px"
 			})
 		})
+
+<?php $trigger->call("admin_javascript_domready"); ?>
 })
 
 var Post = {

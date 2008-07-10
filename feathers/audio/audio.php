@@ -22,13 +22,24 @@
 			$this->respondTo("feed_item", "enclose_mp3");
 			$this->respondTo("filter_post", "filter_post");
 		}
+		public function __init() {
+			if (!ADMIN or !isset($_GET['action']) or !isset($_GET['feather']))
+				return;
+			if ($_GET['action'] != "write_post" or $_GET['feather'] != "audio")
+				return;
+
+			Trigger::current()->call("prepare_swfupload", "audio", "*.mp3");
+		}
 		public function submit() {
-			if (isset($_FILES['audio']) and $_FILES['audio']['error'] == 0)
-				$filename = upload($_FILES['audio'], "mp3");
-			elseif (!empty($_POST['from_url']))
-				$filename = upload_from_url($_POST['from_url'], "mp3");
-			else
-				error(__("Error"), __("Couldn't upload audio file."));
+			if (!isset($_POST['filename'])) {
+				if (isset($_FILES['audio']) and $_FILES['audio']['error'] == 0)
+					$filename = upload($_FILES['audio'], "mp3");
+				elseif (!empty($_POST['from_url']))
+					$filename = upload_from_url($_POST['from_url'], "mp3");
+				else
+					error(__("Error"), __("Couldn't upload audio file."));
+			} else
+				$filename = $_POST['filename'];
 
 			return Post::add(array("filename" => $filename,
 			                        "description" => $_POST['description']),
@@ -38,14 +49,17 @@
 		public function update() {
 			$post = new Post($_POST['id']);
 
-			if (isset($_FILES['audio']) and $_FILES['audio']['error'] == 0) {
-				$this->delete_file($post);
-				$filename = upload($_FILES['audio'], "mp3");
-			} elseif (!empty($_POST['from_url'])) {
-				$this->delete_file($post);
-				$filename = upload_from_url($_POST['from_url'], "mp3");
-			} else
-				$filename = $post->filename;
+			if (!isset($_POST['filename']))
+				if (isset($_FILES['audio']) and $_FILES['audio']['error'] == 0) {
+					$this->delete_file($post);
+					$filename = upload($_FILES['audio'], "mp3");
+				} elseif (!empty($_POST['from_url'])) {
+					$this->delete_file($post);
+					$filename = upload_from_url($_POST['from_url'], "mp3");
+				} else
+					$filename = $post->filename;
+			else
+				$filename = $_POST['filename'];
 
 			$post->update(array("filename" => $filename,
 			                    "description" => $_POST['description']));

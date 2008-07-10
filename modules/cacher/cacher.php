@@ -128,7 +128,7 @@
 				return;
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
+				show_403(__("Access Denied"), __("Invalid security key."));
 
 			Config::current()->set("cache_expire", $_POST['cache_expire']);
 

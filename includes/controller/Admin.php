@@ -35,7 +35,7 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
+				show_403(__("Access Denied"), __("Invalid security key."));
 
 			global $feathers;
 
@@ -75,7 +75,7 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this post."));
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
+				show_403(__("Access Denied"), __("Invalid security key."));
 
 			global $feathers;
 			$feathers[$post->feather]->update();
@@ -111,7 +111,7 @@
 				redirect("/admin/?action=manage_posts");
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
+				show_403(__("Access Denied"), __("Invalid security key."));
 
 			$post = new Post($_POST['id']);
 			if (!$post->deletable())
@@ -195,7 +195,7 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to create pages."));
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
+				show_403(__("Access Denied"), __("Invalid security key."));
 
 			$show_in_list = !empty($_POST['show_in_list']);
 			$clean = (!empty($_POST['slug'])) ? $_POST['slug'] : sanitize($_POST['title']) ;
@@ -230,7 +230,7 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit pages."));
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
+				show_403(__("Access Denied"), __("Invalid security key."));
 
 			$page = new Page($_POST['id']);
 
@@ -284,7 +284,7 @@
 				redirect("/admin/?action=manage_pages");
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
+				show_403(__("Access Denied"), __("Invalid security key."));
 
 			$page = new Page($_POST['id']);
 			foreach ($page->children() as $child)
@@ -366,7 +366,7 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to add users."));
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
+				show_403(__("Access Denied"), __("Invalid security key."));
 
 			if (empty($_POST['login']))
 				error(__("Error"), __("Please enter a username for your account."));
@@ -416,7 +416,7 @@
 				error(__("No ID Specified"), __("An ID is required to edit a user."));
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
+				show_403(__("Access Denied"), __("Invalid security key."));
 
 			$visitor = Visitor::current();
 
@@ -466,7 +466,7 @@
 				redirect("/admin/?action=manage_users");
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
+				show_403(__("Access Denied"), __("Invalid security key."));
 
 			User::delete($_POST['id']);
 
@@ -531,7 +531,7 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to create groups."));
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
+				show_403(__("Access Denied"), __("Invalid security key."));
 
 			Group::add($_POST['name'], array_keys($_POST['permissions']));
 
@@ -559,7 +559,7 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit groups."));
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
+				show_403(__("Access Denied"), __("Invalid security key."));
 
 			$permissions = array_keys($_POST['permissions']);
 
@@ -602,7 +602,7 @@
 				redirect("/admin/?action=manage_pages");
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
+				show_403(__("Access Denied"), __("Invalid security key."));
 
 			$group = new Group($_POST['id']);
 			foreach ($group->members() as $user)
@@ -1601,7 +1601,7 @@
 				return;
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
+				show_403(__("Access Denied"), __("Invalid security key."));
 
 			$config = Config::current();
 			$config->set("name", $_POST['name']);
@@ -1629,7 +1629,7 @@
 				return;
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
+				show_403(__("Access Denied"), __("Invalid security key."));
 
 			$config = Config::current();
 			$config->set("can_register", !empty($_POST['can_register']));
@@ -1651,7 +1651,7 @@
 				return;
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
+				show_403(__("Access Denied"), __("Invalid security key."));
 
 			$config = Config::current();
 			$config->set("feed_items", $_POST['feed_items']);
@@ -1676,7 +1676,7 @@
 				return;
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-				error(__("Access Denied"), __("Invalid security key."));
+				show_403(__("Access Denied"), __("Invalid security key."));
 
 			$config = Config::current();
 			$config->set("clean_urls", !empty($_POST['clean_urls']));

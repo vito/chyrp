@@ -315,7 +315,7 @@
 			if ($trigger->exists("can_not_view_site"))
 				$trigger->call("can_not_view_site");
 			else
-				error(__("Access Denied"), __("You are not allowed to view this site."));
+				show_403(__("Access Denied"), __("You are not allowed to view this site."));
 
 		$trigger->call("runtime");
 
@@ -338,8 +338,4 @@
 				redirect(fallback($config->feed_url, url("feed/"), true)); # Really? Nothing? Too bad. MAIN FEED 4 U.
 
 		$theme = Theme::current();
-
-		# If the URL is invalid, show a 404.
-		if (!ADMIN and !AJAX and !JAVASCRIPT and count($_GET) == 1 and $_GET['action'] == "index" and !empty($route->arg[0]) and $route->arg[0] != "index")
-				show_404();
 	}

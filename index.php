@@ -146,7 +146,7 @@
 			break;
 		case "bookmarklet":
 			if (!$visitor->group()->can("add_post"))
-				error(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 			if (empty($config->enabled_feathers))
 				error(__("No Feathers"), __("Please install a feather or two in order to add a post."));
 

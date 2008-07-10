@@ -138,9 +138,12 @@ textarea {
 	margin-bottom: 1.5em;
 	padding: .3em .4em;
 }
+input[type="file"] {
+	margin-bottom: 1.5em;
+}
 input[type="text"],
 input[type="password"] {
-	width: 20.0em;
+	width: 20em;
 }
 textarea.wide {
 <?php if (substr_count($_SERVER['HTTP_USER_AGENT'], "Safari")): ?>
@@ -532,6 +535,9 @@ div.page span.controls {
 <?php else: ?>
 	width: 41.4em;
 <?php endif; ?>
+}
+.inline_edit input[type="file"] {
+	color: #eee;
 }
 .inline_edit .more_options_link:link {
 	color: #5B7C99;

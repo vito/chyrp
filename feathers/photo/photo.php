@@ -22,13 +22,24 @@
 			$this->respondTo("new_post_options", "alt_text_field");
 			$this->respondTo("edit_post_options", "alt_text_field");
 		}
+		public function __init() {
+			if (!ADMIN or !isset($_GET['action']) or !isset($_GET['feather']))
+				return;
+			if ($_GET['action'] != "write_post" or $_GET['feather'] != "photo")
+				return;
+
+			Trigger::current()->call("prepare_swfupload", "photo", "*.jpg;*.jpeg;*.png;*.gif;*.tiff;*.bmp");
+		}
 		public function submit() {
-			if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0)
-				$filename = upload($_FILES['photo'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp"));
-			elseif (!empty($_POST['from_url']))
-				$filename = upload_from_url($_POST['from_url'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp"));
-			else
-				error(__("Error"), __("Couldn't upload photo."));
+			if (!isset($_POST['filename'])) {
+				if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0)
+					$filename = upload($_FILES['photo'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp"));
+				elseif (!empty($_POST['from_url']))
+					$filename = upload_from_url($_POST['from_url'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp"));
+				else
+					error(__("Error"), __("Couldn't upload photo."));
+			} else
+				$filename = $_POST['filename'];
 
 			return Post::add(array("filename" => $filename,
 			                        "caption" => $_POST['caption']),
@@ -38,14 +49,17 @@
 		public function update() {
 			$post = new Post($_POST['id']);
 
-			if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0) {
-				$this->delete_file($post);
-				$filename = upload($_FILES['photo'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp"));
-			} elseif (!empty($_POST['from_url'])) {
-				$this->delete_file($post);
-				$filename = upload_from_url($_POST['from_url'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp"));
-			} else
-				$filename = $post->filename;
+			if (!isset($_POST['filename']))
+				if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0) {
+					$this->delete_file($post);
+					$filename = upload($_FILES['photo'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp"));
+				} elseif (!empty($_POST['from_url'])) {
+					$this->delete_file($post);
+					$filename = upload_from_url($_POST['from_url'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp"));
+				} else
+					$filename = $post->filename;
+			else
+				$filename = $_POST['filename'];
 
 			$post->update(array("filename" => $filename,
 			                    "caption" => $_POST['caption']));
