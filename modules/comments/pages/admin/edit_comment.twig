@@ -43,11 +43,11 @@
 								<option value="trackback"${ comment.status | option_selected("trackback") }>${ "Trackback" | translate }</option>
 							</select>
 						</p>
-{% endif %}
 						<p>
 							<label for="created_at">${ "Timestamp" | translate }</label>
 							<input class="text" type="text" name="created_at" value="${ comment.created_at | strftime }" id="created_at" />
 						</p>
+{% endif %}
 						${ trigger.call("edit_comment_options", comment) }
 						<div class="clear"></div>
 					</div>

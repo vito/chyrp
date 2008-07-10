@@ -87,12 +87,15 @@
 			if (!$comment->editable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this comment.", "comments"));
 
+			$visitor = Visitor::current();
+			$status = ($visitor->group()->can("edit_comment")) ? $_POST['status'] : $comment->status ;
+			$created_at = ($visitor->group()->can("edit_comment")) ? datetime($_POST['created_at']) : $comment->created_at ;
 			$comment->update($_POST['author'],
 			                 $_POST['author_email'],
 			                 $_POST['author_url'],
 			                 $_POST['body'],
-			                 $_POST['status'],
-			                 datetime($_POST['created_at']));
+			                 $status,
+			                 $created_at);
 
 			if (isset($_POST['ajax']))
 				exit("{ comment_id: ".$_POST['id']." }");
