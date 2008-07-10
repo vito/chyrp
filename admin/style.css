@@ -570,6 +570,10 @@ h1.preview-header {
 .preview-content hr {
 	margin: 2em 0;
 }
+.preview-content blockquote {
+	margin: 0 2em;
+	color: #999;
+}
 /* @end */
 
 /* @group Messages */

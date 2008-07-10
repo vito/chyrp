@@ -392,12 +392,10 @@ div.post h2 a:hover {
 div.post .pinned_text {
 	content: "!";
 	float: left;
-	font-size: 1.4em;
+	font-size: 1.5em;
 	font-weight: bold;
-	margin: 0.2em 0 0 -1.5em;
-	padding: 0 .5em;
+	margin: .15em 0 0 -1em;
 	color: #e35533;
-	text-align: right;
 }
 div.post p,
 div.page p {

@@ -56,7 +56,7 @@ ${ trigger.call("head") }
 				<div class="clear"></div>
 				$posts.prev_link
 				$posts.next_link
-				{% if posts.paginated %}
+				{% if posts.paginated and posts.pages > 1 %}
 				<span class="pages">Page $posts.page of $posts.pages</span>
 				{% endif %}
 				<div id="footer">
