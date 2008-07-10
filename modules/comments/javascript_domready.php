@@ -17,8 +17,19 @@
 				}
 				$("#last_comment").val(json.comment_id)
 				$(data).appendTo(".comments:not(:header)").hide().fadeIn("slow")
+				$("#comment_edit_"+json.comment_id).click(function(){
+					Comment.edit(json.comment_id)
+					return false
+				})
 				$("#comment_delete_"+json.comment_id).click(function(){
-					if (!confirm("<?php echo __("Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this.", "comments"); ?>")) return false
+					notice++
+
+					if (!confirm("<?php echo __("Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this.", "comments"); ?>")) {
+						notice--
+						return false
+					}
+					notice--
+
 					Comment.destroy(json.comment_id)
 					return false
 				})
@@ -33,6 +44,7 @@
 		return false
 	})
 	$(".comment_delete_link").click(function(){
+		notice++
 		if (!confirm("<?php echo __("Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this.", "comments"); ?>")) return false
 		var id = $(this).attr("id").replace(/comment_delete_/, "")
 		Comment.destroy(id)

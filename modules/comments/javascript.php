@@ -52,7 +52,13 @@ var Comment = {
 						})
 						$("#comment_delete_"+id).click(function(){
 							notice++
-							if (!confirm("<?php echo __("Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this.", "comments"); ?>")) return notice--
+
+						if (!confirm("<?php echo __("Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this.", "comments"); ?>")) {
+							notice--
+							return false
+						}
+						notice--
+
 							Comment.destroy(id)
 							return false
 						})
@@ -73,7 +79,13 @@ var Comment = {
 							})
 							$("#comment_delete_"+id).click(function(){
 								notice++
-								if (!confirm("<?php echo __("Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this.", "comments"); ?>")) return notice--
+
+								if (!confirm("<?php echo __("Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this.", "comments"); ?>")) {
+									notice--
+									return false
+								}
+								notice--
+
 								Comment.destroy(id)
 								return false
 							})
