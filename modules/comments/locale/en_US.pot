@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-07-10 17:21-0500\n"
+"PO-Revision-Date: 2008-07-10 17:48-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -133,6 +133,10 @@ msgstr ""
 #: modules/comments/comments.php:193
 #: modules/comments/comments.php:208
 msgid "Closed"
+msgstr ""
+
+#: modules/comments/pages/admin/comment_settings.twig:32
+msgid "enabled"
 msgstr ""
 
 #: modules/comments/pages/admin/comment_settings.twig:31
