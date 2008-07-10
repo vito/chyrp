@@ -41,11 +41,6 @@
 	# Define size of image (maximum width or height)- if specified via get.
 	$thumb_size = (isset($_GET['size'])) ? (int) $_GET["size"] : 0;
 
-	if (isset($_GET['sizex']) and (int) $_GET["sizex"] > 0) {
-		$thumb_size_x = (int) $_GET["sizex"];
-		$thumb_size_y = (isset($_GET['sizey']) and (int) $_GET["sizey"] > 0) ? (int) $_GET["sizey"] : $thumb_size_x ;
-	}
-
 	$filename = fallback($_GET['file'], $image_error, true);
 
 	$filename = str_replace("\'","'",$filename);
@@ -53,10 +48,15 @@
 	$filename = str_replace("//","/",$filename);
 	$fileextension = substr($filename, strrpos($filename, ".") + 1);
 
+	list($original_width, $original_height, $type, $attr) = getimagesize($filename);
+
+	if (isset($_GET['sizex']) and (int) $_GET["sizex"] > 0) {
+		$thumb_size_x = (int) $_GET["sizex"];
+		$thumb_size_y = (isset($_GET['sizey']) and (int) $_GET["sizey"] > 0) ? (int) $_GET["sizey"] : $original_height ;
+	}
+
 	$cache_file = INCLUDES_DIR."/caches/thumb_".
 	              md5($filename.$thumb_size.$thumb_size_x.$thumb_size_y.$quality).'.'.$fileextension;
-
-	list($original_width, $original_height, $type, $attr) = getimagesize($filename);
 	if ($original_width < $thumb_size_x and $original_height < $thumb_size_y)
 		header("Location: ".$filename);
 
@@ -73,10 +73,8 @@
 		exit; # no need to create thumbnail - it already exists in the cache
 	}
 
-	# determine php and gd versions
-	$ver = (int) str_replace(".", "", phpversion());
-	if ($ver >= 430)
-		$gd_version = gd_info();
+	# determine gd version
+	$gd_version = gd_info();
 
 	# define the right function for the right image types
 	if (!$image_type_arr = getimagesize($filename)) {
