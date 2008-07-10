@@ -786,13 +786,19 @@
 	 * Parameters:
 	 *     $string - The string to camelize.
 	 *     $keep_spaces - Whether or not to convert underscores to spaces or remove them.
+	 *
+	 * Returns:
+	 *     A CamelCased string.
 	 */
 	function camelize($string, $keep_spaces = false) {
 		$rep1 = str_replace("_", " ", $string);
-		$rep2 = ucwords($rep1);
+		$rep2 = str_replace("-", " ", $rep1);
+		$rep3 = ucwords($rep2);
+
 		if (!$keep_spaces)
-			$rep2 = str_replace(" ", "", $rep2);
-		return $rep2;
+			$rep4 = str_replace(" ", "", $rep3);
+
+		return $rep4;
 	}
 
 	/**
@@ -801,6 +807,9 @@
 	 *
 	 * Parameters:
 	 *     $string - The string to decamelize.
+	 *
+	 * Returns:
+	 *     A de_camel_cased string.
 	 *
 	 * See Also:
 	 * <camelize>
