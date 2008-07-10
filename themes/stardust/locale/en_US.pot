@@ -9,334 +9,361 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-06-26 19:24-0500\n"
+"PO-Revision-Date: 2008-07-10 17:21-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: themes/default/content/archive.twig:17
-#: themes/default/content/archive.twig:20
+#: themes/stardust/content/sidebar.twig:71
+msgid "Load time:"
+msgstr ""
+
+#: themes/stardust/content/sidebar.twig:70
+msgid "Queries:"
+msgstr ""
+
+#: themes/stardust/pages/archive.twig:6
+#: themes/stardust/pages/archive.twig:28
+#: themes/stardust/pages/archive.twig:31
 #, php-format
 msgid "Archive of %s"
 msgstr ""
 
-#: themes/default/sidebar.twig:45
-msgid "Load time:"
+#: themes/stardust/pages/archive.twig:13
+msgid "%B"
 msgstr ""
 
-#: themes/default/content/search.twig:10
+#: themes/stardust/pages/search.twig:10
 msgid "Your search did not return any results."
 msgstr ""
 
-#: themes/default/sidebar.twig:44
-msgid "Queries:"
-msgstr ""
-
-#: themes/default/forms/user/controls.twig:3
-msgid "Controls"
-msgstr ""
-
-#: themes/default/content/tag.twig:4
+#: themes/stardust/pages/tag.twig:4
 #, php-format
 msgid "Posts tagged with &#8220;%s&#8221;"
 msgstr ""
 
-#: themes/default/forms/user/lost_password.twig:7
-msgid "You have specified a user that does not exist."
+#: themes/stardust/forms/user/controls.twig:3
+msgid "Controls"
 msgstr ""
 
-#: themes/default/content/feather.twig:10
+#: themes/stardust/content/post.twig:16
+msgid "%I:%M %p"
+msgstr ""
+
+#: themes/stardust/info.yaml:1
+msgid "Stardust"
+msgstr ""
+
+#: themes/stardust/pages/feather.twig:10
 msgid "There don't seem to be any posts as the Feather you specified."
 msgstr ""
 
-#: themes/default/forms/user/lost_password.twig:18
+#: themes/stardust/forms/user/register.twig:14
+msgid "(again)"
+msgstr ""
+
+#: themes/stardust/pages/archive.twig:15
+#: themes/stardust/pages/archive.twig:31
+#: themes/stardust/content/sidebar.twig:61
+msgid "%B %Y"
+msgstr ""
+
+#: themes/stardust/forms/user/lost_password.twig:11
 msgid "Submit"
 msgstr ""
 
-#: themes/default/content/404.twig:3
-msgid "Not Found"
-msgstr ""
-
-#: themes/default/info.yaml:5
-msgid "Chyrp's default theme since v.0.0.1 Alpha, developed over a long period of time on and off (mostly off) by Aaron MacDonald."
-msgstr ""
-
-#: themes/default/forms/user/register.twig:11
-#: themes/default/forms/user/login.twig:11
+#: themes/stardust/forms/user/register.twig:10
+#: themes/stardust/forms/user/login.twig:10
 msgid "Password"
 msgstr ""
 
-#: themes/default/content/tags.twig:4
+#: themes/stardust/pages/tags.twig:4
 msgid "Tag Maelstrom"
 msgstr ""
 
-#: themes/default/forms/user/register.twig:19
-#: themes/default/forms/user/controls.twig:11
+#: themes/stardust/pages/404.twig:3
+msgid "Not Found"
+msgstr ""
+
+#: themes/stardust/forms/user/register.twig:18
+#: themes/stardust/forms/user/controls.twig:10
 msgid "E-Mail"
 msgstr ""
 
-#: themes/default/forms/comment/new.twig:4
+#: themes/stardust/forms/comment/new.twig:4
 msgid "Log Out &rarr;"
 msgstr ""
 
-#: themes/default/sidebar.twig:19
-#: themes/default/forms/user/register.twig:3
-#: themes/default/forms/user/register.twig:24
+#: themes/stardust/forms/user/register.twig:3
+#: themes/stardust/forms/user/register.twig:23
+#: themes/stardust/content/sidebar.twig:36
 msgid "Register"
 msgstr ""
 
-#: themes/default/layouts/default.twig:32
+#: themes/stardust/layouts/default.twig:33
 msgid "Close"
 msgstr ""
 
-#: themes/default/layouts/default.twig:21
+#: themes/stardust/layouts/default.twig:22
 msgid "Write Draft"
 msgstr ""
 
-#: themes/default/info.yaml:1
-msgid "Chyrp Default"
-msgstr ""
-
-#: themes/default/content/view.twig:9
+#: themes/stardust/pages/view.twig:9
 msgid "Comments"
 msgstr ""
 
-#: themes/default/content/view.twig:16
+#: themes/stardust/pages/view.twig:16
 msgid "Next &rarr;"
 msgstr ""
 
-#: themes/default/layouts/default.twig:24
+#: themes/stardust/layouts/default.twig:25
 msgid "Add Page"
 msgstr ""
 
-#: themes/default/sidebar.twig:35
+#: themes/stardust/pages/archive.twig:9
+#: themes/stardust/content/sidebar.twig:57
 msgid "Archives"
 msgstr ""
 
-#: themes/default/content/post.twig:22
-#, php-format
-msgid "%s Comment"
-msgid_plural "%s Comments"
-msgstr[0] ""
-msgstr[1] ""
+#: themes/stardust/content/comment.twig:9
+msgid "%B %e, %Y, at %I:%M %p"
+msgstr ""
 
-#: themes/default/sidebar.twig:8
+#: themes/stardust/content/sidebar.twig:25
 msgid "Guest"
 msgstr ""
 
-#: themes/default/sidebar.twig:8
+#: themes/stardust/pages/archive.twig:28
+msgid "%B %e, %Y"
+msgstr ""
+
+#: themes/stardust/content/sidebar.twig:25
 #, php-format
 msgid "Welcome, %s!"
 msgstr ""
 
-#: themes/default/sidebar.twig:11
+#: themes/stardust/content/sidebar.twig:28
 msgid "User Controls"
 msgstr ""
 
-#: themes/default/forms/user/controls.twig:7
+#: themes/stardust/forms/user/controls.twig:6
 msgid "Full Name"
 msgstr ""
 
-#: themes/default/content/feathers/text.twig:3
-#: themes/default/content/feathers/chat.twig:3
+#: themes/stardust/feathers/text.twig:6
+#: themes/stardust/feathers/chat.twig:6
 msgid "Permanent Link to"
 msgstr ""
 
-#: themes/default/content/search.twig:4
+#: themes/stardust/pages/feather.twig:9
+#, php-format
+msgid "No %s"
+msgstr ""
+
+#: themes/stardust/pages/search.twig:4
 #, php-format
 msgid "Search results for &#8220;%s&#8221;"
 msgstr ""
 
-#: themes/default/forms/user/lost_password.twig:10
-msgid "E-mail sent!"
-msgstr ""
-
-#: themes/default/forms/user/register.twig:15
-msgid "Password (again)"
-msgstr ""
-
-#: themes/default/forms/user/lost_password.twig:3
+#: themes/stardust/forms/user/lost_password.twig:3
 msgid "Lost Password"
 msgstr ""
 
-#: themes/default/content/post.twig:3
-msgid "This post is a draft."
-msgstr ""
-
-#: themes/default/content/view.twig:17
+#: themes/stardust/pages/view.twig:17
 msgid "&larr; Previous"
 msgstr ""
 
-#: themes/default/content/tag.twig:10
+#: themes/stardust/pages/tag.twig:10
 #, php-format
 msgid "There don't be any posts tagged as &#8220;%s&#8221;."
 msgstr ""
 
-#: themes/default/layouts/default.twig:27
+#: themes/stardust/layouts/default.twig:28
 msgid "Your Drafts"
 msgstr ""
 
-#: themes/default/layouts/default.twig:30
+#: themes/stardust/layouts/default.twig:31
 msgid "Admin"
 msgstr ""
 
-#: themes/default/forms/user/lost_password.twig:12
+#: themes/stardust/forms/user/lost_password.twig:5
 msgid "Please enter your username below and we will e-mail you a new password for your account."
 msgstr ""
 
-#: themes/default/forms/user/controls.twig:23
+#: themes/stardust/forms/user/controls.twig:22
 msgid "Confirm"
 msgstr ""
 
-#: themes/default/forms/comment/new.twig:13
+#: themes/stardust/forms/comment/new.twig:20
 msgid "Your Website"
 msgstr ""
 
-#: themes/default/forms/comment/new.twig:9
-msgid "Your Name"
-msgstr ""
-
-#: themes/default/forms/comment/new.twig:11
-msgid "Your E-Mail"
-msgstr ""
-
-#: themes/default/sidebar.twig:13
-msgid "Toggle Admin Bar"
-msgstr ""
-
-#: themes/default/sidebar.twig:26
+#: themes/stardust/content/sidebar.twig:44
+#: themes/stardust/content/post.twig:28
 msgid "Tags"
 msgstr ""
 
-#: themes/default/content/comment.twig:9
+#: themes/stardust/forms/comment/new.twig:12
+msgid "Your Name"
+msgstr ""
+
+#: themes/stardust/forms/comment/new.twig:16
+msgid "Your E-Mail"
+msgstr ""
+
+#: themes/stardust/content/sidebar.twig:30
+msgid "Toggle Admin Bar"
+msgstr ""
+
+#: themes/stardust/content/comment.twig:9
 #, php-format
 msgid "<strong>%s</strong> on %s"
 msgstr ""
 
-#: themes/default/content/drafts.twig:4
-msgid "Drafts"
-msgstr ""
-
-#: themes/default/layouts/default.twig:19
+#: themes/stardust/layouts/default.twig:20
 msgid "Write"
 msgstr ""
 
-#: themes/default/forms/user/controls.twig:28
+#: themes/stardust/forms/user/controls.twig:27
 msgid "Update"
 msgstr ""
 
-#: themes/default/content/tag.twig:9
-#: themes/default/content/feather.twig:9
-#: themes/default/content/archive.twig:28
+#: themes/stardust/pages/tag.twig:9
+#: themes/stardust/pages/index.twig:6
+#: themes/stardust/pages/archive.twig:39
 msgid "No Posts"
 msgstr ""
 
-#: themes/default/content/404.twig:4
-msgid "Sorry, but you are looking for something that isn't here."
+#: themes/stardust/pages/drafts.twig:4
+msgid "Drafts"
 msgstr ""
 
-#: themes/default/content/comment.twig:3
+#: themes/stardust/content/comment.twig:3
 msgid "Your comment is awaiting moderation."
 msgstr ""
 
-#: themes/default/forms/user/controls.twig:15
-msgid "Website"
-msgstr ""
-
-#: themes/default/sidebar.twig:31
+#: themes/stardust/content/sidebar.twig:52
 msgid "All &rarr;"
 msgstr ""
 
-#: themes/default/forms/user/register.twig:7
-#: themes/default/forms/user/lost_password.twig:14
-#: themes/default/forms/user/login.twig:7
+#: themes/stardust/forms/user/controls.twig:14
+msgid "Website"
+msgstr ""
+
+#: themes/stardust/forms/user/register.twig:6
+#: themes/stardust/forms/user/lost_password.twig:7
+#: themes/stardust/forms/user/login.twig:6
 msgid "Username"
 msgstr ""
 
-#: themes/default/forms/user/controls.twig:19
+#: themes/stardust/forms/user/controls.twig:18
 msgid "New Password?"
 msgstr ""
 
-#: themes/default/content/drafts.twig:10
-msgid "You don't have any drafts."
+#: themes/stardust/pages/404.twig:4
+msgid "Sorry, but you are looking for something that isn't here."
 msgstr ""
 
-#: themes/default/sidebar.twig:20
+#: themes/stardust/content/sidebar.twig:37
 msgid "Lost Password?"
 msgstr ""
 
-#: themes/default/content/tags.twig:7
+#: themes/stardust/forms/user/register.twig:14
+msgid "Password "
+msgstr ""
+
+#: themes/stardust/pages/tags.twig:7
 msgid "No Tags"
 msgstr ""
 
-#: themes/default/sidebar.twig:6
+#: themes/stardust/pages/drafts.twig:10
+msgid "You don't have any drafts."
+msgstr ""
+
+#: themes/stardust/pages/index.twig:7
+msgid "Nothing here yet!"
+msgstr ""
+
+#: themes/stardust/content/sidebar.twig:9
 msgid "Pages"
 msgstr ""
 
-#: themes/default/content/archive.twig:29
-msgid "There don't seem to be any posts in the timeframe you specified."
-msgstr ""
-
-#: themes/default/content/post.twig:33
-#: themes/default/content/comment.twig:11
+#: themes/stardust/content/post.twig:34
+#: themes/stardust/content/page.twig:8
+#: themes/stardust/content/comment.twig:10
 msgid "Delete"
 msgstr ""
 
-#: themes/default/forms/comment/new.twig:3
+#: themes/stardust/javascripts/theme.js.php:10
+msgid "(click to hide)"
+msgstr ""
+
+#: themes/stardust/forms/comment/new.twig:5
 #, php-format
 msgid "Logged in as %s"
 msgstr ""
 
-#: themes/default/content/post.twig:3
-msgid "(click to hide)"
-msgstr ""
-
-#: themes/default/content/tags.twig:8
+#: themes/stardust/pages/tags.twig:8
 msgid "There aren't any tags yet. Such a shame."
 msgstr ""
 
-#: themes/default/content/post.twig:30
-msgid "Trackback"
+#: themes/stardust/pages/archive.twig:40
+msgid "There don't seem to be any posts in the timeframe you specified."
 msgstr ""
 
-#: themes/default/sidebar.twig:17
-#: themes/default/forms/user/login.twig:3
-#: themes/default/forms/user/login.twig:15
+#: themes/stardust/content/post.twig:5
+msgid "!"
+msgstr ""
+
+#: themes/stardust/content/post.twig:2
+msgid "%B %e"
+msgstr ""
+
+#: themes/stardust/forms/user/login.twig:3
+#: themes/stardust/forms/user/login.twig:14
+#: themes/stardust/content/sidebar.twig:34
 msgid "Log In"
 msgstr ""
 
-#: themes/default/content/post.twig:7
-msgid "pinned"
-msgstr ""
-
-#: themes/default/content/post.twig:32
-#: themes/default/content/comment.twig:10
+#: themes/stardust/content/comment.twig:11
 msgid "Edit"
 msgstr ""
 
-#: themes/default/forms/comment/new.twig:19
+#: themes/stardust/pages/archive.twig:19
+msgid "%d"
+msgstr ""
+
+#: themes/stardust/javascripts/theme.js.php:18
+msgid "Search..."
+msgstr ""
+
+#: themes/stardust/forms/comment/new.twig:29
 msgid "Speak"
 msgstr ""
 
-#: themes/default/content/drafts.twig:9
+#: themes/stardust/pages/drafts.twig:9
 msgid "No Drafts"
 msgstr ""
 
-#: themes/default/sidebar.twig:15
+#: themes/stardust/content/sidebar.twig:32
 msgid "Log Out"
 msgstr ""
 
-#: themes/default/content/search.twig:9
+#: themes/stardust/pages/search.twig:9
 msgid "No Results"
 msgstr ""
 
-#: themes/default/sidebar.twig:42
+#: themes/stardust/content/post.twig:14
+msgid "%B %e @ %I:%M %p"
+msgstr ""
+
+#: themes/stardust/content/sidebar.twig:68
 msgid "Stats"
 msgstr ""
 
-#: themes/default/layouts/default.twig:49
-msgid "Powered by <a href=\"http://chyrp.net/\">Chyrp</a>"
+#: themes/stardust/layouts/default.twig:64
+msgid "Powered by <a class=\"chyrp\" href=\"http://chyrp.net/\">Chyrp</a>"
 msgstr ""
 
