@@ -180,7 +180,7 @@
 			                      "/child/i" => "children",
 			                      "/cow/i" => "kine",
 			                      "/goose/i" => "geese",
-			                      "/(penis)$/i" => "\\1es",
+			                      "/(penis)$/i" => "\\1es", # Take that, Rails!
 			                      "/(ax|test)is$/i" => "\\1es",
 			                      "/(octop|vir)us$/i" => "\\1ii",
 			                      "/(alias|status)$/i" => "\\1es",
@@ -791,14 +791,15 @@
 	 *     A CamelCased string.
 	 */
 	function camelize($string, $keep_spaces = false) {
-		$rep1 = str_replace("_", " ", $string);
-		$rep2 = str_replace("-", " ", $rep1);
-		$rep3 = ucwords($rep2);
+		$lower = strtolower($string);
+		$deunderscore = str_replace("_", " ", $lower);
+		$dehyphen = str_replace("-", " ", $deunderscore);
+		$final = ucwords($dehyphen);
 
 		if (!$keep_spaces)
-			$rep4 = str_replace(" ", "", $rep3);
+			$final = str_replace(" ", "", $final);
 
-		return $rep4;
+		return $final;
 	}
 
 	/**
