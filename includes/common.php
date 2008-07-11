@@ -317,7 +317,7 @@
 		load_translator("theme", THEME_DIR."/locale/".$config->locale.".mo");
 
 	if (!JAVASCRIPT and !XML_RPC) {
-		if (!$visitor->group()->can("view_site") and !in_array($route->action, array("login", "logout", "register")))
+		if (!$visitor->group()->can("view_site") and !in_array($route->action, array("login", "logout", "register", "lost_password")))
 			if ($trigger->exists("can_not_view_site"))
 				$trigger->call("can_not_view_site");
 			else
