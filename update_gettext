@@ -18,6 +18,7 @@ ruby gettext.rb ./modules/rss/          --domain=rss          > ./modules/rss/lo
 ruby gettext.rb ./modules/smartypants/  --domain=smartypants  > ./modules/smartypants/locale/en_US.pot
 ruby gettext.rb ./modules/tags/         --domain=tags         > ./modules/tags/locale/en_US.pot
 ruby gettext.rb ./modules/textilize/    --domain=textilize    > ./modules/textilize/locale/en_US.pot
+ruby gettext.rb ./modules/swfupload/    --domain=swfupload    > ./modules/swfupload/locale/en_US.pot
 
 ruby gettext.rb ./themes/stardust/ --domain=theme > ./themes/stardust/locale/en_US.pot
 

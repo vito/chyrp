@@ -16,16 +16,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: feathers/video/video.php:7
-#: feathers/video/info.yaml:1
-msgid "Video"
+#: modules/swfupload/info.yaml:1
+msgid "SWFUpload"
 msgstr ""
 
-#: feathers/video/video.php:12
-msgid "Caption"
-msgstr ""
-
-#: feathers/video/info.yaml:4
-msgid "Lets you post videos to your site."
+#: modules/swfupload/info.yaml:4
+msgid "This is a helper module, and does nothing on its own. It is only here to provide functionality to other modules."
 msgstr ""
 
