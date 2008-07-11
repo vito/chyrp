@@ -34,8 +34,8 @@
 					<li><a href="{% url "login/" %}">${ "Log In" | translate }</a></li>
 {% if site.can_register %}
 					<li><a href="{% url "register/" %}">${ "Register" | translate }</a></li>
-					<li><a href="{% url "lost_password/" %}">${ "Lost Password?" | translate }</a></li>
 {% endif %}
+					<li><a href="{% url "lost_password/" %}">${ "Lost Password?" | translate }</a></li>
 {% endif %}
 				</ul>
 
