@@ -151,7 +151,7 @@
 					$groups[$group->name][] = $key;
 		}
 		foreach ($groups as $key => &$val)
-			$val = Horde_Yaml::dump($val);
+			$val = Spyc::YAMLDump($val);
 
 		$sql->query("DROP TABLE IF EXISTS `".$sql->prefix."groups`");
 
