@@ -22,6 +22,10 @@
 	# Should Chyrp use debugging processes?
 	define('DEBUG', true);
 
+	# Constant: INDEX
+	# Is the requested file index.php?
+	define('INDEX', (pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME) == "index.php"));
+
 	# Use GZip compression if available.
 	if (extension_loaded("zlib") and
 	    !ini_get("zlib.output_compression") and
@@ -222,7 +226,8 @@
 	}
 
 	# Load the /clean/urls into their correct $_GET values.
-	$route->determine_action();
+	if (INDEX)
+		$route->determine_action();
 
 	# These are down here so that the modules are
 	# initialized after the $_GET values are filled.
@@ -266,7 +271,8 @@
 		if (is_callable(array($module, "__init")))
 			$module->__init();
 
-	$route->check_viewing_post();
+	if (INDEX)
+		$route->check_viewing_post();
 
 	# Variable: $visitor
 	# Holds the current user and their group.

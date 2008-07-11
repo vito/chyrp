@@ -27,7 +27,6 @@
 		                     '/\/search\//'                      => '/?action=search',
 		                     '/\/search\/([^\/]+)\//'            => '/?action=search&amp;query=$1',
 		                     '/\/archive\/([^\/]+)\/([^\/]+)\//' => '/?action=archive&amp;year=$1&amp;month=$2',
-		                     '/\/bookmarklet\/([^\/]+)\//'       => '/?action=bookmarklet&amp;status=$1',
 		                     '/\/theme_preview\/([^\/]+)\//'     => '/?action=theme_preview&amp;theme=$1',
 		                     '/\/([^\/]+)\/feed\/([^\/]+)\//'    => '/?action=$1&amp;feed&amp;title=$2',
 		                     '/\/([^\/]+)\/feed\//'              => '/?action=$1&amp;feed');
@@ -242,10 +241,13 @@
 		}
 
 		public function check_viewing_post() {
-			global $post, $page;
+			global $post, $page, $main;
 			$config = Config::current();
 			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls or isset($this->action))
 				return;
+
+			if (count($this->arg) == 1 and method_exists($main, $this->arg[0]))
+				return $this->action = $this->arg[0];
 
 			$post_url = $this->key_regexp(rtrim($config->post_url, "/"));
 			preg_match_all("/([^\/]+)(\/|$)/", $config->post_url, $parameters);

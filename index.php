@@ -113,20 +113,14 @@
 		case "login":
 			$theme->title = __("Log In");
 			$theme->load("forms/user/login", array("incorrect" => isset($_GET['incorrect'])));
-
 			break;
 		case "register":
 			$theme->title = __("Register");
 			$theme->load("forms/user/register");
-
 			break;
 		case "controls":
-			if (!logged_in())
-				error(__("Error"), __("You must be logged in to access this area."));
-
 			$theme->title = __("Controls");
 			$theme->load("forms/user/controls");
-
 			break;
 		case "lost_password":
 			$theme->title = __("Lost Password");
@@ -143,14 +137,6 @@
 					$latest_timestamp = strtotime($post->created_at);
 
 			require "includes/feed.php";
-			break;
-		case "bookmarklet":
-			if (!$visitor->group()->can("add_post"))
-				show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
-			if (empty($config->enabled_feathers))
-				error(__("No Feathers"), __("Please install a feather or two in order to add a post."));
-
-			require "includes/bookmarklet.php";
 			break;
 		default:
 			# Unknown action. Check for:

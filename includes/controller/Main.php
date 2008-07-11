@@ -100,16 +100,21 @@
 			global $post;
 
 			$config = Config::current();
+			$route = Route::current();
+
 			$get = array_map("urldecode", $_GET);
 
 			if (!$config->clean_urls)
-				return $post = new Post(null, array("where" => "`__posts`.`url` = :url",
-				                                    "params" => array(":url" => $get['url'])));
+				$post = new Post(null, array("where" => "`__posts`.`url` = :url",
+				                             "params" => array(":url" => $get['url'])));
 			else
-				return $post = Post::from_url(Route::current()->post_url_attrs);
+				$post = Post::from_url($route->post_url_attrs);
 
 			if ($post->no_results)
-				show_404();
+				if (count($route->arg) == 1)
+					return $route->action = $route->arg[0];
+				else
+					show_404();
 		}
 
 		/**
@@ -243,10 +248,10 @@
 		}
 
 		/**
-		 * Function: update_self
+		 * Function: controls
 		 * Updates the current user when the form is submitted. Shows an error if they aren't logged in.
 		 */
-		public function update_self() {
+		public function controls() {
 			if (empty($_POST))
 				return;
 

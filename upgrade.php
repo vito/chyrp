@@ -119,6 +119,7 @@
 		$config->set("uploads_path", "/uploads/");
 		$config->set("chyrp_url", $config->url);
 		$config->set("feed_items", $config->rss_posts);
+		$config->set("theme", "stardust");
 		$config->remove("rss_posts");
 		$sql->set("adapter", "mysql");
 		if (empty($sql->prefix)) { # For some reason the prefix was being removed in my remote testing.

@@ -19,10 +19,15 @@
 			if (!$visitor->group()->can("add_post", "add_draft"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
+			$config = Config::current();
+
+			if (empty($config->enabled_feathers))
+				error(__("No Feathers"), __("Please install a feather or two in order to add a post."));
+
 			global $feathers;
 			$this->context["feathers"]       = $feathers;
-			$this->context["feather"]        = $feathers[fallback($_GET['feather'], Config::current()->enabled_feathers[0], true)];
-			$this->context["GET"]["feather"] = fallback($_GET['feather'], Config::current()->enabled_feathers[0], true);
+			$this->context["feather"]        = $feathers[fallback($_GET['feather'], $config->enabled_feathers[0], true)];
+			$this->context["GET"]["feather"] = fallback($_GET['feather'], $config->enabled_feathers[0], true);
 		}
 
 		/**
@@ -1694,7 +1699,7 @@
 
 			if (!isset($action) or $action == "write") {
 				# "Write > Post", if they can add posts or drafts.
-				if ($visitor->group()->can("add_post") or $visitor->group()->can("add_draft"))
+				if ($visitor->group()->can("add_post") or $visitor->group()->can("add_draft") and !empty(Config::current()->enabled_feathers))
 					return "write_post";
 
 				# "Write > Page", if they can add pages.

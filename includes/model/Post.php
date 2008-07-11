@@ -170,7 +170,7 @@
 			foreach ($values as $value)
 				send_pingbacks($value, $post);
 
-			$post->redirect = (isset($_POST['bookmarklet'])) ? url("bookmarklet/done/") : $post->url() ;
+			$post->redirect = (isset($_POST['bookmarklet'])) ? url("/includes/bookmarklet.php?status=done") : $post->url() ;
 
 			Trigger::current()->call("add_post", $post, $options);
 

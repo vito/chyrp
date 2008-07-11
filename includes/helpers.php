@@ -1152,8 +1152,13 @@
 	 function show_404() {
 		global $theme;
 		header("HTTP/1.1 404 Not Found");
+
+		if (!isset($theme))
+			exit("404 Not Found");
+
 		$theme->title = "404";
-		if ($theme->file_exists("pages/404"))
+
+		if (isset($theme) and $theme->file_exists("pages/404"))
 			$theme->load("pages/404");
 		else {
 ?>
