@@ -20,10 +20,10 @@ $(function(){
 	$(".toggle_admin").click(function(){
 		if (!$("#admin_bar:visible, #controls:visible").size()) {
 			$("#admin_bar, #controls").slideDown()
-			Cookie.destroy("chyrp_hide_admin")
+			Cookie.destroy("hide_admin")
 		} else {
 			$("#admin_bar, #controls").slideUp()
-			Cookie.set("chyrp_hide_admin", "true", 30)
+			Cookie.set("hide_admin", "true", 30)
 		}
 		return false
 	})

@@ -275,7 +275,7 @@
 			$this->context["site"]         = $config;
 			$this->context["visitor"]      = $visitor;
 			$this->context["route"]        = Route::current();
-			$this->context["hide_admin"]   = isset($_COOKIE["chyrp_hide_admin"]);
+			$this->context["hide_admin"]   = isset($_COOKIE["hide_admin"]);
 			$this->context["version"]      = CHYRP_VERSION;
 			$this->context["now"]          = now();
 			$this->context["debug"]        = DEBUG;

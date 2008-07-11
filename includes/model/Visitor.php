@@ -15,11 +15,11 @@
 		 * Checks if a valid user is logged in.
 		 */
 		public function __construct() {
-			if (isset($_SESSION['chyrp_login']) and isset($_SESSION['chyrp_password']))
+			if (isset($_SESSION['login']) and isset($_SESSION['password']))
 				parent::__construct(null, array("where"  => array("`login` = :login",
 				                                                  "`password` = :password"),
-				                                "params" => array(":login"    => $_SESSION['chyrp_login'],
-				                                                  ":password" => $_SESSION['chyrp_password'])));
+				                                "params" => array(":login"    => $_SESSION['login'],
+				                                                  ":password" => $_SESSION['password'])));
 		}
 
 		/**

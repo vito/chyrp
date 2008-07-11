@@ -35,7 +35,7 @@
 			$admin->context["visitor"]     = $visitor;
 			$admin->context["logged_in"]   = logged_in();
 			$admin->context["route"]       = array("action" => $action);
-			$admin->context["hide_admin"]  = isset($_SESSION["chyrp_hide_admin"]);
+			$admin->context["hide_admin"]  = isset($_SESSION["hide_admin"]);
 			$admin->context["now"]         = now();
 			$admin->context["now_server"]  = time();
 			$admin->context["version"]     = CHYRP_VERSION;

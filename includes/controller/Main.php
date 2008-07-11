@@ -144,10 +144,10 @@
 		 * Toggles the Admin control panel (if available).
 		 */
 		public function toggle_admin() {
-			if (!isset($_SESSION['chyrp_hide_admin']))
-				$_SESSION['chyrp_hide_admin'] = true;
+			if (!isset($_SESSION['hide_admin']))
+				$_SESSION['hide_admin'] = true;
 			else
-				unset($_SESSION['chyrp_hide_admin']);
+				unset($_SESSION['hide_admin']);
 
 			redirect("/");
 		}
@@ -191,8 +191,8 @@
 
 			User::add($_POST['login'], $_POST['password1'], $_POST['email']);
 
-			$_SESSION['chyrp_login'] = $_POST['login'];
-			$_SESSION['chyrp_password'] = md5($_POST['password1']);
+			$_SESSION['login'] = $_POST['login'];
+			$_SESSION['password'] = md5($_POST['password1']);
 
 			Flash::notice(__("Registration successful."), "/");
 		}
@@ -221,10 +221,10 @@
 			if (Flash::exists("warning"))
 				return;
 
-			$_SESSION['chyrp_login'] = $_POST['login'];
-			$_SESSION['chyrp_password'] = md5($_POST['password']);
+			$_SESSION['login'] = $_POST['login'];
+			$_SESSION['password'] = md5($_POST['password']);
 
-			Flash::notice(__("Login successful."), "/");
+			Flash::notice(__("Logged in."), "/");
 		}
 
 		/**
@@ -266,7 +266,7 @@
 			                 $_POST['website'],
 			                 $visitor->group()->id);
 
-			$_SESSION['chyrp_password'] = $password;
+			$_SESSION['password'] = $password;
 
 			Flash::notice(__("Your profile has been updated."), "/");
 		}

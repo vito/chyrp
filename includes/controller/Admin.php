@@ -435,7 +435,7 @@
 			$user->update($_POST['login'], $password, $_POST['full_name'], $_POST['email'], $_POST['website'], $_POST['group']);
 
 			if ($_POST['id'] == $visitor->id)
-				$_SESSION['chyrp_password'] = $password;
+				$_SESSION['password'] = $password;
 
 			Flash::notice(__("User updated."), "/admin/?action=manage_users");
 		}
