@@ -21,13 +21,12 @@
 			$this->respondTo("filter_post", "filter_post");
 			$this->respondTo("new_post_options", "alt_text_field");
 			$this->respondTo("edit_post_options", "alt_text_field");
+			$this->respondTo("admin_write_post", "swfupload");
+			$this->respondTo("admin_edit_post", "swfupload");
 		}
-		public function __init() {
-			if (!ADMIN or !isset($_GET['action']) or !isset($_GET['feather']))
-				return;
-			if ($_GET['action'] != "write_post" or $_GET['feather'] != "photo")
-				return;
-
+		public function swfupload($post = null) {
+			if (isset($post) and $post->feather != "audio" or
+			    isset($_GET['feather']) and $_GET['feather'] != "audio") return;
 			Trigger::current()->call("prepare_swfupload", "photo", "*.jpg;*.jpeg;*.png;*.gif;*.tiff;*.bmp");
 		}
 		public function submit() {
@@ -58,8 +57,10 @@
 					$filename = upload_from_url($_POST['from_url'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp"));
 				} else
 					$filename = $post->filename;
-			else
+			else {
+				$this->delete_file($post);
 				$filename = $_POST['filename'];
+			}
 
 			$post->update(array("filename" => $filename,
 			                    "caption" => $_POST['caption']));

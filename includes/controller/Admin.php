@@ -24,10 +24,12 @@
 			if (empty($config->enabled_feathers))
 				error(__("No Feathers"), __("Please install a feather or two in order to add a post."));
 
+			fallback($_GET['feather'], $config->enabled_feathers[0]);
+
 			global $feathers;
+
 			$this->context["feathers"]       = $feathers;
-			$this->context["feather"]        = $feathers[fallback($_GET['feather'], $config->enabled_feathers[0], true)];
-			$this->context["GET"]["feather"] = fallback($_GET['feather'], $config->enabled_feathers[0], true);
+			$this->context["feather"]        = $feathers[$_GET['feather']];
 		}
 
 		/**
