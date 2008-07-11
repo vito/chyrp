@@ -127,8 +127,9 @@
 			$sql->prefix = "";
 		}
 
-		if (!@rename(MAIN_DIR."/upload", MAIN_DIR."/uploads"))
-			echo "<p>".__("Uploads directory could not be renamed. Please rename it to <code>/uploads</code>")."</p>";
+		if (!file_exists(MAIN_DIR."/uploads"))
+			if (!@rename(MAIN_DIR."/upload", MAIN_DIR."/uploads"))
+				echo "<p>".__("Uploads directory could not be renamed. Please rename it to <code>/uploads</code>")."</p>";
 
 		# Replace all the posts' XML with SimpleXML well-formed XML.
 		$get_posts = $sql->query("SELECT * FROM `".$sql->prefix."posts`");
