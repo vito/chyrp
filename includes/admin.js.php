@@ -241,7 +241,7 @@ function extend_draggables() {
 			$(this).height($(".disable ul.extend").height())
 	})
 	if ($(".feather").size())
-		$(document.createElement("small")).html("(tip: drag the tabs on the write page to reorder them)").css({
+		$(document.createElement("small")).html("<?php echo __("(tip: drag the tabs on the write page to reorder them)"); ?>").css({
 			position: "relative",
 			bottom: "-1em",
 			display: "block",
