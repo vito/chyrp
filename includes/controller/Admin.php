@@ -606,7 +606,7 @@
 				error(__("No ID Specified"), __("An ID is required to delete a group."));
 
 			if ($_POST['destroy'] == "bollocks")
-				redirect("/admin/?action=manage_pages");
+				redirect("/admin/?action=manage_groups");
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				show_403(__("Access Denied"), __("Invalid security key."));
