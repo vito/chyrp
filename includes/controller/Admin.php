@@ -1075,6 +1075,8 @@
 					                  $chyrp->list_order,
 					                  $chyrp->clean,
 					                  Page::check_url($chyrp->url),
+					                  datetime($entry->published),
+					                  ($entry->updated == $entry->published) ? "0000-00-00 00:00:00" : datetime($entry->updated),
 					                  ($user_id ? $user_id : $visitor->id));
 
 					$trigger->call("import_chyrp_page", $entry, $page);
@@ -1164,7 +1166,14 @@
 
 					$trigger->call("import_wordpress_post", $item, $post);
 				} elseif ($wordpress->post_type == "page") {
-					$page = Page::add(trim($item->title), trim($content->encoded), 0, true, 0, $clean, Page::check_url($clean));
+					$page = Page::add(trim($item->title),
+					                  trim($content->encoded),
+					                  0,
+					                  true,
+					                  0,
+					                  $clean,
+					                  Page::check_url($clean),
+					                  ($wordpress->post_date == "0000-00-00 00:00:00") ? datetime() : $wordpress->post_date);
 					$trigger->call("import_wordpress_page", $item, $post);
 				}
 			}

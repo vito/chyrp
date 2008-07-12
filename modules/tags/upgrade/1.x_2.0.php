@@ -42,7 +42,7 @@
 	echo __("Inserting new tags... Executing the following:", "tags")."<br />\n";
 	echo '<textarea rows="15" cols="100">';
 	foreach ($tags as $post => $tag) {
-		echo "INSERT INTO `".$sql->prefix."tags` VALUES (`tags`, `clean`, `post_id`) ('".implode(" ", $tag["normal"])."', '".implode(" ", $tag["clean"])."', ".$post.")\n";
+		echo "INSERT INTO `".$sql->prefix."tags` VALUES (`tags`, `clean`, `post_id`) ('".implode(",", $tag["normal"])."', '".implode(",", $tag["clean"])."', ".$post.")\n";
 		$sql->insert("tags",
 		             array("tags" => ":tags",
 		                   "clean" => ":clean",

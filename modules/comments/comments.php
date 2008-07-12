@@ -571,9 +571,9 @@
 				             $chyrp->status,
 				             $chyrp->signature,
 				             datetime($comment->published),
+				             ($comment->published == $comment->updated) ? "0000-00-00 00:00:00" : datetime($comment->updated),
 				             $post,
-				             ($user_id ? $user_id : 0),
-				             ($comment->published == $comment->updated) ? "0000-00-00 00:00:00" : datetime($comment->updated));
+				             ($user_id ? $user_id : 0));
 			}
 		}
 
@@ -598,6 +598,7 @@
 				             (isset($comment->comment_approved) && $comment->comment_approved == "1" ? "approved" : "denied"),
 				             "",
 				             $comment->comment_date,
+				             null,
 				             $post,
 				             0);
 			}
@@ -621,6 +622,7 @@
 				             $status,
 				             "",
 				             $comment["posted"],
+				             null,
 				             $post,
 				             0);
 			}
@@ -639,9 +641,9 @@
 				             ($comment["comment_visible"] ? "approved" : denied),
 				             "",
 				             $comment["comment_created_on"],
+				             $comment["comment_modified_on"],
 				             $post,
-				             0,
-				             $comment["comment_modified_on"]);
+				             0);
 		}
 
 		static function view_feed() {

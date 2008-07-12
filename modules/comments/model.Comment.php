@@ -81,10 +81,32 @@
 				list($spam, $spaminess, $signature) = $defensio->auditComment($comment);
 
 				if ($spam) {
-					self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], "spam", $signature, datetime(), $post, $visitor->id);
+					self::add($body,
+					          $author,
+					          $url,
+					          $email,
+					          $_SERVER['REMOTE_ADDR'],
+					          $_SERVER['HTTP_USER_AGENT'],
+					          "spam",
+					          $signature,
+					          null,
+					          null,
+					          $post,
+					          $visitor->id);
 					error(__("Spam Comment"), __("Your comment has been marked as spam. It will have to be approved before it will show up.", "comments"));
 				} else {
-					$comment = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, $signature, datetime(), $post, $visitor->id);
+					$comment = self::add($body,
+					                     $author,
+					                     $url,
+					                     $email,
+					                     $_SERVER['REMOTE_ADDR'],
+					                     $_SERVER['HTTP_USER_AGENT'],
+					                     $status,
+					                     $signature,
+					                     null,
+					                     null,
+					                     $post,
+					                     $visitor->id);
 
 					if (isset($_POST['ajax']))
 						exit("{ comment_id: ".$comment->id." }");
@@ -92,7 +114,18 @@
 					Flash::notice(__("Comment added."), $post->url()."#comment_".$comment->id);
 				}
 			} else {
-				$comment = self::add($body, $author, $url, $email, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], $status, "", datetime(), $post, $visitor->id);
+				$comment = self::add($body,
+					                 $author,
+					                 $url,
+					                 $email,
+					                 $_SERVER['REMOTE_ADDR'],
+					                 $_SERVER['HTTP_USER_AGENT'],
+					                 $status,
+					                 "",
+					                 null,
+					                 null,
+					                 $post,
+					                 $visitor->id);
 
 				if (isset($_POST['ajax']))
 					exit("{ comment_id: ".$comment->id." }");
@@ -115,12 +148,12 @@
 		 *     $status - The new comment's status.
 		 *     $signature - Defensio's data signature of the comment, generated when it is checked
 		 *                  if it's spam in <Comment.create>. Optional.
-		 *     $timestamp - The new comment's "created" timestamp.
+		 *     $created_at - The new comment's "created" timestamp.
+		 *     $updated_at - The new comment's "last updated" timestamp.
 		 *     $post - The <Post> they're commenting on.
 		 *     $user_id - The ID of this <User> this comment was made by.
-		 *     $updated_at - The new comment's "last updated" timestamp.
 		 */
-		static function add($body, $author, $url, $email, $ip, $agent, $status, $signature, $timestamp, $post, $user_id, $updated_at = null) {
+		static function add($body, $author, $url, $email, $ip, $agent, $status, $signature, $created_at = null, $updated_at = null, $post, $user_id) {
 			if (!empty($url)) # Add the http:// if it isn't there.
 				if (!@parse_url($url, PHP_URL_SCHEME))
 					$url = "http://".$url;
@@ -153,7 +186,7 @@
 			                   ":signature" => $signature,
 			                   ":post_id" => $post->id,
 			                   ":user_id"=> $user_id,
-			                   ":created_at" => $timestamp,
+			                   ":created_at" => fallback($created_at, datetime()),
 			                   ":updated_at" => fallback($updated_at, "0000-00-00 00:00:00")
 			             ));
 			$new = new self($sql->latest());;

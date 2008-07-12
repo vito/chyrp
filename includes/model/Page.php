@@ -51,6 +51,9 @@
 		 *     $show_in_list - Whether or not to show it in the pages list.
 		 *     $clean - The sanitized URL (or empty to default to "(feather).(new page's id)").
 		 *     $url - The unique URL (or empty to default to "(feather).(new page's id)").
+		 *     $created_at - The new page's "created" timestamp.
+		 *     $updated_at - The new page's "last updated" timestamp.
+		 *     $user_id - The ID of the user that created the page. Defaults to the visitor's ID.
 		 *
 		 * Returns:
 		 *     $id - The newly created page's ID.
@@ -58,7 +61,7 @@
 		 * See Also:
 		 *     <update>
 		 */
-		static function add($title, $body, $parent_id, $show_in_list, $list_order = 0, $clean, $url, $user_id = null) {
+		static function add($title, $body, $parent_id, $show_in_list, $list_order = 0, $clean, $url, $created_at = null, $updated_at = null, $user_id = null) {
 			$sql = SQL::current();
 			$visitor = Visitor::current();
 			$sql->insert("pages",
@@ -71,7 +74,8 @@
 			                 "list_order" => ":list_order",
 			                 "clean" => ":clean",
 			                 "url" => ":url",
-			                 "created_at" => ":created_at"
+			                 "created_at" => ":created_at",
+			                 "updated_at" => ":updated_at"
 			             ),
 			             array(
 			                 ":title" => $title,
@@ -82,7 +86,8 @@
 			                 ":list_order" => $list_order,
 			                 ":clean" => $clean,
 			                 ":url" => $url,
-			                 ":created_at" => datetime()
+			                 ":created_at" => fallback($created_at, datetime()),
+			                 ":updated_at" => fallback($updated_at, "0000-00-00 00:00:00")
 			             ));
 
 			$page = new self($sql->latest());
