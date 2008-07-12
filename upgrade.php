@@ -128,7 +128,7 @@
 			$sql->prefix = "";
 		}
 
-		if (!file_exists(MAIN_DIR."/uploads"))
+		if (file_exists(MAIN_DIR."/upload") and !file_exists(MAIN_DIR."/uploads"))
 			if (!@rename(MAIN_DIR."/upload", MAIN_DIR."/uploads"))
 				echo "<p>".__("Uploads directory could not be renamed. Please rename it to <code>/uploads</code>")."</p>";
 

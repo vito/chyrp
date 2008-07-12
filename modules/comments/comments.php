@@ -658,7 +658,8 @@
 
 			$comments = array();
 			for ($i = 0; $i < 20; $i++)
-				$comments[] = new Comment($ids[$i]);
+				if (isset($ids[$i]))
+					$comments[] = new Comment(null, array("read_from" => $ids[$i]));
 
 			Route::current()->action = "comments_rss";
 		}
