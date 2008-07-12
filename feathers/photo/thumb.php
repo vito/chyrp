@@ -24,7 +24,8 @@
 	----------------------------------------------------------------------
     */
 
-	$thumb_size = 128; //all thumbnails are this maximum width or height if not specified via get
+	ini_set("memory_limit", "32M");
+
 	$image_error = (file_exists(THEME_URL."/images/icons/image_error.png")) ?
 	               THEME_URL."/images/icons/image_error.png" :
 	               THEME_URL."/img/icons/image_error.png" ;	// used if no image could be found, or a gif image is specified
@@ -34,9 +35,6 @@
 
 	# Define quality of image
 	$quality = (isset($_GET["quality"])) ? $_GET["quality"] : 80 ;
-
-	# Define size of image (maximum width or height)- if specified via get.
-	$thumb_size = (isset($_GET['size'])) ? (int) $_GET["size"] : 0;
 
 	$filename = fallback($_GET['file'], $image_error, true);
 
@@ -53,7 +51,7 @@
 	}
 
 	$cache_file = INCLUDES_DIR."/caches/thumb_".
-	              md5($filename.$thumb_size.$thumb_size_x.$thumb_size_y.$quality).'.'.$fileextension;
+	              md5($filename.$thumb_size_x.$thumb_size_y.$quality).'.'.$fileextension;
 	if ($original_width < $thumb_size_x and $original_height < $thumb_size_y)
 		header("Location: ".$filename);
 
@@ -65,7 +63,7 @@
 		header('Last-Modified: '.gmdate('D, d M Y H:i:s', @filemtime($cache_file)).' GMT');
 		header('Content-type: image/'.($fileextension == "jpg" ? "jpeg" : $fileextension));
 		header("Expires: Mon, 26 Jul 2030 05:00:00 GMT");
-		header('Content-Disposition: inline; filename='.str_replace("/", "", md5($filename.$thumb_size.$thumb_size_x.$thumb_size_y.$quality).".".$fileextension));
+		header('Content-Disposition: inline; filename='.str_replace("/", "", md5($filename.$thumb_size_x.$thumb_size_y.$quality).".".$fileextension));
 		readfile($cache_file);
 		exit; # no need to create thumbnail - it already exists in the cache
 	}
@@ -137,13 +135,11 @@
 		}
 	} else {
 		# define images x OR y
-		$thumb_width = $thumb_size;
-		$factor = $image_width / $thumb_size;
-		$thumb_height = intval($image_height / $factor);
-		if ($thumb_height > $thumb_size) {
-			$thumb_height = $thumb_size;
-			$factor = $image_height / $thumb_size;
-			$thumb_width = intval($image_width / $factor);
+		$thumb_size_x = intval(($thumb_size_y / $original_height) * $original_width);
+		$thumb_width = $thumb_size_x;
+		$thumb_height = $thumb_size_y;
+		if ($thumb_height > $thumb_size_x) {
+			$thumb_height = $thumb_size_x;
 		}
 	}
 
@@ -185,14 +181,14 @@
 	switch ($image_type) {
 		case 2: # JPG
 			header('Content-type: image/jpeg');
-			header('Content-Disposition: inline; filename='.md5($filename.$thumb_size.$thumb_size_x.$thumb_size_y.$quality).'.jpeg');
+			header('Content-Disposition: inline; filename='.md5($filename.$thumb_size_x.$thumb_size_y.$quality).'.jpeg');
 			imagejpeg($thumbnail, $cache_file, $quality);
 			imagejpeg($thumbnail, "", $quality);
 
 			break;
 		case 3: # PNG
 			header('Content-type: image/png');
-			header('Content-Disposition: inline; filename='.md5($filename.$thumb_size.$thumb_size_x.$thumb_size_y.$quality).'.png');
+			header('Content-Disposition: inline; filename='.md5($filename.$thumb_size_x.$thumb_size_y.$quality).'.png');
 			imagepng($thumbnail, $cache_file);
 			imagepng($thumbnail);
 			break;
@@ -200,12 +196,12 @@
 		case 1: # GIF
 			if (function_exists('imagegif')) {
 				header('Content-type: image/gif');
-				header('Content-Disposition: inline; filename='.md5($filename.$thumb_size.$thumb_size_x.$thumb_size_y.$quality).'.gif');
+				header('Content-Disposition: inline; filename='.md5($filename.$thumb_size_x.$thumb_size_y.$quality).'.gif');
 				imagegif($thumbnail, $cache_file);
 				imagegif($thumbnail);
 			} else {
 				header('Content-type: image/jpeg');
-				header('Content-Disposition: inline; filename='.md5($filename.$thumb_size.$thumb_size_x.$thumb_size_y.$quality).'.jpg');
+				header('Content-Disposition: inline; filename='.md5($filename.$thumb_size_x.$thumb_size_y.$quality).'.jpg');
 				imagejpeg($thumbnail, $cache_file);
 				imagejpeg($thumbnail);
 			}

@@ -25,8 +25,8 @@
 			$this->respondTo("admin_edit_post", "swfupload");
 		}
 		public function swfupload($post = null) {
-			if (isset($post) and $post->feather != "audio" or
-			    isset($_GET['feather']) and $_GET['feather'] != "audio") return;
+			if (isset($post) and $post->feather != "photo" or
+			    isset($_GET['feather']) and $_GET['feather'] != "photo") return;
 			Trigger::current()->call("prepare_swfupload", "photo", "*.jpg;*.jpeg;*.png;*.gif;*.tiff;*.bmp");
 		}
 		public function submit() {

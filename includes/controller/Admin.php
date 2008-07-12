@@ -680,7 +680,7 @@
 				} else
 					list($where, $params) = array(false, array());
 
-				$posts = Post::find(array("where" => $where, "params" => $params, "order" => "`__posts`.`id` asc"),
+				$posts = Post::find(array("where" => $where, "params" => $params, "order" => "`__posts`.`id` ASC"),
 				                    array("filter" => false));
 
 				$latest_timestamp = 0;
@@ -771,7 +771,7 @@
 				} else
 					list($where, $params) = array(null, array());
 
-				$pages = Page::find(array("where" => $where, "params" => $params, "order" => "`__pages`.`id` asc"),
+				$pages = Page::find(array("where" => $where, "params" => $params, "order" => "`__pages`.`id` ASC"),
 				                    array("filter" => false));
 
 				$latest_timestamp = 0;
@@ -823,6 +823,80 @@
 				$pages_atom.= '</feed>'."\r";
 
 				$exports["pages.atom"] = $pages_atom;
+			}
+
+			if (isset($_POST['groups'])) {
+				if (!empty($_POST['filter_groups'])) {
+					$search = "";
+					$matches = array();
+
+					$queries = explode(" ", $_POST['filter_groups']);
+					foreach ($queries as $query)
+						if (!strpos($query, ":"))
+							$search.= $query;
+						else
+							$matches[] = $query;
+
+					foreach ($matches as $match) {
+						$match = explode(":", $match);
+						$test = $match[0];
+						$equals = $match[1];
+						$where[] = "`__groups`.`".$test."` = :".$test;
+						$params[":".$test] = $equals;
+					}
+				} else
+					list($where, $params) = array(null, array());
+
+				$groups = Group::find(array("where" => $where, "params" => $params, "order" => "`__groups`.`id` ASC"));
+
+				$groups_yaml = array("groups" => array(),
+				                     "permissions" => array());
+
+				foreach (SQL::current()->select("permissions", "name")->fetchAll() as $permission)
+					$groups_yaml["permissions"][] = $permission["name"];
+
+				foreach ($groups as $index => $group)
+					$groups_yaml["groups"][$group->name] = $group->permissions;
+
+				$exports["groups.yaml"] = Horde_Yaml::dump($groups_yaml);
+			}
+
+			if (isset($_POST['users'])) {
+				if (!empty($_POST['filter_users'])) {
+					$search = "";
+					$matches = array();
+
+					$queries = explode(" ", $_POST['filter_users']);
+					foreach ($queries as $query)
+						if (!strpos($query, ":"))
+							$search.= $query;
+						else
+							$matches[] = $query;
+
+					foreach ($matches as $match) {
+						$match = explode(":", $match);
+						$test = $match[0];
+						$equals = $match[1];
+						$where[] = "`__users`.`".$test."` = :".$test;
+						$params[":".$test] = $equals;
+					}
+				} else
+					list($where, $params) = array(null, array());
+
+				$users = User::find(array("where" => $where, "params" => $params, "order" => "`__users`.`id` ASC"));
+
+				$users_yaml = array();
+				foreach ($users as $user) {
+					$users_yaml[$user->login] = array();
+
+					foreach ($user as $name => $attr)
+						if ($name != "no_results" and $name != "group_id" and $name != "id")
+							$users_yaml[$user->login][$name] = $attr;
+						elseif ($name == "group_id")
+							$users_yaml[$user->login]["group"] = $user->group()->name;
+				}
+
+				$exports["users.yaml"] = Horde_Yaml::dump($users_yaml);
 			}
 
 			$trigger->filter($exports, "export");

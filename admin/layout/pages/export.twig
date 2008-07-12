@@ -27,6 +27,29 @@
 							${ "(optional)" | translate }
 						</small>
 					</p>
+					<p>
+						<label for="groups">${ "Groups" | translate }</label>
+						<input class="checkbox" type="checkbox" name="groups" value="" id="groups" checked="checked" />
+						<small>
+							${ "filter:" | translate }
+							<input class="text" type="text" name="filter_groups" value="" id="filter_groups" />
+							<a href="{% admin "help&id=filtering_results" %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
+							${ "(optional)" | translate }
+						</small>
+					</p>
+					<p>
+						<label for="users">${ "Users" | translate }</label>
+						<input class="checkbox" type="checkbox" name="users" value="" id="users" checked="checked" />
+						<span class="sub">
+							${ "(warning: this also exports the hashed passwords, so keep the export file safe)" | translate }
+						</span>
+						<small>
+							${ "filter:" | translate }
+							<input class="text" type="text" name="filter_users" value="" id="filter_users" />
+							<a href="{% admin "help&id=filtering_results" %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
+							${ "(optional)" | translate }
+						</small>
+					</p>
 
 					${ trigger.call("export_choose") }
 

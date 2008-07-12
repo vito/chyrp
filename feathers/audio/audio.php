@@ -41,7 +41,7 @@
 				$filename = $_POST['filename'];
 
 			return Post::add(array("filename" => $filename,
-			                        "description" => $_POST['description']),
+			                       "description" => $_POST['description']),
 			                 $_POST['slug'],
 			                 Post::check_url($_POST['slug']));
 		}
@@ -129,7 +129,7 @@ var ap_clearID = setInterval( ap_registerPlayers, 100 );
 
 			$config = Config::current();
 			$player = '<script src="'.$config->chyrp_url.'/feathers/audio/lib/audio-player.js" type="text/javascript" charset="utf-8"></script>'."\n";
-			$player.= '<object type="application/x-shockwave-flash" data="'.$config->chyrp_url.'/feathers/audio/lib/player.swf" id="audio_player_'.$post->id.'" height="24" width="290">'."\n\t";
+			$player.= '<object type="application/x-shockwave-flash" data="'.$config->chyrp_url.'/feathers/audio/lib/player.swf" id="audioplayer'.$post->id.'" height="24" width="290">'."\n\t";
 			$player.= '<param name="movie" value="'.$config->chyrp_url.'/feathers/audio/lib/player.swf" />'."\n\t";
 			$player.= '<param name="FlashVars" value="playerID='.$post->id.'&amp;soundFile='.$config->chyrp_url.$config->uploads_path.$filename.$vars.'" />'."\n\t";
 			$player.= '<param name="quality" value="high" />'."\n\t";
