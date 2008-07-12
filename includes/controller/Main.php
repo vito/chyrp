@@ -292,8 +292,8 @@
 
 			$user->update($user->login,
 			              md5($new_password),
-			              $user->full_name,
 			              $user->email,
+			              $user->full_name,
 			              $user->website,
 			              $user->group_id);
 
@@ -309,8 +309,8 @@
 			# Set their password back to what it was originally.
 			$user->update($user->login,
 			              $user->password,
-			              $user->full_name,
 			              $user->email,
+			              $user->full_name,
 			              $user->website,
 			              $user->group_id);
 

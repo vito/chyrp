@@ -43,6 +43,7 @@
 						$this->query = $this->db->prepare($query);
 						$result = $this->query->execute($params);
 						$this->query->setFetchMode(PDO::FETCH_ASSOC);
+						$this->queryString = $this->query->queryString;
 						if (!$result) throw new PDOException;
 					} catch (PDOException $error) {
 						$message = $error->getMessage();
@@ -51,7 +52,7 @@
 							throw new Exception($message);
 
 						if (DEBUG)
-							$message.= "\n\n".$query."\n\n<pre>".print_r($params, true)."</pre>\n\n<pre>".$error->getTraceAsString()."</pre>";
+							$message.= "\n\n<pre>".print_r($query, true)."\n\n<pre>".print_r($params, true)."</pre>\n\n<pre>".$error->getTraceAsString()."</pre>";
 
 						$this->db = null;
 
@@ -62,6 +63,7 @@
 					foreach ($params as $name => $val)
 						$query = str_replace($name, "'".$this->db->escape_string($val)."'", $query);
 
+					$this->queryString = $query;
 					if (!$this->query = $this->db->query($query))
 						return error(__("Database Error"), $this->db->error);
 
@@ -70,6 +72,7 @@
 					foreach ($params as $name => $val)
 						$query = str_replace($name, "'".mysql_real_escape_string($val)."'", $query);
 
+					$this->queryString = $query;
 					if (!$this->query = @mysql_query($query))
 						return error(__("Database Error"), mysql_error());
 
@@ -78,6 +81,7 @@
 					foreach ($params as $name => $val)
 						$query = str_replace($name, "'".sqlite_escape_string($val)."'", $query);
 
+					$this->queryString = $query;
 					if (!$this->query = @$this->db->query($query, SQLITE_BOTH, $this->error))
 						return error(__("Database Error"), $this->error);
 

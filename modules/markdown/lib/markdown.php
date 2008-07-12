@@ -2458,7 +2458,7 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				[:][ ]+						# definition mark (colon)
 			)
 			((?s:.+?))						# definition text = $3
-			(?= \n+                 		# stop at next definition mark,
+			(?= \n+                         # stop at next definition mark,
 				(?:							# next term or end of text
 					[ ]{0,'.$less_than_tab.'} [:][ ]	|
 					<dt> | \z

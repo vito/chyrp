@@ -380,6 +380,10 @@ form.delete blockquote h2,
 form.delete .noitalic {
 	font-style: normal;
 }
+form.delete blockquote h2 input[type="checkbox"] {
+	position: relative;
+	top: -.125em;
+}
 form.delete h2.inline {
 	display: inline;
 }

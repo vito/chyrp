@@ -108,11 +108,6 @@
 				Trigger::current()->filter($options, "bookmarklet_submit_options");
 			}
 
-			foreach ($values as $name => &$value)
-				$value = safe($value);
-			foreach ($options as $name => &$option)
-				$option = safe($option);
-
 			$xml = new SimpleXMLElement("<post></post>");
 			self::arr2xml($xml, $values);
 			self::arr2xml($xml, $options);
@@ -134,7 +129,7 @@
 			             array(
 			                 ":xml" => $xml->asXML(),
 			                 ":feather" => $_POST['feather'],
-			                 ":user_id" => $visitor->id,
+			                 ":user_id" => fallback($_POST['user_id'], $visitor->id),
 			                 ":pinned" => $pinned,
 			                 ":status" => $status,
 			                 ":clean" => $clean,
@@ -167,8 +162,7 @@
 
 			$post = new self($id);
 
-			foreach ($values as $value)
-				send_pingbacks($value, $post);
+			array_walk_recursive($values, array("Post", "send_pingbacks"), $post);
 
 			$post->redirect = (isset($_POST['bookmarklet'])) ? url("/includes/bookmarklet.php?status=done") : $post->url() ;
 
@@ -203,11 +197,6 @@
 			fallback($timestamp, (!empty($_POST['created_at'])) ? when("Y-m-d H:i:s", $_POST['created_at']) : $this->created_at);
 
 			$options = fallback($_POST['option'], array());
-
-			foreach ($values as $name => &$value)
-				$value = safe($value);
-			foreach ($options as $name => &$option)
-				$option = safe($option);
 
 			$xml = new SimpleXMLElement("<post></post>");
 			self::arr2xml($xml, $values);
@@ -299,12 +288,12 @@
 
 			# Can they edit their own posts, and do they have any?
 			if ($visitor->group()->can("edit_own_post") and
-			    Post::find(array("where" => "`__posts`.`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
+			    Post::find(array("where" => "`__posts`.`user_id` = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
 				return true;
 
 			# Can they edit their own drafts, and do they have any?
 			if ($visitor->group()->can("edit_own_draft") and
-			    Post::find(array("where" => "`__posts`.`status` = 'draft' and `__posts`.`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
+			    Post::find(array("where" => "`__posts`.`status` = 'draft' and `__posts`.`user_id` = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
 				return true;
 
 			return false;
@@ -328,12 +317,12 @@
 
 			# Can they delete their own posts, and do they have any?
 			if ($visitor->group()->can("delete_own_post") and
-			    Post::find(array("where" => "`__posts`.`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
+			    Post::find(array("where" => "`__posts`.`user_id` = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
 				return true;
 
 			# Can they delete their own drafts, and do they have any?
 			if ($visitor->group()->can("delete_own_draft") and
-			    Post::find(array("where" => "`__posts`.`status` = 'draft' and `__posts`.`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
+			    Post::find(array("where" => "`__posts`.`status` = 'draft' and `__posts`.`user_id` = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
 				return true;
 
 			return false;
@@ -644,14 +633,16 @@
 		 */
 		static function arr2xml(&$object, $data) {
 			foreach ($data as $key => $val) {
-				if (is_int($key))
-					$key = "data";
+				if (is_int($key) and empty($val)) {
+					unset($data[$key]);
+					continue;
+				}
 
 				if (is_array($val)) {
 					$xml = $object->addChild($key);
 					self::arr2xml($xml, $val);
 				} else
-					$object->addChild($key, $val);
+					$object->addChild($key, safe($val));
 			}
 		}
 
@@ -672,7 +663,17 @@
 				if (get_class($val) == "SimpleXMLElement")
 					$val = self::xml2arr($val);
 
+			array_walk_recursive($parse, array("Post", "recursive_safe"));
+
 			return $parse;
+		}
+
+		static function recursive_safe(&$value, $key) {
+			$value = safe($value);
+		}
+
+		static function send_pingbacks($value, $key, $post) {
+			send_pingbacks($value, $post);
 		}
 
 		/**

@@ -7,7 +7,7 @@
 			<form class="delete" action="{% admin "destroy_group" %}" method="post" accept-charset="utf-8">
 				<fieldset>
 					<blockquote class="noitalic">
-{% if group.size %}
+{% if group.members %}
 						<h2>${ "Members:" | translate }</h2>
 						<ul>
 							{% for member in group.members %}

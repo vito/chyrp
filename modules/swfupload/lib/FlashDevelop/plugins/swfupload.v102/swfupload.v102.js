@@ -34,20 +34,20 @@ if (typeof(SWFUpload) === "function") {
 
 		// Store v1.0.2 settings
 		this.customSettings.v102 = {};
-		this.customSettings.v102.target     			= provideDefault(v102Settings.target, "");
-		this.customSettings.v102.create_ui     			= provideDefault(v102Settings.create_ui, false);
-		this.customSettings.v102.browse_link_class     	= provideDefault(v102Settings.browse_link_class, "SWFBrowseLink");
-		this.customSettings.v102.upload_link_class     	= provideDefault(v102Settings.upload_link_class, "SWFUploadLink");
+		this.customSettings.v102.target                 = provideDefault(v102Settings.target, "");
+		this.customSettings.v102.create_ui                 = provideDefault(v102Settings.create_ui, false);
+		this.customSettings.v102.browse_link_class         = provideDefault(v102Settings.browse_link_class, "SWFBrowseLink");
+		this.customSettings.v102.upload_link_class         = provideDefault(v102Settings.upload_link_class, "SWFUploadLink");
 		this.customSettings.v102.browse_link_innerhtml     = provideDefault(v102Settings.browse_link_innerhtml, "<span>Browse...</span>");
 		this.customSettings.v102.upload_link_innerhtml     = provideDefault(v102Settings.upload_link_innerhtml, "<span>Upload</span>");
-		this.customSettings.v102.auto_upload     		= !!provideDefault(v102Settings.auto_upload, false);
+		this.customSettings.v102.auto_upload             = !!provideDefault(v102Settings.auto_upload, false);
 
 		// Store v1.0.2 events
 		this.customSettings.v102.upload_file_queued_callback     = provideDefault(v102Settings.upload_file_queued_callback, null);
 		this.customSettings.v102.upload_file_start_callback     = provideDefault(v102Settings.upload_file_start_callback, null);
 		this.customSettings.v102.upload_file_complete_callback     = provideDefault(v102Settings.upload_file_complete_callback, null);
 		this.customSettings.v102.upload_queue_complete_callback = provideDefault(v102Settings.upload_queue_complete_callback, null);
-		this.customSettings.v102.upload_progress_callback     	= provideDefault(v102Settings.upload_progress_callback, null);
+		this.customSettings.v102.upload_progress_callback         = provideDefault(v102Settings.upload_progress_callback, null);
 		this.customSettings.v102.upload_dialog_cancel_callback     = provideDefault(v102Settings.upload_dialog_cancel_callback, null);
 		this.customSettings.v102.upload_file_error_callback     = provideDefault(v102Settings.upload_file_error_callback, null);
 		this.customSettings.v102.upload_file_cancel_callback     = provideDefault(v102Settings.upload_file_cancel_callback, null);
@@ -75,10 +75,10 @@ if (typeof(SWFUpload) === "function") {
 
 
 		// Event Handlers
-		this.settings.swfupload_loaded_handler     	= SWFUpload.v102.swfUploadLoaded;
+		this.settings.swfupload_loaded_handler         = SWFUpload.v102.swfUploadLoaded;
 		this.settings.file_dialog_start_handler     = null;
-		this.settings.file_queued_handler     		= SWFUpload.v102.fileQueued;
-		this.settings.file_queue_error_handler     	= SWFUpload.v102.uploadError;
+		this.settings.file_queued_handler             = SWFUpload.v102.fileQueued;
+		this.settings.file_queue_error_handler         = SWFUpload.v102.uploadError;
 		this.settings.file_dialog_complete_handler     = SWFUpload.v102.fileDialogComplete;
 
 		this.settings.upload_start_handler		= SWFUpload.v102.uploadStart;

@@ -164,8 +164,10 @@
 					$params[":".$test] = $equals;
 				}
 
-				$where[] = "`__posts`.`xml` LIKE :query";
-				$params[":query"] = "%".$search."%";
+				if (!empty($search)) {
+					$where[] = "`__posts`.`xml` LIKE :query";
+					$params[":query"] = "%".$search."%";
+				}
 			}
 
 			if (!empty($_GET['month'])) {
@@ -341,8 +343,10 @@
 					$params[":".$test] = $equals;
 				}
 
-				$where[] = "(`__pages`.`title` LIKE :query OR `__pages`.`body` LIKE :query)";
-				$params[":query"] = "%".$search."%";
+				if (!empty($search)) {
+					$where[] = "(`__pages`.`title` LIKE :query OR `__pages`.`body` LIKE :query)";
+					$params[":query"] = "%".$search."%";
+				}
 			}
 
 			$this->context["pages"] = new Paginator(Page::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
@@ -392,7 +396,7 @@
 			if (!eregi("^[[:alnum:]][a-z0-9_.-\+]*@[a-z0-9.-]+\.[a-z]{2,6}$",$_POST['email']))
 				error(__("Error"), __("Unsupported e-mail address."));
 
-			User::add($_POST['login'], $_POST['password1'], $_POST['email'], $_POST['full_name'], $_POST['website'], $_POST['group']);
+			User::add($_POST['login'], $_POST['password1'], $_POST['email'], $_POST['full_name'], $_POST['website'], null, $_POST['group']);
 
 			Flash::notice(__("User added."), "/admin/?action=manage_users");
 		}
@@ -439,7 +443,7 @@
 			            md5($_POST['new_password1']) :
 			            $user->password ;
 
-			$user->update($_POST['login'], $password, $_POST['full_name'], $_POST['email'], $_POST['website'], $_POST['group']);
+			$user->update($_POST['login'], $password, $_POST['email'], $_POST['full_name'], $_POST['website'], $_POST['group']);
 
 			if ($_POST['id'] == $visitor->id)
 				$_SESSION['password'] = $password;
@@ -456,6 +460,8 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete users."));
 
 			$this->context["user"] = new User($_GET['id']);
+			$this->context["users"] = User::find(array("where" => "__users.id != :deleting_id",
+			                                           "params" => array(":deleting_id" => $_GET['id'])));
 		}
 
 		/**
@@ -474,6 +480,33 @@
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				show_403(__("Access Denied"), __("Invalid security key."));
+
+			$sql = SQL::current();
+			$user = new User($_POST['id']);
+
+			if (isset($_POST['posts'])) {
+				if ($_POST['posts'] == "delete")
+					foreach ($user->posts() as $post)
+						Post::delete($post->id);
+				elseif ($_POST['posts'] == "move")
+					$sql->update("posts",
+					             "__posts.user_id = :deleting_id",
+					             array("user_id" => ":user_id"),
+					             array(":user_id" => $_POST['move_posts'],
+					                   ":deleting_id" => $user->id));
+			}
+
+			if (isset($_POST['pages'])) {
+				if ($_POST['pages'] == "delete")
+					foreach ($user->pages() as $page)
+						Page::delete($page->id);
+				elseif ($_POST['pages'] == "move")
+					$sql->update("pages",
+					             "__pages.user_id = :deleting_id",
+					             array("user_id" => ":user_id"),
+					             array(":user_id" => $_POST['move_pages'],
+					                   ":deleting_id" => $user->id));
+			}
 
 			User::delete($_POST['id']);
 
@@ -613,7 +646,7 @@
 
 			$group = new Group($_POST['id']);
 			foreach ($group->members() as $user)
-				$user->update($user->login, $user->password, $user->full_name, $user->email, $user->website, $_POST['move_group']);
+				$user->update($user->login, $user->password, $user->email, $user->full_name, $user->website, $_POST['move_group']);
 
 			$config = Config::current();
 			if (!empty($_POST['default_group']))
@@ -715,7 +748,7 @@
 					array_shift($split);
 					$content = implode("\n", $split);
 					$content = preg_replace("/(^<|<\/)post>/", "", $content);
-					$content = str_replace("><", ">\n\t\t\t<", $content);
+					$content = preg_replace("/><([^\/])/", ">\n\t\t\t<\\1", $content);
 
 					$url = $post->url();
 					$posts_atom.= '	<entry xml:base="'.fix($url).'">'."\r";
@@ -731,7 +764,7 @@
 						$posts_atom.= '			<uri>'.safe($post->user()->website).'</uri>'."\r";
 
 					$posts_atom.= '			<chyrp:login>'.safe($post->user()->login).'</chyrp:login>'."\r";
-					$posts_atom.= '		</author >'."\r";
+					$posts_atom.= '		</author>'."\r";
 					$posts_atom.= '		<content>'."\r";
 					$posts_atom.= '			'.$content;
 					$posts_atom.= '		</content>'."\r";
@@ -808,7 +841,7 @@
 					if (!empty($page->user()->website))
 						$pages_atom.= '			<uri>'.safe($page->user()->website).'</uri>'."\r";
 
-					$pages_atom.= '			<chyrp:login>'.safe($post->user()->login).'</chyrp:login>'."\r";
+					$pages_atom.= '			<chyrp:login>'.safe($page->user()->login).'</chyrp:login>'."\r";
 					$pages_atom.= '		</author>'."\r";
 					$pages_atom.= '		<content type="html">'.safe($page->body).'</content>'."\r";
 
@@ -890,7 +923,7 @@
 					$users_yaml[$user->login] = array();
 
 					foreach ($user as $name => $attr)
-						if ($name != "no_results" and $name != "group_id" and $name != "id")
+						if ($name != "no_results" and $name != "group_id" and $name != "id" and $name != "login")
 							$users_yaml[$user->login][$name] = $attr;
 						elseif ($name == "group_id")
 							$users_yaml[$user->login]["group"] = $user->group()->name;
@@ -951,6 +984,8 @@
 				ini_set("memory_limit", "20M");
 
 			$trigger = Trigger::current();
+			$visitor = Visitor::current();
+			$sql = SQL::current();
 
 			function media_url_scan(&$value) {
 				$config = Config::current();
@@ -963,10 +998,49 @@
 					}
 			}
 
+			if (isset($_FILES['groups_file']) and $_FILES['groups_file']['error'] == 0) {
+				$import = Horde_Yaml::loadFile($_FILES['groups_file']['tmp_name']);
+
+				foreach ($import["groups"] as $name => $permissions)
+					if (!$sql->count("groups", "__groups.name = :name", array(":name" => $name)))
+						$trigger->call("import_chyrp_group", Group::add($name, (array) $permissions));
+
+				foreach ($import["permissions"] as $permission)
+					if (!$sql->count("permissions", "__permissions.name = :name", array(":name" => $permission)))
+						$sql->insert("permissions", array("name" => ":name"), array(":name" => $permission));
+			}
+
+			if (isset($_FILES['users_file']) and $_FILES['users_file']['error'] == 0) {
+				$users = Horde_Yaml::loadFile($_FILES['users_file']['tmp_name']);
+
+				foreach ($users as $login => $user) {
+					$group_id = $sql->select("groups", "id", "__groups.name = :name", "__groups.id DESC",
+					                         array(":name" => $user["group"]))->fetchColumn();
+
+					$group = ($group_id) ? $group_id : $config->default_group ;
+
+					if (!$sql->count("users", "__users.login = :login", array(":login" => $login)))
+						$user = User::add($login,
+						                  $user["password"],
+						                  $user["email"],
+						                  $user["full_name"],
+						                  $user["website"],
+						                  $user["joined_at"],
+						                  $group);
+
+					$trigger->call("import_chyrp_user", $user);
+				}
+			}
+
 			if (isset($_FILES['posts_file']) and $_FILES['posts_file']['error'] == 0)
 				foreach ($posts->entry as $entry) {
 					$chyrp = $entry->children("http://chyrp.net/export/1.0/");
 
+					$login = $entry->author->children("http://chyrp.net/export/1.0/")->login;
+					$user_id = $sql->select("users", "id", "__users.login = :login", "__users.id DESC",
+					                        array(":login" => $login))->fetchColumn();
+
+					$_POST['user_id'] = ($user_id ? $user_id : $visitor->id);
 					$_POST['feather'] = $chyrp->feather;
 					$_POST['status']  = $chyrp->status;
 					$_POST['pinned']  = (bool) (int) $chyrp->pinned;
@@ -989,13 +1063,19 @@
 				foreach ($pages->entry as $entry) {
 					$chyrp = $entry->children("http://chyrp.net/export/1.0/");
 					$attr  = $entry->attributes("http://chyrp.net/export/1.0/");
+
+					$login = $entry->author->children("http://chyrp.net/export/1.0/")->login;
+					$user_id = $sql->select("users", "id", "__users.login = :login", "__users.id DESC",
+					                        array(":login" => $login))->fetchColumn();
+
 					$page = Page::add($entry->title,
 					                  $entry->content,
 					                  $attr->parent_id,
 					                  (bool) (int) $chyrp->show_in_list,
 					                  $chyrp->list_order,
 					                  $chyrp->clean,
-					                  Page::check_url($chyrp->url));
+					                  Page::check_url($chyrp->url),
+					                  ($user_id ? $user_id : $visitor->id));
 
 					$trigger->call("import_chyrp_page", $entry, $page);
 				}

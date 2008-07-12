@@ -58,7 +58,7 @@
 		 * See Also:
 		 *     <update>
 		 */
-		static function add($title, $body, $parent_id, $show_in_list, $list_order = 0, $clean, $url) {
+		static function add($title, $body, $parent_id, $show_in_list, $list_order = 0, $clean, $url, $user_id = null) {
 			$sql = SQL::current();
 			$visitor = Visitor::current();
 			$sql->insert("pages",
@@ -76,7 +76,7 @@
 			             array(
 			                 ":title" => $title,
 			                 ":body" => $body,
-			                 ":user_id" => $visitor->id,
+			                 ":user_id" => fallback($user_id, $visitor->id),
 			                 ":parent_id" => $parent_id,
 			                 ":show_in_list" => $show_in_list,
 			                 ":list_order" => $list_order,

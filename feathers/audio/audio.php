@@ -115,9 +115,10 @@ var ap_clearID = setInterval( ap_registerPlayers, 100 );
 		}
 		public function enclose_mp3($id) {
 			$post = new Post($id);
-			if ($post->feather != "audio") return;
-
 			$config = Config::current();
+			if ($post->feather != "audio" or !file_exists(MAIN_DIR.$config->uploads_path.$post->filename))
+				return;
+
 			$length = filesize(MAIN_DIR.$config->uploads_path.$post->filename);
 
 			echo '			<link rel="enclosure" href="'.$config->chyrp_url.$config->uploads_path.$post->filename.'" type="audio/mpeg" title="MP3" length="'.$length.'" />'."\n";

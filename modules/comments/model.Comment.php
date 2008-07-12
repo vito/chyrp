@@ -15,7 +15,7 @@
 			parent::grab($this, $comment_id, $options);
 
 			$this->body_unfiltered = $this->body;
-			$group = ($this->user_id) ? $this->user()->group() : new Group(Config::current()->guest_group) ;
+			$group = ($this->user_id and !$this->user()->no_results) ? $this->user()->group() : new Group(Config::current()->guest_group) ;
 
 			if (isset($options["filter"]) and !$options["filter"])
 				return;
@@ -216,7 +216,7 @@
 
 			# Can they edit their own comments, and do they have any?
 			if ($visitor->group()->can("edit_own_comment") and
-			    self::find(array("where" => "`__comments`.`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
+			    self::find(array("where" => "`__comments`.`user_id` = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
 				return true;
 
 			return false;
@@ -235,7 +235,7 @@
 
 			# Can they delete their own comments, and do they have any?
 			if ($visitor->group()->can("delete_own_comment") and
-			    self::find(array("where" => "`__comments`.`user_id` = :user_id", "params" => array(":user_id" => $visitor->id))))
+			    self::find(array("where" => "`__comments`.`user_id` = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
 				return true;
 
 			return false;

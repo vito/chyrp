@@ -29,7 +29,7 @@
 	foreach ($comments as $comment):
 		$trigger->call("rss_comment", $comment->id);
 
-		$group = ($comment->user_id) ? $comment->user()->group() : new Group(Config::current()->guest_group) ;
+		$group = ($comment->user_id and !$comment->user()->no_results) ? $comment->user()->group() : new Group(Config::current()->guest_group) ;
 		if (($comment->status != "pingback" and $comment->status != "trackback") and !$group->can("code_in_comments"))
 			$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
 

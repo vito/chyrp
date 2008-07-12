@@ -63,7 +63,7 @@
 		 * See Also:
 		 *     <update>
 		 */
-		static function add($login, $password, $email, $full_name = '', $website = '', $group_id = null) {
+		static function add($login, $password, $email, $full_name = "", $website = "", $joined_at = null, $group_id = null) {
 			$config = Config::current();
 			$sql = SQL::current();
 			$sql->insert("users",
@@ -82,7 +82,7 @@
 			                 ":full_name" => strip_tags($full_name),
 			                 ":website" => strip_tags($website),
 			                 ":group_id" => ($group_id) ? intval($group_id) : $config->default_group,
-			                 ":joined_at" => datetime()
+			                 ":joined_at" => fallback($joined_at, datetime())
 			            ));
 
 			$user = new self($sql->latest());
@@ -109,7 +109,7 @@
 		 * See Also:
 		 *     <add>
 		 */
-		public function update($login, $password, $full_name, $email, $website, $group_id) {
+		public function update($login, $password, $email, $full_name, $website, $group_id) {
 			if ($this->no_results)
 				return false;
 
@@ -156,6 +156,30 @@
 				return false;
 
 			return new Group($this->group_id);
+		}
+
+		/**
+		 * Function: posts
+		 * Returns all the posts of the user.
+		 */
+		public function posts() {
+			if ($this->no_results)
+				return false;
+
+			return Post::find(array("where" => "__posts.user_id = :user_id",
+			                        "params" => array(":user_id" => $this->id)));
+		}
+
+		/**
+		 * Function: pages
+		 * Returns all the pages of the user.
+		 */
+		public function pages() {
+			if ($this->no_results)
+				return false;
+
+			return Page::find(array("where" => "__pages.user_id = :user_id",
+			                        "params" => array(":user_id" => $this->id)));
 		}
 
 		/**

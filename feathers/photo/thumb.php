@@ -43,6 +43,20 @@
 	$filename = str_replace("//","/",$filename);
 	$fileextension = substr($filename, strrpos($filename, ".") + 1);
 
+	if (!file_exists($filename)) {
+		$thumbnail = imagecreatetruecolor(80, 12);
+		$font = 1;
+		$string = "Image Not Found";
+		$white = imagecolorallocate ($thumbnail, 255, 255, 255);
+		$black = imagecolorallocate ($thumbnail, 0, 0, 0);
+		imagestring($thumbnail, $font, 3, 2, $string, $black);
+		imagestring($thumbnail, $font, 2, 2, $string, $white);
+		header('Content-type: image/png');
+		header('Content-Disposition: inline; filename=404.png');
+		imagepng($thumbnail);
+		exit;
+	}
+
 	list($original_width, $original_height, $type, $attr) = getimagesize($filename);
 
 	if (isset($_GET['sizex']) and (int) $_GET["sizex"] > 0) {

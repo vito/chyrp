@@ -237,9 +237,6 @@
 			$options["left_join"][] = array("table" => "tags",
 			                                "where" => "`__tags`.`post_id` = `__posts`.`id`");
 
-			$options["params"][":current_ip"] = ip2long($_SERVER['REMOTE_ADDR']);
-			$options["params"][":user_id"]    = Visitor::current()->id;
-
 			$options["group"][] = "`__posts`.`id`";
 
 			return $options;

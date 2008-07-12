@@ -171,8 +171,10 @@
 					$params[":".$test] = $equals;
 				}
 
-				$where[] = "(`__comments`.`body` LIKE :query)";
-				$params[":query"] = "%".$search."%";
+				if (!empty($search)) {
+					$where[] = "(`__comments`.`body` LIKE :query)";
+					$params[":query"] = "%".$search."%";
+				}
 			}
 
 			$admin->context["comments"] = new Paginator(Comment::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
@@ -258,6 +260,10 @@
 
 		static function delete_post($post) {
 			SQL::current()->delete("comments", "`post_id` = :id", array(":id" => $post->id));
+		}
+
+		static function delete_user($user) {
+			SQL::current()->update("comments", "`user_id` = :id", array("user_id" => 0), array(":id" => $user->id));
 		}
 
 		static function admin_comment_settings() {
@@ -355,14 +361,16 @@
 					$params[":".$test] = $equals;
 				}
 
-				$where[] = "(`__comments`.`body` LIKE :query)";
-				$params[":query"] = "%".$search."%";
+				if (!empty($search)) {
+					$where[] = "(`__comments`.`body` LIKE :query)";
+					$params[":query"] = "%".$search."%";
+				}
 			}
 
 			$visitor = Visitor::current();
 			if (!$visitor->group()->can("edit_comment", "delete_comment", true)) {
-				$where[] = "__comments.user_id = :user_id";
-				$params[":user_id"] = $visitor->id;
+				$where[] = "__comments.user_id = :visitor_id";
+				$params[":visitor_id"] = $visitor->id;
 			}
 
 			$admin->context["comments"] = new Paginator(Comment::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
@@ -480,22 +488,22 @@
 						                             array("`__comments`.`post_id` = :post_id",
 						                                   "`__comments`.`id` > :last_comment",
 						                                   "`__comments`.`status` != 'spam'",
-						                                   "`__comments`.`status` != 'denied' OR (
+						                                   "(`__comments`.`status` != 'denied' OR (
 						                                        `__comments`.`status` = 'denied' AND (
 						                                            (
 						                                                `__comments`.`author_ip` != 0 AND
 						                                                `__comments`.`author_ip` = :current_ip
 						                                            ) OR (
 						                                                `__comments`.`user_id` != 0 AND
-						                                                `__comments`.`user_id` = :user_id
+						                                                `__comments`.`user_id` = :visitor_id
 						                                            )
 						                                        )
-						                                    )"),
+						                                    ))"),
 						                             "`created_at` ASC",
 						                             array(":post_id" => $_POST['post_id'],
 						                                   ":last_comment" => $_POST['last_comment'],
 						                                   ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-						                                   ":user_id" => $visitor->id
+						                                   ":visitor_id" => $visitor->id
 						                             ));
 
 						$ids = array();
@@ -510,7 +518,9 @@
 					$comment = new Comment($_POST['comment_id']);
 					$trigger->call("show_comment", $comment);
 
-					$group = ($comment->user_id) ? $comment->user()->group() : new Group(Config::current()->guest_group) ;
+					$group = ($comment->user_id and !$comment->user()->no_results) ?
+					         $comment->user()->group() :
+					         new Group(Config::current()->guest_group) ;
 					if (($comment->status != "pingback" and !$comment->status != "trackback") and !$group->can("code_in_comments"))
 						$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
 
@@ -542,9 +552,15 @@
 			$chyrp = $entry->children("http://chyrp.net/export/1.0/");
 			if (!isset($chyrp->comment)) return;
 
+			$sql = SQL::current();
+
 			foreach ($chyrp->comment as $comment) {
 				$chyrp = $comment->children("http://chyrp.net/export/1.0/");
 				$comment = $comment->children("http://www.w3.org/2005/Atom");
+
+				$login = $comment->author->children("http://chyrp.net/export/1.0/")->login;
+				$user_id = $sql->select("users", "id", "__users.login = :login", "__users.id DESC",
+				                        array(":login" => $login))->fetchColumn();
 
 				Comment::add(unsafe($comment->content),
 				             unsafe($comment->author->name),
@@ -556,7 +572,7 @@
 				             $chyrp->signature,
 				             datetime($comment->published),
 				             $post,
-				             $comment->author->children("http://chyrp.net/export/1.0/")->attributes()->user_id,
+				             ($user_id ? $user_id : 0),
 				             ($comment->published == $comment->updated) ? "0000-00-00 00:00:00" : datetime($comment->updated));
 			}
 		}
@@ -672,22 +688,22 @@
 				                             "*", # fields
 				                             array("`__comments`.`post_id` = :post_id",
 				                                   "`__comments`.`status` != 'spam'",
-				                                   "`__comments`.`status` != 'denied' OR (
+				                                   "(`__comments`.`status` != 'denied' OR (
 				                                        `__comments`.`status` = 'denied' AND (
 				                                            (
 				                                                `__comments`.`author_ip` != 0 AND
 				                                                `__comments`.`author_ip` = :current_ip
 				                                            ) OR (
 				                                                `__comments`.`user_id` != 0 AND
-				                                                `__comments`.`user_id` = :user_id
+				                                                `__comments`.`user_id` = :visitor_id
 				                                            )
 				                                        )
-				                                    )"),
+				                                    ))"),
 				                             "`created_at` asc", # order
 				                             array(
 				                                 ":post_id" => $post->id,
 				                                 ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-				                                 ":user_id" => $visitor->id
+				                                 ":visitor_id" => $visitor->id
 				                             ));
 
 				$post->comments = array();
@@ -702,7 +718,9 @@
 					if (!in_array(when("m-d-Y", $comment->created_at), $shown_dates))
 						$shown_dates[] = when("m-d-Y", $comment->created_at);
 
-					$group = ($comment->user_id) ? $comment->user()->group() : new Group(Config::current()->guest_group) ;
+					$group = ($comment->user_id and !$comment->user()->no_results) ?
+					         $comment->user()->group() :
+					         new Group(Config::current()->guest_group) ;
 					if (($comment->status != "pingback" and $comment->status != "trackback") and !$group->can("code_in_comments"))
 						$comment->body = strip_tags($comment->body, "<".join("><", $config->allowed_comment_html).">");
 
@@ -719,20 +737,20 @@
 			$options["left_join"][] = array("table" => "comments",
 			                                "where" => array("`__comments`.`post_id` = `__posts`.`id`",
 			                                                 "`__comments`.`status` != 'spam'",
-			                                                 "`__comments`.`status` != 'denied' OR (
+			                                                 "(`__comments`.`status` != 'denied' OR (
 			                                                      `__comments`.`status` = 'denied' AND (
 			                                                          (
 			                                                              `__comments`.`author_ip` != 0 AND
 			                                                              `__comments`.`author_ip` = :current_ip
 			                                                          ) OR (
 			                                                              `__comments`.`user_id` != 0 AND
-			                                                              `__comments`.`user_id` = :user_id
+			                                                              `__comments`.`user_id` = :visitor_id
 			                                                          )
 			                                                      )
-			                                                  )"));
+			                                                  ))"));
 
 			$options["params"][":current_ip"] = ip2long($_SERVER['REMOTE_ADDR']);
-			$options["params"][":user_id"]    = Visitor::current()->id;
+			$options["params"][":visitor_id"] = Visitor::current()->id;
 
 			$options["group"][] = "`__posts`.`id`";
 
@@ -760,6 +778,7 @@
 				if (!empty($comment->author_url))
 					$atom.= "				<uri>".safe($comment->author_url)."</uri>\r";
 				$atom.= "				<email>".safe($comment->author_email)."</email>\r";
+				$atom.= "				<chyrp:login>".safe(fallback($comment->user()->login))."</chyrp:login>\r";
 				$atom.= "				<chyrp:ip>".long2ip($comment->author_ip)."</chyrp:ip>\r";
 				$atom.= "				<chyrp:agent>".safe($comment->author_agent)."</chyrp:agent>\r";
 				$atom.= "			</author>\r";
