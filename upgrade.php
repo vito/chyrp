@@ -537,12 +537,14 @@
 				color: #6B0;
 			}
 			pre.pane {
-				height: 200px;
+				height: 15em;
 				overflow-y: auto;
-				margin: 0 0 3em;
-				padding: 1em;
+				margin: -2.5em -2.5em 4em;
+				padding: 2.5em;
 				background: #333;
 				color: #fff;
+				-webkit-border-top-left-radius: 2.5em;
+				-webkit-border-top-right-radius: 2.5em;
 			}
 			span.yay { color: #0f0; }
 			span.boo { color: #f00; }
@@ -575,6 +577,9 @@
 			ul, ol {
 				margin: 1em 0 1em 2em;
 			}
+			li {
+				margin-bottom: .5em;
+			}
 			ul {
 				margin-bottom: 3em;
 			}
@@ -590,7 +595,6 @@
 		<div class="window">
 <?php if (!empty($_POST)): ?>
 			<pre class="pane"><?php echo __("Upgrading..."); ?>
-
 
 <?php
 		move_yml_yaml();
@@ -638,17 +642,9 @@
 ...done!</pre>
 			<h1 class="what_now"><?php echo __("What now?"); ?></h1>
 			<ol>
-				<li><?php echo __("Look through the above results for any failed tasks. If you see any, you can try and get help at the <a href=\"http://chyrp.net/community/\">Chyrp Community</a>."); ?></li>
-				<li>
-					<?php echo __("If you don't see any failed messages, or if they appear to be minor, you can begin the upgrade process:"); ?>
-					<ol>
-						<li><?php echo __("Back up your current installation, and copy your <code>/includes/config.yaml.php</code> and <code>/includes/database.yaml.php</code> files somewhere safe."); ?></li>
-						<li><?php echo __("Overwrite your current installation with the new files. Be careful of what you're overwriting &ndash; some systems will replace directories instead of merging them."); ?></li>
-						<li><?php echo __("Restore your <code>config.yaml.php</code> and <code>database.yaml.php</code>."); ?></li>
-					</ol>
-				</li>
-				<li><?php echo __("If any of your Modules or Feathers have updates available, check for a <code>upgrades.php</code> file in its main directory. If the file exists, run this upgrader after enabling the Module or Feather."); ?></li>
-				<li><?php echo __("When you are done, delete this file. You probably don't want other people running it."); ?></li>
+				<li><?php echo __("Look through the results up there for any failed tasks. If you see any and you can't figure out why, you can ask for help at the <a href=\"http://chyrp.net/community/\">Chyrp Community</a>."); ?></li>
+				<li><?php echo __("If any of your Modules or Feathers have new versions available for this release, check if an <code>upgrades.php</code> file exists in their main directory. If that file exists, run this upgrader again after enabling the Module or Feather and it will run the upgrade tasks."); ?></li>
+				<li><?php echo __("When you are done, you can delete this file. It doesn't pose any real threat on its own, but you should delete it anyway, just to be sure."); ?></li>
 			</ol>
 			<h1 class="tips"><?php echo __("Tips"); ?></h1>
 			<ul>

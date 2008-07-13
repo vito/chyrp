@@ -7,8 +7,7 @@ Requirements
 Chyrp will thrive on virtually any server setup, but we guarantee Chyrp to run on no less than:
 
 * PHP 5 >= 5.1.0
-* [PDO and PDO\_MYSQL](http://www.php.net/manual/en/ref.pdo-mysql.php) -OR- [PDO and PDO\_SQLITE](http://www.php.net/manual/en/ref.pdo-sqlite.php)
-* DateTime installed (PHP 5.1.x marks it as experimental and you need to enable it, but 5.2.x should have it by default.)
+* DateTime installed (PHP 5.1.x marks it as experimental and you need to enable it, but 5.2.x has it by default.)
 * MySQL 4.1 -OR- SQLite 3
 * Apache 1.3.3
 
@@ -18,29 +17,22 @@ Installation
 ============
 Installing Chyrp is easier than you expect. You can do it in four steps:
 
-1. If using MySQL, Create a MySQL database with a username and password.
+1. If using MySQL, create a MySQL database with a username and password.
 2. Download, unzip, and upload.
 3. Open your web browser and navigate to where you uploaded Chyrp.
-4. Follow through the installer.
+4. Follow through the installer at [index.php]().
 
-That's it! Chyrp will be up and running and ready to do your bidding.
+That's it! Chyrp will be up and running and ready for you to use.
 
 Upgrading
 =========
-Keeping Chyrp up to date is important to make sure that your blog is as safe as possible.
+Keeping Chyrp up to date is important to make sure that your blog is as safe and as awesome as possible.
 
 1. Download the latest version of Chyrp from [http://chyrp.net/](http://chyrp.net/).
-2. Overwrite your current Chyrp installation files (be sure to back up `/themes`, `/modules`, and `/feathers`) with the new ones.
-3. Upgrade by navigating to [upgrade.php]().
-4. Restore any backups you made.
-
-Upgrading from 1.1.x
-====================
-Upgrading from 1.1.x is only available for the first 2.0 release.
-
-1. Overwrite your old upgrade.php with the one included in the 2.0 package.
-2. Upgrade by navigating to [upgrade.php]().
-3. Follow its directions.
+2. Copy `/includes/config.yaml.php` and `/includes/database.yaml.php` to somewhere safe.
+3. Overwrite your current Chyrp installation files with the new ones.
+4. Put both .yaml.php files back in the /includes/ directory.
+5. Upgrade by navigating to [upgrade.php](), and restore any backups.
 
 Extensions
 ==========
@@ -57,7 +49,7 @@ Feathers add new *post types* to Chyrp. Post types determine what kind of media 
 2. Upload the feather to the `feathers/` folder.
 3. Open your web browser and navigate to your Chyrp administration panel.
 4. Click on the *Extend* tab, and then the *Feathers* sub tab.
-5. Click the *enable* link beside the feather you just uploaded.
+5. Drag it from the Disabled pane to the Enabled pane.
 
 You can now use the feather by navigating to the Write tab and choosing the feather you uploaded.
 
@@ -65,11 +57,11 @@ You can now use the feather by navigating to the Write tab and choosing the feat
 Installing modules is quick, easy, and painless with Chyrp. They add extra functionality to Chyrp.
 
 1. Download and unzip the module.
-1. Upload the module to the `modules/` folder.
-1. Open your web browser and navigate to your Chyrp administration panel.
-1. Click on the *Extend* tab and click the *enable* link beside the module you just uploaded.
+2. Upload the module to the `modules/` folder.
+3. Open your web browser and navigate to your Chyrp administration panel.
+4. Click on the *Extend* tab and drag it from the Disabled pane to the Enabled pane.
 
-The module is now installed and is ready for action. Keep in mind that some modules may conflict with each other if they do similar tasks.
+The module is now installed and is ready for action. Keep in mind that some modules may conflict with each other if they do similar tasks. They are marked with red lines between them on the Modules page.
 
 ## Themes
 Chyrp makes applying themes to your blog easy. With a single click you can change the look of your blog.
@@ -89,5 +81,3 @@ Chyrp is multilingual! If your first language isn't English, you can apply a new
 1. Upload the `.mo` file to the `includes/locale/` folder. You don't need anything else for the translation to work.
 1. Open your web browser and navigate to your Chyrp administration panel.
 1. Click on the *Settings* tab, and change the *Language* option to the language you just uploaded.
-
-Chyrp is in need of people like you to help localize Chyrp to your language.
