@@ -156,9 +156,8 @@
 
 			# Permissions table
 			$sql->query("CREATE TABLE IF NOT EXISTS `__permissions` (
-			                 `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
-			                 `name` VARCHAR(100) DEFAULT '',
-			                 UNIQUE (`name`)
+			                 `id` VARCHAR(100) DEFAULT '' PRIMARY KEY,
+			                 `name` VARCHAR(100) DEFAULT ''
 			             ) DEFAULT CHARSET=utf8");
 
 			# Sessions table
@@ -171,37 +170,66 @@
 			                 PRIMARY KEY (`id`)
 			             ) DEFAULT CHARSET=utf8");
 
-			$permissions = array("view_site",
-			                     "view_private",
-			                     "view_draft",
-			                     "view_own_draft",
-			                     "add_post",
-			                     "add_draft",
-			                     "edit_post",
-			                     "edit_draft",
-			                     "edit_own_post",
-			                     "edit_own_draft",
-			                     "delete_post",
-			                     "delete_draft",
-			                     "delete_own_post",
-			                     "delete_own_draft",
-			                     "add_page",
-			                     "edit_page",
-			                     "delete_page",
-			                     "add_user",
-			                     "edit_user",
-			                     "delete_user",
-			                     "add_group",
-			                     "edit_group",
-			                     "delete_group",
-			                     "change_settings",
-			                     "toggle_extensions");
+			# This is to let the gettext scanner do its scanning. We don't want translated strings in the database.
+			/* $translations = array(__("Change Settings"),
+			                         __("Toggle Extensions"),
+			                         __("View Site"),
+			                         __("View Private Posts"),
+			                         __("View Drafts"),
+			                         __("Edit Own Drafts"),
+			                         __("Add Posts"),
+			                         __("Add Drafts"),
+			                         __("Edit Posts"),
+			                         __("Edit Drafts"),
+			                         __("Edit Own Posts"),
+			                         __("Edit Own Drafts"),
+			                         __("Delete Posts"),
+			                         __("Delete Drafts"),
+			                         __("Delete Own Posts"),
+			                         __("Delete Own Drafts"),
+			                         __("Add Pages"),
+			                         __("Edit Pages"),
+			                         __("Delete Pages"),
+			                         __("Add Users"),
+			                         __("Edit Users"),
+			                         __("Delete Users"),
+			                         __("Add Groups"),
+			                         __("Edit Groups"),
+			                         __("Delete Groups")); */
 
-			foreach ($permissions as $permission)
-				$sql->replace("permissions", array("name" => ":permission"), array(":permission" => $permission));
+			$permissions = array("change_settings" => "Change Settings",
+			                     "toggle_extensions" => "Toggle Extensions",
+			                     "view_site" => "View Site",
+			                     "view_private" => "View Private Posts",
+			                     "view_draft" => "View Drafts",
+			                     "view_own_draft" => "Edit Own Drafts",
+			                     "add_post" => "Add Posts",
+			                     "add_draft" => "Add Drafts",
+			                     "edit_post" => "Edit Posts",
+			                     "edit_draft" => "Edit Drafts",
+			                     "edit_own_post" => "Edit Own Posts",
+			                     "edit_own_draft" => "Edit Own Drafts",
+			                     "delete_post" => "Delete Posts",
+			                     "delete_draft" => "Delete Drafts",
+			                     "delete_own_post" => "Delete Own Posts",
+			                     "delete_own_draft" => "Delete Own Drafts",
+			                     "add_page" => "Add Pages",
+			                     "edit_page" => "Edit Pages",
+			                     "delete_page" => "Delete Pages",
+			                     "add_user" => "Add Users",
+			                     "edit_user" => "Edit Users",
+			                     "delete_user" => "Delete Users",
+			                     "add_group" => "Add Groups",
+			                     "edit_group" => "Edit Groups",
+			                     "delete_group" => "Delete Groups");
+
+			foreach ($permissions as $permission => $name)
+				$sql->replace("permissions",
+				              array("id" => ":permission", "name" => ":name"),
+				              array(":permission" => $permission, ":name" => $name));
 
 			$groups = array(
-				"admin" => Horde_Yaml::dump($permissions),
+				"admin" => Horde_Yaml::dump(array_keys($permissions)),
 				"member" => Horde_Yaml::dump(array("view_site")),
 				"friend" => Horde_Yaml::dump(array("view_site", "view_private")),
 				"banned" => Horde_Yaml::dump(array()),

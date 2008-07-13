@@ -48,7 +48,7 @@
 
 		/**
 		 * Function: drafts
-		 * Grabs the posts for viewing the Drafts lists. Shows an error if the user lacks permissions.
+		 * Grabs the posts for viewing the Drafts lists.
 		 */
 		public function drafts() {
 			$visitor = Visitor::current();

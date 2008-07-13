@@ -119,16 +119,17 @@
 		 * Adds a permission to the Groups table.
 		 *
 		 * Parameters:
-		 *     $name - The name of the permission to add. The naming scheme is simple; for example,
-		 *             "code_in_comments" gets converted to "Code In Comments" at the group editing page.
+		 *     $id - The ID for the permission, like "can_do_something".
+		 *     $name - The name for the permission, like "Can Do Something". Defaults to the camelized ID while keeping spaces.
 		 */
-		static function add_permission($name) {
+		static function add_permission($id, $name = null) {
 			$sql = SQL::current();
 
-			if ($sql->count("permissions", "`name` = :name", array(":name" => $name)))
+			if ($sql->count("permissions", "id = :id", array(":id" => $id)))
 				return; # Permission already exists.
 
-			$sql->insert("permissions", array("name" => ":name"), array(":name" => $name));
+			fallback($name, camelize($id, true));
+			$sql->insert("permissions", array("id" => ":id", "name" => ":name"), array(":id" => $id, ":name" => $name));
 		}
 
 		/**
@@ -136,10 +137,10 @@
 		 * Removes a permission from the Groups table.
 		 *
 		 * Parameters:
-		 *     $name - The permission name to remove.
+		 *     $id - The ID of the permission to remove.
 		 */
-		static function remove_permission($name) {
-			SQL::current()->delete("permissions", "`name` = :name", array(":name" => $name));
+		static function remove_permission($id) {
+			SQL::current()->delete("permissions", "id = :id", array(":id" => $id));
 		}
 
 		/**

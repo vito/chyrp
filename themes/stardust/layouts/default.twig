@@ -44,8 +44,9 @@ ${ trigger.call("head") }
 {% endif %}
 			</div>
 		</div>
+
 		<div id="wrapper">
-			{% include "content/sidebar.twig" %}
+{% include "content/sidebar.twig" %}
 			<div id="content">
 {% for type, messages in flash.all | items %}
 				{% for message in messages %}

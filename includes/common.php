@@ -80,7 +80,6 @@
 	require_once INCLUDES_DIR."/class/Query.php"; # SQL query handler
 	require_once INCLUDES_DIR."/class/QueryBuilder.php"; # SQL query builder
 	require_once INCLUDES_DIR."/class/Timestamp.php"; # A smarter DateTime class
-	require_once INCLUDES_DIR."/class/Flash.php"; # Message handler
 	require_once INCLUDES_DIR."/lib/Yaml.php"; # YAML parser
 
 	require_once INCLUDES_DIR."/class/Config.php"; # Configuration
@@ -146,6 +145,11 @@
 
 	if (!JAVASCRIPT)
 		session();
+
+	# File: Flash
+	# See Also:
+	#     <Flash>
+	require_once INCLUDES_DIR."/class/Flash.php";
 
 	# File: Theme
 	# See Also:

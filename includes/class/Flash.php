@@ -12,13 +12,24 @@
 
 		/**
 		 * Function: __construct
-		 * Prepare the structure of the "flash" session value.
+		 * Removes empty notification variables from the session.
 		 */
 		private function __construct() {
-			fallback($_SESSION['flash'], array());
-			fallback($_SESSION['flash']['notices'], array());
-			fallback($_SESSION['flash']['warnings'], array());
-			fallback($_SESSION['flash']['messages'], array());
+			foreach (array("messages", "notices", "warnings") as $type)
+				if (isset($_SESSION[$type]) and empty($_SESSION[$type]))
+					unset($_SESSION[$type]);
+		}
+
+		/**
+		 * Function: prepare
+		 * Prepare the structure of the "flash" session value.
+		 */
+		static function prepare($type) {
+			if (!isset($_SESSION))
+				$_SESSION = array();
+
+			if (!isset($_SESSION[$type]))
+				$_SESSION[$type] = array();
 		}
 
 		/**
@@ -30,7 +41,9 @@
 		 *     $redirect_to - URL to redirect to after the message is stored.
 		 */
 		static function message($message, $redirect_to = null) {
-			$_SESSION['flash']['messages'][] = Trigger::current()->filter($message, "flash_message");
+			self::prepare("messages");
+
+			$_SESSION['messages'][] = Trigger::current()->filter($message, "flash_message");
 
 			if (isset($redirect_to))
 				redirect($redirect_to);
@@ -45,7 +58,9 @@
 		 *     $redirect_to - URL to redirect to after the message is stored.
 		 */
 		static function notice($message, $redirect_to = null) {
-			$_SESSION['flash']['notices'][] = Trigger::current()->filter($message, "flash_notice_message");
+			self::prepare("notices");
+
+			$_SESSION['notices'][] = Trigger::current()->filter($message, "flash_notice_message");
 
 			if (isset($redirect_to))
 				redirect($redirect_to);
@@ -60,7 +75,9 @@
 		 *     $redirect_to - URL to redirect to after the message is stored.
 		 */
 		static function warning($message, $redirect_to = null) {
-			$_SESSION['flash']['warnings'][] = Trigger::current()->filter($message, "flash_warning_message");
+			self::prepare("warnings");
+
+			$_SESSION['warnings'][] = Trigger::current()->filter($message, "flash_warning_message");
 
 			if (isset($redirect_to))
 				redirect($redirect_to);
@@ -68,50 +85,35 @@
 
 		/**
 		 * Function: messages
-		 * Sets <Flash.$messages> to $_SESSION['flash']['messages'] and destroys the session value.
+		 * Sets <Flash.$messages> to $_SESSION['messages'] and destroys the session value.
 		 *
 		 * Returns:
 		 *     <Flash.$messages>
 		 */
 		public function messages() {
-			if (isset($_SESSION['flash']['messages'])) {
-				$this->messages = $_SESSION['flash']['messages'];
-				$_SESSION['flash']['messages'] = array();
-			}
-
-			return $this->messages;
+			return $this->serve("messages");
 		}
 
 		/**
 		 * Function: notices
-		 * Sets <Flash.$notices> to $_SESSION['flash']['notices'] and destroys the session value.
+		 * Sets <Flash.$notices> to $_SESSION['notices'] and destroys the session value.
 		 *
 		 * Returns:
 		 *     <Flash.$notices>
 		 */
 		public function notices() {
-			if (isset($_SESSION['flash']['notices'])) {
-				$this->notices = $_SESSION['flash']['notices'];
-				$_SESSION['flash']['notices'] = array();
-			}
-
-			return $this->notices;
+			return $this->serve("notices");
 		}
 
 		/**
 		 * Function: warnings
-		 * Sets <Flash.$warnings> to $_SESSION['flash']['warnings'] and destroys the session value.
+		 * Sets <Flash.$warnings> to $_SESSION['warnings'] and destroys the session value.
 		 *
 		 * Returns:
 		 *     <Flash.$warnings>
 		 */
 		public function warnings() {
-			if (isset($_SESSION['flash']['warnings'])) {
-				$this->warnings = $_SESSION['flash']['warnings'];
-				$_SESSION['flash']['warnings'] = array();
-			}
-
-			return $this->warnings;
+			return $this->serve("warnings");
 		}
 
 		/**
@@ -122,12 +124,22 @@
 		 *     <Flash.$all>
 		 */
 		public function all() {
-			if (isset($_SESSION['flash'])) {
-				$this->all = $_SESSION['flash'];
-				$_SESSION['flash'] = array("notices" => array(), "warnings" => array(), "messages" => array());
+			return array("messages" => $this->messages(),
+			             "notices" => $this->notices(),
+			             "warnings" => $this->warnings());
+		}
+
+		/**
+		 * Function: serve
+		 * Serves a message of type $type and destroys it from the session.
+		 */
+		public function serve($type) {
+			if (isset($_SESSION[$type])) {
+				$this->$type = $_SESSION[$type];
+				$_SESSION[$type] = array();
 			}
 
-			return $this->all;
+			return $this->$type;
 		}
 
 		/**
@@ -139,10 +151,10 @@
 		 */
 		static function exists($type = null) {
 			if (isset($type))
-				return !empty($_SESSION['flash'][pluralize($type)]);
+				return !empty($_SESSION[pluralize($type)]);
 			else
-				foreach ($_SESSION['flash'] as $flash)
-					if (!empty($flash))
+				foreach (array("messages", "notices", "warnings") as $type)
+					if (!empty($_SESSION[$type]))
 						return true;
 		}
 

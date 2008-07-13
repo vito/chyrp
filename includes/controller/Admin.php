@@ -34,7 +34,7 @@
 
 		/**
 		 * Function: add_post
-		 * Adds a post when the form is submitted. Shows an error if the user lacks permissions.
+		 * Adds a post when the form is submitted.
 		 */
 		public function add_post() {
 			$visitor = Visitor::current();
@@ -70,7 +70,7 @@
 
 		/**
 		 * Function: update_post
-		 * Updates a post when the form is submitted. Shows an error if the user lacks permissions.
+		 * Updates a post when the form is submitted.
 		 */
 		public function update_post() {
 			$post = new Post($_POST['id']);
@@ -197,7 +197,7 @@
 
 		/**
 		 * Function: add_page
-		 * Adds a page when the form is submitted. Shows an error if the user lacks permissions.
+		 * Adds a page when the form is submitted.
 		 */
 		public function add_page() {
 			if (!Visitor::current()->group()->can("add_page"))
@@ -232,7 +232,7 @@
 
 		/**
 		 * Function: update_page
-		 * Updates a page when the form is submitted. Shows an error if the user lacks permissions.
+		 * Updates a page when the form is submitted.
 		 */
 		public function update_page() {
 			if (!Visitor::current()->group()->can("edit_page"))
@@ -370,7 +370,7 @@
 
 		/**
 		 * Function: add_user
-		 * Add a user when the form is submitted. Shows an error if the user lacks permissions.
+		 * Add a user when the form is submitted.
 		 */
 		public function add_user() {
 			if (!Visitor::current()->group()->can("add_user"))
@@ -564,7 +564,7 @@
 
 		/**
 		 * Function: add_group
-		 * Adds a group when the form is submitted. Shows an error if the user lacks permissions.
+		 * Adds a group when the form is submitted.
 		 */
 		public function add_group() {
 			if (!Visitor::current()->group()->can("add_group"))
@@ -592,7 +592,7 @@
 
 		/**
 		 * Function: update_group
-		 * Updates a group when the form is submitted. Shows an error if the user lacks permissions.
+		 * Updates a group when the form is submitted.
 		 */
 		public function update_group() {
 			if (!Visitor::current()->group()->can("edit_group"))
@@ -885,8 +885,8 @@
 				$groups_yaml = array("groups" => array(),
 				                     "permissions" => array());
 
-				foreach (SQL::current()->select("permissions", "name")->fetchAll() as $permission)
-					$groups_yaml["permissions"][] = $permission["name"];
+				foreach (SQL::current()->select("permissions")->fetchAll() as $permission)
+					$groups_yaml["permissions"][$permission["id"]] = $permission["name"];
 
 				foreach ($groups as $index => $group)
 					$groups_yaml["groups"][$group->name] = $group->permissions;
@@ -1005,9 +1005,11 @@
 					if (!$sql->count("groups", "__groups.name = :name", array(":name" => $name)))
 						$trigger->call("import_chyrp_group", Group::add($name, (array) $permissions));
 
-				foreach ($import["permissions"] as $permission)
-					if (!$sql->count("permissions", "__permissions.name = :name", array(":name" => $permission)))
-						$sql->insert("permissions", array("name" => ":name"), array(":name" => $permission));
+				foreach ($import["permissions"] as $id => $name)
+					if (!$sql->count("permissions", "__permissions.id = :id", array(":id" => $id)))
+						$sql->insert("permissions",
+						             array("id" => ":id", "name" => ":name"),
+						             array(":id" => $id, ":name" => $name));
 			}
 
 			if (isset($_FILES['users_file']) and $_FILES['users_file']['error'] == 0) {
@@ -1719,7 +1721,7 @@
 
 		/**
 		 * Function: change_theme
-		 * Changes the theme. Shows an error if the user lacks permissions.
+		 * Changes the theme.
 		 */
 		public function change_theme() {
 			if (!Visitor::current()->group()->can("change_settings"))

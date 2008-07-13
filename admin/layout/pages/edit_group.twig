@@ -18,8 +18,8 @@
 					<hr class="js_enabled" />
 					{% for permission in permissions %}
 					<p>
-						<label for="permission_$permission.name">${ permission.name | camelize(true) }</label>
-						<input class="checkbox" type="checkbox" name="permissions[$permission.name]" id="permission_$permission.name"{% if group.can(permission.name) %} checked="checked"{% endif %} />
+						<label for="permission_$permission.id">${ permission.name | translate }</label>
+						<input class="checkbox" type="checkbox" name="permissions[$permission.id]" id="permission_$permission.id"{% if group.can(permission.id) %} checked="checked"{% endif %} />
 					</p>
 					{% endfor %}
 					<br />
