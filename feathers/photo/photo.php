@@ -27,14 +27,14 @@
 		public function swfupload($post = null) {
 			if (isset($post) and $post->feather != "photo" or
 			    isset($_GET['feather']) and $_GET['feather'] != "photo") return;
-			Trigger::current()->call("prepare_swfupload", "photo", "*.jpg;*.jpeg;*.png;*.gif;*.tiff;*.bmp");
+			Trigger::current()->call("prepare_swfupload", "photo", "*.jpg;*.jpeg;*.png;*.gif;*.bmp");
 		}
 		public function submit() {
 			if (!isset($_POST['filename'])) {
 				if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0)
-					$filename = upload($_FILES['photo'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp"));
+					$filename = upload($_FILES['photo'], array("jpg", "jpeg", "png", "gif", "bmp"));
 				elseif (!empty($_POST['from_url']))
-					$filename = upload_from_url($_POST['from_url'], array("jpg", "jpeg", "png", "gif", "tiff", "bmp"));
+					$filename = upload_from_url($_POST['from_url'], array("jpg", "jpeg", "png", "gif", "bmp"));
 				else
 					error(__("Error"), __("Couldn't upload photo."));
 			} else
@@ -86,7 +86,7 @@
 		public function image_tag_for($post, $max_width = 500, $max_height = null, $more_args = "quality=100") {
 			$filename = $post->filename;
 			$config = Config::current();
-			return '<a href="'.$config->chyrp_url.$config->uploads_path.$filename.'"><img src="'.$config->chyrp_url.'/feathers/photo/thumb.php?file=../..'.$config->uploads_path.urlencode($filename).'&amp;sizex='.$max_width.'&amp;sizey='.$max_height.'&amp;'.$more_args.'" alt="'.fallback($post->alt_text, $filename, true).'" /></a>';
+			return '<a href="'.$config->chyrp_url.$config->uploads_path.$filename.'"><img src="'.$config->chyrp_url.'/feathers/photo/thumb.php?file=../..'.$config->uploads_path.urlencode($filename).'&amp;max_width='.$max_width.'&amp;max_height='.$max_height.'&amp;'.$more_args.'" alt="'.fallback($post->alt_text, $filename, true).'" /></a>';
 		}
 		public function alt_text_field($post = null) {
 			if (isset($post) and $post->feather != "photo") return;
