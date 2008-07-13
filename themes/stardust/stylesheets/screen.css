@@ -1,9 +1,3 @@
-<?php
-	define('JAVASCRIPT', true);
-	error_reporting(0);
-	header("Content-Type: text/css");
-?>
-/* <style> */
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td { margin: 0; padding: 0; }
 table { border-collapse: collapse; border-spacing: 0; }
 fieldset,img { border: 0; }
@@ -45,7 +39,7 @@ a:hover {
 
 h1,
 h2 {
-	letter-spacing: -.1em;
+	letter-spacing: -.01em;
 	margin-bottom: .5em;
 }
 h1 {
@@ -121,7 +115,6 @@ a.logout {
 label {
 	color: #777;
 	display: block;
-	letter-spacing: -.1em;
 	font: bold 1.4em "palatino linotype", palatino, georgia, "times new roman", times, serif;
 	font-weight: bold;
 	padding: 0 0 0.2em 0;
@@ -146,11 +139,7 @@ input[type="password"] {
 	width: 20em;
 }
 textarea.wide {
-<?php if (substr_count($_SERVER['HTTP_USER_AGENT'], "Safari")): ?>
-	width: 48em;
-<?php else: ?>
-	width: 43.5em;
-<?php endif; ?>
+	width: 432px;
 }
 input.big {
 	font-size: 1.5em;
@@ -229,13 +218,8 @@ div#sidebar input#search {
 	background-color: #fff;
 	border: 0;
 	font-size: .9em;
-<?php if (substr_count($_SERVER['HTTP_USER_AGENT'], "Safari")): ?>
-	margin: -.5em auto 0;
-	width: 17em;
-<?php else: ?>
-	margin: -.4em auto 0;
-	width: 15em;
-<?php endif; ?>
+	margin: -4px auto 0;
+	width: 152px;
 	padding: .5em .75em;
 	display: block;
 }
@@ -527,6 +511,7 @@ div.page span.controls {
 	color: #ddd;
 	padding: 1em;
 	background: #111;
+	position: relative;
 }
 .inline_edit input[type="text"],
 .inline_edit textarea {
@@ -534,11 +519,15 @@ div.page span.controls {
 	border: none;
 	color: #eee;
 	padding: .4em;
-<?php if (substr_count($_SERVER['HTTP_USER_AGENT'], "Safari")): ?>
-	width: 45.875em;
-<?php else: ?>
-	width: 41.4em;
-<?php endif; ?>
+	width: 412px;
+}
+::selection {
+	background: #000 !important;
+	color: #fff;
+}
+::-moz-selection {
+	background: #000 !important;
+	color: #fff;
 }
 .inline_edit input[type="file"] {
 	color: #eee;
