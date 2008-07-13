@@ -1,13 +1,13 @@
 <?php
 	function update_tags_structure() {
-		if (query("SELECT `tags` FROM `__tags`")) return;
+		if (SQL::query("SELECT `tags` FROM `__tags`")) return;
 
 		$tags = array();
-		$get_tags = query("SELECT * FROM `__tags`");
+		$get_tags = SQL::query("SELECT * FROM `__tags`");
 		echo __("Backing up tags...").test($get_tags);
 		if (!$get_tags) return;
 
-		while ($tag = fetch_object($get_tags)) {
+		while ($tag = SQL::fetch($get_tags)) {
 			if (!isset($tags[$tag->post_id]))
 				$tags[$tag->post_id] = array("normal" => array(), "clean" => array());
 
@@ -16,12 +16,12 @@
 		}
 
 		# Drop the old table.
-		$delete_tags = query("DROP TABLE `__tags`");
+		$delete_tags = SQL::query("DROP TABLE `__tags`");
 		echo __("Dropping old tags table...", "tags").test($delete_tags);
 		if (!$delete_tags) return;
 
 		# Create the new table.
-		$tags_table = query("CREATE TABLE IF NOT EXISTS `__tags` (
+		$tags_table = SQL::query("CREATE TABLE IF NOT EXISTS `__tags` (
 				                 `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
 				                 `tags` VARCHAR(250) DEFAULT '',
 				                 `clean` VARCHAR(250) DEFAULT '',
@@ -32,10 +32,10 @@
 
 		foreach ($tags as $post => $tag)
 			echo _f("Inserting tags for post #%s...", array($post), "tags").
-			     test(query("INSERT INTO `__tags` SET
-				             `tags` = '".fix(implode(",", $tag["normal"]))."',
-				             `clean` = '".fix(implode(",", $tag["clean"]))."',
-				             `post_id` = '".fix($post)."'"));
+			     test(SQL::query("INSERT INTO `__tags` SET
+				             `tags` = '".SQL::fix(implode(",", $tag["normal"]))."',
+				             `clean` = '".SQL::fix(implode(",", $tag["clean"]))."',
+				             `post_id` = '".SQL::fix($post)."'"));
 	}
 
 	update_tags_structure();

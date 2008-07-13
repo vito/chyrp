@@ -29,33 +29,129 @@
 		}
 	}
 
-	function get_db($setting) {
-		$config = file_get_contents(DATABASE_FILE);
-		$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
+	class Config {
+		static function get($setting) {
+			$config = file_get_contents(CONFIG_FILE);
+			$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
 
-		$yaml = Yaml::load($config);
+			$yaml = Yaml::load($config);
 
-		return (isset($yaml[$setting])) ? $yaml[$setting] : false ;
+			return (isset($yaml[$setting])) ? $yaml[$setting] : false ;
+		}
+
+		static function set($setting, $value, $message = null) {
+			if (self::get($setting) == $value) return;
+
+			if (!isset($message))
+				$message = _f("Setting %s setting to %s...", array($setting, print_r($value, true)));
+
+			$config = file_get_contents(CONFIG_FILE);
+			$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
+
+			$yaml = Yaml::load($config);
+
+			$yaml[$setting] = $value;
+
+			$protection = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
+
+			$dump = $protection.Yaml::dump($yaml);
+
+			echo $message.test(@file_put_contents(CONFIG_FILE, $dump));
+		}
+
+		static function check($setting) {
+			$config = file_get_contents(CONFIG_FILE);
+			$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
+
+			$yaml = Yaml::load($config);
+
+			return (isset($yaml[$setting]));
+		}
+
+		static function fallback($setting, $value) {
+			if (!self::check($setting))
+				echo self::set($setting, $value, _f("Adding %s setting...", array($setting)));
+		}
+
+		static function remove($setting) {
+			if (!self::check($setting)) return;
+
+			$config = file_get_contents(CONFIG_FILE);
+			$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
+
+			$yaml = Yaml::load($config);
+
+			unset($yaml[$setting]);
+
+			$protection = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
+
+			$dump = $protection.Yaml::dump($yaml);
+
+			echo _f("Removing %s setting...", array($setting)).test(@file_put_contents(CONFIG_FILE, $dump));
+		}
 	}
 
-	function set_db($setting, $value, $message = null) {
-		if (get_db($setting) == $value) return;
+	class SQL {
+		static $sql = null;
 
-		if (!isset($message))
-			$message = _f("Setting %s database setting to %s...", array($setting, print_r($value, true)));
+		static function connect() {
+			define('SQL_ADAPTER', (!self::get("adapter")) ? "mysql" : self::get("adapter"));
 
-		$config = file_get_contents(DATABASE_FILE);
-		$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
+			if (SQL_ADAPTER == "mysql") {
+				self::$sql = mysql_connect(self::get("host"), self::get("username"), self::get("password"));
+				mysql_select_db(self::get("database"), self::$sql);
+			} else
+				self::$sql = new SQLiteDatabase(self::get("database"));
+		}
 
-		$yaml = Yaml::load($config);
+		static function get($setting) {
+			$config = file_get_contents(DATABASE_FILE);
+			$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
 
-		$yaml[$setting] = $value;
+			$yaml = Yaml::load($config);
 
-		$protection = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
+			return (isset($yaml[$setting])) ? $yaml[$setting] : false ;
+		}
 
-		$dump = $protection.Yaml::dump($yaml);
+		static function set($setting, $value, $message = null) {
+			if (self::get($setting) == $value) return;
 
-		echo $message.test(@file_put_contents(DATABASE_FILE, $dump));
+			if (!isset($message))
+				$message = _f("Setting %s database setting to %s...", array($setting, print_r($value, true)));
+
+			$config = file_get_contents(DATABASE_FILE);
+			$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
+
+			$yaml = Yaml::load($config);
+
+			$yaml[$setting] = $value;
+
+			$protection = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
+
+			$dump = $protection.Yaml::dump($yaml);
+
+			echo $message.test(@file_put_contents(DATABASE_FILE, $dump));
+		}
+
+		static function fix($string) {
+			if (SQL_ADAPTER == "mysql")
+				return mysql_real_escape_string($string);
+			else
+				return sqlite_escape_string($string);
+		}
+
+		static function query($query) {
+			$query = str_replace("__", SQL::get("prefix"), $query);
+			$query = str_replace("`", "", $query);
+			return (SQL_ADAPTER == "mysql") ? mysql_query($query, self::$sql) : self::$sql->query($query) ;
+		}
+
+		static function fetch($query) {
+			if (SQL_ADAPTER == "mysql")
+				return mysql_fetch_object($query);
+			else
+				return $query->fetchObject();
+		}
 	}
 
 	/**
@@ -117,13 +213,7 @@
 		return call_user_func_array("sprintf", $args);
 	}
 
-	define('SQL_ADAPTER', (!get_db("adapter")) ? "mysql" : get_db("adapter"));
-
-	if (SQL_ADAPTER == "mysql") {
-		$sql = mysql_connect(get_db("host"), get_db("username"), get_db("password"));
-		mysql_select_db(get_db("database"), $sql);
-	} else
-		$sql = new SQLiteDatabase(get_db("database"));
+	load_translator("chyrp", INCLUDES_DIR."/locale/".Config::get("locale").".mo");
 
 	function test($try) {
 		if ($try)
@@ -132,88 +222,7 @@
 			return " <span class=\"boo\">".__("failed!")."</span>\n";
 	}
 
-	function get_config($setting) {
-		$config = file_get_contents(CONFIG_FILE);
-		$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
-
-		$yaml = Yaml::load($config);
-
-		return (isset($yaml[$setting])) ? $yaml[$setting] : false ;
-	}
-
-	load_translator("chyrp", INCLUDES_DIR."/locale/".get_config("locale").".mo");
-
-	function set_config($setting, $value, $message = null) {
-		if (get_config($setting) == $value) return;
-
-		if (!isset($message))
-			$message = _f("Setting %s setting to %s...", array($setting, print_r($value, true)));
-
-		$config = file_get_contents(CONFIG_FILE);
-		$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
-
-		$yaml = Yaml::load($config);
-
-		$yaml[$setting] = $value;
-
-		$protection = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
-
-		$dump = $protection.Yaml::dump($yaml);
-
-		echo $message.test(@file_put_contents(CONFIG_FILE, $dump));
-	}
-
-	function check_config($setting) {
-		$config = file_get_contents(CONFIG_FILE);
-		$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
-
-		$yaml = Yaml::load($config);
-
-		return (isset($yaml[$setting]));
-	}
-
-	function add_config_if_not_exists($setting, $value) {
-		if (!check_config($setting))
-			echo set_config($setting, $value, _f("Adding %s setting...", array($setting)));
-	}
-
-	function remove_config($setting) {
-		if (!check_config($setting)) return;
-
-		$config = file_get_contents(CONFIG_FILE);
-		$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
-
-		$yaml = Yaml::load($config);
-
-		unset($yaml[$setting]);
-
-		$protection = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
-
-		$dump = $protection.Yaml::dump($yaml);
-
-		echo _f("Removing %s setting...", array($setting)).test(@file_put_contents(CONFIG_FILE, $dump));
-	}
-
-	function fix($string) {
-		if (SQL_ADAPTER == "mysql")
-			return mysql_real_escape_string($string);
-		else
-			return sqlite_escape_string($string);
-	}
-
-	function query($query) {
-		global $sql;
-		$query = str_replace("__", get_db("prefix"), $query);
-		$query = str_replace("`", "", $query);
-		return (SQL_ADAPTER == "mysql") ? mysql_query($query, $sql) : $sql->query($query) ;
-	}
-
-	function fetch_object($query) {
-		if (SQL_ADAPTER == "mysql")
-			return mysql_fetch_object($query);
-		else
-			return $query->fetchObject();
-	}
+	SQL::connect();
 
 	# HOLY WALL OF TEXT
 	$html_entities = array("&zwnj;" => "&#8204;", "&aring;" => "&#229;", "&gt;" => "&#62;", "&yen;" => "&#165;", "&ograve;" => "&#242;", "&Chi;" => "&#935;", "&delta;" => "&#948;", "&rang;" => "&#9002;", "&sup;" => "&#8835;", "&trade;" => "&#8482;", "&Ntilde;" => "&#209;", "&xi;" => "&#958;", "&upsih;" => "&#978;", "&Yacute;" => "&#221;", "&Atilde;" => "&#195;", "&radic;" => "&#8730;", "&otimes;" => "&#8855;", "&aelig;" => "&#230;", "&oelig;" => "&#339;", "&equiv;" => "&#8801;", "&ni;" => "&#8715;", "&Psi;" => "&#936;", "&auml;" => "&#228;", "&Uuml;" => "&#220;", "&Epsilon;" => "&#917;", "&Yuml;" => "&#376;", "&lt;" => "&#60;", "&Icirc;" => "&#206;", "&shy;" => "&#173;", "&Upsilon;" => "&#933;", "&Lambda;" => "&#923;", "&yacute;" => "&#253;", "&Prime;" => "&#8243;", "&prime;" => "&#8242;", "&psi;" => "&#968;", "&Kappa;" => "&#922;", "&rsaquo;" => "&#8250;", "&Tau;" => "&#932;", "&darr;" => "&#8595;", "&ocirc;" => "&#244;", "&lrm;" => "&#8206;", "&zwj;" => "&#8205;", "&cedil;" => "&#184;", "&rlm;" => "&#8207;", "&Alpha;" => "&#913;", "&not;" => "&#172;", "&amp;" => "&#38;", "&AElig;" => "&#198;", "&oslash;" => "&#248;", "&acute;" => "&#180;", "&lceil;" => "&#8968;", "&iquest;" => "&#191;", "&uacute;" => "&#250;", "&laquo;" => "&#171;", "&dArr;" => "&#8659;", "&rdquo;" => "&#8221;", "&ge;" => "&#8805;", "&Igrave;" => "&#204;", "&nu;" => "&#957;", "&ccedil;" => "&#231;", "&lsaquo;" => "&#8249;", "&sube;" => "&#8838;", "&rarr;" => "&#8594;", "&sdot;" => "&#8901;", "&supe;" => "&#8839;", "&nbsp;" => "&#160;", "&lfloor;" => "&#8970;", "&lArr;" => "&#8656;", "&Auml;" => "&#196;", "&asymp;" => "&#8776;", "&Otilde;" => "&#213;", "&szlig;" => "&#223;", "&clubs;" => "&#9827;", "&agrave;" => "&#224;", "&Ocirc;" => "&#212;", "&ndash;" => "&#8211;", "&Theta;" => "&#920;", "&Pi;" => "&#928;", "&OElig;" => "&#338;", "&Scaron;" => "&#352;", "&frac14;" => "&#188;", "&egrave;" => "&#232;", "&sub;" => "&#8834;", "&iexcl;" => "&#161;", "&frac12;" => "&#189;", "&ordf;" => "&#170;", "&sum;" => "&#8721;", "&prop;" => "&#8733;", "&circ;" => "&#710;", "&ntilde;" => "&#241;", "&atilde;" => "&#227;", "&theta;" => "&#952;", "&prod;" => "&#8719;", "&nsub;" => "&#8836;", "&hArr;" => "&#8660;", "&rArr;" => "&#8658;", "&Oslash;" => "&#216;", "&emsp;" => "&#8195;", "&THORN;" => "&#222;", "&infin;" => "&#8734;", "&yuml;" => "&#255;", "&Mu;" => "&#924;", "&le;" => "&#8804;", "&Eacute;" => "&#201;", "&thinsp;" => "&#8201;", "&ecirc;" => "&#234;", "&bdquo;" => "&#8222;", "&Sigma;" => "&#931;", "&fnof;" => "&#402;", "&kappa;" => "&#954;", "&Aring;" => "&#197;", "&tilde;" => "&#732;", "&cup;" => "&#8746;", "&mdash;" => "&#8212;", "&uarr;" => "&#8593;", "&permil;" => "&#8240;", "&tau;" => "&#964;", "&Ugrave;" => "&#217;", "&eta;" => "&#951;", "&Agrave;" => "&#192;", "&sup1;" => "&#185;", "&forall;" => "&#8704;", "&eth;" => "&#240;", "&rceil;" => "&#8969;", "&iuml;" => "&#239;", "&gamma;" => "&#947;", "&lambda;" => "&#955;", "&harr;" => "&#8596;", "&reg;" => "&#174;", "&Egrave;" => "&#200;", "&sup3;" => "&#179;", "&dagger;" => "&#8224;", "&divide;" => "&#247;", "&Ouml;" => "&#214;", "&image;" => "&#8465;", "&alefsym;" => "&#8501;", "&igrave;" => "&#236;", "&otilde;" => "&#245;", "&pound;" => "&#163;", "&eacute;" => "&#233;", "&frasl;" => "&#8260;", "&ETH;" => "&#208;", "&lowast;" => "&#8727;", "&Nu;" => "&#925;", "&plusmn;" => "&#177;", "&chi;" => "&#967;", "&sup2;" => "&#178;", "&frac34;" => "&#190;", "&Aacute;" => "&#193;", "&cent;" => "&#162;", "&oline;" => "&#8254;", "&Beta;" => "&#914;", "&perp;" => "&#8869;", "&Delta;" => "&#916;", "&loz;" => "&#9674;", "&pi;" => "&#960;", "&iota;" => "&#953;", "&empty;" => "&#8709;", "&euml;" => "&#235;", "&brvbar;" => "&#166;", "&iacute;" => "&#237;", "&para;" => "&#182;", "&ordm;" => "&#186;", "&ensp;" => "&#8194;", "&uuml;" => "&#252;", "&there4;" => "&#8756;", "&part;" => "&#8706;", "&icirc;" => "&#238;", "&bull;" => "&#8226;", "&omicron;" => "&#959;", "&upsilon;" => "&#965;", "&copy;" => "&#169;", "&Iuml;" => "&#207;", "&Oacute;" => "&#211;", "&Xi;" => "&#926;", "&Dagger;" => "&#8225;", "&Ograve;" => "&#210;", "&Ucirc;" => "&#219;", "&cap;" => "&#8745;", "&mu;" => "&#956;", "&sigmaf;" => "&#962;", "&scaron;" => "&#353;", "&lsquo;" => "&#8216;", "&isin;" => "&#8712;", "&Zeta;" => "&#918;", "&minus;" => "&#8722;", "&deg;" => "&#176;", "&and;" => "&#8743;", "&real;" => "&#8476;", "&ang;" => "&#8736;", "&hellip;" => "&#8230;", "&curren;" => "&#164;", "&int;" => "&#8747;", "&ucirc;" => "&#251;", "&rfloor;" => "&#8971;", "&crarr;" => "&#8629;", "&ugrave;" => "&#249;", "&notin;" => "&#8713;", "&exist;" => "&#8707;", "&cong;" => "&#8773;", "&oplus;" => "&#8853;", "&times;" => "&#215;", "&Acirc;" => "&#194;", "&piv;" => "&#982;", "&Euml;" => "&#203;", "&Phi;" => "&#934;", "&Iacute;" => "&#205;", "&quot;" => "&#34;", "&Uacute;" => "&#218;", "&Omicron;" => "&#927;", "&ne;" => "&#8800;", "&Iota;" => "&#921;", "&nabla;" => "&#8711;", "&sbquo;" => "&#8218;", "&Rho;" => "&#929;", "&epsilon;" => "&#949;", "&Ecirc;" => "&#202;", "&zeta;" => "&#950;", "&Omega;" => "&#937;", "&acirc;" => "&#226;", "&sim;" => "&#8764;", "&phi;" => "&#966;", "&diams;" => "&#9830;", "&macr;" => "&#175;", "&larr;" => "&#8592;", "&Ccedil;" => "&#199;", "&aacute;" => "&#225;", "&uArr;" => "&#8657;", "&beta;" => "&#946;", "&Eta;" => "&#919;", "&weierp;" => "&#8472;", "&rho;" => "&#961;", "&micro;" => "&#181;", "&alpha;" => "&#945;", "&omega;" => "&#969;", "&middot;" => "&#183;", "&Gamma;" => "&#915;", "&euro;" => "&#8364;", "&lang;" => "&#9001;", "&spades;" => "&#9824;", "&rsquo;" => "&#8217;", "&uml;" => "&#168;", "&thorn;" => "&#254;", "&ouml;" => "&#246;", "&thetasym;" => "&#977;", "&or;" => "&#8744;", "&raquo;" => "&#187;", "&sect;" => "&#167;", "&ldquo;" => "&#8220;", "&hearts;" => "&#9829;", "&sigma;" => "&#963;", "&oacute;" => "&#243;");
@@ -326,13 +335,13 @@
 	}
 
 	function theme_default_to_stardust() {
-		if (get_config("theme") != "default") return;
-		set_config("theme", "stardust");
+		if (Config::get("theme") != "default") return;
+		Config::set("theme", "stardust");
 	}
 
 	function default_db_adapter_to_mysql() {
-		if (get_db("adapter")) return;
-		set_db("adapter", "mysql");
+		if (SQL::get("adapter")) return;
+		SQL::set("adapter", "mysql");
 	}
 
 	function move_upload() {
@@ -342,9 +351,9 @@
 
 	function make_posts_safe() {
 		# Replace all the posts' XML with SimpleXML well-formed XML.
-		$get_posts = query("SELECT * FROM `__posts`");
+		$get_posts = SQL::query("SELECT * FROM `__posts`");
 
-		while ($post = fetch_object($get_posts)) {
+		while ($post = SQL::fetch($get_posts)) {
 			if (!substr_count($post->xml, "<![CDATA["))
 				continue;
 
@@ -356,20 +365,20 @@
 			$new_xml = new SimpleXMLElement("<post></post>");
 			arr2xml($new_xml, $parse);
 
-			echo _f("Sanitizing XML data of post #%d...", array($post->id)).test(query("UPDATE `__posts` SET `xml` = '".fix($new_xml->asXML())."' WHERE `id` = '".fix($post->id)."'"));
+			echo _f("Sanitizing XML data of post #%d...", array($post->id)).test(SQL::query("UPDATE `__posts` SET `xml` = '".SQL::fix($new_xml->asXML())."' WHERE `id` = '".SQL::fix($post->id)."'"));
 		}
 	}
 
 	function update_groups_to_yaml() {
-		if (!query("SELECT `view_site` FROM `__groups`")) return;
+		if (!SQL::query("SELECT `view_site` FROM `__groups`")) return;
 
-		$get_groups = query("SELECT * FROM `__groups`");
+		$get_groups = SQL::query("SELECT * FROM `__groups`");
 		echo __("Backing up current groups table...").test($get_groups);
 		if (!$get_groups) return;
 
 		$groups = array();
 		# Generate an array of groups, name => permissions.
-		while ($group = fetch_object($get_groups)) {
+		while ($group = SQL::fetch($get_groups)) {
 			$groups[$group->name] = array();
 			foreach ($group as $key => $val)
 				if ($key != "name" and $val)
@@ -380,11 +389,11 @@
 		foreach ($groups as $key => &$val)
 			$val = Yaml::dump($val);
 
-		$drop_groups = query("DROP TABLE IF EXISTS `__groups`");
+		$drop_groups = SQL::query("DROP TABLE IF EXISTS `__groups`");
 		echo __("Dropping old groups table...").test($drop_groups);
 		if (!$drop_groups) return;
 
-		$groups_table = query("CREATE TABLE IF NOT EXISTS `__groups` (
+		$groups_table = SQL::query("CREATE TABLE IF NOT EXISTS `__groups` (
 		                           `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
 		                           `name` VARCHAR(100) DEFAULT '',
 	                               `permissions` LONGTEXT,
@@ -395,13 +404,13 @@
 
 		foreach($groups as $name => $permissions)
 			echo _f("Restoring group \"%s\"...", array(ucfirst($name))).
-			     test(query("INSERT INTO `__groups` SET `name` = '".fix(ucfirst($name))."', `permissions` = '".fix($permissions)."'"));
+			     test(SQL::query("INSERT INTO `__groups` SET `name` = '".SQL::fix(ucfirst($name))."', `permissions` = '".SQL::fix($permissions)."'"));
 	}
 
 	function add_permissions_table() {
-		if (query("SELECT * FROM `__permissions")) return;
+		if (SQL::query("SELECT * FROM `__permissions")) return;
 
-		$permissions_table = query("CREATE TABLE `__permissions` (
+		$permissions_table = SQL::query("CREATE TABLE `__permissions` (
 		                                `id` VARCHAR(100) DEFAULT '' PRIMARY KEY,
 		                                `name` VARCHAR(100) DEFAULT ''
 		                            ) DEFAULT CHARSET=utf8");
@@ -436,13 +445,13 @@
 
 		foreach ($permissions as $id => $name)
 			echo _f("Inserting permission \"%s\"...", array($name)).
-			     test(query("INSERT INTO `__permissions` SET `id` = '".$id."', `name` = '".fix($name)."'"));
+			     test(SQL::query("INSERT INTO `__permissions` SET `id` = '".$id."', `name` = '".SQL::fix($name)."'"));
 	}
 
 	function add_sessions_table() {
-		if (query("SELECT * FROM `__sessions`")) return;
+		if (SQL::query("SELECT * FROM `__sessions`")) return;
 
-		echo __("Creating sessions table...").test(query("CREATE TABLE `__sessions` (
+		echo __("Creating sessions table...").test(SQL::query("CREATE TABLE `__sessions` (
 		                                                  `id` VARCHAR(32) DEFAULT '',
 		                                                  `data` LONGTEXT,
 		                                                  `user_id` VARCHAR(16) DEFAULT '0',
@@ -454,18 +463,18 @@
 
 	function update_permissions_table() {
 		# If there are any non-numeric IDs in the permissions database, assume this is already done.
-		$check = query("SELECT * FROM `__permissions`");
-		while ($row = fetch_object($check))
+		$check = SQL::query("SELECT * FROM `__permissions`");
+		while ($row = SQL::fetch($check))
 			if (!is_numeric($row->id))
 				return;
 
-		$get_permissions = query("SELECT * FROM `__permissions`");
+		$get_permissions = SQL::query("SELECT * FROM `__permissions`");
 
 		echo __("Updating permissions table structure...").
-		     test(query("ALTER TABLE `__permissions` CHANGE `id` `id` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL"));
+		     test(SQL::query("ALTER TABLE `__permissions` CHANGE `id` `id` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL"));
 
 		echo __("Removing `name` index from permissions table...").
-		     test(query("ALTER TABLE `__permissions` DROP INDEX `name`"));
+		     test(SQL::query("ALTER TABLE `__permissions` DROP INDEX `name`"));
 
 		$permissions = array("change_settings" => "Change Settings",
 		                     "toggle_extensions" => "Toggle Extensions",
@@ -493,11 +502,11 @@
 		                     "edit_group" => "Edit Groups",
 		                     "delete_group" => "Delete Groups");
 
-		while ($permission = fetch_object($get_permissions))
+		while ($permission = SQL::fetch($get_permissions))
 			echo _f("Updating %s permission...", array($permission->name)).
-			     test(query("UPDATE `__permissions` SET
-				             `id` = '".fix($permission->name)."',
-			                 `name` = '".fix((isset($permissions[$permission->name])) ?
+			     test(SQL::query("UPDATE `__permissions` SET
+				             `id` = '".SQL::fix($permission->name)."',
+			                 `name` = '".SQL::fix((isset($permissions[$permission->name])) ?
 			                                 $permissions[$permission->name] :
 			                                 camelize($permission->name, true))."'
 			                 WHERE `id` = ".$permission->id) or die(mysql_error()));
@@ -621,13 +630,13 @@
 
 		theme_default_to_stardust();
 
-		add_config_if_not_exists("secure_hashkey", md5(random(32, true)));
-		add_config_if_not_exists("enable_xmlrpc", true);
-		add_config_if_not_exists("uploads_path", "/uploads/");
-		add_config_if_not_exists("chyrp_url", get_config("url"));
-		add_config_if_not_exists("feed_items", get_config("rss_posts"));
+		Config::fallback("secure_hashkey", md5(random(32, true)));
+		Config::fallback("enable_xmlrpc", true);
+		Config::fallback("uploads_path", "/uploads/");
+		Config::fallback("chyrp_url", Config::get("url"));
+		Config::fallback("feed_items", Config::get("rss_posts"));
 
-		remove_config("rss_posts");
+		Config::remove("rss_posts");
 
 		default_db_adapter_to_mysql();
 
@@ -644,13 +653,13 @@
 		# Needed from 2.0b3.1 -> 2.0rc1
 		update_permissions_table();
 
-		foreach ((array) get_config("enabled_modules") as $module)
+		foreach ((array) Config::get("enabled_modules") as $module)
 			if (file_exists(MAIN_DIR."/modules/".$module."/upgrades.php")) {
 				echo "\n"._f("Calling \"%s\" module's upgrader...", array($module))."\n";
 				require MAIN_DIR."/modules/".$module."/upgrades.php";
 			}
 
-		foreach ((array) get_config("enabled_feathers") as $feather)
+		foreach ((array) Config::get("enabled_feathers") as $feather)
 			if (file_exists(MAIN_DIR."/feathers/".$feather."/upgrades.php")) {
 				echo "\n"._f("Calling \"%s\" feather's upgrader...", array($feather))."\n";
 				require MAIN_DIR."/feathers/".$feather."/upgrades.php";
@@ -670,7 +679,7 @@
 				<li><?php echo __("As of v2.0, Chyrp uses time zones to determine timestamps. Please set your installation to the correct timezone at <a href=\"admin/index.php?action=general_settings\">General Settings</a>."); ?></li>
 				<li><?php echo __("Check the group permissions &ndash; they might have changed."); ?></li>
 			</ul>
-			<a class="big center" href="<?php echo (check_config("ur") ? get_config("url") : get_config("chyrp_url")); ?>"><?php echo __("All done!"); ?></a>
+			<a class="big center" href="<?php echo (Config::check("ur") ? Config::get("url") : Config::get("chyrp_url")); ?>"><?php echo __("All done!"); ?></a>
 <?php else: ?>
 			<h1 class="first"><?php echo __("Halt!"); ?></h1>
 			<p><?php echo __("That button may look ready for a-clickin&rsquo;, but please take these preemptive measures before indulging:"); ?></p>

@@ -1,7 +1,8 @@
 <?php
 	require_once "common.php";
 
-	ini_set("memory_limit", "32M");
+	if (ini_get("memory_limit") < 48)
+		ini_set("memory_limit", "48M");
 
 	$gd_info = gd_info();
 	$gd_version = (substr_count(strtolower($gd_info["GD Version"]), "2.")) ? 2 : 1 ;
