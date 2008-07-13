@@ -9,12 +9,16 @@
 	define('YAML_LOAD', (YAML_CLASS == "Horde_Yaml") ? "load" : "YAMLLoad");
 	define('YAML_DUMP', (YAML_CLASS == "Horde_Yaml") ? "dump" : "YAMLDump");
 
-	define('CONFIG_FILE', (file_exists(INCLUDES_DIR."/config.yaml.php")) ?
-	                      INCLUDES_DIR."/config.yaml.php" :
-	                      INCLUDES_DIR."/config.yml.php");
-	define('DATABASE_FILE', (file_exists(INCLUDES_DIR."/database.yaml.php")) ?
-	                        INCLUDES_DIR."/database.yaml.php" :
-	                        INCLUDES_DIR."/database.yml.php");
+	function config_file() {
+		return (file_exists(INCLUDES_DIR."/config.yaml.php")) ?
+	           INCLUDES_DIR."/config.yaml.php" :
+	           INCLUDES_DIR."/config.yml.php" ;
+	}
+	function database_file() {
+		return (file_exists(INCLUDES_DIR."/database.yaml.php")) ?
+	           INCLUDES_DIR."/database.yaml.php" :
+	           INCLUDES_DIR."/database.yml.php" ;
+	}
 
 	require YAML_LIB;
 	require_once INCLUDES_DIR."/lib/gettext/gettext.php";
@@ -31,8 +35,8 @@
 
 	class Config {
 		static function get($setting) {
-			$config = file_get_contents(CONFIG_FILE);
-			$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
+			$config = file_get_contents(config_file());
+			$config = preg_replace("/<\?php(.+)\?>\n?/s", "", $config);
 
 			$yaml = Yaml::load($config);
 
@@ -45,8 +49,8 @@
 			if (!isset($message))
 				$message = _f("Setting %s setting to %s...", array($setting, print_r($value, true)));
 
-			$config = file_get_contents(CONFIG_FILE);
-			$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
+			$config = file_get_contents(config_file());
+			$config = preg_replace("/<\?php(.+)\?>\n?/s", "", $config);
 
 			$yaml = Yaml::load($config);
 
@@ -56,12 +60,12 @@
 
 			$dump = $protection.Yaml::dump($yaml);
 
-			echo $message.test(@file_put_contents(CONFIG_FILE, $dump));
+			echo $message.test(@file_put_contents(config_file(), $dump));
 		}
 
 		static function check($setting) {
-			$config = file_get_contents(CONFIG_FILE);
-			$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
+			$config = file_get_contents(config_file());
+			$config = preg_replace("/<\?php(.+)\?>\n?/s", "", $config);
 
 			$yaml = Yaml::load($config);
 
@@ -76,8 +80,8 @@
 		static function remove($setting) {
 			if (!self::check($setting)) return;
 
-			$config = file_get_contents(CONFIG_FILE);
-			$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
+			$config = file_get_contents(config_file());
+			$config = preg_replace("/<\?php(.+)\?>\n?/s", "", $config);
 
 			$yaml = Yaml::load($config);
 
@@ -87,7 +91,7 @@
 
 			$dump = $protection.Yaml::dump($yaml);
 
-			echo _f("Removing %s setting...", array($setting)).test(@file_put_contents(CONFIG_FILE, $dump));
+			echo _f("Removing %s setting...", array($setting)).test(@file_put_contents(config_file(), $dump));
 		}
 	}
 
@@ -105,8 +109,8 @@
 		}
 
 		static function get($setting) {
-			$config = file_get_contents(DATABASE_FILE);
-			$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
+			$config = file_get_contents(database_file());
+			$config = preg_replace("/<\?php(.+)\?>\n?/s", "", $config);
 
 			$yaml = Yaml::load($config);
 
@@ -119,8 +123,8 @@
 			if (!isset($message))
 				$message = _f("Setting %s database setting to %s...", array($setting, print_r($value, true)));
 
-			$config = file_get_contents(DATABASE_FILE);
-			$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
+			$config = file_get_contents(database_file());
+			$config = preg_replace("/<\?php(.+)\?>\n?/s", "", $config);
 
 			$yaml = Yaml::load($config);
 
@@ -130,7 +134,7 @@
 
 			$dump = $protection.Yaml::dump($yaml);
 
-			echo $message.test(@file_put_contents(DATABASE_FILE, $dump));
+			echo $message.test(@file_put_contents(database_file(), $dump));
 		}
 
 		static function fix($string) {
