@@ -157,7 +157,7 @@ class Twig_BaseLoader
 	{
 		$code = $this->compileTemplate($name, NULL, $fn);
 		$code = preg_replace('/echo "[\\\\tn]+";/', "", $code); # Remove blank lines
-		#echo "<textarea rows=15 style=width:100%>".htmlspecialchars(print_r($code, true))."</textarea>";
+		#echo "<textarea rows=15 style=width:100%>".fix(print_r($code, true))."</textarea>";
 		eval('?>' . $code);
 	}
 }

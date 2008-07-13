@@ -42,7 +42,7 @@
 			fallback($_GET['query'], "");
 			$posts = new Paginator(Post::find(array("placeholders" => true,
 			                                        "where" => "`xml` LIKE :query",
-			                                        "params" => array(":query" => '%'.htmlspecialchars(urldecode($_GET['query'])).'%'))),
+			                                        "params" => array(":query" => '%'.fix(urldecode($_GET['query'])).'%'))),
 				                   Config::current()->posts_per_page);
 		}
 
@@ -106,7 +106,7 @@
 
 			if (!$config->clean_urls)
 				$post = new Post(null, array("where" => "`__posts`.`url` = :url",
-				                             "params" => array(":url" => $get['url'])));
+				                             "params" => array(":url" => fallback($get['url']))));
 			else
 				$post = Post::from_url($route->post_url_attrs);
 

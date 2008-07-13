@@ -63,7 +63,7 @@
 			(!is_writable(MAIN_DIR) and !file_exists(MAIN_DIR."/.htaccess")) or
 			# .htaccess file DOES exist, IS writable, and it does NOT contain the Chyrp htaccess whatnot.
 		    (file_exists(MAIN_DIR."/.htaccess") and !is_writable(MAIN_DIR."/.htaccess") and !$htaccess_has_chyrp))
-			$errors[] = _f("STOP! Before you go any further, you must create a .htaccess file in Chyrp's install directory and put this in it:\n<pre>%s</pre>", array(htmlspecialchars($htaccess)));
+			$errors[] = _f("STOP! Before you go any further, you must create a .htaccess file in Chyrp's install directory and put this in it:\n<pre>%s</pre>", array(fix($htaccess)));
 
 		if (!is_writable(INCLUDES_DIR))
 			$errors[] = __("Chyrp's includes directory is not writable by the server. In order for the installer to generate your configuration files, please CHMOD or CHOWN it so that Chyrp can write to it.");
@@ -248,10 +248,10 @@
 
 			if (!file_exists(MAIN_DIR."/.htaccess")) {
 				if (!@file_put_contents(MAIN_DIR."/.htaccess", $htaccess))
-					$errors[] = _f("Could not generate .htaccess file. Clean URLs will not be available unless you create it and put this in it:\n<pre>%s</pre>", array(htmlspecialchars($htaccess)));
+					$errors[] = _f("Could not generate .htaccess file. Clean URLs will not be available unless you create it and put this in it:\n<pre>%s</pre>", array(fix($htaccess)));
 			} elseif (!$htaccess_has_chyrp)
 				if (!@file_put_contents(MAIN_DIR."/.htaccess", "\n\n".$htaccess, FILE_APPEND))
-					$errors[] = _f("Could not generate .htaccess file. Clean URLs will not be available unless you create it and put this in it:\n<pre>%s</pre>", array(htmlspecialchars($htaccess)));
+					$errors[] = _f("Could not generate .htaccess file. Clean URLs will not be available unless you create it and put this in it:\n<pre>%s</pre>", array(fix($htaccess)));
 
 			$config->set("name", $_POST['name']);
 			$config->set("description", $_POST['description']);

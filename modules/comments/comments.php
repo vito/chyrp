@@ -652,7 +652,7 @@
 			$title = $post->title();
 			fallback($title, ucfirst($post->feather)." Post #".$post->id);
 
-			$title = _f("Comments on &#8220;%s&#8221;", array(htmlspecialchars($title)), "comments");
+			$title = _f("Comments on &#8220;%s&#8221;", array(fix($title)), "comments");
 
 			$ids = array_reverse($post->comments->array[0]);
 
@@ -661,7 +661,7 @@
 				if (isset($ids[$i]))
 					$comments[] = new Comment(null, array("read_from" => $ids[$i]));
 
-			Route::current()->action = "comments_rss";
+			Route::current()->action = "comments_feed";
 		}
 
 		static function metaWeblog_getPost($struct, $post) {
@@ -806,5 +806,10 @@
 
 			if (Comment::any_editable() or Comment::any_deletable())
 				return "manage_comments";
+		}
+
+		public function route_comments_rss() {
+			header("HTTP/1.1 301 Moved Permanently");
+			redirect(url("comments_feed/"));
 		}
 	}

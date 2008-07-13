@@ -342,7 +342,7 @@ class Twig_AdminURL extends Twig_Node
 	public function compile($compiler)
 	{
 		$compiler->addDebugInfo($this);
-		$compiler->raw('echo htmlspecialchars(Config::current()->chyrp_url."/admin/?action=".(');
+		$compiler->raw('echo fix(Config::current()->chyrp_url."/admin/?action=".(');
 		$this->expr->compile($compiler);
 		$compiler->raw('));'."\n");
 	}

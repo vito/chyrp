@@ -3,13 +3,13 @@
 	echo "<".'?xml version="1.0" encoding="utf-8"?'.">\r";
 ?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-	<title><?php echo htmlspecialchars($config->name.$title, ENT_NOQUOTES, "utf-8"); ?></title>
+	<title><?php echo fix($config->name.$title); ?></title>
 <?php if (!empty($config->description)): ?>
-	<subtitle><?php echo htmlspecialchars($config->description, ENT_NOQUOTES, "utf-8"); ?></subtitle>
+	<subtitle><?php echo fix($config->description); ?></subtitle>
 <?php endif; ?>
-	<id><?php echo self_url() ?></id>
+	<id><?php echo fix(self_url()); ?></id>
 	<updated><?php echo date("c", $latest_timestamp); ?></updated>
-	<link href="<?php echo self_url() ?>" rel="self" type="application/atom+xml" />
+	<link href="<?php echo fix(self_url(), true); ?>" rel="self" type="application/atom+xml" />
 	<generator uri="http://chyrp.net/" version="<?php echo CHYRP_VERSION; ?>">Chyrp</generator>
 <?php
 	foreach ($posts->paginated as $post) {
@@ -24,12 +24,12 @@
 
 		$url = $post->url();
 ?>
-	<entry xml:base="<?php echo fix($post->url(), true); ?>">
+	<entry xml:base="<?php echo $post->url(); ?>">
 		<title type="html"><?php echo $title; ?></title>
 		<id>tag:<?php echo $tagged; ?></id>
 		<updated><?php echo when("c", $updated); ?></updated>
 		<published><?php echo when("c", $post->created_at); ?></published>
-		<link href="<?php echo fix($trigger->filter($url, "feed_url", $post), true); ?>" />
+		<link href="<?php echo $trigger->filter($url, "feed_url", $post); ?>" />
 		<author>
 			<name><?php echo safe(fallback($post->user()->full_name, $post->user()->login, true)); ?></name>
 <?php if (!empty($author_uri)): ?>

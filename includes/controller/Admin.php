@@ -814,8 +814,8 @@
 
 				$pages_atom = '<?xml version="1.0" encoding="utf-8"?>'."\r";
 				$pages_atom.= '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:chyrp="http://chyrp.net/export/1.0/">'."\r";
-				$pages_atom.= '	<title>'.htmlspecialchars($config->name, ENT_NOQUOTES, "utf-8").' Pages</title>'."\r";
-				$pages_atom.= '	<subtitle>'.htmlspecialchars($config->description, ENT_NOQUOTES, "utf-8").'</subtitle>'."\r";
+				$pages_atom.= '	<title>'.fix($config->name).' Pages</title>'."\r";
+				$pages_atom.= '	<subtitle>'.fix($config->description).'</subtitle>'."\r";
 				$pages_atom.= '	<id>tag:'.parse_url($config->url, PHP_URL_HOST).','.date("Y", $latest_timestamp).':Chyrp</id>'."\r";
 				$pages_atom.= '	<updated>'.date("c", $latest_timestamp).'</updated>'."\r";
 				$pages_atom.= '	<link href="'.$config->url.'" rel="self" type="application/atom+xml" />'."\r";
@@ -1497,11 +1497,11 @@
 				fallback($info["help"]);
 
 				$info["description"] = __($info["description"], $folder);
-				$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
-				$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
+				$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.fix('\\1').'</code>'", $info["description"]);
+				$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.fix('\\1').'</pre>'", $info["description"]);
 
 				$info["author"]["link"] = (!empty($info["author"]["url"])) ?
-				                              '<a href="'.htmlspecialchars($info["author"]["url"]).'">'.htmlspecialchars($info["author"]["name"]).'</a>' :
+				                              '<a href="'.fix($info["author"]["url"]).'">'.fix($info["author"]["name"]).'</a>' :
 				                              $info["author"]["name"] ;
 
 				$category = (module_enabled($folder)) ? "enabled_modules" : "disabled_modules" ;
@@ -1548,11 +1548,11 @@
 				fallback($info["help"]);
 
 				$info["description"] = __($info["description"], $folder);
-				$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.htmlspecialchars('\\1').'</code>'", $info["description"]);
-				$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.htmlspecialchars('\\1').'</pre>'", $info["description"]);
+				$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.fix('\\1').'</code>'", $info["description"]);
+				$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.fix('\\1').'</pre>'", $info["description"]);
 
 				$info["author"]["link"] = (!empty($info["author"]["url"])) ?
-				                              '<a href="'.htmlspecialchars($info["author"]["url"]).'">'.htmlspecialchars($info["author"]["name"]).'</a>' :
+				                              '<a href="'.fix($info["author"]["url"]).'">'.fix($info["author"]["name"]).'</a>' :
 				                              $info["author"]["name"] ;
 
 				$category = (feather_enabled($folder)) ? "enabled_feathers" : "disabled_feathers" ;
@@ -1596,11 +1596,11 @@
 				                              '<a href="'.$info["author"]["url"].'">'.$info["author"]["name"].'</a>' :
 				                              $info["author"]["name"] ;
 				$info["description"] = preg_replace("/<code>(.+)<\/code>/se",
-				                                    "'<code>'.htmlspecialchars('\\1').'</code>'",
+				                                    "'<code>'.fix('\\1').'</code>'",
 				                                    $info["description"]);
 
 				$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se",
-				                                    "'<pre>'.htmlspecialchars('\\1').'</pre>'",
+				                                    "'<pre>'.fix('\\1').'</pre>'",
 				                                    $info["description"]);
 
 				$this->context["themes"][] = array("name" => $folder,

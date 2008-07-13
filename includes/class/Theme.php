@@ -236,7 +236,7 @@
 			global $pluralizations;
 
 			$config = Config::current();
-			$request = ($config->clean_urls) ? rtrim(Route::current()->request, "/") : htmlspecialchars($_SERVER['REQUEST_URI']) ;
+			$request = ($config->clean_urls) ? rtrim(Route::current()->request, "/") : fix($_SERVER['REQUEST_URI']) ;
 			$append = ($config->clean_urls) ?
 			              "/feed" :
 			              ((count($_GET) == 1 and Route::current()->action == "index") ?

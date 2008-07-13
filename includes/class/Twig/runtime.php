@@ -24,8 +24,8 @@ $twig_filters = array(
 	'odd' =>               'twig_is_odd_filter',
 
 	// escaping and encoding
-	'escape' =>           'htmlspecialchars',
-	'e' =>                'htmlspecialchars',
+	'escape' =>           'fix',
+	'e' =>                'fix',
 	'urlencode' =>        'twig_urlencode_filter',
 	'quotes' =>           'twig_quotes_filter',
 	'slashes' =>          'addslashes',
@@ -345,7 +345,7 @@ function twig_inspect_filter($thing) {
 		return var_dump($thing);
 	else
 		return '<pre class="chyrp_inspect"><code>' .
-		       htmlspecialchars(var_export($thing, true)) .
+		       fix(var_export($thing, true)) .
 		       '</code></pre>';
 }
 
