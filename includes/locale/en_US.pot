@@ -9,14 +9,14 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-07-13 08:01-0500\n"
+"PO-Revision-Date: 2008-07-13 10:03-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: upgrade.php:591
+#: upgrade.php:644
 msgid "If the admin area looks weird, try clearing your cache."
 msgstr ""
 
@@ -37,6 +37,10 @@ msgstr ""
 msgid "Send Pingbacks"
 msgstr ""
 
+#: upgrade.php:643
+msgid "When you are done, delete this file. You probably don't want other people running it."
+msgstr ""
+
 #: includes/controller/Admin.php:413
 #: includes/controller/Admin.php:427
 msgid "An ID is required to edit a user."
@@ -50,7 +54,7 @@ msgstr ""
 msgid "Information"
 msgstr ""
 
-#: upgrade.php:604
+#: upgrade.php:658
 msgid "Upgrade me!"
 msgstr ""
 
@@ -168,7 +172,7 @@ msgstr ""
 msgid "Post author (username)"
 msgstr ""
 
-#: upgrade.php:374
+#: upgrade.php:417
 msgid "Inserting permissions..."
 msgstr ""
 
@@ -233,10 +237,10 @@ msgstr ""
 
 #: includes/controller/Admin.php:1341
 #: includes/controller/Admin.php:1409
-#: includes/class/SQL.php:128
-#: includes/class/SQL.php:136
-#: includes/class/SQL.php:144
-#: includes/class/SQL.php:149
+#: includes/class/SQL.php:130
+#: includes/class/SQL.php:138
+#: includes/class/SQL.php:146
+#: includes/class/SQL.php:151
 #: includes/class/Query.php:59
 #: includes/class/Query.php:68
 #: includes/class/Query.php:77
@@ -281,7 +285,7 @@ msgstr ""
 msgid "Could not connect to the specified database:\n<pre>%s</pre>"
 msgstr ""
 
-#: upgrade.php:268
+#: upgrade.php:291
 msgid "Moving /includes/database.yml.php to /includes/database.yaml.php..."
 msgstr ""
 
@@ -333,7 +337,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: upgrade.php:588
+#: upgrade.php:641
 msgid "Tips"
 msgstr ""
 
@@ -343,7 +347,7 @@ msgstr ""
 msgid "Password cannot be blank."
 msgstr ""
 
-#: upgrade.php:380
+#: upgrade.php:374
 msgid "Restoring groups..."
 msgstr ""
 
@@ -438,10 +442,6 @@ msgstr ""
 msgid "What time is it?"
 msgstr ""
 
-#: upgrade.php:592
-msgid "As of v2.0, Chyrp uses timezones to manage timestamps. Please set your install to the correct timezone at <a href=\"admin/index.php?action=general_settings\">General Settings</a>."
-msgstr ""
-
 #: admin/index.php:77
 msgid "Manage"
 msgstr ""
@@ -455,17 +455,12 @@ msgstr ""
 msgid "Are you sure you want to delete the &#8220;%s&#8221; group?"
 msgstr ""
 
-#: install.php:179
 #: install.php:185
 msgid "Edit Own Drafts"
 msgstr ""
 
 #: includes/controller/Admin.php:1578
 msgid "Could not read themes directory."
-msgstr ""
-
-#: upgrade.php:593
-msgid "Make sure you check the group permissions &mdash; they might have changed, and you may need to update your group for you to perform some actions."
 msgstr ""
 
 #: includes/controller/Admin.php:227
@@ -590,7 +585,7 @@ msgstr ""
 msgid "Created"
 msgstr ""
 
-#: upgrade.php:283
+#: upgrade.php:306
 #, php-format
 msgid "Updating protection code in %s..."
 msgstr ""
@@ -602,6 +597,10 @@ msgstr ""
 
 #: admin/layout/pages/new_group.twig:29
 msgid "Add Group"
+msgstr ""
+
+#: upgrade.php:448
+msgid "Removing `name` index from permissions table..."
 msgstr ""
 
 #: includes/admin.js.php:115
@@ -664,7 +663,7 @@ msgstr ""
 msgid "View Site"
 msgstr ""
 
-#: upgrade.php:586
+#: upgrade.php:639
 msgid "Take me home."
 msgstr ""
 
@@ -698,7 +697,7 @@ msgstr ""
 msgid "Post created!"
 msgstr ""
 
-#: upgrade.php:597
+#: upgrade.php:650
 msgid "That button may look ready for a-clickin&rsquo;, but please take these preemptive measures before indulging:"
 msgstr ""
 
@@ -745,7 +744,7 @@ msgstr ""
 msgid "Pinned?"
 msgstr ""
 
-#: upgrade.php:446
+#: upgrade.php:493
 msgid "Chyrp Upgrader"
 msgstr ""
 
@@ -766,7 +765,7 @@ msgstr ""
 msgid "You do not have sufficient privileges to edit pages."
 msgstr ""
 
-#: upgrade.php:264
+#: upgrade.php:287
 msgid "Moving /includes/config.yml.php to /includes/config.yaml.php..."
 msgstr ""
 
@@ -775,6 +774,10 @@ msgstr ""
 #: admin/layout/pages/manage_pages.twig:16
 #: admin/layout/pages/manage_groups.twig:18
 msgid "Search &rarr;"
+msgstr ""
+
+#: upgrade.php:645
+msgid "As of v2.0, Chyrp uses time zones to determine timestamps. Please set your installation to the correct timezone at <a href=\"admin/index.php?action=general_settings\">General Settings</a>."
 msgstr ""
 
 #: admin/layout/pages/content_settings.twig:25
@@ -839,7 +842,7 @@ msgstr ""
 msgid "Posts"
 msgstr ""
 
-#: upgrade.php:289
+#: upgrade.php:322
 msgid "Renaming /upload directory to /uploads..."
 msgstr ""
 
@@ -880,15 +883,15 @@ msgstr ""
 msgid "(optional)"
 msgstr ""
 
-#: admin/layout/pages/general_settings.twig:3
-#: admin/layout/pages/general_settings.twig:6
-msgid "Site Configuration"
-msgstr ""
-
 #: admin/layout/pages/export.twig:41
 #: admin/index.php:157
 #: admin/index.php:190
 msgid "Users"
+msgstr ""
+
+#: admin/layout/pages/general_settings.twig:3
+#: admin/layout/pages/general_settings.twig:6
+msgid "Site Configuration"
 msgstr ""
 
 #: install.php:499
@@ -901,7 +904,7 @@ msgstr ""
 msgid "There doesn't seem to be a valid link in your request."
 msgstr ""
 
-#: upgrade.php:596
+#: upgrade.php:649
 msgid "Halt!"
 msgstr ""
 
@@ -933,10 +936,6 @@ msgstr ""
 
 #: includes/ajax.php:8
 msgid "Please specify an ID of the post you would like to edit."
-msgstr ""
-
-#: upgrade.php:602
-msgid "If any of the upgrade processes fail, it is safe to keep refreshing and trying again. If you cannot figure something out, please make a topic (with details!) at the <a href=\"http://chyrp.net/community/\">Chyrp Community</a>."
 msgstr ""
 
 #: includes/controller/Admin.php:1940
@@ -994,7 +993,7 @@ msgstr ""
 msgid "No Feathers"
 msgstr ""
 
-#: upgrade.php:406
+#: upgrade.php:445
 msgid "Updating permissions table structure..."
 msgstr ""
 
@@ -1036,6 +1035,10 @@ msgstr ""
 msgid "Route Settings"
 msgstr ""
 
+#: upgrade.php:656
+msgid "If any of the upgrade processes fail, you can safely keep refreshing &ndash; it will only attempt to do tasks that are not already successfully completed. If you cannot figure something out, please make a topic (with details!) at the <a href=\"http://chyrp.net/community/\">Chyrp Community</a>."
+msgstr ""
+
 #: includes/ajax.php:128
 msgid "You do not have sufficient privileges to enable/disable extensions."
 msgstr ""
@@ -1049,7 +1052,7 @@ msgstr ""
 msgid "Couldn't load template:<br /><br />%s"
 msgstr ""
 
-#: upgrade.php:338
+#: upgrade.php:371
 msgid "Creating new groups table..."
 msgstr ""
 
@@ -1077,6 +1080,10 @@ msgstr ""
 msgid "Contact E-Mail Address"
 msgstr ""
 
+#: admin/layout/pages/export.twig:44
+msgid "(warning: this also exports the hashed passwords, so keep the export file safe)"
+msgstr ""
+
 #: includes/controller/Admin.php:523
 msgid "You do not have sufficient privileges to manage users."
 msgstr ""
@@ -1099,10 +1106,6 @@ msgstr ""
 msgid "You do not have sufficient privileges to enable/disable modules."
 msgstr ""
 
-#: admin/layout/pages/export.twig:44
-msgid "(warning: this also exports the hashed passwords, so keep the export file safe)"
-msgstr ""
-
 #: admin/layout/pages/delete_post.twig:10
 #: admin/layout/pages/delete_page.twig:10
 msgid "Excerpt"
@@ -1116,7 +1119,7 @@ msgstr ""
 msgid "Usually something like <code>http://example.com/wp-content/uploads/</code>."
 msgstr ""
 
-#: upgrade.php:329
+#: upgrade.php:362
 msgid "Deleting old groups table..."
 msgstr ""
 
@@ -1162,6 +1165,10 @@ msgstr ""
 #: admin/layout/layout.twig:31
 #, php-format
 msgid "Hello, %s!"
+msgstr ""
+
+#: install.php:179
+msgid "View Own Drafts"
 msgstr ""
 
 #: admin/layout/pages/route_settings.twig:34
@@ -1216,6 +1223,10 @@ msgstr ""
 msgid "User Settings"
 msgstr ""
 
+#: upgrade.php:652
+msgid "<strong>Make a backup of your installation.</strong> You never know."
+msgstr ""
+
 #: admin/layout/pages/manage_users.twig:51
 #: admin/layout/pages/manage_users.twig:54
 #: admin/layout/pages/manage_posts.twig:53
@@ -1224,10 +1235,6 @@ msgstr ""
 #: admin/layout/pages/manage_pages.twig:45
 #: admin/layout/pages/manage_groups.twig:28
 msgid "edit"
-msgstr ""
-
-#: upgrade.php:590
-msgid "<strong>Delete this file.</strong> You probably don't want other people running it."
 msgstr ""
 
 #: includes/controller/Admin.php:215
@@ -1262,7 +1269,7 @@ msgstr ""
 msgid "Requires .htaccess support (pretty common). If you're unsure, it's safe to test and find out. Just come back and disable it if it breaks your site."
 msgstr ""
 
-#: upgrade.php:345
+#: upgrade.php:388
 msgid "Creating new permissions table..."
 msgstr ""
 
@@ -1362,7 +1369,7 @@ msgstr ""
 msgid "Module already disabled."
 msgstr ""
 
-#: upgrade.php:599
+#: upgrade.php:653
 msgid "Disable any third-party Modules and Feathers."
 msgstr ""
 
@@ -1637,8 +1644,12 @@ msgstr ""
 msgid "Filtering Results"
 msgstr ""
 
-#: upgrade.php:316
+#: upgrade.php:349
 msgid "Backing up current groups table..."
+msgstr ""
+
+#: upgrade.php:646
+msgid "Check the group permissions &ndash; they might have changed."
 msgstr ""
 
 #: admin/layout/pages/manage_pages.twig:21
@@ -1705,7 +1716,7 @@ msgstr ""
 msgid "Get More Themes &rsaquo;"
 msgstr ""
 
-#: upgrade.php:436
+#: upgrade.php:478
 #, php-format
 msgid "Updating %s permission..."
 msgstr ""
@@ -1918,6 +1929,11 @@ msgstr ""
 msgid "Delete Own Posts"
 msgstr ""
 
+#: admin/layout/pages/edit_user.twig:3
+#, php-format
+msgid "Edit User &#8220;%s&#8221;"
+msgstr ""
+
 #: includes/controller/Admin.php:1664
 #: includes/ajax.php:178
 #, php-format
@@ -1930,11 +1946,6 @@ msgstr ""
 
 #: install.php:564
 msgid "Install some Modules."
-msgstr ""
-
-#: admin/layout/pages/edit_user.twig:3
-#, php-format
-msgid "Edit User &#8220;%s&#8221;"
 msgstr ""
 
 #: admin/layout/pages/delete_group.twig:28
@@ -1969,7 +1980,7 @@ msgstr ""
 msgid "You do not have sufficient privileges to manage any posts."
 msgstr ""
 
-#: upgrade.php:600
+#: upgrade.php:654
 msgid "Ensure that the Chyrp installation directory is writable by the server."
 msgstr ""
 
@@ -2092,7 +2103,7 @@ msgstr ""
 msgid "You do not have sufficient privileges to create pages."
 msgstr ""
 
-#: includes/class/SQL.php:92
+#: includes/class/SQL.php:94
 #, php-format
 msgid "Could not set \"<code>%s</code>\" database setting because <code>%s</code> is not writable."
 msgstr ""
@@ -2101,7 +2112,7 @@ msgstr ""
 msgid "(ex. 25)"
 msgstr ""
 
-#: upgrade.php:305
+#: upgrade.php:338
 #, php-format
 msgid "Sanitizing XML data of post #%d..."
 msgstr ""
@@ -2123,7 +2134,7 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
-#: upgrade.php:390
+#: upgrade.php:427
 msgid "Creating sessions table..."
 msgstr ""
 

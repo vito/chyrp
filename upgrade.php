@@ -307,6 +307,16 @@
 		}
 	}
 
+	function theme_default_to_stardust() {
+		if (get_config("theme") != "default") return;
+		set_config("theme", "stardust");
+	}
+
+	function default_db_adapter_to_mysql() {
+		if (get_db("adapter")) return;
+		set_db("adapter", "mysql");
+	}
+
 	function move_upload() {
 		if (file_exists(MAIN_DIR."/upload") and !file_exists(MAIN_DIR."/uploads"))
 			echo __("Renaming /upload directory to /uploads...").test(@rename(MAIN_DIR."/upload", MAIN_DIR."/uploads"));
@@ -329,7 +339,7 @@
 		}
 	}
 
-	function update_groups() {
+	function update_groups_to_yaml() {
 		if (!query("SELECT `view_site` FROM `__groups` LIMIT 1")) return;
 
 		$groups = array();
@@ -361,7 +371,17 @@
 		echo __("Creating new groups table...").test($groups_table);
 		if (!$groups_table) return;
 
-		$permissions_table = query("CREATE TABLE IF NOT EXISTS `__permissions` (
+		echo __("Restoring groups...");
+		foreach($groups as $name => $permissions)
+			if (!query("INSERT INTO `__groups` SET `name` = '".fix(ucfirst($name))."', `permissions` = '".fix($permissions)."'"))
+				exit(test(false));
+		echo test(true);
+	}
+
+	function add_permissions_table() {
+		if (query("SELECT * FROM `__permissions")) return;
+
+		$permissions_table = query("CREATE TABLE `__permissions` (
 		                                `id` VARCHAR(100) DEFAULT '' PRIMARY KEY,
 		                                `name` VARCHAR(100) DEFAULT ''
 		                            ) DEFAULT CHARSET=utf8");
@@ -399,15 +419,9 @@
 			if (!query("INSERT INTO `__permissions` SET `id` = '".$id."', `name` = '".fix($name)."'"))
 				exit(test(false));
 		echo test(true);
-
-		echo __("Restoring groups...");
-		foreach($groups as $name => $permissions)
-			if (!query("INSERT INTO `__groups` SET `name` = '".fix(ucfirst($name))."', `permissions` = '".fix($permissions)."'"))
-				exit(test(false));
-		echo test(true);
 	}
 
-	function create_sessions_table() {
+	function add_sessions_table() {
 		if (query("SELECT * FROM `__sessions`")) return;
 
 		echo __("Creating sessions table...").test(query("CREATE TABLE `__sessions` (
@@ -592,7 +606,7 @@
 
 		update_protection();
 
-		set_config("theme", "stardust");
+		theme_default_to_stardust();
 
 		add_config_if_not_exists("secure_hashkey", md5(random(32, true)));
 		add_config_if_not_exists("enable_xmlrpc", true);
@@ -602,18 +616,28 @@
 
 		remove_config("rss_posts");
 
-		set_db("adapter", "mysql");
+		default_db_adapter_to_mysql();
 
 		move_upload();
 
 		make_posts_safe();
 
-		update_groups();
+		update_groups_to_yaml();
 
-		create_sessions_table();
+		add_permissions_table();
+
+		add_sessions_table();
 
 		# Needed from 2.0b3.1 -> 2.0rc1
 		update_permissions_table();
+
+		foreach (get_config("enabled_modules") as $module)
+			if (file_exists(MAIN_DIR."/modules/".$module."/upgrades.php"))
+				require MAIN_DIR."/modules/".$module."/upgrades.php";
+
+		foreach (get_config("enabled_feathers") as $feather)
+			if (file_exists(MAIN_DIR."/feathers/".$feather."/upgrades.php"))
+				require MAIN_DIR."/feathers/".$feather."/upgrades.php";
 ?></textarea>
 			<form action="index.php" method="get">
 				<button type="submit" class="center"><?php echo __("Take me home."); ?></button>
@@ -629,6 +653,7 @@
 			<h1 class="first"><?php echo __("Halt!"); ?></h1>
 			<p><?php echo __("That button may look ready for a-clickin&rsquo;, but please take these preemptive measures before indulging:"); ?></p>
 			<ol>
+				<li><?php echo __("<strong>Make a backup of your installation.</strong> You never know."); ?></li>
 				<li><?php echo __("Disable any third-party Modules and Feathers."); ?></li>
 				<li><?php echo __("Ensure that the Chyrp installation directory is writable by the server."); ?></li>
 			</ol>

@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-07-13 08:01-0500\n"
+"PO-Revision-Date: 2008-07-13 10:03-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -126,7 +126,7 @@ msgstr ""
 msgid "Delete Comments"
 msgstr ""
 
-#: modules/comments/upgrade/1.x_2.0.php:7
+#: modules/comments/upgrades.php:8
 msgid "Adding `signature` column to comments table..."
 msgstr ""
 
@@ -190,26 +190,22 @@ msgstr ""
 msgid "Delete Own Comments"
 msgstr ""
 
-#: modules/comments/upgrade/1.x_2.0.php:13
-msgid "Adding `auto_reload_comments` and `enable_reload_comments` settings..."
-msgstr ""
-
 #: modules/comments/pages/admin/manage_spam.twig:44
 #: modules/comments/pages/admin/manage_comments.twig:48
 msgid "Added"
 msgstr ""
 
-#: modules/comments/comments.php:442
-msgid "Selected comments marked as spam."
-msgstr ""
-
-#: modules/comments/upgrade/1.x_2.0.php:10
+#: modules/comments/upgrades.php:11
 msgid "Adding `updated_at` column to comments table..."
 msgstr ""
 
 #: modules/comments/pages/admin/comment_settings.twig:3
 #: modules/comments/pages/admin/comment_settings.twig:6
 msgid "Comment Settings"
+msgstr ""
+
+#: modules/comments/comments.php:442
+msgid "Selected comments marked as spam."
 msgstr ""
 
 #: modules/comments/model.Comment.php:96
@@ -223,10 +219,6 @@ msgstr ""
 msgid "deny"
 msgstr ""
 
-#: modules/comments/upgrade/1.x_2.0.php:17
-msgid "Done!"
-msgstr ""
-
 #: modules/comments/pages/admin/comment_settings.twig:32
 msgid "enabled"
 msgstr ""
@@ -235,12 +227,12 @@ msgstr ""
 msgid "Author can't be blank."
 msgstr ""
 
-#: modules/comments/comments.php:429
-msgid "Selected comments approved."
-msgstr ""
-
 #: modules/comments/info.yaml:2
 msgid "Comment System"
+msgstr ""
+
+#: modules/comments/comments.php:429
+msgid "Selected comments approved."
 msgstr ""
 
 #: modules/comments/info.yaml:5
