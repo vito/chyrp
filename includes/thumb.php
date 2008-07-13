@@ -102,11 +102,18 @@
 
 	# Create the final resized image.
 	$thumbnail = $create($new_width, $new_height);
+
+	if ($done == "imagepng")
+		imagealphablending($thumbnail, false);
+
 	$copy($thumbnail, $image, 0, 0, 0, 0, $new_width, $new_height, $original_width, $original_height);
 
 	header("Last-Modified: ".gmdate("D, d M Y H:i:s", @filemtime($filename))." GMT");
 	header("Content-type: ".$mime);
 	header("Content-Disposition: inline; filename=".$cache_filename.".".$extension);
+
+	if ($done == "imagepng")
+		imagesavealpha($thumbnail, true);
 
 	# Generate the cache image.
 	if (!isset($_GET['no_cache']) or $_GET['no_cache'] == "false")

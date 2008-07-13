@@ -393,7 +393,7 @@
 		foreach ($groups as $key => &$val)
 			$val = Yaml::dump($val);
 
-		$drop_groups = SQL::query("DROP TABLE IF EXISTS `__groups`");
+		$drop_groups = SQL::query("DROP TABLE `__groups`");
 		echo __("Dropping old groups table...").test($drop_groups);
 		if (!$drop_groups) return;
 
@@ -455,14 +455,15 @@
 	function add_sessions_table() {
 		if (SQL::query("SELECT * FROM `__sessions`")) return;
 
-		echo __("Creating sessions table...").test(SQL::query("CREATE TABLE `__sessions` (
-		                                                  `id` VARCHAR(32) DEFAULT '',
-		                                                  `data` LONGTEXT,
-		                                                  `user_id` VARCHAR(16) DEFAULT '0',
-		                                                  `created_at` DATETIME DEFAULT '0000-00-00 00:00:00',
-		                                                  `updated_at` DATETIME DEFAULT '0000-00-00 00:00:00',
-		                                                  PRIMARY KEY (`id`)
-		                                              ) DEFAULT CHARSET=utf8") or die(mysql_error()));
+		echo __("Creating sessions table...").
+		     test(SQL::query("CREATE TABLE `__sessions` (
+		                          `id` VARCHAR(32) DEFAULT '',
+		                          `data` LONGTEXT,
+		                          `user_id` VARCHAR(16) DEFAULT '0',
+		                          `created_at` DATETIME DEFAULT '0000-00-00 00:00:00',
+		                          `updated_at` DATETIME DEFAULT '0000-00-00 00:00:00',
+		                          PRIMARY KEY (`id`)
+		                      ) DEFAULT CHARSET=utf8") or die(mysql_error()));
 	}
 
 	function update_permissions_table() {
@@ -472,13 +473,23 @@
 			if (!is_numeric($row->id))
 				return;
 
+		$permissions_backup = array();
 		$get_permissions = SQL::query("SELECT * FROM `__permissions`");
+		echo __("Backing up current permissions table...").test($get_permissions);
+		if (!$get_permissions) return;
 
-		echo __("Updating permissions table structure...").
-		     test(SQL::query("ALTER TABLE `__permissions` CHANGE `id` `id` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL"));
+		while ($permission = SQL::fetch($get_permissions))
+			$permissions_backup[] = $permission->name;
 
-		echo __("Removing `name` index from permissions table...").
-		     test(SQL::query("ALTER TABLE `__permissions` DROP INDEX `name`"));
+		$drop_permissions = SQL::query("DROP TABLE `__permissions`");
+		echo __("Dropping old permissions table...").test($drop_permissions);
+		if (!$drop_permissions) return;
+
+		echo __("Creating new permissions table...").
+		     test(SQL::query("CREATE TABLE IF NOT EXISTS `__permissions` (
+			                      `id` VARCHAR(100) DEFAULT '' PRIMARY KEY,
+			                      `name` VARCHAR(100) DEFAULT ''
+			                  ) DEFAULT CHARSET=utf8"));
 
 		$permissions = array("change_settings" => "Change Settings",
 		                     "toggle_extensions" => "Toggle Extensions",
@@ -506,14 +517,13 @@
 		                     "edit_group" => "Edit Groups",
 		                     "delete_group" => "Delete Groups");
 
-		while ($permission = SQL::fetch($get_permissions))
-			echo _f("Updating %s permission...", array($permission->name)).
-			     test(SQL::query("UPDATE `__permissions` SET
-				             `id` = '".SQL::fix($permission->name)."',
-			                 `name` = '".SQL::fix((isset($permissions[$permission->name])) ?
-			                                 $permissions[$permission->name] :
-			                                 camelize($permission->name, true))."'
-			                 WHERE `id` = ".$permission->id) or die(mysql_error()));
+		foreach ($permissions_backup as $id)
+			echo _f("Restoring permission \"%s\"...", array($name)).
+			     test(SQL::query("INSERT INTO `__permissions` SET
+				                  `id` = '".$id."',
+				                  `name` = '".SQL::fix(isset($permissions[$id]) ?
+				                                       $permissions[$id] :
+				                                       camelize($id, true))."'"));
 
 	}
 ?>
