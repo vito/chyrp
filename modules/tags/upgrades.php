@@ -1,9 +1,6 @@
 <?php
 	function update_tags_structure() {
-		$check = query("SELECT * FROM `__tags`");
-		while ($row = fetch_object($check))
-			if (isset($row->tags))
-				return;
+		if (query("SELECT `tags` FROM `__tags`")) return;
 
 		$tags = array();
 		$get_tags = query("SELECT * FROM `__tags`");

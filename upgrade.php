@@ -327,6 +327,9 @@
 		$get_posts = query("SELECT * FROM `__posts`");
 
 		while ($post = fetch_object($get_posts)) {
+			if (!substr_count($post->xml, "<![CDATA["))
+				continue;
+
 			$xml = simplexml_load_string($post->xml, "SimpleXMLElement", LIBXML_NOCDATA);
 
 			$parse = xml2arr($xml);
@@ -378,14 +381,14 @@
 	}
 
 	function add_permissions_table() {
-		if (!query("SELECT * FROM `__permissions")) {
-			$permissions_table = query("CREATE TABLE `__permissions` (
-			                                `id` VARCHAR(100) DEFAULT '' PRIMARY KEY,
-			                                `name` VARCHAR(100) DEFAULT ''
-			                            ) DEFAULT CHARSET=utf8");
-			echo __("Creating new permissions table...").test($permissions_table);
-			if (!$permissions_table) return;
-		}
+		if (query("SELECT * FROM `__permissions")) return;
+
+		$permissions_table = query("CREATE TABLE `__permissions` (
+		                                `id` VARCHAR(100) DEFAULT '' PRIMARY KEY,
+		                                `name` VARCHAR(100) DEFAULT ''
+		                            ) DEFAULT CHARSET=utf8");
+		echo __("Creating new permissions table...").test($permissions_table);
+		if (!$permissions_table) return;
 
 		$permissions = array("change_settings" => "Change Settings",
 		                     "toggle_extensions" => "Toggle Extensions",
@@ -517,11 +520,14 @@
 			h1 {
 				color: #ccc;
 				font-size: 3em;
-				margin: 1.25em 0 .5em;
+				margin: 1em 0 .5em;
 				text-align: center;
 			}
 			h1.first {
 				margin-top: .25em;
+			}
+			h1.what_now {
+				margin-top: .5em;
 			}
 			h2 {
 				font-size: 1.25em;
@@ -585,11 +591,14 @@
 			button:active {
 				background: #e0e0e0;
 			}
-			ol {
-				margin: 0 0 1em 2em;
+			ul, ol {
+				margin: 1em 0 1em 2em;
+			}
+			ul {
+				margin-bottom: 3em;
 			}
 			p {
-				margin-bottom: 1em;
+				margin-bottom: 2em;
 			}
 			.center {
 				text-align: center;
@@ -599,7 +608,8 @@
 	<body>
 		<div class="window">
 <?php if (!empty($_POST)): ?>
-			<textarea cols="30" rows="15"><?php
+			<textarea cols="30" rows="15">Upgrading...
+<?php
 		move_yml_yaml();
 
 		update_protection();
@@ -630,23 +640,42 @@
 		update_permissions_table();
 
 		foreach (get_config("enabled_modules") as $module)
-			if (file_exists(MAIN_DIR."/modules/".$module."/upgrades.php"))
+			if (file_exists(MAIN_DIR."/modules/".$module."/upgrades.php")) {
+				echo "\nCalling module ".$module."'s upgrader...\n";
 				require MAIN_DIR."/modules/".$module."/upgrades.php";
+			}
 
 		foreach (get_config("enabled_feathers") as $feather)
-			if (file_exists(MAIN_DIR."/feathers/".$feather."/upgrades.php"))
+			if (file_exists(MAIN_DIR."/feathers/".$feather."/upgrades.php")) {
+				echo "\nCalling feather ".$feather."'s upgrader...\n";
 				require MAIN_DIR."/feathers/".$feather."/upgrades.php";
-?></textarea>
-			<form action="index.php" method="get">
-				<button type="submit" class="center"><?php echo __("Take me home."); ?></button>
-			</form>
-			<h1><?php echo __("Tips"); ?></h1>
+			}
+?>
+
+...done!</textarea>
+			<h1 class="what_now"><?php echo __("What now?"); ?></h1>
 			<ol>
+				<li><?php echo __("Look through the above results for any failed tasks. If you see any, you can try and get help at the <a href=\"http://chyrp.net/community/\">Chyrp Community</a>."); ?></li>
+				<li>
+					<?php echo __("If you don't see any failed messages, or if they appear to be minor, you can begin the upgrade process:"); ?>
+					<ol>
+						<li><?php echo __("Back up your current installation, and copy your <code>/includes/config.yaml.php</code> and <code>/includes/database.yaml.php</code> files somewhere safe."); ?></li>
+						<li><?php echo __("Overwrite your current installation with the new files. Be careful of what you're overwriting &ndash; some systems will replace directories instead of merging them."); ?></li>
+						<li><?php echo __("Restore your <code>config.yaml.php</code> and <code>database.yaml.php</code>."); ?></li>
+					</ol>
+				</li>
+				<li><?php echo __("If any of your Modules or Feathers have updates available, check for a <code>upgrades.php</code> file in its main directory. If the file exists, run this upgrader after enabling the Module or Feather."); ?></li>
 				<li><?php echo __("When you are done, delete this file. You probably don't want other people running it."); ?></li>
+			</ol>
+			<h1 class="tips"><?php echo __("Tips"); ?></h1>
+			<ul>
 				<li><?php echo __("If the admin area looks weird, try clearing your cache."); ?></li>
 				<li><?php echo __("As of v2.0, Chyrp uses time zones to determine timestamps. Please set your installation to the correct timezone at <a href=\"admin/index.php?action=general_settings\">General Settings</a>."); ?></li>
 				<li><?php echo __("Check the group permissions &ndash; they might have changed."); ?></li>
-			</ol>
+			</ul>
+			<form action="index.php" method="get">
+				<button type="submit" class="center"><?php echo __("Take me home."); ?></button>
+			</form>
 <?php else: ?>
 			<h1 class="first"><?php echo __("Halt!"); ?></h1>
 			<p><?php echo __("That button may look ready for a-clickin&rsquo;, but please take these preemptive measures before indulging:"); ?></p>
