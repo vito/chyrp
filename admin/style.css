@@ -709,6 +709,19 @@ button.yay:active,
     border-top-color: #003d00;
 	border-bottom-color: #067000 !important;
 }
+button[disabled="disabled"],
+button.disabled {
+	background: #f0f0f0;
+	border-color: #f0f0f0 !important;
+	color: #999;
+}
+button[disabled="disabled"]:hover,
+button.disabled:hover {
+	background: #f0f0f0;
+	border-color: #f0f0f0 !important;
+	color: #999;
+	cursor: default;
+}
 button img,
 .button img {
 	margin: 0 6px -3px -4px;
