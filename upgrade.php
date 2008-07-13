@@ -620,10 +620,10 @@
 			</form>
 			<h1><?php echo __("Tips"); ?></h1>
 			<ol>
-				<li><?php echo __("<strong>Delete this file.</strong> You probably don't want other people running it."); ?></li>
+				<li><?php echo __("When you are done, delete this file. You probably don't want other people running it."); ?></li>
 				<li><?php echo __("If the admin area looks weird, try clearing your cache."); ?></li>
-				<li><?php echo __("As of v2.0, Chyrp uses timezones to manage timestamps. Please set your install to the correct timezone at <a href=\"admin/index.php?action=general_settings\">General Settings</a>."); ?></li>
-				<li><?php echo __("Make sure you check the group permissions &mdash; they might have changed, and you may need to update your group for you to perform some actions."); ?></li>
+				<li><?php echo __("As of v2.0, Chyrp uses time zones to determine timestamps. Please set your installation to the correct timezone at <a href=\"admin/index.php?action=general_settings\">General Settings</a>."); ?></li>
+				<li><?php echo __("Check the group permissions &ndash; they might have changed."); ?></li>
 			</ol>
 <?php else: ?>
 			<h1 class="first"><?php echo __("Halt!"); ?></h1>
@@ -632,7 +632,7 @@
 				<li><?php echo __("Disable any third-party Modules and Feathers."); ?></li>
 				<li><?php echo __("Ensure that the Chyrp installation directory is writable by the server."); ?></li>
 			</ol>
-			<p><?php echo __("If any of the upgrade processes fail, it is safe to keep refreshing and trying again. If you cannot figure something out, please make a topic (with details!) at the <a href=\"http://chyrp.net/community/\">Chyrp Community</a>."); ?></p>
+			<p><?php echo __("If any of the upgrade processes fail, you can safely keep refreshing &ndash; it will only attempt to do tasks that are not already successfully completed. If you cannot figure something out, please make a topic (with details!) at the <a href=\"http://chyrp.net/community/\">Chyrp Community</a>."); ?></p>
 			<form action="upgrade.php" method="post">
 				<button type="submit" class="center" name="upgrade"><?php echo __("Upgrade me!"); ?></button>
 			</form>

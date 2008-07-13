@@ -27,8 +27,10 @@
 		private function __construct() {
 			$this->connected = false;
 
-			if (class_exists("PDO") and (in_array("mysql", PDO::getAvailableDrivers()) or in_array("sqlite", PDO::getAvailableDrivers())))
-				return $this->interface = "pdo";
+			# We really don't need PDO anymore, since we have the two we supported with it hardcoded (kinda).
+			# Keeping this here for when/if we decide to add support for more database engines, like Postgres and MSSQL.
+			#if (class_exists("PDO") and (in_array("mysql", PDO::getAvailableDrivers()) or in_array("sqlite", PDO::getAvailableDrivers())))
+			#	return $this->interface = "pdo";
 
 			if (isset($this->adapter)) {
 				if ($this->adapter == "mysql" and class_exists("MySQLi"))
