@@ -9,18 +9,18 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-07-11 03:22-0500\n"
+"PO-Revision-Date: 2008-07-13 01:43-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: themes/stardust/content/sidebar.twig:71
+#: themes/stardust/content/sidebar.twig:70
 msgid "Load time:"
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:70
+#: themes/stardust/content/sidebar.twig:69
 msgid "Queries:"
 msgstr ""
 
@@ -66,7 +66,7 @@ msgstr ""
 
 #: themes/stardust/pages/archive.twig:15
 #: themes/stardust/pages/archive.twig:31
-#: themes/stardust/content/sidebar.twig:61
+#: themes/stardust/content/sidebar.twig:60
 msgid "%B %Y"
 msgstr ""
 
@@ -98,7 +98,7 @@ msgstr ""
 
 #: themes/stardust/forms/user/register.twig:3
 #: themes/stardust/forms/user/register.twig:23
-#: themes/stardust/content/sidebar.twig:36
+#: themes/stardust/content/sidebar.twig:35
 msgid "Register"
 msgstr ""
 
@@ -123,7 +123,7 @@ msgid "Add Page"
 msgstr ""
 
 #: themes/stardust/pages/archive.twig:9
-#: themes/stardust/content/sidebar.twig:57
+#: themes/stardust/content/sidebar.twig:56
 msgid "Archives"
 msgstr ""
 
@@ -131,7 +131,7 @@ msgstr ""
 msgid "%B %e, %Y, at %I:%M %p"
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:25
+#: themes/stardust/content/sidebar.twig:24
 msgid "Guest"
 msgstr ""
 
@@ -139,12 +139,12 @@ msgstr ""
 msgid "%B %e, %Y"
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:25
+#: themes/stardust/content/sidebar.twig:24
 #, php-format
 msgid "Welcome, %s!"
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:28
+#: themes/stardust/content/sidebar.twig:27
 msgid "User Controls"
 msgstr ""
 
@@ -200,7 +200,7 @@ msgstr ""
 msgid "Your Website"
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:44
+#: themes/stardust/content/sidebar.twig:43
 #: themes/stardust/content/post.twig:28
 msgid "Tags"
 msgstr ""
@@ -213,7 +213,7 @@ msgstr ""
 msgid "Your E-Mail"
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:30
+#: themes/stardust/content/sidebar.twig:29
 msgid "Toggle Admin Bar"
 msgstr ""
 
@@ -244,7 +244,7 @@ msgstr ""
 msgid "Your comment is awaiting moderation."
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:52
+#: themes/stardust/content/sidebar.twig:51
 msgid "All &rarr;"
 msgstr ""
 
@@ -323,7 +323,7 @@ msgstr ""
 
 #: themes/stardust/forms/user/login.twig:3
 #: themes/stardust/forms/user/login.twig:14
-#: themes/stardust/content/sidebar.twig:34
+#: themes/stardust/content/sidebar.twig:33
 msgid "Log In"
 msgstr ""
 
@@ -347,7 +347,7 @@ msgstr ""
 msgid "No Drafts"
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:32
+#: themes/stardust/content/sidebar.twig:31
 msgid "Log Out"
 msgstr ""
 
@@ -359,11 +359,11 @@ msgstr ""
 msgid "%B %e @ %I:%M %p"
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:68
+#: themes/stardust/content/sidebar.twig:67
 msgid "Stats"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:64
+#: themes/stardust/layouts/default.twig:65
 msgid "Powered by <a class=\"chyrp\" href=\"http://chyrp.net/\">Chyrp</a>"
 msgstr ""
 
