@@ -36,7 +36,7 @@ function fileDialogComplete(numFilesSelected, numFilesQueued) {
 function uploadStart(file) {
 	$("#progress").css("display", "block")
 	$("input.swfupload_button").remove()
-	$("#publish, #save").attr("disabled", "disabled")
+	$("#publish, #save").attr("disabled", "disabled").addClass("disabled")
 }
 
 function uploadProgress(file, bytesLoaded, bytesTotal) {
