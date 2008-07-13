@@ -117,12 +117,11 @@
 			$theme->load("feathers/".$post->feather, array("post" => $post, "ajax_reason" => $reason));
 			break;
 		case "preview":
-			$content = urldecode($_POST['content']);
-			if (empty($content)) break;
+			if (empty($_POST['content'])) break;
 
-			$trigger->filter($content, array("preview_".$_POST['feather'], "preview"));
+			$trigger->filter($_POST['content'], array("preview_".$_POST['feather'], "preview"));
 
-			echo "<h2 class=\"preview-header\">".__("Preview")."</h2>\n<div class=\"preview-content\">".$content."</div>";
+			echo "<h2 class=\"preview-header\">".__("Preview")."</h2>\n<div class=\"preview-content\">".$_POST['content']."</div>";
 			break;
 		case "check_confirm":
 			if (!$visitor->group()->can("toggle_extensions"))
