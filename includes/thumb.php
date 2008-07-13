@@ -1,5 +1,5 @@
 <?php
-	require_once "../../includes/common.php";
+	require_once "common.php";
 
 	ini_set("memory_limit", "32M");
 
