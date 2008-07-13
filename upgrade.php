@@ -118,9 +118,9 @@
 
 	function test($try) {
 		if ($try)
-			return " ".__("success!")."\n";
+			return " <span class=\"yay\">".__("success!")."</span>\n";
 		else
-			return " ".__("failed!")."\n";
+			return " <span class=\"boo\">".__("failed!")."</span>\n";
 	}
 
 	function get_config($setting) {
@@ -529,42 +529,23 @@
 			h1.what_now {
 				margin-top: .5em;
 			}
-			h2 {
-				font-size: 1.25em;
-				font-weight: bold;
-			}
-			input[type="password"], input[type="text"], textarea, select {
-				font-size: 1.25em;
-				width: 23.3em;
-				padding: .3em;
-				border: .1em solid #ddd;
-			}
-			textarea {
-				width: 97.75%;
-				font-family: Monaco, monospace;
-			}
 			code {
 				color: #06B;
 				font-family: Monaco, monospace;
 			}
-			label {
-				display: block;
-				font-weight: bold;
-				border-bottom: .1em dotted #ddd;
-				margin-bottom: .2em;
-			}
-			.footer {
-				color: #777;
-				margin-top: 1em;
-				font-size: .9em;
-				text-align: center;
-			}
-			.error {
-				color: #F22;
-			}
 			a:link, a:visited {
 				color: #6B0;
 			}
+			pre.pane {
+				height: 200px;
+				overflow-y: auto;
+				margin: 0 0 3em;
+				padding: 1em;
+				background: #333;
+				color: #fff;
+			}
+			span.yay { color: #0f0; }
+			span.boo { color: #f00; }
 			a.big,
 			button {
 				background: #eee;
@@ -601,14 +582,16 @@
 				margin-bottom: 2em;
 			}
 			.center {
-				text-align: center;
+				text-align: center !important;
 			}
 		</style>
 	</head>
 	<body>
 		<div class="window">
 <?php if (!empty($_POST)): ?>
-			<textarea cols="30" rows="15">Upgrading...
+			<pre class="pane"><?php echo __("Upgrading..."); ?>
+
+
 <?php
 		move_yml_yaml();
 
@@ -639,20 +622,20 @@
 		# Needed from 2.0b3.1 -> 2.0rc1
 		update_permissions_table();
 
-		foreach (get_config("enabled_modules") as $module)
+		foreach ((array) get_config("enabled_modules") as $module)
 			if (file_exists(MAIN_DIR."/modules/".$module."/upgrades.php")) {
-				echo "\nCalling module ".$module."'s upgrader...\n";
+				echo "\n"._f("Calling \"%s\" module's upgrader...", array($module))."\n";
 				require MAIN_DIR."/modules/".$module."/upgrades.php";
 			}
 
-		foreach (get_config("enabled_feathers") as $feather)
+		foreach ((array) get_config("enabled_feathers") as $feather)
 			if (file_exists(MAIN_DIR."/feathers/".$feather."/upgrades.php")) {
-				echo "\nCalling feather ".$feather."'s upgrader...\n";
+				echo "\n"._f("Calling \"%s\" feather's upgrader...", array($feather))."\n";
 				require MAIN_DIR."/feathers/".$feather."/upgrades.php";
 			}
 ?>
 
-...done!</textarea>
+...done!</pre>
 			<h1 class="what_now"><?php echo __("What now?"); ?></h1>
 			<ol>
 				<li><?php echo __("Look through the above results for any failed tasks. If you see any, you can try and get help at the <a href=\"http://chyrp.net/community/\">Chyrp Community</a>."); ?></li>
@@ -673,9 +656,7 @@
 				<li><?php echo __("As of v2.0, Chyrp uses time zones to determine timestamps. Please set your installation to the correct timezone at <a href=\"admin/index.php?action=general_settings\">General Settings</a>."); ?></li>
 				<li><?php echo __("Check the group permissions &ndash; they might have changed."); ?></li>
 			</ul>
-			<form action="index.php" method="get">
-				<button type="submit" class="center"><?php echo __("Take me home."); ?></button>
-			</form>
+			<a class="big center" href="index.php"><?php echo __("All done!"); ?></a>
 <?php else: ?>
 			<h1 class="first"><?php echo __("Halt!"); ?></h1>
 			<p><?php echo __("That button may look ready for a-clickin&rsquo;, but please take these preemptive measures before indulging:"); ?></p>
