@@ -254,6 +254,29 @@
 		}
 	}
 
+	/**
+	 * Function: camelize
+	 * Converts a given string to camel-case.
+	 *
+	 * Parameters:
+	 *     $string - The string to camelize.
+	 *     $keep_spaces - Whether or not to convert underscores to spaces or remove them.
+	 *
+	 * Returns:
+	 *     A CamelCased string.
+	 */
+	function camelize($string, $keep_spaces = false) {
+		$lower = strtolower($string);
+		$deunderscore = str_replace("_", " ", $lower);
+		$dehyphen = str_replace("-", " ", $deunderscore);
+		$final = ucwords($dehyphen);
+
+		if (!$keep_spaces)
+			$final = str_replace(" ", "", $final);
+
+		return $final;
+	}
+
 
 	#---------------------------------------------
 	# Upgrading Actions
@@ -350,7 +373,7 @@
 		                     "view_site" => "View Site",
 		                     "view_private" => "View Private Posts",
 		                     "view_draft" => "View Drafts",
-		                     "view_own_draft" => "Edit Own Drafts",
+		                     "view_own_draft" => "View Own Drafts",
 		                     "add_post" => "Add Posts",
 		                     "add_draft" => "Add Drafts",
 		                     "edit_post" => "Edit Posts",
@@ -398,20 +421,25 @@
 	}
 
 	function update_permissions_table() {
-		$get_permissions = query("SELECT * FROM `__permissions`");
-		while ($row = fetch_object($get_permissions))
+		$check = query("SELECT * FROM `__permissions`");
+		while ($row = fetch_object($check))
 			if (!is_numeric($row->id))
 				return;
 
+		$get_permissions = query("SELECT * FROM `__permissions`");
+
 		echo __("Updating permissions table structure...").
 		     test(query("ALTER TABLE `__permissions` CHANGE `id` `id` VARCHAR(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL"));
+
+		echo __("Removing `name` index from permissions table...").
+		     test(query("ALTER TABLE `__permissions` DROP INDEX `name`"));
 
 		$permissions = array("change_settings" => "Change Settings",
 		                     "toggle_extensions" => "Toggle Extensions",
 		                     "view_site" => "View Site",
 		                     "view_private" => "View Private Posts",
 		                     "view_draft" => "View Drafts",
-		                     "view_own_draft" => "Edit Own Drafts",
+		                     "view_own_draft" => "View Own Drafts",
 		                     "add_post" => "Add Posts",
 		                     "add_draft" => "Add Drafts",
 		                     "edit_post" => "Edit Posts",
@@ -434,7 +462,12 @@
 
 		while ($permission = fetch_object($get_permissions))
 			echo _f("Updating %s permission...", array($permission->name)).
-			     test(query("UPDATE `__permissions` SET `id` = '".fix($permission->name)."', `name` = '".fix($permissions[$permission->name])."' WHERE `id` = ".$permission->id));
+			     test(query("UPDATE `__permissions` SET
+				             `id` = '".fix($permission->name)."',
+			                 `name` = '".fix((isset($permissions[$permission->name])) ?
+			                                 $permissions[$permission->name] :
+			                                 camelize($permission->name, true))."'
+			                 WHERE `id` = ".$permission->id) or die(mysql_error()));
 
 	}
 ?>
