@@ -109,10 +109,16 @@
 
 	# Generate the cache image.
 	if (!isset($_GET['no_cache']) or $_GET['no_cache'] == "false")
-		$done($thumbnail, $cache_file, $quality);
+		if ($done == "imagejpeg")
+			$done($thumbnail, $cache_file, $quality);
+		else
+			$done($thumbnail, $cache_file);
 
 	# Serve the image.
-	$done($thumbnail, "", $quality);
+	if ($done == "imagejpeg")
+		$done($thumbnail, "", $quality);
+	else
+		$done($thumbnail);
 
 	# Clear memory.
 	imagedestroy($image);

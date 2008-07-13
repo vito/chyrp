@@ -20,11 +20,20 @@
 	require_once INCLUDES_DIR."/lib/gettext/gettext.php";
 	require_once INCLUDES_DIR."/lib/gettext/streams.php";
 
+	class Yaml {
+		static function load($string) {
+			return call_user_func(array(YAML_CLASS, YAML_LOAD), $string);
+		}
+		static function dump($array) {
+			return call_user_func(array(YAML_CLASS, YAML_DUMP), $array);
+		}
+	}
+
 	function get_db($setting) {
 		$config = file_get_contents(DATABASE_FILE);
 		$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
 
-		$yaml = call_user_func(array(YAML_CLASS, YAML_LOAD), $config);
+		$yaml = Yaml::load($config);
 
 		return (isset($yaml[$setting])) ? $yaml[$setting] : false ;
 	}
@@ -38,13 +47,13 @@
 		$config = file_get_contents(DATABASE_FILE);
 		$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
 
-		$yaml = call_user_func(array(YAML_CLASS, YAML_LOAD), $config);
+		$yaml = Yaml::load($config);
 
 		$yaml[$setting] = $value;
 
 		$protection = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
 
-		$dump = $protection.call_user_func(array(YAML_CLASS, YAML_DUMP), $yaml);
+		$dump = $protection.Yaml::dump($yaml);
 
 		echo $message.test(@file_put_contents(DATABASE_FILE, $dump));
 	}
@@ -127,7 +136,7 @@
 		$config = file_get_contents(CONFIG_FILE);
 		$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
 
-		$yaml = call_user_func(array(YAML_CLASS, YAML_LOAD), $config);
+		$yaml = Yaml::load($config);
 
 		return (isset($yaml[$setting])) ? $yaml[$setting] : false ;
 	}
@@ -143,35 +152,44 @@
 		$config = file_get_contents(CONFIG_FILE);
 		$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
 
-		$yaml = call_user_func(array(YAML_CLASS, YAML_LOAD), $config);
+		$yaml = Yaml::load($config);
 
 		$yaml[$setting] = $value;
 
 		$protection = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
 
-		$dump = $protection.call_user_func(array(YAML_CLASS, YAML_DUMP), $yaml);
+		$dump = $protection.Yaml::dump($yaml);
 
 		echo $message.test(@file_put_contents(CONFIG_FILE, $dump));
 	}
 
+	function check_config($setting) {
+		$config = file_get_contents(CONFIG_FILE);
+		$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
+
+		$yaml = Yaml::load($config);
+
+		return (isset($yaml[$setting]));
+	}
+
 	function add_config_if_not_exists($setting, $value) {
-		if (!get_config($setting))
+		if (!check_config($setting))
 			echo set_config($setting, $value, _f("Adding %s setting...", array($setting)));
 	}
 
 	function remove_config($setting) {
-		if (!get_config($setting)) return;
+		if (!check_config($setting)) return;
 
 		$config = file_get_contents(CONFIG_FILE);
 		$config = preg_replace("/<\?php (.+) \?>\n?/", "", $config);
 
-		$yaml = call_user_func(array(YAML_CLASS, YAML_LOAD), $config);
+		$yaml = Yaml::load($config);
 
 		unset($yaml[$setting]);
 
 		$protection = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
 
-		$dump = $protection.call_user_func(array(YAML_CLASS, YAML_DUMP), $yaml);
+		$dump = $protection.Yaml::dump($yaml);
 
 		echo _f("Removing %s setting...", array($setting)).test(@file_put_contents(CONFIG_FILE, $dump));
 	}
@@ -360,7 +378,7 @@
 
 		# Convert permissions array to a YAML dump.
 		foreach ($groups as $key => &$val)
-			$val = call_user_func(array(YAML_CLASS, YAML_DUMP), $val);
+			$val = Yaml::dump($val);
 
 		$drop_groups = query("DROP TABLE IF EXISTS `__groups`");
 		echo __("Dropping old groups table...").test($drop_groups);
@@ -652,7 +670,7 @@
 				<li><?php echo __("As of v2.0, Chyrp uses time zones to determine timestamps. Please set your installation to the correct timezone at <a href=\"admin/index.php?action=general_settings\">General Settings</a>."); ?></li>
 				<li><?php echo __("Check the group permissions &ndash; they might have changed."); ?></li>
 			</ul>
-			<a class="big center" href="index.php"><?php echo __("All done!"); ?></a>
+			<a class="big center" href="<?php echo (check_config("ur") ? get_config("url") : get_config("chyrp_url")); ?>"><?php echo __("All done!"); ?></a>
 <?php else: ?>
 			<h1 class="first"><?php echo __("Halt!"); ?></h1>
 			<p><?php echo __("That button may look ready for a-clickin&rsquo;, but please take these preemptive measures before indulging:"); ?></p>
