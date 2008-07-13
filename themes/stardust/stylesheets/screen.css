@@ -521,17 +521,6 @@ div.page span.controls {
 	padding: .4em;
 	width: 412px;
 }
-::selection {
-	background: #000 !important;
-	color: #fff;
-}
-::-moz-selection {
-	background: #000 !important;
-	color: #fff;
-}
-.inline_edit input[type="file"] {
-	color: #eee;
-}
 .inline_edit .more_options_link:link {
 	color: #5B7C99;
 	display: block;
