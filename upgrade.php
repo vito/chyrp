@@ -340,27 +340,28 @@
 	}
 
 	function update_groups_to_yaml() {
-		if (!query("SELECT `view_site` FROM `__groups` LIMIT 1")) return;
-
-		$groups = array();
+		if (!query("SELECT `view_site` FROM `__groups`")) return;
 
 		$get_groups = query("SELECT * FROM `__groups`");
-
 		echo __("Backing up current groups table...").test($get_groups);
 		if (!$get_groups) return;
 
+		$groups = array();
+		# Generate an array of groups, name => permissions.
 		while ($group = fetch_object($get_groups)) {
 			$groups[$group->name] = array();
 			foreach ($group as $key => $val)
 				if ($key != "name" and $val)
 					$groups[$group->name][] = $key;
 		}
+
+		# Convert permissions array to a YAML dump.
 		foreach ($groups as $key => &$val)
 			$val = call_user_func(array(YAML_CLASS, YAML_DUMP), $val);
 
-		$delete_groups = query("DROP TABLE IF EXISTS `__groups`");
-		echo __("Deleting old groups table...").test($delete_groups);
-		if (!$delete_groups) return;
+		$drop_groups = query("DROP TABLE IF EXISTS `__groups`");
+		echo __("Dropping old groups table...").test($drop_groups);
+		if (!$drop_groups) return;
 
 		$groups_table = query("CREATE TABLE IF NOT EXISTS `__groups` (
 		                           `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -371,22 +372,20 @@
 		echo __("Creating new groups table...").test($groups_table);
 		if (!$groups_table) return;
 
-		echo __("Restoring groups...");
 		foreach($groups as $name => $permissions)
-			if (!query("INSERT INTO `__groups` SET `name` = '".fix(ucfirst($name))."', `permissions` = '".fix($permissions)."'"))
-				exit(test(false));
-		echo test(true);
+			echo _f("Restoring group \"%s\"...", array(ucfirst($name))).
+			     test(query("INSERT INTO `__groups` SET `name` = '".fix(ucfirst($name))."', `permissions` = '".fix($permissions)."'"));
 	}
 
 	function add_permissions_table() {
-		if (query("SELECT * FROM `__permissions")) return;
-
-		$permissions_table = query("CREATE TABLE `__permissions` (
-		                                `id` VARCHAR(100) DEFAULT '' PRIMARY KEY,
-		                                `name` VARCHAR(100) DEFAULT ''
-		                            ) DEFAULT CHARSET=utf8");
-		echo __("Creating new permissions table...").test($permissions_table);
-		if (!$permissions_table) return;
+		if (!query("SELECT * FROM `__permissions")) {
+			$permissions_table = query("CREATE TABLE `__permissions` (
+			                                `id` VARCHAR(100) DEFAULT '' PRIMARY KEY,
+			                                `name` VARCHAR(100) DEFAULT ''
+			                            ) DEFAULT CHARSET=utf8");
+			echo __("Creating new permissions table...").test($permissions_table);
+			if (!$permissions_table) return;
+		}
 
 		$permissions = array("change_settings" => "Change Settings",
 		                     "toggle_extensions" => "Toggle Extensions",
@@ -414,11 +413,9 @@
 		                     "edit_group" => "Edit Groups",
 		                     "delete_group" => "Delete Groups");
 
-		echo __("Inserting permissions...");
 		foreach ($permissions as $id => $name)
-			if (!query("INSERT INTO `__permissions` SET `id` = '".$id."', `name` = '".fix($name)."'"))
-				exit(test(false));
-		echo test(true);
+			echo _f("Inserting permission \"%s\"...", array($name)).
+			     test(query("INSERT INTO `__permissions` SET `id` = '".$id."', `name` = '".fix($name)."'"));
 	}
 
 	function add_sessions_table() {
@@ -435,6 +432,7 @@
 	}
 
 	function update_permissions_table() {
+		# If there are any non-numeric IDs in the permissions database, assume this is already done.
 		$check = query("SELECT * FROM `__permissions`");
 		while ($row = fetch_object($check))
 			if (!is_numeric($row->id))

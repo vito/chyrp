@@ -20,7 +20,7 @@
 
 		# Drop the old table.
 		$delete_tags = query("DROP TABLE `__tags`");
-		echo __("Deleting old tags table...", "tags").test($delete_tags);
+		echo __("Dropping old tags table...", "tags").test($delete_tags);
 		if (!$delete_tags) return;
 
 		# Create the new table.
