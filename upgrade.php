@@ -517,13 +517,13 @@
 		                     "edit_group" => "Edit Groups",
 		                     "delete_group" => "Delete Groups");
 
-		foreach ($permissions_backup as $id)
+		foreach ($permissions_backup as $id) {
+			$name = isset($permissions[$id]) ? $permissions[$id] : camelize($id, true);
 			echo _f("Restoring permission \"%s\"...", array($name)).
 			     test(SQL::query("INSERT INTO `__permissions` SET
 				                  `id` = '".$id."',
-				                  `name` = '".SQL::fix(isset($permissions[$id]) ?
-				                                       $permissions[$id] :
-				                                       camelize($id, true))."'"));
+				                  `name` = '".SQL::fix($name)."'"));
+		}
 
 	}
 ?>
