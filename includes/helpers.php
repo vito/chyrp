@@ -38,22 +38,28 @@
 	 */
 	function error($title, $body) {
 		# Clear all output sent before this error.
-		ob_end_clean();
-
-		# Since the header might already be set to gzip, start output buffering again.
-		if (extension_loaded("zlib") and !ini_get("zlib.output_compression") and
-			isset($_SERVER['HTTP_ACCEPT_ENCODING']) and
-		    substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip")) {
-			ob_start("ob_gzhandler");
-			header("Content-Encoding: gzip");
-		} else
-			ob_start();
+		if ($end = @ob_end_clean()) {
+			# Since the header might already be set to gzip, start output buffering again.
+			if (extension_loaded("zlib") and !ini_get("zlib.output_compression") and
+				isset($_SERVER['HTTP_ACCEPT_ENCODING']) and
+			    substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip")) {
+				ob_start("ob_gzhandler");
+				header("Content-Encoding: gzip");
+			} else
+				ob_start();
+		} else {
+			# If output buffering is not started, assume this
+			# is sent from the Session class or somewhere deep.
+			error_log($title.": ".$body);
+			exit;
+		}
 
 		# Display the error.
 		require (defined('THEME_DIR') and file_exists(THEME_DIR."/content/error.php")) ? THEME_DIR."/content/error.php" : INCLUDES_DIR."/error.php" ;
 
-		# And take a bow.
-		ob_end_flush();
+		if ($end)
+			ob_end_flush();
+
 		exit;
 	}
 

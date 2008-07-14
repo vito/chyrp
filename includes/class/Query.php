@@ -20,6 +20,9 @@
 			$this->db =& SQL::current()->db;
 			$this->interface =& SQL::current()->interface;
 
+			$this->params = $params;
+			$this->throw_exceptions = $throw_exceptions;
+
 			if (defined('DEBUG') and DEBUG) {
 				$trace = debug_backtrace();
 				$target = $trace[$index = 0];
@@ -46,44 +49,48 @@
 						$this->queryString = $this->query->queryString;
 						if (!$result) throw new PDOException;
 					} catch (PDOException $error) {
-						$message = $error->getMessage();
-
-						if (XML_RPC or $throw_exceptions)
-							throw new Exception($message);
-
-						if (DEBUG)
-							$message.= "\n\n<pre>".print_r($query, true)."\n\n<pre>".print_r($params, true)."</pre>\n\n<pre>".$error->getTraceAsString()."</pre>";
-
-						$this->db = null;
-
-						error(__("Database Error"), $message);
+						$this->handle($error);
 					}
 					break;
 				case "mysqli":
 					foreach ($params as $name => $val)
-						$query = str_replace($name, "'".$this->db->escape_string($val)."'", $query);
+						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", "'".$this->db->escape_string($val)."'\\1", $query);
 
 					$this->queryString = $query;
-					if (!$this->query = $this->db->query($query))
-						return error(__("Database Error"), $this->db->error);
 
+					try {
+						if (!$this->query = $this->db->query($query))
+							throw new Exception($this->db->error);
+					} catch (Exception $error) {
+						$this->handle($error);
+					}
 					break;
 				case "mysql":
 					foreach ($params as $name => $val)
-						$query = str_replace($name, "'".mysql_real_escape_string($val)."'", $query);
+						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", "'".$this->db->escape_string($val)."'\\1", $query);
 
 					$this->queryString = $query;
-					if (!$this->query = @mysql_query($query))
-						return error(__("Database Error"), mysql_error());
+
+					try {
+						if (!$this->query = @mysql_query($query))
+							throw new Exception(mysql_error());
+					} catch (Exception $error) {
+						$this->handle($error);
+					}
 
 					break;
 				case "sqlite":
 					foreach ($params as $name => $val)
-						$query = str_replace($name, "'".sqlite_escape_string($val)."'", $query);
+						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", "'".$this->db->escape_string($val)."'\\1", $query);
 
 					$this->queryString = $query;
-					if (!$this->query = @$this->db->query($query, SQLITE_BOTH, $this->error))
-						return error(__("Database Error"), $this->error);
+
+					try {
+						if (!$this->query = @$this->db->query($query, SQLITE_BOTH, $this->error))
+							throw new Exception($this->error);
+					} catch (Exception $error) {
+						$this->handle($error);
+					}
 
 					break;
 			}
@@ -176,5 +183,20 @@
 
 					return $results;
 			}
+		}
+
+		public function handle($error) {
+			$message = $error->getMessage();
+
+			if (DEBUG)
+				$message.= "\n\n<pre>".print_r($this->queryString, true)."\n\n<pre>".print_r($this->params, true)."</pre>\n\n<pre>".$error->getTraceAsString()."</pre>";
+
+			if (XML_RPC or $this->throw_exceptions) {
+				error_log("THROWING EXCEPTION FOR ".$this->queryString."...");
+				throw new Exception($message);
+				return;
+			}
+
+			error(__("Database Error"), $message);
 		}
 	}

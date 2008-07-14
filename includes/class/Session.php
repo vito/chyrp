@@ -32,7 +32,8 @@
 			                                     "data",
 			                                     "`__sessions`.`id` = :id",
 			                                     "id",
-			                                     array(":id" => $id))->fetchColumn();
+			                                     array(":id" => $id),
+			                                     null, null, null, null, true)->fetchColumn();
 
 			return fallback(self::$data, "");
 		}
@@ -52,11 +53,13 @@
 				$sql->update("sessions",
 				             "`__sessions`.`id` = :id",
 				             array("data" => ":data", "user_id" => ":user_id", "updated_at" => ":updated_at"),
-				             array(":id" => $id, ":data" => $data, ":user_id" => $user_id, ":updated_at" => datetime()));
+				             array(":id" => $id, ":data" => $data, ":user_id" => $user_id, ":updated_at" => datetime()),
+				             true);
 			else
 				$sql->insert("sessions",
 				             array("id" => ":id", "data" => ":data", "user_id" => ":user_id", "created_at" => ":created_at"),
-				             array(":id" => $id, ":data" => $data, ":user_id" => $user_id, ":created_at" => datetime()));
+				             array(":id" => $id, ":data" => $data, ":user_id" => $user_id, ":created_at" => datetime()),
+				             true);
 		}
 
 		/**
@@ -64,7 +67,7 @@
 		 * Destroys their session.
 		 */
 		static function destroy($id) {
-			if (SQL::current()->delete("sessions", "`__sessions`.`id` = :id", array(":id" => $id)))
+			if (SQL::current()->delete("sessions", "`__sessions`.`id` = :id", array(":id" => $id), true))
 				return true;
 
 			return false;
@@ -79,7 +82,8 @@
 
 			$delete = SQL::current()->delete("sessions",
 			                                 "`__sessions`.`created_at` >= :thirty_days OR `__sessions`.`data` = '' OR `data` IS NULL",
-			                                 array(":thirty_days" => datetime($thirty_days)));
+			                                 array(":thirty_days" => datetime($thirty_days)),
+			                                 true);
 			return true;
 		}
 	}
