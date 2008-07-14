@@ -58,9 +58,11 @@ ul li {
 	list-style-type: disc;
 }
 ol {
-	list-style: decimal;
 	padding-left: 2em;
 	margin-bottom: 1em;
+}
+ol li {
+	list-style: decimal;
 }
 
 a.comment_delete_link,
@@ -314,6 +316,7 @@ ol.comments {
 	word-wrap: break-word;
 }
 ol.comments li {
+	list-style: none;
 	margin-bottom: 1.5em;
 	width: auto;
 }
@@ -422,7 +425,7 @@ div.page span.controls {
 	color: #ccc;
 	margin: .6em 0 0 .6em;
 }
-div.post.text ul {
+div.post ul {
 	margin-bottom: 1em;
 }
 div.post.quote blockquote {
