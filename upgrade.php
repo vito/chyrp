@@ -593,7 +593,8 @@
 			button {
 				background: #eee;
 				display: block;
-				text-align: left;
+				text-align: center;
+				margin-top: 2em;
 				padding: .75em 1em;
 				color: #777;
 				text-shadow: #fff .1em .1em 0;
@@ -616,28 +617,23 @@
 				background: #e0e0e0;
 			}
 			ul, ol {
-				margin: 1em 0 1em 2em;
+				margin: 0 0 1em 2em;
 			}
 			li {
 				margin-bottom: .5em;
 			}
 			ul {
-				margin-bottom: 3em;
+				margin-bottom: 1.5em;
 			}
 			p {
-				margin-bottom: 2em;
-			}
-			.center {
-				text-align: center !important;
+				margin-bottom: 1em;
 			}
 		</style>
 	</head>
 	<body>
 		<div class="window">
 <?php if (!empty($_POST)): ?>
-			<pre class="pane"><?php echo __("Upgrading..."); ?>
-
-<?php
+			<pre class="pane"><?php
 		move_yml_yaml();
 
 		update_protection();
@@ -669,18 +665,20 @@
 
 		foreach ((array) Config::get("enabled_modules") as $module)
 			if (file_exists(MAIN_DIR."/modules/".$module."/upgrades.php")) {
-				echo "\n"._f("Calling \"%s\" module's upgrader...", array($module))."\n";
+				echo _f("Calling \"%s\" module's upgrader...", array($module))."\n";
 				require MAIN_DIR."/modules/".$module."/upgrades.php";
 			}
 
 		foreach ((array) Config::get("enabled_feathers") as $feather)
 			if (file_exists(MAIN_DIR."/feathers/".$feather."/upgrades.php")) {
-				echo "\n"._f("Calling \"%s\" feather's upgrader...", array($feather))."\n";
+				echo _f("Calling \"%s\" feather's upgrader...", array($feather))."\n";
 				require MAIN_DIR."/feathers/".$feather."/upgrades.php";
 			}
 ?>
 
-...done!</pre>
+<?php echo __("Done!"); ?>
+
+</pre>
 			<h1 class="what_now"><?php echo __("What now?"); ?></h1>
 			<ol>
 				<li><?php echo __("Look through the results up there for any failed tasks. If you see any and you can't figure out why, you can ask for help at the <a href=\"http://chyrp.net/community/\">Chyrp Community</a>."); ?></li>
@@ -693,7 +691,7 @@
 				<li><?php echo __("As of v2.0, Chyrp uses time zones to determine timestamps. Please set your installation to the correct timezone at <a href=\"admin/index.php?action=general_settings\">General Settings</a>."); ?></li>
 				<li><?php echo __("Check the group permissions &ndash; they might have changed."); ?></li>
 			</ul>
-			<a class="big center" href="<?php echo (Config::check("url") ? Config::get("url") : Config::get("chyrp_url")); ?>"><?php echo __("All done!"); ?></a>
+			<a class="big" href="<?php echo (Config::check("url") ? Config::get("url") : Config::get("chyrp_url")); ?>"><?php echo __("All done!"); ?></a>
 <?php else: ?>
 			<h1 class="first"><?php echo __("Halt!"); ?></h1>
 			<p><?php echo __("That button may look ready for a-clickin&rsquo;, but please take these preemptive measures before indulging:"); ?></p>
@@ -704,7 +702,7 @@
 			</ol>
 			<p><?php echo __("If any of the upgrade processes fail, you can safely keep refreshing &ndash; it will only attempt to do tasks that are not already successfully completed. If you cannot figure something out, please make a topic (with details!) at the <a href=\"http://chyrp.net/community/\">Chyrp Community</a>."); ?></p>
 			<form action="upgrade.php" method="post">
-				<button type="submit" class="center" name="upgrade"><?php echo __("Upgrade me!"); ?></button>
+				<button type="submit" name="upgrade"><?php echo __("Upgrade me!"); ?></button>
 			</form>
 <?php endif; ?>
 		</div>

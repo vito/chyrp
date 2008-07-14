@@ -16,7 +16,7 @@
 					echo "				".$id." = new SWFUpload({\n";
 					echo '					upload_url : "'.$config->chyrp_url.'/modules/swfupload/upload_handler.php",'."\n";
 					echo '					flash_url : "'.$config->chyrp_url.'/modules/swfupload/lib/FlashDevelop/Flash9/swfupload_f9.swf",'."\n";
-					echo '					post_params: {"PHPSESSID" : "'.session_id().'", "PHPSESSNAME" : "'.session_name().'" },'."\n";
+					echo '					post_params: {"PHPSESSID" : "'.session_id().'", "PHPSESSNAME" : "'.session_name().'", "ajax" : "true" },'."\n";
 					echo '					file_size_limit : "100 MB",'."\n";
 					echo '					file_types : "'.$extensions.'",'."\n";
 					echo '					file_types_description : "All Files",'."\n";

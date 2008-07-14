@@ -55,7 +55,10 @@ function uploadProgress(file, bytesLoaded, bytesTotal) {
 
 function uploadSuccess(file, serverData) {
 	try {
-		$('<input type="hidden" name="filename" value="'+serverData+'" />').insertAfter("#progress")
+		if (/HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW/m.test(serverData))
+			alert(serverData.replace(/(HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW|<([^>]+)>\n?)/gm, ""))
+		else
+			$('<input type="hidden" name="filename" value="'+serverData+'" />').insertAfter("#progress")
 		return true;
 	} catch (ex) {
 		this.debug(ex);
