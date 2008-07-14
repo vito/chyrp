@@ -65,10 +65,16 @@
 
 			$posts = parent::search(get_class(), $options, $options_for_object);
 
-			if (!isset($options["placeholders"]) or !$options["placeholders"])
+			if (!isset($options["placeholders"]) or !$options["placeholders"]) {
 				foreach ($posts as $index => $post)
 					if (!$post->theme_exists())
 						unset($posts[$index]);
+			} else
+				foreach ($posts[0] as $index => $data)
+					if (!Theme::current()->file_exists("feathers/".$data["feather"]))
+						unset($posts[0][$index]);
+
+			$posts[0] = array_values($posts[0]);
 
 			return $posts;
 		}

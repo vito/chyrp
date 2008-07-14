@@ -191,11 +191,8 @@
 			if (DEBUG)
 				$message.= "\n\n<pre>".print_r($this->queryString, true)."\n\n<pre>".print_r($this->params, true)."</pre>\n\n<pre>".$error->getTraceAsString()."</pre>";
 
-			if (XML_RPC or $this->throw_exceptions) {
-				error_log("THROWING EXCEPTION FOR ".$this->queryString."...");
+			if (XML_RPC or $this->throw_exceptions)
 				throw new Exception($message);
-				return;
-			}
 
 			error(__("Database Error"), $message);
 		}
