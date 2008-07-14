@@ -4,7 +4,7 @@
 
 		$tags = array();
 		$get_tags = SQL::query("SELECT * FROM `__tags`");
-		echo __("Backing up tags...").test($get_tags);
+		echo __("Backing up tags...", "tags").test($get_tags);
 		if (!$get_tags) return;
 
 		while ($tag = SQL::fetch($get_tags)) {

@@ -154,7 +154,7 @@ div#controls {
 div#controls ul {
 	margin: 0 auto;
 	padding: .4em;
-	width: 60em;
+	width: 660px;
 }
 div#controls ul li {
 	background: none;
@@ -181,13 +181,13 @@ div#controls ul li.close a:hover {
 }
 
 div#wrapper {
-	width: 60em;
+	width: 660px;
 	margin: 4em auto;
 	padding: 0 0 1em 0;
 }
 
 div#content {
-	width: 40em;
+	width: 440px;
 	float: left;
 }
 
@@ -196,7 +196,7 @@ div#sidebar {
 	float: right;
 	margin: 0 0 2em 0;
 	padding: 1.5em 1em;
-	width: 15em;
+	width: 165px;
 }
 div#sidebar a:link,
 div#sidebar a:visited {
@@ -236,7 +236,7 @@ div#header {
 }
 div#header .header_box {
 	margin: auto;
-	width: 60em;
+	width: 660px;
 }
 div#header h1 {
 	margin-bottom: 0;
