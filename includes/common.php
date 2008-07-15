@@ -166,12 +166,17 @@
 	# File: Module
 	# See Also:
 	#     <Module>
-	require_once INCLUDES_DIR."/class/Module.php";
+	require_once INCLUDES_DIR."/class/Modules.php";
 
 	# File: Feather
 	# See Also:
 	#     <Feather>
 	require_once INCLUDES_DIR."/class/Feather.php";
+
+	# File: Feathers
+	# See Also:
+	#     <Feathers>
+	require_once INCLUDES_DIR."/class/Feathers.php";
 
 	# File: Paginator
 	# See Also:

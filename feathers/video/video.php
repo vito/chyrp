@@ -1,5 +1,5 @@
 <?php
-	class Video extends Feather {
+	class Video extends Feathers implements Feather {
 		public function __construct() {
 			$this->setField(array("attr" => "video",
 			                      "type" => "text_block",

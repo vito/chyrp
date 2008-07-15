@@ -1,5 +1,5 @@
 <?php
-	class Quote extends Feather {
+	class Quote extends Feathers implements Feather {
 		public function __construct() {
 			$this->setField(array("attr" => "quote",
 			                      "type" => "text_block",

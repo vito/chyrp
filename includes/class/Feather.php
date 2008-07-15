@@ -1,61 +1,40 @@
 <?php
 	/**
-	 * Class: Feather
-	 * Contains various functions, acts as the backbone for all feathers.
+	 * Interface: Feather
+	 * Describes the functions required by Feather implementations.
 	 */
-	class Feather {
-		static $filters = array();
-		static $custom_filters = array();
-
+	interface Feather {
 		/**
-		 * Function: setFilter
-		 * Applies a filter to a specified field of the Feather.
-		 */
-		protected function setFilter($field, $name) {
-			self::$filters[get_class($this)][] = array("field" => $field, "name" => $name);
-		}
-
-		/**
-		 * Function: customFilter
-		 * Allows a Feather to apply its own filter to a specified field.
-		 */
-		protected function customFilter($field, $name, $priority = 10) {
-			self::$custom_filters[get_class($this)][] = array("field" => $field, "name" => $name);
-		}
-
-		/**
-		 * Function: respondTo
-		 * Allows a Feather to respond to a Trigger as a Module would.
-		 */
-		protected function respondTo($name, $function = null, $priority = 10) {
-			fallback($function, $name);
-			Trigger::current()->priorities[$name][] = array("priority" => $priority, "function" => array($this, $function));
-		}
-
-		/**
-		 * Function: setField
-		 * Sets the feather's fields for creating/editing posts with that feather.
+		 * Function: submit
+		 * Handles post submitting.
 		 *
-		 * Options:
-		 *     attr - The technical name for the field. Think $post->attr.
-		 *     type - The field type. (text, file, text_block, or select)
-		 *     label - The label for the field.
-		 *     preview - Is this field previewable? (Only use one per feather.)
-		 *     optional - Is this field optional?
-		 *     bookmarklet - What to fill this field by in the bookmarklet.
-		 *                   url or page_url - The URL of the page they're viewing when they open the bookmarklet.
-		 *                   title or page_title - The title of the page they're viewing when they open the bookmarklet.
-		 *                   selection - Their selection on the page they're viewing when they open the bookmarklet.
+		 * Returns:
+		 *     The <Post> object created.
 		 */
-		protected function setField($options) {
-			fallback($options["classes"], array());
+		public function submit();
 
-			if (isset($options["class"]))
-				$options["classes"][] = $options["class"];
+		/**
+		 * Function: update
+		 * Handles updating a post.
+		 */
+		public function update();
 
-			if (isset($options["preview"]) and $options["preview"])
-				$options["classes"][] = "preview_me";
+		/**
+		 * Function: title
+		 * Returns the appropriate source to be treated as a "title" of a post.
+		 * If there is no immediate solution, you may use <Post.title_from_excerpt>.
+		 */
+		public function title($post);
 
-			$this->fields[$options["attr"]] = $options;
-		}
+		/**
+		 * Function: excerpt
+		 * Returns the appropriate source, unmodified, to be used as an excerpt of a post.
+		 */
+		public function excerpt($post);
+
+		/**
+		 * Function: feed_content
+		 * Returns the appropriate content for a feed.
+		 */
+		public function feed_content($post);
 	}

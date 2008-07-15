@@ -1,5 +1,5 @@
 <?php
-	class Photo extends Feather {
+	class Photo extends Feathers implements Feather {
 		public function __construct() {
 			$this->setField(array("attr" => "photo",
 			                      "type" => "file",

@@ -1,5 +1,5 @@
 <?php
-	class Audio extends Feather {
+	class Audio extends Feathers implements Feather {
 		public function __construct() {
 			$this->setField(array("attr" => "audio",
 			                      "type" => "file",

@@ -1,5 +1,5 @@
 <?php
-	class Text extends Feather {
+	class Text extends Feathers implements Feather {
 		public function __construct() {
 			$this->setField(array("attr" => "title",
 			                      "type" => "text",

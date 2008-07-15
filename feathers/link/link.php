@@ -1,5 +1,5 @@
 <?php
-	class Link extends Feather {
+	class Link extends Feathers implements Feather {
 		public function __construct() {
 			$this->setField(array("attr" => "source",
 			                      "type" => "text",

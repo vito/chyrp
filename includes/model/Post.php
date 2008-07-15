@@ -65,17 +65,18 @@
 
 			$posts = parent::search(get_class(), $options, $options_for_object);
 
-			if (!isset($options["placeholders"]) or !$options["placeholders"]) {
-				foreach ($posts as $index => $post)
-					if (!$post->theme_exists())
-						unset($posts[$index]);
-			} else {
-				foreach ($posts[0] as $index => $data)
-					if (!Theme::current()->file_exists("feathers/".$data["feather"]))
-						unset($posts[0][$index]);
+			if (!ADMIN)
+				if (!isset($options["placeholders"]) or !$options["placeholders"]) {
+					foreach ($posts as $index => $post)
+						if (!$post->theme_exists())
+							unset($posts[$index]);
+				} else {
+					foreach ($posts[0] as $index => $data)
+						if (!Theme::current()->file_exists("feathers/".$data["feather"]))
+							unset($posts[0][$index]);
 
-				$posts[0] = array_values($posts[0]);
-			}
+					$posts[0] = array_values($posts[0]);
+				}
 
 			return $posts;
 		}
@@ -567,16 +568,16 @@
 			$trigger = Trigger::current();
 			$trigger->filter($this, "filter_post");
 
-			if (isset(Feather::$custom_filters[$class])) # Run through feather-specified filters, first.
-				foreach (Feather::$custom_filters[$class] as $custom_filter) {
+			if (isset(Feathers::$custom_filters[$class])) # Run through feather-specified filters, first.
+				foreach (Feathers::$custom_filters[$class] as $custom_filter) {
 					$varname = $custom_filter["field"]."_unfiltered";
 					$this->$varname = $this->$custom_filter["field"];
 					$this->$custom_filter["field"] = call_user_func_array(array($feathers[$this->feather], $custom_filter["name"]),
 					                                                      array($this->$custom_filter["field"], $this));
 				}
 
-			if (isset(Feather::$filters[$class])) # Now actually filter it.
-				foreach (Feather::$filters[$class] as $filter) {
+			if (isset(Feathers::$filters[$class])) # Now actually filter it.
+				foreach (Feathers::$filters[$class] as $filter) {
 					$varname = $filter["field"]."_unfiltered";
 					$this->$varname = $this->$filter["field"];
 					$trigger->filter($this->$filter["field"], $filter["name"], $this);
