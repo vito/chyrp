@@ -44,7 +44,7 @@
 	$htaccess = "<IfModule mod_rewrite.c>\nRewriteEngine On\nRewriteBase ".str_replace("install.php", "", $index)."\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule ^.+$ index.php [L]\n</IfModule>";
 
 	$path = preg_quote(str_replace("install.php", "", $index), "/");
-	$htaccess_has_chyrp = (file_exists(MAIN_DIR."/.htaccess") and preg_match("/<IfModule mod_rewrite.c>\n([\s]*)RewriteEngine On\n([\s]*)RewriteBase {$path}\n([\s]*)RewriteCond %{REQUEST_FILENAME} !-f\n([\s]*)RewriteCond %{REQUEST_FILENAME} !-d\n([\s]*)RewriteRule ^.+$ index.php [L]\n([\s]*)<\/IfModule>/", file_get_contents(MAIN_DIR."/.htaccess")));
+	$htaccess_has_chyrp = (file_exists(MAIN_DIR."/.htaccess") and preg_match("/<IfModule mod_rewrite\.c>\n([\s]*)RewriteEngine On\n([\s]*)RewriteBase {$path}\n([\s]*)RewriteCond %\{REQUEST_FILENAME\} !-f\n([\s]*)RewriteCond %\{REQUEST_FILENAME\} !-d\n([\s]*)RewriteRule \^\.\+\\$ index\.php \[L\]\n([\s]*)<\/IfModule>/", file_get_contents(MAIN_DIR."/.htaccess")));
 
 	$errors = array();
 	$installed = false;
