@@ -41,9 +41,9 @@
 
 	$url = "http://".$_SERVER['HTTP_HOST'].str_replace("/install.php", "", $_SERVER['REQUEST_URI']);
 	$index = (parse_url($url, PHP_URL_PATH)) ? "/".trim(parse_url($url, PHP_URL_PATH), "/")."/" : "/" ;
-	$htaccess = "<IfModule mod_rewrite.c>\nRewriteEngine On\nRewriteBase ".str_replace("install.php", "", $index)."\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule ^.+$ index.php [L]\n</IfModule>";
+	$htaccess = "<IfModule mod_rewrite.c>\nRewriteEngine On\nRewriteBase {$index}\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule ^.+$ index.php [L]\n</IfModule>";
 
-	$path = preg_quote(str_replace("install.php", "", $index), "/");
+	$path = preg_quote($index, "/");
 	$htaccess_has_chyrp = (file_exists(MAIN_DIR."/.htaccess") and preg_match("/<IfModule mod_rewrite\.c>\n([\s]*)RewriteEngine On\n([\s]*)RewriteBase {$path}\n([\s]*)RewriteCond %\{REQUEST_FILENAME\} !-f\n([\s]*)RewriteCond %\{REQUEST_FILENAME\} !-d\n([\s]*)RewriteRule \^\.\+\\$ index\.php \[L\]\n([\s]*)<\/IfModule>/", file_get_contents(MAIN_DIR."/.htaccess")));
 
 	$errors = array();
@@ -243,11 +243,10 @@
 				$group_id[$name] = $sql->latest();
 			}
 
-			if (!file_exists(MAIN_DIR."/.htaccess")) {
-				if (!@file_put_contents(MAIN_DIR."/.htaccess", $htaccess))
+			if (!$htaccess_has_chyrp)
+				if (!file_exists(MAIN_DIR."/.htaccess") and !@file_put_contents(MAIN_DIR."/.htaccess", $htaccess))
 					$errors[] = _f("Could not generate .htaccess file. Clean URLs will not be available unless you create it and put this in it:\n<pre>%s</pre>", array(fix($htaccess)));
-			} elseif (!$htaccess_has_chyrp)
-				if (!@file_put_contents(MAIN_DIR."/.htaccess", "\n\n".$htaccess, FILE_APPEND))
+				} elseif (!@file_put_contents(MAIN_DIR."/.htaccess", "\n\n".$htaccess, FILE_APPEND))
 					$errors[] = _f("Could not generate .htaccess file. Clean URLs will not be available unless you create it and put this in it:\n<pre>%s</pre>", array(fix($htaccess)));
 
 			$config->set("name", $_POST['name']);
@@ -460,7 +459,7 @@
 		</script>
 	</head>
 	<body>
-<?php foreach ($errors as $index => $error): ?>
+<?php foreach ($errors as $error): ?>
 		<div class="error<?php if ($index + 1 == count($errors)) echo " last"; ?>"><?php echo $error; ?></div>
 <?php endforeach; ?>
 		<div class="window">

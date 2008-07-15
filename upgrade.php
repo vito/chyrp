@@ -2,74 +2,88 @@
 	define('MAIN_DIR', dirname(__FILE__));
 	define('INCLUDES_DIR', dirname(__FILE__)."/includes");
 
-	define('YAML_LIB', (file_exists(INCLUDES_DIR."/lib/Yaml.php")) ?
-	                   INCLUDES_DIR."/lib/Yaml.php" :
-	                   INCLUDES_DIR."/lib/spyc.php");
-	define('YAML_CLASS', (file_exists(INCLUDES_DIR."/lib/Yaml.php")) ? "Horde_Yaml" : "Spyc");
-	define('YAML_LOAD', (YAML_CLASS == "Horde_Yaml") ? "load" : "YAMLLoad");
-	define('YAML_DUMP', (YAML_CLASS == "Horde_Yaml") ? "dump" : "YAMLDump");
-
 	function config_file() {
-		return (file_exists(INCLUDES_DIR."/config.yaml.php")) ?
-	           INCLUDES_DIR."/config.yaml.php" :
-	           INCLUDES_DIR."/config.yml.php" ;
+		if (file_exists(INCLUDES_DIR."/config.yaml.php"))
+			return INCLUDES_DIR."/config.yaml.php";
+
+		if (file_exists(INCLUDES_DIR."/config.yml.php"))
+			return INCLUDES_DIR."/config.yml.php";
+
+		if (file_exists(INCLUDES_DIR."/config.php"))
+			return INCLUDES_DIR."/config.php";
+
+		exit("Config file not found.");
 	}
 	function database_file() {
-		return (file_exists(INCLUDES_DIR."/database.yaml.php")) ?
-	           INCLUDES_DIR."/database.yaml.php" :
-	           INCLUDES_DIR."/database.yml.php" ;
+		if (file_exists(INCLUDES_DIR."/database.yaml.php"))
+			return INCLUDES_DIR."/database.yaml.php";
+
+		if (file_exists(INCLUDES_DIR."/database.yml.php"))
+			return INCLUDES_DIR."/database.yml.php";
+
+		if (file_exists(INCLUDES_DIR."/database.php"))
+			return INCLUDES_DIR."/database.php";
+
+		exit("Database config file not found.");
+	}
+	function using_yaml() {
+		return (basename(config_file()) != "config.php" and basename(database_file()) != "database.php");
 	}
 
-	require YAML_LIB;
+	if (!using_yaml()) {
+		eval(str_replace(array("<?php", "?>", "Config"),
+		                 array("", "", "OldConfig"),
+		                 file_get_contents(config_file())));
+		eval(str_replace(array("<?php", "?>", "SQL"),
+		                 array("", "", "OldSQL"),
+		                 file_get_contents(database_file())));
+	}
+
+	require_once INCLUDES_DIR."/lib/Yaml.php";
 	require_once INCLUDES_DIR."/lib/gettext/gettext.php";
 	require_once INCLUDES_DIR."/lib/gettext/streams.php";
 
-	class Yaml {
-		static function load($string) {
-			return call_user_func(array(YAML_CLASS, YAML_LOAD), $string);
-		}
-		static function dump($array) {
-			return call_user_func(array(YAML_CLASS, YAML_DUMP), $array);
-		}
+	$yaml = array();
+	$yaml["config"] = array();
+	$yaml["database"] = array();
+
+	if (using_yaml()) {
+		$yaml["config"] = Horde_Yaml::load(preg_replace("/<\?php(.+)\?>\n?/s", "", file_get_contents(config_file())));
+		$yaml["database"] = Horde_Yaml::load(preg_replace("/<\?php(.+)\?>\n?/s", "", file_get_contents(database_file())));
+	} else {
+		foreach ($config as $name => $val)
+			$yaml["config"][$name] = $val;
+
+		foreach ($sql as $name => $val)
+			$yaml["database"][$name] = $val;
 	}
 
 	class Config {
 		static function get($setting) {
-			$config = file_get_contents(config_file());
-			$config = preg_replace("/<\?php(.+)\?>\n?/s", "", $config);
-
-			$yaml = Yaml::load($config);
-
-			return (isset($yaml[$setting])) ? $yaml[$setting] : false ;
+			global $yaml;
+			return (isset($yaml["config"][$setting])) ? $yaml["config"][$setting] : false ;
 		}
 
 		static function set($setting, $value, $message = null) {
 			if (self::get($setting) == $value) return;
 
+			global $yaml;
+
 			if (!isset($message))
-				$message = _f("Setting %s setting to %s...", array($setting, print_r($value, true)));
+				$message = _f("Setting %s to %s...", array($setting, print_r($value, true)));
 
-			$config = file_get_contents(config_file());
-			$config = preg_replace("/<\?php(.+)\?>\n?/s", "", $config);
-
-			$yaml = Yaml::load($config);
-
-			$yaml[$setting] = $value;
+			$yaml["config"][$setting] = $value;
 
 			$protection = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
 
-			$dump = $protection.Yaml::dump($yaml);
+			$dump = $protection.Horde_Yaml::dump($yaml["config"]);
 
-			echo $message.test(@file_put_contents(config_file(), $dump));
+			echo $message.test(@file_put_contents(INCLUDES_DIR."/config.yaml.php", $dump));
 		}
 
 		static function check($setting) {
-			$config = file_get_contents(config_file());
-			$config = preg_replace("/<\?php(.+)\?>\n?/s", "", $config);
-
-			$yaml = Yaml::load($config);
-
-			return (isset($yaml[$setting]));
+			global $yaml;
+			return (isset($yaml["config"][$setting]));
 		}
 
 		static function fallback($setting, $value) {
@@ -80,18 +94,16 @@
 		static function remove($setting) {
 			if (!self::check($setting)) return;
 
-			$config = file_get_contents(config_file());
-			$config = preg_replace("/<\?php(.+)\?>\n?/s", "", $config);
+			global $yaml;
 
-			$yaml = Yaml::load($config);
-
-			unset($yaml[$setting]);
+			unset($yaml["config"][$setting]);
 
 			$protection = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
 
-			$dump = $protection.Yaml::dump($yaml);
+			$dump = $protection.Horde_Yaml::dump($yaml["config"]);
 
-			echo _f("Removing %s setting...", array($setting)).test(@file_put_contents(config_file(), $dump));
+			echo _f("Removing %s setting...", array($setting)).
+			     test(@file_put_contents(INCLUDES_DIR."/config.yaml.php", $dump));
 		}
 	}
 
@@ -109,32 +121,25 @@
 		}
 
 		static function get($setting) {
-			$config = file_get_contents(database_file());
-			$config = preg_replace("/<\?php(.+)\?>\n?/s", "", $config);
-
-			$yaml = Yaml::load($config);
-
-			return (isset($yaml[$setting])) ? $yaml[$setting] : false ;
+			global $yaml;
+			return (isset($yaml["database"][$setting])) ? $yaml["database"][$setting] : false ;
 		}
 
 		static function set($setting, $value, $message = null) {
 			if (self::get($setting) == $value) return;
 
+			global $yaml;
+
 			if (!isset($message))
 				$message = _f("Setting %s database setting to %s...", array($setting, print_r($value, true)));
 
-			$config = file_get_contents(database_file());
-			$config = preg_replace("/<\?php(.+)\?>\n?/s", "", $config);
-
-			$yaml = Yaml::load($config);
-
-			$yaml[$setting] = $value;
+			$yaml["database"][$setting] = $value;
 
 			$protection = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
 
-			$dump = $protection.Yaml::dump($yaml);
+			$dump = $protection.Horde_Yaml::dump($yaml["database"]);
 
-			echo $message.test(@file_put_contents(database_file(), $dump));
+			echo $message.test(@file_put_contents(INCLUDES_DIR."/database.yaml.php", $dump));
 		}
 
 		static function fix($string) {
@@ -313,6 +318,69 @@
 	# Upgrading Actions
 	#---------------------------------------------
 
+	function fix_htaccess() {
+		$url = "http://".$_SERVER['HTTP_HOST'].str_replace("/upgrade.php", "", $_SERVER['REQUEST_URI']);
+		$index = (parse_url($url, PHP_URL_PATH)) ? "/".trim(parse_url($url, PHP_URL_PATH), "/")."/" : "/" ;
+
+		$path = preg_quote($index, "/");
+		$htaccess_has_chyrp = (file_exists(MAIN_DIR."/.htaccess") and preg_match("/<IfModule mod_rewrite\.c>\n([\s]*)RewriteEngine On\n([\s]*)RewriteBase {$path}\n([\s]*)RewriteCond %\{REQUEST_FILENAME\} !-f\n([\s]*)RewriteCond %\{REQUEST_FILENAME\} !-d\n([\s]*)RewriteRule \^\.\+\\$ index\.php \[L\]\n([\s]*)<\/IfModule>/", file_get_contents(MAIN_DIR."/.htaccess")));
+		if ($htaccess_has_chyrp)
+			return;
+
+		$htaccess = "<IfModule mod_rewrite.c>\nRewriteEngine On\nRewriteBase {$index}\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule ^.+$ index.php [L]\n</IfModule>";
+
+		if (!file_exists(MAIN_DIR."/.htaccess"))
+			echo __("Generating .htaccess file...").
+			     test(@file_put_contents(MAIN_DIR."/.htaccess", $htaccess));
+		else
+			echo __("Appending to .htaccess file...").
+			     test(@file_put_contents(MAIN_DIR."/.htaccess", "\n\n".$htaccess, FILE_APPEND));
+	}
+
+	function tweets_to_posts() {
+		if (SQL::query("SELECT * FROM `__tweets`"))
+			echo __("Renaming `tweets` table to `posts`...").
+			     test(SQL::query("RENAME TABLE `__tweets` TO `__posts`"));
+
+		if (SQL::query("SELECT `add_tweet` FROM `__groups`"))
+			echo __("Renaming `add_tweet` permission to `add_post`...").
+			     test(SQL::query("ALTER TABLE `__groups` CHANGE `add_tweet` `add_post` TINYINT(1) NOT NULL DEFAULT '0'"));
+
+		if (SQL::query("SELECT `edit_tweet` FROM `__groups`"))
+			echo __("Renaming `edit_tweet` permission to `edit_post`...").
+			     test(SQL::query("ALTER TABLE `__groups` CHANGE `edit_tweet` `edit_post` TINYINT(1) NOT NULL DEFAULT '0'"));
+
+		if (SQL::query("SELECT `delete_tweet` FROM `__groups`"))
+			echo __("Renaming `delete_tweet` permission to `delete_post`...").
+			     test(SQL::query("ALTER TABLE `__groups` CHANGE `delete_tweet` `delete_post` TINYINT(1) NOT NULL DEFAULT '0'"));
+
+		if (Config::check("tweets_per_page")) {
+			Config::fallback("posts_per_page", Config::get("tweets_per_page"));
+			Config::remove("tweets_per_page");
+		}
+	}
+
+	function pages_parent_id_column() {
+		if (SQL::query("SELECT `parent_id` FROM `__pages`"))
+			return;
+
+		echo __("Adding `parent_id` column to `pages` table...").
+		     test(SQL::query("ALTER TABLE `__pages` ADD `parent_id` INT(11) NOT NULL DEFAULT '0' AFTER `user_id`"));
+	}
+
+	function pages_list_order_column() {
+		if (SQL::query("SELECT `list_order` FROM `__pages`"))
+			return;
+
+		echo __("Adding `list_order` column to `pages` table...").
+		     test(SQL::query("ALTER TABLE `__pages` ADD `list_order` INT(11) NOT NULL DEFAULT '0' AFTER `show_in_list`"));
+	}
+
+	function remove_beginning_slash_from_post_url() {
+		if (substr(Config::get("post_url"), 0, 1) == "/")
+			Config::set("post_url", ltrim(Config::get("post_url"), "/"));
+	}
+
 	function move_yml_yaml() {
 		if (file_exists(INCLUDES_DIR."/config.yml.php"))
 			echo __("Moving /includes/config.yml.php to /includes/config.yaml.php...").
@@ -325,7 +393,8 @@
 
 	function update_protection() {
 		foreach (array("database.yaml.php", "config.yaml.php") as $file) {
-			if (substr_count(file_get_contents(INCLUDES_DIR."/".$file),
+			if (!file_exists(INCLUDES_DIR."/".$file) or
+			    substr_count(file_get_contents(INCLUDES_DIR."/".$file),
 			                 "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>"))
 				continue;
 
@@ -334,7 +403,8 @@
 			                     "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>",
 			                     $contents);
 
-			echo _f("Updating protection code in %s...", array($file)).test(@file_put_contents(INCLUDES_DIR."/".$file, $new_error));
+			echo _f("Updating protection code in %s...", array($file)).
+			     test(@file_put_contents(INCLUDES_DIR."/".$file, $new_error));
 		}
 	}
 
@@ -391,7 +461,7 @@
 
 		# Convert permissions array to a YAML dump.
 		foreach ($groups as $key => &$val)
-			$val = Yaml::dump($val);
+			$val = Horde_Yaml::dump($val);
 
 		$drop_groups = SQL::query("DROP TABLE `__groups`");
 		echo __("Dropping old groups table...").test($drop_groups);
@@ -634,6 +704,16 @@
 		<div class="window">
 <?php if (!empty($_POST)): ?>
 			<pre class="pane"><?php
+		fix_htaccess();
+
+		tweets_to_posts();
+
+		pages_parent_id_column();
+
+		pages_list_order_column();
+
+		remove_beginning_slash_from_post_url();
+
 		move_yml_yaml();
 
 		update_protection();
@@ -646,7 +726,11 @@
 		Config::fallback("chyrp_url", Config::get("url"));
 		Config::fallback("feed_items", Config::get("rss_posts"));
 
+		Config::fallback("timezone", "America/Indiana/Indianapolis");
+
 		Config::remove("rss_posts");
+
+		Config::remove("time_offset");
 
 		default_db_adapter_to_mysql();
 

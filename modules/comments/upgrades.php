@@ -1,4 +1,6 @@
 <?php
+	# ALTER TABLE is safe to use here, because all of these modifications
+	# are only relevant to those ugprading from 1.x, which only used MySQL.
 	function add_signature_updated_at() {
 		if (!SQL::query("SELECT `signature` FROM `__comments`"))
 			echo __("Adding `signature` column to comments table...", "comments").

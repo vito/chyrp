@@ -94,8 +94,6 @@
 	# Load the configuration settings
 	$config->load(INCLUDES_DIR."/config.yaml.php");
 
-	fallback(Config::current()->timezone, "US/Eastern");
-
 	if (function_exists("date_default_timezone_set"))
 		date_default_timezone_set($config->timezone);
 	else
