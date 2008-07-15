@@ -79,7 +79,6 @@
 
 	require_once INCLUDES_DIR."/class/Query.php"; # SQL query handler
 	require_once INCLUDES_DIR."/class/QueryBuilder.php"; # SQL query builder
-	require_once INCLUDES_DIR."/class/Timestamp.php"; # A smarter DateTime class
 	require_once INCLUDES_DIR."/lib/Yaml.php"; # YAML parser
 
 	require_once INCLUDES_DIR."/class/Config.php"; # Configuration
@@ -94,7 +93,10 @@
 
 	fallback(Config::current()->timezone, "US/Eastern");
 
-	date_default_timezone_set($config->timezone);
+	if (function_exists("date_default_timezone_set"))
+		date_default_timezone_set($config->timezone);
+	else
+		ini_set("date.timezone", $config->timezone);
 
 	header("X-Pingback: ".$config->chyrp_url."/includes/xmlrpc.php");
 

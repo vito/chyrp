@@ -41,9 +41,9 @@
 
 	# Serve a cache if it exists and the original image has not changed.
 	if (file_exists($cache_file) and filemtime($cache_file) > filemtime($filename)) {
-		header("Last-Modified: ".gmdate('D, d M Y H:i:s', @filemtime($cache_file)).' GMT');
+		header("Last-Modified: ".gmdate('D, d M Y H:i:s', filemtime($cache_file)).' GMT');
 		header("Content-type: image/".($extension == "jpg" ? "jpeg" : $extension));
-		header("Expires: ".now("+30 seconds")->format("r"));
+		header("Expires: ".date("r", strtotime("+30 seconds")));
 		header("Content-Disposition: inline; filename=".$cache_filename);
 		readfile($cache_file);
 		exit;
@@ -108,7 +108,7 @@
 
 	$copy($thumbnail, $image, 0, 0, 0, 0, $new_width, $new_height, $original_width, $original_height);
 
-	header("Last-Modified: ".gmdate("D, d M Y H:i:s", @filemtime($filename))." GMT");
+	header("Last-Modified: ".gmdate("D, d M Y H:i:s", filemtime($filename))." GMT");
 	header("Content-type: ".$mime);
 	header("Content-Disposition: inline; filename=".$cache_filename.".".$extension);
 

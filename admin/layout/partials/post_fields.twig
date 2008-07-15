@@ -72,8 +72,8 @@
 						</p>
 						<p>
 							<label for="created_at">${ "Timestamp" | translate }</label>
-							<input class="text" type="text" name="created_at" value="${ post.created_at | fallback(now.format("r")) | strftime }" id="created_at" />
-							<input type="hidden" name="original_time" value="${ post.created_at | fallback(now.format("r")) | strftime }" />
+							<input class="text" type="text" name="created_at" value="${ post.created_at | fallback(now | date("r")) | strftime }" id="created_at" />
+							<input type="hidden" name="original_time" value="${ post.created_at | fallback(now | date("r")) | strftime }" />
 						</p>
 						<p>
 							<label for="trackbacks">

@@ -13,7 +13,6 @@
 
 	require_once INCLUDES_DIR."/class/Query.php"; # SQL query handler
 	require_once INCLUDES_DIR."/class/QueryBuilder.php"; # SQL query builder
-	require_once INCLUDES_DIR."/class/Timestamp.php"; # A smarter DateTime class
 	require_once INCLUDES_DIR."/lib/Yaml.php"; # YAML parser
 	require_once INCLUDES_DIR."/class/Trigger.php";
 	require_once INCLUDES_DIR."/class/Model.php";
@@ -48,7 +47,6 @@
 	$installed = false;
 
 	# TODO: Determine exact PHP version that is required for Chyrp
-	# Note from Alex: Minimum requirement for the DateTime class is 5.1.0
 	if (version_compare(PHP_VERSION, "5.1.0", "<"))
 		$errors[] = __("Chyrp requires PHP 5. Installation cannot continue.");
 
@@ -520,7 +518,7 @@
 					<select name="timezone" id="timezone">
 <?php foreach (timezones() as $zone): ?>
 						<option value="<?php echo $zone["name"]; ?>"<?php selected($zone["name"], fallback($_POST['timezone'], "Africa/Abidjan", true)); ?>>
-							<?php echo when(__("%I:%M %p on %B %e, %Y"), $zone["now"], true); ?>
+							<?php echo strftime(__("%I:%M %p on %B %e, %Y"), $zone["now"]); ?>
 							(GMT<?php if ($zone["offset"] >= 0) echo "+"; ?><?php echo $zone["offset"]; ?>)
 						</option>
 <?php endforeach; ?>

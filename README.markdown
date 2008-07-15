@@ -7,7 +7,6 @@ Requirements
 Chyrp will thrive on virtually any server setup, but we guarantee Chyrp to run on no less than:
 
 * PHP 5 >= 5.1.0
-* DateTime installed (PHP 5.1.x marks it as experimental and you need to enable it, but 5.2.x has it by default.)
 * MySQL 4.1 -OR- SQLite 3
 * Apache 1.3.3
 

@@ -277,7 +277,7 @@
 			$this->context["route"]        = Route::current();
 			$this->context["hide_admin"]   = isset($_COOKIE["hide_admin"]);
 			$this->context["version"]      = CHYRP_VERSION;
-			$this->context["now"]          = now();
+			$this->context["now"]          = time();
 			$this->context["debug"]        = DEBUG;
 			$this->context["POST"]         = $_POST;
 			$this->context["GET"]          = $_GET;
