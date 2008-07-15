@@ -1,6 +1,6 @@
 name: Paging
 url: http://chyrp.net/
-version: 2.0.1
+version: 1.0
 description: Split entries into multiple pages at <code><!--page--></code> tags. Use $post.paginated.prev_link and $post.paginated.next_link in your theme.
 author:
   name: Alex Suraci

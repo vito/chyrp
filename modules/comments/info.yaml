@@ -1,6 +1,6 @@
 name: Comment System
 url: http://chyrp.net/
-version: 2.0.1
+version: 2.0
 description: Adds commenting functionality to posts, including Defensio spam protection, auto-reloading, pagination, etc. etc.
 author:
   name: Alex Suraci

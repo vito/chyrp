@@ -1,6 +1,6 @@
 name: Cacher
 url: http://chyrp.net/
-version: 1.0.1
+version: 1.0
 description: Caches pages, drastically reducing server load.
 author:
   name: Alex Suraci

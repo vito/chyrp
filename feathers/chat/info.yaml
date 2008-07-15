@@ -1,6 +1,6 @@
 name: Chat
 url: http://chyrp.net/
-version: 2.0.1
+version: 2.0
 description: Post logs of IRC or other chat formats.
 author:
   name: Alex Suraci
