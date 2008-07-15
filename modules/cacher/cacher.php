@@ -130,8 +130,7 @@
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				show_403(__("Access Denied"), __("Invalid security key."));
 
-			Config::current()->set("cache_expire", $_POST['cache_expire']);
-
-			Flash::notice(__("Settings updated."), "/admin/?action=cache_settings");
+			if (Config::current()->set("cache_expire", $_POST['cache_expire']))
+				Flash::notice(__("Settings updated."), "/admin/?action=cache_settings");
 		}
 	}

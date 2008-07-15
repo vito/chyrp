@@ -279,22 +279,24 @@
 				show_403(__("Access Denied"), __("Invalid security key."));
 
 			$config = Config::current();
-			$config->set("allowed_comment_html", explode(", ", $_POST['allowed_comment_html']));
-			$config->set("default_comment_status", $_POST['default_comment_status']);
-			$config->set("comments_per_page", $_POST['comments_per_page']);
-			$config->set("auto_reload_comments", $_POST['auto_reload_comments']);
-			$config->set("enable_reload_comments", isset($_POST['enable_reload_comments']));
+			$set = array($config->set("allowed_comment_html", explode(", ", $_POST['allowed_comment_html'])),
+			             $config->set("default_comment_status", $_POST['default_comment_status']),
+			             $config->set("comments_per_page", $_POST['comments_per_page']),
+			             $config->set("auto_reload_comments", $_POST['auto_reload_comments']),
+			             $config->set("enable_reload_comments", isset($_POST['enable_reload_comments'])));
 
 			if (!empty($_POST['defensio_api_key'])) {
 				$_POST['defensio_api_key'] = trim($_POST['defensio_api_key']);
 				$defensio = new Defensio($config->url, $_POST['defensio_api_key']);
-				if ($defensio->errorsExist())
+				if ($defensio->errorsExist()) {
 					Flash::warning(__("Invalid Defensio API key."));
-				else
-					$config->set("defensio_api_key", $_POST['defensio_api_key']);
+					$set[] = false;
+				} else
+					$set[] = $config->set("defensio_api_key", $_POST['defensio_api_key']);
 			}
 
-			Flash::notice(__("Settings updated."), "/admin/?action=comment_settings");
+			if (!in_array(false, $set))
+				Flash::notice(__("Settings updated."), "/admin/?action=comment_settings");
 		}
 
 		static function settings_nav($navs) {

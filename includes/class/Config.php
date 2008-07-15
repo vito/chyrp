@@ -76,8 +76,11 @@
 			# Generate the new YAML settings
 			$contents.= Horde_Yaml::dump($this->yaml);
 
-			if (!@file_put_contents(INCLUDES_DIR."/config.yaml.php", $contents))
+			if (!@file_put_contents(INCLUDES_DIR."/config.yaml.php", $contents)) {
 				Flash::warning(_f("Could not set \"<code>%s</code>\" configuration setting because <code>%s</code> is not writable.", array($setting, "/includes/config.yaml.php")));
+				return false;
+			} else
+				return true;
 		}
 
 		/**

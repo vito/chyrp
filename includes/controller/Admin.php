@@ -1772,15 +1772,16 @@
 				show_403(__("Access Denied"), __("Invalid security key."));
 
 			$config = Config::current();
-			$config->set("name", $_POST['name']);
-			$config->set("description", $_POST['description']);
-			$config->set("chyrp_url", rtrim($_POST['chyrp_url'], '/'));
-			$config->set("url", rtrim(fallback($_POST['url'], $_POST['chyrp_url'], true), '/'));
-			$config->set("email", $_POST['email']);
-			$config->set("timezone", $_POST['timezone']);
-			$config->set("locale", $_POST['locale']);
+			$set = array($config->set("name", $_POST['name']),
+			             $config->set("description", $_POST['description']),
+			             $config->set("chyrp_url", rtrim($_POST['chyrp_url'], '/')),
+			             $config->set("url", rtrim(fallback($_POST['url'], $_POST['chyrp_url'], true), '/')),
+			             $config->set("email", $_POST['email']),
+			             $config->set("timezone", $_POST['timezone']),
+			             $config->set("locale", $_POST['locale']));
 
-			Flash::notice(__("Settings updated."), "/admin/?action=general_settings");
+			if (!in_array(false, $set))
+				Flash::notice(__("Settings updated."), "/admin/?action=general_settings");
 		}
 
 		/**
@@ -1800,11 +1801,12 @@
 				show_403(__("Access Denied"), __("Invalid security key."));
 
 			$config = Config::current();
-			$config->set("can_register", !empty($_POST['can_register']));
-			$config->set("default_group", $_POST['default_group']);
-			$config->set("guest_group", $_POST['guest_group']);
+			$set = array($config->set("can_register", !empty($_POST['can_register'])),
+			             $config->set("default_group", $_POST['default_group']),
+			             $config->set("guest_group", $_POST['guest_group']));
 
-			Flash::notice(__("Settings updated."), "/admin/?action=user_settings");
+			if (!in_array(false, $set))
+				Flash::notice(__("Settings updated."), "/admin/?action=user_settings");
 		}
 
 		/**
@@ -1822,14 +1824,15 @@
 				show_403(__("Access Denied"), __("Invalid security key."));
 
 			$config = Config::current();
-			$config->set("feed_items", $_POST['feed_items']);
-			$config->set("feed_url", $_POST['feed_url']);
-			$config->set("enable_trackbacking", !empty($_POST['enable_trackbacking']));
-			$config->set("send_pingbacks", !empty($_POST['send_pingbacks']));
-			$config->set("posts_per_page", $_POST['posts_per_page']);
-			$config->set("enable_xmlrpc", !empty($_POST['enable_xmlrpc']));
+			$set = array($config->set("feed_items", $_POST['feed_items']),
+			             $config->set("feed_url", $_POST['feed_url']),
+			             $config->set("enable_trackbacking", !empty($_POST['enable_trackbacking'])),
+			             $config->set("send_pingbacks", !empty($_POST['send_pingbacks'])),
+			             $config->set("posts_per_page", $_POST['posts_per_page']),
+			             $config->set("enable_xmlrpc", !empty($_POST['enable_xmlrpc'])));
 
-			Flash::notice(__("Settings updated."), "/admin/?action=content_settings");
+			if (!in_array(false, $set))
+				Flash::notice(__("Settings updated."), "/admin/?action=content_settings");
 		}
 
 		/**
@@ -1847,10 +1850,11 @@
 				show_403(__("Access Denied"), __("Invalid security key."));
 
 			$config = Config::current();
-			$config->set("clean_urls", !empty($_POST['clean_urls']));
-			$config->set("post_url", $_POST['post_url']);
+			$set = array($config->set("clean_urls", !empty($_POST['clean_urls'])),
+			             $config->set("post_url", $_POST['post_url']));
 
-			Flash::notice(__("Settings updated."), "/admin/?action=route_settings");
+			if (!in_array(false, $set))
+				Flash::notice(__("Settings updated."), "/admin/?action=route_settings");
 		}
 
 		/**
