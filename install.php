@@ -246,7 +246,7 @@
 			if (!$htaccess_has_chyrp)
 				if (!file_exists(MAIN_DIR."/.htaccess") and !@file_put_contents(MAIN_DIR."/.htaccess", $htaccess))
 					$errors[] = _f("Could not generate .htaccess file. Clean URLs will not be available unless you create it and put this in it:\n<pre>%s</pre>", array(fix($htaccess)));
-				} elseif (!@file_put_contents(MAIN_DIR."/.htaccess", "\n\n".$htaccess, FILE_APPEND))
+				elseif (!@file_put_contents(MAIN_DIR."/.htaccess", "\n\n".$htaccess, FILE_APPEND))
 					$errors[] = _f("Could not generate .htaccess file. Clean URLs will not be available unless you create it and put this in it:\n<pre>%s</pre>", array(fix($htaccess)));
 
 			$config->set("name", $_POST['name']);
