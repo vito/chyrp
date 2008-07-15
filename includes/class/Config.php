@@ -6,16 +6,18 @@
 	 * Holds all of the configuration variables for the entire site, as well as Module settings.
 	 */
 	class Config {
+		# Variable: $yaml
+		# Holds all of the YAML settings as a $key => $val array.
+		private $yaml = array();
+
+		# Variable: $file
+		# The current file loaded.
+		private $file = null;
+
 		/**
 		 * The class constructor is private so there is only one instance and config is guaranteed to be kept in sync.
 		 */
 		private function __construct() {}
-
-		/**
-		 * Variable: $yaml
-		 * Holds all of the YAML settings as a $key => $val array.
-		 */
-		private $yaml = array();
 
 		/**
 		 * Function: load
@@ -27,6 +29,8 @@
 		public function load($file) {
 			if (!file_exists($file))
 				return false;
+
+			$this->file = $file;
 
 			$contents = str_replace("<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n",
 			                        "",
@@ -56,11 +60,13 @@
 			if (isset($this->$setting) and $this->$setting == $value and !$overwrite)
 				return false;
 
-			$contents = str_replace("<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n",
-			                        "",
-			                        file_get_contents(INCLUDES_DIR."/config.yaml.php"));
+			if (isset($this->file) and file_exists($this->file)) {
+				$contents = str_replace("<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n",
+				                        "",
+				                        file_get_contents($this->file));
 
-			$this->yaml = Horde_Yaml::load($contents);
+				$this->yaml = Horde_Yaml::load($contents);
+			}
 
 			# Add the setting
 			$this->yaml[$setting] = $this->$setting = $value;
@@ -89,11 +95,13 @@
 		 *     $setting - The name of the variable to remove.
 		 */
 		public function remove($setting) {
-			$contents = str_replace("<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n",
-			                        "",
-			                        file_get_contents(INCLUDES_DIR."/config.yaml.php"));
+			if (isset($this->file) and file_exists($this->file)) {
+				$contents = str_replace("<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n",
+				                        "",
+				                        file_get_contents($this->file));
 
-			$this->yaml = Horde_Yaml::load($contents);
+				$this->yaml = Horde_Yaml::load($contents);
+			}
 
 			# Add the setting
 			unset($this->yaml[$setting]);
