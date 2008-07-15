@@ -69,12 +69,13 @@
 				foreach ($posts as $index => $post)
 					if (!$post->theme_exists())
 						unset($posts[$index]);
-			} else
+			} else {
 				foreach ($posts[0] as $index => $data)
 					if (!Theme::current()->file_exists("feathers/".$data["feather"]))
 						unset($posts[0][$index]);
 
-			$posts[0] = array_values($posts[0]);
+				$posts[0] = array_values($posts[0]);
+			}
 
 			return $posts;
 		}

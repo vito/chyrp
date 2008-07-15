@@ -9,14 +9,14 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-07-13 11:04-0500\n"
+"PO-Revision-Date: 2008-07-14 22:25-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: modules/tags/upgrades.php:37
+#: modules/tags/upgrades.php:34
 #, php-format
 msgid "Inserting tags for post #%s..."
 msgstr ""
@@ -32,11 +32,15 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
+#: modules/tags/upgrades.php:7
+msgid "Backing up tags..."
+msgstr ""
+
 #: modules/tags/info.yaml:5
 msgid "Adds tagging functionality to posts, allowing organization, grouping, and adding keywords to posts."
 msgstr ""
 
-#: modules/tags/upgrades.php:33
+#: modules/tags/upgrades.php:30
 msgid "Creating new tags table..."
 msgstr ""
 
@@ -49,7 +53,7 @@ msgstr ""
 msgid "Tagginator"
 msgstr ""
 
-#: modules/tags/upgrades.php:23
+#: modules/tags/upgrades.php:20
 msgid "Dropping old tags table..."
 msgstr ""
 
