@@ -54,8 +54,9 @@
 		public function feed_content($post) {
 			return $post->dialogue;
 		}
-		public function format_dialogue($text, $post) {
-			$post->dialogue_unformatted = $text;
+		public function format_dialogue($text, $post = null) {
+			if (isset($post))
+				$post->dialogue_unformatted = $text;
 
 			$split = explode("\n", $text);
 			$return = '<ul class="dialogue">';
