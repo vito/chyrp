@@ -28,8 +28,6 @@
 			if (!file_exists($file))
 				return false;
 
-			$this->file = $file;
-
 			$contents = str_replace("<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n",
 			                        "",
 			                        file_get_contents($file));
@@ -60,7 +58,7 @@
 
 			$contents = str_replace("<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n",
 			                        "",
-			                        file_get_contents($this->file));
+			                        file_get_contents(INCLUDES_DIR."/config.yaml.php"));
 
 			$this->yaml = Horde_Yaml::load($contents);
 
@@ -93,7 +91,7 @@
 		public function remove($setting) {
 			$contents = str_replace("<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n",
 			                        "",
-			                        file_get_contents($this->file));
+			                        file_get_contents(INCLUDES_DIR."/config.yaml.php"));
 
 			$this->yaml = Horde_Yaml::load($contents);
 
