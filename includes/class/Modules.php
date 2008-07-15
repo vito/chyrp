@@ -1,9 +1,9 @@
 <?php
 	/**
-	 * Class: Module
+	 * Class: Modules
 	 * Contains various functions, acts as the backbone for all modules.
 	 */
-	class Module {
+	class Modules {
 		/**
 		 * Function: setPriority
 		 * Sets the priority of an action for the module this function is called from.

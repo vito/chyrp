@@ -1,5 +1,5 @@
 <?php
-	class ReadMore extends Module {
+	class ReadMore extends Modules {
 		public function __construct() {
 			$this->addAlias("markup_post_text", "makesafe", 8);
 		}

@@ -1,5 +1,5 @@
 <?php
-	class Cacher extends Module {
+	class Cacher extends Modules {
 		public function __init() {
 			$this->user = (logged_in()) ? Visitor::current()->login : "guest" ;
 			$this->caches = INCLUDES_DIR."/caches";

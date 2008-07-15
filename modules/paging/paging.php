@@ -1,5 +1,5 @@
 <?php
-	class Paging extends Module {
+	class Paging extends Modules {
 		public function __construct() {
 			$this->addAlias("markup_post_text", "makesafe", 8);
 			$this->addAlias("markup_post_text", "split");

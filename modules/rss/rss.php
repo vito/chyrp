@@ -1,6 +1,6 @@
 <?php
 	# This module is outdated.
-	class RSS extends Module {
+	class RSS extends Modules {
 		static function __install() {
 			$config = Config::current();
 			$config->set("rss_last_update", 0);

@@ -1,7 +1,7 @@
 <?php
 	require "lib/textile.php";
 
-	class Textilize extends Module {
+	class Textilize extends Modules {
 		public function __construct() {
 			$this->textile = new Textile();
 			$this->addAlias("markup_post_text", "textile", 9);

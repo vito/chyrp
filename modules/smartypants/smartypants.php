@@ -1,7 +1,7 @@
 <?php
 	require "lib/smartypants.php";
 
-	class Smartypants extends Module {
+	class Smartypants extends Modules {
 		public function __construct() {
 			$this->addAlias("markup_post_text", "smartify");
 			$this->addAlias("markup_post_title", "smartify");

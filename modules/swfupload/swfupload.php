@@ -1,5 +1,5 @@
 <?php
-	class SWFUpload extends Module {
+	class SWFUpload extends Modules {
 		public $insert_swfupload = array();
 
 		public function admin_head() {

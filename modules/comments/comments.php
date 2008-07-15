@@ -2,7 +2,7 @@
 	require_once "model.Comment.php";
 	require_once "lib/Defensio.php";
 
-	class Comments extends Module {
+	class Comments extends Modules {
 		public function __construct() {
 			$this->addAlias("metaWeblog_newPost_preQuery", "metaWeblog_editPost_preQuery");
 			$this->addAlias("post_grab", "posts_get");
