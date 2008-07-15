@@ -77,7 +77,6 @@
 		 *     $overwrite - If the setting exists and is the same value, should it be overwritten?
 		 */
 		public function set($setting, $value, $overwrite = true) {
-			global $errors;
 			if (isset($this->$setting) and $this->$setting == $value and !$overwrite)
 				return false;
 
@@ -90,8 +89,8 @@
 			# Generate the new YAML settings
 			$contents.= Horde_Yaml::dump($this->yaml);
 
-			if (!@file_put_contents(INCLUDES_DIR."/database.yaml.php", $contents) and is_array($errors))
-				$errors[] = _f("Could not set \"<code>%s</code>\" database setting because <code>%s</code> is not writable.", array($setting, "/includes/database.yaml.php"));
+			if (!@file_put_contents(INCLUDES_DIR."/database.yaml.php", $contents))
+				Flash::warning(_f("Could not set \"<code>%s</code>\" database setting because <code>%s</code> is not writable.", array($setting, "/includes/database.yaml.php")));
 		}
 
 		/**

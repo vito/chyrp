@@ -1325,9 +1325,7 @@
 			$trigger = Trigger::current();
 
 			$dbcon = $dbsel = false;
-			if (!$link = @mysql_connect($_POST['host'], $_POST['username'], $_POST['password']))
-				$errors[] = "Could not connect to the MySQL server: ".mysql_error();
-			else {
+			if ($link = @mysql_connect($_POST['host'], $_POST['username'], $_POST['password'])) {
 				$dbcon = true;
 				$dbsel = @mysql_select_db($_POST['database'], $link);
 			}
@@ -1393,9 +1391,7 @@
 			$trigger = Trigger::current();
 
 			$dbcon = $dbsel = false;
-			if (!$link = @mysql_connect($_POST['host'], $_POST['username'], $_POST['password']))
-				$errors[] = "Could not connect to the MySQL server: ".mysql_error();
-			else {
+			if ($link = @mysql_connect($_POST['host'], $_POST['username'], $_POST['password'])) {
 				$dbcon = true;
 				$dbsel = @mysql_select_db($_POST['database'], $link);
 			}
