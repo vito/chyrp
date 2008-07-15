@@ -47,18 +47,28 @@
 				return;
 
 			$sql = SQL::current();
-			$user_id = fallback(Visitor::current()->id, null, true);
 
 			if ($sql->count("sessions", "`__sessions`.`id` = :id", array(":id" => $id)))
 				$sql->update("sessions",
 				             "`__sessions`.`id` = :id",
-				             array("data" => ":data", "user_id" => ":user_id", "updated_at" => ":updated_at"),
-				             array(":id" => $id, ":data" => $data, ":user_id" => $user_id, ":updated_at" => datetime()),
+				             array("data" => ":data",
+				                   "user_id" => ":visitor_id",
+				                   "updated_at" => ":updated_at"),
+				             array(":id" => $id,
+				                   ":data" => $data,
+				                   ":visitor_id" => Visitor::current()->id,
+				                   ":updated_at" => datetime()),
 				             true);
 			else
 				$sql->insert("sessions",
-				             array("id" => ":id", "data" => ":data", "user_id" => ":user_id", "created_at" => ":created_at"),
-				             array(":id" => $id, ":data" => $data, ":user_id" => $user_id, ":created_at" => datetime()),
+				             array("id" => ":id",
+				                   "data" => ":data",
+				                   "user_id" => ":visitor_id",
+				                   "created_at" => ":created_at"),
+				             array(":id" => $id,
+				                   ":data" => $data,
+				                   ":visitor_id" => Visitor::current()->id,
+				                   ":created_at" => datetime()),
 				             true);
 		}
 

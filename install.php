@@ -161,7 +161,7 @@
 			$sql->query("CREATE TABLE IF NOT EXISTS `__sessions` (
 			                 `id` VARCHAR(40) DEFAULT '',
 			                 `data` LONGTEXT,
-			                 `user_id` VARCHAR(16) DEFAULT '0',
+			                 `user_id` INTEGER DEFAULT '0',
 			                 `created_at` DATETIME DEFAULT '0000-00-00 00:00:00',
 			                 `updated_at` DATETIME DEFAULT '0000-00-00 00:00:00',
 			                 PRIMARY KEY (`id`)
