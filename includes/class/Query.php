@@ -67,7 +67,7 @@
 					break;
 				case "mysql":
 					foreach ($params as $name => $val)
-						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", "'".$this->db->escape_string($val)."'\\1", $query);
+						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", "'".mysql_real_escape_string($val)."'\\1", $query);
 
 					$this->queryString = $query;
 
@@ -81,7 +81,7 @@
 					break;
 				case "sqlite":
 					foreach ($params as $name => $val)
-						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", "'".$this->db->escape_string($val)."'\\1", $query);
+						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", "'".sqlite_escape_string($val)."'\\1", $query);
 
 					$this->queryString = $query;
 
