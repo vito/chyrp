@@ -11,6 +11,9 @@
 
 	ob_start();
 
+	if (version_compare(PHP_VERSION, "5.1.3", "<"))
+		exit("Chyrp requires PHP 5.1.3 or greater. Installation cannot continue.");
+
 	require_once INCLUDES_DIR."/class/Query.php"; # SQL query handler
 	require_once INCLUDES_DIR."/class/QueryBuilder.php"; # SQL query builder
 	require_once INCLUDES_DIR."/lib/Yaml.php"; # YAML parser
@@ -45,10 +48,6 @@
 
 	$errors = array();
 	$installed = false;
-
-	# TODO: Determine exact PHP version that is required for Chyrp
-	if (version_compare(PHP_VERSION, "5.1.0", "<"))
-		$errors[] = __("Chyrp requires PHP 5. Installation cannot continue.");
 
 	if (file_exists(INCLUDES_DIR."/config.yaml.php") and file_exists(INCLUDES_DIR."/database.yaml.php") and file_exists(MAIN_DIR."/.htaccess")) {
 		$sql->load(INCLUDES_DIR."/database.yaml.php");
