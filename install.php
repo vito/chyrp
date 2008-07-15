@@ -167,7 +167,9 @@
 			                 PRIMARY KEY (`id`)
 			             ) DEFAULT CHARSET=utf8");
 
-			# This is to let the gettext scanner do its scanning. We don't want translated strings in the database.
+			# This is to let the gettext scanner add these strings to the .pot file.
+			# They are translated on display via Twig.
+			# We don't want translated strings in the database.
 			/* $translations = array(__("Change Settings"),
 			                         __("Toggle Extensions"),
 			                         __("View Site"),

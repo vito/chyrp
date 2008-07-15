@@ -191,7 +191,7 @@ Called from:
 change_setting
 --------------
 Called from:
-	includes/class/Config.php on line 71
+	includes/class/Config.php on line 75
 Arguments:
 	$setting, $value, $overwrite
 
@@ -242,7 +242,7 @@ Called from:
 runtime
 -------
 Called from:
-	includes/common.php on line 340
+	includes/common.php on line 338
 
 
 import_movabletype_post
@@ -367,7 +367,7 @@ Called from:
 can_not_view_site
 -----------------
 Called from:
-	includes/common.php on line 336
+	includes/common.php on line 334
 
 
 top
@@ -420,7 +420,7 @@ draft_situations
 Target:
 	$draft_situations
 Called from:
-	includes/common.php on line 304
+	includes/common.php on line 302
 
 
 manage_nav

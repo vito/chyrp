@@ -191,7 +191,6 @@
 			if (DEBUG)
 				$message.= "\n\n<pre>".print_r($this->queryString, true)."\n\n<pre>".print_r($this->params, true)."</pre>\n\n<pre>".$error->getTraceAsString()."</pre>";
 
-			error_log($message);
 			if (XML_RPC or $this->throw_exceptions)
 				throw new Exception($message);
 
