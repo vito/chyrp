@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
 "POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-07-14 22:25-0500\n"
+"PO-Revision-Date: 2008-07-15 12:53-0500\n"
 "Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
 "Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Author"
 msgstr ""
 
-#: modules/comments/comments.php:394
+#: modules/comments/comments.php:396
 msgid "Selected comments deleted."
 msgstr ""
 
@@ -66,7 +66,7 @@ msgid "Please remember to update the permission settings for each group."
 msgstr ""
 
 #: modules/comments/comments.php:148
-#: modules/comments/comments.php:338
+#: modules/comments/comments.php:340
 msgid "You do not have sufficient privileges to manage any comments."
 msgstr ""
 
@@ -74,14 +74,14 @@ msgstr ""
 msgid "Registered Only"
 msgstr ""
 
-#: modules/comments/comments.php:302
-#: modules/comments/comments.php:311
-#: modules/comments/comments.php:457
+#: modules/comments/comments.php:304
+#: modules/comments/comments.php:313
+#: modules/comments/comments.php:459
 msgid "Comments"
 msgstr ""
 
 #: modules/comments/comments.php:88
-#: modules/comments/comments.php:333
+#: modules/comments/comments.php:335
 msgid "You do not have sufficient privileges to edit this comment."
 msgstr ""
 
@@ -90,7 +90,7 @@ msgstr ""
 msgid "Reload Comments Every %s Seconds"
 msgstr ""
 
-#: modules/comments/comments.php:655
+#: modules/comments/comments.php:657
 #, php-format
 msgid "Comments on &#8220;%s&#8221;"
 msgstr ""
@@ -174,7 +174,7 @@ msgstr ""
 msgid "A ping from that URL is already registered."
 msgstr ""
 
-#: modules/comments/comments.php:415
+#: modules/comments/comments.php:417
 msgid "Selected comments denied."
 msgstr ""
 
@@ -204,7 +204,7 @@ msgstr ""
 msgid "Comment Settings"
 msgstr ""
 
-#: modules/comments/comments.php:442
+#: modules/comments/comments.php:444
 msgid "Selected comments marked as spam."
 msgstr ""
 
@@ -231,7 +231,7 @@ msgstr ""
 msgid "Comment System"
 msgstr ""
 
-#: modules/comments/comments.php:429
+#: modules/comments/comments.php:431
 msgid "Selected comments approved."
 msgstr ""
 
@@ -270,7 +270,7 @@ msgid "Format: <code>strong, blockquote, em</code>"
 msgstr ""
 
 #: modules/comments/edit_form.php:25
-#: modules/comments/comments.php:315
+#: modules/comments/comments.php:317
 msgid "Spam"
 msgstr ""
 
@@ -301,7 +301,7 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: modules/comments/comments.php:328
+#: modules/comments/comments.php:330
 msgid "An ID is required to edit a comment."
 msgstr ""
 
