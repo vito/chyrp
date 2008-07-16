@@ -641,7 +641,7 @@
 		 */
 		static function arr2xml(&$object, $data) {
 			foreach ($data as $key => $val) {
-				if (is_int($key) and empty($val)) {
+				if (is_int($key) and (empty($val) or trim($val) == "")) {
 					unset($data[$key]);
 					continue;
 				}

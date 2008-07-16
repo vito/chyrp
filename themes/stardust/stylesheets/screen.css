@@ -227,6 +227,7 @@ div#sidebar input#search {
 }
 div#sidebar ul li {
 	color: #555;
+	font-size: 1.1em;
 }
 
 
@@ -394,6 +395,7 @@ div.post .pinned_text {
 div.post p,
 div.page p {
 	padding: 0 0 1em;
+	font-size: 1.1em;
 }
 div.post blockquote {
 	padding: .5em .8em;
