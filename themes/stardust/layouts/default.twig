@@ -67,14 +67,14 @@ ${ trigger.call("head") }
 				</div>
 			</div>
 		</div>
-{% if debug %}
+{# if debug %}
 		<script type="text/javascript">
 {% for debug in sql_debug %}
 			console.log("$debug.number: ${ debug.query | quotes | strip } (Called from $debug.file on line $debug.line\.)")
 {% endfor %}
 			console.log("Total: $sql_queries")
 		</script>
-{% endif %}
+{% endif #}
 ${ trigger.call("end_content") }
 	</body>
 </html>

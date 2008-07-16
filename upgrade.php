@@ -137,7 +137,7 @@
 			$info = "";
 
 		if ($try)
-			return " <span class=\"yay\">".__("success!")."</span>\n".$info;
+			return " <span class=\"yay\">".__("success!")."</span>\n";
 		else
 			return " <span class=\"boo\">".__("failed!")."</span>\n".$info;
 	}
