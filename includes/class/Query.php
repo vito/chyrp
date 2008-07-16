@@ -79,20 +79,6 @@
 					}
 
 					break;
-				case "sqlite":
-					foreach ($params as $name => $val)
-						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", "'".sqlite_escape_string($val)."'\\1", $query);
-
-					$this->queryString = $query;
-
-					try {
-						if (!$this->query = @$this->db->query($query, SQLITE_BOTH, $this->error))
-							throw new Exception($this->error);
-					} catch (Exception $error) {
-						$this->handle($error);
-					}
-
-					break;
 			}
 		}
 
@@ -113,9 +99,6 @@
 				case "mysql":
 					$result = mysql_fetch_array($this->query);
 					return $result[$column];
-				case "sqlite":
-					$result = $this->query->fetch();
-					return $result[$column];
 			}
 		}
 
@@ -131,8 +114,6 @@
 					return $this->query->fetch_array();
 				case "mysql":
 					return mysql_fetch_array($this->query);
-				case "sqlite":
-					return $this->query->fetch();
 			}
 		}
 
@@ -148,8 +129,6 @@
 					return $this->query->fetch_object();
 				case "mysql":
 					return mysql_fetch_object($this->query);
-				case "sqlite":
-					return $this->query->fetchObject();
 			}
 		}
 
@@ -172,13 +151,6 @@
 					$results = array();
 
 					while ($row = mysql_fetch_assoc($this->query))
-						$results[] = $row;
-
-					return $results;
-				case "sqlite":
-					$results = array();
-
-					while ($row = $this->query->fetch())
 						$results[] = $row;
 
 					return $results;

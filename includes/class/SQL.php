@@ -35,15 +35,20 @@
 			if (isset($this->adapter)) {
 				if ($this->adapter == "mysql" and class_exists("MySQLi"))
 					$this->interface = "mysqli";
-				elseif ($this->adapter == "mysql")
+				elseif ($this->adapter == "mysql" and function_exists("mysql_connect"))
 					$this->interface = "mysql";
-				elseif ($this->adapter == "sqlite" and class_exists("SQLiteDatabase"))
-					$this->interface = "sqlite";
+				elseif ($this->adapter == "sqlite" and in_array("sqlite", PDO::getAvailableDrivers()))
+					$this->interface = "pdo";
 			} else
 				if (class_exists("MySQLi"))
 					$this->interface = "mysqli";
-				else
+				elseif (function_exists("mysql_connect"))
 					$this->interface = "mysql";
+				elseif (in_array("mysql", PDO::getAvailableDrivers()))
+					$this->interface = "pdo";
+
+			if (empty($this->interface))
+				exit("Cannot find a way to connect to a database.");
 		}
 
 		/**
@@ -146,15 +151,6 @@
 
 					if (!$this->db or !@mysql_select_db($this->database))
 						return ($checking) ? false : error(__("Database Error"), $this->error) ;
-
-					break;
-				case "sqlite":
-					if (!$this->db = new SQLiteDatabase($this->database, 0666, $this->error))
-						return ($checking) ? false : error(__("Database Error"), $this->error) ;
-
-					$this->db->createFunction("YEAR", "year_from_datetime", 1);
-					$this->db->createFunction("MONTH", "month_from_datetime", 1);
-					$this->db->createFunction("DAY", "day_from_datetime", 1);
 
 					break;
 			}
@@ -291,9 +287,6 @@
 					break;
 				case "mysql":
 					return @mysql_insert_id();
-					break;
-				case "sqlite":
-					return $this->db->lastInsertRowid();
 					break;
 			}
 		}

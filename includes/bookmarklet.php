@@ -44,6 +44,7 @@
 				background: #e8e8e8;
 				margin: 0;
 				padding: 1.25em;
+				overflow-x: auto;
 			}
 			a:link, a:visited {
 				text-decoration: none;
@@ -98,7 +99,6 @@
 			.content {
 				background: #fff;
 				padding: 1em;
-				height: 27.75em;
 <?php if (count($config->enabled_feathers) == 1): ?>
 				position: absolute;
 				border: 0;
@@ -116,11 +116,33 @@
 				width: 100%;
 			}
 			textarea.wide, input.text.wide {
-				width: 98.5%; /* Compensating for the 6px added from the padding */
+				width: 98%; /* Compensating for the 6px added from the padding */
 				_width: 100%; /* Hooray for IE6's randomized box model. */
 			}
 			.sub {
 				display: none;
+			}
+			button {
+				background: #eee;
+				display: block;
+				margin: 0 auto;
+				width: 7em;
+				text-align: center;
+				padding: .75em 1em;
+				color: #777;
+				text-shadow: #fff .1em .1em 0;
+				font: 1em normal "Lucida Grande", "Verdana", Helvetica, Arial, sans-serif;
+				text-decoration: none;
+				border: 0;
+				cursor: pointer;
+				-webkit-border-radius: .5em;
+				-moz-border-radius: .5em;
+			}
+			button:hover {
+				background: #f5f5f5;
+			}
+			button:active {
+				background: #e0e0e0;
 			}
 		</style>
 		<script src="<?php echo $config->chyrp_url; ?>/includes/lib/gz.php?file=jquery.js" type="text/javascript" charset="utf-8"></script>
@@ -134,7 +156,10 @@
 			}
 			$(function(){
 				$("input.text").each(function(){
-					$(this).css("min-width", $(this).width()).Autoexpand()
+					$(this).css({
+						minWidth: $(this).outerWidth(),
+						maxWidth: "98%"
+					}).Autoexpand()
 				})
 				$(".navigation li").css("float", "left")
 				$(".navigation").sortable({
@@ -209,7 +234,9 @@
 				<input type="hidden" name="slug" value="" id="slug" />
 				<input type="hidden" name="bookmarklet" value="true" id="bookmarklet" />
 				<input type="hidden" name="hash" value="<?php echo $config->secure_hashkey; ?>" id="hash" />
-				<input type="submit" value="<?php echo __("Publish"); ?>" />
+				<button type="submit">
+					<?php echo __("Publish"); ?>
+				</button>
 			</form>
 <?php
 	}

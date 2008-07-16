@@ -7,7 +7,11 @@ Requirements
 Chyrp will thrive on virtually any server setup, but we guarantee Chyrp to run on no less than:
 
 * PHP 5 >= 5.1.3
-* MySQL 4.1 -OR- SQLite 3
+* MySQL:
+  - MySQL 4.1+
+* SQLite:
+  - SQLite 3+
+  - PDO
 
 These requirements are more of guidelines, as these are the earliest versions of the services that we have tested Chyrp on. If you are successfully running Chyrp on an earlier version of these services, let us know.
 

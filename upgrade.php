@@ -113,13 +113,19 @@
 		static $sql = null;
 
 		static function connect() {
-			define('SQL_ADAPTER', (!self::get("adapter")) ? "mysql" : self::get("adapter"));
+			define('SQL_ADAPTER', (!self::check("adapter")) ? "mysql" : self::get("adapter"));
 
 			if (SQL_ADAPTER == "mysql") {
 				self::$sql = mysql_connect(self::get("host"), self::get("username"), self::get("password"));
 				mysql_select_db(self::get("database"), self::$sql);
 			} else
-				self::$sql = new SQLiteDatabase(self::get("database"));
+				self::$sql = new PDO(self::get("adapter").":".
+				                         "host=".self::get("host").";".
+				                         (self::check("port") ? "port=".self::get("port").";" : "").
+				                         "dbname=".self::get("database"),
+				                     self::get("username"),
+				                     self::get("password"),
+				                     array(PDO::ATTR_PERSISTENT => true));
 		}
 
 		static function get($setting) {
@@ -148,13 +154,15 @@
 			if (SQL_ADAPTER == "mysql")
 				return mysql_real_escape_string($string);
 			else
-				return sqlite_escape_string($string);
+				return PDO::quote($string);
 		}
 
 		static function query($query) {
 			$query = str_replace("__", SQL::get("prefix"), $query);
 			$query = str_replace("`", "", $query);
-			return (SQL_ADAPTER == "mysql") ? mysql_query($query, self::$sql) : self::$sql->query($query) ;
+			return (SQL_ADAPTER == "mysql") ?
+			       mysql_query($query, self::$sql) :
+			       self::$sql->query($query) ;
 		}
 
 		static function fetch($query) {
