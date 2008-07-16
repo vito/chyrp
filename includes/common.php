@@ -94,15 +94,15 @@
 	# Load the configuration settings
 	$config->load(INCLUDES_DIR."/config.yaml.php");
 
+	# Load the database settings
+	$sql->load(INCLUDES_DIR."/database.yaml.php");
+
 	if (function_exists("date_default_timezone_set"))
 		date_default_timezone_set($config->timezone);
 	else
 		ini_set("date.timezone", $config->timezone);
 
 	header("X-Pingback: ".$config->chyrp_url."/includes/xmlrpc.php");
-
-	if (!ADMIN and !JAVASCRIPT and !XML_RPC and !TRACKBACK and strpos($_SERVER['REQUEST_URI'], "?"))
-		$config->clean_urls = false;
 
 	$sql->connect();
 

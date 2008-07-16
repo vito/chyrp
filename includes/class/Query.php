@@ -49,7 +49,7 @@
 						$this->query->setFetchMode(PDO::FETCH_ASSOC);
 						if (!$result) throw new PDOException;
 					} catch (PDOException $error) {
-						$this->handle($error);
+						return $this->handle($error);
 					}
 					break;
 				case "mysqli":
@@ -60,7 +60,7 @@
 						if (!$this->query = $this->db->query($query))
 							throw new Exception($this->db->error);
 					} catch (Exception $error) {
-						$this->handle($error);
+						return $this->handle($error);
 					}
 					break;
 				case "mysql":
@@ -71,7 +71,7 @@
 						if (!$this->query = @mysql_query($query))
 							throw new Exception(mysql_error());
 					} catch (Exception $error) {
-						$this->handle($error);
+						return $this->handle($error);
 					}
 
 					break;
@@ -154,10 +154,11 @@
 		}
 
 		public function handle($error) {
+			if (defined('SQL_BOOL') and SQL_BOOL) return false;
+
 			$message = $error->getMessage();
 
-			if (DEBUG)
-				$message.= "\n\n<pre>".print_r($this->queryString, true)."\n\n<pre>".print_r($this->params, true)."</pre>\n\n<pre>".$error->getTraceAsString()."</pre>";
+			$message.= "\n\n<pre>".print_r($this->queryString, true)."\n\n<pre>".print_r($this->params, true)."</pre>\n\n<pre>".$error->getTraceAsString()."</pre>";
 
 			if (XML_RPC or $this->throw_exceptions)
 				throw new Exception($message);

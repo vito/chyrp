@@ -38,8 +38,13 @@
 		 * Grabs the posts for a search query.
 		 */
 		public function search() {
-			global $posts;
 			fallback($_GET['query'], "");
+			$config = Config::current();
+
+			if ($config->clean_urls and substr_count($_SERVER['REQUEST_URI'], "?"))
+				redirect("search/".urlencode($_GET['query'])."/");
+
+			global $posts;
 			$posts = new Paginator(Post::find(array("placeholders" => true,
 			                                        "where" => "`xml` LIKE :query",
 			                                        "params" => array(":query" => '%'.fix(urldecode($_GET['query'])).'%'))),

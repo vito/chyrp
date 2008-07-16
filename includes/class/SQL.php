@@ -4,6 +4,11 @@
 	 * Contains the database settings and functions for interacting with the SQL database.
 	 */
 	class SQL {
+		# Array: $yaml
+		# An associative array of YAML-parsed settings.
+		# This is what gets altered/added to when using <SQL.set.
+		public $yaml = array();
+
 		# Array: $debug
 		# Holds debug information for SQL queries.
 		public $debug = array();
@@ -110,7 +115,6 @@
 		 *     $checking - Return a boolean of whether or not it could connect, instead of showing an error.
 		 */
 		public function connect($checking = false) {
-			$this->load(INCLUDES_DIR."/database.yaml.php");
 			if ($this->connected)
 				return true;
 
@@ -122,9 +126,9 @@
 
 						if ($this->adapter == "sqlite") {
 							$this->db = new PDO("sqlite:".$this->database, null, null, array(PDO::ATTR_PERSISTENT => true));
-							$this->db->sqliteCreateFunction("YEAR", "year_from_datetime", 1);
-							$this->db->sqliteCreateFunction("MONTH", "month_from_datetime", 1);
-							$this->db->sqliteCreateFunction("DAY", "day_from_datetime", 1);
+							$this->db->sqliteCreateFunction("YEAR", array($this, "year_from_datetime"), 1);
+							$this->db->sqliteCreateFunction("MONTH", array($this, "month_from_datetime"), 1);
+							$this->db->sqliteCreateFunction("DAY", array($this, "day_from_datetime"), 1);
 						} else
 							$this->db = new PDO($this->adapter.":host=".$this->host.";".((isset($this->port)) ? "port=".$this->port.";" : "")."dbname=".$this->database,
 							                    $this->username,
@@ -185,7 +189,9 @@
 
 			++$this->queries;
 
-			return new Query($query, $params, $throw_exceptions);
+			$query = new Query($query, $params, $throw_exceptions);
+
+			return (!$query->query and (defined('SQL_BOOL') and SQL_BOOL)) ? false : $query ;
 		}
 
 		/**
@@ -298,6 +304,30 @@
 		public static function & current() {
 			static $instance = null;
 			return $instance = (empty($instance)) ? new self() : $instance ;
+		}
+
+		/**
+		 * Function: year_from_datetime
+		 * Returns the year of a datetime.
+		 */
+		public function year_from_datetime($datetime) {
+			return when("Y", $datetime);
+		}
+
+		/**
+		 * Function: month_from_datetime
+		 * Returns the month of a datetime.
+		 */
+		public function month_from_datetime($datetime) {
+			return when("m", $datetime);
+		}
+
+		/**
+		 * Function: day_from_datetime
+		 * Returns the day of a datetime.
+		 */
+		public function day_from_datetime($datetime) {
+			return when("d", $datetime);
 		}
 	}
 
