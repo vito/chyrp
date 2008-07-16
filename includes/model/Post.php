@@ -59,13 +59,14 @@
 			elseif (!isset($options["where"]))
 				$options["where"] = array();
 
-			$options["where"] = array_merge($options["where"], array(self::$enabled_feathers, self::$private));
+			if (!XML_RPC)
+				$options["where"] = array_merge($options["where"], array(self::$enabled_feathers, self::$private));
 
 			fallback($options["order"], "`__posts`.`pinned` desc, `__posts`.`created_at` desc, `__posts`.`id` desc");
 
 			$posts = parent::search(get_class(), $options, $options_for_object);
 
-			if (!ADMIN)
+			if (!ADMIN and !XML_RPC)
 				if (!isset($options["placeholders"]) or !$options["placeholders"]) {
 					foreach ($posts as $index => $post)
 						if (!$post->theme_exists())
