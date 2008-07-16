@@ -120,7 +120,10 @@ function prepare_write_bling() {
 		$(this).css("min-width", $(this).outerWidth()).Autoexpand()
 	})
 	$("textarea").each(function(){
-		$(this).css("min-height", $(this).outerHeight()).autogrow()
+		$(this).css({
+			minHeight: $(this).outerHeight() + 2,
+			lineHeight: "15px"
+		}).autogrow()
 	})
 
 	// Make the Feathers sortable
