@@ -11,23 +11,23 @@
 	$filename = rtrim(fallback($_GET['file']));
 	$extension = pathinfo($filename, PATHINFO_EXTENSION);
 
-	list($original_width, $original_height, $type, $attr) = getimagesize($filename);
-
-	$new_width = (int) fallback($_GET["max_width"], $original_width);
-	$new_height = (int) fallback($_GET["max_height"], $original_height);
+	if (!file_exists($filename))
+		display_error("Image Not Found");
 
 	function display_error($string) {
 		global $new_width;
-		$thumbnail = imagecreatetruecolor($new_width, 12);
-		imagestring($thumbnail, 1, 2, 2, $string, imagecolorallocate($thumbnail, 255, 255, 255));
+		$thumbnail = imagecreatetruecolor(fallback($_GET['max_width'], 100, true), 18);
+		imagestring($thumbnail, 1, 5, 5, $string, imagecolorallocate($thumbnail, 255, 255, 255));
 		header("Content-type: image/png");
 		header("Content-Disposition: inline; filename=error.png");
 		imagepng($thumbnail);
 		exit;
 	}
 
-	if (!file_exists($filename))
-		display_error("Image Not Found");
+	list($original_width, $original_height, $type, $attr) = getimagesize($filename);
+
+	$new_width = (int) fallback($_GET["max_width"], $original_width);
+	$new_height = (int) fallback($_GET["max_height"], $original_height);
 
 	# If it's already below the maximum, just redirect to it.
 	if ($original_width <= $new_width and $original_height <= $new_height)
