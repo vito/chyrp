@@ -17,7 +17,7 @@
 			if ($this->no_results)
 				return false;
 
-			$this->permissions = Horde_Yaml::load($this->permissions);
+			$this->permissions = (!empty($this->permissions)) ? Horde_Yaml::load($this->permissions) : array() ;
 		}
 
 		/**

@@ -364,7 +364,7 @@
 
 			$this->context["default_group"] = new Group($config->default_group);
 			$this->context["groups"] = Group::find(array("where" => array("`__groups`.`id` != :guest_id", "`__groups`.`id` != :default_id"),
-			                                             "params" => array(":guest_id" => $config->guest_group, "default_id" => $config->default_group),
+			                                             "params" => array(":guest_id" => $config->guest_group, ":default_id" => $config->default_group),
 			                                             "order" => "`__groups`.`id` desc"));
 		}
 

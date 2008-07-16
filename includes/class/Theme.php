@@ -218,11 +218,13 @@
 			               '" type="text/javascript" charset="utf-8"></script>';
 
 			if (file_exists(THEMES_DIR."/".$this->theme."/javascripts/") or file_exists(THEMES_DIR."/".$this->theme."/js/")) {
-				foreach(glob(THEMES_DIR."/".$this->theme."/{javascripts,js}/*.js", GLOB_BRACE) as $file)
-					$javascripts.= "\n\t\t".'<script src="'.$config->chyrp_url.'/includes/lib/gz.php?file='.preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file).'" type="text/javascript" charset="utf-8"></script>';
+				if ($js = glob(THEMES_DIR."/".$this->theme."/{javascripts,js}/*.js", GLOB_BRACE))
+					foreach($js as $file)
+						$javascripts.= "\n\t\t".'<script src="'.$config->chyrp_url.'/includes/lib/gz.php?file='.preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file).'" type="text/javascript" charset="utf-8"></script>';
 
-				foreach(glob(THEMES_DIR."/".$this->theme."/{javascripts,js}/*.js.php", GLOB_BRACE) as $file)
-					$javascripts.= "\n\t\t".'<script src="'.$config->chyrp_url.preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file).'" type="text/javascript" charset="utf-8"></script>';
+				if ($jsphp = glob(THEMES_DIR."/".$this->theme."/{javascripts,js}/*.js.php", GLOB_BRACE))
+					foreach($jsphp as $file)
+						$javascripts.= "\n\t\t".'<script src="'.$config->chyrp_url.preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file).'" type="text/javascript" charset="utf-8"></script>';
 			}
 
 			return $javascripts;

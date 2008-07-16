@@ -11,8 +11,10 @@
 	$filename = rtrim(fallback($_GET['file']));
 	$extension = pathinfo($filename, PATHINFO_EXTENSION);
 
-	$new_width = (int) fallback($_GET["max_width"]);
-	$new_height = (int) fallback($_GET["max_height"]);
+	list($original_width, $original_height, $type, $attr) = getimagesize($filename);
+
+	$new_width = (int) fallback($_GET["max_width"], $original_width);
+	$new_height = (int) fallback($_GET["max_height"], $original_height);
 
 	function display_error($string) {
 		global $new_width;
@@ -27,10 +29,8 @@
 	if (!file_exists($filename))
 		display_error("Image Not Found");
 
-	list($original_width, $original_height, $type, $attr) = getimagesize($filename);
-
 	# If it's already below the maximum, just redirect to it.
-	if ($original_width < $new_width and $original_height < $new_height)
+	if ($original_width <= $new_width and $original_height <= $new_height)
 		header("Location: ".$filename);
 
 	$cache_filename = md5($filename.$new_width.$new_height.$quality).".".$extension;
