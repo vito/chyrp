@@ -26,7 +26,9 @@
 		 */
 		private function __construct() {
 			$this->connected = false;
+		}
 
+		public function method() {
 			# We really don't need PDO anymore, since we have the two we supported with it hardcoded (kinda).
 			# Keeping this here for when/if we decide to add support for more database engines, like Postgres and MSSQL.
 			#if (class_exists("PDO") and (in_array("mysql", PDO::getAvailableDrivers()) or in_array("sqlite", PDO::getAvailableDrivers())))
@@ -34,21 +36,20 @@
 
 			if (isset($this->adapter)) {
 				if ($this->adapter == "mysql" and class_exists("MySQLi"))
-					$this->interface = "mysqli";
+					return $this->interface = "mysqli";
 				elseif ($this->adapter == "mysql" and function_exists("mysql_connect"))
-					$this->interface = "mysql";
+					return $this->interface = "mysql";
 				elseif ($this->adapter == "sqlite" and in_array("sqlite", PDO::getAvailableDrivers()))
-					$this->interface = "pdo";
+					return $this->interface = "pdo";
 			} else
 				if (class_exists("MySQLi"))
-					$this->interface = "mysqli";
+					return $this->interface = "mysqli";
 				elseif (function_exists("mysql_connect"))
-					$this->interface = "mysql";
+					return $this->interface = "mysql";
 				elseif (in_array("mysql", PDO::getAvailableDrivers()))
-					$this->interface = "pdo";
+					return $this->interface = "pdo";
 
-			if (empty($this->interface))
-				exit("Cannot find a way to connect to a database.");
+			exit(__("Cannot find a way to connect to a database."));
 		}
 
 		/**
@@ -113,7 +114,7 @@
 			if ($this->connected)
 				return true;
 
-			switch($this->interface) {
+			switch($this->method()) {
 				case "pdo":
 					try {
 						if (empty($this->database))
@@ -121,7 +122,6 @@
 
 						if ($this->adapter == "sqlite") {
 							$this->db = new PDO("sqlite:".$this->database, null, null, array(PDO::ATTR_PERSISTENT => true));
-
 							$this->db->sqliteCreateFunction("YEAR", "year_from_datetime", 1);
 							$this->db->sqliteCreateFunction("MONTH", "month_from_datetime", 1);
 							$this->db->sqliteCreateFunction("DAY", "day_from_datetime", 1);
@@ -278,7 +278,7 @@
 		 * Returns the last inserted ID.
 		 */
 		public function latest() {
-			switch($this->interface) {
+			switch($this->method()) {
 				case "pdo":
 					return $this->db->lastInsertId();
 					break;

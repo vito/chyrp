@@ -18,10 +18,10 @@
 		 */
 		public function __construct($query, $params = array(), $throw_exceptions = false) {
 			$this->db =& SQL::current()->db;
-			$this->interface =& SQL::current()->interface;
 
 			$this->params = $params;
 			$this->throw_exceptions = $throw_exceptions;
+			$this->queryString = $query;
 
 			if (defined('DEBUG') and DEBUG) {
 				$trace = debug_backtrace();
@@ -37,16 +37,16 @@
 				SQL::current()->debug[] = array("number" => SQL::current()->queries,
 				                                "file" => str_replace(MAIN_DIR."/", "", $target["file"]),
 				                                "line" => $target["line"],
-				                                "query" => str_replace("\n", "\\n", str_replace(array_keys($params), array_values($params), $query)));
+				                                "query" => str_replace("\n", "\\n",
+				                                           str_replace(array_keys($params), array_values($params), $query)));
 			}
 
-			switch($this->interface) {
+			switch(SQL::current()->method()) {
 				case "pdo":
 					try {
 						$this->query = $this->db->prepare($query);
 						$result = $this->query->execute($params);
 						$this->query->setFetchMode(PDO::FETCH_ASSOC);
-						$this->queryString = $this->query->queryString;
 						if (!$result) throw new PDOException;
 					} catch (PDOException $error) {
 						$this->handle($error);
@@ -55,8 +55,6 @@
 				case "mysqli":
 					foreach ($params as $name => $val)
 						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", "'".$this->db->escape_string($val)."'\\1", $query);
-
-					$this->queryString = $query;
 
 					try {
 						if (!$this->query = $this->db->query($query))
@@ -68,8 +66,6 @@
 				case "mysql":
 					foreach ($params as $name => $val)
 						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", "'".mysql_real_escape_string($val)."'\\1", $query);
-
-					$this->queryString = $query;
 
 					try {
 						if (!$this->query = @mysql_query($query))
@@ -90,7 +86,7 @@
 		 *     $column - The offset of the column to grab. Default 0.
 		 */
 		public function fetchColumn($column = 0) {
-			switch($this->interface) {
+			switch(SQL::current()->method()) {
 				case "pdo":
 					return $this->query->fetchColumn($column);
 				case "mysqli":
@@ -107,7 +103,7 @@
 		 * Returns the first row as an array.
 		 */
 		public function fetch() {
-			switch($this->interface) {
+			switch(SQL::current()->method()) {
 				case "pdo":
 					return $this->query->fetch();
 				case "mysqli":
@@ -122,7 +118,7 @@
 		 * Returns the first row as an object.
 		 */
 		public function fetchObject() {
-			switch($this->interface) {
+			switch(SQL::current()->method()) {
 				case "pdo":
 					return $this->query->fetchObject();
 				case "mysqli":
@@ -137,7 +133,7 @@
 		 * Returns an array of every result.
 		 */
 		public function fetchAll($style = null) {
-			switch($this->interface) {
+			switch(SQL::current()->method()) {
 				case "pdo":
 					return $this->query->fetchAll($style);
 				case "mysqli":

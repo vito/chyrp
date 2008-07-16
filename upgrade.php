@@ -150,6 +150,11 @@
 			echo $message.test(@file_put_contents(INCLUDES_DIR."/database.yaml.php", $dump));
 		}
 
+		static function check($setting) {
+			global $yaml;
+			return (isset($yaml["database"][$setting]));
+		}
+
 		static function fix($string) {
 			if (SQL_ADAPTER == "mysql")
 				return mysql_real_escape_string($string);

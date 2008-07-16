@@ -2024,11 +2024,12 @@
 
 		$zones = array();
 		$offsets = array();
+		$reverse = (isset(Config::current()->timezone)) ? $timezones[Config::current()->timezone] : 0 ;
 		foreach ($timezones as $timezone => $offset) {
 			if (!in_array($offset, $offsets))
 				$zones[] = array("offset" => ($offsets[] = $offset) / 3600,
 				                 "name" => $timezone,
-				                 "now" => time() - $timezones[Config::current()->timezone] + $offset);
+				                 "now" => time() - $reverse + $offset);
 		}
 
 		function by_time($a, $b) {
