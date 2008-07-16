@@ -283,8 +283,10 @@
 		if (is_callable(array($module, "__init")))
 			$module->__init();
 
-	if (INDEX)
+	if (INDEX) {
+		$route->check_viewing_page();
 		$route->check_viewing_post();
+	}
 
 	# Variable: $visitor
 	# Holds the current user and their group.

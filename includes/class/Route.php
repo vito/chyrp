@@ -232,16 +232,27 @@
 						return $this->action = $this->arg[0];
 					}
 				}
+		}
 
-			# Check for a page
+		public function check_viewing_page() {
+			global $page, $main;
+
+			$config = Config::current();
+			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls or isset($this->action))
+				return;
+
+			if (count($this->arg) == 1 and method_exists($main, $this->arg[0]))
+				return $this->action = $this->arg[0];
+
 			$page = new Page(null, array("where" => "__pages.url = :url",
 			                             "params" => array(":url" => end($this->arg))));
+
 			if (!$page->no_results)
 				return list($_GET['url'], $this->action) = array(end($this->arg), "page");
 		}
 
 		public function check_viewing_post() {
-			global $post, $page, $main;
+			global $post, $main;
 			$config = Config::current();
 			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls or isset($this->action))
 				return;
