@@ -154,7 +154,9 @@
 		}
 
 		public function handle($error) {
-			if (defined('SQL_BOOL') and SQL_BOOL) return false;
+			SQL::current()->error = $error;
+
+			if (defined('UPGRADING') and UPGRADING) return false;
 
 			$message = $error->getMessage();
 

@@ -21,6 +21,10 @@
 		# Holds the currently running database.
 		public $db;
 
+		# Variable: $error
+		# Holds an error message from the last attempted query.
+		public $error = "";
+
 		# String: $interface
 		# What method to use for interacting with the database.
 		public $interface = "";
@@ -88,14 +92,14 @@
 		 *     $overwrite - If the setting exists and is the same value, should it be overwritten?
 		 */
 		public function set($setting, $value, $overwrite = true) {
-			if (isset($this->$setting) and $this->$setting == $value and !$overwrite)
+			if (isset($this->$setting) and $this->$setting == $value and !$overwrite and !UPGRADING)
 				return false;
 
 			# Add the PHP protection!
 			$contents = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
 
 			# Add the setting
-			$this->yaml[$setting] = $value;
+			$this->yaml[$setting] = $this->$setting = $value;
 
 			# Generate the new YAML settings
 			$contents.= Horde_Yaml::dump($this->yaml);
@@ -191,7 +195,7 @@
 
 			$query = new Query($query, $params, $throw_exceptions);
 
-			return (!$query->query and (defined('SQL_BOOL') and SQL_BOOL)) ? false : $query ;
+			return (!$query->query and (defined('UPGRADING') and UPGRADING)) ? false : $query ;
 		}
 
 		/**
