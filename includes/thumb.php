@@ -26,8 +26,8 @@
 
 	list($original_width, $original_height, $type, $attr) = getimagesize($filename);
 
-	$new_width = (int) fallback($_GET["max_width"], $original_width);
-	$new_height = (int) fallback($_GET["max_height"], $original_height);
+	$new_width = (int) fallback($_GET["max_width"], 0);
+	$new_height = (int) fallback($_GET["max_height"], 0);
 
 	# If it's already below the maximum, just redirect to it.
 	if ($original_width <= $new_width and $original_height <= $new_height)

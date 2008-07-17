@@ -58,7 +58,7 @@
 
 				if (!empty($_GET['year']))
 					$timestamps = $sql->select("posts",
-					                           array("DISTINCT YEAR(created_at) AS `year",
+					                           array("DISTINCT YEAR(created_at) AS year",
 					                                 "MONTH(created_at) AS month",
 					                                 "created_at",
 					                                 "COUNT(id) AS posts"),
@@ -69,7 +69,7 @@
 					                           array("YEAR(created_at)", "MONTH(created_at)"));
 				else
 					$timestamps = $sql->select("posts",
-					                           array("DISTINCT YEAR(created_at) AS `year",
+					                           array("DISTINCT YEAR(created_at) AS year",
 					                                 "MONTH(created_at) AS month",
 					                                 "created_at",
 					                                 "COUNT(id) AS posts"),

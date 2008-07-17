@@ -355,7 +355,7 @@
 	}
 
 	function add_permissions_table() {
-		if (SQL::current()->query("SELECT * FROM `__permissions")) return;
+		if (SQL::current()->query("SELECT * FROM __permissions")) return;
 
 		$permissions_table = SQL::current()->query("CREATE TABLE __permissions (
 		                                                id VARCHAR(100) DEFAULT '' PRIMARY KEY,
