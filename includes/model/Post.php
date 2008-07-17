@@ -514,7 +514,7 @@
 				$statuses[] = "draft";
 			if (logged_in())
 				$statuses[] = "registered_only";
-			if ($visitor->group()->can("view_private"))
+			if (Visitor::current()->group()->can("view_private"))
 				$statuses[] = "private";
 
 			$where[] = "status IN ('".implode("', '", $statuses)."')";
@@ -541,7 +541,7 @@
 				$statuses[] = "draft";
 			if (logged_in())
 				$statuses[] = "registered_only";
-			if ($visitor->group()->can("view_private"))
+			if (Visitor::current()->group()->can("view_private"))
 				$statuses[] = "private";
 
 			$where[] = "status IN ('".implode("', '", $statuses)."')";
