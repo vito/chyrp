@@ -944,7 +944,7 @@
 
 			$filename = sanitize(camelize($config->name), false, true)."_Export_".date("Y-m-d");
 			header("Content-type: application/octet-stream");
-			header("Content-Disposition: attachment; filename=\$filename.".zip\"");
+			header("Content-Disposition: attachment; filename=\"".$filename.".zip\"");
 			header("Content-length: ".strlen($zip_contents)."\n\n");
 
 			echo $zip_contents;
