@@ -78,11 +78,15 @@
 				$username = str_replace(" (me)", "", $matches[1].$matches[2].$matches[3]);
 				$class = ($count % 2) ? "even" : "odd" ;
 				$return.= '<li class="'.$class.$me.'">';
-				$return.= '<span class="label">'.htmlentities($username, ENT_NOQUOTES, "utf-8").'</span> '.$matches[4]."\n";
+				$return.= '<span class="label">'.fix($username, false).'</span> '.$matches[4]."\n";
 				$return.= '</li>';
 				$count++;
 			}
 			$return.= "</ul>";
+
+			# If they're previewing.
+			if (!isset($post))
+				$return = preg_replace("/(<li class=\"(even|odd) me\"><span class=\"label\">)(.+)(<\/span> (.+)\n<\/li>)/", "\\1<strong>\\3</strong>\\4", $return);
 
 			return $return;
 		}
