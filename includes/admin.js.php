@@ -142,7 +142,7 @@ function prepare_write_bling() {
 
 function togglers() {
 	var all_checked = true
-	$("#toggler").html('<label for="toggle">Toggle All</label><input class="checkbox" type="checkbox" name="toggle" id="toggle" />')
+	$("#toggler").html('<label for="toggle"><?php echo __("Toggle All"); ?></label><input class="checkbox" type="checkbox" name="toggle" id="toggle" />')
 	$(".toggler").html('<input class="checkbox" type="checkbox" name="toggle" id="toggle" />')
 	$("#toggle").click(function(){
 		$("form#new_group, form#group_edit, table").find(":checkbox").not("#toggle").each(function(){
