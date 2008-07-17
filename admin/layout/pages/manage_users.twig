@@ -23,11 +23,12 @@
 				</fieldset>
 			</form>
 			<br />
-			<h2>${ "Last 25 Users" | translate }</h2>
+			<h2>${ "Users" | translate }</h2>
 			<table border="0" cellspacing="0" cellpadding="0" class="wide">
 				<thead>
 					<tr class="head">
 						<th>${ "Name" | translate }</th>
+						<th>${ "Group" | translate }</th>
 						<th>${ "Joined" | translate }</th>
 						<th>${ "Website" | translate }</th>
 						${ trigger.call("manage_users_column_header") }
@@ -44,6 +45,7 @@
 							<a href="mailto:$user.email">$user.login</a>
 							{% endif %}
 						</td>
+						<td>${ user.group.name | escape }</td>
 						<td>${ user.joined_at | strftime }</td>
 						<td>{% if user.website != "" %}<a href="$user.website">$user.website</a>{% endif %}</td>
 						${ trigger.call("manage_users_column", user) }
@@ -62,6 +64,7 @@
 				{% endfor %}
 				</tbody>
 			</table>
-			$posts.next_link
-			$posts.prev_link
+			<br />
+			$users.next_link
+			$users.prev_link
 {% endblock %}
