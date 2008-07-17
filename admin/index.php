@@ -34,7 +34,7 @@
 			$admin->context["site"]        = Config::current();
 			$admin->context["visitor"]     = $visitor;
 			$admin->context["logged_in"]   = logged_in();
-			$admin->context["route"]       = array("action" => $action);
+			$admin->context["route"]       = Route::current();
 			$admin->context["hide_admin"]  = isset($_SESSION["hide_admin"]);
 			$admin->context["now"]         = time();
 			$admin->context["version"]     = CHYRP_VERSION;

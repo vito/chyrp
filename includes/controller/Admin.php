@@ -540,12 +540,19 @@
 					$match = explode(":", $match);
 					$test = $match[0];
 					$equals = $match[1];
+					if ($test == "group") {
+						$group = new Group(null, array("where" => "name = :name", "params" => array(":name" => $equals)));
+						$test = "group_id";
+						$equals = ($group->no_results) ? 0 : $group->id ;
+					}
 					$where[] = $test." = :".$test;
 					$params[":".$test] = $equals;
 				}
 
-				$where[] = "(login LIKE :query OR full_name LIKE :query OR email LIKE :query OR website LIKE :query)";
-				$params[":query"] = "%".$_GET['query']."%";
+				if (!empty($search)) {
+					$where[] = "(login LIKE :query OR full_name LIKE :query OR email LIKE :query OR website LIKE :query)";
+					$params[":query"] = "%".$_GET['query']."%";
+				}
 			}
 
 			$this->context["users"] = new Paginator(User::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
@@ -710,6 +717,11 @@
 						$where[] = $test." = :".$test;
 						$params[":".$test] = $equals;
 					}
+
+					if (!empty($search)) {
+						$where[] = "xml LIKE :query";
+						$params[":query"] = "%".$search."%";
+					}
 				} else
 					list($where, $params) = array(false, array());
 
@@ -800,6 +812,11 @@
 						$equals = $match[1];
 						$where[] = $test." = :".$test;
 						$params[":".$test] = $equals;
+					}
+
+					if (!empty($search)) {
+						$where[] = "(title LIKE :query OR body LIKE :query)";
+						$params[":query"] = "%".$search."%";
 					}
 				} else
 					list($where, $params) = array(null, array());
@@ -912,6 +929,11 @@
 						$equals = $match[1];
 						$where[] = $test." = :".$test;
 						$params[":".$test] = $equals;
+					}
+
+					if (!empty($search)) {
+						$where[] = "(login LIKE :query OR full_name LIKE :query OR email LIKE :query OR website LIKE :query)";
+						$params[":query"] = "%".$_GET['query']."%";
 					}
 				} else
 					list($where, $params) = array(null, array());

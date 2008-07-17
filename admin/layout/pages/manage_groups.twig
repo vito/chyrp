@@ -31,9 +31,9 @@
 					{% if group.id == site.guest_group %}
 					${ "&#8220;%s&#8221; is the group for guests." | translate | format(group.name) }
 					{% elseif group.id == site.default_group %}
-					${ "&#8220;%s&#8221; is the default group and has %s member." | translate_plural("&#8220;%s&#8221; is the default group and has %s members.", group.size) | format(group.name, group.size) }
+					${ "&#8220;%s&#8221; is the default group and has %s <a href=\"%s\">member</a>." | translate_plural("&#8220;%s&#8221; is the default group and has %s <a href=\"%s\">members</a>.", group.size) | format(group.name, group.size, route.url("/admin/?action=manage_users&query=group%3A"~group.name)) }
 					{% else %}
-					${ "&#8220;%s&#8221; has %s member." | translate_plural("&#8220;%s&#8221; has %s members.", group.size) | format(group.name, group.size) }
+					${ "&#8220;%s&#8221; has %s <a href=\"%s\">member</a>." | translate_plural("&#8220;%s&#8221; has %s <a href=\"%s\">members</a>.", group.size) | format(group.name, group.size, route.url("/admin/?action=manage_users&query=group%3A"~group.name)) }
 					{% endif %}
 				</h1>
 			</div>
