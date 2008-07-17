@@ -42,7 +42,7 @@
 			if (isset($this->pages_list))
 				return $this->pages_list;
 
-			$this->pages = Page::find(array("where" => "`show_in_list` = 1", "order" => "`list_order` asc"));
+			$this->pages = Page::find(array("where" => "show_in_list = 1", "order" => "list_order asc"));
 
 			foreach ($this->pages as $page)
 				$this->end_tags_for[$page->id] = $this->children[$page->id] = array();
@@ -116,13 +116,13 @@
 
 			$sql = SQL::current();
 			$dates = $sql->select("posts",
-			                       "DISTINCT YEAR(`created_at`) AS `year`, MONTH(`created_at`) AS `month`, `created_at`, COUNT(`id`) AS `posts`",
-			                       "`status` = 'public'",
-			                       "`__posts`.`{$order_by}` ".strtoupper($order),
+			                       "DISTINCT YEAR(created_at) AS year, MONTH(created_at) AS month, created_at, COUNT(id) AS posts",
+			                       "status = 'public'",
+			                       "__posts.{$order_by} ".strtoupper($order),
 			                       array(),
 			                       ($limit == 0) ? null : $limit,
 			                       null,
-			                       "YEAR(`created_at`), MONTH(`created_at`)");
+			                       "YEAR(created_at), MONTH(created_at)");
 
 			$archives = array();
 			while ($date = $dates->fetchObject())

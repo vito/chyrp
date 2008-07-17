@@ -12,7 +12,7 @@
 			$set = array();
 
 			foreach ($data as $field => $val)
-				array_push($set, "`$field` = $val");
+				array_push($set, "$field = $val");
 
 			return implode(", ", $set);
 		}
@@ -25,7 +25,7 @@
 			$set = array();
 
 			foreach (array_keys($data) as $field)
-				array_push($set, "`$field`");
+				array_push($set, $field);
 
 			return "(".implode(", ", $set).")";
 		}
@@ -44,7 +44,7 @@
 		 */
 		public static function build_insert($table, $data) {
 			return "
-				INSERT INTO `__$table`
+				INSERT INTO __$table
 				".self::build_insert_header($data)."
 				VALUES
 				".self::build_insert_values($data)."
@@ -57,7 +57,7 @@
 		 */
 		public static function build_replace($table, $data) {
 			return "
-				REPLACE INTO `__$table`
+				REPLACE INTO __$table
 				".self::build_insert_header($data)."
 				VALUES
 				".self::build_insert_values($data)."
@@ -70,7 +70,7 @@
 		 */
 		public static function build_update($table, $conds, $data) {
 			return "
-				UPDATE `__$table`
+				UPDATE __$table
 				SET ".self::build_update_values($data)."
 				".($conds ? "WHERE ".self::build_where($conds) : "")."
 			";
@@ -82,7 +82,7 @@
 		 */
 		public static function build_delete($table, $conds) {
 			return "
-				DELETE FROM `__$table`
+				DELETE FROM __$table
 				".($conds ? "WHERE ".self::build_where($conds) : "")."
 			";
 		}
@@ -108,7 +108,7 @@
 				$tables = array($tables);
 
 			foreach ($tables as &$table)
-				$table = "`__".$table."`";
+				$table = "__".$table;
 
 			return implode(", ", $tables);
 		}
@@ -132,20 +132,8 @@
 		public static function build_select_header($fields) {
 			if (!is_array($fields))
 				$fields = array($fields);
-			$set = array();
 
-			foreach ($fields as $field) {
-				$field = explode(" ", $field);
-				$parts = explode(".", $field[0]);
-				foreach ($parts as $index => &$part) {
-					if ($part != '*' and !strpos($part, "(") and !strpos($part, ")") and strtoupper($part) != $part)
-						$part = "`$part`";
-				}
-				$field[0] = implode(".", $parts);
-				array_push($set, implode(" ", $field));
-			}
-
-			return implode(', ', $set);
+			return implode(', ', $fields);
 		}
 
 		/**
@@ -167,7 +155,7 @@
 				if (is_array($table))
 					$table = $table[0];
 				foreach ((array) $by as $col)
-					$groups[] = preg_replace("/^`([^`]+)` /", "`__".$table."`.`\\1` ", $col);
+					$groups[] = preg_replace("/^`([^`]+)` /", "__".$table.".\\1 ", $col);
 			} else
 				$groups = (array) $by;
 
@@ -187,7 +175,7 @@
 				FROM ".self::build_from($tables);
 			if (isset($left_join))
 				foreach ($left_join as $join)
-					$query.= "\n\t\t\t\tLEFT JOIN `__".$join["table"]."` ON ".self::build_where($join["where"]);
+					$query.= "\n\t\t\t\tLEFT JOIN __".$join["table"]." ON ".self::build_where($join["where"]);
 			$query.= "
 				".($conds ? "WHERE ".self::build_where($conds) : "")."
 				".($group ? "GROUP BY ".self::build_group($group) : "")."

@@ -23,12 +23,12 @@
 
 			if (isset($_GET['day']))
 				$posts = new Paginator(Post::find(array("placeholders" => true,
-				                                        "where" => "`__posts`.`created_at` like :date",
+				                                        "where" => "__posts.created_at like :date",
 				                                        "params" => array(":date" => $_GET['year']."-".$_GET['month']."-".$_GET['day']."%"))),
 				                       Config::current()->posts_per_page);
 			else
 				$posts = new Paginator(Post::find(array("placeholders" => true,
-				                                        "where" => "`__posts`.`created_at` like :date",
+				                                        "where" => "__posts.created_at like :date",
 				                                        "params" => array(":date" => $_GET['year']."-".$_GET['month']."%"))),
 				                       Config::current()->posts_per_page);
 		}
@@ -46,7 +46,7 @@
 
 			global $posts;
 			$posts = new Paginator(Post::find(array("placeholders" => true,
-			                                        "where" => "`xml` LIKE :query",
+			                                        "where" => "xml LIKE :query",
 			                                        "params" => array(":query" => '%'.fix(urldecode($_GET['query'])).'%'))),
 				                   Config::current()->posts_per_page);
 		}
@@ -62,7 +62,7 @@
 
 			global $posts;
 			$posts = new Paginator(Post::find(array("placeholders" => true,
-			                                        "where" => array("`__posts`.`status` = 'draft'", "`__posts`.`user_id` = :current_user"),
+			                                        "where" => array("__posts.status = 'draft'", "__posts.user_id = :current_user"),
 			                                        "params" => array(":current_user" => $visitor->id))),
 				                   Config::current()->posts_per_page);
 		}
@@ -74,7 +74,7 @@
 		public function feather() {
 			global $posts;
 			$posts = new Paginator(Post::find(array("placeholders" => true,
-			                                        "where" => "`feather` = :feather",
+			                                        "where" => "feather = :feather",
 			                                        "params" => array(":feather" => depluralize($_GET['feather'])))),
 				                   Config::current()->posts_per_page);
 		}
@@ -110,7 +110,7 @@
 			$get = array_map("urldecode", $_GET);
 
 			if (!$config->clean_urls)
-				$post = new Post(null, array("where" => "`__posts`.`url` = :url",
+				$post = new Post(null, array("where" => "__posts.url = :url",
 				                             "params" => array(":url" => fallback($get['url']))));
 			else
 				$post = Post::from_url($route->post_url_attrs);
@@ -182,7 +182,7 @@
 			if (empty($_POST['login']))
 				return Flash::warning(__("Please enter a username for your account."));
 
-			if (count(User::find(array("where" => "`login` = :login",
+			if (count(User::find(array("where" => "login = :login",
 			                           "params" => array(":login" => $_POST['login'])))))
 				Flash::warning(__("That username is already in use."));
 
@@ -289,7 +289,7 @@
 			if (empty($_POST))
 				return;
 
-			$user = new User(null, array("where" => "`login` = :login", "params" => array(":login" => $_POST['login'])));
+			$user = new User(null, array("where" => "login = :login", "params" => array(":login" => $_POST['login'])));
 			if ($user->no_results)
 				return Flash::warning(__("Invalid user specified."));
 

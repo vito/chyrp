@@ -96,7 +96,7 @@
 				return false;
 
 			$sql = SQL::current();
-			$sql->update("groups", "`__groups`.`id` = :id",
+			$sql->update("groups", "__groups.id = :id",
 			             array("name" => ":name", "permissions" => ":permissions"),
 			             array(":name" => $name, ":permissions" => Horde_Yaml::dump($permissions), ":id" => $this->id));
 
@@ -165,7 +165,7 @@
 			if ($this->no_results)
 				return false;
 
-			return User::find(array("where" => "`group_id` = :group_id",
+			return User::find(array("where" => "group_id = :group_id",
 			                        "params" => array(":group_id" => $this->id)));
 		}
 

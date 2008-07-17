@@ -200,21 +200,21 @@
 	}
 
 	function tweets_to_posts() {
-		if (SQL::current()->query("SELECT * FROM `__tweets`"))
-			echo __("Renaming `tweets` table to `posts`...").
-			     test(SQL::current()->query("RENAME TABLE `__tweets` TO `__posts`"));
+		if (SQL::current()->query("SELECT * FROM __tweets"))
+			echo __("Renaming tweets table to posts...").
+			     test(SQL::current()->query("RENAME TABLE __tweets TO __posts"));
 
-		if (SQL::current()->query("SELECT `add_tweet` FROM `__groups`"))
-			echo __("Renaming `add_tweet` permission to `add_post`...").
-			     test(SQL::current()->query("ALTER TABLE `__groups` CHANGE `add_tweet` `add_post` TINYINT(1) NOT NULL DEFAULT '0'"));
+		if (SQL::current()->query("SELECT add_tweet FROM __groups"))
+			echo __("Renaming add_tweet permission to add_post...").
+			     test(SQL::current()->query("ALTER TABLE __groups CHANGE add_tweet add_post TINYINT(1) NOT NULL DEFAULT '0'"));
 
-		if (SQL::current()->query("SELECT `edit_tweet` FROM `__groups`"))
-			echo __("Renaming `edit_tweet` permission to `edit_post`...").
-			     test(SQL::current()->query("ALTER TABLE `__groups` CHANGE `edit_tweet` `edit_post` TINYINT(1) NOT NULL DEFAULT '0'"));
+		if (SQL::current()->query("SELECT edit_tweet FROM __groups"))
+			echo __("Renaming edit_tweet permission to edit_post...").
+			     test(SQL::current()->query("ALTER TABLE __groups CHANGE edit_tweet edit_post TINYINT(1) NOT NULL DEFAULT '0'"));
 
-		if (SQL::current()->query("SELECT `delete_tweet` FROM `__groups`"))
-			echo __("Renaming `delete_tweet` permission to `delete_post`...").
-			     test(SQL::current()->query("ALTER TABLE `__groups` CHANGE `delete_tweet` `delete_post` TINYINT(1) NOT NULL DEFAULT '0'"));
+		if (SQL::current()->query("SELECT delete_tweet FROM __groups"))
+			echo __("Renaming delete_tweet permission to delete_post...").
+			     test(SQL::current()->query("ALTER TABLE __groups CHANGE delete_tweet delete_post TINYINT(1) NOT NULL DEFAULT '0'"));
 
 		if (Config::check("tweets_per_page")) {
 			Config::fallback("posts_per_page", Config::get("tweets_per_page"));
@@ -223,19 +223,19 @@
 	}
 
 	function pages_parent_id_column() {
-		if (SQL::current()->query("SELECT `parent_id` FROM `__pages`"))
+		if (SQL::current()->query("SELECT parent_id FROM __pages"))
 			return;
 
-		echo __("Adding `parent_id` column to `pages` table...").
-		     test(SQL::current()->query("ALTER TABLE `__pages` ADD `parent_id` INT(11) NOT NULL DEFAULT '0' AFTER `user_id`"));
+		echo __("Adding parent_id column to pages table...").
+		     test(SQL::current()->query("ALTER TABLE __pages ADD parent_id INT(11) NOT NULL DEFAULT '0' AFTER user_id"));
 	}
 
 	function pages_list_order_column() {
-		if (SQL::current()->query("SELECT `list_order` FROM `__pages`"))
+		if (SQL::current()->query("SELECT list_order FROM __pages"))
 			return;
 
-		echo __("Adding `list_order` column to `pages` table...").
-		     test(SQL::current()->query("ALTER TABLE `__pages` ADD `list_order` INT(11) NOT NULL DEFAULT '0' AFTER `show_in_list`"));
+		echo __("Adding list_order column to pages table...").
+		     test(SQL::current()->query("ALTER TABLE __pages ADD list_order INT(11) NOT NULL DEFAULT '0' AFTER show_in_list"));
 	}
 
 	function remove_beginning_slash_from_post_url() {
@@ -287,7 +287,7 @@
 	}
 
 	function make_posts_safe() {
-		if (!$posts = SQL::current()->query("SELECT * FROM `__posts`"))
+		if (!$posts = SQL::current()->query("SELECT * FROM __posts"))
 			return;
 
 		# Replace all the posts' CDATAized XML with well-formed XML.
@@ -313,9 +313,9 @@
 	}
 
 	function update_groups_to_yaml() {
-		if (!SQL::current()->query("SELECT `view_site` FROM `__groups`")) return;
+		if (!SQL::current()->query("SELECT view_site FROM __groups")) return;
 
-		$get_groups = SQL::current()->query("SELECT * FROM `__groups`");
+		$get_groups = SQL::current()->query("SELECT * FROM __groups");
 		echo __("Backing up current groups table...").test($get_groups);
 		if (!$get_groups) return;
 
@@ -332,15 +332,15 @@
 		foreach ($groups as $key => &$val)
 			$val = Horde_Yaml::dump($val);
 
-		$drop_groups = SQL::current()->query("DROP TABLE `__groups`");
+		$drop_groups = SQL::current()->query("DROP TABLE __groups");
 		echo __("Dropping old groups table...").test($drop_groups);
 		if (!$drop_groups) return;
 
-		$groups_table = SQL::current()->query("CREATE TABLE IF NOT EXISTS `__groups` (
-		                                           `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
-		                                           `name` VARCHAR(100) DEFAULT '',
-	                                               `permissions` LONGTEXT,
-		                                           UNIQUE (`name`)
+		$groups_table = SQL::current()->query("CREATE TABLE IF NOT EXISTS __groups (
+		                                           id INTEGER PRIMARY KEY AUTO_INCREMENT,
+		                                           name VARCHAR(100) DEFAULT '',
+	                                               permissions LONGTEXT,
+		                                           UNIQUE (name)
 		                                       ) DEFAULT CHARSET=utf8");
 		echo __("Creating new groups table...").test($groups_table);
 		if (!$groups_table) return;
@@ -357,9 +357,9 @@
 	function add_permissions_table() {
 		if (SQL::current()->query("SELECT * FROM `__permissions")) return;
 
-		$permissions_table = SQL::current()->query("CREATE TABLE `__permissions` (
-		                                                `id` VARCHAR(100) DEFAULT '' PRIMARY KEY,
-		                                                `name` VARCHAR(100) DEFAULT ''
+		$permissions_table = SQL::current()->query("CREATE TABLE __permissions (
+		                                                id VARCHAR(100) DEFAULT '' PRIMARY KEY,
+		                                                name VARCHAR(100) DEFAULT ''
 		                                            ) DEFAULT CHARSET=utf8");
 		echo __("Creating new permissions table...").test($permissions_table);
 		if (!$permissions_table) return;
@@ -400,42 +400,42 @@
 	}
 
 	function add_sessions_table() {
-		if (SQL::current()->query("SELECT * FROM `__sessions`")) return;
+		if (SQL::current()->query("SELECT * FROM __sessions")) return;
 
 		echo __("Creating sessions table...").
-		     test(SQL::current()->query("CREATE TABLE `__sessions` (
-		                                     `id` VARCHAR(32) DEFAULT '',
-		                                     `data` LONGTEXT,
-		                                     `user_id` INTEGER DEFAULT '0',
-		                                     `created_at` DATETIME DEFAULT '0000-00-00 00:00:00',
-		                                     `updated_at` DATETIME DEFAULT '0000-00-00 00:00:00',
-		                                     PRIMARY KEY (`id`)
+		     test(SQL::current()->query("CREATE TABLE __sessions (
+		                                     id VARCHAR(32) DEFAULT '',
+		                                     data LONGTEXT,
+		                                     user_id INTEGER DEFAULT '0',
+		                                     created_at DATETIME DEFAULT '0000-00-00 00:00:00',
+		                                     updated_at DATETIME DEFAULT '0000-00-00 00:00:00',
+		                                     PRIMARY KEY (id)
 		                                 ) DEFAULT CHARSET=utf8") or die(mysql_error()));
 	}
 
 	function update_permissions_table() {
 		# If there are any non-numeric IDs in the permissions database, assume this is already done.
-		$check = SQL::current()->query("SELECT * FROM `__permissions`");
+		$check = SQL::current()->query("SELECT * FROM __permissions");
 		while ($row = $check->fetchObject())
 			if (!is_numeric($row->id))
 				return;
 
 		$permissions_backup = array();
-		$get_permissions = SQL::current()->query("SELECT * FROM `__permissions`");
+		$get_permissions = SQL::current()->query("SELECT * FROM __permissions");
 		echo __("Backing up current permissions table...").test($get_permissions);
 		if (!$get_permissions) return;
 
 		while ($permission = $get_permissions->fetchObject())
 			$permissions_backup[] = $permission->name;
 
-		$drop_permissions = SQL::current()->query("DROP TABLE `__permissions`");
+		$drop_permissions = SQL::current()->query("DROP TABLE __permissions");
 		echo __("Dropping old permissions table...").test($drop_permissions);
 		if (!$drop_permissions) return;
 
 		echo __("Creating new permissions table...").
-		     test(SQL::current()->query("CREATE TABLE IF NOT EXISTS `__permissions` (
-			                                 `id` VARCHAR(100) DEFAULT '' PRIMARY KEY,
-			                                 `name` VARCHAR(100) DEFAULT ''
+		     test(SQL::current()->query("CREATE TABLE IF NOT EXISTS __permissions (
+			                                 id VARCHAR(100) DEFAULT '' PRIMARY KEY,
+			                                 name VARCHAR(100) DEFAULT ''
 			                             ) DEFAULT CHARSET=utf8"));
 
 		$permissions = array("change_settings" => "Change Settings",

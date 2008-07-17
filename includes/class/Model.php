@@ -19,10 +19,10 @@
 		 *     select - What to grab from the table. @(modelname)s@ by default.
 		 *     from - Which table(s) to grab from? @(modelname)s.*@ by default.
 		 *     left_join - A @LEFT JOIN@ associative array. Example: @array("table" => "foo", "where" => "foo = :bar")@
-		 *     where - A string or array of conditions. @array("`__(modelname)s`.`id` = :id")@ by default.
+		 *     where - A string or array of conditions. @array("__(modelname)s.id = :id")@ by default.
 		 *     params - An array of parameters to pass to PDO. @array(":id" => $id)@ by default.
 		 *     group - A string or array of "GROUP BY" conditions.
-		 *     order - What to order the SQL result by. @`__(modelname)s`.`id` DESC@ by default.
+		 *     order - What to order the SQL result by. @__(modelname)s.id DESC@ by default.
 		 *     offset - Offset for SQL query.
 		 *     read_from - An array to read from instead of performing another query.
 		 */
@@ -33,13 +33,29 @@
 			if ($model_name == "visitor")
 				$model_name = "user";
 
+			# Is this model already in the cache?
+			if (isset($loaded_models[$model_name][$id])) {
+				foreach ($loaded_models[$model_name][$id] as $key => $val)
+					$model->$key = $val;
+
+				$model->no_results = false;
+
+				if (isset($loaded_models[$model_name][$id]["queryString"]))
+					$model->queryString = $loaded_models[$model_name][$id]["queryString"];
+
+				if (isset($loaded_models[$model_name][$id]["updated"]))
+					$model->updated = $loaded_models[$model_name][$id]["updated"];
+
+				return;
+			}
+
 			fallback($options["select"], "__".pluralize($model_name).".*");
 			fallback($options["from"], ($model_name == "visitor" ? "users" : pluralize($model_name)));
 			fallback($options["left_join"], array());
 			fallback($options["where"], array());
 			fallback($options["params"], array());
 			fallback($options["group"], array());
-			fallback($options["order"], "`__".pluralize($model_name)."`.`id` DESC");
+			fallback($options["order"], "__".pluralize($model_name).".id DESC");
 			fallback($options["offset"], null);
 			fallback($options["read_from"], array());
 
@@ -48,7 +64,7 @@
 			$options["select"] = (array) $options["select"];
 
 			if (is_numeric($id)) {
-				$options["where"][] = "`__".pluralize($model_name)."`.`id` = :id";
+				$options["where"][] = "__".pluralize($model_name).".id = :id";
 				$options["params"][":id"] = $id;
 			}
 
@@ -58,8 +74,6 @@
 			$sql = SQL::current();
 			if (!empty($options["read_from"]))
 				$read = $options["read_from"];
-			elseif (isset($loaded_models[$model_name][$id]))
-				$read = $loaded_models[$model_name][$id];
 			else {
 				$query = $sql->select($options["from"],
 				                     $options["select"],
@@ -83,10 +97,10 @@
 					$model->$key = $loaded_models[$model_name][$read["id"]][$key] = $val;
 
 			if (isset($query) and isset($query->query->queryString))
-				$model->queryString = $query->query->queryString;
+				$model->queryString = $loaded_models[$model_name][$read["id"]]["queryString"] = $query->query->queryString;
 
 			if (isset($model->updated_at))
-				$model->updated = $model->updated_at != "0000-00-00 00:00:00";
+				$model->updated = $loaded_models[$model_name][$read["id"]]["updated"] = $model->updated_at != "0000-00-00 00:00:00";
 		}
 
 		/**
@@ -101,10 +115,10 @@
 		 *     select - What to grab from the table. @(modelname)s@ by default.
 		 *     from - Which table(s) to grab from? @(modelname)s.*@ by default.
 		 *     left_join - A @LEFT JOIN@ associative array. Example: @array("table" => "foo", "where" => "foo = :bar")@
-		 *     where - A string or array of conditions. @array("`__(modelname)s`.`id` = :id")@ by default.
+		 *     where - A string or array of conditions. @array("__(modelname)s.id = :id")@ by default.
 		 *     params - An array of parameters to pass to PDO. @array(":id" => $id)@ by default.
 		 *     group - A string or array of "GROUP BY" conditions.
-		 *     order - What to order the SQL result by. @`__(modelname)s`.`id` DESC@ by default.
+		 *     order - What to order the SQL result by. @__(modelname)s.id DESC@ by default.
 		 *     offset - Offset for SQL query.
 		 *     limit - Limit for SQL query.
 		 *
@@ -123,7 +137,7 @@
 			fallback($options["where"], null);
 			fallback($options["params"], array());
 			fallback($options["group"], array());
-			fallback($options["order"], "`__".pluralize(strtolower($model))."`.`id` DESC");
+			fallback($options["order"], "__".pluralize(strtolower($model)).".id DESC");
 			fallback($options["offset"], null);
 			fallback($options["limit"], null);
 			fallback($options["placeholders"], false);
@@ -186,6 +200,6 @@
 			if (Trigger::current()->exists("delete_".$model))
 				Trigger::current()->call("delete_".$model, new $class($id));
 
-			SQL::current()->delete(pluralize($model), "`__".pluralize($model)."`.`id` = :id", array(":id" => $id));
+			SQL::current()->delete(pluralize($model), "__".pluralize($model).".id = :id", array(":id" => $id));
 		}
 	}

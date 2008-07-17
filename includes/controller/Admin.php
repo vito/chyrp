@@ -156,28 +156,28 @@
 					$test = $match[0];
 					$equals = $match[1];
 					if ($test == "author") {
-						$user = new User(null, array("where" => "`login` = :login", "params" => array(":login" => $equals)));
+						$user = new User(null, array("where" => "login = :login", "params" => array(":login" => $equals)));
 						$test = "user_id";
 						$equals = $user->id;
 					}
-					$where[] = "`__posts`.`".$test."` = :".$test;
+					$where[] = "__posts.".$test." = :".$test;
 					$params[":".$test] = $equals;
 				}
 
 				if (!empty($search)) {
-					$where[] = "`__posts`.`xml` LIKE :query";
+					$where[] = "__posts.xml LIKE :query";
 					$params[":query"] = "%".$search."%";
 				}
 			}
 
 			if (!empty($_GET['month'])) {
-				$where[] = "`__posts`.`created_at` LIKE :when";
+				$where[] = "__posts.created_at LIKE :when";
 				$params[":when"] = $_GET['month']."-%";
 			}
 
 			$visitor = Visitor::current();
 			if (!$visitor->group()->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post")) {
-				$where[] = "`__posts`.`user_id` = :visitor_id";
+				$where[] = "__posts.user_id = :visitor_id";
 				$params[':visitor_id'] = $visitor->id;
 			}
 
@@ -227,7 +227,7 @@
 				error(__("No ID Specified"), __("An ID is required to edit a page."));
 
 			$this->context["page"] = new Page($_GET['id'], array("filter" => false));
-			$this->context["pages"] = Page::find(array("where" => "`__pages`.`id` != :id", "params" => array(":id" => $_GET['id'])));
+			$this->context["pages"] = Page::find(array("where" => "__pages.id != :id", "params" => array(":id" => $_GET['id'])));
 		}
 
 		/**
@@ -335,16 +335,16 @@
 					$test = $match[0];
 					$equals = $match[1];
 					if ($test == "author") {
-						$user = new User(null, array("where" => "`login` = :login", "params" => array(":login" => $equals)));
+						$user = new User(null, array("where" => "login = :login", "params" => array(":login" => $equals)));
 						$test = "user_id";
 						$equals = ($user->no_results) ? 0 : $user->id ;
 					}
-					$where[] = "`__pages`.`".$test."` = :".$test;
+					$where[] = "__pages.".$test." = :".$test;
 					$params[":".$test] = $equals;
 				}
 
 				if (!empty($search)) {
-					$where[] = "(`__pages`.`title` LIKE :query OR `__pages`.`body` LIKE :query)";
+					$where[] = "(__pages.title LIKE :query OR __pages.body LIKE :query)";
 					$params[":query"] = "%".$search."%";
 				}
 			}
@@ -363,9 +363,9 @@
 			$config = Config::current();
 
 			$this->context["default_group"] = new Group($config->default_group);
-			$this->context["groups"] = Group::find(array("where" => array("`__groups`.`id` != :guest_id", "`__groups`.`id` != :default_id"),
+			$this->context["groups"] = Group::find(array("where" => array("__groups.id != :guest_id", "__groups.id != :default_id"),
 			                                             "params" => array(":guest_id" => $config->guest_group, ":default_id" => $config->default_group),
-			                                             "order" => "`__groups`.`id` desc"));
+			                                             "order" => "__groups.id desc"));
 		}
 
 		/**
@@ -382,7 +382,7 @@
 			if (empty($_POST['login']))
 				error(__("Error"), __("Please enter a username for your account."));
 
-			$check = new User(null, array("where" => "`login` = :login",
+			$check = new User(null, array("where" => "login = :login",
 			                              "params" => array(":login" => $_POST['login'])));
 			if (!$check->no_results)
 				error(__("Error"), __("That username is already in use."));
@@ -413,8 +413,8 @@
 				error(__("No ID Specified"), __("An ID is required to edit a user."));
 
 			$this->context["user"] = new User($_GET['id']);
-			$this->context["groups"] = Group::find(array("order" => "`__groups`.`id` asc",
-			                                             "where" => "`__groups`.`id` != :guest_id",
+			$this->context["groups"] = Group::find(array("order" => "__groups.id asc",
+			                                             "where" => "__groups.id != :guest_id",
 			                                             "params" => array(":guest_id" => Config::current()->guest_group)));
 		}
 
@@ -540,11 +540,11 @@
 					$match = explode(":", $match);
 					$test = $match[0];
 					$equals = $match[1];
-					$where[] = "`__pages`.`".$test."` = :".$test;
+					$where[] = "__pages.".$test." = :".$test;
 					$params[":".$test] = $equals;
 				}
 
-				$where[] = "(`__users`.`login` LIKE :query OR `__users`.`full_name` LIKE :query OR `__users`.`email` LIKE :query OR `__users`.`website` LIKE :query)";
+				$where[] = "(__users.login LIKE :query OR __users.full_name LIKE :query OR __users.email LIKE :query OR __users.website LIKE :query)";
 				$params[":query"] = "%".$_GET['query']."%";
 			}
 
@@ -622,8 +622,8 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete groups."));
 
 			$this->context["group"] = new Group($_GET['id']);
-			$this->context["groups"] = Group::find(array("where" => "`__groups`.`id` != :group_id",
-			                                             "order" => "`__groups`.`id` asc",
+			$this->context["groups"] = Group::find(array("where" => "__groups.id != :group_id",
+			                                             "order" => "__groups.id asc",
 			                                             "params" => array(":group_id" => $_GET['id'])));
 		}
 
@@ -669,10 +669,10 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage groups."));
 
 			if (!empty($_GET['search'])) {
-				$user = new User(null, array("where" => "`login` = :search", "params" => array(":search" => $_GET['search'])));
+				$user = new User(null, array("where" => "login = :search", "params" => array(":search" => $_GET['search'])));
 				$this->context["groups"] = array($user->group());
 			} else
-				$this->context["groups"] = new Paginator(Group::find(array("placeholders" => true, "order" => "`__groups`.`id` asc")), 10);
+				$this->context["groups"] = new Paginator(Group::find(array("placeholders" => true, "order" => "__groups.id asc")), 10);
 		}
 
 		/**
@@ -707,13 +707,13 @@
 						$match = explode(":", $match);
 						$test = $match[0];
 						$equals = $match[1];
-						$where[] = "`__posts`.`".$test."` = :".$test;
+						$where[] = "__posts.".$test." = :".$test;
 						$params[":".$test] = $equals;
 					}
 				} else
 					list($where, $params) = array(false, array());
 
-				$posts = Post::find(array("where" => $where, "params" => $params, "order" => "`__posts`.`id` ASC"),
+				$posts = Post::find(array("where" => $where, "params" => $params, "order" => "__posts.id ASC"),
 				                    array("filter" => false));
 
 				$latest_timestamp = 0;
@@ -798,13 +798,13 @@
 						$match = explode(":", $match);
 						$test = $match[0];
 						$equals = $match[1];
-						$where[] = "`__pages`.`".$test."` = :".$test;
+						$where[] = "__pages.".$test." = :".$test;
 						$params[":".$test] = $equals;
 					}
 				} else
 					list($where, $params) = array(null, array());
 
-				$pages = Page::find(array("where" => $where, "params" => $params, "order" => "`__pages`.`id` ASC"),
+				$pages = Page::find(array("where" => $where, "params" => $params, "order" => "__pages.id ASC"),
 				                    array("filter" => false));
 
 				$latest_timestamp = 0;
@@ -874,13 +874,13 @@
 						$match = explode(":", $match);
 						$test = $match[0];
 						$equals = $match[1];
-						$where[] = "`__groups`.`".$test."` = :".$test;
+						$where[] = "__groups.".$test." = :".$test;
 						$params[":".$test] = $equals;
 					}
 				} else
 					list($where, $params) = array(null, array());
 
-				$groups = Group::find(array("where" => $where, "params" => $params, "order" => "`__groups`.`id` ASC"));
+				$groups = Group::find(array("where" => $where, "params" => $params, "order" => "__groups.id ASC"));
 
 				$groups_yaml = array("groups" => array(),
 				                     "permissions" => array());
@@ -910,13 +910,13 @@
 						$match = explode(":", $match);
 						$test = $match[0];
 						$equals = $match[1];
-						$where[] = "`__users`.`".$test."` = :".$test;
+						$where[] = "__users.".$test." = :".$test;
 						$params[":".$test] = $equals;
 					}
 				} else
 					list($where, $params) = array(null, array());
 
-				$users = User::find(array("where" => $where, "params" => $params, "order" => "`__users`.`id` ASC"));
+				$users = User::find(array("where" => $where, "params" => $params, "order" => "__users.id ASC"));
 
 				$users_yaml = array();
 				foreach ($users as $user) {
@@ -1336,7 +1336,7 @@
 
 			mysql_query("SET NAMES 'utf8'");
 
-			$get_posts = mysql_query("SELECT * FROM `{$_POST['prefix']}textpattern` ORDER BY `ID` ASC", $link) or error(__("Database Error"), mysql_error());
+			$get_posts = mysql_query("SELECT * FROM {$_POST['prefix']}textpattern ORDER BY ID ASC", $link) or error(__("Database Error"), mysql_error());
 			$posts = array();
 			while ($post = mysql_fetch_array($get_posts))
 				$posts[$post["ID"]] = $post;
@@ -1402,7 +1402,7 @@
 
 			mysql_query("SET NAMES 'utf8'");
 
-			$get_posts = mysql_query("SELECT * FROM `mt_entry` ORDER BY `entry_id` ASC", $link) or error(__("Database Error"), mysql_error());
+			$get_posts = mysql_query("SELECT * FROM mt_entry ORDER BY entry_id ASC", $link) or error(__("Database Error"), mysql_error());
 			$posts = array();
 			while ($post = mysql_fetch_array($get_posts))
 				$posts[$post["entry_id"]] = $post;
@@ -1792,7 +1792,7 @@
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
-			$this->context["groups"] = Group::find(array("order" => "`__groups`.`id` desc"));
+			$this->context["groups"] = Group::find(array("order" => "__groups.id desc"));
 
 			if (empty($_POST))
 				return;

@@ -7,18 +7,18 @@
 
 		static function __install() {
 			$sql = SQL::current();
-			$sql->query("CREATE TABLE IF NOT EXISTS `__tags` (
-			              `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
-			              `tags` VARCHAR(250) DEFAULT '',
-			              `clean` VARCHAR(250) DEFAULT '',
-			              `post_id` INTEGER DEFAULT '0'
+			$sql->query("CREATE TABLE IF NOT EXISTS __tags (
+			              id INTEGER PRIMARY KEY AUTO_INCREMENT,
+			              tags VARCHAR(250) DEFAULT '',
+			              clean VARCHAR(250) DEFAULT '',
+			              post_id INTEGER DEFAULT '0'
 			             ) DEFAULT CHARSET=utf8");
 			Route::current()->add("tag/(name)/");
 		}
 
 		static function __uninstall($confirm) {
 			if ($confirm)
-				SQL::current()->query("DROP TABLE `__tags`");
+				SQL::current()->query("DROP TABLE __tags");
 
 			Route::current()->remove("tag/(name)/");
 		}
@@ -82,7 +82,7 @@
 			if (!isset($_POST['tags'])) return;
 
 			$sql = SQL::current();
-			$sql->delete("tags", "`post_id` = :post_id", array(":post_id" => $post->id));
+			$sql->delete("tags", "post_id = :post_id", array(":post_id" => $post->id));
 
 			$tags = explode(",", $_POST['tags']); // Split at the comma
 			$tags = array_map('trim', $tags); // Remove whitespace
@@ -95,7 +95,7 @@
 			$tags_cleaned_string = (!empty($tags_cleaned)) ? "{{".implode("}},{{", $tags_cleaned)."}}" : "" ;
 
 			if (empty($tags_string) and empty($tags_cleaned_string))
-				$sql->delete("tags", "`__tags`.`post_id` = :post_id", array(":post_id" => $post->id));
+				$sql->delete("tags", "__tags.post_id = :post_id", array(":post_id" => $post->id));
 			else
 				$sql->insert("tags", array("tags" => ":tags", "clean" => ":clean", "post_id" => ":post_id"), array(
 				                 ":tags"    => $tags_string,
@@ -105,7 +105,7 @@
 		}
 
 		public function delete_post($post) {
-			SQL::current()->delete("tags", "`post_id` = :post_id", array(":post_id" => $post->id));
+			SQL::current()->delete("tags", "post_id = :post_id", array(":post_id" => $post->id));
 		}
 
 		public function parse_urls($urls) {
@@ -172,19 +172,19 @@
 		}
 
 		public function import_movabletype_post($array, $post, $link) {
-			$get_pointers = mysql_query("SELECT * FROM `mt_objecttag` WHERE `objecttag_object_id` = {$array["entry_id"]} ORDER BY `objecttag_object_id` ASC", $link) or error(__("Database Error"), mysql_error());
+			$get_pointers = mysql_query("SELECT * FROM mt_objecttag WHERE objecttag_object_id = {$array["entry_id"]} ORDER BY objecttag_object_id ASC", $link) or error(__("Database Error"), mysql_error());
 			if (!mysql_num_rows($get_pointers))
 				return;
 
 			$tags = array();
 			while ($pointer = mysql_fetch_array($get_pointers)) {
-				$get_dirty_tag = mysql_query("SELECT `tag_name`, `tag_n8d_id` FROM `mt_tag` WHERE `tag_id` = {$pointer["objecttag_tag_id"]}", $link) or error(__("Database Error"), mysql_error());
+				$get_dirty_tag = mysql_query("SELECT tag_name, tag_n8d_id FROM mt_tag WHERE tag_id = {$pointer["objecttag_tag_id"]}", $link) or error(__("Database Error"), mysql_error());
 				if (!mysql_num_rows($get_dirty_tag)) continue;
 
 				$dirty_tag = mysql_fetch_array($get_dirty_tag);
 				$dirty = $dirty_tag["tag_name"];
 
-				$clean_tag = mysql_query("SELECT `tag_name` FROM `mt_tag` WHERE `tag_id` = {$dirty_tag["tag_n8d_id"]}", $link) or error(__("Database Error"), mysql_error());
+				$clean_tag = mysql_query("SELECT tag_name FROM mt_tag WHERE tag_id = {$dirty_tag["tag_n8d_id"]}", $link) or error(__("Database Error"), mysql_error());
 				if (mysql_num_rows($clean_tag))
 					$clean = mysql_result($clean_tag, 0);
 				else
@@ -231,13 +231,13 @@
 		}
 
 		public function posts_get($options) {
-			$options["select"][] = "__tags.tags AS `unclean_tags`";
-			$options["select"][] = "__tags.clean AS `clean_tags`";
+			$options["select"][] = "__tags.tags AS unclean_tags";
+			$options["select"][] = "__tags.clean AS clean_tags";
 
 			$options["left_join"][] = array("table" => "tags",
-			                                "where" => "`__tags`.`post_id` = `__posts`.`id`");
+			                                "where" => "__tags.post_id = __posts.id");
 
-			$options["group"][] = "`__posts`.`id`";
+			$options["group"][] = "__posts.id";
 
 			return $options;
 		}
@@ -296,7 +296,7 @@
 			                      array(),
 			                      null, null, null,
 			                      array(array("table" => "tags",
-			                                  "where" => "`__tags`.`post_id` = `__posts`.`id`")));
+			                                  "where" => "__tags.post_id = __posts.id")));
 
 			$unclean = array();
 			$clean = array();

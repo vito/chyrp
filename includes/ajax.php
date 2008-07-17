@@ -137,10 +137,10 @@
 			break;
 		case "organize_pages":
 			foreach ($_POST['parent'] as $id => $parent)
-				$sql->update("pages", "`__pages`.`id` = :id", array("parent_id" => ":parent"), array(":id" => $id, ":parent" => $parent));
+				$sql->update("pages", "__pages.id = :id", array("parent_id" => ":parent"), array(":id" => $id, ":parent" => $parent));
 
 			foreach ($_POST['sort_pages'] as $index => $page)
-				$sql->update("pages", "`__pages`.`id` = :id", array("list_order" => ":index"), array(":id" => str_replace("page_list_", "", $page), ":index" => $index));
+				$sql->update("pages", "__pages.id = :id", array("list_order" => ":index"), array(":id" => str_replace("page_list_", "", $page), ":index" => $index));
 
 			break;
 		case "enable_module": case "enable_feather":

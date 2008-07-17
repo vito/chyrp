@@ -59,14 +59,13 @@
 			elseif (!isset($options["where"]))
 				$options["where"] = array();
 
-			if (!XML_RPC)
-				$options["where"] = array_merge($options["where"], array(self::$enabled_feathers, self::$private));
+			$options["where"] = array_merge($options["where"], array(self::$enabled_feathers, self::$private));
 
-			fallback($options["order"], "`__posts`.`pinned` desc, `__posts`.`created_at` desc, `__posts`.`id` desc");
+			fallback($options["order"], "__posts.pinned desc, __posts.created_at desc, __posts.id desc");
 
 			$posts = parent::search(get_class(), $options, $options_for_object);
 
-			if (!ADMIN and !XML_RPC)
+			if (!ADMIN)
 				if (!isset($options["placeholders"]) or !$options["placeholders"]) {
 					foreach ($posts as $index => $post)
 						if (!$post->theme_exists())
@@ -150,7 +149,7 @@
 
 			if (empty($clean) or empty($url))
 				$sql->update("posts",
-				             "`__posts`.`id` = :id",
+				             "__posts.id = :id",
 				             array(
 				                 "clean" => ":clean",
 				                 "url" => ":url"
@@ -213,7 +212,7 @@
 
 			$sql = SQL::current();
 			$sql->update("posts",
-			             "`__posts`.`id` = :id",
+			             "__posts.id = :id",
 			             array(
 			                 "xml" => ":xml",
 			                 "pinned" => ":pinned",
@@ -292,17 +291,17 @@
 
 			# Can they edit drafts?
 			if ($visitor->group()->can("edit_draft") and
-			    Post::find(array("where" => "`__posts`.`status` = 'draft'")))
+			    Post::find(array("where" => "__posts.status = 'draft'")))
 				return true;
 
 			# Can they edit their own posts, and do they have any?
 			if ($visitor->group()->can("edit_own_post") and
-			    Post::find(array("where" => "`__posts`.`user_id` = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
+			    Post::find(array("where" => "__posts.user_id = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
 				return true;
 
 			# Can they edit their own drafts, and do they have any?
 			if ($visitor->group()->can("edit_own_draft") and
-			    Post::find(array("where" => "`__posts`.`status` = 'draft' and `__posts`.`user_id` = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
+			    Post::find(array("where" => "__posts.status = 'draft' and __posts.user_id = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
 				return true;
 
 			return false;
@@ -321,17 +320,17 @@
 
 			# Can they delete drafts?
 			if ($visitor->group()->can("delete_draft") and
-			    Post::find(array("where" => "`__posts`.`status` = 'draft'")))
+			    Post::find(array("where" => "__posts.status = 'draft'")))
 				return true;
 
 			# Can they delete their own posts, and do they have any?
 			if ($visitor->group()->can("delete_own_post") and
-			    Post::find(array("where" => "`__posts`.`user_id` = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
+			    Post::find(array("where" => "__posts.user_id = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
 				return true;
 
 			# Can they delete their own drafts, and do they have any?
 			if ($visitor->group()->can("delete_own_draft") and
-			    Post::find(array("where" => "`__posts`.`status` = 'draft' and `__posts`.`user_id` = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
+			    Post::find(array("where" => "__posts.status = 'draft' and __posts.user_id = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
 				return true;
 
 			return false;
@@ -348,7 +347,7 @@
 		 *     true - if a post with that ID is in the database.
 		 */
 		static function exists($post_id) {
-			return SQL::current()->count("posts", "`__posts`.`id` = :id", array(":id" => $post_id));
+			return SQL::current()->count("posts", "__posts.id = :id", array(":id" => $post_id));
 		}
 
 		/**
@@ -364,7 +363,7 @@
 		static function check_url($clean) {
 			$sql = SQL::current();
 			$count = $sql->count("posts",
-			                     "`clean` = :clean",
+			                     "clean = :clean",
 			                     array(":clean" => $clean));
 
 			return (!$count or empty($clean)) ? $clean : $clean."-".($count + 1) ;
@@ -708,19 +707,19 @@
 			$params = array();
 			foreach ($matches[1] as $attr)
 				if (in_array($attr, $times)) {
-					$where[] = strtoupper($attr)."(`__posts`.`created_at`) = :created_".$attr;
+					$where[] = strtoupper($attr)."(__posts.created_at) = :created_".$attr;
 					$params[':created_'.$attr] = $get[$attr];
 				} elseif ($attr == "author") {
-					$where[] = "`__posts`.`user_id` = :attrauthor";
+					$where[] = "__posts.user_id = :attrauthor";
 					$params[':attrauthor'] = SQL::current()->select("users",
 					                                      "id",
-					                                      "`login` = :login",
+					                                      "login = :login",
 					                                      "id",
 					                                      array(
 					                                          ":login" => $get['author']
 					                                      ), 1)->fetchColumn();
 				} elseif ($attr == "feathers") {
-					$where[] = "`__posts`.`feather` = :feather";
+					$where[] = "__posts.feather = :feather";
 					$params[':feather'] = depluralize($get['feathers']);
 				} else {
 					$tokens = array($where, $params, $attr);
@@ -728,7 +727,7 @@
 					list($where, $params, $attr) = $tokens;
 
 					if ($attr !== null) {
-						$where[] = "`__posts`.`".$attr."` = :attr".$attr;
+						$where[] = "__posts.".$attr." = :attr".$attr;
 						$params[':attr'.$attr] = $get[$attr];
 					}
 				}

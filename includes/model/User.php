@@ -41,7 +41,7 @@
 		 *     true - if a match is found.
 		 */
 		static function authenticate($login, $password) {
-			$check = new self(null, array("where" => array("`login` = :login", "`password` = :password"),
+			$check = new self(null, array("where" => array("login = :login", "password = :password"),
 			                              "params" => array(":login" => $login, ":password" => $password)));
 			return !$check->no_results;
 		}
@@ -115,7 +115,7 @@
 
 			$sql = SQL::current();
 			$sql->update("users",
-			             "`__users`.`id` = :id",
+			             "__users.id = :id",
 			             array(
 			                 "login" => ":login",
 			                 "password" => ":password",

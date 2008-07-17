@@ -10,20 +10,20 @@
 
 		static function __install() {
 			$sql = SQL::current();
-			$sql->query("CREATE TABLE IF NOT EXISTS `__comments` (
-			                 `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
-			                 `body` LONGTEXT,
-			                 `author` VARCHAR(250) DEFAULT '',
-			                 `author_url` VARCHAR(128) DEFAULT '',
-			                 `author_email` VARCHAR(128) DEFAULT '',
-			                 `author_ip` INT(10) DEFAULT '0',
-			                 `author_agent` VARCHAR(255) DEFAULT '',
-			                 `status` VARCHAR(32) default 'denied',
-			                 `signature` VARCHAR(32) DEFAULT '',
-			                 `post_id` INTEGER DEFAULT '0',
-			                 `user_id` INTEGER DEFAULT '0',
-			                 `created_at` DATETIME DEFAULT '0000-00-00 00:00:00',
-			                 `updated_at` DATETIME DEFAULT '0000-00-00 00:00:00'
+			$sql->query("CREATE TABLE IF NOT EXISTS __comments (
+			                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
+			                 body LONGTEXT,
+			                 author VARCHAR(250) DEFAULT '',
+			                 author_url VARCHAR(128) DEFAULT '',
+			                 author_email VARCHAR(128) DEFAULT '',
+			                 author_ip INT(10) DEFAULT '0',
+			                 author_agent VARCHAR(255) DEFAULT '',
+			                 status VARCHAR(32) default 'denied',
+			                 signature VARCHAR(32) DEFAULT '',
+			                 post_id INTEGER DEFAULT '0',
+			                 user_id INTEGER DEFAULT '0',
+			                 created_at DATETIME DEFAULT '0000-00-00 00:00:00',
+			                 updated_at DATETIME DEFAULT '0000-00-00 00:00:00'
 			             ) DEFAULT CHARSET=utf8");
 
 			$config = Config::current();
@@ -45,7 +45,7 @@
 
 		static function __uninstall($confirm) {
 			if ($confirm)
-				SQL::current()->query("DROP TABLE `__comments`");
+				SQL::current()->query("DROP TABLE __comments");
 
 			$config = Config::current();
 			$config->remove("default_comment_status");
@@ -150,7 +150,7 @@
 			global $admin;
 
 			$params = array();
-			$where = array("`__comments`.`status` = 'spam'");
+			$where = array("__comments.status = 'spam'");
 
 			if (!empty($_GET['query'])) {
 				$search = "";
@@ -167,12 +167,12 @@
 					$match = explode(":", $match);
 					$test = $match[0];
 					$equals = $match[1];
-					$where[] = "`__comments`.`".$test."` = :".$test;
+					$where[] = "__comments.".$test." = :".$test;
 					$params[":".$test] = $equals;
 				}
 
 				if (!empty($search)) {
-					$where[] = "(`__comments`.`body` LIKE :query)";
+					$where[] = "(__comments.body LIKE :query)";
 					$params[":query"] = "%".$search."%";
 				}
 			}
@@ -223,8 +223,8 @@
 
 			$sql = SQL::current();
 			$count = $sql->count("comments",
-			                     array("`post_id` = :id",
-			                           "`author_url` = :url"),
+			                     array("post_id = :id",
+			                           "author_url = :url"),
 			                     array(":id" => $_GET['id'],
 			                           ":url" => $_POST['url']));
 			if ($count)
@@ -243,8 +243,8 @@
 
 			$sql = SQL::current();
 			$count = $sql->count("comments",
-			                     array("`post_id` = :id",
-			                           "`author_url` = :url"),
+			                     array("post_id = :id",
+			                           "author_url = :url"),
 			                     array(":id" => $id,
 			                           ":url" => $from));
 			if ($count)
@@ -259,11 +259,11 @@
 		}
 
 		static function delete_post($post) {
-			SQL::current()->delete("comments", "`post_id` = :id", array(":id" => $post->id));
+			SQL::current()->delete("comments", "post_id = :id", array(":id" => $post->id));
 		}
 
 		static function delete_user($user) {
-			SQL::current()->update("comments", "`user_id` = :id", array("user_id" => 0), array(":id" => $user->id));
+			SQL::current()->update("comments", "user_id = :id", array("user_id" => 0), array(":id" => $user->id));
 		}
 
 		static function admin_comment_settings() {
@@ -342,7 +342,7 @@
 			global $admin;
 
 			$params = array();
-			$where = array("`__comments`.`status` != 'spam'");
+			$where = array("__comments.status != 'spam'");
 
 			if (!empty($_GET['query'])) {
 				$search = "";
@@ -359,12 +359,12 @@
 					$match = explode(":", $match);
 					$test = $match[0];
 					$equals = $match[1];
-					$where[] = "`__comments`.`".$test."` = :".$test;
+					$where[] = "__comments.".$test." = :".$test;
 					$params[":".$test] = $equals;
 				}
 
 				if (!empty($search)) {
-					$where[] = "(`__comments`.`body` LIKE :query)";
+					$where[] = "(__comments.body LIKE :query)";
 					$params[":query"] = "%".$search."%";
 				}
 			}
@@ -411,7 +411,7 @@
 					if ($comment->status == "spam")
 						$false_positives[] = $comment->signature;
 
-					$sql->update("comments", "`__comments`.`id` = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "denied"));
+					$sql->update("comments", "__comments.id = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "denied"));
 				}
 
 				Flash::notice(__("Selected comments denied.", "comments"));
@@ -425,7 +425,7 @@
 					if ($comment->status == "spam")
 						$false_positives[] = $comment->signature;
 
-					$sql->update("comments", "`__comments`.`id` = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "approved"));
+					$sql->update("comments", "__comments.id = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "approved"));
 				}
 
 				Flash::notice(__("Selected comments approved.", "comments"));
@@ -436,7 +436,7 @@
 					if (!$comment->editable())
 						continue;
 
-					$sql->update("comments", "`__comments`.`id` = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "spam"));
+					$sql->update("comments", "__comments.id = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "spam"));
 
 					$false_negatives[] = $comment->signature;
 				}
@@ -486,22 +486,22 @@
 					$post = new Post($_POST['post_id']);
 					if ($post->latest_comment > $_POST['last_comment']) {
 						$new_comments = $sql->select("comments",
-						                             "`id`",
-						                             array("`__comments`.`post_id` = :post_id",
-						                                   "`__comments`.`id` > :last_comment",
-						                                   "`__comments`.`status` != 'spam'",
-						                                   "(`__comments`.`status` != 'denied' OR (
-						                                        `__comments`.`status` = 'denied' AND (
+						                             "id",
+						                             array("__comments.post_id = :post_id",
+						                                   "__comments.id > :last_comment",
+						                                   "__comments.status != 'spam'",
+						                                   "(__comments.status != 'denied' OR (
+						                                        __comments.status = 'denied' AND (
 						                                            (
-						                                                `__comments`.`author_ip` != 0 AND
-						                                                `__comments`.`author_ip` = :current_ip
+						                                                __comments.author_ip != 0 AND
+						                                                __comments.author_ip = :current_ip
 						                                            ) OR (
-						                                                `__comments`.`user_id` != 0 AND
-						                                                `__comments`.`user_id` = :visitor_id
+						                                                __comments.user_id != 0 AND
+						                                                __comments.user_id = :visitor_id
 						                                            )
 						                                        )
 						                                    ))"),
-						                             "`created_at` ASC",
+						                             "created_at ASC",
 						                             array(":post_id" => $_POST['post_id'],
 						                                   ":last_comment" => $_POST['last_comment'],
 						                                   ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
@@ -607,7 +607,7 @@
 		}
 
 		static function import_textpattern_post($array, $post, $link) {
-			$get_comments = mysql_query("SELECT * FROM `{$_POST['prefix']}txp_discuss` WHERE `parentid` = {$array["ID"]} ORDER BY `discussid` ASC", $link) or error(__("Database Error"), mysql_error());
+			$get_comments = mysql_query("SELECT * FROM {$_POST['prefix']}txp_discuss WHERE parentid = {$array["ID"]} ORDER BY discussid ASC", $link) or error(__("Database Error"), mysql_error());
 
 			while ($comment = mysql_fetch_array($get_comments)) {
 				$translate_status = array(-1 => "spam",
@@ -631,7 +631,7 @@
 		}
 
 		static function import_movabletype_post($array, $post, $link) {
-			$get_comments = mysql_query("SELECT * FROM `mt_comment` WHERE `comment_entry_id` = {$array["entry_id"]} ORDER BY `comment_id` ASC", $link) or error(__("Database Error"), mysql_error());
+			$get_comments = mysql_query("SELECT * FROM mt_comment WHERE comment_entry_id = {$array["entry_id"]} ORDER BY comment_id ASC", $link) or error(__("Database Error"), mysql_error());
 
 			while ($comment = mysql_fetch_array($get_comments))
 				Comment::add($comment["comment_text"],
@@ -691,20 +691,20 @@
 			if (isset($route->action) and $route->action == "view") {
 				$get_comments = $sql->select("comments", # table
 				                             "*", # fields
-				                             array("`__comments`.`post_id` = :post_id",
-				                                   "`__comments`.`status` != 'spam'",
-				                                   "(`__comments`.`status` != 'denied' OR (
-				                                        `__comments`.`status` = 'denied' AND (
+				                             array("__comments.post_id = :post_id",
+				                                   "__comments.status != 'spam'",
+				                                   "(__comments.status != 'denied' OR (
+				                                        __comments.status = 'denied' AND (
 				                                            (
-				                                                `__comments`.`author_ip` != 0 AND
-				                                                `__comments`.`author_ip` = :current_ip
+				                                                __comments.author_ip != 0 AND
+				                                                __comments.author_ip = :current_ip
 				                                            ) OR (
-				                                                `__comments`.`user_id` != 0 AND
-				                                                `__comments`.`user_id` = :visitor_id
+				                                                __comments.user_id != 0 AND
+				                                                __comments.user_id = :visitor_id
 				                                            )
 				                                        )
 				                                    ))"),
-				                             "`created_at` asc", # order
+				                             "created_at asc", # order
 				                             array(
 				                                 ":post_id" => $post->id,
 				                                 ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
@@ -736,20 +736,20 @@
 		}
 
 		static function posts_get($options) {
-			$options["select"][]  = "COUNT(`__comments`.`id`) as `comment_count`";
-			$options["select"][]  = "MAX(`__comments`.`created_at`) as `latest_comment`";
+			$options["select"][]  = "COUNT(__comments.id) AS comment_count";
+			$options["select"][]  = "MAX(__comments.created_at) AS latest_comment";
 
 			$options["left_join"][] = array("table" => "comments",
-			                                "where" => array("`__comments`.`post_id` = `__posts`.`id`",
-			                                                 "`__comments`.`status` != 'spam'",
-			                                                 "(`__comments`.`status` != 'denied' OR (
-			                                                      `__comments`.`status` = 'denied' AND (
+			                                "where" => array("__comments.post_id = __posts.id",
+			                                                 "__comments.status != 'spam'",
+			                                                 "(__comments.status != 'denied' OR (
+			                                                      __comments.status = 'denied' AND (
 			                                                          (
-			                                                              `__comments`.`author_ip` != 0 AND
-			                                                              `__comments`.`author_ip` = :current_ip
+			                                                              __comments.author_ip != 0 AND
+			                                                              __comments.author_ip = :current_ip
 			                                                          ) OR (
-			                                                              `__comments`.`user_id` != 0 AND
-			                                                              `__comments`.`user_id` = :visitor_id
+			                                                              __comments.user_id != 0 AND
+			                                                              __comments.user_id = :visitor_id
 			                                                          )
 			                                                      )
 			                                                  ))"));
@@ -757,7 +757,7 @@
 			$options["params"][":current_ip"] = ip2long($_SERVER['REMOTE_ADDR']);
 			$options["params"][":visitor_id"] = Visitor::current()->id;
 
-			$options["group"][] = "`__posts`.`id`";
+			$options["group"][] = "__posts.id";
 
 			return $options;
 		}

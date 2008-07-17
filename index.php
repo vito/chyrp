@@ -34,7 +34,7 @@
 			$theme->load(array("pages/view", "pages/index"), array("post" => $post, "posts" => array($post)));
 			break;
 		case "page":
-			fallback($page, new Page(null, array("where" => "`url` = :url", "params" => array(":url" => $_GET['url']))));
+			fallback($page, new Page(null, array("where" => "url = :url", "params" => array(":url" => $_GET['url']))));
 
 			if (!$page->no_results) {
 				$theme->title = $page->title;
@@ -58,26 +58,26 @@
 
 				if (!empty($_GET['year']))
 					$timestamps = $sql->select("posts",
-					                           array("DISTINCT YEAR(`created_at`) AS `year",
-					                                 "MONTH(`created_at`) AS `month`",
-					                                 "`created_at`",
-					                                 "COUNT(`id`) AS `posts`"),
-					                           array("YEAR(`created_at`) = :year"),
-					                           "`created_at` DESC, `id` DESC",
+					                           array("DISTINCT YEAR(created_at) AS `year",
+					                                 "MONTH(created_at) AS month",
+					                                 "created_at",
+					                                 "COUNT(id) AS posts"),
+					                           array("YEAR(created_at) = :year"),
+					                           "created_at DESC, id DESC",
 					                           array(":year" => $_GET['year']),
 					                           null, null,
-					                           array("YEAR(`created_at`)", "MONTH(`created_at`)"));
+					                           array("YEAR(created_at)", "MONTH(created_at)"));
 				else
 					$timestamps = $sql->select("posts",
-					                           array("DISTINCT YEAR(`created_at`) AS `year",
-					                                 "MONTH(`created_at`) AS `month`",
-					                                 "`created_at`",
-					                                 "COUNT(`id`) AS `posts`"),
+					                           array("DISTINCT YEAR(created_at) AS `year",
+					                                 "MONTH(created_at) AS month",
+					                                 "created_at",
+					                                 "COUNT(id) AS posts"),
 					                           null,
-					                           "`created_at` DESC, `id` DESC",
+					                           "created_at DESC, id DESC",
 					                           array(),
 					                           null, null,
-					                           array("YEAR(`created_at`)", "MONTH(`created_at`)"));
+					                           array("YEAR(created_at)", "MONTH(created_at)"));
 
 				$archives = array();
 				while ($time = $timestamps->fetchObject()) {
@@ -88,7 +88,7 @@
 					                              "timestamp" => $timestamp,
 					                              "url" => url("archive/".when("Y/m/", $time->created_at)));
 
-					$archives[$timestamp]["posts"] = Post::find(array("where" => "`__posts`.`created_at` like :created_at",
+					$archives[$timestamp]["posts"] = Post::find(array("where" => "__posts.created_at like :created_at",
 					                                                  "params" => array(":created_at" => when("Y-m", $time->created_at)."%")));
 				}
 
