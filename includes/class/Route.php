@@ -244,7 +244,7 @@
 			if (count($this->arg) == 1 and method_exists($main, $this->arg[0]))
 				return $this->action = $this->arg[0];
 
-			$page = new Page(null, array("where" => "__pages.url = :url",
+			$page = new Page(null, array("where" => "url = :url",
 			                             "params" => array(":url" => end($this->arg))));
 
 			if (!$page->no_results)

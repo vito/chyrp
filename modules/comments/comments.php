@@ -150,7 +150,7 @@
 			global $admin;
 
 			$params = array();
-			$where = array("__comments.status = 'spam'");
+			$where = array("status = 'spam'");
 
 			if (!empty($_GET['query'])) {
 				$search = "";
@@ -167,12 +167,12 @@
 					$match = explode(":", $match);
 					$test = $match[0];
 					$equals = $match[1];
-					$where[] = "__comments.".$test." = :".$test;
+					$where[] = $test." = :".$test;
 					$params[":".$test] = $equals;
 				}
 
 				if (!empty($search)) {
-					$where[] = "(__comments.body LIKE :query)";
+					$where[] = "(body LIKE :query)";
 					$params[":query"] = "%".$search."%";
 				}
 			}
@@ -184,7 +184,7 @@
 			if (!Visitor::current()->group()->can("delete_comment"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete comments.", "comments"));
 
-			SQL::current()->delete("comments", "__comments.status = 'spam'");
+			SQL::current()->delete("comments", "status = 'spam'");
 
 			Flash::notice(__("All spam deleted.", "comments"), "/admin/?action=manage_spam");
 		}
@@ -342,7 +342,7 @@
 			global $admin;
 
 			$params = array();
-			$where = array("__comments.status != 'spam'");
+			$where = array("status != 'spam'");
 
 			if (!empty($_GET['query'])) {
 				$search = "";
@@ -359,19 +359,19 @@
 					$match = explode(":", $match);
 					$test = $match[0];
 					$equals = $match[1];
-					$where[] = "__comments.".$test." = :".$test;
+					$where[] = $test." = :".$test;
 					$params[":".$test] = $equals;
 				}
 
 				if (!empty($search)) {
-					$where[] = "(__comments.body LIKE :query)";
+					$where[] = "(body LIKE :query)";
 					$params[":query"] = "%".$search."%";
 				}
 			}
 
 			$visitor = Visitor::current();
 			if (!$visitor->group()->can("edit_comment", "delete_comment", true)) {
-				$where[] = "__comments.user_id = :visitor_id";
+				$where[] = "user_id = :visitor_id";
 				$params[":visitor_id"] = $visitor->id;
 			}
 
@@ -411,7 +411,7 @@
 					if ($comment->status == "spam")
 						$false_positives[] = $comment->signature;
 
-					$sql->update("comments", "__comments.id = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "denied"));
+					$sql->update("comments", "id = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "denied"));
 				}
 
 				Flash::notice(__("Selected comments denied.", "comments"));
@@ -425,7 +425,7 @@
 					if ($comment->status == "spam")
 						$false_positives[] = $comment->signature;
 
-					$sql->update("comments", "__comments.id = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "approved"));
+					$sql->update("comments", "id = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "approved"));
 				}
 
 				Flash::notice(__("Selected comments approved.", "comments"));
@@ -436,7 +436,7 @@
 					if (!$comment->editable())
 						continue;
 
-					$sql->update("comments", "__comments.id = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "spam"));
+					$sql->update("comments", "id = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "spam"));
 
 					$false_negatives[] = $comment->signature;
 				}
@@ -487,17 +487,17 @@
 					if ($post->latest_comment > $_POST['last_comment']) {
 						$new_comments = $sql->select("comments",
 						                             "id",
-						                             array("__comments.post_id = :post_id",
-						                                   "__comments.id > :last_comment",
-						                                   "__comments.status != 'spam'",
-						                                   "(__comments.status != 'denied' OR (
-						                                        __comments.status = 'denied' AND (
+						                             array("post_id = :post_id",
+						                                   "id > :last_comment",
+						                                   "status != 'spam'",
+						                                   "(status != 'denied' OR (
+						                                        status = 'denied' AND (
 						                                            (
-						                                                __comments.author_ip != 0 AND
-						                                                __comments.author_ip = :current_ip
+						                                                author_ip != 0 AND
+						                                                author_ip = :current_ip
 						                                            ) OR (
-						                                                __comments.user_id != 0 AND
-						                                                __comments.user_id = :visitor_id
+						                                                user_id != 0 AND
+						                                                user_id = :visitor_id
 						                                            )
 						                                        )
 						                                    ))"),
@@ -561,7 +561,7 @@
 				$comment = $comment->children("http://www.w3.org/2005/Atom");
 
 				$login = $comment->author->children("http://chyrp.net/export/1.0/")->login;
-				$user_id = $sql->select("users", "id", "__users.login = :login", "__users.id DESC",
+				$user_id = $sql->select("users", "id", "login = :login", "id DESC",
 				                        array(":login" => $login))->fetchColumn();
 
 				Comment::add(unsafe($comment->content),
@@ -691,16 +691,16 @@
 			if (isset($route->action) and $route->action == "view") {
 				$get_comments = $sql->select("comments", # table
 				                             "*", # fields
-				                             array("__comments.post_id = :post_id",
-				                                   "__comments.status != 'spam'",
-				                                   "(__comments.status != 'denied' OR (
-				                                        __comments.status = 'denied' AND (
+				                             array("post_id = :post_id",
+				                                   "status != 'spam'",
+				                                   "(status != 'denied' OR (
+				                                        status = 'denied' AND (
 				                                            (
-				                                                __comments.author_ip != 0 AND
-				                                                __comments.author_ip = :current_ip
+				                                                author_ip != 0 AND
+				                                                author_ip = :current_ip
 				                                            ) OR (
-				                                                __comments.user_id != 0 AND
-				                                                __comments.user_id = :visitor_id
+				                                                user_id != 0 AND
+				                                                user_id = :visitor_id
 				                                            )
 				                                        )
 				                                    ))"),
@@ -736,20 +736,20 @@
 		}
 
 		static function posts_get($options) {
-			$options["select"][]  = "COUNT(__comments.id) AS comment_count";
-			$options["select"][]  = "MAX(__comments.created_at) AS latest_comment";
+			$options["select"][]  = "COUNT(comments.id) AS comment_count";
+			$options["select"][]  = "MAX(comments.created_at) AS latest_comment";
 
 			$options["left_join"][] = array("table" => "comments",
-			                                "where" => array("__comments.post_id = __posts.id",
-			                                                 "__comments.status != 'spam'",
-			                                                 "(__comments.status != 'denied' OR (
-			                                                      __comments.status = 'denied' AND (
+			                                "where" => array("post_id = id",
+			                                                 "status != 'spam'",
+			                                                 "(status != 'denied' OR (
+			                                                      status = 'denied' AND (
 			                                                          (
-			                                                              __comments.author_ip != 0 AND
-			                                                              __comments.author_ip = :current_ip
+			                                                              author_ip != 0 AND
+			                                                              author_ip = :current_ip
 			                                                          ) OR (
-			                                                              __comments.user_id != 0 AND
-			                                                              __comments.user_id = :visitor_id
+			                                                              user_id != 0 AND
+			                                                              user_id = :visitor_id
 			                                                          )
 			                                                      )
 			                                                  ))"));
@@ -757,7 +757,7 @@
 			$options["params"][":current_ip"] = ip2long($_SERVER['REMOTE_ADDR']);
 			$options["params"][":visitor_id"] = Visitor::current()->id;
 
-			$options["group"][] = "__posts.id";
+			$options["group"][] = "id";
 
 			return $options;
 		}
@@ -768,7 +768,7 @@
 		}
 
 		public function posts_export($atom, $post) {
-			$comments = Comment::find(array("where" => "__comments.post_id = :post_id",
+			$comments = Comment::find(array("where" => "post_id = :post_id",
 			                                "params" => array(":post_id" => $post->id)),
 			                          array("filter" => false));
 

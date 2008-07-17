@@ -116,13 +116,16 @@
 
 			$sql = SQL::current();
 			$dates = $sql->select("posts",
-			                       "DISTINCT YEAR(created_at) AS year, MONTH(created_at) AS month, created_at, COUNT(id) AS posts",
-			                       "status = 'public'",
-			                       "__posts.{$order_by} ".strtoupper($order),
-			                       array(),
-			                       ($limit == 0) ? null : $limit,
-			                       null,
-			                       "YEAR(created_at), MONTH(created_at)");
+			                      array("DISTINCT YEAR(created_at) AS year",
+			                            "MONTH(created_at) AS month",
+			                            "created_at",
+			                            "COUNT(id) AS posts"),
+			                      "status = 'public'",
+			                      $order_by." ".strtoupper($order),
+			                      array(),
+			                      ($limit == 0) ? null : $limit,
+			                      null,
+			                      "YEAR(created_at), MONTH(created_at)");
 
 			$archives = array();
 			while ($date = $dates->fetchObject())

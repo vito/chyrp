@@ -30,7 +30,7 @@
 		static function read($id) {
 			self::$data = SQL::current()->select("sessions",
 			                                     "data",
-			                                     "__sessions.id = :id",
+			                                     "id = :id",
 			                                     "id",
 			                                     array(":id" => $id),
 			                                     null, null, null, null, true)->fetchColumn();
@@ -48,9 +48,9 @@
 
 			$sql = SQL::current();
 
-			if ($sql->count("sessions", "__sessions.id = :id", array(":id" => $id)))
+			if ($sql->count("sessions", "id = :id", array(":id" => $id)))
 				$sql->update("sessions",
-				             "__sessions.id = :id",
+				             "id = :id",
 				             array("data" => ":data",
 				                   "user_id" => ":visitor_id",
 				                   "updated_at" => ":updated_at"),
@@ -77,7 +77,7 @@
 		 * Destroys their session.
 		 */
 		static function destroy($id) {
-			if (SQL::current()->delete("sessions", "__sessions.id = :id", array(":id" => $id), true))
+			if (SQL::current()->delete("sessions", "id = :id", array(":id" => $id), true))
 				return true;
 
 			return false;
@@ -89,7 +89,7 @@
 		 */
 		static function gc() {
 			SQL::current()->delete("sessions",
-			                       "__sessions.created_at >= :thirty_days OR __sessions.data = '' OR data IS NULL",
+			                       "created_at >= :thirty_days OR data = '' OR data IS NULL",
 			                       array(":thirty_days" => datetime(strtotime("+30 days"))),
 			                       true);
 			return true;

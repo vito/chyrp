@@ -96,7 +96,7 @@
 				return false;
 
 			$sql = SQL::current();
-			$sql->update("groups", "__groups.id = :id",
+			$sql->update("groups", "id = :id",
 			             array("name" => ":name", "permissions" => ":permissions"),
 			             array(":name" => $name, ":permissions" => Horde_Yaml::dump($permissions), ":id" => $this->id));
 
@@ -153,7 +153,7 @@
 
 			return (isset($this->size)) ? $this->size :
 			       $this->size = SQL::current()->count("users",
-			                                           "__users.group_id = :group_id",
+			                                           "group_id = :group_id",
 			                                           array(":group_id" => $this->id)) ;
 		}
 

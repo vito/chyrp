@@ -305,8 +305,8 @@
 	if (in_array(true, $draft_situations) and $visitor->group()->can("view_draft"))
 		$statuses[] = "draft";
 
-	Post::$private = "__posts.status IN ('".implode("', '", $statuses)."')";
-	Post::$enabled_feathers = "__posts.feather IN ('".implode("', '", $config->enabled_feathers)."')";
+	Post::$private = "status IN ('".implode("', '", $statuses)."')";
+	Post::$enabled_feathers = "feather IN ('".implode("', '", $config->enabled_feathers)."')";
 
 	$config->theme = ($visitor->group()->can("change_settings") and
 	                      !empty($_GET['action']) and

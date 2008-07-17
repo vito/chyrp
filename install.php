@@ -277,7 +277,7 @@
 
 			$config->load(INCLUDES_DIR."/config.yaml.php");
 
-			if (!$sql->select("users", "id", "__users.login = :login", null, array(":login" => $_POST['login']))->fetchColumn())
+			if (!$sql->select("users", "id", "login = :login", null, array(":login" => $_POST['login']))->fetchColumn())
 				$sql->insert("users",
 				             array("login" => ":login",
 				                   "password" => ":password",

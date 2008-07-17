@@ -114,7 +114,7 @@
 
 			$sql = SQL::current();
 			$sql->update("pages",
-			             "__pages.id = :id",
+			             "id = :id",
 			             array(
 			                 "title" => ":title",
 			                 "body" => ":body",
@@ -167,7 +167,7 @@
 		 *     true - if a page with that ID is in the database.
 		 */
 		static function exists($page_id) {
-			return SQL::current()->count("pages", "__pages.id = :id", array(":id" => $post_id));
+			return SQL::current()->count("pages", "id = :id", array(":id" => $post_id));
 		}
 
 		/**

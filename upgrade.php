@@ -305,7 +305,7 @@
 
 			echo _f("Sanitizing XML data of post #%d...", array($post->id)).
 			     test(SQL::current()->update("posts",
-			                                 "__posts.id = :post_id",
+			                                 "id = :post_id",
 			                                 array("xml" => ":xml"),
 			                                 array(":xml" => $new_xml->asXML(),
 			                                       ":post_id" => $post->id)));

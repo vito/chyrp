@@ -160,24 +160,24 @@
 						$test = "user_id";
 						$equals = $user->id;
 					}
-					$where[] = "__posts.".$test." = :".$test;
+					$where[] = $test." = :".$test;
 					$params[":".$test] = $equals;
 				}
 
 				if (!empty($search)) {
-					$where[] = "__posts.xml LIKE :query";
+					$where[] = "xml LIKE :query";
 					$params[":query"] = "%".$search."%";
 				}
 			}
 
 			if (!empty($_GET['month'])) {
-				$where[] = "__posts.created_at LIKE :when";
+				$where[] = "created_at LIKE :when";
 				$params[":when"] = $_GET['month']."-%";
 			}
 
 			$visitor = Visitor::current();
 			if (!$visitor->group()->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post")) {
-				$where[] = "__posts.user_id = :visitor_id";
+				$where[] = "user_id = :visitor_id";
 				$params[':visitor_id'] = $visitor->id;
 			}
 
@@ -227,7 +227,7 @@
 				error(__("No ID Specified"), __("An ID is required to edit a page."));
 
 			$this->context["page"] = new Page($_GET['id'], array("filter" => false));
-			$this->context["pages"] = Page::find(array("where" => "__pages.id != :id", "params" => array(":id" => $_GET['id'])));
+			$this->context["pages"] = Page::find(array("where" => "id != :id", "params" => array(":id" => $_GET['id'])));
 		}
 
 		/**
@@ -339,12 +339,12 @@
 						$test = "user_id";
 						$equals = ($user->no_results) ? 0 : $user->id ;
 					}
-					$where[] = "__pages.".$test." = :".$test;
+					$where[] = $test." = :".$test;
 					$params[":".$test] = $equals;
 				}
 
 				if (!empty($search)) {
-					$where[] = "(__pages.title LIKE :query OR __pages.body LIKE :query)";
+					$where[] = "(title LIKE :query OR body LIKE :query)";
 					$params[":query"] = "%".$search."%";
 				}
 			}
@@ -363,9 +363,9 @@
 			$config = Config::current();
 
 			$this->context["default_group"] = new Group($config->default_group);
-			$this->context["groups"] = Group::find(array("where" => array("__groups.id != :guest_id", "__groups.id != :default_id"),
+			$this->context["groups"] = Group::find(array("where" => array("id != :guest_id", "id != :default_id"),
 			                                             "params" => array(":guest_id" => $config->guest_group, ":default_id" => $config->default_group),
-			                                             "order" => "__groups.id desc"));
+			                                             "order" => "id desc"));
 		}
 
 		/**
@@ -413,8 +413,8 @@
 				error(__("No ID Specified"), __("An ID is required to edit a user."));
 
 			$this->context["user"] = new User($_GET['id']);
-			$this->context["groups"] = Group::find(array("order" => "__groups.id asc",
-			                                             "where" => "__groups.id != :guest_id",
+			$this->context["groups"] = Group::find(array("order" => "id asc",
+			                                             "where" => "id != :guest_id",
 			                                             "params" => array(":guest_id" => Config::current()->guest_group)));
 		}
 
@@ -460,7 +460,7 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete users."));
 
 			$this->context["user"] = new User($_GET['id']);
-			$this->context["users"] = User::find(array("where" => "__users.id != :deleting_id",
+			$this->context["users"] = User::find(array("where" => "id != :deleting_id",
 			                                           "params" => array(":deleting_id" => $_GET['id'])));
 		}
 
@@ -490,7 +490,7 @@
 						Post::delete($post->id);
 				elseif ($_POST['posts'] == "move")
 					$sql->update("posts",
-					             "__posts.user_id = :deleting_id",
+					             "user_id = :deleting_id",
 					             array("user_id" => ":user_id"),
 					             array(":user_id" => $_POST['move_posts'],
 					                   ":deleting_id" => $user->id));
@@ -502,7 +502,7 @@
 						Page::delete($page->id);
 				elseif ($_POST['pages'] == "move")
 					$sql->update("pages",
-					             "__pages.user_id = :deleting_id",
+					             "user_id = :deleting_id",
 					             array("user_id" => ":user_id"),
 					             array(":user_id" => $_POST['move_pages'],
 					                   ":deleting_id" => $user->id));
@@ -540,11 +540,11 @@
 					$match = explode(":", $match);
 					$test = $match[0];
 					$equals = $match[1];
-					$where[] = "__pages.".$test." = :".$test;
+					$where[] = $test." = :".$test;
 					$params[":".$test] = $equals;
 				}
 
-				$where[] = "(__users.login LIKE :query OR __users.full_name LIKE :query OR __users.email LIKE :query OR __users.website LIKE :query)";
+				$where[] = "(login LIKE :query OR full_name LIKE :query OR email LIKE :query OR website LIKE :query)";
 				$params[":query"] = "%".$_GET['query']."%";
 			}
 
@@ -622,8 +622,8 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete groups."));
 
 			$this->context["group"] = new Group($_GET['id']);
-			$this->context["groups"] = Group::find(array("where" => "__groups.id != :group_id",
-			                                             "order" => "__groups.id asc",
+			$this->context["groups"] = Group::find(array("where" => "id != :group_id",
+			                                             "order" => "id asc",
 			                                             "params" => array(":group_id" => $_GET['id'])));
 		}
 
@@ -672,7 +672,7 @@
 				$user = new User(null, array("where" => "login = :search", "params" => array(":search" => $_GET['search'])));
 				$this->context["groups"] = array($user->group());
 			} else
-				$this->context["groups"] = new Paginator(Group::find(array("placeholders" => true, "order" => "__groups.id asc")), 10);
+				$this->context["groups"] = new Paginator(Group::find(array("placeholders" => true, "order" => "id asc")), 10);
 		}
 
 		/**
@@ -707,13 +707,13 @@
 						$match = explode(":", $match);
 						$test = $match[0];
 						$equals = $match[1];
-						$where[] = "__posts.".$test." = :".$test;
+						$where[] = $test." = :".$test;
 						$params[":".$test] = $equals;
 					}
 				} else
 					list($where, $params) = array(false, array());
 
-				$posts = Post::find(array("where" => $where, "params" => $params, "order" => "__posts.id ASC"),
+				$posts = Post::find(array("where" => $where, "params" => $params, "order" => "id ASC"),
 				                    array("filter" => false));
 
 				$latest_timestamp = 0;
@@ -798,13 +798,13 @@
 						$match = explode(":", $match);
 						$test = $match[0];
 						$equals = $match[1];
-						$where[] = "__pages.".$test." = :".$test;
+						$where[] = $test." = :".$test;
 						$params[":".$test] = $equals;
 					}
 				} else
 					list($where, $params) = array(null, array());
 
-				$pages = Page::find(array("where" => $where, "params" => $params, "order" => "__pages.id ASC"),
+				$pages = Page::find(array("where" => $where, "params" => $params, "order" => "id ASC"),
 				                    array("filter" => false));
 
 				$latest_timestamp = 0;
@@ -874,13 +874,13 @@
 						$match = explode(":", $match);
 						$test = $match[0];
 						$equals = $match[1];
-						$where[] = "__groups.".$test." = :".$test;
+						$where[] = $test." = :".$test;
 						$params[":".$test] = $equals;
 					}
 				} else
 					list($where, $params) = array(null, array());
 
-				$groups = Group::find(array("where" => $where, "params" => $params, "order" => "__groups.id ASC"));
+				$groups = Group::find(array("where" => $where, "params" => $params, "order" => "id ASC"));
 
 				$groups_yaml = array("groups" => array(),
 				                     "permissions" => array());
@@ -910,13 +910,13 @@
 						$match = explode(":", $match);
 						$test = $match[0];
 						$equals = $match[1];
-						$where[] = "__users.".$test." = :".$test;
+						$where[] = $test." = :".$test;
 						$params[":".$test] = $equals;
 					}
 				} else
 					list($where, $params) = array(null, array());
 
-				$users = User::find(array("where" => $where, "params" => $params, "order" => "__users.id ASC"));
+				$users = User::find(array("where" => $where, "params" => $params, "order" => "id ASC"));
 
 				$users_yaml = array();
 				foreach ($users as $user) {
@@ -944,7 +944,7 @@
 
 			$filename = sanitize(camelize($config->name), false, true)."_Export_".date("Y-m-d");
 			header("Content-type: application/octet-stream");
-			header("Content-Disposition: attachment; filename=\"".$filename.".zip\"");
+			header("Content-Disposition: attachment; filename=\$filename.".zip\"");
 			header("Content-length: ".strlen($zip_contents)."\n\n");
 
 			echo $zip_contents;
@@ -1002,11 +1002,11 @@
 				$import = Horde_Yaml::loadFile($_FILES['groups_file']['tmp_name']);
 
 				foreach ($import["groups"] as $name => $permissions)
-					if (!$sql->count("groups", "__groups.name = :name", array(":name" => $name)))
+					if (!$sql->count("groups", "name = :name", array(":name" => $name)))
 						$trigger->call("import_chyrp_group", Group::add($name, (array) $permissions));
 
 				foreach ($import["permissions"] as $id => $name)
-					if (!$sql->count("permissions", "__permissions.id = :id", array(":id" => $id)))
+					if (!$sql->count("permissions", "id = :id", array(":id" => $id)))
 						$sql->insert("permissions",
 						             array("id" => ":id", "name" => ":name"),
 						             array(":id" => $id, ":name" => $name));
@@ -1016,12 +1016,12 @@
 				$users = Horde_Yaml::loadFile($_FILES['users_file']['tmp_name']);
 
 				foreach ($users as $login => $user) {
-					$group_id = $sql->select("groups", "id", "__groups.name = :name", "__groups.id DESC",
+					$group_id = $sql->select("groups", "id", "name = :name", "id DESC",
 					                         array(":name" => $user["group"]))->fetchColumn();
 
 					$group = ($group_id) ? $group_id : $config->default_group ;
 
-					if (!$sql->count("users", "__users.login = :login", array(":login" => $login)))
+					if (!$sql->count("users", "login = :login", array(":login" => $login)))
 						$user = User::add($login,
 						                  $user["password"],
 						                  $user["email"],
@@ -1039,7 +1039,7 @@
 					$chyrp = $entry->children("http://chyrp.net/export/1.0/");
 
 					$login = $entry->author->children("http://chyrp.net/export/1.0/")->login;
-					$user_id = $sql->select("users", "id", "__users.login = :login", "__users.id DESC",
+					$user_id = $sql->select("users", "id", "login = :login", "id DESC",
 					                        array(":login" => $login))->fetchColumn();
 
 					$_POST['user_id'] = ($user_id ? $user_id : $visitor->id);
@@ -1067,7 +1067,7 @@
 					$attr  = $entry->attributes("http://chyrp.net/export/1.0/");
 
 					$login = $entry->author->children("http://chyrp.net/export/1.0/")->login;
-					$user_id = $sql->select("users", "id", "__users.login = :login", "__users.id DESC",
+					$user_id = $sql->select("users", "id", "login = :login", "id DESC",
 					                        array(":login" => $login))->fetchColumn();
 
 					$page = Page::add($entry->title,
@@ -1792,7 +1792,7 @@
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
-			$this->context["groups"] = Group::find(array("order" => "__groups.id desc"));
+			$this->context["groups"] = Group::find(array("order" => "id desc"));
 
 			if (empty($_POST))
 				return;

@@ -198,7 +198,7 @@
 		public function update($author, $author_email, $author_url, $body, $status, $timestamp, $update_timestamp = true) {
 			$sql = SQL::current();
 			$sql->update("comments",
-			             "__comments.id = :id",
+			             "id = :id",
 			             array("body" => ":body",
 			                   "author" => ":author",
 			                   "author_email" => ":author_email",
@@ -249,7 +249,7 @@
 
 			# Can they edit their own comments, and do they have any?
 			if ($visitor->group()->can("edit_own_comment") and
-			    self::find(array("where" => "__comments.user_id = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
+			    self::find(array("where" => "user_id = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
 				return true;
 
 			return false;
@@ -268,7 +268,7 @@
 
 			# Can they delete their own comments, and do they have any?
 			if ($visitor->group()->can("delete_own_comment") and
-			    self::find(array("where" => "__comments.user_id = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
+			    self::find(array("where" => "user_id = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
 				return true;
 
 			return false;

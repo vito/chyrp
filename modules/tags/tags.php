@@ -95,7 +95,7 @@
 			$tags_cleaned_string = (!empty($tags_cleaned)) ? "{{".implode("}},{{", $tags_cleaned)."}}" : "" ;
 
 			if (empty($tags_string) and empty($tags_cleaned_string))
-				$sql->delete("tags", "__tags.post_id = :post_id", array(":post_id" => $post->id));
+				$sql->delete("tags", "post_id = :post_id", array(":post_id" => $post->id));
 			else
 				$sql->insert("tags", array("tags" => ":tags", "clean" => ":clean", "post_id" => ":post_id"), array(
 				                 ":tags"    => $tags_string,
@@ -235,9 +235,9 @@
 			$options["select"][] = "__tags.clean AS clean_tags";
 
 			$options["left_join"][] = array("table" => "tags",
-			                                "where" => "__tags.post_id = __posts.id");
+			                                "where" => "post_id = __posts.id");
 
-			$options["group"][] = "__posts.id";
+			$options["group"][] = "id";
 
 			return $options;
 		}
@@ -296,7 +296,7 @@
 			                      array(),
 			                      null, null, null,
 			                      array(array("table" => "tags",
-			                                  "where" => "__tags.post_id = __posts.id")));
+			                                  "where" => "post_id = __posts.id")));
 
 			$unclean = array();
 			$clean = array();
@@ -361,7 +361,7 @@
 		}
 
 		public function posts_export($atom, $post) {
-			$tags = SQL::current()->select("tags", "tags", "__tags.post_id = :post_id", "__tags.id DESC", array(":post_id" => $post->id))->fetchColumn();
+			$tags = SQL::current()->select("tags", "tags", "post_id = :post_id", "id DESC", array(":post_id" => $post->id))->fetchColumn();
 			if (empty($tags)) return;
 
 			$atom.= "		<chyrp:tags>".safe(implode(", ", self::unlinked_tags($tags)))."</chyrp:tags>\r";

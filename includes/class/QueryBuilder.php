@@ -72,7 +72,7 @@
 			return "
 				UPDATE __$table
 				SET ".self::build_update_values($data)."
-				".($conds ? "WHERE ".self::build_where($conds) : "")."
+				".($conds ? "WHERE ".self::build_where($conds, $table) : "")."
 			";
 		}
 
@@ -83,7 +83,7 @@
 		public static function build_delete($table, $conds) {
 			return "
 				DELETE FROM __$table
-				".($conds ? "WHERE ".self::build_where($conds) : "")."
+				".($conds ? "WHERE ".self::build_where($conds, $table) : "")."
 			";
 		}
 
@@ -108,7 +108,8 @@
 				$tables = array($tables);
 
 			foreach ($tables as &$table)
-				$table = "__".$table;
+				if (substr($table, 0, 2) != "__")
+					$table = "__".$table;
 
 			return implode(", ", $tables);
 		}
@@ -121,7 +122,7 @@
 			$query = "
 				SELECT COUNT(1) AS count
 				FROM ".self::build_from($tables);
-			$query.= "\n\t\t\t\t".($conds ? "WHERE ".self::build_where($conds) : "");
+			$query.= "\n\t\t\t\t".($conds ? "WHERE ".self::build_where($conds, $tables) : "");
 			return $query;
 		}
 
@@ -129,9 +130,14 @@
 		 * Function: build_select_header
 		 * Creates a SELECT fields header.
 		 */
-		public static function build_select_header($fields) {
+		public static function build_select_header($fields, $tables = null) {
 			if (!is_array($fields))
 				$fields = array($fields);
+
+			$tables = (array) $tables;
+
+			foreach ($fields as &$field)
+				self::tablefy($field, $tables);
 
 			return implode(', ', $fields);
 		}
@@ -140,8 +146,13 @@
 		 * Function: build_where
 		 * Creates a WHERE query.
 		 */
-		public static function build_where($conds) {
+		public static function build_where($conds, $tables = null) {
 			$conditions = (array) $conds;
+			$tables = (array) $tables;
+
+			foreach ($conditions as &$condition)
+				self::tablefy($condition, $tables);
+
 			return implode(" AND ", array_filter($conditions));
 		}
 
@@ -149,17 +160,14 @@
 		 * Function: build_group
 		 * Creates a GROUP BY argument.
 		 */
-		public static function build_group($by, $table = null) {
-			if (isset($table)) {
-				$groups = array();
-				if (is_array($table))
-					$table = $table[0];
-				foreach ((array) $by as $col)
-					$groups[] = preg_replace("/^`([^`]+)` /", "__".$table.".\\1 ", $col);
-			} else
-				$groups = (array) $by;
+		public static function build_group($by, $tables = null) {
+			$by = (array) $by;
+			$tables = (array) $tables;
 
-			return implode(", ", array_filter($groups));
+			foreach ($by as &$column)
+				self::tablefy($column, $tables);
+
+			return implode(", ", array_unique(array_filter($by)));
 		}
 
 		/**
@@ -171,17 +179,50 @@
 				$order = implode(", ", $order);
 
 			$query = "
-				SELECT ".self::build_select_header($fields)."
+				SELECT ".self::build_select_header($fields, $tables)."
 				FROM ".self::build_from($tables);
 			if (isset($left_join))
 				foreach ($left_join as $join)
-					$query.= "\n\t\t\t\tLEFT JOIN __".$join["table"]." ON ".self::build_where($join["where"]);
+					$query.= "\n\t\t\t\tLEFT JOIN __".$join["table"]." ON ".self::build_where($join["where"], $join["table"]);
 			$query.= "
-				".($conds ? "WHERE ".self::build_where($conds) : "")."
-				".($group ? "GROUP BY ".self::build_group($group) : "")."
+				".($conds ? "WHERE ".self::build_where($conds, $tables) : "")."
+				".($group ? "GROUP BY ".self::build_group($group, $tables) : "")."
 				".($order ? "ORDER BY ".$order : "")."
 				".self::build_limits($offset, $limit)."
 			";
 			return $query;
+		}
+
+		public static function tablefy(&$field, $tables) {
+			if (!preg_match_all("/(\(|^)?([a-z_\.]+)/", $field, $matches))
+				return;
+
+			foreach ($matches[0] as $index => $full) {
+				$paren = $matches[1][$index];
+				$name  = $matches[2][$index];
+
+				if (substr($full, 0, 2) == "__")
+					return;
+
+				# Does it not already have a table specified?
+				if (!substr_count($full, ".")) {
+						                   # Don't replace things that are already either prefixed or paramized.
+					$field = preg_replace("/([^\.:'_]|^)".preg_quote($full, "/")."/",
+					                      "\\1".$paren."__".$tables[0].".".$name,
+					                      $field,
+					                      1);
+				} else {
+					# Okay, it does, but is the table prefixed?
+					if (substr($full, 0, 2) != "__") {
+						                       # Don't replace things that are already either prefixed or paramized.
+						$field = preg_replace("/([^\.:'_]|^)".preg_quote($full, "/")."/",
+						                      "\\1".$paren."__".$name,
+						                      $field,
+						                      1);
+					}
+				}
+			}
+
+			$field = preg_replace("/AS ([^ ]+)\./", "AS ", $field);
 		}
 	}

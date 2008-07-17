@@ -115,7 +115,7 @@
 
 			$sql = SQL::current();
 			$sql->update("users",
-			             "__users.id = :id",
+			             "id = :id",
 			             array(
 			                 "login" => ":login",
 			                 "password" => ":password",
@@ -166,7 +166,7 @@
 			if ($this->no_results)
 				return false;
 
-			return Post::find(array("where" => "__posts.user_id = :user_id",
+			return Post::find(array("where" => "user_id = :user_id",
 			                        "params" => array(":user_id" => $this->id)));
 		}
 
@@ -178,7 +178,7 @@
 			if ($this->no_results)
 				return false;
 
-			return Page::find(array("where" => "__pages.user_id = :user_id",
+			return Page::find(array("where" => "user_id = :user_id",
 			                        "params" => array(":user_id" => $this->id)));
 		}
 
