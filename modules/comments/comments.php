@@ -740,7 +740,7 @@
 			$options["select"][]  = "MAX(comments.created_at) AS latest_comment";
 
 			$options["left_join"][] = array("table" => "comments",
-			                                "where" => array("post_id = id",
+			                                "where" => array("post_id = posts.id",
 			                                                 "status != 'spam'",
 			                                                 "(status != 'denied' OR (
 			                                                      status = 'denied' AND (

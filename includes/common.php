@@ -284,8 +284,14 @@
 			$module->__init();
 
 	if (INDEX) {
-		$route->check_viewing_page();
-		$route->check_viewing_post();
+		# If the post viewing URL is the same as the page viewing URL, check for viewing a page first.
+		if (preg_match("/^\((clean|url)\)$/", $config->post_url)) {
+			$route->check_viewing_page();
+			$route->check_viewing_post();
+		} else {
+			$route->check_viewing_post();
+			$route->check_viewing_page();
+		}
 	}
 
 	# Variable: $visitor
