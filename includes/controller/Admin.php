@@ -1824,11 +1824,12 @@
 				show_403(__("Access Denied"), __("Invalid security key."));
 
 			$config = Config::current();
-			$set = array($config->set("feed_items", $_POST['feed_items']),
+			$set = array($config->set("posts_per_page", $_POST['posts_per_page']),
+			             $config->set("feed_items", $_POST['feed_items']),
 			             $config->set("feed_url", $_POST['feed_url']),
+			             $config->set("uploads_path", $_POST['uploads_path']),
 			             $config->set("enable_trackbacking", !empty($_POST['enable_trackbacking'])),
 			             $config->set("send_pingbacks", !empty($_POST['send_pingbacks'])),
-			             $config->set("posts_per_page", $_POST['posts_per_page']),
 			             $config->set("enable_xmlrpc", !empty($_POST['enable_xmlrpc'])));
 
 			if (!in_array(false, $set))
