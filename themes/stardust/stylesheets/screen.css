@@ -613,3 +613,8 @@ span.waiting {
 .left {
 	float: left;
 }
+
+/* Miscellaneous */
+img.smiley {
+	margin: 0 0 -.3em;
+}
