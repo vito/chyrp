@@ -24,14 +24,10 @@
 			$visitor = Visitor::current();
 			$config = Config::current();
 
-			$this->theme = (isset($_GET['action']) and $_GET['action'] == "theme_preview" and !empty($_GET['theme']) and $visitor->group()->can("change_settings")) ?
-			               $_GET['theme'] :
-			               $config->theme;
-			$this->directory = THEMES_DIR."/".$this->theme."/";
+			$this->twig = new Twig_Loader(THEME_DIR,
+				                          ((is_writable(INCLUDES_DIR."/caches") and !DEBUG) ? INCLUDES_DIR."/caches" : null));
 
-			$this->twig = new Twig_Loader($this->directory, ((is_writable(INCLUDES_DIR."/caches") and !DEBUG) ? INCLUDES_DIR."/caches" : null));
-
-			$this->url = $config->chyrp_url."/themes/".$this->theme;
+			$this->url = $config->chyrp_url."/themes/".$config->theme;
 		}
 
 		/**
@@ -146,7 +142,7 @@
 		 *     $file - The file's name
 		 */
 		public function file_exists($file) {
-			return file_exists($this->directory.$file.".twig");
+			return file_exists(THEME_DIR."/".$file.".twig");
 		}
 
 		/**
@@ -159,11 +155,14 @@
 			$trigger = Trigger::current();
 
 			$stylesheets = "";
-			if (file_exists(THEMES_DIR."/".$this->theme."/stylesheets/") or file_exists(THEMES_DIR."/".$this->theme."/css/")) {
+			if (file_exists(THEME_DIR."/stylesheets/") or file_exists(THEME_DIR."/css/")) {
 				$count = 1;
-				$glob = glob(THEMES_DIR."/".$this->theme."/{stylesheets,css}/*", GLOB_BRACE);
 
-				foreach($glob as $file) {
+				$long  = (array) glob(THEME_DIR."/stylesheets/*");
+				$short = (array) glob(THEME_DIR."/css/*");
+
+				$total = array_merge($long, $short);
+				foreach($total as $file) {
 					$path = preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file);
 					$file = basename($file);
 
@@ -179,13 +178,12 @@
 					if ($file == "ie.css" or preg_match("/(lt|gt)?ie([0-9\.]+)\.css/", $file))
 						$stylesheets.= "<![endif]-->";
 
-					if ($count != count($glob))
-						$stylesheets.= "\n\t\t";
+					$stylesheets.= "\n\t\t";
 
 					$count++;
 				}
 			} else
-				$stylesheets = '<link rel="stylesheet" href="'.$config->chyrp_url.'/themes/'.$this->theme.'/style.css" type="text/css" media="screen" charset="utf-8" />';
+				$stylesheets = '<link rel="stylesheet" href="'.$config->chyrp_url.'/themes/'.$config->theme.'/style.css" type="text/css" media="screen" charset="utf-8" />';
 
 			return $stylesheets;
 		}
@@ -200,10 +198,9 @@
 			$route = Route::current();
 
 			$args = "";
-			$i = 0;
-			foreach ($_GET as $val)
+			foreach ($_GET as $key => $val)
 				if (!empty($val) and $val != $route->action)
-					$args.= "&amp;arg".++$i."=".urlencode($val);
+					$args.= "&amp;".$key."=".urlencode($val);
 
 			# if (isset($posts))
 			#     $args.= "&amp;next_post=".$posts->next()->paginated[0]->id;
@@ -220,14 +217,17 @@
 			               implode('" type="text/javascript" charset="utf-8"></script>'."\n\t\t".'<script src="', $javascripts).
 			               '" type="text/javascript" charset="utf-8"></script>';
 
-			if (file_exists(THEMES_DIR."/".$this->theme."/javascripts/") or file_exists(THEMES_DIR."/".$this->theme."/js/")) {
-				if ($js = glob(THEMES_DIR."/".$this->theme."/{javascripts,js}/*.js", GLOB_BRACE))
-					foreach($js as $file)
-						$javascripts.= "\n\t\t".'<script src="'.$config->chyrp_url.'/includes/lib/gz.php?file='.preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file).'" type="text/javascript" charset="utf-8"></script>';
+			if (file_exists(THEME_DIR."/javascripts/") or file_exists(THEME_DIR."/js/")) {
+				$long  = (array) glob(THEME_DIR."/javascripts/*.js");
+				$short = (array) glob(THEME_DIR."/js/*.js");
 
-				if ($jsphp = glob(THEMES_DIR."/".$this->theme."/{javascripts,js}/*.js.php", GLOB_BRACE))
-					foreach($jsphp as $file)
-						$javascripts.= "\n\t\t".'<script src="'.$config->chyrp_url.preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file).'" type="text/javascript" charset="utf-8"></script>';
+				foreach(array_merge($long, $short) as $file)
+					$javascripts.= "\n\t\t".'<script src="'.$config->chyrp_url.'/includes/lib/gz.php?file='.preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file).'" type="text/javascript" charset="utf-8"></script>';
+
+				$long  = (array) glob(THEME_DIR."/javascripts/*.js.php");
+				$short = (array) glob(THEME_DIR."/js/*.js.php");
+				foreach(array_merge($long, $short) as $file)
+					$javascripts.= "\n\t\t".'<script src="'.$config->chyrp_url.preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file).'" type="text/javascript" charset="utf-8"></script>';
 			}
 
 			return $javascripts;
@@ -254,11 +254,13 @@
 			$route = Route::current();
 			$feeds = '<link rel="alternate" type="application/atom+xml" title="'.$config->name.' Feed" href="'.fallback($config->feed_url, url("feed/"), true).'" />'."\n";
 
-			foreach ($pluralizations["feathers"] as $normal => $plural) {
+			foreach ($pluralizations["feathers"] as $normal => $plural)
 				$feeds.= "\t\t".'<link rel="alternate" type="application/atom+xml" title="'.ucfirst($plural).' Feed" href="'.url($plural."/feed/".urlencode(ucfirst($plural))."/").'" />'."\n";
-			}
 
 			$feeds.= "\t\t".'<link rel="alternate" type="application/atom+xml" title="Current Page (if applicable)" href="'.$config->url.$request.$append.'" />';
+
+			$feeds.= "\n\t\t";
+
 			return $feeds;
 		}
 
@@ -313,12 +315,15 @@
 		public function load($file, $context = array()) {
 			if (is_array($file))
 				for ($i = 0; $i < count($file); $i++) {
-					$check = ($file[$i][0] == '/' or preg_match("/[a-zA-Z]:\\\/", $file[$i])) ? $file[$i] : $this->directory.$file[$i] ;
+					$check = ($file[$i][0] == '/' or preg_match("/[a-zA-Z]:\\\/", $file[$i])) ?
+					         $file[$i] :
+					         THEME_DIR."/".$file[$i] ;
+
 					if (file_exists($check.".twig") or ($i + 1) == count($file))
 						return $this->load($file[$i], $context);
 				}
 
-			$file = ($file[0] == "/" or preg_match("/[a-zA-Z]:\\\/", $file)) ? $file : $this->directory.$file ;
+			$file = ($file[0] == "/" or preg_match("/[a-zA-Z]:\\\/", $file)) ? $file : THEME_DIR."/".$file ;
 			if (!file_exists($file.".twig"))
 				error(__("Template Missing"), _f("Couldn't load template: <code>%s</code>", array($file.".twig")));
 
