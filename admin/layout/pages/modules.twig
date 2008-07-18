@@ -43,7 +43,7 @@
 								</p>
 								<ul class="dependencies_list"{% if not module.dependencies_needed %} style="display: none"{% endif %}>
 									{% for dependency in module.dependencies_needed %}
-									<li>$dependency</li>
+									<li class="$dependency">$dependency</li>
 									{% endfor %}
 								</ul>
 							</div>

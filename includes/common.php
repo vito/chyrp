@@ -39,15 +39,20 @@
 	} else
 		ob_start();
 
-	# Make sure E_STRICT is on so Chyrp remains errorless.
-	error_reporting(E_ALL | E_STRICT);
-
 	# Fallback all these definitions.
 	if (!defined('JAVASCRIPT')) define('JAVASCRIPT', false);
 	if (!defined('ADMIN'))      define('ADMIN', false);
 	if (!defined('AJAX'))       define('AJAX', false);
 	if (!defined('XML_RPC'))    define('XML_RPC', false);
 	if (!defined('TRACKBACK'))  define('TRACKBACK', false);
+
+	if (JAVASCRIPT) {
+		error_reporting(0);
+		header("Content-Type: application/x-javascript");
+		header("Cache-Control: no-cache, must-revalidate");
+		header("Expires: Mon, 03 Jun 1991 05:30:00 GMT");
+	} else
+		error_reporting(E_ALL | E_STRICT); # Make sure E_STRICT is on so Chyrp remains errorless.
 
 	if (!JAVASCRIPT and !XML_RPC)
 		header("Content-type: text/html; charset=UTF-8");

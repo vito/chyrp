@@ -1,21 +1,15 @@
 <?php
 	define('JAVASCRIPT', true);
 	require_once "common.php";
-	error_reporting(0);
-	header("Content-Type: application/x-javascript");
-	header("Cache-Control: no-cache, must-revalidate");
-	header("Expires: Mon, 03 Jun 1991 05:30:00 GMT");
-	$action = $_GET['action'];
-	$page = fallback($_GET['page'], 1, true);
 ?>
-<!-- --><script type="text/javascript"> (This is so TextMate gives me nice JS highlighting.)
+<!-- --><script>
 $(function(){
 	// Scan AJAX responses for errors.
-	$(document).ajaxComplete(function(imconfused, request){
+	$(document).ajaxComplete(function(event, request){
 		var response = request.responseText
 		if (isError(response))
 			alert(response.replace(/(HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW|<([^>]+)>\n?)/gm, ""))
-	})
+	})<?php echo "\n\n\n\n\n"; # Balance out the line numbers in this script and in the output to help debugging. ?>
 
 	$(".toggle_admin").click(function(){
 		if (!$("#admin_bar:visible, #controls:visible").size()) {
@@ -28,16 +22,22 @@ $(function(){
 		return false
 	})
 
-	prepare_ajax_links();
+	Post.prepare_links();
 
 <?php $trigger->call("javascript_domready"); ?>
 
 })
 
+var Route = {
+	action: "<?php echo $_GET['action']; ?>"
+}
+
 var Post = {
 	delete_animations: { height: "hide", opacity: "hide" },
 	delete_wrap: "<div></div>",
+	id: 0,
 	edit: function(id) {
+		Post.id = id
 		$("#post_"+id).loader()
 		$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "edit_post", id: id }, function(data) {
 			$("#post_"+id).loader(true).fadeOut("fast", function(){
@@ -56,48 +56,46 @@ var Post = {
 					})
 					$("#post_edit_form_"+id).ajaxForm({ beforeSubmit: function(){
 						$("#post_edit_form_"+id).loader()
-					}, success: function(response){
-						if (isError(response))
-							return $("#post_edit_form_"+id).loader(true)
-
-<?php if ($action != "drafts" and $action != "view"): ?>
-						if ($("#post_edit_form_"+id+" select#status").val() == "draft") {
-							$("#post_edit_form_"+id).loader(true).fadeOut("fast")
-							alert("<?php echo __("Post has been saved as a draft."); ?>")
-						} else {
-<?php elseif ($action == "drafts"): ?>
-						if ($("#post_edit_form_"+id+" select#status").val() != "draft") {
-							$("#post_edit_form_"+id).loader(true).fadeOut("fast")
-							alert("<?php echo __("Post has been published."); ?>")
-						} else {
-<?php endif; ?>
-							$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "view_post", context: "all", id: id, reason: "edited" }, function(data) {
-								$("#post_edit_form_"+id).loader(true).fadeOut("fast", function(){
-									$(this).replaceWith(data)
-									$("#post_"+id).hide().fadeIn("fast", function(){
-										prepare_ajax_links(id)
-									})
+					}, success: Post.updated })
+					$("#post_cancel_edit_"+id).click(function(){
+						$("#post_edit_form_"+id).loader()
+						$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "view_post", context: "all", id: id, reason: "cancelled" }, function(data) {
+							$("#post_edit_form_"+id).loader(true).fadeOut("fast", function(){
+								$(this).replaceWith(data)
+								$(this).hide().fadeIn("fast", function(){
+									Post.prepare_links(id)
 								})
 							})
-<?php if (($action != "drafts" and $action != "view") or $action == "drafts"): ?>
-						}
-<?php endif; ?>
-					}
-				})
-				$("#post_cancel_edit_"+id).click(function(){
-					$("#post_edit_form_"+id).loader()
-					$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "view_post", context: "all", id: id, reason: "cancelled" }, function(data) {
-						$("#post_edit_form_"+id).loader(true).fadeOut("fast", function(){
-							$(this).replaceWith(data)
-							$(this).hide().fadeIn("fast", function(){
-								prepare_ajax_links(id)
-							})
 						})
+						return false
 					})
-					return false
 				})
-			}) })
+			})
 		})
+	},
+	updated: function(response){
+		id = Post.id
+		if (isError(response))
+			return $("#post_edit_form_"+id).loader(true)
+
+		if (Route.action != "drafts" && Route.action != "view" && $("#post_edit_form_"+id+" select#status").val() == "draft") {
+			$("#post_edit_form_"+id).loader(true).fadeOut("fast", function(){
+				alert("<?php echo __("Post has been saved as a draft."); ?>")
+			})
+		} else if (Route.action == "drafts" && $("#post_edit_form_"+id+" select#status").val() != "draft") {
+			$("#post_edit_form_"+id).loader(true).fadeOut("fast", function(){
+				alert("<?php echo __("Post has been published."); ?>")
+			})
+		} else {
+			$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "view_post", context: "all", id: id, reason: "edited" }, function(data) {
+				$("#post_edit_form_"+id).loader(true).fadeOut("fast", function(){
+					$(this).replaceWith(data)
+					$("#post_"+id).hide().fadeIn("fast", function(){
+						Post.prepare_links(id)
+					})
+				})
+			})
+		}
 	},
 	destroy: function(id) {
 		$("#post_"+id).loader()
@@ -108,42 +106,44 @@ var Post = {
 			if (Post.delete_wrap != "")
 				$("#post_"+id).wrap(Post.delete_wrap).parent().animate(Post.delete_animations, function(){
 					$(this).remove()
+
+					if (Route.action == "view")
+						window.location = "<?php echo $config->url; ?>"
 				})
 			else
 				$("#post_"+id).animate(Post.delete_animations, function(){
 					$(this).remove()
+
+					if (Route.action == "view")
+						window.location = "<?php echo $config->url; ?>"
 				})
 		})
-<?php if ($_GET['action'] == "view"): ?>
-		window.location = "<?php echo $config->url; ?>"
-<?php endif; ?>
-	}
-}
+	},
+	prepare_links: function(id) {
+		if (id != null) {
+			$("#post_edit_"+id).click(function(){
+				Post.edit(id)
+				return false
+			})
+			$("#post_delete_"+id).click(function(){
+				if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
+				Post.destroy(id)
+				return false
+			})
+		} else {
+			$(".post_edit_link").click(function(){
+				var id = $(this).attr("id").replace(/post_edit_/, "")
+				Post.edit(id)
+				return false
+			})
 
-function prepare_ajax_links(id) {
-	if (id != null) {
-		$("#post_edit_"+id).click(function(){
-			Post.edit(id)
-			return false
-		})
-		$("#post_delete_"+id).click(function(){
-			if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
-			Post.destroy(id)
-			return false
-		})
-	} else {
-		$(".post_edit_link").click(function(){
-			var id = $(this).attr("id").replace(/post_edit_/, "")
-			Post.edit(id)
-			return false
-		})
-
-		$(".post_delete_link").click(function(){
-			if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
-			var id = $(this).attr("id").replace(/post_delete_/, "")
-			Post.destroy(id)
-			return false
-		})
+			$(".post_delete_link").click(function(){
+				if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
+				var id = $(this).attr("id").replace(/post_delete_/, "")
+				Post.destroy(id)
+				return false
+			})
+		}
 	}
 }
 
@@ -190,21 +190,34 @@ $.fn.loader = function(remove) {
 	return this
 }
 
+// Originally from http://livepipe.net/extra/cookie
 var Cookie = {
-	set: function(name, value, expires) {
-		var today = new Date()
-		today.setTime( today.getTime() )
+	set: function (name, value, days) {
+		if (days) {
+			var d = new Date();
+			d.setTime(d.getTime() + (days * 1000 * 60 * 60 * 24));
+			var expiry = "; expires=" + d.toGMTString();
+		} else
+			var expiry = "";
 
-		if (expires)
-			expires = expires * 1000 * 60 * 60 * 24
-
-		var expires_date = new Date(today.getTime() + (expires))
-
-		document.cookie = name+"="+escape(value)+
-		                  ((expires) ? ";expires="+expires_date.toGMTString() : "" )+";path=/"
+		document.cookie = name + "=" + value + expiry + "; path=/";
 	},
-	destroy: function(name) {
-		document.cookie = name+"=;path=/;expires=Thu, 01-Jan-1970 00:00:01 GMT"
+	get: function(name){
+		var nameEQ = name + "=";
+		var ca = document.cookie.split(';');
+		for (var i = 0; i < ca.length; i++) {
+			var c = ca[i];
+
+			while(c.charAt(0) == " ")
+				c = c.substring(1,c.length);
+
+			if(c.indexOf(nameEQ) == 0)
+				return c.substring(nameEQ.length,c.length);
+		}
+		return null;
+	},
+	destroy: function(name){
+		Cookie.set(name, "", -1);
 	}
 }
 
