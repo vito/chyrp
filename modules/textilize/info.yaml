@@ -7,5 +7,4 @@ author:
   url: http://i.am.toogeneric.com/
 conflicts:
   - markdown
-  - wpformatting
   - smartypants

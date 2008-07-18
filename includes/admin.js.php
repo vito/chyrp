@@ -7,6 +7,7 @@
 	header("Expires: Mon, 03 Jun 1991 05:30:00 GMT");
 	$page = fallback($_GET['page'], 1, true);
 	$more_options_string = (empty($_COOKIE['show_more_options'])) ? __("More Options &raquo;") : __("&laquo; Fewer Options") ;
+	echo "\n\n\n\n\n\n\n\n\n\n\n"; # Balance out the line numbers in this script and in the output to help debugging.
 ?>
 <!-- --><script>
 $(function(){
@@ -50,10 +51,8 @@ $(function(){
 	$.ifixpng("<?php echo $config->chyrp_url; ?>/admin/images/icons/pixel.gif")
 	$("img[@src$=.png]").ifixpng()
 
-<?php if (match("/(edit|write)_/", $_GET['action'])): ?>
-	prepare_write_bling()
+<?php if (match("/(edit|write)_/", $_GET['action'])): ?>	prepare_write_bling()<?php endif; ?>
 
-<?php endif; ?>
 	// "Help" links should open in popup windows.
 	$(".help").click(function(){
 		window.open($(this).attr("href"), "help", "status=0, height=350, width=300")
@@ -80,13 +79,11 @@ $(function(){
 	// Extension enabling/disabling (drag'n'drop)
 	extend_draggables()
 
-<?php if ($_GET['action'] == "modules" or $_GET['action'] == "feathers"): ?>
-	draw_conflicts()
+<?php if ($_GET['action'] == "modules" or $_GET['action'] == "feathers"): ?>	draw_conflicts()
 
 	$(window).resize(function(){
 		draw_conflicts()
-	})
-<?php endif; ?>
+	})<?php endif; ?>
 
 	if ($.browser.safari)
 		$("code").each(function(){
@@ -94,9 +91,7 @@ $(function(){
 				fontFamily: "Monaco, monospace",
 				fontSize: "9px"
 			})
-		})
-
-<?php $trigger->call("admin_javascript_domready"); ?>
+		}) <?php echo "\n\n\n\n"; $trigger->call("admin_javascript_domready"); ?>
 })
 
 var Post = {
@@ -173,13 +168,13 @@ function prepare_previewer() {
 
 function extend_draggables() {
 	$(".enable h2, .disable h2").append(" <span class=\"sub\"><?php echo __("(drag)"); ?></span>")
-	$(".disable ul li, .enable ul li").draggable({
+	$(".disable > ul > li:not(.missing_dependency), .enable > ul > li:not(.missing_dependency)").draggable({
 		zIndex: 100,
 		cancel: "a",
 		revert: true
 	})
 	$(".enable ul, .disable ul").droppable({
-		accept: "ul.extend li",
+		accept: "ul.extend > li:not(.missing_dependency)",
 		tolerance: "pointer",
 		activeClass: "active",
 		hoverClass: "hover",
@@ -190,6 +185,7 @@ function extend_draggables() {
 			var previous = $(ui.draggable).parent().parent().attr("class").split(" ")[0]
 			var action = classes[0]
 			var type = classes[1]
+			var extension_classes = $(ui.draggable).attr("class").split(" ")
 			var extension = $(ui.draggable).attr("class").split(" ")[0]
 
 			if (previous == action)
@@ -202,6 +198,39 @@ function extend_draggables() {
 				$.ajax({ type: "post", dataType: "json", url: "<?php echo $config->chyrp_url; ?>/includes/ajax.php", data: { action: action + "_" + type, extension: extension, confirm: confirmed }, beforeSend: function(){
 					box.loader()
 				}, success: function(json){
+					if (action == "enable") {
+						var dependees = extension_classes.find(/depended_by_(.+)/)
+						for (i = 0; i < dependees.length; i++) {
+							var module_id = dependees[i].replace("depended_by", "module")
+
+							// The module depending on this one no longer "needs" it
+							$("#"+module_id).removeClass("needs_"+extension)
+
+							var depends_classes = $("#"+module_id).attr("class").split(" ")
+							var depends_needs = depends_classes.find(/needs_(.+)/)
+
+							if (depends_needs.length == 0)
+								$("#"+module_id).find(".dependencies_message, .dependencies_list, .description").hide().end()
+								                .draggable({
+								                    zIndex: 100,
+								                    cancel: "a",
+								                    revert: true
+								                })
+								                .css("cursor", "move")
+						}
+					}
+
+					$("ul.extend").height("auto")
+					$("ul.extend").each(function(){
+						if ($(".enable ul.extend").height() > $(this).height())
+							$(this).height($(".enable ul.extend").height())
+
+						if ($(".disable ul.extend").height() > $(this).height())
+							$(this).height($(".disable ul.extend").height())
+
+						draw_conflicts()
+					})
+
 					box.loader(true)
 					$(json.notifications).each(function(){
 						if (this == "") return
@@ -212,14 +241,7 @@ function extend_draggables() {
 
 			$(ui.draggable).css({ left: 0, right: 0, top: 0, bottom: 0 }).appendTo(this)
 
-			$("ul.extend").height("auto")
-			$("ul.extend").each(function(){
-				if ($(".enable ul.extend").height() > $(this).height())
-					$(this).height($(".enable ul.extend").height())
-				if ($(".disable ul.extend").height() > $(this).height())
-					$(this).height($(".disable ul.extend").height())
-				draw_conflicts()
-			})
+			return true
 		}
 	})
 	$(".info_link").click(function(){
@@ -235,8 +257,8 @@ function extend_draggables() {
 		})
 		return false
 	})
-	$("ul.extend li").css("cursor", "move")
-	$("ul.extend li .description").css("display", "none")
+	$("ul.extend > li:not(.missing_dependency)").css("cursor", "move")
+	$("ul.extend li .description:not(.expanded)").css("display", "none")
 	$("ul.extend").each(function(){
 		if ($(".enable ul.extend").height() > $(this).height())
 			$(this).height($(".enable ul.extend").height())
@@ -293,16 +315,51 @@ function reorder_pages() {
 	$("form#reorder_pages .buttons").remove()
 }
 
-function remove_from_array(value, array) {
-	for (i = 0; i < array.length; i++)
-		if (array[i] == value)
-			array.splice(i, 1)
-	return array
+Array.prototype.indicesOf = function(value) {
+	var results = []
+
+	for (var j = 0; j < this.length; j++)
+		if (typeof value != "string") {
+			if (value.test(this[j]))
+				results.push(j)
+		} else if (this[j] == value)
+			results.push(j)
+
+	return results
+}
+
+Array.prototype.find = function(match) {
+	var matches = []
+
+	for (var f = 0; f < this.length; f++)
+		if (match.test(this[f]))
+			matches.push(this[f])
+
+	return matches
+}
+
+Array.prototype.remove = function(value) {
+	if (typeof value == "object" && value.length > 1) {
+		for (var r = 0; r < value.length; r++)
+			this.remove(value[r])
+
+		return
+	}
+
+	var indices = this.indicesOf(value)
+
+	if (indices.length == 0)
+		return
+
+	for (var h = 0; h < indices.length; h++)
+		this.splice(indices[h] - h, 1)
+
+	return this
 }
 
 function draw_conflicts() {
 	if (!$(".extend li.conflict").size() && !($.browser.safari || $.browser.opera || ($.browser.mozilla && $.browser.version >= 1.9)))
-		return
+		return false
 
 	$("#canvas").remove()
 
@@ -324,25 +381,157 @@ function draw_conflicts() {
 	}).attr({ width: $(document).width(), height: $(document).height() })
 
 	var canvas = document.getElementById("canvas").getContext("2d")
-	var displayed = []
+	var conflict_displayed = []
 
 	$(".extend li.conflict").each(function(){
 		var classes = $(this).attr("class").split(" ")
 		classes.shift() // Remove the module's safename class
 
-		// Remove the "conflict" class
-		remove_from_array("conflict", classes);
-		remove_from_array("ui-draggable", classes);
-		remove_from_array("ui-draggable-dragging", classes);
+		classes.remove(["conflict",
+		                "depends",
+		                "missing_dependency",
+		                /depended_by_(.+)/,
+		                /needs_(.+)/,
+		                /depends_(.+)/,
+		                /ui-draggable(-dragging)?/])
 
 		for (i = 0; i < classes.length; i++) {
 			var conflict = classes[i].replace("conflict_", "module_")
 
-			if (displayed[$(this).attr("id")+" :: "+conflict])
+			if (conflict_displayed[$(this).attr("id")+" :: "+conflict])
 				continue;
 
-			canvas.strokeStyle = "#d12f19"
+			canvas.strokeStyle = "#ef4646"
 			canvas.fillStyle = "#fbe3e4"
+			canvas.lineWidth = 3
+
+			var this_status = $(this).parent().parent().attr("class").split(" ")[0] + "d"
+			var conflict_status = $("#"+conflict).parent().parent().attr("class").split(" ")[0] + "d"
+
+			if (conflict_status != this_status) {
+				var line_from_x = (conflict_status == "disabled") ? $("#"+conflict).offset().left : $("#"+conflict).offset().left + $("#"+conflict).outerWidth()
+				var line_from_y = $("#"+conflict).offset().top + 12
+				var line_to_x = (conflict_status == "enabled") ? $(this).offset().left : $(this).offset().left + $(this).outerWidth()
+				var line_to_y   = $(this).offset().top + 12
+
+				// Line
+				canvas.moveTo(line_from_x, line_from_y)
+				canvas.lineTo(line_to_x, line_to_y)
+				canvas.stroke()
+
+				// Beginning circle
+				canvas.beginPath()
+				if (conflict_status == "disabled")
+					canvas.arc(line_from_x, line_from_y, 5, 1.35, -1.35, false)
+				else
+					canvas.arc(line_from_x, line_from_y, 5, -1.35, 1.35, false)
+				canvas.fill()
+				canvas.stroke()
+
+				// Ending circle
+				canvas.beginPath()
+				if (conflict_status == "disabled")
+					canvas.arc(line_to_x, line_to_y, 5, -1.75, 1.75, false)
+				else
+					canvas.arc(line_to_x, line_to_y, 5, 1.75, -1.75, false)
+				canvas.fill()
+				canvas.stroke()
+			} else if (conflict_status == "disabled") {
+				var line_from_x = $("#"+conflict).offset().left
+				var line_from_y = $("#"+conflict).offset().top + 12
+				var line_to_x   = $(this).offset().left
+				var line_to_y   = $(this).offset().top + 12
+				var median = line_from_y + ((line_to_y - line_from_y) / 2)
+				var curve = line_from_x - 25
+
+				// Line
+				canvas.beginPath();
+				canvas.moveTo(line_from_x, line_from_y)
+				canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y);
+				canvas.stroke();
+
+				// Beginning circle
+				canvas.beginPath()
+				canvas.arc(line_from_x, line_from_y, 5, 1.35, -1.35, false)
+				canvas.fill()
+				canvas.stroke()
+
+				// Ending circle
+				canvas.beginPath()
+				canvas.arc(line_to_x, line_to_y, 5, 1.35, -1.35, false)
+				canvas.fill()
+				canvas.stroke()
+			} else if (conflict_status == "enabled") {
+				var line_from_x = $("#"+conflict).offset().left + $("#"+conflict).outerWidth()
+				var line_from_y = $("#"+conflict).offset().top + 12
+				var line_to_x   = $(this).offset().left + $(this).outerWidth()
+				var line_to_y   = $(this).offset().top + 12
+				var median = line_from_y + ((line_to_y - line_from_y) / 2)
+				var curve = line_from_x + 25
+
+				// Line
+				canvas.beginPath();
+				canvas.moveTo(line_from_x, line_from_y)
+				canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y);
+				canvas.stroke();
+
+				// Beginning circle
+				canvas.beginPath()
+				canvas.arc(line_from_x, line_from_y, 5, -1.75, 1.75, false)
+				canvas.fill()
+				canvas.stroke()
+
+				// Ending circle
+				canvas.beginPath()
+				canvas.arc(line_to_x, line_to_y, 5, -1.75, 1.75, false)
+				canvas.fill()
+				canvas.stroke()
+			}
+
+			conflict_displayed[conflict+" :: "+$(this).attr("id")] = true
+		}
+	})
+
+	return draw_dependencies()
+}
+
+function draw_dependencies() {
+	if (!$(".extend li.depends").size() && !($.browser.safari || $.browser.opera || ($.browser.mozilla && $.browser.version >= 1.9)))
+		return false
+
+	$("#depends_canvas").remove()
+
+	$(document.createElement("canvas")).attr("id", "depends_canvas").prependTo("body")
+	$("#depends_canvas").css({
+		position: "absolute",
+		top: 0,
+		bottom: 0,
+		zIndex: 1
+	}).attr({ width: $(document).width(), height: $(document).height() })
+
+	var canvas = document.getElementById("depends_canvas").getContext("2d")
+	var dependency_displayed = []
+
+	$(".extend li.depends").each(function(){
+		var classes = $(this).attr("class").split(" ")
+		classes.shift() // Remove the module's safename class
+
+		classes.remove(["conflict",
+		                "depends",
+		                "missing_dependency",
+		                /depended_by_(.+)/,
+		                /needs_(.+)/,
+		                /conflict_(.+)/,
+		                /ui-draggable(-dragging)?/])
+
+		for (i = 0; i < classes.length; i++) {
+			var conflict = classes[i].replace("depends_", "module_")
+
+			if (dependency_displayed[$(this).attr("id")+" :: "+conflict])
+				continue;
+
+			canvas.strokeStyle = "#0096ff"
+			canvas.fillStyle = "#e4e3fb"
 			canvas.lineWidth = 3
 
 			var this_status = $(this).parent().parent().attr("class").split(" ")[0] + "d"
@@ -429,7 +618,7 @@ function draw_conflicts() {
 				canvas.stroke()
 			}
 
-			displayed[conflict+" :: "+$(this).attr("id")] = true
+			dependency_displayed[conflict+" :: "+$(this).attr("id")] = true
 		}
 	})
 

@@ -3,7 +3,10 @@
 
 	require_once "../includes/common.php";
 
-	$action = ($_GET['action'] == "index" or !isset($_GET['action'])) ? $admin->determine_action() : $_GET['action'];
+	$action =& $_GET['action'];
+
+	if ($action == "index" or !isset($_GET['action']))
+		$action = $admin->determine_action();
 
 	$admin->handle_redirects($action);
 

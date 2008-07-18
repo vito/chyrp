@@ -1485,10 +1485,10 @@
 
 			$this->context["enabled_modules"] = $this->context["disabled_modules"] = array();
 
-			$issues = array();
-
 			if (!$open = @opendir(MODULES_DIR))
 				return Flash::warning(__("Could not read modules directory."));
+
+			$classes = array();
 
 			while (($folder = readdir($open)) !== false) {
 				if (!file_exists(MODULES_DIR."/".$folder."/".$folder.".php") or !file_exists(MODULES_DIR."/".$folder."/info.yaml")) continue;
@@ -1496,16 +1496,44 @@
 				if (file_exists(MODULES_DIR."/".$folder."/locale/".$config->locale.".mo"))
 					load_translator($folder, MODULES_DIR."/".$folder."/locale/".$config->locale.".mo");
 
+				if (!isset($classes[$folder]))
+					$classes[$folder] = array($folder);
+				else
+					array_unshift($classes[$folder], $folder);
+
 				$info = Horde_Yaml::loadFile(MODULES_DIR."/".$folder."/info.yaml");
 
 				$info["conflicts_true"] = array();
+				$info["depends_true"] = array();
 
-				if (!empty($info["conflicts"]))
+				if (!empty($info["conflicts"])) {
+					$classes[$folder][] = "conflict";
+
 					foreach ($info["conflicts"] as $conflict)
-						if (file_exists(MODULES_DIR."/".$conflict."/".$conflict.".php")) {
-							$issues[$folder] = true;
-							$info["conflicts_true"][] = $conflict;
+						if (file_exists(MODULES_DIR."/".$conflict."/".$conflict.".php"))
+							$classes[$folder][] = "conflict_".$conflict;
+				}
+
+				$dependencies_needed = array();
+				if (!empty($info["depends"])) {
+					$classes[$folder][] = "depends";
+
+					foreach ($info["depends"] as $dependency) {
+						if (!module_enabled($dependency)) {
+							if (!in_array("missing_dependency", $classes[$folder]))
+								$classes[$folder][] = "missing_dependency";
+
+							$classes[$folder][] = "needs_".$dependency;
+
+							$dependencies_needed[] = $dependency;
 						}
+
+						$classes[$folder][] = "depends_".$dependency;
+
+						fallback($classes[$dependency], array());
+						$classes[$dependency][] = "depended_by_".$folder;
+					}
+				}
 
 				fallback($info["name"], $folder);
 				fallback($info["version"], "0");
@@ -1515,12 +1543,13 @@
 				fallback($info["help"]);
 
 				$info["description"] = __($info["description"], $folder);
-				$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.fix('\\1').'</code>'", $info["description"]);
-				$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.fix('\\1').'</pre>'", $info["description"]);
+				$info["description"] = preg_replace(array("/<code>(.+)<\/code>/se", "/<pre>(.+)<\/pre>/se"),
+				                                    array("'<code>'.fix('\\1').'</code>'", "'<pre>'.fix('\\1').'</pre>'"),
+				                                    $info["description"]);
 
 				$info["author"]["link"] = (!empty($info["author"]["url"])) ?
-				                              '<a href="'.fix($info["author"]["url"]).'">'.fix($info["author"]["name"]).'</a>' :
-				                              $info["author"]["name"] ;
+				                          '<a href="'.fix($info["author"]["url"]).'">'.fix($info["author"]["name"]).'</a>' :
+				                          $info["author"]["name"] ;
 
 				$category = (module_enabled($folder)) ? "enabled_modules" : "disabled_modules" ;
 				$this->context[$category][$folder] = array("name" => $info["name"],
@@ -1529,10 +1558,15 @@
 				                                           "description" => $info["description"],
 				                                           "author" => $info["author"],
 				                                           "help" => $info["help"],
-				                                           "conflict" => isset($issues[$folder]),
-				                                           "conflicts" => $info["conflicts_true"],
-				                                           "conflicts_class" => (isset($issues[$folder])) ? " conflict conflict_".join(" conflict_", $info["conflicts_true"]) : "");
+				                                           "classes" => $classes[$folder],
+				                                           "dependencies_needed" => $dependencies_needed);
 			}
+
+			foreach ($this->context["enabled_modules"] as $module => &$attrs)
+				$attrs["classes"] = $classes[$module];
+
+			foreach ($this->context["disabled_modules"] as $module => &$attrs)
+				$attrs["classes"] = $classes[$module];
 		}
 
 		/**
