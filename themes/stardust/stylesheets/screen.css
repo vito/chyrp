@@ -345,6 +345,10 @@ ol.comments li cite a:link,
 ol.comments li cite a:visited {
 	color: #bbb;
 }
+ol.comments li cite a.permalink:link,
+ol.comments li cite a.permalink:visited {
+	color: #666;
+}
 ol.comments ul {
 	padding: 0 0 1em;
 }
