@@ -54,7 +54,7 @@
 					break;
 				case "mysqli":
 					foreach ($params as $name => $val)
-						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", "'".$this->db->escape_string($val)."'\\1", $query);
+						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", "'".$this->escape($val)."'\\1", $query);
 
 					try {
 						if (!$this->query = $this->db->query($query))
@@ -65,7 +65,7 @@
 					break;
 				case "mysql":
 					foreach ($params as $name => $val)
-						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", "'".mysql_real_escape_string($val)."'\\1", $query);
+						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", "'".$this->escape($val)."'\\1", $query);
 
 					try {
 						if (!$this->query = @mysql_query($query))
@@ -153,6 +153,31 @@
 			}
 		}
 
+		/**
+		 * Function: escape
+		 * Escapes a string, escaping things like $1 and C:\foo\bar so that they don't get borked by the preg_replace.
+		 * This also handles calling the SQL connection method's "escape_string" functions.
+		 */
+		public function escape($string) {
+			switch(SQL::current()->method()) {
+				case "mysqli":
+					$string = $this->db->escape_string($string);
+					break;
+				case "mysql":
+					$string = mysql_real_escape_string($string);
+					break;
+			}
+
+			$string = str_replace('\\', '\\\\', $string);
+			$string = str_replace('$', '\$', $string);
+
+			return $string;
+		}
+
+		/**
+		 * Function: handle
+		 * Handles exceptions thrown by failed queries.
+		 */
 		public function handle($error) {
 			SQL::current()->error = $error;
 
