@@ -33,6 +33,39 @@
 		}
 
 		/**
+		 * Function: bookmarklet
+		 * Post writing, from the bookmarklet.
+		 */
+		public function bookmarklet() {
+			$visitor = Visitor::current();
+			if (!$visitor->group()->can("add_post", "add_draft"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
+
+			$config = Config::current();
+
+			if (empty($config->enabled_feathers))
+				error(__("No Feathers"), __("Please install a feather or two in order to add a post."));
+
+			fallback($_GET['feather'], $config->enabled_feathers[0]);
+
+			global $feathers;
+
+			$this->context["done"] = isset($_GET['done']);
+
+			$this->context["feathers"]         = $feathers;
+			$this->context["selected_feather"] = $feathers[$_GET['feather']];
+
+			if (!$this->context["done"]) {
+				$this->context["args"] = array("url" => urldecode(stripslashes($_GET['url'])),
+				                               "title" => urldecode(stripslashes($_GET['title'])),
+				                               "selection" => urldecode(stripslashes($_GET['selection'])));
+
+				$this->context["args"]["page_url"]   =& $this->context["args"]["url"];
+				$this->context["args"]["page_title"] =& $this->context["args"]["title"];
+			}
+		}
+
+		/**
 		 * Function: add_post
 		 * Adds a post when the form is submitted.
 		 */
@@ -48,7 +81,10 @@
 
 			$post = $feathers[$_POST['feather']]->submit();
 
-			Flash::notice(__("Post created!"), $post->redirect);
+			if (!isset($_POST['bookmarklet']))
+				Flash::notice(__("Post created!"), $post->redirect);
+			else
+				redirect($post->redirect);
 		}
 
 		/**

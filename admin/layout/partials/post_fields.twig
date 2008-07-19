@@ -1,4 +1,4 @@
-					${ trigger.call("before_post_fields") }
+					${ trigger.call("before_post_fields", feather) }
 					{% for field in feather.fields %}
 					<p>
 						<label for="$field.attr">
@@ -23,10 +23,14 @@
 						{% endif %}
 					</p>
 					{% endfor %}
-					${ trigger.call("after_post_fields") }
+					${ trigger.call("after_post_fields", feather) }
 
 					<div class="buttons">
-{% if route.action == "write_post" %}
+{% if route.action == "edit_post" %}
+						<button type="submit" class="yay right" accesskey="s" id="save">
+							<img src="images/icons/success.png" alt="success" />${ "Save" | translate }
+						</button>
+{% else %}
 						{% if visitor.group.can("add_post") %}
 						<button type="submit" class="yay right" accesskey="s" id="publish">
 							<img src="images/icons/success.png" alt="success" />${ "Publish" | translate }
@@ -34,10 +38,6 @@
 						{% endif %}
 						<button type="submit" class="right" accesskey="s" id="save" name="draft" value="true">
 							<img src="images/icons/save.png" alt="success" />${ "Save" | translate }
-						</button>
-{% else %}
-						<button type="submit" class="yay right" accesskey="s" id="save">
-							<img src="images/icons/success.png" alt="success" />${ "Save" | translate }
 						</button>
 {% endif %}
 					</div>
@@ -83,10 +83,10 @@
 
 							<input class="text" type="text" name="trackbacks" value="" id="trackbacks" />
 						</p>
-{% if route.action == "write_post" %}
-${ trigger.call("new_post_options") }
-{% else %}
+{% if route.action == "edit_post" %}
 ${ trigger.call("edit_post_options", post) }
+{% else %}
+${ trigger.call("new_post_options") }
 {% endif %}
 						<div class="clear"></div>
 					</div>
