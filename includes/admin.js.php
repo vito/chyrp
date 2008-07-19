@@ -41,9 +41,6 @@ $(function(){
 	if (/(edit|write)_/.test(Route.action))
 		Write.init()
 
-	if (Route.action == "manage_posts")
-		Manage.posts.init()
-
 	if (Route.action == "manage_pages")
 		Manage.pages.init()
 
@@ -123,17 +120,6 @@ Array.prototype.remove = function(value) {
 
 var Route = {
 	action: "<?php echo $_GET['action']; ?>"
-}
-
-var Post = {
-	destroy: function(id) {
-		$("#post_"+id).loader()
-		$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "delete_post", id: id }, function(response){
-			$("#post_"+id).loader(true)
-			if (!isError(response))
-				$("#post_"+id).animate({ height: "hide", opacity: "hide" }).remove()
-		})
-	}
 }
 
 var Write = {
@@ -218,19 +204,6 @@ var Write = {
 }
 
 var Manage = {
-	posts: {
-		init: function(){
-			Manage.posts.prepare_links()
-		},
-		prepare_links: function(){
-			$(".post_delete_link").click(function(){
-				if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
-				var id = $(this).attr("id").replace(/post_delete_/, "")
-				Post.destroy(id)
-				return false
-			})
-		}
-	},
 	pages: {
 		init: function(){
 			Manage.pages.prepare_reordering()
