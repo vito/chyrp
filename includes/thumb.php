@@ -29,6 +29,19 @@
 	$new_width = (int) fallback($_GET["max_width"], 0);
 	$new_height = (int) fallback($_GET["max_height"], 0);
 
+	# Determine the final scale of the thumbnail.
+	if ($new_width and !$new_height)
+		$new_height = ($new_width / $original_width) * $original_height;
+	elseif (!$new_width and $new_height)
+		$new_width = ($new_height / $original_height) * $original_width;
+	elseif ($new_width and $new_height) {
+		if ($original_width > $original_height)
+			$new_height = ($new_width / $original_width) * $original_height;
+		else
+			$new_width = ($new_height / $original_height) * $original_width;
+	} else
+		display_error("Maxium width and height must be greater than zero.");
+
 	# If it's already below the maximum, just redirect to it.
 	if ($original_width <= $new_width and $original_height <= $new_height)
 		header("Location: ".$filename);
@@ -82,19 +95,6 @@
 
 	if (!$image)
 		display_error("Image could not be created.");
-
-	# Determine the final scale of the thumbnail.
-	if ($new_width and !$new_height)
-		$new_height = ($new_width / $original_width) * $original_height;
-	elseif (!$new_width and $new_height)
-		$new_width = ($new_height / $original_height) * $original_width;
-	elseif ($new_width and $new_height) {
-		if ($original_width > $original_height)
-			$new_height = ($new_width / $original_width) * $original_height;
-		else
-			$new_width = ($new_height / $original_height) * $original_width;
-	} else
-		display_error("Maxium width and height must be greater than zero.");
 
 	# Decide what functions to use.
 	$create = ($gd_version == 2) ? "imagecreatetruecolor" : "imagecreate" ;
