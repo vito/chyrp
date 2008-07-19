@@ -27,7 +27,8 @@
 				background: #e8e8e8;
 				margin: 0;
 				padding: 1.25em;
-				overflow-x: auto;
+				overflow-y: auto;
+				overflow-x: hidden;
 			}
 			a:link, a:visited {
 				text-decoration: none;
@@ -141,7 +142,7 @@
 				$$("input.text").each(function(){
 					$$(this).css({
 						minWidth: $$(this).outerWidth(),
-						maxWidth: "98%"
+						maxWidth: $$(this).parent().outerWidth() - 8
 					}).Autoexpand()
 				})
 				$$(".navigation li").css("float", "left")
@@ -187,13 +188,13 @@
 							{% endif %}
 						</label>
 						{% if field.type == "text" or field.type == "file" %}
-						<input class="$field.type{% if field.classes %} ${ field.classes | join(" ") }{% endif %}" type="$field.type" name="$field.attr" value="{% if not field.no_value %}${ args[field.bookmarklet] | escape }{% endif %}" id="$field.attr" />
+						<input class="$field.type{% if field.classes %} ${ field.classes | join(" ") }{% endif %}" type="$field.type" name="$field.attr" value="{% if not field.no_value %}${ field.value | fallback(args[field.bookmarklet] | escape) }{% endif %}" id="$field.attr" />
 						{% elseif field.type == "text_block" %}
-						<textarea class="wide{% if field.classes %} ${ field.classes | join(" ") }{% endif %}" rows="${ field.rows | fallback(10) }" name="$field.attr" id="$field.attr" cols="50">{% if not field.no_value %}${ args[field.bookmarklet] | escape }{% endif %}</textarea>
+						<textarea class="wide{% if field.classes %} ${ field.classes | join(" ") }{% endif %}" rows="${ field.rows | fallback(10) }" name="$field.attr" id="$field.attr" cols="50">{% if not field.no_value %}${ field.value | fallback(args[field.bookmarklet] | escape) }{% endif %}</textarea>
 						{% elseif field.type == "select" %}
 						<select name="$field.attr" id="$field.attr"{% if field.classes %} class="${ field.classes | join(" ") }"{% endif %}>
 							{% for value, name in field.options | items %}
-							<option value="${ value | escape }"{% if not field.no_value %}${ value | option_selected(args[field.bookmarklet]) }{% endif %}>${ name | escape }</option>
+							<option value="${ value | escape }"{% if not field.no_value %}${ value | option_selected(field.value | fallback(args[field.bookmarklet] | escape)) }{% endif %}>${ name | escape }</option>
 							{% endfor %}
 						</select>
 						{% endif %}

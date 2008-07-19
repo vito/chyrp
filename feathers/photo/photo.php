@@ -1,6 +1,6 @@
 <?php
 	class Photo extends Feathers implements Feather {
-		public function __construct() {
+		public function __init() {
 			$this->setField(array("attr" => "photo",
 			                      "type" => "file",
 			                      "label" => __("Photo", "photo")));
@@ -23,6 +23,20 @@
 			$this->respondTo("edit_post_options", "alt_text_field");
 			$this->respondTo("admin_write_post", "swfupload");
 			$this->respondTo("admin_edit_post", "swfupload");
+
+			if (isset($_GET['url']) and
+			    preg_match("/http:\/\/(www\.)?flickr\.com\/photos\/([^\/]+)\/([0-9]+)/", $_GET['url'])) {
+				$this->bookmarkletSelected(true);
+
+				$page = get_remote($_GET['url']);
+				preg_match("/class=\"photoImgDiv\">\n<img src=\"([^\?\"]+)/", $page, $image);
+
+				$this->setField(array("attr" => "from_url",
+				                      "type" => "text",
+				                      "label" => __("From URL?", "photo"),
+				                      "optional" => true,
+				                      "value" => $image[1]));
+			}
 		}
 		public function swfupload($post = null) {
 			if (isset($post) and $post->feather != "photo" or
