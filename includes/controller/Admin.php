@@ -4,11 +4,13 @@
 	 * The logic behind the Admin area.
 	 */
 	class AdminController {
-		/**
-		 * Variable: $context
-		 * Contains the context for various admin pages, to be passed to the Twig templates.
-		 */
+		# Array: $context
+		# Contains the context for various admin pages, to be passed to the Twig templates.
 		public $context = array();
+
+		# String: $selected_bookmarklet
+		# Holds the name of the Feather to be selected when they open the bookmarklet.
+		public $selected_bookmarklet;
 
 		/**
 		 * Function: write
@@ -46,14 +48,17 @@
 			if (empty($config->enabled_feathers))
 				error(__("No Feathers"), __("Please install a feather or two in order to add a post."));
 
-			fallback($_GET['feather'], $config->enabled_feathers[0]);
+			if (!isset($this->selected_bookmarklet))
+				fallback($feather, $config->enabled_feathers[0]);
+			else
+				$feather = $this->selected_bookmarklet;
 
 			global $feathers;
 
 			$this->context["done"] = isset($_GET['done']);
 
 			$this->context["feathers"]         = $feathers;
-			$this->context["selected_feather"] = $feathers[$_GET['feather']];
+			$this->context["selected_feather"] = $feathers[$feather];
 
 			if (!$this->context["done"]) {
 				$this->context["args"] = array("url" => urldecode(stripslashes($_GET['url'])),

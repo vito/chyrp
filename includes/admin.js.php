@@ -354,7 +354,7 @@ var Extend = {
 			check: Extend.Drop.extension.name,
 			type: Extend.Drop.extension.type
 		}, function(data){
-			if (data != "" && Extend.drop.action == "disable")
+			if (data != "" && Extend.Drop.action == "disable")
 				Extend.Drop.confirmed = (confirm(data)) ? 1 : 0
 
 			$.ajax({
@@ -619,7 +619,7 @@ var Extend = {
 					var height = line_to_y - line_from_y
 					var width = line_to_x - line_from_x
 
-					if (height == 0)
+					if (height <= 45)
 						gradients[i] = canvas.createLinearGradient(line_from_x, 0, line_from_x + width, 0)
 					else
 						gradients[i] = canvas.createLinearGradient(0, line_from_y, 0, line_from_y + height)

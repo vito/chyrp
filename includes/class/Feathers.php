@@ -58,4 +58,14 @@
 
 			$this->fields[$options["attr"]] = $options;
 		}
+
+		/**
+		 * Function: bookmarkletSelected
+		 * If $boolean is true, the Feather that this function is called from will be selected when they open the Bookmarklet.
+		 */
+		protected function bookmarkletSelected($boolean) {
+			global $admin;
+			if ($boolean)
+				$admin->selected_bookmarklet = $this->safename;
+		}
 	}

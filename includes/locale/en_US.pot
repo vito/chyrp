@@ -1,22 +1,23 @@
-# Chyrp Translation File.
-# Copyright (C) 2007 Alex Suraci
-# This file is distributed under the same license as the Chyrp package.
-# Alex Suraci <suracil.icio.us@gmail.com>, 2007.
+# Chyrp v2.0 Beta 5 Translation File.
+# Copyright (C) YEAR Alex Suraci
+# This file is distributed under the same license as the Chyrp v2.0 Beta 5 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Chyrp v2.0 Beta 3\n"
+"Project-Id-Version: Chyrp v2.0 Beta 5\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-07-15 19:33-0500\n"
-"Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
-"Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
+"POT-Creation-Date: 2008-07-19 19:21+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
+"Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: upgrade.php:774
+#: upgrade.php:653
 msgid "If the admin area looks weird, try clearing your cache."
 msgstr ""
 
@@ -24,21 +25,21 @@ msgstr ""
 msgid "Add Posts"
 msgstr ""
 
-#: includes/controller/Admin.php:587
-#: includes/controller/Admin.php:599
+#: includes/controller/Admin.php:635
+#: includes/controller/Admin.php:647
 msgid "You do not have sufficient privileges to edit groups."
 msgstr ""
 
-#: includes/controller/Main.php:141
+#: includes/controller/Main.php:147
 msgid "Please specify a theme to preview."
 msgstr ""
 
-#: admin/layout/pages/content_settings.twig:36
+#: admin/layout/pages/content_settings.twig:43
 msgid "Send Pingbacks"
 msgstr ""
 
-#: includes/controller/Admin.php:413
-#: includes/controller/Admin.php:427
+#: includes/controller/Admin.php:454
+#: includes/controller/Admin.php:468
 msgid "An ID is required to edit a user."
 msgstr ""
 
@@ -50,11 +51,11 @@ msgstr ""
 msgid "Information"
 msgstr ""
 
-#: upgrade.php:789
+#: upgrade.php:668
 msgid "Upgrade me!"
 msgstr ""
 
-#: upgrade.php:73
+#: upgrade.php:92
 #, php-format
 msgid "Setting %s to %s..."
 msgstr ""
@@ -63,7 +64,7 @@ msgstr ""
 msgid "(ex. 12)"
 msgstr ""
 
-#: includes/controller/Admin.php:224
+#: includes/controller/Admin.php:265
 msgid "You do not have sufficient privileges to edit this page."
 msgstr ""
 
@@ -92,23 +93,23 @@ msgstr ""
 msgid "Posted"
 msgstr ""
 
-#: includes/controller/Admin.php:560
-#: includes/controller/Admin.php:571
+#: includes/controller/Admin.php:608
+#: includes/controller/Admin.php:619
 msgid "You do not have sufficient privileges to create groups."
 msgstr ""
 
-#: install.php:557
+#: install.php:554
 msgid "<strong>Delete install.php</strong>, you won't need it anymore."
 msgstr ""
 
 #: includes/javascript.php:52
 #: includes/ajax.php:50
-#: includes/admin.js.php:9
-#: includes/admin.js.php:33
+#: includes/admin.js.php:195
+#: includes/admin.js.php:211
 msgid "More Options &raquo;"
 msgstr ""
 
-#: includes/controller/Admin.php:1941
+#: includes/controller/Admin.php:2039
 msgid "Usage"
 msgstr ""
 
@@ -119,15 +120,15 @@ msgstr ""
 msgid "Need more detail?"
 msgstr ""
 
-#: install.php:561
+#: install.php:558
 msgid "Look for a translation for your language."
 msgstr ""
 
-#: install.php:485
+#: install.php:482
 msgid "(usually ok as \"localhost\")"
 msgstr ""
 
-#: includes/controller/Admin.php:684
+#: includes/controller/Admin.php:732
 msgid "You do not have sufficient privileges to export content."
 msgstr ""
 
@@ -139,7 +140,7 @@ msgstr ""
 msgid "Month submitted"
 msgstr ""
 
-#: includes/controller/Admin.php:410
+#: includes/controller/Admin.php:451
 msgid "You do not have sufficient privileges to edit this user."
 msgstr ""
 
@@ -152,14 +153,14 @@ msgstr ""
 msgid "Confirm"
 msgstr ""
 
-#: includes/controller/Admin.php:1784
-#: includes/controller/Admin.php:1809
-#: includes/controller/Admin.php:1835
-#: includes/controller/Admin.php:1857
+#: includes/controller/Admin.php:1881
+#: includes/controller/Admin.php:1906
+#: includes/controller/Admin.php:1933
+#: includes/controller/Admin.php:1955
 msgid "Settings updated."
 msgstr ""
 
-#: admin/layout/pages/manage_users.twig:60
+#: admin/layout/pages/manage_users.twig:62
 #: admin/layout/pages/manage_posts.twig:62
 #: admin/layout/pages/manage_pages.twig:51
 msgid "(none)"
@@ -178,7 +179,7 @@ msgid "&#8220;Guest&#8221; Group"
 msgstr ""
 
 #: admin/layout/pages/modules.twig:16
-#: admin/layout/pages/modules.twig:36
+#: admin/layout/pages/modules.twig:47
 #: admin/layout/pages/feathers.twig:16
 #: admin/layout/pages/feathers.twig:36
 #, php-format
@@ -199,20 +200,20 @@ msgstr ""
 msgid "Registered Only"
 msgstr ""
 
-#: install.php:513
+#: install.php:510
 #: admin/layout/pages/general_settings.twig:14
 msgid "Description"
 msgstr ""
 
-#: includes/controller/Main.php:224
+#: includes/controller/Main.php:230
 msgid "Password incorrect."
 msgstr ""
 
-#: admin/layout/pages/content_settings.twig:29
+#: admin/layout/pages/content_settings.twig:36
 msgid "Enable Trackbacking"
 msgstr ""
 
-#: includes/controller/Admin.php:1939
+#: includes/controller/Admin.php:2037
 msgid "Use this to search for specific items. You can either enter plain text to match the item with, or use keywords:"
 msgstr ""
 
@@ -227,22 +228,21 @@ msgstr ""
 msgid "Delete Posts"
 msgstr ""
 
-#: includes/controller/Admin.php:622
-#: includes/controller/Admin.php:636
+#: includes/controller/Admin.php:670
+#: includes/controller/Admin.php:684
 msgid "You do not have sufficient privileges to delete groups."
 msgstr ""
 
-#: includes/controller/Admin.php:1339
-#: includes/controller/Admin.php:1405
-#: includes/class/SQL.php:132
-#: includes/class/SQL.php:140
-#: includes/class/SQL.php:148
+#: includes/controller/Admin.php:1402
+#: includes/controller/Admin.php:1468
+#: includes/class/SQL.php:145
 #: includes/class/SQL.php:153
-#: includes/class/Query.php:197
+#: includes/class/SQL.php:161
+#: includes/class/Query.php:193
 msgid "Database Error"
 msgstr ""
 
-#: install.php:507
+#: install.php:504
 msgid "Website Setup"
 msgstr ""
 
@@ -259,13 +259,13 @@ msgstr ""
 msgid "Year submitted"
 msgstr ""
 
-#: includes/controller/Admin.php:1658
+#: includes/controller/Admin.php:1755
 #: includes/ajax.php:176
 #, php-format
 msgid "Please create the <code>%s</code> directory at your Chyrp install's root and CHMOD it to 777."
 msgstr ""
 
-#: upgrade.php:231
+#: upgrade.php:142
 msgid "failed!"
 msgstr ""
 
@@ -279,16 +279,16 @@ msgstr ""
 msgid "Could not connect to the specified database:\n<pre>%s</pre>"
 msgstr ""
 
-#: upgrade.php:390
+#: upgrade.php:252
 msgid "Moving /includes/database.yml.php to /includes/database.yaml.php..."
 msgstr ""
 
-#: includes/controller/Admin.php:317
+#: includes/controller/Admin.php:358
 msgid "You do not have sufficient privileges to manage pages."
 msgstr ""
 
-#: admin/layout/pages/manage_users.twig:52
-#: admin/layout/pages/manage_users.twig:55
+#: admin/layout/pages/manage_users.twig:54
+#: admin/layout/pages/manage_users.twig:57
 #: admin/layout/pages/manage_posts.twig:54
 #: admin/layout/pages/manage_posts.twig:57
 #: admin/layout/pages/manage_pages.twig:43
@@ -297,24 +297,28 @@ msgstr ""
 msgid "delete"
 msgstr ""
 
-#: includes/javascript.php:66
+#: includes/javascript.php:83
 msgid "Post has been saved as a draft."
 msgstr ""
 
 #: index.php:122
-#: admin/layout/pages/manage_users.twig:34
+#: admin/layout/pages/manage_users.twig:35
 #: admin/layout/pages/manage_posts.twig:41
 #: admin/layout/pages/manage_pages.twig:30
 msgid "Controls"
 msgstr ""
 
-#: upgrade.php:763
-#: install.php:551
-#: includes/bookmarklet.php:265
+#: upgrade.php:642
+#: install.php:548
+#: admin/layout/pages/bookmarklet.twig:260
 msgid "Done!"
 msgstr ""
 
-#: includes/controller/Admin.php:1941
+#: admin/layout/pages/content_settings.twig:29
+msgid "Uploads Path"
+msgstr ""
+
+#: includes/controller/Admin.php:2039
 msgid "Use this syntax to quickly match specific results. Keywords will modify the query to match items where <code>attr</code> is equal to <code>val</code> (case insensitive)."
 msgstr ""
 
@@ -328,17 +332,17 @@ msgstr ""
 msgid "Delete Users"
 msgstr ""
 
-#: admin/index.php:84
+#: admin/index.php:87
 msgid "Settings"
 msgstr ""
 
-#: upgrade.php:772
+#: upgrade.php:651
 msgid "Tips"
 msgstr ""
 
 #: install.php:90
-#: includes/controller/Main.php:185
-#: includes/controller/Admin.php:391
+#: includes/controller/Main.php:191
+#: includes/controller/Admin.php:432
 msgid "Password cannot be blank."
 msgstr ""
 
@@ -350,24 +354,24 @@ msgstr ""
 msgid "Lost Password"
 msgstr ""
 
-#: install.php:501
+#: install.php:498
 #: admin/layout/pages/import.twig:116
 msgid "Table Prefix"
 msgstr ""
 
-#: admin/layout/partials/post_fields.twig:36
+#: admin/layout/partials/post_fields.twig:31
 #: admin/layout/partials/post_fields.twig:40
 #: admin/layout/partials/page_fields.twig:17
 msgid "Save"
 msgstr ""
 
 #: install.php:93
-#: includes/controller/Main.php:187
-#: includes/controller/Admin.php:395
+#: includes/controller/Main.php:193
+#: includes/controller/Admin.php:436
 msgid "Passwords do not match."
 msgstr ""
 
-#: includes/controller/Admin.php:1944
+#: includes/controller/Admin.php:2042
 msgid "Post Slugs"
 msgstr ""
 
@@ -379,13 +383,6 @@ msgstr ""
 msgid "What would you like to export?"
 msgstr ""
 
-#: admin/layout/pages/manage_groups.twig:36
-#, php-format
-msgid "&#8220;%s&#8221; has %s member."
-msgid_plural "&#8220;%s&#8221; has %s members."
-msgstr[0] ""
-msgstr[1] ""
-
 #: includes/ajax.php:88
 #: admin/layout/pages/delete_user.twig:78
 #: admin/layout/pages/delete_post.twig:17
@@ -394,11 +391,11 @@ msgstr[1] ""
 msgid "Cancel"
 msgstr ""
 
-#: install.php:472
+#: install.php:470
 msgid "Adapter"
 msgstr ""
 
-#: includes/controller/Admin.php:513
+#: includes/controller/Admin.php:554
 msgid "User deleted."
 msgstr ""
 
@@ -406,7 +403,7 @@ msgstr ""
 msgid "Members:"
 msgstr ""
 
-#: install.php:564
+#: install.php:561
 msgid "Read &#8220;Getting Started&#8221;"
 msgstr ""
 
@@ -416,7 +413,7 @@ msgstr ""
 msgid "New Group"
 msgstr ""
 
-#: includes/controller/Admin.php:1310
+#: includes/controller/Admin.php:1373
 msgid "Tumblr content successfully imported!"
 msgstr ""
 
@@ -428,16 +425,20 @@ msgstr ""
 msgid "Delete Drafts"
 msgstr ""
 
-#: install.php:517
+#: upgrade.php:212
+msgid "Renaming edit_tweet permission to edit_post..."
+msgstr ""
+
+#: install.php:514
 #: admin/layout/pages/general_settings.twig:37
 msgid "What time is it?"
 msgstr ""
 
-#: admin/index.php:76
+#: admin/index.php:79
 msgid "Manage"
 msgstr ""
 
-#: admin/layout/pages/content_settings.twig:43
+#: admin/layout/pages/content_settings.twig:50
 msgid "Enable XML-RPC Support"
 msgstr ""
 
@@ -450,16 +451,16 @@ msgstr ""
 msgid "Edit Own Drafts"
 msgstr ""
 
-#: includes/controller/Admin.php:1574
+#: includes/controller/Admin.php:1671
 msgid "Could not read themes directory."
 msgstr ""
 
-#: includes/controller/Admin.php:227
+#: includes/controller/Admin.php:268
 msgid "An ID is required to edit a page."
 msgstr ""
 
 #: includes/model/User.php:216
-#: includes/model/Post.php:618
+#: includes/model/Post.php:628
 #: includes/model/Page.php:279
 #: includes/model/Group.php:203
 msgid "Delete"
@@ -479,20 +480,16 @@ msgstr ""
 msgid "Delete pages."
 msgstr ""
 
-#: includes/controller/Admin.php:1952
+#: includes/controller/Admin.php:2050
 #: admin/layout/pages/general_settings.twig:23
 msgid "Alternate URL"
-msgstr ""
-
-#: upgrade.php:354
-msgid "Renaming `delete_tweet` permission to `delete_post`..."
 msgstr ""
 
 #: install.php:191
 msgid "Delete Pages"
 msgstr ""
 
-#: admin/layout/pages/content_settings.twig:32
+#: admin/layout/pages/content_settings.twig:39
 msgid "Trackbacking allows sites to notify you when they write a new entry, usually because they link to or reference yours."
 msgstr ""
 
@@ -509,7 +506,7 @@ msgstr ""
 msgid "Delete User &#8220;%s&#8221;?"
 msgstr ""
 
-#: includes/controller/Admin.php:1469
+#: includes/controller/Admin.php:1530
 msgid "Could not read modules directory."
 msgstr ""
 
@@ -517,7 +514,7 @@ msgstr ""
 msgid "Edit Own Posts"
 msgstr ""
 
-#: includes/controller/Admin.php:1451
+#: includes/controller/Admin.php:1514
 msgid "MovableType content successfully imported!"
 msgstr ""
 
@@ -525,30 +522,38 @@ msgstr ""
 msgid "Add Drafts"
 msgstr ""
 
+#: upgrade.php:237
+msgid "Adding list_order column to pages table..."
+msgstr ""
+
 #: includes/xmlrpc.php:473
 msgid "XML-RPC support is disabled for this site."
 msgstr ""
 
-#: upgrade.php:768
+#: upgrade.php:216
+msgid "Renaming delete_tweet permission to delete_post..."
+msgstr ""
+
+#: upgrade.php:647
 msgid "Look through the results up there for any failed tasks. If you see any and you can't figure out why, you can ask for help at the <a href=\"http://chyrp.net/community/\">Chyrp Community</a>."
 msgstr ""
 
-#: includes/controller/Main.php:192
-#: includes/controller/Admin.php:397
+#: includes/controller/Main.php:198
+#: includes/controller/Admin.php:438
 msgid "Unsupported e-mail address."
 msgstr ""
 
-#: includes/javascript.php:71
+#: includes/javascript.php:87
 msgid "Post has been published."
 msgstr ""
 
 #: admin/layout/pages/new_user.twig:19
-#: admin/layout/pages/manage_users.twig:32
+#: admin/layout/pages/manage_users.twig:33
 #: admin/layout/pages/edit_user.twig:19
 msgid "Website"
 msgstr ""
 
-#: includes/controller/Admin.php:1695
+#: includes/controller/Admin.php:1792
 msgid "Feather already disabled."
 msgstr ""
 
@@ -557,11 +562,18 @@ msgstr ""
 msgid "STOP! Before you go any further, you must create a .htaccess file in Chyrp's install directory and put this in it:\n<pre>%s</pre>"
 msgstr ""
 
+#: admin/layout/pages/manage_groups.twig:36
+#, php-format
+msgid "&#8220;%s&#8221; has %d <a href=\"%s\">member</a>."
+msgid_plural "&#8220;%s&#8221; has %d <a href=\"%s\">members</a>."
+msgstr[0] ""
+msgstr[1] ""
+
 #: includes/xmlrpc.php:57
 msgid "The from and to URLs cannot be the same."
 msgstr ""
 
-#: includes/controller/Admin.php:1334
+#: includes/controller/Admin.php:1397
 msgid "Could not connect to the specified TextPattern database."
 msgstr ""
 
@@ -584,7 +596,7 @@ msgstr ""
 msgid "Created"
 msgstr ""
 
-#: upgrade.php:406
+#: upgrade.php:268
 #, php-format
 msgid "Updating protection code in %s..."
 msgstr ""
@@ -598,14 +610,14 @@ msgstr ""
 msgid "Add Group"
 msgstr ""
 
-#: includes/admin.js.php:115
+#: includes/admin.js.php:148
 #, php-format
 msgid "Bookmarklet: %s"
 msgstr ""
 
-#: includes/controller/Admin.php:1522
-#: includes/controller/Admin.php:1625
-#: includes/controller/Admin.php:1689
+#: includes/controller/Admin.php:1619
+#: includes/controller/Admin.php:1722
+#: includes/controller/Admin.php:1786
 #: includes/ajax.php:153
 #: includes/ajax.php:198
 msgid "You do not have sufficient privileges to enable/disable feathers."
@@ -621,7 +633,7 @@ msgstr ""
 msgid "Add User"
 msgstr ""
 
-#: includes/controller/Admin.php:578
+#: includes/controller/Admin.php:626
 msgid "Group added."
 msgstr ""
 
@@ -658,17 +670,17 @@ msgstr ""
 msgid "View Site"
 msgstr ""
 
-#: includes/controller/Admin.php:609
+#: includes/controller/Admin.php:657
 msgid "Group not found."
 msgstr ""
 
 #: admin/layout/pages/modules.twig:3
 #: admin/layout/pages/modules.twig:6
-#: admin/index.php:197
+#: admin/index.php:198
 msgid "Modules"
 msgstr ""
 
-#: includes/controller/Admin.php:1129
+#: includes/controller/Admin.php:1192
 msgid "File does not seem to be a valid WordPress export file."
 msgstr ""
 
@@ -684,15 +696,15 @@ msgstr ""
 msgid "Full Name:"
 msgstr ""
 
-#: includes/controller/Admin.php:51
+#: includes/controller/Admin.php:90
 msgid "Post created!"
 msgstr ""
 
-#: upgrade.php:781
+#: upgrade.php:660
 msgid "That button may look ready for a-clickin&rsquo;, but please take these preemptive measures before indulging:"
 msgstr ""
 
-#: admin/layout/pages/content_settings.twig:14
+#: admin/layout/pages/content_settings.twig:18
 msgid "Feed URL"
 msgstr ""
 
@@ -700,17 +712,13 @@ msgstr ""
 msgid "This post is a draft."
 msgstr ""
 
-#: admin/layout/pages/modules.twig:41
+#: admin/layout/pages/modules.twig:62
 #: admin/layout/pages/feathers.twig:41
 msgid "Enable"
 msgstr ""
 
-#: admin/layout/pages/manage_pages.twig:78
+#: admin/layout/pages/manage_pages.twig:79
 msgid "Reorder"
-msgstr ""
-
-#: includes/bookmarklet.php:250
-msgid "or wait 1 second."
 msgstr ""
 
 #: admin/layout/pages/user_settings.twig:15
@@ -725,12 +733,12 @@ msgstr ""
 msgid "Please enter a name for your website."
 msgstr ""
 
-#: includes/class/Theme.php:318
+#: includes/class/Theme.php:328
 #, php-format
 msgid "Couldn't load template: <code>%s</code>"
 msgstr ""
 
-#: upgrade.php:333
+#: upgrade.php:195
 msgid "Generating .htaccess file..."
 msgstr ""
 
@@ -739,7 +747,7 @@ msgstr ""
 msgid "Pinned?"
 msgstr ""
 
-#: upgrade.php:605
+#: upgrade.php:484
 msgid "Chyrp Upgrader"
 msgstr ""
 
@@ -747,20 +755,20 @@ msgstr ""
 msgid "eXtended .XML File"
 msgstr ""
 
-#: includes/class/Theme.php:318
-#: admin/index.php:116
+#: includes/class/Theme.php:328
+#: admin/index.php:117
 msgid "Template Missing"
 msgstr ""
 
-#: includes/controller/Main.php:247
+#: includes/controller/Main.php:253
 msgid "Logged out."
 msgstr ""
 
-#: includes/controller/Admin.php:239
+#: includes/controller/Admin.php:280
 msgid "You do not have sufficient privileges to edit pages."
 msgstr ""
 
-#: upgrade.php:386
+#: upgrade.php:248
 msgid "Moving /includes/config.yml.php to /includes/config.yaml.php..."
 msgstr ""
 
@@ -771,35 +779,35 @@ msgstr ""
 msgid "Search &rarr;"
 msgstr ""
 
-#: upgrade.php:775
+#: upgrade.php:654
 msgid "As of v2.0, Chyrp uses time zones to determine timestamps. Please set your installation to the correct timezone at <a href=\"admin/index.php?action=general_settings\">General Settings</a>."
 msgstr ""
 
-#: admin/layout/pages/content_settings.twig:25
-msgid "Feed Posts Limit"
+#: admin/layout/pages/content_settings.twig:24
+msgid "Allows you to set an alternative URL for <code>/?feed</code>, e.g. your feed on FeedBurner."
 msgstr ""
 
-#: admin/layout/pages/content_settings.twig:20
-msgid "Allows you to set an alternative URL for <code>/?feed</code>, e.g. your feed on FeedBurner."
+#: admin/layout/pages/content_settings.twig:14
+msgid "Feed Posts Limit"
 msgstr ""
 
 #: admin/layout/pages/import.twig:83
 msgid "Note: Audio tumbles cannot be imported."
 msgstr ""
 
-#: includes/controller/Admin.php:440
+#: includes/controller/Admin.php:481
 msgid "User not found."
 msgstr ""
 
-#: includes/controller/Main.php:167
+#: includes/controller/Main.php:173
 msgid "Registration Disabled"
 msgstr ""
 
-#: includes/controller/Admin.php:1104
+#: includes/controller/Admin.php:1167
 msgid "Importing from WordPress requires the Text feather to be installed and enabled."
 msgstr ""
 
-#: includes/controller/Admin.php:1400
+#: includes/controller/Admin.php:1463
 msgid "Could not connect to the specified MovableType database."
 msgstr ""
 
@@ -812,15 +820,15 @@ msgstr ""
 msgid "E-Mail"
 msgstr ""
 
-#: includes/controller/Admin.php:451
+#: includes/controller/Admin.php:492
 msgid "User updated."
 msgstr ""
 
-#: includes/controller/Admin.php:1913
+#: includes/controller/Admin.php:2011
 msgid "You do not have sufficient privileges to access this area."
 msgstr ""
 
-#: includes/controller/Admin.php:977
+#: includes/controller/Admin.php:1040
 msgid "Chyrp Posts export file is invalid."
 msgstr ""
 
@@ -829,7 +837,7 @@ msgid "Drafts"
 msgstr ""
 
 #: admin/layout/pages/export.twig:11
-#: admin/index.php:150
+#: admin/index.php:151
 msgid "Posts"
 msgstr ""
 
@@ -837,7 +845,7 @@ msgstr ""
 msgid "Get More Feathers &rsaquo;"
 msgstr ""
 
-#: upgrade.php:423
+#: upgrade.php:286
 msgid "Renaming /upload directory to /uploads..."
 msgstr ""
 
@@ -845,20 +853,20 @@ msgstr ""
 msgid "Edit Drafts"
 msgstr ""
 
-#: upgrade.php:778
+#: upgrade.php:657
 msgid "All done!"
 msgstr ""
 
-#: includes/controller/Admin.php:79
+#: includes/controller/Admin.php:120
 msgid "Post not found."
 msgstr ""
 
-#: admin/layout/pages/modules.twig:49
+#: admin/layout/pages/modules.twig:71
 msgid "Get More Modules &rsaquo;"
 msgstr ""
 
-#: includes/controller/Admin.php:460
-#: includes/controller/Admin.php:473
+#: includes/controller/Admin.php:501
+#: includes/controller/Admin.php:514
 msgid "You do not have sufficient privileges to delete users."
 msgstr ""
 
@@ -866,8 +874,14 @@ msgstr ""
 msgid "(ex. links)"
 msgstr ""
 
-#: install.php:501
-#: includes/bookmarklet.php:188
+#: admin/layout/pages/manage_groups.twig:34
+#, php-format
+msgid "&#8220;%s&#8221; is the default group and has %d <a href=\"%s\">member</a>."
+msgid_plural "&#8220;%s&#8221; is the default group and has %d <a href=\"%s\">members</a>."
+msgstr[0] ""
+msgstr[1] ""
+
+#: install.php:498
 #: includes/ajax.php:30
 #: admin/layout/partials/post_fields.twig:6
 #: admin/layout/pages/import.twig:29
@@ -879,13 +893,8 @@ msgstr ""
 #: admin/layout/pages/export.twig:27
 #: admin/layout/pages/export.twig:37
 #: admin/layout/pages/export.twig:50
+#: admin/layout/pages/bookmarklet.twig:182
 msgid "(optional)"
-msgstr ""
-
-#: admin/layout/pages/export.twig:41
-#: admin/index.php:156
-#: admin/index.php:189
-msgid "Users"
 msgstr ""
 
 #: admin/layout/pages/general_settings.twig:3
@@ -893,7 +902,14 @@ msgstr ""
 msgid "Site Configuration"
 msgstr ""
 
-#: install.php:497
+#: admin/layout/pages/manage_users.twig:26
+#: admin/layout/pages/export.twig:41
+#: admin/index.php:157
+#: admin/index.php:190
+msgid "Users"
+msgstr ""
+
+#: install.php:494
 #: admin/layout/pages/import.twig:112
 #: admin/layout/pages/import.twig:156
 msgid "Database"
@@ -903,11 +919,11 @@ msgstr ""
 msgid "There doesn't seem to be a valid link in your request."
 msgstr ""
 
-#: upgrade.php:780
+#: upgrade.php:659
 msgid "Halt!"
 msgstr ""
 
-#: admin/layout/pages/content_settings.twig:46
+#: admin/layout/pages/content_settings.twig:53
 msgid "XML-RPC support allows for remote access to your site. This allows you to use remote clients (e.g., <a href=\"http://www.red-sweater.com/marsedit/\">MarsEdit</a> or <a href=\"http://flickr.com/help/blogging/\">Flickr</a>) to create/edit content on your site."
 msgstr ""
 
@@ -916,16 +932,20 @@ msgstr ""
 msgid "Delete Group &#8220;%s&#8221;?"
 msgstr ""
 
-#: includes/controller/Main.php:222
+#: includes/controller/Main.php:228
 msgid "There is no user with that login name."
 msgstr ""
 
-#: includes/controller/Admin.php:1953
+#: includes/controller/Admin.php:2051
 msgid "An alternate URL will allow you to keep Chyrp in its own directory, while having your site URLs point to someplace else. For example, you could have Chyrp in a <code>/chyrp</code> directory, and have your site at <code>/</code>. There are two requirements for this to work."
 msgstr ""
 
-#: includes/controller/Admin.php:361
-#: includes/controller/Admin.php:377
+#: upgrade.php:204
+msgid "Renaming tweets table to posts..."
+msgstr ""
+
+#: includes/controller/Admin.php:402
+#: includes/controller/Admin.php:418
 msgid "You do not have sufficient privileges to add users."
 msgstr ""
 
@@ -937,7 +957,7 @@ msgstr ""
 msgid "Please specify an ID of the post you would like to edit."
 msgstr ""
 
-#: includes/controller/Admin.php:1940
+#: includes/controller/Admin.php:2038
 msgid "Keywords"
 msgstr ""
 
@@ -949,11 +969,12 @@ msgstr ""
 msgid "Move members to:"
 msgstr ""
 
-#: includes/controller/Main.php:241
+#: includes/controller/Main.php:247
 msgid "You aren't logged in."
 msgstr ""
 
 #: admin/layout/pages/new_user.twig:29
+#: admin/layout/pages/manage_users.twig:31
 #: admin/layout/pages/edit_user.twig:29
 msgid "Group"
 msgstr ""
@@ -965,20 +986,20 @@ msgstr ""
 msgid "DESTROY!"
 msgstr ""
 
-#: upgrade.php:548
+#: upgrade.php:425
 msgid "Backing up current permissions table..."
 msgstr ""
 
-#: install.php:555
+#: install.php:552
 msgid "So, what now?"
 msgstr ""
 
-#: includes/admin.js.php:172
+#: includes/admin.js.php:303
 msgid "(drag)"
 msgstr ""
 
-#: includes/controller/Main.php:190
-#: includes/controller/Admin.php:393
+#: includes/controller/Main.php:196
+#: includes/controller/Admin.php:434
 msgid "E-mail address cannot be blank."
 msgstr ""
 
@@ -987,16 +1008,16 @@ msgstr ""
 msgid "Editing Group &#8220;%s&#8221;"
 msgstr ""
 
-#: install.php:530
+#: install.php:527
 msgid "Admin Account"
 msgstr ""
 
-#: upgrade.php:555
+#: upgrade.php:432
 msgid "Dropping old permissions table..."
 msgstr ""
 
-#: includes/controller/Admin.php:25
-#: includes/bookmarklet.php:8
+#: includes/controller/Admin.php:27
+#: includes/controller/Admin.php:49
 msgid "No Feathers"
 msgstr ""
 
@@ -1009,7 +1030,7 @@ msgstr ""
 msgid "Group:"
 msgstr ""
 
-#: install.php:521
+#: install.php:518
 #: admin/layout/pages/general_settings.twig:40
 msgid "%I:%M %p on %B %e, %Y"
 msgstr ""
@@ -1038,7 +1059,7 @@ msgstr ""
 msgid "Route Settings"
 msgstr ""
 
-#: upgrade.php:787
+#: upgrade.php:666
 msgid "If any of the upgrade processes fail, you can safely keep refreshing &ndash; it will only attempt to do tasks that are not already successfully completed. If you cannot figure something out, please make a topic (with details!) at the <a href=\"http://chyrp.net/community/\">Chyrp Community</a>."
 msgstr ""
 
@@ -1046,16 +1067,16 @@ msgstr ""
 msgid "You do not have sufficient privileges to enable/disable extensions."
 msgstr ""
 
-#: includes/controller/Main.php:301
+#: includes/controller/Main.php:307
 msgid "Lost Password Request"
 msgstr ""
 
-#: admin/index.php:116
+#: admin/index.php:117
 #, php-format
 msgid "Couldn't load template:<br /><br />%s"
 msgstr ""
 
-#: upgrade.php:476
+#: upgrade.php:345
 msgid "Creating new groups table..."
 msgstr ""
 
@@ -1065,7 +1086,7 @@ msgid "Could not set \"<code>%s</code>\" configuration setting because <code>%s<
 msgstr ""
 
 #: admin/layout/pages/export.twig:21
-#: admin/index.php:153
+#: admin/index.php:154
 msgid "Pages"
 msgstr ""
 
@@ -1073,12 +1094,12 @@ msgstr ""
 msgid "Contact E-Mail Address"
 msgstr ""
 
-#: upgrade.php:467
+#: upgrade.php:336
 msgid "Dropping old groups table..."
 msgstr ""
 
-#: includes/controller/Admin.php:106
-#: includes/controller/Admin.php:125
+#: includes/controller/Admin.php:147
+#: includes/controller/Admin.php:166
 #: includes/ajax.php:98
 msgid "You do not have sufficient privileges to delete this post."
 msgstr ""
@@ -1091,7 +1112,7 @@ msgstr ""
 msgid "(warning: this also exports the hashed passwords, so keep the export file safe)"
 msgstr ""
 
-#: includes/controller/Admin.php:523
+#: includes/controller/Admin.php:564
 msgid "You do not have sufficient privileges to manage users."
 msgstr ""
 
@@ -1101,13 +1122,13 @@ msgstr ""
 msgid "Search&hellip;"
 msgstr ""
 
-#: includes/controller/Main.php:276
+#: includes/controller/Main.php:282
 msgid "Your profile has been updated."
 msgstr ""
 
-#: includes/controller/Admin.php:1460
-#: includes/controller/Admin.php:1623
-#: includes/controller/Admin.php:1687
+#: includes/controller/Admin.php:1523
+#: includes/controller/Admin.php:1720
+#: includes/controller/Admin.php:1784
 #: includes/ajax.php:151
 #: includes/ajax.php:196
 msgid "You do not have sufficient privileges to enable/disable modules."
@@ -1142,7 +1163,7 @@ msgstr ""
 #: admin/layout/pages/export.twig:3
 #: admin/layout/pages/export.twig:6
 #: admin/layout/pages/export.twig:57
-#: admin/index.php:170
+#: admin/index.php:171
 msgid "Export"
 msgstr ""
 
@@ -1161,7 +1182,7 @@ msgstr ""
 msgid "(ex. text)"
 msgstr ""
 
-#: includes/controller/Main.php:289
+#: includes/controller/Main.php:295
 msgid "Invalid user specified."
 msgstr ""
 
@@ -1178,16 +1199,12 @@ msgstr ""
 msgid "Post ID"
 msgstr ""
 
-#: install.php:509
+#: install.php:506
 #: admin/layout/pages/general_settings.twig:10
 msgid "Site Name"
 msgstr ""
 
-#: admin/layout/pages/manage_users.twig:26
-msgid "Last 25 Users"
-msgstr ""
-
-#: includes/controller/Admin.php:129
+#: includes/controller/Admin.php:170
 msgid "Post deleted."
 msgstr ""
 
@@ -1197,23 +1214,16 @@ msgstr ""
 #: admin/layout/pages/general_settings.twig:55
 #: admin/layout/pages/edit_user.twig:49
 #: admin/layout/pages/edit_group.twig:29
-#: admin/layout/pages/content_settings.twig:52
+#: admin/layout/pages/content_settings.twig:59
 msgid "Update"
 msgstr ""
 
-#: includes/controller/Main.php:182
-#: includes/controller/Admin.php:388
+#: includes/controller/Main.php:188
+#: includes/controller/Admin.php:429
 msgid "That username is already in use."
 msgstr ""
 
-#: admin/layout/pages/manage_groups.twig:34
-#, php-format
-msgid "&#8220;%s&#8221; is the default group and has %s member."
-msgid_plural "&#8220;%s&#8221; is the default group and has %s members."
-msgstr[0] ""
-msgstr[1] ""
-
-#: includes/controller/Admin.php:247
+#: includes/controller/Admin.php:288
 msgid "Page not found."
 msgstr ""
 
@@ -1226,12 +1236,12 @@ msgstr ""
 msgid "User Settings"
 msgstr ""
 
-#: upgrade.php:783
+#: upgrade.php:662
 msgid "<strong>Make a backup of your installation.</strong> You never know."
 msgstr ""
 
-#: admin/layout/pages/manage_users.twig:51
-#: admin/layout/pages/manage_users.twig:54
+#: admin/layout/pages/manage_users.twig:53
+#: admin/layout/pages/manage_users.twig:56
 #: admin/layout/pages/manage_posts.twig:53
 #: admin/layout/pages/manage_posts.twig:56
 #: admin/layout/pages/manage_pages.twig:42
@@ -1240,15 +1250,15 @@ msgstr ""
 msgid "edit"
 msgstr ""
 
-#: includes/controller/Admin.php:215
+#: includes/controller/Admin.php:256
 msgid "Page created!"
 msgstr ""
 
-#: install.php:566
+#: install.php:563
 msgid "Take me to my site! &rarr;"
 msgstr ""
 
-#: includes/controller/Main.php:167
+#: includes/controller/Main.php:173
 msgid "I'm sorry, but this site is not allowing registration."
 msgstr ""
 
@@ -1264,24 +1274,24 @@ msgstr ""
 msgid "Post View URL"
 msgstr ""
 
-#: install.php:544
+#: install.php:541
 msgid "E-Mail Address"
-msgstr ""
-
-#: upgrade.php:375
-msgid "Adding `list_order` column to `pages` table..."
 msgstr ""
 
 #: admin/layout/pages/route_settings.twig:15
 msgid "Requires .htaccess support (pretty common). If you're unsure, it's safe to test and find out. Just come back and disable it if it breaks your site."
 msgstr ""
 
-#: upgrade.php:491
-#: upgrade.php:558
+#: upgrade.php:364
+#: upgrade.php:435
 msgid "Creating new permissions table..."
 msgstr ""
 
-#: includes/controller/Admin.php:1631
+#: admin/layout/pages/content_settings.twig:32
+msgid "The directory, relative to your Chyrp install, to upload files to. You can use <code>/../</code> to go up one directory."
+msgstr ""
+
+#: includes/controller/Admin.php:1728
 msgid "Feather already enabled."
 msgstr ""
 
@@ -1298,25 +1308,29 @@ msgstr ""
 msgid "Search all groups for user&hellip;"
 msgstr ""
 
+#: upgrade.php:229
+msgid "Adding parent_id column to pages table..."
+msgstr ""
+
 #: index.php:101
 #, php-format
 msgid "Archive of %s"
 msgstr ""
 
-#: admin/layout/pages/content_settings.twig:39
+#: admin/layout/pages/content_settings.twig:46
 msgid "Attempts to notify sites linked to from your posts. It'll slow down things a bit when you submit them, depending on how many links you've got in it."
 msgstr ""
 
-#: includes/common.php:336
+#: includes/common.php:349
 msgid "You are not allowed to view this site."
 msgstr ""
 
-#: includes/controller/Main.php:56
+#: includes/controller/Main.php:61
 msgid "You do not have sufficient privileges to view drafts."
 msgstr ""
 
-#: includes/controller/Main.php:170
-#: includes/controller/Main.php:211
+#: includes/controller/Main.php:176
+#: includes/controller/Main.php:217
 msgid "You're already logged in."
 msgstr ""
 
@@ -1332,7 +1346,7 @@ msgstr ""
 msgid "Chyrp is already correctly installed and configured."
 msgstr ""
 
-#: install.php:553
+#: install.php:550
 msgid "Chyrp has been successfully installed."
 msgstr ""
 
@@ -1341,11 +1355,11 @@ msgstr ""
 msgid "Body can't be blank."
 msgstr ""
 
-#: includes/controller/Admin.php:1220
+#: includes/controller/Admin.php:1283
 msgid "The URL you specified does not seem to be a valid Tumblr site."
 msgstr ""
 
-#: includes/controller/Admin.php:1948
+#: includes/controller/Admin.php:2046
 #: includes/ajax.php:77
 #: admin/layout/partials/post_fields.twig:80
 msgid "Trackbacks"
@@ -1360,7 +1374,7 @@ msgstr ""
 msgid "Time zone cannot be blank."
 msgstr ""
 
-#: includes/controller/Admin.php:1376
+#: includes/controller/Admin.php:1439
 msgid "TextPattern content successfully imported!"
 msgstr ""
 
@@ -1369,15 +1383,15 @@ msgstr ""
 msgid "Content Settings"
 msgstr ""
 
-#: includes/controller/Main.php:232
+#: includes/controller/Main.php:238
 msgid "Logged in."
 msgstr ""
 
-#: includes/controller/Admin.php:1692
+#: includes/controller/Admin.php:1789
 msgid "Module already disabled."
 msgstr ""
 
-#: upgrade.php:784
+#: upgrade.php:663
 msgid "Disable any third-party Modules and Feathers."
 msgstr ""
 
@@ -1395,22 +1409,22 @@ msgstr ""
 msgid "Manage Posts"
 msgstr ""
 
-#: includes/controller/Admin.php:45
-#: includes/controller/Admin.php:85
-#: includes/controller/Admin.php:121
-#: includes/controller/Admin.php:207
-#: includes/controller/Admin.php:242
-#: includes/controller/Admin.php:296
-#: includes/controller/Admin.php:380
-#: includes/controller/Admin.php:430
-#: includes/controller/Admin.php:482
-#: includes/controller/Admin.php:574
-#: includes/controller/Admin.php:602
-#: includes/controller/Admin.php:645
-#: includes/controller/Admin.php:1772
-#: includes/controller/Admin.php:1801
-#: includes/controller/Admin.php:1824
-#: includes/controller/Admin.php:1850
+#: includes/controller/Admin.php:83
+#: includes/controller/Admin.php:126
+#: includes/controller/Admin.php:162
+#: includes/controller/Admin.php:248
+#: includes/controller/Admin.php:283
+#: includes/controller/Admin.php:337
+#: includes/controller/Admin.php:421
+#: includes/controller/Admin.php:471
+#: includes/controller/Admin.php:523
+#: includes/controller/Admin.php:622
+#: includes/controller/Admin.php:650
+#: includes/controller/Admin.php:693
+#: includes/controller/Admin.php:1869
+#: includes/controller/Admin.php:1898
+#: includes/controller/Admin.php:1921
+#: includes/controller/Admin.php:1948
 msgid "Invalid security key."
 msgstr ""
 
@@ -1418,33 +1432,34 @@ msgstr ""
 msgid "(ex. 30)"
 msgstr ""
 
-#: upgrade.php:350
-msgid "Renaming `edit_tweet` permission to `edit_post`..."
-msgstr ""
-
 #: index.php:27
 #: index.php:98
 #: includes/helpers.php:1000
 #: includes/helpers.php:1002
-#: includes/controller/Main.php:141
-#: includes/controller/Main.php:170
-#: includes/controller/Main.php:211
-#: includes/controller/Main.php:241
-#: includes/controller/Main.php:259
-#: includes/controller/Admin.php:383
-#: includes/controller/Admin.php:388
-#: includes/controller/Admin.php:391
-#: includes/controller/Admin.php:393
-#: includes/controller/Admin.php:395
-#: includes/controller/Admin.php:397
+#: includes/controller/Main.php:147
+#: includes/controller/Main.php:176
+#: includes/controller/Main.php:217
+#: includes/controller/Main.php:247
+#: includes/controller/Main.php:265
+#: includes/controller/Admin.php:424
+#: includes/controller/Admin.php:429
+#: includes/controller/Admin.php:432
+#: includes/controller/Admin.php:434
+#: includes/controller/Admin.php:436
+#: includes/controller/Admin.php:438
 msgid "Error"
 msgstr ""
 
-#: includes/controller/Admin.php:401
+#: includes/controller/Admin.php:442
 msgid "User added."
 msgstr ""
 
-#: admin/layout/pages/content_settings.twig:18
+#: admin/layout/pages/modules.twig:22
+#: admin/layout/pages/modules.twig:53
+msgid "This Module requires the following Modules to be enabled:"
+msgstr ""
+
+#: admin/layout/pages/content_settings.twig:22
 msgid "Allows you to set an alternative URL for <code>/feed/</code>, e.g. your feed on FeedBurner."
 msgstr ""
 
@@ -1459,7 +1474,7 @@ msgstr ""
 msgid "Toggle Extensions"
 msgstr ""
 
-#: upgrade.php:105
+#: upgrade.php:124
 #, php-format
 msgid "Removing %s setting..."
 msgstr ""
@@ -1468,7 +1483,7 @@ msgstr ""
 msgid "New &#8220;guest&#8221; group:"
 msgstr ""
 
-#: upgrade.php:521
+#: upgrade.php:394
 #, php-format
 msgid "Inserting permission \"%s\"..."
 msgstr ""
@@ -1478,7 +1493,7 @@ msgstr ""
 msgid "Timestamp"
 msgstr ""
 
-#: includes/controller/Admin.php:1183
+#: includes/controller/Admin.php:1246
 msgid "WordPress content successfully imported!"
 msgstr ""
 
@@ -1492,20 +1507,20 @@ msgid "Manage Users"
 msgstr ""
 
 #: admin/layout/pages/write_post.twig:3
-#: admin/index.php:71
+#: admin/index.php:74
 msgid "Write"
 msgstr ""
 
-#: includes/controller/Admin.php:1628
+#: includes/controller/Admin.php:1725
 msgid "Module already enabled."
 msgstr ""
 
-#: upgrade.php:229
+#: upgrade.php:140
 msgid "success!"
 msgstr ""
 
-#: includes/controller/Admin.php:115
-#: includes/controller/Admin.php:290
+#: includes/controller/Admin.php:156
+#: includes/controller/Admin.php:331
 msgid "An ID is required to delete a post."
 msgstr ""
 
@@ -1525,7 +1540,7 @@ msgstr ""
 #: admin/layout/pages/import.twig:87
 #: admin/layout/pages/import.twig:131
 #: admin/layout/pages/import.twig:170
-#: admin/index.php:168
+#: admin/index.php:169
 msgid "Import"
 msgstr ""
 
@@ -1533,30 +1548,26 @@ msgstr ""
 msgid "(ex. 59)"
 msgstr ""
 
+#: install.php:248
 #: install.php:250
-#: install.php:252
 #, php-format
 msgid "Could not generate .htaccess file. Clean URLs will not be available unless you create it and put this in it:\n<pre>%s</pre>"
 msgstr ""
 
-#: includes/controller/Admin.php:476
+#: includes/controller/Admin.php:517
 msgid "An ID is required to delete a user."
 msgstr ""
 
-#: upgrade.php:592
+#: upgrade.php:469
 #, php-format
 msgid "Restoring permission \"%s\"..."
-msgstr ""
-
-#: upgrade.php:367
-msgid "Adding `parent_id` column to `pages` table..."
 msgstr ""
 
 #: includes/xmlrpc.php:314
 msgid "You don't have permission to delete this post."
 msgstr ""
 
-#: install.php:510
+#: install.php:507
 msgid "My Awesome Site"
 msgstr ""
 
@@ -1564,85 +1575,89 @@ msgstr ""
 msgid "Chyrp's includes directory is not writable by the server. In order for the installer to generate your configuration files, please CHMOD or CHOWN it so that Chyrp can write to it."
 msgstr ""
 
-#: includes/controller/Admin.php:1744
+#: includes/controller/Admin.php:1841
 #, php-format
 msgid "Theme changed to &#8220;%s&#8221;."
 msgstr ""
 
-#: includes/controller/Admin.php:981
+#: includes/controller/Admin.php:1044
 msgid "Chyrp Pages export file is invalid."
 msgstr ""
 
-#: admin/index.php:185
+#: admin/index.php:186
 msgid "General"
 msgstr ""
 
-#: includes/controller/Main.php:56
-#: includes/controller/Admin.php:20
-#: includes/controller/Admin.php:42
-#: includes/controller/Admin.php:45
-#: includes/controller/Admin.php:65
-#: includes/controller/Admin.php:82
-#: includes/controller/Admin.php:85
+#: admin/layout/pages/bookmarklet.twig:262
+msgid "Close this window"
+msgstr ""
+
+#: includes/controller/Main.php:61
+#: includes/controller/Admin.php:22
+#: includes/controller/Admin.php:44
+#: includes/controller/Admin.php:80
+#: includes/controller/Admin.php:83
 #: includes/controller/Admin.php:106
-#: includes/controller/Admin.php:121
-#: includes/controller/Admin.php:125
-#: includes/controller/Admin.php:138
-#: includes/controller/Admin.php:193
-#: includes/controller/Admin.php:204
-#: includes/controller/Admin.php:207
-#: includes/controller/Admin.php:224
-#: includes/controller/Admin.php:239
-#: includes/controller/Admin.php:242
-#: includes/controller/Admin.php:276
-#: includes/controller/Admin.php:287
-#: includes/controller/Admin.php:296
+#: includes/controller/Admin.php:123
+#: includes/controller/Admin.php:126
+#: includes/controller/Admin.php:147
+#: includes/controller/Admin.php:162
+#: includes/controller/Admin.php:166
+#: includes/controller/Admin.php:179
+#: includes/controller/Admin.php:234
+#: includes/controller/Admin.php:245
+#: includes/controller/Admin.php:248
+#: includes/controller/Admin.php:265
+#: includes/controller/Admin.php:280
+#: includes/controller/Admin.php:283
 #: includes/controller/Admin.php:317
-#: includes/controller/Admin.php:361
-#: includes/controller/Admin.php:377
-#: includes/controller/Admin.php:380
-#: includes/controller/Admin.php:410
-#: includes/controller/Admin.php:430
-#: includes/controller/Admin.php:435
-#: includes/controller/Admin.php:460
-#: includes/controller/Admin.php:473
-#: includes/controller/Admin.php:482
+#: includes/controller/Admin.php:328
+#: includes/controller/Admin.php:337
+#: includes/controller/Admin.php:358
+#: includes/controller/Admin.php:402
+#: includes/controller/Admin.php:418
+#: includes/controller/Admin.php:421
+#: includes/controller/Admin.php:451
+#: includes/controller/Admin.php:471
+#: includes/controller/Admin.php:476
+#: includes/controller/Admin.php:501
+#: includes/controller/Admin.php:514
 #: includes/controller/Admin.php:523
-#: includes/controller/Admin.php:560
-#: includes/controller/Admin.php:571
-#: includes/controller/Admin.php:574
-#: includes/controller/Admin.php:587
-#: includes/controller/Admin.php:599
-#: includes/controller/Admin.php:602
+#: includes/controller/Admin.php:564
+#: includes/controller/Admin.php:608
+#: includes/controller/Admin.php:619
 #: includes/controller/Admin.php:622
-#: includes/controller/Admin.php:636
-#: includes/controller/Admin.php:645
-#: includes/controller/Admin.php:669
+#: includes/controller/Admin.php:635
+#: includes/controller/Admin.php:647
+#: includes/controller/Admin.php:650
+#: includes/controller/Admin.php:670
 #: includes/controller/Admin.php:684
-#: includes/controller/Admin.php:961
-#: includes/controller/Admin.php:973
-#: includes/controller/Admin.php:1099
-#: includes/controller/Admin.php:1195
-#: includes/controller/Admin.php:1322
-#: includes/controller/Admin.php:1388
-#: includes/controller/Admin.php:1460
-#: includes/controller/Admin.php:1522
-#: includes/controller/Admin.php:1623
-#: includes/controller/Admin.php:1625
-#: includes/controller/Admin.php:1687
-#: includes/controller/Admin.php:1689
-#: includes/controller/Admin.php:1724
-#: includes/controller/Admin.php:1753
-#: includes/controller/Admin.php:1772
-#: includes/controller/Admin.php:1793
-#: includes/controller/Admin.php:1801
-#: includes/controller/Admin.php:1818
-#: includes/controller/Admin.php:1824
-#: includes/controller/Admin.php:1844
+#: includes/controller/Admin.php:693
+#: includes/controller/Admin.php:717
+#: includes/controller/Admin.php:732
+#: includes/controller/Admin.php:1024
+#: includes/controller/Admin.php:1036
+#: includes/controller/Admin.php:1162
+#: includes/controller/Admin.php:1258
+#: includes/controller/Admin.php:1385
+#: includes/controller/Admin.php:1451
+#: includes/controller/Admin.php:1523
+#: includes/controller/Admin.php:1619
+#: includes/controller/Admin.php:1720
+#: includes/controller/Admin.php:1722
+#: includes/controller/Admin.php:1784
+#: includes/controller/Admin.php:1786
+#: includes/controller/Admin.php:1821
 #: includes/controller/Admin.php:1850
-#: includes/controller/Admin.php:1913
-#: includes/common.php:336
-#: includes/bookmarklet.php:5
+#: includes/controller/Admin.php:1869
+#: includes/controller/Admin.php:1890
+#: includes/controller/Admin.php:1898
+#: includes/controller/Admin.php:1915
+#: includes/controller/Admin.php:1921
+#: includes/controller/Admin.php:1942
+#: includes/controller/Admin.php:1948
+#: includes/controller/Admin.php:2011
+#: includes/common.php:349
 #: includes/ajax.php:13
 #: includes/ajax.php:98
 #: includes/ajax.php:128
@@ -1653,23 +1668,19 @@ msgstr ""
 msgid "Sorry, but you are looking for something that isn't here."
 msgstr ""
 
-#: includes/bookmarklet.php:268
-msgid "Close this window"
-msgstr ""
-
-#: includes/controller/Main.php:259
+#: includes/controller/Main.php:265
 msgid "You must be logged in to access this area."
 msgstr ""
 
-#: includes/controller/Admin.php:1938
+#: includes/controller/Admin.php:2036
 msgid "Filtering Results"
 msgstr ""
 
-#: upgrade.php:450
+#: upgrade.php:319
 msgid "Backing up current groups table..."
 msgstr ""
 
-#: upgrade.php:776
+#: upgrade.php:655
 msgid "Check the group permissions &ndash; they might have changed."
 msgstr ""
 
@@ -1677,8 +1688,12 @@ msgstr ""
 msgid "Last 25 Pages"
 msgstr ""
 
-#: includes/controller/Admin.php:1529
+#: includes/controller/Admin.php:1626
 msgid "Could not read feathers directory."
+msgstr ""
+
+#: upgrade.php:208
+msgid "Renaming add_tweet permission to add_post..."
 msgstr ""
 
 #: install.php:197
@@ -1693,39 +1708,39 @@ msgstr ""
 msgid "Browse by month:"
 msgstr ""
 
-#: admin/index.php:191
+#: admin/index.php:192
 msgid "Routes"
 msgstr ""
 
-#: includes/bookmarklet.php:253
+#: admin/layout/pages/bookmarklet.twig:247
 msgid "or wait 2 seconds."
 msgstr ""
 
-#: install.php:485
+#: install.php:482
 #: admin/layout/pages/import.twig:100
 #: admin/layout/pages/import.twig:144
 msgid "Host"
 msgstr ""
 
-#: upgrade.php:770
+#: upgrade.php:649
 msgid "When you are done, you can delete this file. It doesn't pose any real threat on its own, but you should delete it anyway, just to be sure."
 msgstr ""
 
-#: includes/controller/Admin.php:435
+#: includes/controller/Admin.php:476
 msgid "You do not have sufficient privileges to edit users."
 msgstr ""
 
-#: upgrade.php:752
+#: upgrade.php:631
 #, php-format
 msgid "Calling \"%s\" module's upgrader..."
 msgstr ""
 
-#: includes/controller/Admin.php:267
+#: includes/controller/Admin.php:308
 msgid "Pages reordered."
 msgstr ""
 
-#: includes/controller/Admin.php:1104
-#: includes/controller/Admin.php:1205
+#: includes/controller/Admin.php:1167
+#: includes/controller/Admin.php:1268
 msgid "Missing Feather"
 msgstr ""
 
@@ -1747,13 +1762,17 @@ msgid "Get More Themes &rsaquo;"
 msgstr ""
 
 #: includes/javascript.php:49
-#: includes/admin.js.php:9
-#: includes/admin.js.php:30
+#: includes/admin.js.php:193
+#: includes/admin.js.php:208
 msgid "&laquo; Fewer Options"
 msgstr ""
 
-#: includes/admin.js.php:162
+#: includes/admin.js.php:181
 msgid "Preview &rarr;"
+msgstr ""
+
+#: admin/layout/pages/bookmarklet.twig:245
+msgid "or wait 1 seconds."
 msgstr ""
 
 #: includes/ajax.php:57
@@ -1767,7 +1786,7 @@ msgstr ""
 
 #: admin/layout/pages/themes.twig:3
 #: admin/layout/pages/themes.twig:6
-#: admin/index.php:201
+#: admin/index.php:202
 msgid "Themes"
 msgstr ""
 
@@ -1777,7 +1796,7 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: install.php:470
+#: install.php:468
 msgid "Database Setup"
 msgstr ""
 
@@ -1793,26 +1812,30 @@ msgstr ""
 msgid "(requires clean URLs)"
 msgstr ""
 
-#: includes/controller/Main.php:317
+#: includes/controller/Main.php:323
 msgid "E-Mail could not be sent. Password change cancelled."
 msgstr ""
 
-#: admin/layout/pages/modules.twig:28
+#: admin/layout/pages/modules.twig:39
 #: admin/layout/pages/feathers.twig:28
 msgid "Disabled"
 msgstr ""
 
-#: includes/bookmarklet.php:271
+#: includes/class/SQL.php:61
+msgid "Cannot find a way to connect to a database."
+msgstr ""
+
+#: admin/layout/pages/bookmarklet.twig:265
 msgid "or wait 3 seconds."
 msgstr ""
 
-#: includes/controller/Admin.php:669
+#: includes/controller/Admin.php:717
 msgid "You do not have sufficient privileges to manage groups."
 msgstr ""
 
-#: install.php:493
-#: install.php:536
-#: install.php:540
+#: install.php:490
+#: install.php:533
+#: install.php:537
 #: admin/layout/pages/import.twig:108
 #: admin/layout/pages/import.twig:152
 msgid "Password"
@@ -1824,42 +1847,38 @@ msgstr ""
 
 #: admin/layout/pages/feathers.twig:3
 #: admin/layout/pages/feathers.twig:6
-#: admin/index.php:199
+#: admin/index.php:200
 msgid "Feathers"
 msgstr ""
 
-#: includes/controller/Admin.php:307
+#: includes/controller/Admin.php:348
 msgid "Page deleted."
 msgstr ""
 
 #: includes/model/User.php:198
-#: includes/model/Post.php:600
+#: includes/model/Post.php:610
 #: includes/model/Page.php:261
 #: includes/model/Group.php:185
 msgid "Edit"
-msgstr ""
-
-#: upgrade.php:342
-msgid "Renaming `tweets` table to `posts`..."
-msgstr ""
-
-#: admin/layout/pages/general_settings.twig:18
-msgid "Chyrp URL"
 msgstr ""
 
 #: includes/ajax.php:87
 msgid "or"
 msgstr ""
 
-#: includes/controller/Admin.php:1954
+#: admin/layout/pages/general_settings.twig:18
+msgid "Chyrp URL"
+msgstr ""
+
+#: includes/controller/Admin.php:2052
 msgid "Create an <code>index.php</code> file in your destination directory with the following in it:"
 msgstr ""
 
-#: includes/controller/Admin.php:659
+#: includes/controller/Admin.php:707
 msgid "Group deleted."
 msgstr ""
 
-#: admin/index.php:89
+#: admin/index.php:92
 msgid "Extend"
 msgstr ""
 
@@ -1867,24 +1886,24 @@ msgstr ""
 msgid "There isn't a title on that page."
 msgstr ""
 
-#: includes/controller/Admin.php:20
-#: includes/controller/Admin.php:42
-#: includes/bookmarklet.php:5
+#: includes/controller/Admin.php:22
+#: includes/controller/Admin.php:44
+#: includes/controller/Admin.php:80
 msgid "You do not have sufficient privileges to create posts."
 msgstr ""
 
 #: install.php:87
-#: includes/controller/Main.php:178
-#: includes/controller/Admin.php:383
+#: includes/controller/Main.php:184
+#: includes/controller/Admin.php:424
 msgid "Please enter a username for your account."
 msgstr ""
 
-#: includes/controller/Admin.php:961
-#: includes/controller/Admin.php:973
-#: includes/controller/Admin.php:1099
-#: includes/controller/Admin.php:1195
-#: includes/controller/Admin.php:1322
-#: includes/controller/Admin.php:1388
+#: includes/controller/Admin.php:1024
+#: includes/controller/Admin.php:1036
+#: includes/controller/Admin.php:1162
+#: includes/controller/Admin.php:1258
+#: includes/controller/Admin.php:1385
+#: includes/controller/Admin.php:1451
 msgid "You do not have sufficient privileges to import content."
 msgstr ""
 
@@ -1900,7 +1919,7 @@ msgstr ""
 msgid "I can't find a post from that URL."
 msgstr ""
 
-#: includes/controller/Admin.php:639
+#: includes/controller/Admin.php:687
 msgid "An ID is required to delete a group."
 msgstr ""
 
@@ -1908,14 +1927,14 @@ msgstr ""
 msgid "Edit Groups"
 msgstr ""
 
-#: includes/controller/Admin.php:60
-#: includes/controller/Admin.php:115
-#: includes/controller/Admin.php:227
-#: includes/controller/Admin.php:290
-#: includes/controller/Admin.php:413
-#: includes/controller/Admin.php:427
-#: includes/controller/Admin.php:476
-#: includes/controller/Admin.php:639
+#: includes/controller/Admin.php:101
+#: includes/controller/Admin.php:156
+#: includes/controller/Admin.php:268
+#: includes/controller/Admin.php:331
+#: includes/controller/Admin.php:454
+#: includes/controller/Admin.php:468
+#: includes/controller/Admin.php:517
+#: includes/controller/Admin.php:687
 msgid "No ID Specified"
 msgstr ""
 
@@ -1924,16 +1943,21 @@ msgstr ""
 msgid "Add %s"
 msgstr ""
 
-#: admin/layout/pages/modules.twig:21
+#: admin/layout/pages/modules.twig:31
 #: admin/layout/pages/feathers.twig:21
 msgid "Disable"
 msgstr ""
 
-#: includes/controller/Admin.php:613
+#: includes/controller/Admin.php:661
 msgid "Group updated."
 msgstr ""
 
-#: includes/controller/Admin.php:1945
+#: admin/layout/pages/new_group.twig:14
+#: admin/layout/pages/edit_group.twig:14
+msgid "Permissions"
+msgstr ""
+
+#: includes/controller/Admin.php:2043
 msgid "Post slugs are strings to use for the URL of a post. They are directly respondible for the <code>(url)</code> attribute in a post's clean URL, or the <code>/?action=view&amp;url=<strong>foo</strong></code> in a post's dirty URL. A post slug should not contain any special characters other than hyphens."
 msgstr ""
 
@@ -1959,7 +1983,7 @@ msgstr ""
 msgid "Edit User &#8220;%s&#8221;"
 msgstr ""
 
-#: includes/controller/Admin.php:1660
+#: includes/controller/Admin.php:1757
 #: includes/ajax.php:178
 #, php-format
 msgid "Please CHMOD <code>%s</code> to 777."
@@ -1969,7 +1993,7 @@ msgstr ""
 msgid "Day submitted"
 msgstr ""
 
-#: install.php:562
+#: install.php:559
 msgid "Install some Modules."
 msgstr ""
 
@@ -1985,24 +2009,24 @@ msgstr ""
 msgid "Fake post ID, or nonexistant post."
 msgstr ""
 
-#: upgrade.php:480
+#: upgrade.php:349
 #, php-format
 msgid "Restoring group \"%s\"..."
 msgstr ""
 
-#: upgrade.php:336
+#: upgrade.php:198
 msgid "Appending to .htaccess file..."
 msgstr ""
 
-#: includes/controller/Admin.php:1724
-#: includes/controller/Admin.php:1753
-#: includes/controller/Admin.php:1793
-#: includes/controller/Admin.php:1818
-#: includes/controller/Admin.php:1844
+#: includes/controller/Admin.php:1821
+#: includes/controller/Admin.php:1850
+#: includes/controller/Admin.php:1890
+#: includes/controller/Admin.php:1915
+#: includes/controller/Admin.php:1942
 msgid "You do not have sufficient privileges to change settings."
 msgstr ""
 
-#: install.php:563
+#: install.php:560
 msgid "Find some Feathers you want."
 msgstr ""
 
@@ -2010,17 +2034,17 @@ msgstr ""
 msgid "The post's feather"
 msgstr ""
 
-#: includes/controller/Admin.php:138
+#: includes/controller/Admin.php:179
 msgid "You do not have sufficient privileges to manage any posts."
 msgstr ""
 
-#: upgrade.php:785
+#: upgrade.php:664
 msgid "Ensure that the Chyrp installation directory is writable by the server."
 msgstr ""
 
-#: includes/javascript.php:130
-#: includes/javascript.php:142
-#: includes/admin.js.php:65
+#: includes/javascript.php:129
+#: includes/javascript.php:141
+#: includes/admin.js.php:227
 msgid "Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."
 msgstr ""
 
@@ -2029,7 +2053,7 @@ msgstr ""
 msgid "Author"
 msgstr ""
 
-#: upgrade.php:769
+#: upgrade.php:648
 msgid "If any of your Modules or Feathers have new versions available for this release, check if an <code>upgrades.php</code> file exists in their main directory. If that file exists, run this upgrader again after enabling the Module or Feather and it will run the upgrade tasks."
 msgstr ""
 
@@ -2037,15 +2061,15 @@ msgstr ""
 msgid "Edit Posts"
 msgstr ""
 
-#: includes/controller/Admin.php:1087
+#: includes/controller/Admin.php:1150
 msgid "Chyrp content successfully imported!"
 msgstr ""
 
-#: includes/controller/Admin.php:1205
+#: includes/controller/Admin.php:1268
 msgid "Importing from Tumblr requires the Text, Video, Audio, Chat, Photo, Quote, and Link feathers to be installed and enabled."
 msgstr ""
 
-#: includes/controller/Main.php:202
+#: includes/controller/Main.php:208
 msgid "Registration successful."
 msgstr ""
 
@@ -2057,11 +2081,11 @@ msgstr ""
 msgid "Attribute pages to:"
 msgstr ""
 
-#: admin/index.php:144
+#: admin/index.php:145
 msgid "Page"
 msgstr ""
 
-#: admin/layout/pages/manage_pages.twig:59
+#: admin/layout/pages/manage_pages.twig:60
 msgid "Reorder Pages"
 msgstr ""
 
@@ -2074,7 +2098,7 @@ msgstr ""
 msgid "Edit Users"
 msgstr ""
 
-#: includes/admin.js.php:244
+#: includes/admin.js.php:330
 msgid "(tip: drag the tabs on the write page to reorder them)"
 msgstr ""
 
@@ -2082,11 +2106,11 @@ msgstr ""
 msgid "(if any)"
 msgstr ""
 
-#: install.php:559
+#: install.php:556
 msgid "CHMOD <code>/includes/caches</code> to 777."
 msgstr ""
 
-#: includes/controller/Admin.php:1726
+#: includes/controller/Admin.php:1823
 msgid "No Theme Specified"
 msgstr ""
 
@@ -2102,23 +2126,18 @@ msgstr ""
 msgid "New Password?"
 msgstr ""
 
-#: upgrade.php:134
-#, php-format
-msgid "Setting %s database setting to %s..."
-msgstr ""
-
-#: includes/controller/Admin.php:1949
+#: includes/controller/Admin.php:2047
 msgid "Trackbacks are special urls to posts from other blogs that your post is related to or references. The other blog will be notified of your post, and in some cases a comment will automatically be added to the post in question linking back to your post. It's basically a way to network between blogs via posts."
 msgstr ""
 
-#: includes/controller/Admin.php:65
-#: includes/controller/Admin.php:82
+#: includes/controller/Admin.php:106
+#: includes/controller/Admin.php:123
 msgid "You do not have sufficient privileges to edit this post."
 msgstr ""
 
 #: admin/layout/pages/manage_groups.twig:23
 #: admin/layout/pages/export.twig:31
-#: admin/index.php:161
+#: admin/index.php:162
 msgid "Groups"
 msgstr ""
 
@@ -2126,38 +2145,38 @@ msgstr ""
 msgid "The non-unique sanitized name"
 msgstr ""
 
-#: install.php:548
+#: install.php:545
 msgid "Install! &rarr;"
 msgstr ""
 
-#: includes/bookmarklet.php:212
-#: admin/layout/partials/post_fields.twig:32
+#: admin/layout/partials/post_fields.twig:36
 #: admin/layout/partials/page_fields.twig:15
+#: admin/layout/pages/bookmarklet.twig:205
 msgid "Publish"
 msgstr ""
 
-#: includes/controller/Admin.php:193
-#: includes/controller/Admin.php:204
+#: includes/controller/Admin.php:234
+#: includes/controller/Admin.php:245
 msgid "You do not have sufficient privileges to create pages."
 msgstr ""
 
-#: includes/class/SQL.php:93
+#: includes/class/SQL.php:108
 #, php-format
 msgid "Could not set \"<code>%s</code>\" database setting because <code>%s</code> is not writable."
+msgstr ""
+
+#: admin/layout/pages/bookmarklet.twig:7
+#: admin/layout/pages/bookmarklet.twig:224
+msgid "Chyrp!"
 msgstr ""
 
 #: admin/layout/pages/route_settings.twig:30
 msgid "(ex. 25)"
 msgstr ""
 
-#: upgrade.php:442
+#: upgrade.php:306
 #, php-format
 msgid "Sanitizing XML data of post #%d..."
-msgstr ""
-
-#: includes/bookmarklet.php:25
-#: includes/bookmarklet.php:230
-msgid "Chyrp!"
 msgstr ""
 
 #: admin/layout/pages/new_user.twig:11
@@ -2165,18 +2184,18 @@ msgstr ""
 msgid "Full Name"
 msgstr ""
 
-#: install.php:489
-#: install.php:532
+#: install.php:486
+#: install.php:529
 #: admin/layout/pages/import.twig:104
 #: admin/layout/pages/import.twig:148
 msgid "Username"
 msgstr ""
 
-#: upgrade.php:528
+#: upgrade.php:405
 msgid "Creating sessions table..."
 msgstr ""
 
-#: admin/layout/pages/manage_users.twig:31
+#: admin/layout/pages/manage_users.twig:32
 msgid "Joined"
 msgstr ""
 
@@ -2188,12 +2207,12 @@ msgstr ""
 msgid "Website:"
 msgstr ""
 
-#: includes/controller/Admin.php:25
-#: includes/bookmarklet.php:8
+#: includes/controller/Admin.php:27
+#: includes/controller/Admin.php:49
 msgid "Please install a feather or two in order to add a post."
 msgstr ""
 
-#: upgrade.php:91
+#: upgrade.php:110
 #, php-format
 msgid "Adding %s setting..."
 msgstr ""
@@ -2214,7 +2233,7 @@ msgstr ""
 msgid "Unspecified ID"
 msgstr ""
 
-#: upgrade.php:758
+#: upgrade.php:637
 #, php-format
 msgid "Calling \"%s\" feather's upgrader..."
 msgstr ""
@@ -2223,7 +2242,7 @@ msgstr ""
 msgid "Pages .atom File"
 msgstr ""
 
-#: install.php:453
+#: install.php:451
 msgid "(full path)"
 msgstr ""
 
@@ -2235,7 +2254,7 @@ msgstr ""
 msgid "Edit Pages"
 msgstr ""
 
-#: admin/index.php:187
+#: admin/index.php:188
 msgid "Content"
 msgstr ""
 
@@ -2260,36 +2279,36 @@ msgstr ""
 msgid "Usually something like <code>http://example.com/images/</code>."
 msgstr ""
 
-#: includes/controller/Admin.php:1958
+#: includes/controller/Admin.php:2056
 msgid "Move the .htaccess file from the original Chyrp directory, and change the <code>RewriteBase</code> line to reflect the new website location."
 msgstr ""
 
-#: includes/controller/Admin.php:1726
+#: includes/controller/Admin.php:1823
 msgid "You did not specify a theme to switch to."
 msgstr ""
 
-#: upgrade.php:346
-msgid "Renaming `add_tweet` permission to `add_post`..."
+#: includes/admin.js.php:63
+msgid "Toggle All"
 msgstr ""
 
 #: admin/layout/pages/new_user.twig:38
 msgid "Password?"
 msgstr ""
 
-#: includes/controller/Admin.php:276
-#: includes/controller/Admin.php:287
+#: includes/controller/Admin.php:317
+#: includes/controller/Admin.php:328
 msgid "You do not have sufficient privileges to delete pages."
 msgstr ""
 
-#: install.php:540
+#: install.php:537
 msgid "(again)"
 msgstr ""
 
-#: upgrade.php:766
+#: upgrade.php:645
 msgid "What now?"
 msgstr ""
 
-#: includes/controller/Admin.php:60
+#: includes/controller/Admin.php:101
 msgid "An ID is required to edit a post."
 msgstr ""
 

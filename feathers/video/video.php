@@ -1,11 +1,15 @@
 <?php
 	class Video extends Feathers implements Feather {
-		public function __construct() {
+		public function __init() {
 			$this->setField(array("attr" => "video",
 			                      "type" => "text_block",
 			                      "rows" => 4,
 			                      "label" => __("Video", "video"),
-			                      "bookmarklet" => (isset($_GET['url']) and strpos($_GET['url'], ".youtube.")) ? "url" : ""));
+			                      "bookmarklet" => (isset($_GET['url']) and
+			                                        preg_match("/http:\/\/(www\.|[a-z]{2}\.)?youtube\.com\/watch\?v=([^&]+)/",
+			                                                   $_GET['url'])) ?
+			                                        "url" :
+			                                        ""));
 			$this->setField(array("attr" => "caption",
 			                      "type" => "text_block",
 			                      "rows" => 4,
@@ -14,6 +18,10 @@
 			                      "preview" => true,
 			                      "bookmarklet" => "selection"));
 
+			$this->bookmarkletSelected(isset($_GET['url']) and
+			                           preg_match("/http:\/\/(www\.|[a-z]{2}\.)?youtube\.com\/watch\?v=([^&]+)/",
+			                                      $_GET['url']));
+
 			$this->setFilter("caption", "markup_post_text");
 		}
 		public function submit() {
@@ -21,8 +29,8 @@
 				error(__("Error"), __("Video can't be blank."));
 
 			return Post::add(array("embed" => $this->embed_tag($_POST['video']),
-			                        "video" => $_POST['video'],
-			                        "caption" => $_POST['caption']),
+			                       "video" => $_POST['video'],
+			                       "caption" => $_POST['caption']),
 			                 $_POST['slug'],
 			                 Post::check_url($_POST['slug']));
 		}

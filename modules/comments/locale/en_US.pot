@@ -1,20 +1,21 @@
-# Chyrp Translation File.
-# Copyright (C) 2007 Alex Suraci
-# This file is distributed under the same license as the Chyrp package.
-# Alex Suraci <suracil.icio.us@gmail.com>, 2007.
+# Chyrp v2.0 Beta 5 Translation File.
+# Copyright (C) YEAR Alex Suraci
+# This file is distributed under the same license as the Chyrp v2.0 Beta 5 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Chyrp v2.0 Beta 3\n"
+"Project-Id-Version: Chyrp v2.0 Beta 5\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-07-15 19:33-0500\n"
-"Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
-"Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
+"POT-Creation-Date: 2008-07-19 19:21+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
+"Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: modules/comments/pages/admin/manage_spam.twig:43
 #: modules/comments/pages/admin/manage_comments.twig:47
@@ -126,10 +127,6 @@ msgstr ""
 msgid "Delete Comments"
 msgstr ""
 
-#: modules/comments/upgrades.php:6
-msgid "Adding `signature` column to comments table..."
-msgstr ""
-
 #: modules/comments/pages/admin/manage_comments.twig:3
 #: modules/comments/pages/admin/manage_comments.twig:6
 msgid "Manage Comments"
@@ -195,10 +192,6 @@ msgstr ""
 msgid "Added"
 msgstr ""
 
-#: modules/comments/upgrades.php:10
-msgid "Adding `updated_at` column to comments table..."
-msgstr ""
-
 #: modules/comments/pages/admin/comment_settings.twig:3
 #: modules/comments/pages/admin/comment_settings.twig:6
 msgid "Comment Settings"
@@ -223,6 +216,10 @@ msgstr ""
 msgid "enabled"
 msgstr ""
 
+#: modules/comments/upgrades.php:4
+msgid "Adding signature column to comments table..."
+msgstr ""
+
 #: modules/comments/comments.php:72
 msgid "Author can't be blank."
 msgstr ""
@@ -237,6 +234,10 @@ msgstr ""
 
 #: modules/comments/info.yaml:5
 msgid "Adds commenting functionality to posts, including Defensio spam protection, auto-reloading, pagination, etc. etc."
+msgstr ""
+
+#: modules/comments/upgrades.php:8
+msgid "Adding updated_at column to comments table..."
 msgstr ""
 
 #: modules/comments/pages/admin/manage_spam.twig:26

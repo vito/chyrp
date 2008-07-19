@@ -29,8 +29,8 @@
 			fallback($_POST['slug'], sanitize($_POST['name']));
 
 			return Post::add(array("name" => $_POST['name'],
-			                        "source" => $_POST['source'],
-			                        "description" => $_POST['description']),
+			                       "source" => $_POST['source'],
+			                       "description" => $_POST['description']),
 			                 $_POST['slug'],
 			                 Post::check_url($_POST['slug']));
 		}

@@ -3,6 +3,8 @@ require "yaml"
 require "optparse"
 
 OPTIONS = {
+  :project => "Chyrp v2.0 Beta 5",
+  :maintainer => "Alex Suraci <suracil.icio.us@gmail.com>",
   :domain  => nil,
   :msgstr  => "",#"XXX",
   :msgstr_filter => "",#"XXX :: %s",
@@ -18,13 +20,17 @@ ARGV.options do |o|
 
   o.separator ""
 
+  o.on("--project=[val]", String,
+       "The name of the project the .pot file is for.") { |OPTIONS[:project]| }
+  o.on("--maintainer=[val]", String,
+       "The maintainer of the .pot file. (Firstname Lastname <foo@bar.com>)") { |OPTIONS[:maintainer]| }
   o.on("--domain=[val]", String,
-       "Domain to generate translations for.") { |OPTIONS[:domain]| }
+       "Domain to scan for translations.") { |OPTIONS[:domain]| }
   o.on("--msgstr=[val]", String,
        "Message string to translate all found translations to. Useful for debugging.") { |OPTIONS[:mststr]| }
-  o.on("--exclude=[val1,val1]", Array,
+  o.on("--exclude=[val1,val2]", Array,
        "A list of directories to exclude from the scan.") { |OPTIONS[:exclude]| }
-  o.on("--keys=[val1,val1]", Array,
+  o.on("--keys=[val1,val2]", Array,
        "A list of YAML keys for which to generate translations.") { |OPTIONS[:keys]| }
 
   o.separator ""
@@ -197,23 +203,24 @@ class Gettext
   end
 
   def print_pofile
-    puts '# Chyrp Translation File.'
-    puts '# Copyright (C) 2007 Alex Suraci'
-    puts '# This file is distributed under the same license as the Chyrp package.'
-    puts '# Alex Suraci <suracil.icio.us@gmail.com>, 2007.'
+    puts '# '+OPTIONS[:project]+' Translation File.'
+    puts '# Copyright (C) YEAR '+OPTIONS[:maintainer].gsub(/ <([^>]+)>/, "")
+    puts '# This file is distributed under the same license as the '+OPTIONS[:project]+' package.'
+    puts '# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.'
     puts '#'
     puts '#, fuzzy'
     puts 'msgid ""'
     puts 'msgstr ""'
-    puts '"Project-Id-Version: Chyrp v2.0 Beta 3\n"'
-    puts '"Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"'
-    puts '"POT-Creation-Date: 2007-08-03 00:29-0500\n"'
-    puts '"PO-Revision-Date: '+Time.now.strftime("%Y-%m-%d %H:%M")+'-0500\n"'
-    puts '"Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"'
-    puts '"Language-Team: English (en) <suracil.icio.us@gmail.com>\n"'
+    puts '"Project-Id-Version: '+OPTIONS[:project]+'\n"'
+    puts '"Report-Msgid-Bugs-To: '+OPTIONS[:maintainer].gsub(/[^<]+ <([^>]+)>/, "\\1")+'\n"'
+    puts '"POT-Creation-Date: '+Time.now.utc.strftime("%Y-%m-%d %H:%M")+'+0000\n"'
+    puts '"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"'
+    puts '"Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"'
+    puts '"Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"'
     puts '"MIME-Version: 1.0\n"'
-    puts '"Content-Type: text/plain; charset=UTF-8\n"'
+    puts '"Content-Type: text/plain; charset=CHARSET\n"'
     puts '"Content-Transfer-Encoding: 8bit\n"'
+    puts '"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"'
     puts ''
 
     output = ""

@@ -1,20 +1,21 @@
-# Chyrp Translation File.
-# Copyright (C) 2007 Alex Suraci
-# This file is distributed under the same license as the Chyrp package.
-# Alex Suraci <suracil.icio.us@gmail.com>, 2007.
+# Chyrp v2.0 Beta 5 Translation File.
+# Copyright (C) YEAR Alex Suraci
+# This file is distributed under the same license as the Chyrp v2.0 Beta 5 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Chyrp v2.0 Beta 3\n"
+"Project-Id-Version: Chyrp v2.0 Beta 5\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2007-08-03 00:29-0500\n"
-"PO-Revision-Date: 2008-07-15 19:33-0500\n"
-"Last-Translator: Alex Suraci <suracil.icio.us@gmail.com>\n"
-"Language-Team: English (en) <suracil.icio.us@gmail.com>\n"
+"POT-Creation-Date: 2008-07-19 19:21+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
+"Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: themes/stardust/content/sidebar.twig:70
 msgid "Load time:"
@@ -217,11 +218,6 @@ msgstr ""
 msgid "Toggle Admin Bar"
 msgstr ""
 
-#: themes/stardust/content/comment.twig:9
-#, php-format
-msgid "<strong>%s</strong> on %s"
-msgstr ""
-
 #: themes/stardust/layouts/default.twig:20
 msgid "Write"
 msgstr ""
@@ -353,6 +349,11 @@ msgstr ""
 
 #: themes/stardust/pages/search.twig:9
 msgid "No Results"
+msgstr ""
+
+#: themes/stardust/content/comment.twig:9
+#, php-format
+msgid "<strong>%s</strong> on <a href=\"%s\" class=\"permalink\">%s</a>"
 msgstr ""
 
 #: themes/stardust/content/post.twig:14
