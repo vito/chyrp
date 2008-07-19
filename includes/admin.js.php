@@ -596,13 +596,14 @@ var Extend = {
 			                /conflict_(.+)/,
 			                /ui-draggable(-dragging)?/])
 
+			var gradients = []
+
 			for (i = 0; i < classes.length; i++) {
 				var conflict = classes[i].replace("depends_", "module_")
 
 				if (dependency_displayed[$(this).attr("id")+" :: "+conflict])
 					continue;
 
-				canvas.strokeStyle = "#0096ff"
 				canvas.fillStyle = "#e4e3fb"
 				canvas.lineWidth = 3
 
@@ -615,6 +616,18 @@ var Extend = {
 
 					var line_to_x = (conflict_status == "enabled") ? $(this).offset().left : $(this).offset().left + $(this).outerWidth()
 					var line_to_y   = $(this).offset().top + 12
+					var height = line_to_y - line_from_y
+					var width = line_to_x - line_from_x
+
+					if (height == 0)
+						gradients[i] = canvas.createLinearGradient(line_from_x, 0, line_from_x + width, 0)
+					else
+						gradients[i] = canvas.createLinearGradient(0, line_from_y, 0, line_from_y + height)
+
+					gradients[i].addColorStop(0, '#0052cc');
+					gradients[i].addColorStop(1, '#0096ff');
+
+					canvas.strokeStyle = gradients[i]
 
 					// Line
 					canvas.moveTo(line_from_x, line_from_y)
@@ -644,7 +657,14 @@ var Extend = {
 					var line_to_x   = $(this).offset().left
 					var line_to_y   = $(this).offset().top + 12
 					var median = line_from_y + ((line_to_y - line_from_y) / 2)
+					var height = line_to_y - line_from_y
 					var curve = line_from_x - 25
+
+					gradients[i] = canvas.createLinearGradient(0, line_from_y, 0, line_from_y + height);
+					gradients[i].addColorStop(0, '#0052cc');
+					gradients[i].addColorStop(1, '#0096ff');
+
+					canvas.strokeStyle = gradients[i]
 
 					// Line
 					canvas.beginPath();
@@ -669,7 +689,14 @@ var Extend = {
 					var line_to_x   = $(this).offset().left + $(this).outerWidth()
 					var line_to_y   = $(this).offset().top + 12
 					var median = line_from_y + ((line_to_y - line_from_y) / 2)
+					var height = line_to_y - line_from_y
 					var curve = line_from_x + 25
+
+					gradients[i] = canvas.createLinearGradient(0, line_from_y, 0, line_from_y + height);
+					gradients[i].addColorStop(0, '#0052cc');
+					gradients[i].addColorStop(1, '#0096ff');
+
+					canvas.strokeStyle = gradients[i]
 
 					// Line
 					canvas.beginPath();
