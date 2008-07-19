@@ -105,7 +105,9 @@
 			$contents.= Horde_Yaml::dump($this->yaml);
 
 			if (!@file_put_contents(INCLUDES_DIR."/database.yaml.php", $contents)) {
-				Flash::warning(_f("Could not set \"<code>%s</code>\" database setting because <code>%s</code> is not writable.", array($setting, "/includes/database.yaml.php")));
+				if (!UPGRADING)
+					Flash::warning(_f("Could not set \"<code>%s</code>\" database setting because <code>%s</code> is not writable.", array($setting, "/includes/database.yaml.php")));
+
 				return false;
 			} else
 				return true;
