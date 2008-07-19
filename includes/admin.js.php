@@ -302,13 +302,13 @@ var Extend = {
 	prepare_draggables: function(){
 		$(".enable h2, .disable h2").append(" <span class=\"sub\"><?php echo __("(drag)"); ?></span>")
 
-		$(".disable > ul > li:not(.missing_dependency), .enable > ul > li:not(.missing_dependency)").draggable({
+		$(".disable > ul > li:not(.missing_dependency), .enable > ul > li").draggable({
 			zIndex: 100,
 			cancel: "a",
 			revert: true
 		})
 
-		$(".enable ul, .disable ul").droppable({
+		$(".enable > ul, .disable > ul").droppable({
 			accept: "ul.extend > li:not(.missing_dependency)",
 			tolerance: "pointer",
 			activeClass: "active",
@@ -321,7 +321,7 @@ var Extend = {
 			return false
 		})
 
-		$("ul.extend > li:not(.missing_dependency)").css("cursor", "move")
+		$(".enable > ul > li, .disable > ul > li:not(.missing_dependency)").css("cursor", "move")
 		$("ul.extend li .description:not(.expanded)").css("display", "none")
 
 		Extend.equalize_lists()
@@ -366,12 +366,14 @@ var Extend = {
 					extension: Extend.Drop.extension.name,
 					confirm: Extend.Drop.confirmed
 				},
-				beforeSend: Extend.Drop.pane.loader,
+				beforeSend: function(){ Extend.Drop.pane.loader() },
 				success: Extend.finish_drop
 			})
 		})
 
 		$(ui.draggable).css({ left: 0, right: 0, top: 0, bottom: 0 }).appendTo(this)
+
+		Extend.redraw()
 
 		return true
 	},
@@ -396,15 +398,22 @@ var Extend = {
 					                })
 					                .css("cursor", "move")
 			}
+		} else {
+			$(".depends_"+ Extend.Drop.extension.name).find(".dependencies_message, .dependencies_list, .description").show()
+			$(".depends_"+ Extend.Drop.extension.name)
+				.find(".dependencies_list")
+				.append($(document.createElement("li")).html(Extend.Drop.extension.name).addClass(Extend.Drop.extension.name))
+				.end()
+				.addClass("needs_"+ Extend.Drop.extension.name)
 		}
-
-		Extend.redraw()
 
 		Extend.Drop.pane.loader(true)
 		$(json.notifications).each(function(){
 			if (this == "") return
 			alert(this.replace(/<([^>]+)>\n?/gm, ""))
 		})
+
+		Extend.redraw()
 	},
 	equalize_lists: function(){
 		$("ul.extend").height("auto")

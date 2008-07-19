@@ -15,10 +15,21 @@
 						{% endif %}
 						${ "<a href=\"%s\">%s</a> v%s <span class=\"sub\">by %s</span>" | translate | format(module.url, module.name | translate(safename), module.version, module.author.link) }
 						<div class="expand">
-							<div class="description">
+							<div class="description{% if module.dependencies_needed %} expanded{% endif %}">
 								$module.description {# translation is done in the controller #}
+
+								<p class="dependencies_message"{% if not module.dependencies_needed %} style="display: none"{% endif %}>
+									${ "This Module requires the following Modules to be enabled:" | translate }
+								</p>
+								<ul class="dependencies_list"{% if not module.dependencies_needed %} style="display: none"{% endif %}>
+									{% for dependency in module.dependencies_needed %}
+									<li class="$dependency">$dependency</li>
+									{% endfor %}
+								</ul>
 							</div>
+							{% if not module.dependencies_needed %}
 							<noscript><a class="enable_button" href="{% admin "disable&module="~safename %}">${ "Disable" | translate }</a></noscript>
+							{% endif %}
 						</div>
 					</li>
 {% endfor %}

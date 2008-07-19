@@ -226,16 +226,19 @@ a:visited {
 	width: 15px;
 	height: 15px;
 }
+.enable ul li .dependencies_message,
 .disable ul li .dependencies_message {
 	margin: 1em 1em 0;
 	color: #ee1111;
 }
+.enable ul.dependencies_list,
 .disable ul.dependencies_list {
 	padding: 0 !important;
 	margin: .5em 2em;
 	border: 0;
 	background: transparent;
 }
+.enable ul.dependencies_list li,
 .disable ul.dependencies_list li {
 	padding: 0;
 	margin: 0;
