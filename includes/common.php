@@ -246,6 +246,25 @@
 	if (INDEX)
 		$route->determine_action();
 
+	# Variable: $visitor
+	# Holds the current user and their group.
+	$visitor = Visitor::current();
+
+	$config->theme = ($visitor->group()->can("change_settings") and
+	                      !empty($_GET['action']) and
+	                      $_GET['action'] == "theme_preview" and
+	                      !empty($_GET['theme'])) ?
+	                 $_GET['theme'] :
+	                 $config->theme;
+
+	# Constant: THEME_DIR
+	# Absolute path to /themes/(current theme)
+	define('THEME_DIR', MAIN_DIR."/themes/".$config->theme);
+
+	# Constant: THEME_URL
+	# URL to /themes/(current theme)
+	define('THEME_URL', $config->chyrp_url."/themes/".$config->theme);
+
 	# These are down here so that the modules are
 	# initialized after the $_GET values are filled.
 	/**
@@ -297,11 +316,9 @@
 			$route->check_viewing_post();
 			$route->check_viewing_page();
 		}
-	}
 
-	# Variable: $visitor
-	# Holds the current user and their group.
-	$visitor = Visitor::current();
+		$route->check_custom_routes();
+	}
 
 	# Array: $statuses
 	# An array of post statuses that <Visitor> can view.
@@ -318,21 +335,6 @@
 
 	Post::$private = "status IN ('".implode("', '", $statuses)."')";
 	Post::$enabled_feathers = "feather IN ('".implode("', '", $config->enabled_feathers)."')";
-
-	$config->theme = ($visitor->group()->can("change_settings") and
-	                      !empty($_GET['action']) and
-	                      $_GET['action'] == "theme_preview" and
-	                      !empty($_GET['theme'])) ?
-	                 $_GET['theme'] :
-	                 $config->theme;
-
-	# Constant: THEME_DIR
-	# Absolute path to /themes/(current theme)
-	define('THEME_DIR', MAIN_DIR."/themes/".$config->theme);
-
-	# Constant: THEME_URL
-	# URL to /themes/(current theme)
-	define('THEME_URL', $config->chyrp_url."/themes/".$config->theme);
 
 	# Load the translation engine
 	load_translator("chyrp", INCLUDES_DIR."/locale/".$config->locale.".mo");

@@ -13,14 +13,14 @@
 			              clean VARCHAR(250) DEFAULT '',
 			              post_id INTEGER DEFAULT '0'
 			             ) DEFAULT CHARSET=utf8");
-			Route::current()->add("tag/(name)/");
+			Route::current()->add("tag", "tag/(name)/");
 		}
 
 		static function __uninstall($confirm) {
 			if ($confirm)
 				SQL::current()->query("DROP TABLE __tags");
 
-			Route::current()->remove("tag/(name)/");
+			Route::current()->remove("tag");
 		}
 
 		public function new_post_options() {
@@ -121,13 +121,24 @@
 			echo "<td>".implode(", ", $post->tags["linked"])."</td>";
 		}
 
-		public function route_tag() {
+		public function check_route_tag() {
 			global $posts;
 
 			$posts = new Paginator(Post::find(array("placeholders" => true,
 			                                        "where" => "__tags.clean LIKE :tag",
 			                                        "params" => array(":tag" => "%{{".$_GET['name']."}}%"))),
 			                       Config::current()->posts_per_page);
+
+			return !empty($posts->paginated);
+		}
+
+		public function route_tag() {
+			global $posts;
+
+			if (!isset($posts))
+				return;
+			else
+				return $this->check_route_tag();
 		}
 
 		public function import_chyrp_post($entry, $post) {

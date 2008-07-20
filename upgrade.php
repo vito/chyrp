@@ -475,6 +475,23 @@
 		}
 
 	}
+
+	function update_custom_routes() {
+		$custom_routes = Config::get("routes");
+		if (empty($custom_routes)) return;
+
+		$new_routes = array();
+		foreach ($custom_routes as $key => $route) {
+			if (!is_int($key))
+				continue;
+
+			$split = array_filter(explode("/", $route));
+			echo _f("Updating custom route %s to new format...", array($route)).
+			     test(isset($split[0]) and $new_routes[$split[0]] = $route);
+		}
+
+		Config::set("routes", $new_routes);
+	}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -623,8 +640,9 @@
 
 		add_sessions_table();
 
-		# Needed from 2.0b3.1 -> 2.0rc1
 		update_permissions_table();
+
+		update_custom_routes();
 
 		foreach ((array) Config::get("enabled_modules") as $module)
 			if (file_exists(MAIN_DIR."/modules/".$module."/upgrades.php")) {

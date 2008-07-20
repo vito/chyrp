@@ -219,25 +219,6 @@
 				$_GET['feather'] = $this->arg[0];
 				return $this->action = "feather";
 			}
-
-			# Custom pages added by Modules, Feathers, Themes, etc.
-			foreach ($config->routes as $route)
-				if (preg_match_all("/\(([^\)]+)\)/", $route, $matches)) {
-					if (substr($config->post_url, -1) != "/")
-						$route = rtrim($route, "/");
-
-					$fix_slashes = str_replace("/", "\\/", $route);
-					$to_regexp = preg_replace("/\(([^\)]+)\)/", "([^\/]+)", $fix_slashes);
-
-					if (preg_match("/".$to_regexp."/", $this->request, $url_matches)) {
-						array_shift($url_matches);
-
-						foreach ($matches[1] as $index => $parameter)
-							$_GET[$parameter] = $url_matches[$index];
-
-						return $this->action = $this->arg[0];
-					}
-				}
 		}
 
 		public function check_viewing_page() {
@@ -281,6 +262,37 @@
 			return $this->action = (empty($this->arg[0])) ? "index" : $this->arg[0] ;
 		}
 
+		public function check_custom_routes() {
+			$config = Config::current();
+
+			# Custom pages added by Modules, Feathers, Themes, etc.
+			foreach ($config->routes as $action => $route) {
+				if (is_numeric($action))
+					$action = $this->arg[0];
+
+				preg_match_all("/\(([^\)]+)\)/", $route, $matches);
+
+				$route = rtrim($route, "/");
+
+				$fix_slashes = str_replace("/", "\\/", $route);
+				$to_regexp = preg_replace("/\(([^\)]+)\)/", "([^\/]+)", $fix_slashes);
+
+				if (preg_match("/".$to_regexp."/", $this->request, $url_matches)) {
+					array_shift($url_matches);
+
+					if (isset($matches[1]))
+						foreach ($matches[1] as $index => $parameter)
+							$_GET[$parameter] = $url_matches[$index];
+
+					$its_fine = true;
+					Trigger::current()->filter($its_fine, "check_route_".$action, $action);
+
+					if ($its_fine)
+						return $this->action = $action;
+				}
+			}
+		}
+
 		/**
 		 * Function: add
 		 * Adds a route to Chyrp. Only needed for actions that have more than one parameter.
@@ -292,10 +304,12 @@
 		 * See Also:
 		 *     <remove_route>
 		 */
-		public function add($path) {
+		public function add($action, $path) {
 			$config = Config::current();
+
 			$new_routes = $config->routes;
-			$new_routes[] = $path;
+			$new_routes[$action] = $path;
+
 			$config->set("routes", $new_routes);
 		}
 
@@ -309,16 +323,12 @@
 		 * See Also:
 		 *     <add_route>
 		 */
-		public function remove($path) {
-			$new_routes = array();
+		public function remove($action) {
 			$config = Config::current();
 
-			foreach ($config->routes as $route) {
-				if ($route == $path) continue;
-				$new_routes[] = $route;
-			}
+			unset($config->routes[$action]);
 
-			$config->set("routes", $new_routes);
+			$config->set("routes", $config->routes);
 		}
 
 		/**
