@@ -300,7 +300,8 @@ var Extend = {
 		Extend.equalize_lists()
 
 		if ($(".feather").size())
-			$(document.createElement("small")).html("<?php echo __("(tip: drag the tabs on the write page to reorder them)"); ?>").css({
+			<?php $tip = _f("(tip: drag the tabs on the <a href=\\\"%s\\\">write</a> page to reorder them)", array(url("/admin/?action=write"))); ?>
+			$(document.createElement("small")).html("<?php echo $tip; ?>").css({
 				position: "relative",
 				bottom: "-1em",
 				display: "block",

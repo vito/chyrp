@@ -38,7 +38,7 @@
 	 */
 	function error($title, $body) {
 		# Clear all output sent before this error.
-		if ($foo = ob_get_contents()) {
+		if (($foo = ob_get_contents()) !== false) {
 			ob_end_clean();
 
 			# Since the header might already be set to gzip, start output buffering again.
@@ -59,7 +59,7 @@
 		# Display the error.
 		require (defined('THEME_DIR') and file_exists(THEME_DIR."/content/error.php")) ? THEME_DIR."/content/error.php" : INCLUDES_DIR."/error.php" ;
 
-		if ($foo)
+		if ($foo !== false)
 			ob_end_flush();
 
 		exit;
@@ -153,8 +153,8 @@
 		# Handle URIs without domain
 		if ($url[0] == "/")
 			$url = (ADMIN or $use_chyrp_url) ?
-				Config::current()->chyrp_url.$url :
-				Config::current()->url.$url;
+			       Config::current()->chyrp_url.$url :
+			       Config::current()->url.$url ;
 		elseif (class_exists("Route") and !substr_count($url, "://"))
 			$url = url($url);
 

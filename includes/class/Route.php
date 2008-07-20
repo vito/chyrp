@@ -62,8 +62,14 @@
 		 *     Clean URL - if $config->clean_urls is set to *true*.
 		 *     Dirty URL - if $config->clean_urls is set to *false*.
 		 */
-		public function url($url) {
+		public function url($url, $use_chyrp_url = false) {
 			$config = Config::current();
+
+			if ($url[0] == "/")
+				return (ADMIN or $use_chyrp_url) ?
+				       Config::current()->chyrp_url.$url :
+				       Config::current()->url.$url ;
+
 			if ($config->clean_urls) { # If their post URL doesn't have a trailing slash, remove it from these as well.
 				if (substr($url, 0, 5) == "page/") # Different URL for viewing a page
 					$url = substr($url, 5);
