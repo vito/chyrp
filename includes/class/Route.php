@@ -266,18 +266,18 @@
 			$config = Config::current();
 
 			# Custom pages added by Modules, Feathers, Themes, etc.
-			foreach ($config->routes as $action => $route) {
+			foreach ($config->routes as $route => $action) {
 				if (is_numeric($action))
 					$action = $this->arg[0];
 
 				preg_match_all("/\(([^\)]+)\)/", $route, $matches);
 
-				$route = rtrim($route, "/");
+				$route = trim($route, "/");
 
-				$fix_slashes = str_replace("/", "\\/", $route);
-				$to_regexp = preg_replace("/\(([^\)]+)\)/", "([^\/]+)", $fix_slashes);
+				$escape = preg_quote($route, "/");
+				$to_regexp = preg_replace("/\\\\\(([^\)]+)\\\\\)/", "([^\/]+)", $escape);
 
-				if (preg_match("/".$to_regexp."/", $this->request, $url_matches)) {
+				if (preg_match("/^\/{$to_regexp}/", $this->request, $url_matches)) {
 					array_shift($url_matches);
 
 					if (isset($matches[1]))
@@ -304,7 +304,7 @@
 		 * See Also:
 		 *     <remove_route>
 		 */
-		public function add($action, $path) {
+		public function add($path, $action) {
 			$config = Config::current();
 
 			$new_routes = $config->routes;
@@ -323,10 +323,10 @@
 		 * See Also:
 		 *     <add_route>
 		 */
-		public function remove($action) {
+		public function remove($path) {
 			$config = Config::current();
 
-			unset($config->routes[$action]);
+			unset($config->routes[$path]);
 
 			$config->set("routes", $config->routes);
 		}

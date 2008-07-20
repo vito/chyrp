@@ -489,7 +489,7 @@
 			if (!isset($split[0]))
 				return;
 			echo _f("Updating custom route %s to new format...", array($route)).
-			     test(isset($split[0]) and $new_routes[$split[0]] = $route);
+			     test(isset($split[0]) and $new_routes[$route] = $split[0]);
 		}
 
 		Config::set("routes", $new_routes, "Setting new custom routes configuration...");

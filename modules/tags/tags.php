@@ -13,14 +13,14 @@
 			              clean VARCHAR(250) DEFAULT '',
 			              post_id INTEGER DEFAULT '0'
 			             ) DEFAULT CHARSET=utf8");
-			Route::current()->add("tag", "tag/(name)/");
+			Route::current()->add("tag/(name)/", "tag");
 		}
 
 		static function __uninstall($confirm) {
 			if ($confirm)
 				SQL::current()->query("DROP TABLE __tags");
 
-			Route::current()->remove("tag");
+			Route::current()->remove("tag/(name)/");
 		}
 
 		public function new_post_options() {

@@ -85,6 +85,11 @@ ol li {
 	list-style: decimal;
 }
 
+hr {
+	border: 0;
+	border-top: 1px solid #ddd;
+}
+
 a.comment_delete_link,
 a.comment_edit_link,
 a.delete_link,
@@ -419,6 +424,10 @@ div.post p,
 div.page p {
 	padding: 0 0 1em;
 	font-size: 1.1em;
+}
+div.post pre,
+div.page pre {
+	padding: 0 0 1.5em;
 }
 div.post blockquote {
 	padding: .5em .8em;
