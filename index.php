@@ -88,7 +88,7 @@
 					                              "timestamp" => $timestamp,
 					                              "url" => url("archive/".when("Y/m/", $time->created_at)));
 
-					$archives[$timestamp]["posts"] = Post::find(array("where" => "created_at like :created_at",
+					$archives[$timestamp]["posts"] = Post::find(array("where" => "created_at LIKE :created_at",
 					                                                  "params" => array(":created_at" => when("Y-m", $time->created_at)."%")));
 				}
 

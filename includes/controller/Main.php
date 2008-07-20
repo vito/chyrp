@@ -23,12 +23,12 @@
 
 			if (isset($_GET['day']))
 				$posts = new Paginator(Post::find(array("placeholders" => true,
-				                                        "where" => "created_at like :date",
+				                                        "where" => "created_at LIKE :date",
 				                                        "params" => array(":date" => $_GET['year']."-".$_GET['month']."-".$_GET['day']."%"))),
 				                       Config::current()->posts_per_page);
 			else
 				$posts = new Paginator(Post::find(array("placeholders" => true,
-				                                        "where" => "created_at like :date",
+				                                        "where" => "created_at LIKE :date",
 				                                        "params" => array(":date" => $_GET['year']."-".$_GET['month']."%"))),
 				                       Config::current()->posts_per_page);
 		}

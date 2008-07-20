@@ -40,32 +40,33 @@ a:hover {
 h1,
 h2 {
 	letter-spacing: -.01em;
-	margin-bottom: .5em;
 }
 h1 {
 	color: #344469;
 	font: bold 2.6em "palatino linotype", palatino, georgia, "times new roman", times, serif;
+	margin-bottom: .4em
 }
 h2 {
 	color: #664761;
 	font: bold 2em "palatino linotype", palatino, georgia, "times new roman", times, serif;
+	margin-bottom: .5em;
 }
 h3 {
 	font: bold 1.75em "palatino linotype", palatino, georgia, "times new roman", times, serif;
-	margin-bottom: .25em;
+	margin-bottom: .75em;
 }
 h4 {
 	font-size: 1.5em;
 	font-weight: bold;
-	margin-bottom: .4em;
+	margin-bottom: 1em;
 }
 h5 {
-	font-size: 1.25em;
+	font-size: 1em;
 	font-weight: bold;
-	margin-bottom: .3em;
+	margin-bottom: 1em;
 }
 h6 {
-	font-size: 1.125em;
+	font-size: .8em;
 	font-weight: bold;
 	margin-bottom: .2em;
 }
@@ -391,19 +392,19 @@ div.post a:link,
 div.post a:visited {
 	color: #3f5161;
 }
-div.post h2 {
+div.post h2.title {
 	font-size: 2em;
 	padding: 0 0 .3em 0;
 	margin: 0;
 }
-div.post h2 a:link,
-div.post h2 a:visited {
+div.post h2.title a:link,
+div.post h2.title a:visited {
 	color: #222;
 	font-size: .8em;
 	font-style: normal;
 	font-weight: bold;
 }
-div.post h2 a:hover {
+div.post h2.title a:hover {
 	color: #000;
 }
 div.post .pinned_text {
