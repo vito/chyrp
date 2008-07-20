@@ -1,7 +1,7 @@
 {% extends "layouts/default.twig" %}
 {% block content %}
 {% if archives %} {# List? (For all/yearly archives) #}
-{% if archives | length == 1 %}
+{% if GET.year != null %}
 	{% for archive in archives %}
 	<h1>${ "Archive of %s" | translate | format(archive.year) }</h1>
 	{% endfor %}
@@ -9,7 +9,7 @@
 	<h1>${ "Archives" | translate }</h1>
 {% endif %}
 	{% for archive in archives %}
-	{% if archives | length == 1 %}
+	{% if GET.year != null %}
 	<h2><a href="$archive.url">${ archive.timestamp | strftime("%B" | translate) }</a></h2>
 	{% else %}
 	<h2><a href="$archive.url">${ archive.timestamp | strftime("%B %Y" | translate) }</a></h2>

@@ -89,7 +89,7 @@
 			global $yaml;
 
 			if (!isset($message))
-				$message = _f("Setting %s to %s...", array($setting, print_r($value, true)));
+				$message = _f("Setting %s to %s...", array($setting, normalize(print_r($value, true))));
 
 			$yaml["config"][$setting] = $value;
 
@@ -486,11 +486,13 @@
 				continue;
 
 			$split = array_filter(explode("/", $route));
+			if (!isset($split[0]))
+				return;
 			echo _f("Updating custom route %s to new format...", array($route)).
 			     test(isset($split[0]) and $new_routes[$split[0]] = $route);
 		}
 
-		Config::set("routes", $new_routes);
+		Config::set("routes", $new_routes, "Setting new custom routes configuration...");
 	}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
