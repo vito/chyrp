@@ -50,6 +50,25 @@ h2 {
 	color: #664761;
 	font: bold 2em "palatino linotype", palatino, georgia, "times new roman", times, serif;
 }
+h3 {
+	font: bold 1.75em "palatino linotype", palatino, georgia, "times new roman", times, serif;
+	margin-bottom: .25em;
+}
+h4 {
+	font-size: 1.5em;
+	font-weight: bold;
+	margin-bottom: .4em;
+}
+h5 {
+	font-size: 1.25em;
+	font-weight: bold;
+	margin-bottom: .3em;
+}
+h6 {
+	font-size: 1.125em;
+	font-weight: bold;
+	margin-bottom: .2em;
+}
 
 ul {
 	margin: 0 0 0 1.75em;

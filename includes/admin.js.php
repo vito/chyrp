@@ -625,38 +625,6 @@ var Extend = {
 					canvas.fill()
 					canvas.stroke()
 				} else if (conflict_status == "disabled") {
-					var line_from_x = $("#"+conflict).offset().left
-					var line_from_y = $("#"+conflict).offset().top + 12
-					var line_to_x   = $(this).offset().left
-					var line_to_y   = $(this).offset().top + 12
-					var median = line_from_y + ((line_to_y - line_from_y) / 2)
-					var height = line_to_y - line_from_y
-					var curve = line_from_x - 25
-
-					gradients[i] = canvas.createLinearGradient(0, line_from_y, 0, line_from_y + height);
-					gradients[i].addColorStop(0, '#0052cc');
-					gradients[i].addColorStop(1, '#0096ff');
-
-					canvas.strokeStyle = gradients[i]
-
-					// Line
-					canvas.beginPath();
-					canvas.moveTo(line_from_x, line_from_y)
-					canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y);
-					canvas.stroke();
-
-					// Beginning circle
-					canvas.beginPath()
-					canvas.arc(line_from_x, line_from_y, 5, 1.35, -1.35, false)
-					canvas.fill()
-					canvas.stroke()
-
-					// Ending circle
-					canvas.beginPath()
-					canvas.arc(line_to_x, line_to_y, 5, 1.35, -1.35, false)
-					canvas.fill()
-					canvas.stroke()
-				} else if (conflict_status == "enabled") {
 					var line_from_x = $("#"+conflict).offset().left + $("#"+conflict).outerWidth()
 					var line_from_y = $("#"+conflict).offset().top + 12
 					var line_to_x   = $(this).offset().left + $(this).outerWidth()
@@ -686,6 +654,38 @@ var Extend = {
 					// Ending circle
 					canvas.beginPath()
 					canvas.arc(line_to_x, line_to_y, 5, -1.75, 1.75, false)
+					canvas.fill()
+					canvas.stroke()
+				} else if (conflict_status == "enabled") {
+					var line_from_x = $("#"+conflict).offset().left
+					var line_from_y = $("#"+conflict).offset().top + 12
+					var line_to_x   = $(this).offset().left
+					var line_to_y   = $(this).offset().top + 12
+					var median = line_from_y + ((line_to_y - line_from_y) / 2)
+					var height = line_to_y - line_from_y
+					var curve = line_from_x - 25
+
+					gradients[i] = canvas.createLinearGradient(0, line_from_y, 0, line_from_y + height);
+					gradients[i].addColorStop(0, '#0052cc');
+					gradients[i].addColorStop(1, '#0096ff');
+
+					canvas.strokeStyle = gradients[i]
+
+					// Line
+					canvas.beginPath();
+					canvas.moveTo(line_from_x, line_from_y)
+					canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y);
+					canvas.stroke();
+
+					// Beginning circle
+					canvas.beginPath()
+					canvas.arc(line_from_x, line_from_y, 5, 1.35, -1.35, false)
+					canvas.fill()
+					canvas.stroke()
+
+					// Ending circle
+					canvas.beginPath()
+					canvas.arc(line_to_x, line_to_y, 5, 1.35, -1.35, false)
 					canvas.fill()
 					canvas.stroke()
 				}
