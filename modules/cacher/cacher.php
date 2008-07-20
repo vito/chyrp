@@ -68,12 +68,12 @@
 		}
 
 		public function remove_expired() {
-			foreach (glob($this->caches."/*/*.html") as $file) {
+			foreach ((array) glob($this->caches."/*/*.html") as $file) {
 				if (time() - filemtime($file) > Config::current()->cache_expire)
 					unlink($file);
 
 				$dir = dirname($file);
-				if (!count(glob($dir."/*")))
+				if (!count((array) glob($dir."/*")))
 					rmdir($dir);
 			}
 		}
@@ -82,7 +82,7 @@
 			if (DEBUG)
 				error_log("REGENERATING");
 
-			foreach (glob($this->caches."/*/*.html") as $file)
+			foreach ((array) glob($this->caches."/*/*.html") as $file)
 				unlink($file);
 		}
 
@@ -91,7 +91,7 @@
 				error_log("REGENERATING local user ".$this->user."...");
 
 			$directory = (isset($user)) ? $this->caches."/".$user : $this->path ;
-			foreach (glob($directory."/*.html") as $file)
+			foreach ((array) glob($directory."/*.html") as $file)
 				unlink($file);
 		}
 
@@ -99,7 +99,7 @@
 			if (DEBUG)
 				error_log("REMOVING caches for ".$url."...");
 
-			foreach (glob($this->caches."/*/".md5($url).".html") as $file)
+			foreach ((array) glob($this->caches."/*/".md5($url).".html") as $file)
 				unlink($file);
 		}
 
