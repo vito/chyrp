@@ -38,7 +38,9 @@
 	 */
 	function error($title, $body) {
 		# Clear all output sent before this error.
-		if ($end = @ob_end_clean()) {
+		if ($foo = ob_get_contents()) {
+			ob_end_clean();
+
 			# Since the header might already be set to gzip, start output buffering again.
 			if (extension_loaded("zlib") and !ini_get("zlib.output_compression") and
 				isset($_SERVER['HTTP_ACCEPT_ENCODING']) and
@@ -57,7 +59,7 @@
 		# Display the error.
 		require (defined('THEME_DIR') and file_exists(THEME_DIR."/content/error.php")) ? THEME_DIR."/content/error.php" : INCLUDES_DIR."/error.php" ;
 
-		if ($end)
+		if ($foo)
 			ob_end_flush();
 
 		exit;
