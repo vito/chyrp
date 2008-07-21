@@ -9,7 +9,7 @@ $(function(){
 		var response = request.responseText
 		if (isError(response))
 			alert(response.replace(/(HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW|<([^>]+)>\n?)/gm, ""))
-	})<?php echo "\n\n\n\n\n"; # Balance out the line numbers in this script and in the output to help debugging. ?>
+	})<?php echo "\n\n\n\n"; # Balance out the line numbers in this script and in the output to help debugging. ?>
 
 	$(".toggle_admin").click(function(){
 		if (!$("#admin_bar:visible, #controls:visible").size()) {
@@ -22,10 +22,7 @@ $(function(){
 		return false
 	})
 
-	Post.prepare_links();
-
-<?php $trigger->call("javascript_domready"); ?>
-
+	Post.prepare_links()
 })
 
 var Route = {
@@ -225,5 +222,5 @@ function isError(text) {
 	return /HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW/m.test(text);
 }
 
-<?php $trigger->call("javascript"); ?>
+<?php echo "\n"; $trigger->call("javascript"); ?>
 <!-- --></script>

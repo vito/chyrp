@@ -84,7 +84,6 @@
 		}
 		public function player_js() {
 ?>
-<!-- --><script>
 var ap_instances = new Array();
 
 function ap_stopAll(playerID) {
@@ -110,7 +109,6 @@ function ap_registerPlayers() {
 }
 
 var ap_clearID = setInterval( ap_registerPlayers, 100 );
-<!-- --></script>
 <?php
 		}
 		public function enclose_mp3($id) {

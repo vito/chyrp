@@ -50,8 +50,6 @@ $(function(){
 	// Remove things that only exist for JS-disabled users.
 	$(".js_disabled").remove()
 	$(".js_enabled").css("display", "block")
-
-<?php echo "\n\n\n\n"; $trigger->call("admin_javascript_domready"); ?>
 })
 
 function togglers() {

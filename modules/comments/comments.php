@@ -463,11 +463,6 @@
 			echo '<td align="center"><a href="'.$post->url().'#comments">'.$post->comment_count.'</a></td>';
 		}
 
-		static function javascript_domready() {
-			$config = Config::current();
-			require "javascript_domready.php";
-		}
-
 		static function scripts($scripts) {
 			$scripts[] = Config::current()->chyrp_url."/modules/comments/javascript.php";
 			return $scripts;

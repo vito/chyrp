@@ -13,7 +13,7 @@ Arguments:
 manage_users_column
 -------------------
 Called from:
-	admin/layout/pages/manage_users.twig on line 49
+	admin/layout/pages/manage_users.twig on line 51
 Arguments:
 	user
 
@@ -27,7 +27,7 @@ Called from:
 import_textpattern_post
 -----------------------
 Called from:
-	includes/controller/Admin.php on line 1371
+	includes/controller/Admin.php on line 1434
 Arguments:
 	$post, $new_post
 
@@ -35,7 +35,7 @@ Arguments:
 import_wordpress_post
 ---------------------
 Called from:
-	includes/controller/Admin.php on line 1169
+	includes/controller/Admin.php on line 1232
 Arguments:
 	$item, $post
 
@@ -43,7 +43,7 @@ Arguments:
 import_chyrp_page
 -----------------
 Called from:
-	includes/controller/Admin.php on line 1084
+	includes/controller/Admin.php on line 1147
 Arguments:
 	$entry, $page
 
@@ -79,13 +79,7 @@ Called from:
 new_post_options
 ----------------
 Called from:
-	admin/layout/partials/post_fields.twig on line 87
-
-
-javascript_domready
--------------------
-Called from:
-	includes/javascript.php on line 33
+	admin/layout/partials/post_fields.twig on line 89
 
 
 add_post
@@ -114,12 +108,14 @@ before_post_fields
 ------------------
 Called from:
 	admin/layout/partials/post_fields.twig on line 1
+Arguments:
+	feather
 
 
 import_tumble
 -------------
 Called from:
-	includes/controller/Admin.php on line 1307
+	includes/controller/Admin.php on line 1370
 Arguments:
 	$post, $new_post
 
@@ -127,7 +123,7 @@ Arguments:
 import_chyrp_group
 ------------------
 Called from:
-	includes/controller/Admin.php on line 1006
+	includes/controller/Admin.php on line 1069
 Arguments:
 	Group::add($name, (array) $permissions)
 
@@ -163,7 +159,7 @@ Called from:
 import_movabletype_page
 -----------------------
 Called from:
-	includes/controller/Admin.php on line 1445
+	includes/controller/Admin.php on line 1508
 Arguments:
 	$post, $new_page, $link
 
@@ -171,7 +167,7 @@ Arguments:
 import_wordpress_page
 ---------------------
 Called from:
-	includes/controller/Admin.php on line 1179
+	includes/controller/Admin.php on line 1242
 Arguments:
 	$item, $post
 
@@ -185,7 +181,7 @@ Called from:
 manage_users_column_header
 --------------------------
 Called from:
-	admin/layout/pages/manage_users.twig on line 33
+	admin/layout/pages/manage_users.twig on line 34
 
 
 change_setting
@@ -242,13 +238,13 @@ Called from:
 runtime
 -------
 Called from:
-	includes/common.php on line 338
+	includes/common.php on line 353
 
 
 import_movabletype_post
 -----------------------
 Called from:
-	includes/controller/Admin.php on line 1442
+	includes/controller/Admin.php on line 1505
 Arguments:
 	$post, $new_post, $link
 
@@ -256,7 +252,7 @@ Arguments:
 javascript
 ----------
 Called from:
-	includes/javascript.php on line 215
+	includes/javascript.php on line 225
 
 
 add_page
@@ -284,19 +280,13 @@ Arguments:
 admin_javascript
 ----------------
 Called from:
-	includes/admin.js.php on line 503
-
-
-admin_javascript_domready
--------------------------
-Called from:
-	includes/admin.js.php on line 99
+	includes/admin.js.php on line 780
 
 
 import_chyrp_post
 -----------------
 Called from:
-	includes/controller/Admin.php on line 1061
+	includes/controller/Admin.php on line 1124
 Arguments:
 	$entry, $post
 
@@ -304,15 +294,23 @@ Arguments:
 import_chyrp_user
 -----------------
 Called from:
-	includes/controller/Admin.php on line 1033
+	includes/controller/Admin.php on line 1096
 Arguments:
 	$user
+
+
+before_bookmarklet_fields
+-------------------------
+Called from:
+	admin/layout/pages/bookmarklet.twig on line 178
+Arguments:
+	feather
 
 
 ajax_post_edit_form_javascript
 ------------------------------
 Called from:
-	includes/javascript.php on line 46
+	includes/javascript.php on line 43
 
 
 admin_head
@@ -337,7 +335,7 @@ edit_post_options
 -----------------
 Called from:
 	includes/ajax.php on line 80
-	admin/layout/partials/post_fields.twig on line 89
+	admin/layout/partials/post_fields.twig on line 87
 Arguments:
 	$post
 
@@ -362,12 +360,15 @@ after_post_fields
 -----------------
 Called from:
 	admin/layout/partials/post_fields.twig on line 26
+	admin/layout/pages/bookmarklet.twig on line 203
+Arguments:
+	feather
 
 
 can_not_view_site
 -----------------
 Called from:
-	includes/common.php on line 334
+	includes/common.php on line 349
 
 
 top
@@ -386,7 +387,7 @@ posts_export
 Target:
 	$posts_atom
 Called from:
-	includes/controller/Admin.php on line 775
+	includes/controller/Admin.php on line 828
 Arguments:
 	$post
 
@@ -396,7 +397,7 @@ filter_post
 Target:
 	$this
 Called from:
-	includes/model/Post.php on line 569
+	includes/model/Post.php on line 579
 
 
 admin_subnav
@@ -404,7 +405,7 @@ admin_subnav
 Target:
 	$subnav
 Called from:
-	admin/index.php on line 214
+	admin/index.php on line 215
 
 
 extend_nav
@@ -412,7 +413,7 @@ extend_nav
 Target:
 	$subnav["extend"]
 Called from:
-	admin/index.php on line 203
+	admin/index.php on line 204
 
 
 draft_situations
@@ -420,7 +421,7 @@ draft_situations
 Target:
 	$draft_situations
 Called from:
-	includes/common.php on line 302
+	includes/common.php on line 332
 
 
 manage_nav
@@ -428,7 +429,7 @@ manage_nav
 Target:
 	$subnav["manage"]
 Called from:
-	admin/index.php on line 166
+	admin/index.php on line 167
 
 
 page_export_url
@@ -436,7 +437,7 @@ page_export_url
 Target:
 	$url
 Called from:
-	includes/controller/Admin.php on line 837
+	includes/controller/Admin.php on line 895
 Arguments:
 	$page)
 
@@ -474,7 +475,7 @@ post_export_url
 Target:
 	$url
 Called from:
-	includes/controller/Admin.php on line 759
+	includes/controller/Admin.php on line 812
 Arguments:
 	$post)
 
@@ -494,7 +495,7 @@ post_url_token
 Target:
 	$tokens
 Called from:
-	includes/model/Post.php on line 726
+	includes/model/Post.php on line 736
 
 
 pages_export
@@ -502,7 +503,7 @@ pages_export
 Target:
 	$pages_atom
 Called from:
-	includes/controller/Admin.php on line 852
+	includes/controller/Admin.php on line 910
 Arguments:
 	$page
 
@@ -512,7 +513,7 @@ nav_selected
 Target:
 	$admin->context["selected"]
 Called from:
-	admin/index.php on line 95
+	admin/index.php on line 98
 
 
 excerpt
@@ -538,7 +539,7 @@ admin_redirectables
 Target:
 	$redirectable
 Called from:
-	includes/controller/Admin.php on line 1918
+	includes/controller/Admin.php on line 2016
 
 
 determine_action
@@ -546,7 +547,7 @@ determine_action
 Target:
 	$extended
 Called from:
-	includes/controller/Admin.php on line 1908
+	includes/controller/Admin.php on line 2006
 
 
 feed_content
@@ -564,7 +565,7 @@ settings_nav
 Target:
 	$subnav["settings"]
 Called from:
-	admin/index.php on line 193
+	admin/index.php on line 194
 
 
 title_from_excerpt
@@ -588,7 +589,7 @@ export
 Target:
 	$exports
 Called from:
-	includes/controller/Admin.php on line 935
+	includes/controller/Admin.php on line 998
 
 
 markup_page_text
