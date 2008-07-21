@@ -404,7 +404,7 @@
 
 		echo __("Creating sessions table...").
 		     test(SQL::current()->query("CREATE TABLE __sessions (
-		                                     id VARCHAR(32) DEFAULT '',
+		                                     id VARCHAR(40) DEFAULT '',
 		                                     data LONGTEXT,
 		                                     user_id INTEGER DEFAULT '0',
 		                                     created_at DATETIME DEFAULT '0000-00-00 00:00:00',
