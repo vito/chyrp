@@ -225,21 +225,14 @@
 			global $page, $main;
 
 			$config = Config::current();
-			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls)
-				return;
-
-			if (isset($this->action) and $this->action != "view")
-				$url = $this->action;
-			elseif (!isset($this->action))
-				$url = end($this->arg);
-			else
+			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls or isset($this->action))
 				return;
 
 			if (count($this->arg) == 1 and method_exists($main, $this->arg[0]))
 				return $this->action = $this->arg[0];
 
 			$page = new Page(null, array("where" => "url = :url",
-			                             "params" => array(":url" => $url)));
+			                             "params" => array(":url" => end($this->arg))));
 
 			if (!$page->no_results)
 				return list($_GET['url'], $this->action) = array(end($this->arg), "page");
@@ -248,6 +241,7 @@
 		public function check_viewing_post() {
 			global $main;
 			$config = Config::current();
+
 			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls or isset($this->action))
 				return;
 
@@ -295,6 +289,15 @@
 					if (isset($matches[1]))
 						foreach ($matches[1] as $index => $parameter)
 							$_GET[$parameter] = $url_matches[$index];
+
+					$params = explode(";", $action);
+					$action = $params[0];
+
+					array_shift($params);
+					foreach ($params as $param) {
+						$split = explode("=", $param);
+						$_GET[$split[0]] = $split[1];
+					}
 
 					$its_fine = true;
 					Trigger::current()->filter($its_fine, "check_route_".$action, $action);
