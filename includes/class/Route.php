@@ -225,21 +225,28 @@
 			global $page, $main;
 
 			$config = Config::current();
-			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls or isset($this->action))
+			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls)
+				return;
+
+			if (isset($this->action) and $this->action != "view")
+				$url = $this->action;
+			elseif (!isset($this->action))
+				$url = end($this->arg);
+			else
 				return;
 
 			if (count($this->arg) == 1 and method_exists($main, $this->arg[0]))
 				return $this->action = $this->arg[0];
 
 			$page = new Page(null, array("where" => "url = :url",
-			                             "params" => array(":url" => end($this->arg))));
+			                             "params" => array(":url" => $url)));
 
 			if (!$page->no_results)
 				return list($_GET['url'], $this->action) = array(end($this->arg), "page");
 		}
 
 		public function check_viewing_post() {
-			global $post, $main;
+			global $main;
 			$config = Config::current();
 			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls or isset($this->action))
 				return;
@@ -256,10 +263,11 @@
 					if ($parameters[1][$index][0] == "(")
 						$this->post_url_attrs[rtrim(ltrim($parameter, "("), ")")] = urldecode($this->arg[$index]);
 
-				return $this->action = "view";
-			}
+				$check = Post::from_url($this->post_url_attrs);
 
-			return $this->action = (empty($this->arg[0])) ? "index" : $this->arg[0] ;
+				if (!$check->no_results)
+					return $this->action = "view";
+			}
 		}
 
 		public function check_custom_routes() {
@@ -272,10 +280,14 @@
 
 				preg_match_all("/\(([^\)]+)\)/", $route, $matches);
 
-				$route = trim($route, "/");
+				if ($route != "/")
+					$route = trim($route, "/");
 
 				$escape = preg_quote($route, "/");
 				$to_regexp = preg_replace("/\\\\\(([^\)]+)\\\\\)/", "([^\/]+)", $escape);
+
+				if ($route == "/")
+					$to_regexp = "\$";
 
 				if (preg_match("/^\/{$to_regexp}/", $this->request, $url_matches)) {
 					array_shift($url_matches);
