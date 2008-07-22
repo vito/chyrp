@@ -1,11 +1,13 @@
 <?php
-	$loaded_models = array();
-
 	/**
 	 * Class: Model
 	 * The basis for the Models system.
 	 */
 	class Model {
+		# Array: $loaded_models
+		# Caches every loaded module into an array of results.
+		static $loaded_models = array();
+
 		/**
 		 * Function: grab
 		 * Grabs a single model from the database.
@@ -27,24 +29,23 @@
 		 *     read_from - An array to read from instead of performing another query.
 		 */
 		protected static function grab($model, $id, $options = array()) {
-			global $loaded_models;
 			$model_name = strtolower(get_class($model));
 
 			if ($model_name == "visitor")
 				$model_name = "user";
 
 			# Is this model already in the cache?
-			if (isset($loaded_models[$model_name][$id])) {
-				foreach ($loaded_models[$model_name][$id] as $key => $val)
+			if (isset(self::$loaded_models[$model_name][$id])) {
+				foreach (self::$loaded_models[$model_name][$id] as $key => $val)
 					$model->$key = $val;
 
 				$model->no_results = false;
 
-				if (isset($loaded_models[$model_name][$id]["queryString"]))
-					$model->queryString = $loaded_models[$model_name][$id]["queryString"];
+				if (isset(self::$loaded_models[$model_name][$id]["queryString"]))
+					$model->queryString = self::$loaded_models[$model_name][$id]["queryString"];
 
-				if (isset($loaded_models[$model_name][$id]["updated"]))
-					$model->updated = $loaded_models[$model_name][$id]["updated"];
+				if (isset(self::$loaded_models[$model_name][$id]["updated"]))
+					$model->updated = self::$loaded_models[$model_name][$id]["updated"];
 
 				return;
 			}
@@ -94,13 +95,13 @@
 
 			foreach ($read as $key => $val)
 				if (!is_int($key))
-					$model->$key = $loaded_models[$model_name][$read["id"]][$key] = $val;
+					$model->$key = self::$loaded_models[$model_name][$read["id"]][$key] = $val;
 
 			if (isset($query) and isset($query->query->queryString))
-				$model->queryString = $loaded_models[$model_name][$read["id"]]["queryString"] = $query->query->queryString;
+				$model->queryString = self::$loaded_models[$model_name][$read["id"]]["queryString"] = $query->query->queryString;
 
 			if (isset($model->updated_at))
-				$model->updated = $loaded_models[$model_name][$read["id"]]["updated"] = $model->updated_at != "0000-00-00 00:00:00";
+				$model->updated = self::$loaded_models[$model_name][$read["id"]]["updated"] = $model->updated_at != "0000-00-00 00:00:00";
 		}
 
 		/**

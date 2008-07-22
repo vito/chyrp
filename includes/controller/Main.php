@@ -13,6 +13,8 @@
 			$posts = new Paginator(Post::find(array("placeholders" => true)), Config::current()->posts_per_page);
 		}
 
+		private function __construct() { }
+
 		/**
 		 * Function: archive
 		 * Grabs the posts for the Archive page when viewing a year or a month.
@@ -322,5 +324,14 @@
 
 			Flash::warning(__("E-Mail could not be sent. Password change cancelled."));
 		}
+
+		/**
+		 * Function: current
+		 * Returns a singleton reference to the current class.
+		 */
+		public static function & current() {
+			static $instance = null;
+			return $instance = (empty($instance)) ? new self() : $instance ;
+		}
 	}
-	$main = new MainController();
+	$main = MainController::current();

@@ -52,7 +52,6 @@
 		 */
 		static function create($author, $email, $url, $body, $post, $type = null) {
 			if (!self::user_can($post->id)) return;
-			global $modules;
 
 			$config = Config::current();
 			$route = Route::current();

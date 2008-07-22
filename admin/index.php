@@ -16,8 +16,6 @@
 		}
 
 		public function load($action) {
-			global $admin, $theme;
-
 			# Are there any extension-added pages?
 			$trigger = Trigger::current();
 			foreach (array("write" => array(),
@@ -29,8 +27,9 @@
 			}
 
 			$visitor = Visitor::current();
+			$admin = AdminController::current();
 
-			$admin->context["theme"]       = $theme;
+			$admin->context["theme"]       = Theme::current();
 			$admin->context["flash"]       = Flash::current();
 			$admin->context["trigger"]     = $trigger;
 			$admin->context["title"]       = camelize($action, true);
@@ -121,10 +120,11 @@
 		}
 
 		public function subnav_context() {
-			global $admin, $action;
+			global $action;
 
 			$trigger = Trigger::current();
 			$visitor = Visitor::current();
+			$admin   = AdminController::current();
 
 			$admin->context["subnav"] = array();
 			$subnav =& $admin->context["subnav"];

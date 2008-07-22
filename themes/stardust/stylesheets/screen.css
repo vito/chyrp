@@ -421,7 +421,9 @@ div.post .pinned_text {
 	color: #e35533;
 }
 div.post p,
-div.page p {
+div.page p,
+div.post li,
+div.page li {
 	padding: 0 0 1em;
 	font-size: 1.1em;
 }

@@ -23,7 +23,7 @@
 			$excerpt = truncate($excerpt, 255);
 			$title = truncate($title, 250);
 
-			$trigger->call("trackback_receive");
+			$trigger->call("trackback_receive", $url, $title, $excerpt, $blog_name);
 			trackback_respond();
 		}
 	}

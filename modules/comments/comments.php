@@ -110,8 +110,10 @@
 		}
 
 		static function admin_delete_comment() {
-			global $admin;
+			$admin = AdminController::current();
+
 			$admin->context["comment"] = new Comment($_GET['id']);
+
 			if (!$admin->context["comment"]->deletable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this comment.", "comments"));
 		}
@@ -147,8 +149,6 @@
 			if (!Visitor::current()->group()->can("edit_comment", "delete_comment", true))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage any comments.", "comments"));
 
-			global $admin;
-
 			$params = array();
 			$where = array("status = 'spam'");
 
@@ -177,7 +177,7 @@
 				}
 			}
 
-			$admin->context["comments"] = new Paginator(Comment::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
+			AdminController::current()->context["comments"] = new Paginator(Comment::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
 		}
 
 		static function admin_purge_spam() {
@@ -218,9 +218,7 @@
 <?php
 		}
 
-		static function trackback_receive() {
-			global $comment, $url, $title, $excerpt, $blog_name;
-
+		static function trackback_receive($url, $title, $excerpt, $blog_name) {
 			$sql = SQL::current();
 			$count = $sql->count("comments",
 			                     array("post_id = :id",
@@ -239,8 +237,6 @@
 		}
 
 		static function pingback($id, $to, $from, $title, $excerpt) {
-			global $comment;
-
 			$sql = SQL::current();
 			$count = $sql->count("comments",
 			                     array("post_id = :id",
@@ -267,8 +263,6 @@
 		}
 
 		static function admin_comment_settings() {
-			global $admin;
-
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
@@ -325,9 +319,10 @@
 		}
 
 		public function admin_edit_comment() {
-			global $admin;
 			if (empty($_GET['id']))
 				error(__("No ID Specified"), __("An ID is required to edit a comment.", "comments"));
+
+			$admin = AdminController::current();
 
 			$admin->context["comment"] = new Comment($_GET['id'], array("filter" => false));
 
@@ -338,8 +333,6 @@
 		static function admin_manage_comments() {
 			if (!Comment::any_editable() and !Comment::any_deletable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage any comments.", "comments"));
-
-			global $admin;
 
 			$params = array();
 			$where = array("status != 'spam'");
@@ -375,7 +368,7 @@
 				$params[":visitor_id"] = $visitor->id;
 			}
 
-			$admin->context["comments"] = new Paginator(Comment::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
+			AdminController::current()->context["comments"] = new Paginator(Comment::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
 		}
 
 		static function admin_bulk_comments() {
@@ -469,13 +462,14 @@
 		}
 
 		static function ajax() {
-			global $theme, $comment;
 			header("Content-Type: application/x-javascript", true);
 
-			$config = Config::current();
-			$sql = SQL::current();
+			$config  = Config::current();
+			$sql     = SQL::current();
 			$trigger = Trigger::current();
 			$visitor = Visitor::current();
+			$theme   = Theme::current();
+
 			switch($_POST['action']) {
 				case "reload_comments":
 					$post = new Post($_POST['post_id']);

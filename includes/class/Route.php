@@ -222,13 +222,13 @@
 		}
 
 		public function check_viewing_page() {
-			global $page, $main;
+			global $page;
 
 			$config = Config::current();
 			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls or isset($this->action))
 				return;
 
-			if (count($this->arg) == 1 and method_exists($main, $this->arg[0]))
+			if (count($this->arg) == 1 and method_exists(MainController::current(), $this->arg[0]))
 				return $this->action = $this->arg[0];
 
 			$page = new Page(null, array("where" => "url = :url",
@@ -239,13 +239,12 @@
 		}
 
 		public function check_viewing_post() {
-			global $main;
 			$config = Config::current();
 
 			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls or isset($this->action))
 				return;
 
-			if (count($this->arg) == 1 and method_exists($main, $this->arg[0]))
+			if (count($this->arg) == 1 and method_exists(MainController::current(), $this->arg[0]))
 				return $this->action = $this->arg[0];
 
 			$post_url = $this->key_regexp(rtrim($config->post_url, "/"));

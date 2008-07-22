@@ -119,8 +119,6 @@
 		}
 
 		public function admin_cache_settings() {
-			global $admin;
-
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 

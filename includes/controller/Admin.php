@@ -12,6 +12,8 @@
 		# Holds the name of the Feather to be selected when they open the bookmarklet.
 		public $selected_bookmarklet;
 
+		private function __construct() { }
+
 		/**
 		 * Function: write
 		 * Post writing.
@@ -2056,5 +2058,14 @@
 					$body.= "</li>\n\t<li>".__("Move the .htaccess file from the original Chyrp directory, and change the <code>RewriteBase</code> line to reflect the new website location.")."</li>\n</ol>";
 			}
 		}
+
+		/**
+		 * Function: current
+		 * Returns a singleton reference to the current class.
+		 */
+		public static function & current() {
+			static $instance = null;
+			return $instance = (empty($instance)) ? new self() : $instance ;
+		}
 	}
-	$admin = new AdminController();
+	$admin = AdminController::current();
