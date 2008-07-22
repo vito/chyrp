@@ -24,7 +24,7 @@
 		                         array("Session", "destroy"),
 		                         array("Session", "gc"));
 		session_set_cookie_params(60 * 60 * 24 * 30);
-		session_name(sanitize(camelize(Config::current()->name)."ChyrpSession", false, true));
+		session_name("ChyrpSession");
 		session_start();
 	}
 
