@@ -2,7 +2,7 @@
 				<form action="$site.url" method="get" accept-charset="utf-8">
 					<fieldset>
 						<input type="hidden" name="action" value="search" id="action" />
-						<input type="text" id="search" name="query" />
+						<input type="text" id="search" name="query" value="${ GET.query | escape }" />
 					</fieldset>
 				</form>
 
