@@ -136,10 +136,4 @@
 			if (Config::current()->set("cache_expire", $_POST['cache_expire']))
 				Flash::notice(__("Settings updated."), "/admin/?action=cache_settings");
 		}
-
-		public function route_regenerate() {
-			if (!DEBUG) return;
-			$this->regenerate();
-			Flash::message("Regenerated!", "/");
-		}
 	}

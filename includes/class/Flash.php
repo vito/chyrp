@@ -161,6 +161,8 @@
 				foreach (array("messages", "notices", "warnings") as $type)
 					if (!empty($_SESSION[$type]))
 						return self::$exists = true;
+
+			return false;
 		}
 
 		/**
