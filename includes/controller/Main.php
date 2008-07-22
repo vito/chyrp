@@ -80,8 +80,6 @@
 				}
 			}
 
-			var_dump($where, $params);
-
 			$posts = new Paginator(Post::find(array("placeholders" => true,
 			                                        "where" => $where,
 			                                        "params" => $params)),
