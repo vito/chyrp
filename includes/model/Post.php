@@ -32,16 +32,18 @@
 				if (substr_count($where, "status"))
 					$has_status = true;
 
-			$options["where"][] = self::$enabled_feathers;
-			if (!$has_status)
-				$options["where"][] = self::$private;
+			if (!XML_RPC) {
+				$options["where"][] = self::$enabled_feathers;
+				if (!$has_status)
+					$options["where"][] = self::$private;
+			}
 
 			parent::grab($this, $post_id, $options);
 
 			if ($this->no_results)
 				return false;
 
-			$this->filtered = !isset($options["filter"]) or $options["filter"];
+			$this->filtered = (!isset($options["filter"]) or $options["filter"]) and !XML_RPC;
 			$this->slug =& $this->url;
 			fallback($this->clean, $this->url);
 
@@ -160,13 +162,15 @@
 				                 ':id' => $id
 				             ));
 
-			$trackbacks = explode(",", $trackbacks);
-			$trackbacks = array_map('trim', $trackbacks);
-			$trackbacks = array_map('strip_tags', $trackbacks);
-			$trackbacks = array_unique($trackbacks);
-			$trackbacks = array_diff($trackbacks, array(""));
-			foreach ($trackbacks as $url)
-				trackback_send($id, $url);
+			if ($trackbacks !== '') {
+				$trackbacks = explode(",", $trackbacks);
+				$trackbacks = array_map('trim', $trackbacks);
+				$trackbacks = array_map('strip_tags', $trackbacks);
+				$trackbacks = array_unique($trackbacks);
+				$trackbacks = array_diff($trackbacks, array(""));
+				foreach ($trackbacks as $url)
+					trackback_send($id, $url);
+			}
 
 			$post = new self($id);
 
