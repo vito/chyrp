@@ -137,14 +137,20 @@
 				$$("[id$$='_form']").hide()
 				$$("#"+id+"_form").show()
 				$$(".nav_" + id).addClass("selected")
+
+				$$("#"+id+"_form input.text").each(function(){
+					var min = $$(this).outerWidth()
+					var max = $$(this).parent().outerWidth() - 8
+					$$(this).Autoexpand(max)
+				})
 			}
 			$$(function(){
-				$$("input.text").each(function(){
-					$$(this).css({
-						minWidth: $$(this).outerWidth(),
-						maxWidth: $$(this).parent().outerWidth() - 8
-					}).Autoexpand()
+				$$("form:visible input.text").each(function(){
+					var min = $$(this).outerWidth()
+					var max = $$(this).parent().outerWidth() - 8
+					$$(this).Autoexpand(max)
 				})
+
 				$$(".navigation li").css("float", "left")
 				$$(".navigation").sortable({
 					axis: "x",

@@ -26,7 +26,7 @@
 
 			if (isset($_GET['url']) and
 			    preg_match("/http:\/\/(www\.)?flickr\.com\/photos\/([^\/]+)\/([0-9]+)/", $_GET['url'])) {
-				$this->bookmarkletSelected(true);
+				$this->bookmarkletSelected();
 
 				$page = get_remote($_GET['url']);
 				preg_match("/class=\"photoImgDiv\">\n<img src=\"([^\?\"]+)/", $page, $image);
@@ -36,6 +36,16 @@
 				                      "label" => __("From URL?", "photo"),
 				                      "optional" => true,
 				                      "value" => $image[1]));
+			}
+
+			if (isset($_GET['url']) and preg_match("/\.(jpg|jpeg|png|gif|bmp)$/", $_GET['url'])) {
+				$this->bookmarkletSelected();
+
+				$this->setField(array("attr" => "from_url",
+				                      "type" => "text",
+				                      "label" => __("From URL?", "photo"),
+				                      "optional" => true,
+				                      "value" => $_GET['url']));
 			}
 		}
 		public function swfupload($post = null) {

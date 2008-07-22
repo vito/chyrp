@@ -63,7 +63,7 @@
 		 * Function: bookmarkletSelected
 		 * If $boolean is true, the Feather that this function is called from will be selected when they open the Bookmarklet.
 		 */
-		protected function bookmarkletSelected($boolean) {
+		protected function bookmarkletSelected($boolean = true) {
 			if ($boolean)
 				AdminController::current()->selected_bookmarklet = $this->safename;
 		}
