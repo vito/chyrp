@@ -66,9 +66,9 @@ class Gettext
         end
       else
         next unless path =~ /\.(php|twig|yaml)/
-        @files << [cleaned, path] if File.read(path) =~ /(__|_f|_p)\(".*?"#{@domain}\)/
-        @files << [cleaned, path] if File.read(path) =~ /".*?" ?\| ?translate#{@twig_domain}/
-        @files << [cleaned, path] if File.read(path) =~ /".*?" ?\| ?translate_plural\(".*?", ?.*?#{@domain}\) ?\| ?format\(.*?\)/
+        @files << [cleaned, path] if File.read(path) =~ /(__|_f|_p)\(("|').*?\2#{@domain}\)/
+        @files << [cleaned, path] if File.read(path) =~ /("|').*?\1 ?\| ?translate#{@twig_domain}/
+        @files << [cleaned, path] if File.read(path) =~ /("|').*?\1 ?\| ?translate_plural\(("|').*?\2, ?.*?#{@domain}\) ?\| ?format\(.*?\)/
         @files << [cleaned, path] if path =~ /\.yaml/
       end
     end
@@ -98,73 +98,73 @@ class Gettext
   end
 
   def scan_normal(text, line, filename, clean_filename)
-    text.gsub(/__\("([^"]+)"#{@domain}\)/) do
-      if @translations[$1].nil?
-        @translations[$1] = { :places => [clean_filename + ":" + line.to_s],
+    text.gsub(/__\(("|')([^"]+)\1#{@domain}\)/) do
+      if @translations[$2].nil?
+        @translations[$2] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => false,
                               :plural => false }
-      elsif not @translations[$1][:places].include?(clean_filename + ":" + line.to_s)
-        @translations[$1][:places] << clean_filename + ":" + line.to_s
+      elsif not @translations[$2][:places].include?(clean_filename + ":" + line.to_s)
+        @translations[$2][:places] << clean_filename + ":" + line.to_s
       end
     end
   end
 
   def scan_filter(text, line, filename, clean_filename)
-    text.gsub(/_f\("([^"]+)", .*?#{@domain}\)/) do
-      if @translations[$1].nil?
-        @translations[$1] = { :places => [clean_filename + ":" + line.to_s],
+    text.gsub(/_f\(("|')([^"]+)\1, .*?#{@domain}\)/) do
+      if @translations[$2].nil?
+        @translations[$2] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => true,
                               :plural => false }
-      elsif not @translations[$1][:places].include?(clean_filename + ":" + line.to_s)
-        @translations[$1][:places] << clean_filename + ":" + line.to_s
+      elsif not @translations[$2][:places].include?(clean_filename + ":" + line.to_s)
+        @translations[$2][:places] << clean_filename + ":" + line.to_s
       end
     end
   end
 
   def scan_plural(text, line, filename, clean_filename)
-    text.gsub(/_p\("([^"]+)", "([^"]+)", .*?#{@domain}\)/) do
-      if @translations[$1].nil?
-        @translations[$1] = { :places => [clean_filename + ":" + line.to_s],
+    text.gsub(/_p\(("|')([^"]+)\1, ("|')([^"]+)\3, .*?#{@domain}\)/) do
+      if @translations[$2].nil?
+        @translations[$2] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => true,
-                              :plural => $2 }
-      elsif not @translations[$1][:places].include?(clean_filename + ":" + line.to_s)
-        @translations[$1][:places] << clean_filename + ":" + line.to_s
+                              :plural => $4 }
+      elsif not @translations[$2][:places].include?(clean_filename + ":" + line.to_s)
+        @translations[$2][:places] << clean_filename + ":" + line.to_s
       end
     end
   end
 
   def scan_twig(text, line, filename, clean_filename)
-    text.gsub(/"([^"]+)" ?\| ?translate(?!_plural)#{@twig_domain}(?! ?\| ?format)/) do
-      if @translations[$1].nil?
-        @translations[$1] = { :places => [clean_filename + ":" + line.to_s],
+    text.gsub(/("|')([^"]+)\1 ?\| ?translate(?!_plural)#{@twig_domain}(?! ?\| ?format)/) do
+      if @translations[$2].nil?
+        @translations[$2] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => false,
                               :plural => false }
-      elsif not @translations[$1][:places].include?(clean_filename + ":" + line.to_s)
-        @translations[$1][:places] << clean_filename + ":" + line.to_s
+      elsif not @translations[$2][:places].include?(clean_filename + ":" + line.to_s)
+        @translations[$2][:places] << clean_filename + ":" + line.to_s
       end
     end
   end
 
   def scan_twig_filter(text, line, filename, clean_filename)
-    text.gsub(/"([^"]+)" ?\| ?translate(?!_plural)#{@twig_domain} ?\| ?format\(.*?\).*?/) do
-      if @translations[$1].nil?
-        @translations[$1] = { :places => [clean_filename + ":" + line.to_s],
+    text.gsub(/("|')([^"]+)\1 ?\| ?translate(?!_plural)#{@twig_domain} ?\| ?format\(.*?\).*?/) do
+      if @translations[$2].nil?
+        @translations[$2] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => true,
                               :plural => false }
-      elsif not @translations[$1][:places].include?(clean_filename + ":" + line.to_s)
-        @translations[$1][:places] << clean_filename + ":" + line.to_s
+      elsif not @translations[$2][:places].include?(clean_filename + ":" + line.to_s)
+        @translations[$2][:places] << clean_filename + ":" + line.to_s
       end
     end
   end
 
   def scan_twig_plural(text, line, filename, clean_filename)
-    text.gsub(/"([^"]+)" ?\| ?translate_plural\("([^"]+)", .*?#{@domain}\) ?\| ?format\(.*?\)/) do
-      if @translations[$1].nil?
-        @translations[$1] = { :places => [clean_filename + ":" + line.to_s],
+    text.gsub(/("|')([^"]+)\1 ?\| ?translate_plural\(("|')([^"]+)\3, .*?#{@domain}\) ?\| ?format\(.*?\)/) do
+      if @translations[$2].nil?
+        @translations[$2] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => true,
-                              :plural => $2 }
-      elsif not @translations[$1][:places].include?(clean_filename + ":" + line.to_s)
-        @translations[$1][:places] << clean_filename + ":" + line.to_s
+                              :plural => $4 }
+      elsif not @translations[$2][:places].include?(clean_filename + ":" + line.to_s)
+        @translations[$2][:places] << clean_filename + ":" + line.to_s
       end
     end
   end

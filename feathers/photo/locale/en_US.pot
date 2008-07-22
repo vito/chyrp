@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 5\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-07-19 19:21+0000\n"
+"POT-Creation-Date: 2008-07-22 21:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: feathers/photo/photo.php:97
+#: feathers/photo/photo.php:121
 msgid "Alt-Text"
 msgstr ""
 
@@ -35,6 +35,8 @@ msgid "A photo feather, allowing you to upload any type of picture, with a capti
 msgstr ""
 
 #: feathers/photo/photo.php:9
+#: feathers/photo/photo.php:36
+#: feathers/photo/photo.php:46
 msgid "From URL?"
 msgstr ""
 
