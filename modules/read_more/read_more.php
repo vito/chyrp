@@ -1,6 +1,6 @@
 <?php
 	class ReadMore extends Modules {
-		public function __construct() {
+		public function __init() {
 			$this->addAlias("markup_post_text", "makesafe", 8);
 		}
 		static function makesafe($text, $post = null) {

@@ -1,6 +1,6 @@
 <?php
 	class Tags extends Modules {
-		public function __construct() {
+		public function __init() {
 			$this->addAlias('metaWeblog_newPost_preQuery', 'metaWeblog_editPost_preQuery');
 			$this->addAlias("post_grab", "posts_get");
 		}

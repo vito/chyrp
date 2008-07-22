@@ -1,6 +1,6 @@
 <?php
 	class Audio extends Feathers implements Feather {
-		public function __construct() {
+		public function __init() {
 			$this->setField(array("attr" => "audio",
 			                      "type" => "file",
 			                      "label" => __("MP3 File", "audio")));

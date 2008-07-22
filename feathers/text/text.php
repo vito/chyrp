@@ -1,6 +1,6 @@
 <?php
 	class Text extends Feathers implements Feather {
-		public function __construct() {
+		public function __init() {
 			$this->setField(array("attr" => "title",
 			                      "type" => "text",
 			                      "label" => __("Title", "text"),

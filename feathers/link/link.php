@@ -1,6 +1,6 @@
 <?php
 	class Link extends Feathers implements Feather {
-		public function __construct() {
+		public function __init() {
 			$this->setField(array("attr" => "source",
 			                      "type" => "text",
 			                      "label" => __("URL", "link"),

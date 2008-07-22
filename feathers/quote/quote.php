@@ -1,6 +1,6 @@
 <?php
 	class Quote extends Feathers implements Feather {
-		public function __construct() {
+		public function __init() {
 			$this->setField(array("attr" => "quote",
 			                      "type" => "text_block",
 			                      "rows" => 5,
