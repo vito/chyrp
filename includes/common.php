@@ -279,6 +279,8 @@
 		$feathers[$feather] = new $camelized;
 		$feathers[$feather]->safename = $feather;
 
+		if (!ADMIN) continue;
+
 		foreach (Horde_Yaml::loadFile(FEATHERS_DIR."/".$feather."/info.yaml") as $key => $val)
 			$feathers[$feather]->$key = $val;
 	}
@@ -295,16 +297,18 @@
 		$modules[$module] = new $camelized;
 		$modules[$module]->safename = $module;
 
+		if (!ADMIN) continue;
+
 		foreach (Horde_Yaml::loadFile(MODULES_DIR."/".$module."/info.yaml") as $key => $val)
 			$modules[$module]->$key = $val;
 	}
 
 	# Now that they're all instantiated, call __init().
 	foreach ($feathers as $feather)
-		if (is_callable(array($feather, "__init")))
+		if (method_exists($feather, "__init"))
 			$feather->__init();
 	foreach ($modules as $module)
-		if (is_callable(array($module, "__init")))
+		if (method_exists($module, "__init"))
 			$module->__init();
 
 	if (INDEX) {
@@ -319,6 +323,8 @@
 			$route->check_viewing_page(true);
 		}
 	}
+
+	$trigger->call("runtime");
 
 	# Array: $statuses
 	# An array of post statuses that <Visitor> can view.
@@ -349,8 +355,6 @@
 				$trigger->call("can_not_view_site");
 			else
 				show_403(__("Access Denied"), __("You are not allowed to view this site."));
-
-		$trigger->call("runtime");
 
 		if (isset($_GET['feed']))
 			$config->posts_per_page = $config->feed_items;

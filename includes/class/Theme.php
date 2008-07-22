@@ -291,7 +291,8 @@
 			$this->context["sql_queries"]  =& SQL::current()->queries;
 
 			$this->context["visitor"]->logged_in = logged_in();
-			$trigger->filter($this->context, array("twig_global_context", "twig_context_".str_replace("/", "_", $this->file)));
+			$local_file = str_replace(THEME_DIR."/", "", $this->file);
+			$trigger->filter($this->context, array("twig_global_context", "twig_context_".str_replace("/", "_", $local_file)));
 
 			$this->context["enabled_modules"] = array();
 			foreach ($config->enabled_modules as $module)

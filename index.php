@@ -1,8 +1,6 @@
 <?php
 	require_once "includes/common.php";
 
-	$trigger->call("top");
-
 	switch($route->action) {
 		case "index": case "search": case "drafts": case "feather":
 			$context = array("posts" => $posts);

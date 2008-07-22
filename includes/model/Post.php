@@ -401,7 +401,7 @@
 			              urlencode($this->feather),
 			              urlencode(pluralize($this->feather)));
 
-			Trigger::current()->filter($vals, "url_vals", $this->id);
+			Trigger::current()->filter($vals, "url_vals", $this);
 			return $config->url."/".str_replace(array_keys(Route::current()->code), $vals, $config->post_url);
 		}
 

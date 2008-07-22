@@ -101,15 +101,11 @@
 		 *     $key - Input URL with the keys from <Routes->$code>.
 		 *
 		 * Returns:
-		 *     $regexp - $key values replaced with their regular expressions from <Routes->$code>.
+		 *     $key values replaced with their regular expressions from <Routes->$code>.
 		 */
 		private function key_regexp($key) {
 			Trigger::current()->filter($this->code, "url_code");
-
-			$replace = str_replace("/", "\\/", $key);
-			$replace = str_replace(array_keys($this->code), array_values($this->code), $replace);
-
-			return $replace;
+			return str_replace(array_keys($this->code), array_values($this->code), str_replace("/", "\\/", $key));
 		}
 
 		/**
