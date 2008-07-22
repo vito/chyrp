@@ -152,10 +152,7 @@
 				$post = Post::from_url($route->post_url_attrs);
 
 			if ($post->no_results)
-				if (count($route->arg) == 1)
-					return $route->action = $route->arg[0];
-				else
-					show_404();
+				show_404();
 		}
 
 		/**

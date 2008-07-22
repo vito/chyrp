@@ -29,7 +29,12 @@
 		}
 
 		public function runtime() {
-			if (!file_exists($this->file))
+			if (!file_exists($this->file) or Flash::exists())
+				return;
+
+			$action = Route::current()->action;
+
+			if (in_array($action, array("login", "logout", "register", "lost_password")))
 				return;
 
 			if (DEBUG)
@@ -39,7 +44,7 @@
 		}
 
 		public function bottom() {
-			if (file_exists($this->file))
+			if (file_exists($this->file) or Flash::exists())
 				return;
 
 			if (DEBUG)
@@ -130,5 +135,11 @@
 
 			if (Config::current()->set("cache_expire", $_POST['cache_expire']))
 				Flash::notice(__("Settings updated."), "/admin/?action=cache_settings");
+		}
+
+		public function route_regenerate() {
+			if (!DEBUG) return;
+			$this->regenerate();
+			Flash::message("Regenerated!", "/");
 		}
 	}

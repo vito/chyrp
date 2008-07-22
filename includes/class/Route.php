@@ -221,11 +221,11 @@
 			}
 		}
 
-		public function check_viewing_page() {
+		public function check_viewing_page($i_have_the_power = false) {
 			global $page;
 
 			$config = Config::current();
-			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls or isset($this->action))
+			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls or !empty($this->action))
 				return;
 
 			if (count($this->arg) == 1 and method_exists(MainController::current(), $this->arg[0]))
@@ -234,14 +234,19 @@
 			$page = new Page(null, array("where" => "url = :url",
 			                             "params" => array(":url" => end($this->arg))));
 
+			if ($i_have_the_power)
+				error_log(print_r($this->arg, true));
+
 			if (!$page->no_results)
 				return list($_GET['url'], $this->action) = array(end($this->arg), "page");
+			elseif ($i_have_the_power)
+				return $this->action = fallback($this->arg[0], "index");
 		}
 
-		public function check_viewing_post() {
+		public function check_viewing_post($i_have_the_power = false) {
 			$config = Config::current();
 
-			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls or isset($this->action))
+			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls or !empty($this->action))
 				return;
 
 			if (count($this->arg) == 1 and method_exists(MainController::current(), $this->arg[0]))
@@ -261,6 +266,9 @@
 				if (!$check->no_results)
 					return $this->action = "view";
 			}
+
+			if ($i_have_the_power)
+				return $this->action = fallback($this->arg[0], "index");
 		}
 
 		public function check_custom_routes() {

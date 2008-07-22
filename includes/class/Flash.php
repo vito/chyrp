@@ -10,6 +10,8 @@
 
 		private $all = array();
 
+		static $exists = false;
+
 		/**
 		 * Function: __construct
 		 * Removes empty notification variables from the session.
@@ -43,7 +45,7 @@
 		static function message($message, $redirect_to = null) {
 			self::prepare("messages");
 
-			$_SESSION['messages'][] = Trigger::current()->filter($message, "flash_message");
+			$_SESSION['messages'][] = Trigger::current()->filter($message, "flash_message", $redirect_to);
 
 			if (isset($redirect_to))
 				redirect($redirect_to);
@@ -60,7 +62,7 @@
 		static function notice($message, $redirect_to = null) {
 			self::prepare("notices");
 
-			$_SESSION['notices'][] = Trigger::current()->filter($message, "flash_notice_message");
+			$_SESSION['notices'][] = Trigger::current()->filter($message, "flash_notice_message", $redirect_to);
 
 			if (isset($redirect_to))
 				redirect($redirect_to);
@@ -77,7 +79,7 @@
 		static function warning($message, $redirect_to = null) {
 			self::prepare("warnings");
 
-			$_SESSION['warnings'][] = Trigger::current()->filter($message, "flash_warning_message");
+			$_SESSION['warnings'][] = Trigger::current()->filter($message, "flash_warning_message", $redirect_to);
 
 			if (isset($redirect_to))
 				redirect($redirect_to);
@@ -150,12 +152,15 @@
 		 *     $type - message, notice, or warning.
 		 */
 		static function exists($type = null) {
+			if (self::$exists)
+				return self::$exists;
+
 			if (isset($type))
-				return !empty($_SESSION[pluralize($type)]);
+				return self::$exists = !empty($_SESSION[pluralize($type)]);
 			else
 				foreach (array("messages", "notices", "warnings") as $type)
 					if (!empty($_SESSION[$type]))
-						return true;
+						return self::$exists = true;
 		}
 
 		/**

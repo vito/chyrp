@@ -311,12 +311,12 @@
 		$route->check_custom_routes();
 
 		# If the post viewing URL is the same as the page viewing URL, check for viewing a page first.
-		if (preg_match("/^\((clean|url)\)$/", $config->post_url)) {
+		if (preg_match("/^\((clean|url)\)\/?$/", $config->post_url)) {
 			$route->check_viewing_page();
-			$route->check_viewing_post();
+			$route->check_viewing_post(true);
 		} else {
 			$route->check_viewing_post();
-			$route->check_viewing_page();
+			$route->check_viewing_page(true);
 		}
 	}
 
@@ -343,7 +343,7 @@
 	if (file_exists(THEME_DIR."/locale/".$config->locale.".mo"))
 		load_translator("theme", THEME_DIR."/locale/".$config->locale.".mo");
 
-	if (!JAVASCRIPT and !XML_RPC) {
+	if (INDEX or ADMIN or AJAX) {
 		if (!$visitor->group()->can("view_site") and !in_array($route->action, array("login", "logout", "register", "lost_password")))
 			if ($trigger->exists("can_not_view_site"))
 				$trigger->call("can_not_view_site");
@@ -359,7 +359,7 @@
 			call_user_func(array($main, $route->action));
 
 		# Call any plugin route functions
-		if (!ADMIN)
+		if (INDEX)
 			$trigger->call("route_".$route->action);
 
 		if (isset($_GET['feed']))
