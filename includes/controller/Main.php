@@ -304,8 +304,8 @@
 
 			$visitor->update($visitor->login,
 			                 $password,
-			                 $_POST['full_name'],
 			                 $_POST['email'],
+			                 $_POST['full_name'],
 			                 $_POST['website'],
 			                 $visitor->group()->id);
 
