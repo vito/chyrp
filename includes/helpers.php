@@ -172,7 +172,7 @@
 
 	/**
 	 * Function: pluralize
-	 * Returns a pluralized string. This is a port of Rails' pluralizer.
+	 * Returns a pluralized string. This is a port of Rails's pluralizer.
 	 *
 	 * Parameters:
 	 *     $string - The string to pluralize.
@@ -183,6 +183,10 @@
 			return $pluralizations[$string];
 		else {
 			$uncountable = array("moose", "sheep", "fish", "series", "species", "rice", "money", "information", "equipment", "piss");
+
+			if (in_array($string, $uncountable))
+				return $string;
+
 			$replacements = array("/person/i" => "people",
 			                      "/man/i" => "men",
 			                      "/child/i" => "children",
@@ -191,6 +195,7 @@
 			                      "/(penis)$/i" => "\\1es", # Take that, Rails!
 			                      "/(ax|test)is$/i" => "\\1es",
 			                      "/(octop|vir)us$/i" => "\\1ii",
+			                      "/(cact)us$/i" => "\\1i",
 			                      "/(alias|status)$/i" => "\\1es",
 			                      "/(bu)s$/i" => "\\1ses",
 			                      "/(buffal|tomat)o$/i" => "\\1oes",
@@ -204,18 +209,9 @@
 			                      "/([m|l])ouse$/i" => "\\1ice",
 			                      "/(quiz)$/i" => "\\1zes");
 
-			$replaced = $string;
-			foreach ($replacements as $key => $val) {
-				if (in_array($string, $uncountable))
-					break;
+			$replaced = preg_replace(array_keys($replacements), array_values($replacements), $string, 1);
 
-				$replaced = preg_replace($key, $val, $string);
-
-				if ($replaced != $string)
-					break;
-			}
-
-			if ($replaced == $string and !in_array($string, $uncountable))
+			if ($replaced == $string)
 				return $string."s";
 			else
 				return $replaced;
@@ -239,7 +235,6 @@
 		if (isset($reversed[$string]))
 			return $reversed[$string];
 		else {
-			$uncountable = array("moose", "sheep", "fish", "series", "species", "rice", "money", "information", "equipment", "piss");
 			$replacements = array("/people/i" => "person",
 			                      "/^men/i" => "man",
 			                      "/children/i" => "child",
@@ -247,7 +242,7 @@
 			                      "/geese/i" => "goose",
 			                      "/(penis)es$/i" => "\\1",
 			                      "/(ax|test)es$/i" => "\\1is",
-			                      "/(octop|vir)ii$/i" => "\\1us",
+			                      "/(octopi|viri|cact)i$/i" => "\\1us",
 			                      "/(alias|status)es$/i" => "\\1",
 			                      "/(bu)ses$/i" => "\\1s",
 			                      "/(buffal|tomat)oes$/i" => "\\1o",
@@ -262,18 +257,9 @@
 			                      "/([m|l])ice$/i" => "\\1ouse",
 			                      "/(quiz)zes$/i" => "\\1");
 
-			$replaced = $string;
-			foreach ($replacements as $key => $val) {
-				if (in_array($string, $uncountable))
-					break;
+			$replaced = preg_replace(array_keys($replacements), array_values($replacements), $string, 1);
 
-				$replaced = preg_replace($key, $val, $string, 1);
-
-				if ($replaced != $string)
-					break;
-			}
-
-			if ($replaced == $string and !in_array($string, $uncountable) and substr($string, -1) == "s")
+			if ($replaced == $string and substr($string, -1) == "s")
 				return substr($string, 0, -1);
 			else
 				return $replaced;

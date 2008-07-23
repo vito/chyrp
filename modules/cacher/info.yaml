@@ -6,4 +6,4 @@ author:
   name: Alex Suraci
   url: http://i.am.toogeneric.com/
 notifications:
-  - Please make sure that /includes/cache is writable by the server. If you are not certain whether it is or not, CHMOD it to 777.
+  - Please make sure that /includes/caches is writable by the server. If you are not certain whether it is or not, CHMOD it to 777.

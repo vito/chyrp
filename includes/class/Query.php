@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * Class: Query
-	 * Handles a query based on the <SQL.interface>.
+	 * Handles a query based on the <SQL.method>.
 	 */
 	class Query {
 		# Variable: $query

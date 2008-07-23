@@ -6,7 +6,7 @@
 	class SQL {
 		# Array: $yaml
 		# An associative array of YAML-parsed settings.
-		# This is what gets altered/added to when using <SQL.set.
+		# This is what gets altered/added to when using <SQL.set>.
 		public $yaml = array();
 
 		# Array: $debug
@@ -37,6 +37,10 @@
 			$this->connected = false;
 		}
 
+		/**
+		 * Function: method
+		 * Returns the proper method of connecting and interacting with the database.
+		 */
 		public function method() {
 			# We really don't need PDO anymore, since we have the two we supported with it hardcoded (kinda).
 			# Keeping this here for when/if we decide to add support for more database engines, like Postgres and MSSQL.

@@ -174,11 +174,6 @@
 	#     <Module>
 	require_once INCLUDES_DIR."/class/Modules.php";
 
-	# File: Feather
-	# See Also:
-	#     <Feather>
-	require_once INCLUDES_DIR."/class/Feather.php";
-
 	# File: Feathers
 	# See Also:
 	#     <Feathers>
@@ -207,6 +202,11 @@
 	# See Also:
 	#     <Admin Controller>
 	require_once INCLUDES_DIR."/controller/Admin.php";
+
+	# File: Feather
+	# See Also:
+	#     <Feather>
+	require_once INCLUDES_DIR."/interface/Feather.php";
 
 	timer_start();
 
@@ -322,9 +322,9 @@
 			$route->check_viewing_post();
 			$route->check_viewing_page(true);
 		}
-	}
 
-	$trigger->call("runtime");
+		$trigger->call("runtime");
+	}
 
 	# Array: $statuses
 	# An array of post statuses that <Visitor> can view.

@@ -43,6 +43,7 @@ $twig_filters = array(
 	'normalize' =>        'normalize',
 	'truncate' =>         'truncate',
 	'replace' =>          'twig_replace_filter',
+	'match' =>            'twig_match_filter',
 	'linebreaks' =>       'nl2br',
 	'camelize' =>         'camelize',
 	'strip_tags' =>       'strip_tags',
@@ -273,7 +274,13 @@ function twig_is_odd_filter($value)
 
 function twig_replace_filter($str, $search, $replace)
 {
-	return str_replace($search, $replace, $str);
+	$func = ($str[0] == "/") ? "preg_replace" : "str_replace" ;
+	return $func($search, $replace, $str);
+}
+
+function twig_match_filter($str, $match)
+{
+	return preg_match($match, $str);
 }
 
 
