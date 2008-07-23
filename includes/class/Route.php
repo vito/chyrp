@@ -230,9 +230,6 @@
 			$page = new Page(null, array("where" => "url = :url",
 			                             "params" => array(":url" => end($this->arg))));
 
-			if ($i_have_the_power)
-				error_log(print_r($this->arg, true));
-
 			if (!$page->no_results)
 				return list($_GET['url'], $this->action) = array(end($this->arg), "page");
 			elseif ($i_have_the_power)

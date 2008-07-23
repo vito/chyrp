@@ -136,6 +136,9 @@
 		 * Serves a message of type $type and destroys it from the session.
 		 */
 		public function serve($type) {
+			if (!empty($_SESSION[$type]))
+				self::$exists = true;
+
 			if (isset($_SESSION[$type])) {
 				$this->$type = $_SESSION[$type];
 				$_SESSION[$type] = array();

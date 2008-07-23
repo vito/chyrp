@@ -138,7 +138,6 @@ var Write = {
 		})
 		$("textarea").each(function(){
 			$(this).css({
-				minHeight: $(this).outerHeight() + 2,
 				lineHeight: "15px"
 			}).autogrow()
 		})
@@ -171,7 +170,6 @@ var Write = {
 		}
 	},
 	more_options: function(){
-		console.log($("#more_options").size())
 		if ($("#more_options").size()) {
 			if (Cookie.get("show_more_options") == "true")
 				var more_options_text = "<?php echo __("&laquo; Fewer Options"); ?>";
