@@ -34,7 +34,7 @@
 
 			$action = Route::current()->action;
 
-			if (in_array($action, array("login", "logout", "register", "lost_password")))
+			if (in_array($action, array("login", "logout", "register", "lost_password", "controls")))
 				return;
 
 			if (DEBUG)
