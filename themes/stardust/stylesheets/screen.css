@@ -374,14 +374,17 @@ ol.comments li cite a.permalink:link,
 ol.comments li cite a.permalink:visited {
 	color: #666;
 }
-ol.comments ul {
-	padding: 0 0 1em;
-}
-ol.comments ol li,
-ol.comments ul li {
+ol.comments li ul,
+ol.comments li ol {
 	margin: 0;
+	padding: 0 0 1em 1.5em;
 }
-ol.comments ol li {
+ol.comments li ul li,
+ol.comments li ol li {
+	margin: 0;
+	padding: 0;
+}
+ol.comments li ol li {
 	list-style-type: decimal;
 }
 
