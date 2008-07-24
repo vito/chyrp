@@ -161,8 +161,7 @@ $(document).scrollLeft($(document).scrollLeft()+o.scrollSpeed);}}});$.ui.plugin.
 var self=$(this).data("sortable");$(ui.item).removeClass("sort-dragging")},sortIndicator:function(e,item,append,hardRefresh){append?append[0].appendChild(this.placeholder[0]):item.item[0].parentNode.insertBefore(this.placeholder[0],(this.direction=='down'?item.item[0]:item.item[0].nextSibling));}});$(this.options.dropOn,this.element).droppable({accept:this.options.sortOn,hoverClass:this.options.hoverClass,drop:function(e,ui){if($(this).parent().hasClass("sort-dragging"))
 return;if(!$(this).parent().find("ul").size())
 $(this).parent().append(document.createElement("ul"))
-$(this).parent().find("ul:first").append(ui.draggable);self.element.data("sortable")._noFinalSort=true;self.options.done()}});}});$.extend($.ui.tree,{defaults:{sortOn:"*",dropOn:"div",hoverClass:"ui-tree-hover"}});
-
+$(this).parent().find("ul:first").append(ui.draggable);self.element.data("sortable")._noFinalSort=true;}});}});$.extend($.ui.tree,{defaults:{sortOn:"*",dropOn:"div",hoverClass:"ui-tree-hover"}});
 
 /*
  * Auto Expanding Text Area (1.2.2)
