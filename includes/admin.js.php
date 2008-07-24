@@ -138,6 +138,7 @@ var Write = {
 		})
 		$("textarea").each(function(){
 			$(this).css({
+				minHeight: $(this).outerHeight() + 2,
 				lineHeight: "15px"
 			}).autogrow()
 		})
