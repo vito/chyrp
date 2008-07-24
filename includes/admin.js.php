@@ -158,17 +158,17 @@ var Write = {
 		})
 	},
 	prepare_previewer: function() {
-		if ($(".preview_me").length > 0) {
-			var feather = ($("#write_feather").size()) ? $("#write_feather").val() : ""
-			var feather = ($("#edit_feather").size()) ? $("#edit_feather").val() : feather
-			$(document.createElement("div")).css("display", "none").attr("id", "preview").insertBefore("#write_form, #edit_form")
-			$(document.createElement("button")).html("<?php echo __("Preview &rarr;"); ?>").attr({ "type": "submit", "accesskey": "p" }).click(function(){
-				$("#preview").load("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "preview", content: $(".preview_me").val(), feather: feather }, function(){
-					$(this).fadeIn("fast")
-				})
-				return false
-			}).appendTo(".buttons")
-		}
+		if (!$(".preview_me").size())
+			return;
+
+		var feather = ($("#feather").size()) ? $("#feather").val() : ""
+		$(document.createElement("div")).css("display", "none").attr("id", "preview").insertBefore("#write_form, #edit_form")
+		$(document.createElement("button")).html("<?php echo __("Preview &rarr;"); ?>").attr({ "type": "submit", "accesskey": "p" }).click(function(){
+			$("#preview").load("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "preview", content: $(".preview_me").val(), feather: feather }, function(){
+				$(this).fadeIn("fast")
+			})
+			return false
+		}).appendTo(".buttons")
 	},
 	more_options: function(){
 		if ($("#more_options").size()) {
