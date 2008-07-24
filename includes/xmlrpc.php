@@ -443,7 +443,7 @@
 			global $user;
 
 			if (!in_array(XML_RPC_FEATHER, Config::current()->enabled_feathers))
-				throw new Exception(__(sprintf("The %s feather is not enabled.", XML_RPC_FEATHER)));
+				throw new Exception(_f("The %s feather is not enabled.", array(XML_RPC_FEATHER)));
 
 			$where = array('feather = :feather');
 			$params = array(':feather' => XML_RPC_FEATHER);
@@ -500,7 +500,7 @@
 			if ($user->no_results)
 				throw new Exception(__("Login incorrect."));
 			else if (!$user->group()->can("{$do}_own_post", "{$do}_post", "{$do}_draft", "{$do}_own_draft"))
-				throw new Exception(__(sprintf("You don't have permission to %s posts/drafts.", $do)));
+				throw new Exception(_f("You don't have permission to %s posts/drafts.", array($do)));
 		}
 
 		#
