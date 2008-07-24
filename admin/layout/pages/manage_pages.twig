@@ -62,10 +62,10 @@
 				<ul class="sort_pages">
 				{% for item in theme.pages_list %}
 					<li class="page-item" id="page_list_$item.page.id">
-						<input type="text" size="2" name="list_order[$item.page.id]" value="$item.page.list_order" class="center" />
-						<a href="$item.page.url">$item.page.title</a>
+						<noscript><input type="text" size="2" name="list_order[$item.page.id]" value="$item.page.list_order" class="center" /></noscript>
+						<div><a href="$item.page.url">$item.page.title</a></div>
 
-						{% if item.has_children %}<ul class="sort_pages">{% endif %}
+						{% if item.has_children %}<ul>{% endif %}
 					{% if not item.has_children %}</li>{% endif %}
 
 					{% for ul, li in item.end_tags %}
@@ -74,10 +74,12 @@
 					{% endfor %}
 				{% endfor %}
 				</ul>
-				<div class="buttons">
-					<button type="submit" class="yay">
-						<img src="images/icons/success.png" alt="success" />${ "Reorder" | translate }
-					</button>
-				</div>
+				<noscript>
+					<div class="buttons">
+						<button type="submit" class="yay">
+							<img src="images/icons/success.png" alt="success" />${ "Reorder" | translate }
+						</button>
+					</div>
+				</noscript>
 			</form>
 {% endblock %}

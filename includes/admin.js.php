@@ -183,18 +183,20 @@ var Write = {
 			}).addClass("more_options_link").html(more_options_text).insertBefore(".buttons")
 			$("#more_options").clone().insertAfter("#more_options_link").removeClass("js_disabled")
 
+			$("#more_options").wrap("<div></div>")
+
 			if (Cookie.get("show_more_options") == null)
-				$("#more_options").css("display", "none")
+				$("#more_options").parent().css("display", "none")
 
 			$("#more_options_link").click(function(){
-				if ($("#more_options").css("display") == "none") {
+				if ($("#more_options").parent().css("display") == "none") {
 					$(this).html("<?php echo __("&laquo; Fewer Options"); ?>")
 					Cookie.set("show_more_options", "true", 30)
 				} else {
 					$(this).html("<?php echo __("More Options &raquo;"); ?>")
 					Cookie.destroy("show_more_options")
 				}
-				$("#more_options").slideToggle()
+				$("#more_options").parent().slideToggle()
 			})
 		}
 	}
@@ -221,21 +223,18 @@ var Manage = {
 				background: "#f9f9f9",
 				padding: ".15em .5em",
 				marginBottom: ".5em",
-				border: "1px solid #ddd"
+				border: "1px solid #ddd",
+				cursor: "move"
 			})
 
-			$(".sort_pages li, .page-item").css("cursor", "move")
-
-			$(".sort_pages input, form#reorder_pages .buttons").remove()
-
-			$("ul.sort_pages").attr("id", "sort_pages").NestedSortable({
-				accept: "page-item",
-				opacity: 0.8,
-				nestingPxSpace: 5,
-				onStop: function(){
+			$("ul.sort_pages").tree({
+				sortOn: "li",
+				dropOn: "li:not(.dragging) div",
+				hoverClass: "sort_hover",
+				done: function(){
 					$("#content > form > ul.sort_pages").loader()
 					$.post("<?php echo $config->url; ?>/includes/ajax.php",
-					       "action=organize_pages&"+ $.SortSerialize("sort_pages").hash + Manage.pages.parent_hash(),
+					       "action=organize_pages&"+ $("ul.sort_pages").sortable("serialize") + Manage.pages.parent_hash(),
 					       function(){ $("#content > form > ul.sort_pages").loader(true) })
 				}
 			})
@@ -245,6 +244,7 @@ var Manage = {
 
 var Extend = {
 	init: function(){
+		this.prepare_info()
 		this.prepare_draggables()
 
 		if (Route.action != "modules")
@@ -269,6 +269,13 @@ var Extend = {
 		pane: null,
 		confirmed: null
 	},
+	prepare_info: function(){
+		$(".description").wrap("<div></div>").parent().hide()
+		$(".info_link").click(function(){
+			$(this).parent().find(".description").parent().slideToggle("normal", Extend.redraw)
+			return false
+		})
+	},
 	prepare_draggables: function(){
 		$(".enable h2, .disable h2").append(" <span class=\"sub\"><?php echo __("(drag)"); ?></span>")
 
@@ -286,13 +293,7 @@ var Extend = {
 			drop: Extend.handle_drop
 		})
 
-		$(".info_link").click(function(){
-			$(this).parent().find(".description").toggle("blind", {}, null, Extend.redraw)
-			return false
-		})
-
 		$(".enable > ul > li, .disable > ul > li:not(.missing_dependency)").css("cursor", "move")
-		$("ul.extend li .description:not(.expanded)").css("display", "none")
 
 		Extend.equalize_lists()
 

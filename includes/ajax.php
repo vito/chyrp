@@ -139,7 +139,7 @@
 			foreach ($_POST['parent'] as $id => $parent)
 				$sql->update("pages", "id = :id", array("parent_id" => ":parent"), array(":id" => $id, ":parent" => $parent));
 
-			foreach ($_POST['sort_pages'] as $index => $page)
+			foreach ($_POST['page_list'] as $index => $page)
 				$sql->update("pages", "id = :id", array("list_order" => ":index"), array(":id" => str_replace("page_list_", "", $page), ":index" => $index));
 
 			break;

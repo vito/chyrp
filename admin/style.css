@@ -784,9 +784,6 @@ ul.sort_pages ul {
 	padding: 0;
 	margin: 0 0 0 2em;
 }
-ul.sort_pages li {
-	list-style: square;
-}
 ul.sort_pages li a:link,
 ul.sort_pages li a:visited {
 	text-decoration: none !important;
@@ -795,8 +792,14 @@ ul.sort_pages input {
 	font-size: 1em;
 	margin: .25em .25em .25em 0;
 }
-#sortHelper {
+.sort_hover {
+	background: #ddd;
+}
+.sort-placeholder {
 	border: 1px dashed #777;
+	height: 1.6em;
+	margin-bottom: .5em;
+	display: list-item !important;
 }
 /* @end */
 

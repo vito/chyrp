@@ -1552,7 +1552,7 @@
 				if (!empty($info["conflicts"])) {
 					$classes[$folder][] = "conflict";
 
-					foreach ($info["conflicts"] as $conflict)
+					foreach ((array) $info["conflicts"] as $conflict)
 						if (file_exists(MODULES_DIR."/".$conflict."/".$conflict.".php"))
 							$classes[$folder][] = "conflict_".$conflict;
 				}
@@ -1561,7 +1561,7 @@
 				if (!empty($info["depends"])) {
 					$classes[$folder][] = "depends";
 
-					foreach ($info["depends"] as $dependency) {
+					foreach ((array) $info["depends"] as $dependency) {
 						if (!module_enabled($dependency)) {
 							if (!in_array("missing_dependency", $classes[$folder]))
 								$classes[$folder][] = "missing_dependency";

@@ -12,13 +12,12 @@ $(function(){
 	})<?php echo "\n\n\n\n"; # Balance out the line numbers in this script and in the output to help debugging. ?>
 
 	$(".toggle_admin").click(function(){
-		if (!$("#admin_bar:visible, #controls:visible").size()) {
-			$("#admin_bar, #controls").slideDown()
+		if (!$("#admin_bar:visible, #controls:visible").size())
 			Cookie.destroy("hide_admin")
-		} else {
-			$("#admin_bar, #controls").slideUp()
+		else
 			Cookie.set("hide_admin", "true", 30)
-		}
+
+		$("#admin_bar, #controls").slideToggle()
 		return false
 	})
 
