@@ -57,31 +57,43 @@
 				           $site,
 				           $scale);
 				return '<object type="application/x-shockwave-flash" class="object-vimeo" width="'.$scale[1].'" height="'.$scale[2].'" data="http://www.vimeo.com/moogaloop.swf?clip_id='.$matches[2].'&amp;server=www.vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1"><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="http://www.vimeo.com/moogaloop.swf?clip_id='.$matches[2].'&amp;server=www.vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1" /></object>';
+			} else if (preg_match('/http:\/\/(www\.)?metacafe.com\/watch\/([0-9]+)\/([^\/&\?]+)/', $video, $matches)) {
+				return '<object type="application/x-shockwave-flash" class="object-metacafe" data="http://www.metacafe.com/fplayer/'.$matches[2].'/'.$matches[3].'.swf" width="400" height="345"></object>';
+			} else if (preg_match("/http:\/\/(www\.)?revver.com\/video\/([0-9]+)/", $video, $matches)) {
+				return '<script src="http://flash.revver.com/player/1.0/player.js?mediaId:'.$matches[2].';width:468;height:391;" type="text/javascript"></script>';
 			} else {
 				return $video;
 			}
 		}
 		public function embed_tag_for($post, $max_width = 500) {
-			preg_match('/width=("|\')([0-9]+)("|\') height=("|\')([0-9]+)("|\')/', $post->embed, $scale);
-			$match  = $scale[0];
-			$width  = $scale[2];
-			$height = $scale[5];
+			if (preg_match('/width=("|\')([0-9]+)("|\') height=("|\')([0-9]+)("|\')/', $post->embed, $scale)) {
+				$match  = $scale[0];
+				$width  = $scale[2];
+				$height = $scale[5];
 
-			if ($width < $max_width)
-				return $post->embed;
+				$new_height = (int) (($max_width / $width) * $height);
 
-			$height = ($max_width / $width) * $height;
+				return str_replace($match, 'width="'.$max_width.'" height="'.$new_height.'"', $post->embed);
+			}
 
-			return str_replace($match, 'width="'.$max_width.'" height="'.$height.'"', $post->embed);
+			if (preg_match('/width:([0-9]+);height:([0-9]+);/', $post->embed, $scale)) {
+				$match  = $scale[0];
+				$width  = $scale[1];
+				$height = $scale[2];
+
+				$new_height = (int) (($max_width / $width) * $height);
+
+				return str_replace($match, 'width:'.$max_width.';height:'.$new_height.';', $post->embed);
+			}
 		}
 		public function isVideo() {
 			if (!isset($_GET['url']))
 				return false;
 
-			if (preg_match("/http:\/\/(www\.|[a-z]{2}\.)?youtube\.com\/watch\?v=([^&]+)/", $_GET['url']))
-				return true;
-
-			if (preg_match("/http:\/\/(www\.)?vimeo.com\/([0-9]+)/", $_GET['url']))
+			if (preg_match("/http:\/\/(www\.|[a-z]{2}\.)?youtube\.com\/watch\?v=([^&]+)/", $_GET['url']) or
+			    preg_match("/http:\/\/(www\.)?vimeo.com\/([0-9]+)/", $_GET['url']) or
+			    preg_match('/http:\/\/(www\.)?metacafe.com\/watch\/([0-9]+)\/([^\/&\?]+)/', $_GET['url']) or
+			    preg_match("/http:\/\/(www\.)?revver.com\/video\/([0-9]+)/", $_GET['url']))
 				return true;
 
 			return false;

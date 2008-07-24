@@ -521,10 +521,8 @@ div.post.chat li .label {
 div.post.chat li.me .label {
 	color: #AB2F26;
 }
-div.post.photo img,
-div.post.video object {
-	background-color: #111;
-	padding: .3em;
+div.post.photo img {
+	border: .3em solid #111;
 }
 div.post.photo img a:link,
 div.post.photo img a:visited {
