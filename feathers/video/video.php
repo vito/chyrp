@@ -66,6 +66,8 @@
 			}
 		}
 		public function embed_tag_for($post, $max_width = 500) {
+			$post->embed = preg_replace("/&([[:alnum:]_]+)=/", "&amp;\\1=", $post->embed);
+
 			if (preg_match('/width=("|\')([0-9]+)("|\') height=("|\')([0-9]+)("|\')/', $post->embed, $scale)) {
 				$match  = $scale[0];
 				$width  = $scale[2];
