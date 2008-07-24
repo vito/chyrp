@@ -521,7 +521,8 @@ div.post.chat li .label {
 div.post.chat li.me .label {
 	color: #AB2F26;
 }
-div.post.photo img {
+div.post.photo img,
+div.post.video object {
 	background-color: #111;
 	padding: .3em;
 }
@@ -534,11 +535,6 @@ div.post.audio p,
 div.post.video p {
 	color: #444;
 	margin: .4em 0;
-}
-div.post.video .object-youtube,
-div.post.video .embed-youtube {
-	width: 440px;
-	height: 366px;
 }
 
 div.page h1 {
