@@ -5,9 +5,7 @@
 			                      "type" => "text_block",
 			                      "rows" => 4,
 			                      "label" => __("Video", "video"),
-			                      "bookmarklet" => (isset($_GET['url']) and
-			                                        preg_match("/http:\/\/(www\.|[a-z]{2}\.)?youtube\.com\/watch\?v=([^&]+)/",
-			                                                   $_GET['url'])) ?
+			                      "bookmarklet" => $this->isVideo() ?
 			                                        "url" :
 			                                        ""));
 			$this->setField(array("attr" => "caption",
@@ -18,9 +16,7 @@
 			                      "preview" => true,
 			                      "bookmarklet" => "selection"));
 
-			$this->bookmarkletSelected(isset($_GET['url']) and
-			                           preg_match("/http:\/\/(www\.|[a-z]{2}\.)?youtube\.com\/watch\?v=([^&]+)/",
-			                                      $_GET['url']));
+			$this->bookmarkletSelected($this->isVideo());
 
 			$this->setFilter("caption", "markup_post_text");
 		}
@@ -55,8 +51,39 @@
 		public function embed_tag($video) {
 			if (preg_match("/http:\/\/(www\.|[a-z]{2}\.)?youtube\.com\/watch\?v=([^&]+)/", $video, $matches)) {
 				return '<object type="application/x-shockwave-flash" class="object-youtube" data="http://'.$matches[1].'youtube.com/v/'.$matches[2].'" width="468" height="391"><param name="movie" value="http://'.$matches[1].'youtube.com/v/'.$matches[2].'" /><param name="FlashVars" value="playerMode=embedded" /></object>';
+			} else if (preg_match("/http:\/\/(www\.)?vimeo.com\/([0-9]+)/", $video, $matches)) {
+				$site = get_remote($video);
+				preg_match('/<div id="vimeo_player_1397502" class="player" style="width:([0-9]+)px;height:([0-9]+)px;">/',
+				           $site,
+				           $scale);
+				return '<object type="application/x-shockwave-flash" class="object-vimeo" width="'.$scale[1].'" height="'.$scale[2].'" data="http://www.vimeo.com/moogaloop.swf?clip_id='.$matches[2].'&amp;server=www.vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1"><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="http://www.vimeo.com/moogaloop.swf?clip_id='.$matches[2].'&amp;server=www.vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1" /></object>';
 			} else {
 				return $video;
 			}
+		}
+		public function embed_tag_for($post, $max_width = 500) {
+			preg_match('/width=("|\')([0-9]+)("|\') height=("|\')([0-9]+)("|\')/', $post->embed, $scale);
+			$match  = $scale[0];
+			$width  = $scale[2];
+			$height = $scale[5];
+
+			if ($width < $max_width)
+				return $post->embed;
+
+			$height = ($max_width / $width) * $height;
+
+			return str_replace($match, 'width="'.$max_width.'" height="'.$height.'"', $post->embed);
+		}
+		public function isVideo() {
+			if (!isset($_GET['url']))
+				return false;
+
+			if (preg_match("/http:\/\/(www\.|[a-z]{2}\.)?youtube\.com\/watch\?v=([^&]+)/", $_GET['url']))
+				return true;
+
+			if (preg_match("/http:\/\/(www\.)?vimeo.com\/([0-9]+)/", $_GET['url']))
+				return true;
+
+			return false;
 		}
 	}

@@ -1,7 +1,7 @@
 {% extends "content/post.twig" %}
 
 {% block content %}
-						$post.embed
+						${ feathers['video'].embed_tag_for(post, 434) }
 						<br />
 						${ post.caption | read_more }
 {% endblock %}
