@@ -357,7 +357,7 @@
 	 */
 	function fix($string, $quotes = true) {
 		$quotes = ($quotes) ? ENT_QUOTES : ENT_NOQUOTES ;
-		$string = htmlspecialchars_decode($string, ENT_QUOTES);
+		$string = html_entity_decode($string, ENT_QUOTES, "utf-8");
 		return htmlspecialchars($string, $quotes, "utf-8");
 	}
 

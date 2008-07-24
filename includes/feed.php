@@ -10,11 +10,11 @@
 	<id><?php echo fix(self_url()); ?></id>
 	<updated><?php echo date("c", $latest_timestamp); ?></updated>
 	<link href="<?php echo fix(self_url(), true); ?>" rel="self" type="application/atom+xml" />
+	<link href="<?php echo fix($config->url, true); ?>" />
 	<generator uri="http://chyrp.net/" version="<?php echo CHYRP_VERSION; ?>">Chyrp</generator>
 <?php
 	foreach ($posts->paginated as $post) {
 		$title = safe($post->title());
-		fallback($title, ucfirst($post->feather)." Post #".$post->id);
 
 		$updated = ($post->updated) ? $post->updated_at : $post->created_at ;
 
@@ -24,12 +24,12 @@
 
 		$url = $post->url();
 ?>
-	<entry xml:base="<?php echo $post->url(); ?>">
-		<title type="html"><?php echo $title; ?></title>
+	<entry>
+		<title type="html"><?php echo safe($post->title()); ?></title>
 		<id>tag:<?php echo $tagged; ?></id>
 		<updated><?php echo when("c", $updated); ?></updated>
 		<published><?php echo when("c", $post->created_at); ?></published>
-		<link href="<?php echo $trigger->filter($url, "feed_url", $post); ?>" />
+		<link rel="alternate" type="text/html" href="<?php echo $trigger->filter($url, "feed_url", $post); ?>" />
 		<author>
 			<name><?php echo safe(fallback($post->user()->full_name, $post->user()->login, true)); ?></name>
 <?php if (!empty($author_uri)): ?>

@@ -152,6 +152,9 @@ var Write = {
 			delay: 1,
 			revert: true,
 			cancel: "a.no_drag, a[href$=write_page]",
+			start: function(e, ui) {
+				$(".feathers_sort").width($(ui.item).width())
+			},
 			update: function(){
 				$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", "action=reorder_feathers&"+$("#sub-nav").sortable("serialize"))
 			}
