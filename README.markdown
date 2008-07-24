@@ -32,9 +32,10 @@ Keeping Chyrp up to date is important to make sure that your blog is as safe and
 
 1. Download the latest version of Chyrp from [http://chyrp.net/](http://chyrp.net/).
 2. Copy `/includes/config.yaml.php` and `/includes/database.yaml.php` to somewhere safe.
-3. Overwrite your current Chyrp installation files with the new ones.
-4. Put both .yaml.php files back in the /includes/ directory.
-5. Upgrade by navigating to [upgrade.php](), and restore any backups.
+3. Disable any Modules/Feathers that you downloaded for the release you're upgrading from.
+4. Overwrite your current Chyrp installation files with the new ones.
+5. Put both .yaml.php files back in the /includes/ directory.
+6. Upgrade by navigating to [upgrade.php](), and restore any backups.
 
 Extensions
 ==========

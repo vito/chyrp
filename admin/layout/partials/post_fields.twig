@@ -17,7 +17,7 @@
 						{% elseif field.type == "select" %}
 						<select name="$field.attr" id="$field.attr"{% if field.classes %} class="${ field.classes | join(" ") }"{% endif %}>
 							{% for value, name in field.options | items %}
-							<option value="${ value | escape }"{% if not field.no_value %}${ value | option_selected(field.value | fallback(post[field.attr] | escape)) }{% endif %}>${ name | escape }</option>
+							<option value="${ value | escape }"{% if not field.no_value %}${ value | option_selected(post[field.attr]) }{% endif %}>${ name | escape }</option>
 							{% endfor %}
 						</select>
 						{% endif %}
