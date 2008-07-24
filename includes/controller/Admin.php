@@ -1966,7 +1966,7 @@
 
 			if (!isset($action) or $action == "write") {
 				# "Write > Post", if they can add posts or drafts.
-				if ($visitor->group()->can("add_post") or $visitor->group()->can("add_draft") and !empty(Config::current()->enabled_feathers))
+				if (($visitor->group()->can("add_post") or $visitor->group()->can("add_draft")) and !empty(Config::current()->enabled_feathers))
 					return "write_post";
 
 				# "Write > Page", if they can add pages.
