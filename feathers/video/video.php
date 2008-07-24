@@ -46,7 +46,7 @@
 			return $post->caption;
 		}
 		public function feed_content($post) {
-			return $post->caption;
+			return $post->embed."<br /><br />".$post->caption;
 		}
 		public function embed_tag($video) {
 			if (preg_match("/http:\/\/(www\.|[a-z]{2}\.)?youtube\.com\/watch\?v=([^&]+)/", $video, $matches)) {

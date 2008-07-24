@@ -14,8 +14,6 @@
 	<generator uri="http://chyrp.net/" version="<?php echo CHYRP_VERSION; ?>">Chyrp</generator>
 <?php
 	foreach ($posts->paginated as $post) {
-		$title = safe($post->title());
-
 		$updated = ($post->updated) ? $post->updated_at : $post->created_at ;
 
 		$tagged = substr(strstr(url("id/".$post->id."/"), "//"), 2);
@@ -23,9 +21,10 @@
 		$tagged = preg_replace("/(".preg_quote(parse_url($post->url(), PHP_URL_HOST)).")/", "\\1,".when("Y-m-d", $updated).":", $tagged, 1);
 
 		$url = $post->url();
+		$title = $post->title();
 ?>
 	<entry>
-		<title type="html"><?php echo safe($post->title()); ?></title>
+		<title type="html"><?php echo safe(fallback($title, ucfirst($post->feather), true)); ?></title>
 		<id>tag:<?php echo $tagged; ?></id>
 		<updated><?php echo when("c", $updated); ?></updated>
 		<published><?php echo when("c", $post->created_at); ?></published>
