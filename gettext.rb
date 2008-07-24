@@ -98,7 +98,7 @@ class Gettext
   end
 
   def scan_normal(text, line, filename, clean_filename)
-    text.gsub(/__\(("|')([^"]+)\1#{@domain}\)/) do
+    text.gsub(/__\(("|')([^\1]+)\1#{@domain}\)/) do
       if @translations[$2].nil?
         @translations[$2] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => false,
@@ -110,7 +110,7 @@ class Gettext
   end
 
   def scan_filter(text, line, filename, clean_filename)
-    text.gsub(/_f\(("|')([^"]+)\1, .*?#{@domain}\)/) do
+    text.gsub(/_f\(("|')([^\1]+)\1, .*?#{@domain}\)/) do
       if @translations[$2].nil?
         @translations[$2] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => true,
@@ -122,7 +122,7 @@ class Gettext
   end
 
   def scan_plural(text, line, filename, clean_filename)
-    text.gsub(/_p\(("|')([^"]+)\1, ("|')([^"]+)\3, .*?#{@domain}\)/) do
+    text.gsub(/_p\(("|')([^\1]+)\1, ("|')([^\3]+)\3, .*?#{@domain}\)/) do
       if @translations[$2].nil?
         @translations[$2] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => true,
@@ -134,7 +134,7 @@ class Gettext
   end
 
   def scan_twig(text, line, filename, clean_filename)
-    text.gsub(/("|')([^"]+)\1 ?\| ?translate(?!_plural)#{@twig_domain}(?! ?\| ?format)/) do
+    text.gsub(/("|')([^\1]+)\1 ?\| ?translate(?!_plural)#{@twig_domain}(?! ?\| ?format)/) do
       if @translations[$2].nil?
         @translations[$2] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => false,
@@ -146,7 +146,7 @@ class Gettext
   end
 
   def scan_twig_filter(text, line, filename, clean_filename)
-    text.gsub(/("|')([^"]+)\1 ?\| ?translate(?!_plural)#{@twig_domain} ?\| ?format\(.*?\).*?/) do
+    text.gsub(/("|')([^\1]+)\1 ?\| ?translate(?!_plural)#{@twig_domain} ?\| ?format\(.*?\).*?/) do
       if @translations[$2].nil?
         @translations[$2] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => true,
@@ -158,7 +158,7 @@ class Gettext
   end
 
   def scan_twig_plural(text, line, filename, clean_filename)
-    text.gsub(/("|')([^"]+)\1 ?\| ?translate_plural\(("|')([^"]+)\3, .*?#{@domain}\) ?\| ?format\(.*?\)/) do
+    text.gsub(/("|')([^\1]+)\1 ?\| ?translate_plural\(("|')([^\3]+)\3, .*?#{@domain}\) ?\| ?format\(.*?\)/) do
       if @translations[$2].nil?
         @translations[$2] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => true,

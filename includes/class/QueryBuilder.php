@@ -193,6 +193,14 @@
 			return $query;
 		}
 
+		/**
+		 * Function: tablefy
+		 * Automatically prepends tables and table prefixes to a field if it doesn't already have them.
+		 *
+		 * Parameters:
+		 *     $field - The field to "tablefy".
+		 *     $tables - An array of tables. The first one will be used for prepending.
+		 */
 		public static function tablefy(&$field, $tables) {
 			if (!preg_match_all("/(\(|^)?([a-z_\.]+)/", $field, $matches))
 				return;
@@ -207,7 +215,7 @@
 				# Does it not already have a table specified?
 				if (!substr_count($full, ".")) {
 						                   # Don't replace things that are already either prefixed or paramized.
-					$field = preg_replace("/([^\.:'_]|^)".preg_quote($full, "/")."/",
+					$field = preg_replace("/([^\.:'\"_]|^)".preg_quote($full, "/")."/",
 					                      "\\1".$paren."__".$tables[0].".".$name,
 					                      $field,
 					                      1);
@@ -215,7 +223,7 @@
 					# Okay, it does, but is the table prefixed?
 					if (substr($full, 0, 2) != "__") {
 						                       # Don't replace things that are already either prefixed or paramized.
-						$field = preg_replace("/([^\.:'_]|^)".preg_quote($full, "/")."/",
+						$field = preg_replace("/([^\.:'\"_]|^)".preg_quote($full, "/")."/",
 						                      "\\1".$paren."__".$name,
 						                      $field,
 						                      1);
