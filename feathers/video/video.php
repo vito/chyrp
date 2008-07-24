@@ -53,7 +53,7 @@
 				return '<object type="application/x-shockwave-flash" class="object-youtube" data="http://'.$matches[1].'youtube.com/v/'.$matches[2].'" width="468" height="391"><param name="movie" value="http://'.$matches[1].'youtube.com/v/'.$matches[2].'" /><param name="FlashVars" value="playerMode=embedded" /></object>';
 			} else if (preg_match("/http:\/\/(www\.)?vimeo.com\/([0-9]+)/", $video, $matches)) {
 				$site = get_remote($video);
-				preg_match('/<div id="vimeo_player_1397502" class="player" style="width:([0-9]+)px;height:([0-9]+)px;">/',
+				preg_match('/<div id="vimeo_player_[0-9]+" class="player" style="width:([0-9]+)px;height:([0-9]+)px;">/',
 				           $site,
 				           $scale);
 				return '<object type="application/x-shockwave-flash" class="object-vimeo" width="'.$scale[1].'" height="'.$scale[2].'" data="http://www.vimeo.com/moogaloop.swf?clip_id='.$matches[2].'&amp;server=www.vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1"><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="http://www.vimeo.com/moogaloop.swf?clip_id='.$matches[2].'&amp;server=www.vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1" /></object>';
