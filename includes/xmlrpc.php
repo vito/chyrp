@@ -443,9 +443,9 @@
 			global $user;
 
 			if (!in_array(XML_RPC_FEATHER, Config::current()->enabled_feathers))
-				throw new Exception(__(sprintf("%s feather is not enabled.", XML_RPC_FEATHER)));
+				throw new Exception(__(sprintf("The %s feather is not enabled.", XML_RPC_FEATHER)));
 
-			$where = array('posts.feather = :feather');
+			$where = array('feather = :feather');
 			$params = array(':feather' => XML_RPC_FEATHER);
 
 			if ($user->group()->can('view_own_draft', 'view_draft'))
