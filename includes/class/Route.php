@@ -138,24 +138,8 @@
 			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls)
 				return;
 
-			if (empty($this->arg[0])) return $this->action = "index"; # If they're just at /, don't bother with all this.
-
-			# Viewing a post by its ID
-			if ($this->arg[0] == "id") {
-				$_GET['id'] = $this->arg[1];
-				return $this->action = "id";
-			}
-
-			# Paginator
-			if (preg_match_all("/\/((([^_\/]+)_)?page)\/([0-9]+)/", $this->request, $page_matches)) {
-				foreach ($page_matches[1] as $key => $page_var) {
-					$index = array_search($page_var, $this->arg);
-					$_GET[$page_var] = $this->arg[$index + 1];
-				}
-
-				if ($index == 0) # Don't set $this->action to "page" (bottom of this function).
-					return $this->action = "index";
-			}
+			if (empty($this->arg[0])) # If they're just at /, don't bother with all this.
+				return $this->action = "index";
 
 			# Feed
 			if (preg_match("/\/feed\/?$/", $this->request)) {
@@ -171,6 +155,23 @@
 				$_GET['title'] = $title[1];
 
 				if ($this->arg[0] == "feed") # Don't set $this->action to "feed" (bottom of this function).
+					return $this->action = "index";
+			}
+
+			# Viewing a post by its ID
+			if ($this->arg[0] == "id") {
+				$_GET['id'] = $this->arg[1];
+				return $this->action = "id";
+			}
+
+			# Paginator
+			if (preg_match_all("/\/((([^_\/]+)_)?page)\/([0-9]+)/", $this->request, $page_matches)) {
+				foreach ($page_matches[1] as $key => $page_var) {
+					$index = array_search($page_var, $this->arg);
+					$_GET[$page_var] = $this->arg[$index + 1];
+				}
+
+				if ($index == 0) # Don't set $this->action to "page" (bottom of this function).
 					return $this->action = "index";
 			}
 

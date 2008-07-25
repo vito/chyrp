@@ -4,6 +4,8 @@
 	 * The logic behind the Chyrp install.
 	 */
 	class MainController {
+		private function __construct() { }
+
 		/**
 		 * Function: index
 		 * Grabs the posts for the main page.
@@ -12,8 +14,6 @@
 			global $posts;
 			$posts = new Paginator(Post::find(array("placeholders" => true)), Config::current()->posts_per_page);
 		}
-
-		private function __construct() { }
 
 		/**
 		 * Function: archive
