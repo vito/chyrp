@@ -135,7 +135,7 @@
 		public function route_tag() {
 			global $posts;
 
-			if (!isset($posts))
+			if (isset($posts))
 				return;
 			else
 				return $this->check_route_tag();
