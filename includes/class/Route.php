@@ -231,11 +231,9 @@
 			$valids = Page::find(array("where" => "url IN ('".implode("', '", $this->arg)."')"));
 
 			if (count($valids) == count($this->arg)) {
-				foreach ($valids as $valid)
-					if ($valid->url == end($this->arg)) {
-						$page = $valid;
-						return list($_GET['url'], $this->action) = array($valid->url, "page");
-					}
+				foreach ($valids as $page)
+					if ($page->url == end($this->arg))
+						return list($_GET['url'], $this->action) = array($page->url, "page");
 			} elseif ($i_have_the_power)
 				return $this->action = fallback($this->arg[0], "index");
 		}
