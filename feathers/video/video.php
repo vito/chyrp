@@ -61,6 +61,16 @@
 				return '<object type="application/x-shockwave-flash" class="object-metacafe" data="http://www.metacafe.com/fplayer/'.$matches[2].'/'.$matches[3].'.swf" width="400" height="345"></object>';
 			} else if (preg_match("/http:\/\/(www\.)?revver.com\/video\/([0-9]+)/", $video, $matches)) {
 				return '<script src="http://flash.revver.com/player/1.0/player.js?mediaId:'.$matches[2].';width:468;height:391;" type="text/javascript"></script>';
+			} else if (preg_match("/http:\/\/(www\.)viddler\.com\/.+/", $video)) {
+				$viddler_page = get_remote($video);
+
+				if (preg_match("/<link\s+rel=\"video_src\"\s+href=\"http:\/\/(www\.)?viddler.com\/player\/([0-9a-fA-F]+)/", $viddler_page, $matches) and
+				    preg_match("/<meta\s+name=\"video_height\"\s+content=\"([0-9]+)\"/", $viddler_page, $height) and
+				    preg_match("/<meta\s+name=\"video_width\"\s+content=\"([0-9]+)\"/", $viddler_page, $width)) {
+					return '<object type="application/x-shockwave-flash" data="http://www.viddler.com/player/'.$matches[2].'/" width="'.$width[1].'" height="'.$height[1].'" id="viddler_'.$matches[2].'" class="object-youtube"><param name="movie" value="http://www.viddler.com/player/'.$matches[2].'/" /><param name="allowScriptAccess" value="always" /><param name="allowFullScreen" value="true" /></object>';
+				}
+
+				return $video;
 			} else {
 				return $video;
 			}
@@ -95,7 +105,8 @@
 			if (preg_match("/http:\/\/(www\.|[a-z]{2}\.)?youtube\.com\/watch\?v=([^&]+)/", $_GET['url']) or
 			    preg_match("/http:\/\/(www\.)?vimeo.com\/([0-9]+)/", $_GET['url']) or
 			    preg_match('/http:\/\/(www\.)?metacafe.com\/watch\/([0-9]+)\/([^\/&\?]+)/', $_GET['url']) or
-			    preg_match("/http:\/\/(www\.)?revver.com\/video\/([0-9]+)/", $_GET['url']))
+			    preg_match("/http:\/\/(www\.)?revver.com\/video\/([0-9]+)/", $_GET['url']) or
+			    preg_match("/http:\/\/(www\.)viddler\.com\/.+/", $_GET['url']))
 				return true;
 
 			return false;
