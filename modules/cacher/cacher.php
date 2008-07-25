@@ -40,7 +40,12 @@
 			if (DEBUG)
 				error_log("SERVING cache file for ".$this->url."...");
 
-			exit(file_get_contents($this->file));
+			$cache = file_get_contents($this->file);
+
+			if (substr_count($cache, "<feed"))
+				header("Content-Type: application/atom+xml; charset=UTF-8");
+
+			exit($cache);
 		}
 
 		public function bottom() {
