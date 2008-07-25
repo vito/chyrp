@@ -54,9 +54,6 @@
 	} else
 		error_reporting(E_ALL | E_STRICT); # Make sure E_STRICT is on so Chyrp remains errorless.
 
-	if (!JAVASCRIPT and !XML_RPC)
-		header("Content-type: text/html; charset=UTF-8");
-
 	# Constant: MAIN_DIR
 	# Absolute path to the Chyrp root
 	define('MAIN_DIR', dirname(dirname(__FILE__)));
@@ -265,6 +262,14 @@
 	# URL to /themes/(current theme)
 	define('THEME_URL', $config->chyrp_url."/themes/".$config->theme);
 
+	$theme = Theme::current();
+
+	foreach (Horde_Yaml::loadFile(THEME_DIR."/info.yaml") as $key => $val)
+		$theme->$key = $val;
+
+	if (!JAVASCRIPT and !XML_RPC)
+		header("Content-type: ".fallback($theme->type, "application/xhtml+xml")."; charset=UTF-8");
+
 	# These are down here so that the modules are
 	# initialized after the $_GET values are filled.
 	/**
@@ -373,6 +378,4 @@
 				$route->action = "feed";
 			else
 				redirect(fallback($config->feed_url, url("feed/"), true)); # Really? Nothing? Too bad. MAIN FEED 4 U.
-
-		$theme = Theme::current();
 	}

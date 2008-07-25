@@ -26,8 +26,6 @@
 
 			$this->twig = new Twig_Loader(THEME_DIR,
 				                          ((is_writable(INCLUDES_DIR."/caches") and !DEBUG) ? INCLUDES_DIR."/caches" : null));
-
-			$this->url = $config->chyrp_url."/themes/".$config->theme;
 		}
 
 		/**
