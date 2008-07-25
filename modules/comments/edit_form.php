@@ -1,21 +1,21 @@
 <form id="comment_edit_<?php echo $comment->id; ?>" class="inline_edit comment_edit" action="<?php echo $config->chyrp_url."/admin/?action=update_comment"; ?>" method="post" accept-charset="utf-8">
 	<p>
 		<label for="body"><?php echo __("Body", "comments"); ?></label>
-		<textarea name="body" rows="8" cols="40" class="wide"><?php echo fix($comment->body, "html"); ?></textarea>
+		<textarea name="body" rows="8" cols="40" class="wide"><?php echo fix($comment->body, false, false); ?></textarea>
 	</p>
-	<a id="more_options_link_<?php echo $comment->id; ?>" href="javascript:void(0)" class="more_options_link"><?php echo __("More Options &raquo;"); ?></a>
+	<a id="more_options_link_<?php echo $comment->id; ?>" href="javascript:void(0)" class="more_options_link"><?php echo __("More Options &#187;"); ?></a>
 	<div id="more_options_<?php echo $comment->id; ?>" class="more_options" style="display: none">
 		<p>
 			<label for="author"><?php echo __("Author"); ?></label>
-			<input class="text" type="text" name="author" value="<?php echo fix($comment->author, "html"); ?>" id="author" />
+			<input class="text" type="text" name="author" value="<?php echo fix($comment->author); ?>" id="author" />
 		</p>
 		<p>
 			<label for="author_url"><?php echo __("Author URL", "comments"); ?></label>
-			<input class="text" type="text" name="author_url" value="<?php echo fix($comment->author_url, "html"); ?>" id="author_url" />
+			<input class="text" type="text" name="author_url" value="<?php echo fix($comment->author_url); ?>" id="author_url" />
 		</p>
 		<p>
 			<label for="author_email"><?php echo __("Author E-Mail", "comments"); ?></label>
-			<input class="text" type="text" name="author_email" value="<?php echo fix($comment->author_email, "html"); ?>" id="author_email" />
+			<input class="text" type="text" name="author_email" value="<?php echo fix($comment->author_email); ?>" id="author_email" />
 		</p>
 		<p>
 			<label for="status"><?php echo __("Status"); ?></label>
@@ -32,7 +32,7 @@
 		<div class="clear"></div>
 	</div>
 	<br />
-	<input type="hidden" name="id" value="<?php echo fix($comment->id, "html"); ?>" id="id" />
+	<input type="hidden" name="id" value="<?php echo fix($comment->id); ?>" id="id" />
 	<input type="hidden" name="ajax" value="true" id="ajax" />
 	<div class="buttons">
 		<input type="submit" value="<?php echo __("Update"); ?>" accesskey="s" /> <?php echo __("or"); ?>

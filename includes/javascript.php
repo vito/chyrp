@@ -42,13 +42,13 @@ var Post = {
 <?php $trigger->call("ajax_post_edit_form_javascript"); ?>
 					$("#more_options_link_"+id).click(function(){
 						if ($("#more_options_"+id).css("display") == "none") {
-							$(this).html("<?php echo __("&laquo; Fewer Options"); ?>")
-							$("#more_options_"+id).slideDown("slow")
+							$(this).empty().append("<?php echo __("&#171; Fewer Options"); ?>")
+							$("#more_options_"+id).slideDown("slow");
 						} else {
-							$(this).html("<?php echo __("More Options &raquo;"); ?>")
-							$("#more_options_"+id).slideUp("slow")
+							$(this).empty().append("<?php echo __("More Options &#187;"); ?>")
+							$("#more_options_"+id).slideUp("slow");
 						}
-						return false
+						return false;
 					})
 					$("#post_edit_form_"+id).ajaxForm({ beforeSubmit: function(){
 						$("#post_edit_form_"+id).loader()

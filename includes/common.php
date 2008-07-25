@@ -29,8 +29,15 @@
 	# Is the requested file index.php?
 	define('INDEX', (pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME) == "index.php"));
 
+	# Fallback all these definitions.
+	if (!defined('JAVASCRIPT')) define('JAVASCRIPT', false);
+	if (!defined('ADMIN'))      define('ADMIN', false);
+	if (!defined('AJAX'))       define('AJAX', false);
+	if (!defined('XML_RPC'))    define('XML_RPC', false);
+	if (!defined('TRACKBACK'))  define('TRACKBACK', false);
+
 	# Use GZip compression if available.
-	if (extension_loaded("zlib") and
+	if (!AJAX and extension_loaded("zlib") and
 	    !ini_get("zlib.output_compression") and
 	    isset($_SERVER['HTTP_ACCEPT_ENCODING']) and
 	    substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip")) {
@@ -38,13 +45,6 @@
 		header("Content-Encoding: gzip");
 	} else
 		ob_start();
-
-	# Fallback all these definitions.
-	if (!defined('JAVASCRIPT')) define('JAVASCRIPT', false);
-	if (!defined('ADMIN'))      define('ADMIN', false);
-	if (!defined('AJAX'))       define('AJAX', false);
-	if (!defined('XML_RPC'))    define('XML_RPC', false);
-	if (!defined('TRACKBACK'))  define('TRACKBACK', false);
 
 	if (JAVASCRIPT) {
 		error_reporting(0);
@@ -267,8 +267,14 @@
 	foreach (Horde_Yaml::loadFile(THEME_DIR."/info.yaml") as $key => $val)
 		$theme->$key = $val;
 
-	if (!JAVASCRIPT and !XML_RPC)
-		header("Content-type: ".fallback($theme->type, "application/xhtml+xml")."; charset=UTF-8");
+	# Only set to application/xhtml+xml if it's not set and they're not in IE
+	if (!isset($theme->type) and !substr_count($_SERVER['HTTP_USER_AGENT'], "MSIE"))
+		$theme->type = "application/xhtml+xml";
+
+	if (!JAVASCRIPT and !XML_RPC and !AJAX)            # Fall back to text/html; if it's not set they're in IE (see above)
+		header("Content-type: ".fallback($theme->type, "text/html")."; charset=UTF-8");
+	elseif (AJAX)
+		header("Content-type: text/html; charset=UTF-8");
 
 	# These are down here so that the modules are
 	# initialized after the $_GET values are filled.

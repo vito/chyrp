@@ -571,7 +571,7 @@
 		 */
 		private function parse() {
 			foreach (self::xml2arr(simplexml_load_string($this->xml)) as $key => $val)
-				$this->$key = codepoint2name($val);
+				$this->$key = $val;
 
 			if (!$this->filtered)
 				return;
@@ -665,7 +665,7 @@
 					$xml = $object->addChild($key);
 					self::arr2xml($xml, $val);
 				} else
-					$object->addChild($key, safe($val));
+					$object->addChild($key, fix($val, false, false));
 			}
 		}
 
@@ -686,7 +686,7 @@
 				if (get_class($val) == "SimpleXMLElement")
 					$val = self::xml2arr($val);
 
-			array_walk_recursive($parse, array("Post", "recursive_unsafe"));
+			//array_walk_recursive($parse, array("Post", "recursive_unsafe"));
 
 			return $parse;
 		}

@@ -1,4 +1,6 @@
 <?php
+	header("Content-type: text/html; charset=UTF-8");
+
 	define('MAIN_DIR', dirname(__FILE__));
 	define('INCLUDES_DIR', MAIN_DIR."/includes");
 	define('DEBUG', true);
@@ -450,7 +452,7 @@
 			$(function(){
 				$("#adapter").change(function(){
 					if ($(this).val() == "sqlite") {
-						$(document.createElement("span")).addClass("sub").css("display", "none").html("<?php echo __("(full path)"); ?>").appendTo("#database_field label").animate({ opacity: "show" })
+						$(document.createElement("span")).addClass("sub").css("display", "none").text("<?php echo __("(full path)"); ?>").appendTo("#database_field label").animate({ opacity: "show" })
 						$("#host_field, #username_field, #password_field, #prefix_field").animate({ height: "hide", opacity: "hide" })
 					} else {
 						$("#database_field label .sub").animate({ opacity: "hide" }).remove()

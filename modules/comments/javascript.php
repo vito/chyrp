@@ -84,13 +84,13 @@ var Comment = {
 		$("#comment_"+id).loader()
 		$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "edit_comment", comment_id: id }, function(data) {
 			if (isError(data)) return $("#comment_"+id).loader(true)
-			$("#comment_"+id).loader(true).fadeOut("fast", function(){ $(this).html(data).fadeIn("fast", function(){
+			$("#comment_"+id).loader(true).fadeOut("fast", function(){ $(this).empty().append(data).fadeIn("fast", function(){
 				$("#more_options_link_"+id).click(function(){
 					if ($("#more_options_"+id).css("display") == "none") {
-						$(this).html("<?php echo __("&laquo; Fewer Options"); ?>")
+						$(this).empty().append("<?php echo __("&#171; Fewer Options"); ?>")
 						$("#more_options_"+id).slideDown("slow");
 					} else {
-						$(this).html("<?php echo __("More Options &raquo;"); ?>")
+						$(this).empty().append("<?php echo __("More Options &#187;"); ?>")
 						$("#more_options_"+id).slideUp("slow");
 					}
 					return false;

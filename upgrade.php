@@ -143,9 +143,7 @@
 	}
 
 	function make_xml_safe(&$text) {
-		$text = html_entity_decode($text, ENT_QUOTES, "utf-8");
-		$text = name2codepoint(htmlentities($text, ENT_NOQUOTES, "utf-8"));
-		return $text;
+		return htmlspecialchars($text, ENT_NOQUOTES, "utf-8");
 	}
 
 	function xml2arr($parse) {
@@ -172,7 +170,7 @@
 				$xml = $object->addChild($key);
 				arr2xml($xml, $val);
 			} else
-				$object->addChild($key, trim(make_xml_safe($val)));
+				$object->addChild($key, trim(fix($val, false, false)));
 		}
 	}
 

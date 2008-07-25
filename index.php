@@ -11,7 +11,7 @@
 				$theme->title = ucfirst($_GET['feather']);
 				$context["feather"] = $_GET['feather'];
 			} elseif ($route->action == "search") {
-				$theme->title = fix(_f("Search results for \"%s\"", array(urldecode($_GET['query'])), "html"));
+				$theme->title = fix(_f("Search results for \"%s\"", array(urldecode($_GET['query']))));
 				$context["search"] = urldecode($_GET['query']);
 			} elseif ($route->action == "drafts")
 				$theme->title = __("Drafts");

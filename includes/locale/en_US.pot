@@ -106,7 +106,7 @@ msgstr ""
 #: includes/ajax.php:50
 #: includes/admin.js.php:179
 #: includes/admin.js.php:195
-msgid "More Options &raquo;"
+msgid "More Options &#187;"
 msgstr ""
 
 #: includes/controller/Admin.php:2041

@@ -28,7 +28,7 @@
 		<id>tag:<?php echo $tagged; ?></id>
 		<updated><?php echo when("c", $updated); ?></updated>
 		<published><?php echo when("c", $post->created_at); ?></published>
-		<link rel="alternate" type="text/html" href="<?php echo $trigger->filter($url, "feed_url", $post); ?>" />
+		<link rel="alternate" type="<?php echo $theme->type; ?>" href="<?php echo $trigger->filter($url, "feed_url", $post); ?>" />
 		<author>
 			<name><?php echo safe(fallback($post->user()->full_name, $post->user()->login, true)); ?></name>
 <?php if (!empty($author_uri)): ?>

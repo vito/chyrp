@@ -55,11 +55,13 @@ $(function(){
 function togglers() {
 	var all_checked = true
 
-	$("#toggler").html('<label for="toggle"><?php echo __("Toggle All"); ?></label><input class="checkbox" type="checkbox" name="toggle" id="toggle" />')
-
-	$(".toggler").html('<input class="checkbox" type="checkbox" name="toggle" id="toggle" />')
-
-	$("#toggle").click(function(){
+	$(document.createElement("label")).attr("for", "toggle").text("<?php echo __("Toggle All"); ?>").appendTo("#toggler")
+	$(document.createElement("input")).attr({
+		"class": "checkbox",
+		type: "checkbox",
+		name: "toggle",
+		id: "toggle"
+	}).appendTo("#toggler, .toggler").click(function(){
 		$("form#new_group, form#group_edit, table").find(":checkbox").not("#toggle").each(function(){
 			this.checked = document.getElementById("toggle").checked
 		})
@@ -129,7 +131,11 @@ var Write = {
 		this.more_options()
 	},
 	bookmarklet_link: function(){
-		$(document.createElement("li")).addClass("bookmarklet right").html("<?php echo _f("Bookmarklet: %s", array('<a class=\"no_drag\" href=\"javascript:var%20d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f=\''.$config->chyrp_url.'/admin/?action=bookmarklet\',l=d.location,e=encodeURIComponent,p=\'&url=\'+e(l.href)+\'&title=\'+e(d.title)+\'&selection=\'+e(s),u=f+p;a=function(){if(!w.open(u,\'t\',\'toolbar=0,resizable=0,status=1,width=450,height=430\'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0)\">Chyrp!</a>')); ?>").prependTo(".write_post_nav")
+		// Add the list item
+		$(document.createElement("li")).addClass("bookmarklet right").text("Bookmarklet: ").prependTo(".write_post_nav")
+
+		// Add the link
+		$(document.createElement("a")).text("<?php echo __("Chyrp!"); ?>").addClass("no_drag").attr("href", "<?php echo 'javascript:var%20d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f=\''.$config->chyrp_url.'/admin/?action=bookmarklet\',l=d.location,e=encodeURIComponent,p=\'&url=\'+e(l.href)+\'&title=\'+e(d.title)+\'&selection=\'+e(s),u=f+p;a=function(){if(!w.open(u,\'t\',\'toolbar=0,resizable=0,status=1,width=450,height=430\'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0)'; ?>").appendTo(".bookmarklet")
 	},
 	auto_expand_fields: function(){
 		$("input.text").each(function(){
@@ -166,7 +172,7 @@ var Write = {
 
 		var feather = ($("#feather").size()) ? $("#feather").val() : ""
 		$(document.createElement("div")).css("display", "none").attr("id", "preview").insertBefore("#write_form, #edit_form")
-		$(document.createElement("button")).html("<?php echo __("Preview &rarr;"); ?>").attr({ "type": "submit", "accesskey": "p" }).click(function(){
+		$(document.createElement("button")).append("<?php echo __("Preview &#8594;"); ?>").attr({ "type": "submit", "accesskey": "p" }).click(function(){
 			$("#preview").load("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "preview", content: $(".preview_me").val(), feather: feather }, function(){
 				$(this).fadeIn("fast")
 			})
@@ -176,14 +182,14 @@ var Write = {
 	more_options: function(){
 		if ($("#more_options").size()) {
 			if (Cookie.get("show_more_options") == "true")
-				var more_options_text = "<?php echo __("&laquo; Fewer Options"); ?>";
+				var more_options_text = "<?php echo __("&#171; Fewer Options"); ?>";
 			else
-				var more_options_text = "<?php echo __("More Options &raquo;"); ?>";
+				var more_options_text = "<?php echo __("More Options &#187;"); ?>";
 
 			$(document.createElement("a")).attr({
 				id: "more_options_link",
 				href: "javascript:void(0)"
-			}).addClass("more_options_link").html(more_options_text).insertBefore(".buttons")
+			}).addClass("more_options_link").append(more_options_text).insertBefore(".buttons")
 			$("#more_options").clone().insertAfter("#more_options_link").removeClass("js_disabled")
 
 			$("#more_options").wrap("<div></div>")
@@ -193,10 +199,10 @@ var Write = {
 
 			$("#more_options_link").click(function(){
 				if ($("#more_options").parent().css("display") == "none") {
-					$(this).html("<?php echo __("&laquo; Fewer Options"); ?>")
+					$(this).empty().append("<?php echo __("&#171; Fewer Options"); ?>")
 					Cookie.set("show_more_options", "true", 30)
 				} else {
-					$(this).html("<?php echo __("More Options &raquo;"); ?>")
+					$(this).empty().append("<?php echo __("More Options &#187;"); ?>")
 					Cookie.destroy("show_more_options")
 				}
 				$("#more_options").parent().slideToggle()
@@ -273,7 +279,7 @@ var Extend = {
 		confirmed: null
 	},
 	prepare_info: function(){
-		$(".description").wrap("<div></div>").parent().hide()
+		$(".description:not(.expanded)").wrap("<div></div>").parent().hide()
 		$(".info_link").click(function(){
 			$(this).parent().find(".description").parent().slideToggle("normal", Extend.redraw)
 			return false
@@ -302,7 +308,7 @@ var Extend = {
 
 		if ($(".feather").size())
 			<?php $tip = _f("(tip: drag the tabs on the <a href=\\\"%s\\\">write</a> page to reorder them)", array(url("/admin/?action=write"))); ?>
-			$(document.createElement("small")).html("<?php echo $tip; ?>").css({
+			$(document.createElement("small")).text("<?php echo $tip; ?>").css({
 				position: "relative",
 				bottom: "-1em",
 				display: "block",
@@ -365,7 +371,7 @@ var Extend = {
 				$("#"+ dependee +" .dependencies_list ."+ Extend.Drop.extension.name).hide()
 
 				if ($("#"+ dependee).attr("class").split(" ").find(/needs_(.+)/).length == 0)
-					$("#"+ dependee).find(".dependencies_message, .dependencies_list, .description").hide().end()
+					$("#"+ dependee).find(".description").parent().hide().end()
 					                .draggable({
 					                    zIndex: 100,
 					                    cancel: "a",
@@ -374,10 +380,10 @@ var Extend = {
 					                .css("cursor", "move")
 			}
 		} else {
-			$(".depends_"+ Extend.Drop.extension.name).find(".dependencies_message, .dependencies_list, .description").show()
+			$(".depends_"+ Extend.Drop.extension.name).find(".description").parent().show()
 			$(".depends_"+ Extend.Drop.extension.name)
 				.find(".dependencies_list")
-				.append($(document.createElement("li")).html(Extend.Drop.extension.name).addClass(Extend.Drop.extension.name))
+				.append($(document.createElement("li")).text(Extend.Drop.extension.name).addClass(Extend.Drop.extension.name))
 				.end()
 				.addClass("needs_"+ Extend.Drop.extension.name)
 		}

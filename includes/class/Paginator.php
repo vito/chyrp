@@ -132,7 +132,7 @@
 
 			$config = Config::current();
 			if (!$config->clean_urls or !$clean_urls or ADMIN)
-				$mark = (strpos($request, "?") and !$only_page) ? "&" : "?" ;
+				$mark = (strpos($request, "?") and !$only_page) ? "&amp;" : "?" ;
 
 			return ($config->clean_urls and $clean_urls and !ADMIN) ?
 			       preg_replace("/(\/{$this->name}\/([0-9]+)|$)/", "/".$this->name."/".($this->page + 1), "http://".$_SERVER['HTTP_HOST'].$request, 1) :
@@ -152,7 +152,7 @@
 
 			$config = Config::current();
 			if (!$config->clean_urls or !$clean_urls or ADMIN)
-				$mark = (strpos($request, "?") and !$only_page) ? "&" : "?" ;
+				$mark = (strpos($request, "?") and !$only_page) ? "&amp;" : "?" ;
 
 			return ($config->clean_urls and $clean_urls and !ADMIN) ?
 			       preg_replace("/(\/".$this->name."\/([0-9]+)|$)/", "/".$this->name."/".($this->page - 1), "http://".$_SERVER['HTTP_HOST'].$request, 1) :
