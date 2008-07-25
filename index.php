@@ -34,8 +34,6 @@
 			$theme->load(array("pages/view", "pages/index"), array("post" => $post, "posts" => array($post)));
 			break;
 		case "page":
-			fallback($page, new Page(null, array("where" => "url = :url", "params" => array(":url" => $_GET['url']))));
-
 			if (!$page->no_results) {
 				$theme->title = $page->title;
 

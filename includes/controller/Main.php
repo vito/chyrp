@@ -116,6 +116,17 @@
 		}
 
 		/**
+		 * Function: page
+		 * Handles page viewing.
+		 */
+		public function page() {
+			global $page;
+
+			if (!isset($page))
+				$page = new Page(null, array("where" => "url = :url", "params" => array(":url" => $_GET['url'])));
+		}
+
+		/**
 		 * Function: feed
 		 * Grabs posts for the feed.
 		 */

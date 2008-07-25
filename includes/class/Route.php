@@ -228,12 +228,15 @@
 			if (count($this->arg) == 1 and method_exists(MainController::current(), $this->arg[0]))
 				return $this->action = $this->arg[0];
 
-			$page = new Page(null, array("where" => "url = :url",
-			                             "params" => array(":url" => end($this->arg))));
+			$valids = Page::find(array("where" => "url IN ('".implode("', '", $this->arg)."')"));
 
-			if (!$page->no_results)
-				return list($_GET['url'], $this->action) = array(end($this->arg), "page");
-			elseif ($i_have_the_power)
+			if (count($valids) == count($this->arg)) {
+				foreach ($valids as $valid)
+					if ($valid->url == end($this->arg)) {
+						$page = $valid;
+						return list($_GET['url'], $this->action) = array($valid->url, "page");
+					}
+			} elseif ($i_have_the_power)
 				return $this->action = fallback($this->arg[0], "index");
 		}
 

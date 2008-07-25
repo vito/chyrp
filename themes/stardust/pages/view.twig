@@ -13,8 +13,11 @@
 				</ol>
 				{% endif %}
 				<input type="hidden" name="last_comment" value="$post.latest_comment" id="last_comment" />
-				${ post.comments.next_link("Next &rarr;" | translate, "next_page") }
-				${ post.comments.prev_link("&larr; Previous" | translate, "prev_page") }
+				$post.comments.prev_link
+				$post.comments.next_link
+				{% if post.comments.paginated and post.comments.pages > 1 %}
+				<span class="pages">Page $post.comments.page of $post.comments.pages</span>
+				{% endif %}
 {% if post.commentable %}
 {% include "forms/comment/new.twig" %}
 {% endif %}
