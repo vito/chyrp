@@ -142,7 +142,27 @@ var Write = {
 	auto_expand_fields: function(){
 		$("input.text").each(function(){
 			if ($(this).parent().parent().attr("class") == "more_options") return
-			$(this).css("min-width", $(this).outerWidth()).Autoexpand()
+
+			$(this).css("min-width", $(this).width())
+			$(this).css("max-width", $(this).parent().width() - 8)
+
+			$(document.createElement("span")).prependTo("body").addClass("dummy_"+$(this).attr("id")).css({
+				fontSize: $(this).css("font-size"),
+				fontFamily: $(this).css("font-family"),
+				padding: $(this).css("padding"),
+				display: "none"
+			})
+
+			$(this).keypress(function(e){
+				var dummy = ".dummy_"+$(this).attr("id")
+
+				$(dummy).text($(this).val() + String.fromCharCode(e.which))
+
+				if (e.which == 8)
+					$(dummy).text($(this).val().substring(0, $(this).val().length - 1))
+
+				$(this).width($(".dummy_"+$(this).attr("id")).width() + 20)
+			})
 		})
 		$("textarea").each(function(){
 			$(this).css({
@@ -161,9 +181,11 @@ var Write = {
 			revert: true,
 			cancel: "a.no_drag, a[href$=write_page]",
 			start: function(e, ui) {
-				$(".feathers_sort").width($(ui.item).width())
+				$(ui.item).find("a").click(function(){ return false })
+				$(".feathers_sort").width($(ui.item).width() - 2)
 			},
-			update: function(){
+			update: function(e, ui){
+				$(ui.item).find("a").unbind("click")
 				$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", "action=reorder_feathers&"+$("#sub-nav").sortable("serialize"))
 			}
 		})

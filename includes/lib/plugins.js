@@ -180,51 +180,18 @@ $(this).parent().find("ul:first").append(ui.draggable);self.element.data("sortab
  * NOTE: This script requires jQuery to work.  Download jQuery at www.jquery.com
  *
  */
+
 (function(jQuery){var self=null;jQuery.fn.autogrow=function(o)
 {return this.each(function(){new jQuery.autogrow(this,o);});};jQuery.autogrow=function(e,o)
 {if(o=="disable")
 return $(".autogrow-dummy").addClass("disabled")
 this.options=o||{};this.dummy=null;this.interval=null;this.line_height=this.options.lineHeight||parseInt(jQuery(e).css('line-height'));this.min_height=this.options.minHeight||parseInt(jQuery(e).css('min-height'));this.max_height=this.options.maxHeight||parseInt(jQuery(e).css('max-height'));;this.textarea=jQuery(e);if(this.line_height==NaN)
-this.line_height=0;this.init();};jQuery.autogrow.fn=jQuery.autogrow.prototype={autogrow:'1.2.2'};jQuery.autogrow.fn.extend=jQuery.autogrow.extend=jQuery.extend;jQuery.autogrow.fn.extend({init:function(){var self=this;this.textarea.css({overflow:'hidden',display:'block'});this.textarea.bind('focus',function(){self.startExpand()}).bind('blur',function(){self.stopExpand()});this.checkExpand();},startExpand:function(){var self=this;this.interval=window.setInterval(function(){self.checkExpand()},400);},stopExpand:function(){clearInterval(this.interval);},checkExpand:function(){if(this.dummy==null)
-{this.dummy=jQuery('<div></div>');this.dummy.css({'font-size':this.textarea.css('font-size'),'font-family':this.textarea.css('font-family'),'width':this.textarea.css('width'),'padding':this.textarea.css('padding'),'line-height':this.line_height+'px','overflow-x':'hidden','position':'absolute','top':0,'left':-9999}).addClass("autogrow-dummy").appendTo('body');}
+this.line_height=0;this.init();};jQuery.autogrow.fn=jQuery.autogrow.prototype={autogrow:'1.2.2'};jQuery.autogrow.fn.extend=jQuery.autogrow.extend=jQuery.extend;jQuery.autogrow.fn.extend({init:function(){var self=this;this.textarea.css({overflow:'hidden',display:'block'});this.textarea.bind('focus',function(){self.startExpand()}).bind('blur',function(){self.stopExpand()});this.checkExpand();},startExpand:function(){var self=this;this.interval=window.setInterval(function(){self.checkExpand()},400);this.textarea.keypress(function(){self.checkExpand()})},stopExpand:function(){clearInterval(this.interval);},checkExpand:function(){if(this.dummy==null){this.dummy=jQuery('<div></div>');this.dummy.css({fontSize:this.textarea.css('font-size'),fontFamily:this.textarea.css('font-family'),width:this.textarea.css('width'),padding:this.textarea.css('padding'),lineHeight:this.line_height+'px',overflowX:'hidden',display:"none"}).addClass("autogrow-dummy").appendTo('body');}
 if(this.dummy.hasClass("disabled"))
 return clearInterval(this.interval)
-var html=this.textarea.val().replace(/(<|>|&)/g,' ');if($.browser.msie)
-{html=html.replace(/\n/g,'<BR>new');}
-else
-{html=html.replace(/\n/g,'<br />new');}
-if(this.dummy.html()!=html)
-{this.dummy.empty().append(html);if(this.max_height>0&&(this.dummy.height()+this.line_height>this.max_height))
-{this.textarea.css('overflow-y','auto');}
-else
-{this.textarea.css('overflow-y','hidden');if(this.textarea.height()<this.dummy.height()+this.line_height||(this.dummy.height()<this.textarea.height()))
-{this.textarea.animate({height:(this.dummy.height()+this.line_height)+'px'},100);}}}}});})(jQuery);
-
-
-/**
- * Expands text and textarea elements while new characters are typed to the a miximum width
- *
- * @name Expander
- * @description Expands text and textarea elements while new characters are typed to the a miximum width
- * @param Mixed limit integer if only expands in width, array if expands in width and height
- * @type jQuery
- * @cat Plugins/Interface
- * @author Stefan Petre
- */
-jQuery.iExpander={helper:null,limit:null,expand:function()
-{text=this.value;if(!text)
-return;style={fontFamily:jQuery(this).css('fontFamily')||'',fontSize:jQuery(this).css('fontSize')||'',fontWeight:jQuery(this).css('fontWeight')||'',fontStyle:jQuery(this).css('fontStyle')||'',fontStretch:jQuery(this).css('fontStretch')||'',fontVariant:jQuery(this).css('fontVariant')||'',letterSpacing:jQuery(this).css('letterSpacing')||'',wordSpacing:jQuery(this).css('wordSpacing')||''};jQuery.iExpander.helper.css(style);html=jQuery.iExpander.htmlEntities(text);html=html.replace(new RegExp("\\n","g"),"<br />");jQuery.iExpander.helper.html('pW');spacer=jQuery.iExpander.helper.get(0).offsetWidth;jQuery.iExpander.helper.html(html);width=jQuery.iExpander.helper.get(0).offsetWidth+spacer;if(jQuery.iExpander.limit&&width>jQuery.iExpander.limit[0]){width=jQuery.iExpander.limit[0];}
-this.style.width=width+'px';if(this.tagName=='TEXTAREA'){height=jQuery.iExpander.helper.get(0).offsetHeight+spacer;if(jQuery.iExpander.limit&&height>jQuery.iExpander.limit[1]){height=jQuery.iExpander.limit[1];}
-this.style.height=height+'px';}},htmlEntities:function(text)
-{entities={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'};for(i in entities){text=text.replace(new RegExp(i,'g'),entities[i]);}
-return text;},build:function(limit)
-{if(jQuery.iExpander.helper==null){jQuery('body',document).append('<div id="expanderHelper" style="position: absolute; top: 0; left: 0; visibility: hidden;"></div>');jQuery.iExpander.helper=jQuery('#expanderHelper');}
-return this.each(function()
-{if(/TEXTAREA|INPUT/.test(this.tagName)){if(this.tagName=='INPUT'){elType=this.getAttribute('type');if(!/text|password/.test(elType)){return;}}
-if(limit&&(limit.constructor==Number||(limit.constructor==Array&&limit.length==2))){if(limit.constructor==Number)
-limit=[limit,limit];else{limit[0]=parseInt(limit[0])||400;limit[1]=parseInt(limit[1])||400;}
-jQuery.iExpander.limit=limit;}
-jQuery(this).blur(jQuery.iExpander.expand).keyup(jQuery.iExpander.expand).keypress(jQuery.iExpander.expand);jQuery.iExpander.expand.apply(this);}});}};jQuery.fn.Autoexpand=jQuery.iExpander.build;
+var html=this.textarea.val().replace(/(<|>|&)/g,'&#160;');html=($.browser.msie)?html.replace(/\n/g,'<BR />new'):html.replace(/\n/g,'<br />new');if(this.dummy.html()!=html){this.dummy.html(html);if(this.max_height>0&&(this.dummy.height()+this.line_height>this.max_height)){this.textarea.css('overflow-y','auto');}else{this.textarea.css('overflow-y','hidden');if(this.textarea.height()<this.dummy.height()+this.line_height||(this.dummy.height()<this.textarea.height())){if($.browser.safari||$.browser.opera)
+this.textarea.animate({height:(this.dummy.height()+this.line_height)},100);else
+this.textarea.height(this.dummy.height()+this.line_height)}}}}});})(jQuery);
 
 
 /*
