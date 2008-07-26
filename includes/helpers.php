@@ -277,7 +277,11 @@
 	 *     $minimum - If the truncated string is less than this and $keep_words is true, it will act as if $keep_words is false.
 	 */
 	function truncate($text, $numb = 50, $keep_words = true, $minimum = 10) {
-		$text = html_entity_decode($text, ENT_QUOTES);
+		# Entities only represent one character when rendered, so treat them as one character.
+		preg_match_all("/&([^\s;]+);/", $text, $entities);
+		foreach ($entities[0] as $entity)
+			$numb += strlen($entity) - 1;
+
 		$original = $text;
 		$numb -= 3;
 		if (strlen($text) > $numb) {

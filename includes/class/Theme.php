@@ -152,36 +152,48 @@
 			$config = Config::current();
 			$trigger = Trigger::current();
 
-			$stylesheets = "";
-			if (file_exists(THEME_DIR."/stylesheets/") or file_exists(THEME_DIR."/css/")) {
-				$count = 1;
+			$stylesheets = array();
+			Trigger::current()->filter($stylesheets, "stylesheets");
 
-				$long  = (array) glob(THEME_DIR."/stylesheets/*");
-				$short = (array) glob(THEME_DIR."/css/*");
+			if (!empty($stylesheets))
+				$stylesheets = '<link rel="stylesheet" href="'.
+				               implode('" type="text/css" media="screen" charset="utf-8" /'."\n\t\t".'<link rel="stylesheet" href="', $stylesheets).
+				               '" type="text/css" media="screen" charset="utf-8" />';
+			else
+				$stylesheets = "";
 
-				$total = array_merge($long, $short);
-				foreach($total as $file) {
-					$path = preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file);
-					$file = basename($file);
+			if (file_exists(THEME_DIR."/style.css"))
+				$stylesheets = '<link rel="stylesheet" href="'.$config->chyrp_url.'/themes/'.$config->theme.'/style.css" type="text/css" media="screen" charset="utf-8" />'."\n\t\t";
 
-					if ($file == "ie.css")
-					    $stylesheets.= "<!--[if IE]>";
-					if (preg_match("/^ie([0-9\.]+)\.css/", $file, $matches))
-					    $stylesheets.= "<!--[if IE ".$matches[1]."]>";
-					elseif (preg_match("/(lt|gt)ie([0-9\.]+)\.css/", $file, $matches))
-					    $stylesheets.= "<!--[if ".$matches[1]." IE ".$matches[2]."]>";
+			if (!file_exists(THEME_DIR."/stylesheets/") and !file_exists(THEME_DIR."/css/"))
+				return $stylesheets;
 
-					$stylesheets.= '<link rel="stylesheet" href="'.$config->chyrp_url.$path.'" type="text/css" media="'.($file == "print.css" ? "print" : "screen").'" charset="utf-8" />';
+			$count = 1;
 
-					if ($file == "ie.css" or preg_match("/(lt|gt)?ie([0-9\.]+)\.css/", $file))
-						$stylesheets.= "<![endif]-->";
+			$long  = (array) glob(THEME_DIR."/stylesheets/*");
+			$short = (array) glob(THEME_DIR."/css/*");
 
-					$stylesheets.= "\n\t\t";
+			$total = array_merge($long, $short);
+			foreach($total as $file) {
+				$path = preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file);
+				$file = basename($file);
 
-					$count++;
-				}
-			} else
-				$stylesheets = '<link rel="stylesheet" href="'.$config->chyrp_url.'/themes/'.$config->theme.'/style.css" type="text/css" media="screen" charset="utf-8" />';
+				if ($file == "ie.css")
+				    $stylesheets.= "<!--[if IE]>";
+				if (preg_match("/^ie([0-9\.]+)\.css/", $file, $matches))
+				    $stylesheets.= "<!--[if IE ".$matches[1]."]>";
+				elseif (preg_match("/(lt|gt)ie([0-9\.]+)\.css/", $file, $matches))
+				    $stylesheets.= "<!--[if ".$matches[1]." IE ".$matches[2]."]>";
+
+				$stylesheets.= '<link rel="stylesheet" href="'.$config->chyrp_url.$path.'" type="text/css" media="'.($file == "print.css" ? "print" : "screen").'" charset="utf-8" />';
+
+				if ($file == "ie.css" or preg_match("/(lt|gt)?ie([0-9\.]+)\.css/", $file))
+					$stylesheets.= "<![endif]-->";
+
+				$stylesheets.= "\n\t\t";
+
+				$count++;
+			}
 
 			return $stylesheets;
 		}

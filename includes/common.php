@@ -25,16 +25,16 @@
 	# Should Chyrp use debugging processes?
 	define('DEBUG', true);
 
-	# Constant: INDEX
-	# Is the requested file index.php?
-	define('INDEX', (pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME) == "index.php"));
-
 	# Fallback all these definitions.
 	if (!defined('JAVASCRIPT')) define('JAVASCRIPT', false);
 	if (!defined('ADMIN'))      define('ADMIN', false);
 	if (!defined('AJAX'))       define('AJAX', false);
 	if (!defined('XML_RPC'))    define('XML_RPC', false);
 	if (!defined('TRACKBACK'))  define('TRACKBACK', false);
+
+	# Constant: INDEX
+	# Is the requested file index.php?
+	define('INDEX', (pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME) == "index.php") and !ADMIN);
 
 	# Use GZip compression if available.
 	if (!AJAX and extension_loaded("zlib") and
@@ -240,7 +240,7 @@
 	}
 
 	# Load the /clean/urls into their correct $_GET values.
-	if (INDEX)
+	if (INDEX or ADMIN)
 		$route->determine_action();
 
 	# Variable: $visitor
@@ -267,14 +267,12 @@
 	foreach (Horde_Yaml::loadFile(THEME_DIR."/info.yaml") as $key => $val)
 		$theme->$key = $val;
 
-	# Only set to application/xhtml+xml if it's not set and they're not in IE
-	if (!isset($theme->type) and !substr_count($_SERVER['HTTP_USER_AGENT'], "MSIE"))
-		$theme->type = "application/xhtml+xml";
-
-	if (!JAVASCRIPT and !XML_RPC and !AJAX)            # Fall back to text/html; if it's not set they're in IE (see above)
+	if (INDEX)
 		header("Content-type: ".fallback($theme->type, "text/html")."; charset=UTF-8");
 	elseif (AJAX)
 		header("Content-type: text/html; charset=UTF-8");
+	elseif (ADMIN)
+		header("Content-type: application/xhtml+xml; charset=UTF-8");
 
 	# These are down here so that the modules are
 	# initialized after the $_GET values are filled.
@@ -333,9 +331,10 @@
 			$route->check_viewing_post();
 			$route->check_viewing_page(true);
 		}
-
-		$trigger->call("runtime");
 	}
+
+	if (INDEX or ADMIN)
+		$trigger->call("runtime");
 
 	# Array: $statuses
 	# An array of post statuses that <Visitor> can view.

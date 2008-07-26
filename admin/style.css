@@ -915,4 +915,7 @@ br#after_options {
 .js_enabled {
 	display: none;
 }
+img.smiley {
+	margin: 0 0 -.3em;
+}
 /* @end */

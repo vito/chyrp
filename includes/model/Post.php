@@ -686,17 +686,7 @@
 				if (get_class($val) == "SimpleXMLElement")
 					$val = self::xml2arr($val);
 
-			//array_walk_recursive($parse, array("Post", "recursive_unsafe"));
-
 			return $parse;
-		}
-
-		/**
-		 * Function: recursive_unsafe
-		 * Callback used by <Post.xml2arr> for parsing a post.
-		 */
-		static function recursive_unsafe(&$value, $key) {
-			$value = unsafe($value);
 		}
 
 		/**
