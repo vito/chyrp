@@ -11,12 +11,14 @@ a { text-decoration: none; color: inherit; }
 
 html {
 	font-size: 62.5%;
+	height: 100%;
 }
 body {
 	background-color: #fff;
 	color: #111;
 	font: normal 1.1em/1.5em 'Helvetica Neue', Helvetica, Arial, Verdana, sans-serif;
 	margin: 0;
+	height: 100%;
 }
 
 code {

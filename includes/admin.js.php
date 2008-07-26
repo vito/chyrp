@@ -332,7 +332,7 @@ var Extend = {
 
 		if ($(".feather").size())
 			<?php $tip = _f("(tip: drag the tabs on the <a href=\\\"%s\\\">write</a> page to reorder them)", array(url("/admin/?action=write"))); ?>
-			$(document.createElement("small")).text("<?php echo $tip; ?>").css({
+			$(document.createElement("small")).html("<?php echo $tip; ?>").css({
 				position: "relative",
 				bottom: "-1em",
 				display: "block",

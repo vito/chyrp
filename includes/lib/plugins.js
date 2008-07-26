@@ -180,7 +180,6 @@ $(this).parent().find("ul:first").append(ui.draggable);self.element.data("sortab
  * NOTE: This script requires jQuery to work.  Download jQuery at www.jquery.com
  *
  */
-
 (function(jQuery){var self=null;jQuery.fn.autogrow=function(o)
 {return this.each(function(){new jQuery.autogrow(this,o);});};jQuery.autogrow=function(e,o)
 {if(o=="disable")
