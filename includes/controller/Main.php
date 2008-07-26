@@ -56,7 +56,7 @@
 
 				$queries = explode(" ", $_GET['query']);
 				foreach ($queries as $query)
-					if (!strpos($query, ":"))
+					if (!preg_match("/([a-z0-9_]+):(.+)/", $query))
 						$search.= $query;
 					else
 						$matches[] = $query;

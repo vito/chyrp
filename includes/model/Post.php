@@ -593,6 +593,9 @@
 
 			if (isset(Feathers::$filters[$class])) # Now actually filter it.
 				foreach (Feathers::$filters[$class] as $filter) {
+					if (!isset($this->$filter["field"]) or empty($this->$filter["field"]))
+						return;
+
 					$varname = $filter["field"]."_unfiltered";
 					$this->$varname = $this->$filter["field"];
 					$trigger->filter($this->$filter["field"], $filter["name"], $this);
