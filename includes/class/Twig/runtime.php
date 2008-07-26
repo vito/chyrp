@@ -272,10 +272,12 @@ function twig_is_odd_filter($value)
 	return $value % 2 == 1;
 }
 
-function twig_replace_filter($str, $search, $replace)
+function twig_replace_filter($str, $search, $replace, $regex = false)
 {
-	$func = ($str[0] == "/") ? "preg_replace" : "str_replace" ;
-	return $func($search, $replace, $str);
+	if ($regex)
+		return preg_replace($search, $replace, $str);
+	else
+		return str_replace($search, $replace, $str);
 }
 
 function twig_match_filter($str, $match)
