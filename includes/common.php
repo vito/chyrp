@@ -271,8 +271,6 @@
 		header("Content-type: ".fallback($theme->type, "text/html")."; charset=UTF-8");
 	elseif (AJAX)
 		header("Content-type: text/html; charset=UTF-8");
-	elseif (ADMIN)
-		header("Content-type: application/xhtml+xml; charset=UTF-8");
 
 	# These are down here so that the modules are
 	# initialized after the $_GET values are filled.
