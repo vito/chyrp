@@ -12,58 +12,46 @@
 			if (Route::current()->action != "index" or JAVASCRIPT or ADMIN) return;
 
 			$config = Config::current();
-			if (time() - $config->rss_last_update >= ($config->rss_update_every * 60)) {
-				$rss_feeds = $config->rss_feeds;
-				foreach ($config->rss_feeds as $name => $feed) {
-					$get_xml_contents = get_remote(trim($feed["url"]));
-					$xml_contents = preg_replace("/<(\/?)dc:date>/", "<\\1date>", $get_xml_contents);
-					$xml = simplexml_load_string($xml_contents, "SimpleXMLElement", LIBXML_NOCDATA);
+			if (time() - $config->rss_last_update < ($config->rss_update_every * 60))
+				return;
 
-					if ($xml == false)
-						continue;
+			$rss_feeds = $config->rss_feeds;
+			foreach ($config->rss_feeds as $name => $feed) {
+				$get_xml_contents = get_remote(trim($feed["url"]));
+				$xml_contents = preg_replace("/<(\/?)dc:date>/", "<\\1date>", $get_xml_contents);
+				$xml = simplexml_load_string($xml_contents, "SimpleXMLElement", LIBXML_NOCDATA);
 
-					$this->flatten($xml);
+				if ($xml == false)
+					continue;
 
-					$items = array();
+				$this->flatten($xml);
 
-					if (isset($xml->item))
-						foreach ($xml->item as $item)
-							array_unshift($items, $item);
-					else
-						foreach ($xml->channel->item as $item)
-							array_unshift($items, $item);
+				$items = array();
 
-					foreach ($items as $item) {
-						$date = (isset($item->pubDate)) ? $item->pubDate : ((isset($item->date)) ? $item->date : 0) ;
+				if (isset($xml->item))
+					foreach ($xml->item as $item)
+						array_unshift($items, $item);
+				else
+					foreach ($xml->channel->item as $item)
+						array_unshift($items, $item);
 
-						if (strtotime($date) > $feed["last_updated"]) {
-							$data = array();
-							foreach ($feed["data"] as $attr => $field)
-								if (!empty($field)) {
-									if (preg_match("/^([a-z0-9:]+)$/", $field))
-										$value = html_entity_decode($item->$field, ENT_QUOTES, "utf-8");
-									elseif (preg_match("/feed\[([^\]]+)\]\.attr\[([^\]]+)\]/", $field, $matches))
-										$value = html_entity_decode($item->$matches[1]->attributes()->$matches[2], ENT_QUOTES, "utf-8");
-									elseif (preg_match("/feed\[([^\]]+)\]/", $field, $matches))
-										$value = html_entity_decode($item->$matches[1], ENT_QUOTES, "utf-8");
+				foreach ($items as $item) {
+					$date = (isset($item->pubDate)) ? $item->pubDate : ((isset($item->date)) ? $item->date : 0) ;
 
-									if (preg_match("/call:([^\(]+)\(/", $field, $matches))
-										$value = call_user_func($matches[1], $value);
+					if (strtotime($date) > $feed["last_updated"]) {
+						$data = array();
+						foreach ($feed["data"] as $attr => $field)
+							$data[$attr] = (!empty($field)) ? $this->parse_field($field, $item) : "" ;
 
-									$data[$attr] = $value;
-								} else
-									$data[$attr] = "";
+						$_POST['feather'] = $feed["feather"];
+						Post::add($data);
 
-							$_POST['feather'] = $feed["feather"];
-							Post::add($data);
-
-							$rss_feeds[$name]["last_updated"] = strtotime($date);
-						}
+						$rss_feeds[$name]["last_updated"] = strtotime($date);
 					}
 				}
-				$config->set("rss_feeds", $rss_feeds);
-				$config->set("rss_last_update", time());
 			}
+			$config->set("rss_feeds", $rss_feeds);
+			$config->set("rss_last_update", time());
 		}
 
 		public function settings_nav($navs) {
@@ -100,5 +88,40 @@
 
 		static function upload_image_from_html($html) {
 			return upload_from_url(self::image_from_html($html));
+		}
+
+		public function parse_field($value, $item) {
+			if (preg_match("/^([a-z0-9:\/]+)$/", $value)) {
+				$xpath = $item->xpath($value);
+				$value = html_entity_decode($xpath[0], ENT_QUOTES, "utf-8");
+			}
+
+			if (preg_match("/feed\[([^\]]+)\]\.attr\[([^\]]+)\]/", $value, $matches)) {
+				$xpath = $item->xpath($matches[1]);
+				$value = str_replace($matches[0],
+				                     html_entity_decode($xpath[0]->attributes()->$matches[2],
+				                                        ENT_QUOTES,
+				                                        "utf-8"),
+				                     $value);
+			}
+
+			if (preg_match("/feed\[([^\]]+)\]/", $value, $matches)) {
+				$xpath = $item->xpath($matches[1]);
+				$value = str_replace($matches[0],
+				                     html_entity_decode($xpath[0], ENT_QUOTES, "utf-8"),
+				                     $value);
+			}
+
+			if (preg_match_all("/call:([^\(]+)\((.+)\)/", $value, $calls))
+				foreach ($calls[0] as $index => $full) {
+					$function = $calls[1][$index];
+					$arguments = explode(" || ", $calls[2][$index]);
+
+					$value = str_replace($full,
+					                     call_user_func_array($function, $arguments),
+					                     $value);
+				}
+
+			return $value;
 		}
 	}

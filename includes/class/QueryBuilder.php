@@ -231,6 +231,6 @@
 				}
 			}
 
-			$field = preg_replace("/AS ([^ ]+)\./", "AS ", $field);
+			$field = preg_replace("/AS ([^ ]+)\./i", "AS ", $field);
 		}
 	}
