@@ -22,6 +22,11 @@
 
 		$url = $post->url();
 		$title = $post->title();
+
+		if (!$post->user()->no_results)
+			$author = fallback($post->user()->full_name, $post->user()->login, true);
+		else
+			$author = __("Guest");
 ?>
 	<entry>
 		<title type="html"><?php echo safe(fallback($title, ucfirst($post->feather), true)); ?></title>
@@ -30,8 +35,8 @@
 		<published><?php echo when("c", $post->created_at); ?></published>
 		<link rel="alternate" type="<?php echo $theme->type; ?>" href="<?php echo $trigger->filter($url, "feed_url", $post); ?>" />
 		<author>
-			<name><?php echo safe(fallback($post->user()->full_name, $post->user()->login, true)); ?></name>
-<?php if (!empty($author_uri)): ?>
+			<name><?php echo safe($author); ?></name>
+<?php if (!empty($post->user()->website)): ?>
 			<uri><?php echo safe($post->user()->website); ?></uri>
 <?php endif; ?>
 		</author>

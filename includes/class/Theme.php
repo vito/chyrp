@@ -24,6 +24,8 @@
 			$visitor = Visitor::current();
 			$config = Config::current();
 
+			$this->url = THEME_URL;
+
 			$this->twig = new Twig_Loader(THEME_DIR,
 				                          ((is_writable(INCLUDES_DIR."/caches") and !DEBUG) ? INCLUDES_DIR."/caches" : null));
 		}
