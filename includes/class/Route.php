@@ -26,7 +26,10 @@
 		                     '/\/page\/(([^\/]+)\/)+/'           => '/?action=page&amp;url=$2',
 		                     '/\/search\//'                      => '/?action=search',
 		                     '/\/search\/([^\/]+)\//'            => '/?action=search&amp;query=$1',
-		                     '/\/archive\/([^\/]+)\/([^\/]+)\//' => '/?action=archive&amp;year=$1&amp;month=$2',
+		                     '/\/archive\/([0-9]{4})\/([0-9]{2})\//'
+		                                                         => '/?action=archive&amp;year=$1&amp;month=$2',
+		                     '/\/archive\/([0-9]{4})\/([0-9]{2})\/([0-9]{2})\//'
+		                                                         => '/?action=archive&amp;year=$1&amp;month=$2&amp;day=$3',
 		                     '/\/theme_preview\/([^\/]+)\//'     => '/?action=theme_preview&amp;theme=$1',
 		                     '/\/([^\/]+)\/feed\/([^\/]+)\//'    => '/?action=$1&amp;feed&amp;title=$2',
 		                     '/\/([^\/]+)\/feed\//'              => '/?action=$1&amp;feed');
