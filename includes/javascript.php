@@ -218,7 +218,7 @@ var Cookie = {
 }
 
 function isError(text) {
-	return /HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW/m.test(text);
+	return /HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW$/m.test(text);
 }
 
 <?php echo "\n"; $trigger->call("javascript"); ?>
