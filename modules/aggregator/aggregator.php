@@ -6,7 +6,7 @@
 			$config->set("aggregate_every", 30);
 			$config->set("disable_aggregation", false);
 			$config->set("aggregation_author", Visitor::current()->id);
-			$config->set("aggregations", array());
+			$config->set("aggregates", array());
 		}
 
 		static function __uninstall() {
@@ -15,7 +15,7 @@
 			$config->remove("aggregate_every");
 			$config->remove("disable_aggregation");
 			$config->remove("aggregation_author");
-			$config->remove("aggregations");
+			$config->remove("aggregates");
 		}
 
 		public function runtime() {
@@ -25,8 +25,8 @@
 			if ($config->disable_aggregation or time() - $config->last_aggregation < ($config->aggregate_every * 60))
 				return;
 
-			$aggregations = $config->aggregations;
-			foreach ($config->aggregations as $name => $feed) {
+			$aggregates = $config->aggregates;
+			foreach ($config->aggregates as $name => $feed) {
 				$xml_contents = preg_replace(array("/<(\/?)dc:date>/", "/xmlns=/"),
 				                             array("<\\1date>", "a="),
 				                             get_remote(trim($feed["url"])));
@@ -62,11 +62,11 @@
 						$_POST['user_id'] = $config->aggregation_author;
 						Post::add($data);
 
-						$aggregations[$name]["last_updated"] = strtotime($date);
+						$aggregates[$name]["last_updated"] = strtotime($date);
 					}
 				}
 			}
-			$config->set("aggregations", $aggregations);
+			$config->set("aggregates", $aggregates);
 			$config->set("last_aggregation", time());
 		}
 
