@@ -484,10 +484,6 @@ div.post.quote .source {
 	display: block;
 	margin: .8em 0 1em 0;
 }
-div.post.quote .source p {
-	display: inline;
-	margin: 0;
-}
 div.post.link h2 a:link,
 div.post.link h2 a:visited {
 	color: #3f5161;

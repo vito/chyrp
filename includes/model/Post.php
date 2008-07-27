@@ -583,22 +583,25 @@
 			$trigger = Trigger::current();
 			$trigger->filter($this, "filter_post");
 
+
 			if (isset(Feathers::$custom_filters[$class])) # Run through feather-specified filters, first.
 				foreach (Feathers::$custom_filters[$class] as $custom_filter) {
 					$varname = $custom_filter["field"]."_unfiltered";
-					$this->$varname = $this->$custom_filter["field"];
+					if (!isset($this->$varname))
+						$this->$varname = $this->$custom_filter["field"];
+
 					$this->$custom_filter["field"] = call_user_func_array(array($feathers[$this->feather], $custom_filter["name"]),
 					                                                      array($this->$custom_filter["field"], $this));
 				}
 
 			if (isset(Feathers::$filters[$class])) # Now actually filter it.
 				foreach (Feathers::$filters[$class] as $filter) {
-					if (!isset($this->$filter["field"]) or empty($this->$filter["field"]))
-						return;
-
 					$varname = $filter["field"]."_unfiltered";
-					$this->$varname = $this->$filter["field"];
-					$trigger->filter($this->$filter["field"], $filter["name"], $this);
+					if (!isset($this->$varname))
+						$this->$varname = $this->$filter["field"];
+
+					if (isset($this->$filter["field"]) and !empty($this->$filter["field"]))
+						$trigger->filter($this->$filter["field"], $filter["name"], $this);
 				}
 		}
 
