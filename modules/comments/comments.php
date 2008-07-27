@@ -383,7 +383,7 @@
 				foreach ($comments as $comment) {
 					$comment = new Comment($comment);
 					if ($comment->deletable())
-						Comment::delete($comment);
+						Comment::delete($comment->id);
 				}
 
 				Flash::notice(__("Selected comments deleted.", "comments"));
