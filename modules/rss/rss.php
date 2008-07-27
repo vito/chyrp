@@ -17,8 +17,9 @@
 
 			$rss_feeds = $config->rss_feeds;
 			foreach ($config->rss_feeds as $name => $feed) {
-				$get_xml_contents = get_remote(trim($feed["url"]));
-				$xml_contents = preg_replace("/<(\/?)dc:date>/", "<\\1date>", $get_xml_contents);
+				$xml_contents = preg_replace(array("/<(\/?)dc:date>/", "/xmlns=/"),
+				                             array("<\\1date>", "a="),
+				                             get_remote(trim($feed["url"])));
 				$xml = simplexml_load_string($xml_contents, "SimpleXMLElement", LIBXML_NOCDATA);
 
 				if ($xml == false)
@@ -28,7 +29,10 @@
 
 				$items = array();
 
-				if (isset($xml->item))
+				if (isset($xml->entry))
+					foreach ($xml->entry as $entry)
+						array_unshift($items, $entry);
+				elseif (isset($xml->item))
 					foreach ($xml->item as $item)
 						array_unshift($items, $item);
 				else
@@ -36,7 +40,7 @@
 						array_unshift($items, $item);
 
 				foreach ($items as $item) {
-					$date = (isset($item->pubDate)) ? $item->pubDate : ((isset($item->date)) ? $item->date : 0) ;
+					$date = fallback($item->pubDate, fallback($item->date, fallback($item->published, 0, true), true), true);
 
 					if (strtotime($date) > $feed["last_updated"]) {
 						$data = array();
@@ -93,10 +97,10 @@
 		public function parse_field($value, $item) {
 			if (preg_match("/^([a-z0-9:\/]+)$/", $value)) {
 				$xpath = $item->xpath($value);
-				$value = html_entity_decode($xpath[0], ENT_QUOTES, "utf-8");
+				return html_entity_decode($xpath[0], ENT_QUOTES, "utf-8");
 			}
 
-			if (preg_match("/feed\[([^\]]+)\]\.attr\[([^\]]+)\]/", $value, $matches)) {
+			if (preg_match("/feed\[(.+)\]\.attr\[([^\]]+)\]/", $value, $matches)) {
 				$xpath = $item->xpath($matches[1]);
 				$value = str_replace($matches[0],
 				                     html_entity_decode($xpath[0]->attributes()->$matches[2],
@@ -105,7 +109,7 @@
 				                     $value);
 			}
 
-			if (preg_match("/feed\[([^\]]+)\]/", $value, $matches)) {
+			if (preg_match("/feed\[(.+)\]/", $value, $matches)) {
 				$xpath = $item->xpath($matches[1]);
 				$value = str_replace($matches[0],
 				                     html_entity_decode($xpath[0], ENT_QUOTES, "utf-8"),
