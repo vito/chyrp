@@ -316,7 +316,8 @@
 		 * For example, for /tags/ you won't need to do this, but you will for /tag/tag-name/.
 		 *
 		 * Parameters:
-		 *     $path - The path to add. Wrap variables with parentheses, e.g. "/tag/(name)/".
+		 *     $path - The path to add. Wrap variables with parentheses, e.g. "tag/(name)/".
+		 *     $action - The action the path points to.
 		 *
 		 * See Also:
 		 *     <remove_route>
@@ -325,7 +326,7 @@
 			$config = Config::current();
 
 			$new_routes = $config->routes;
-			$new_routes[$action] = $path;
+			$new_routes[$path] = $action;
 
 			$config->set("routes", $new_routes);
 		}
