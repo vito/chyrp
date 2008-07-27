@@ -48,9 +48,10 @@
 				                      "value" => $_GET['url']));
 			}
 		}
-		public function swfupload($post = null) {
+		public function swfupload($admin, $post = null) {
 			if (isset($post) and $post->feather != "photo" or
 			    isset($_GET['feather']) and $_GET['feather'] != "photo") return;
+
 			Trigger::current()->call("prepare_swfupload", "photo", "*.jpg;*.jpeg;*.png;*.gif;*.bmp");
 		}
 		public function submit() {

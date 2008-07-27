@@ -5,7 +5,7 @@
 			$config->set("last_aggregation", 0);
 			$config->set("aggregate_every", 30);
 			$config->set("disable_aggregation", false);
-			$config->set("aggregation_author", 1);
+			$config->set("aggregation_author", Visitor::current()->id);
 			$config->set("aggregations", array());
 		}
 

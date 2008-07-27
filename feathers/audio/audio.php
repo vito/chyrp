@@ -24,7 +24,7 @@
 			$this->respondTo("admin_write_post", "swfupload");
 			$this->respondTo("admin_edit_post", "swfupload");
 		}
-		public function swfupload($post = null) {
+		public function swfupload($admin, $post = null) {
 			if (isset($post) and $post->feather != "audio" or
 			    isset($_GET['feather']) and $_GET['feather'] != "audio") return;
 			Trigger::current()->call("prepare_swfupload", "audio", "*.mp3");
