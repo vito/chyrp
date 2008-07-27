@@ -26,6 +26,7 @@
 		 *     <Model::search>
 		 */
 		static function find($options = array(), $options_for_object = array()) {
+			fallback($options["order"], "id asc");
 			return parent::search(get_class(), $options, $options_for_object);
 		}
 

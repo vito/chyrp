@@ -17,23 +17,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: modules/rss/rss.php:52
+#: modules/aggregator/aggregator.php:52
 msgid "Aggregation"
 msgstr ""
 
-#: modules/rss/info.yaml:1
+#: modules/aggregator/info.yaml:1
 msgid "RSS Aggregator"
 msgstr ""
 
-#: modules/rss/pages/admin/new_aggregator.php:64
+#: modules/aggregator/pages/admin/new_aggregator.php:64
 msgid "Aggregate!"
 msgstr ""
 
-#: modules/rss/info.yaml:4
+#: modules/aggregator/info.yaml:4
 msgid "Imports RSS feeds."
 msgstr ""
 
-#: modules/rss/pages/admin/new_aggregator.php:28
+#: modules/aggregator/pages/admin/new_aggregator.php:28
 msgid "New Aggregator"
 msgstr ""
 

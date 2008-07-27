@@ -1,0 +1,30 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Aggregation Settings" | translate("aggregator") }{% endblock %}
+
+{% block content %}
+			<h1>${ "Aggregation Settings" | translate("aggregator") }</h1>
+			<form id="aggregation_settings" class="split" action="{% admin "aggregation_settings" %}" method="post">
+				<fieldset>
+					<p>
+						<label for="aggregate_every">${ "Check Feeds Every %s Minutes" | translate("aggregator") | format("<input class=\"text nowidth\" type=\"text\" name=\"aggregate_every\" value=\"" ~ site.aggregate_every | escape ~ "\" size=\"2\" id=\"aggregate_every\" class=\"center\" />") }</label>
+						<input type="checkbox" class="checkbox" name="disable_aggregation"${ site.disable_aggregation | checked } /> ${ "disable" | translate("aggregator") }
+					</p>
+					<p>
+						<label for="aggregation_author">${ "Import Feeds As&hellip;" | translate("aggregator") }</label>
+						<select name="aggregation_author">
+							{% for user in users %}
+							<option value="$user.id"${ user.id | option_selected(site.aggregation_author) }>$user.login</option>
+							{% endfor %}
+							<option value="0"${ 0 | option_selected(site.aggregation_author) }>${ "Guest" | translate }</option>
+						</select>
+					</p>
+
+					<p class="buttons">
+						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Update" | translate }</button>
+					</p>
+
+					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+				</fieldset>
+			</form>
+{% endblock %}

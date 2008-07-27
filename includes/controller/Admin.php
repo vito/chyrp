@@ -189,7 +189,7 @@
 
 				$queries = explode(" ", $_GET['query']);
 				foreach ($queries as $query)
-					if (!strpos($query, ":"))
+					if (!preg_match("/([a-z0-9_]+):(.+)/", $query))
 						$search.= $query;
 					else
 						$matches[] = $query;
@@ -368,7 +368,7 @@
 
 				$queries = explode(" ", $_GET['query']);
 				foreach ($queries as $query)
-					if (!strpos($query, ":"))
+					if (!preg_match("/([a-z0-9_]+):(.+)/", $query))
 						$search.= $query;
 					else
 						$matches[] = $query;
@@ -574,7 +574,7 @@
 
 				$queries = explode(" ", $_GET['query']);
 				foreach ($queries as $query)
-					if (!strpos($query, ":"))
+					if (!preg_match("/([a-z0-9_]+):(.+)/", $query))
 						$search.= $query;
 					else
 						$matches[] = $query;
@@ -748,7 +748,7 @@
 
 					$queries = explode(" ", $_POST['filter_posts']);
 					foreach ($queries as $query)
-						if (!strpos($query, ":"))
+						if (!preg_match("/([a-z0-9_]+):(.+)/", $query))
 							$search.= $query;
 						else
 							$matches[] = $query;
@@ -844,7 +844,7 @@
 
 					$queries = explode(" ", $_POST['filter_pages']);
 					foreach ($queries as $query)
-						if (!strpos($query, ":"))
+						if (!preg_match("/([a-z0-9_]+):(.+)/", $query))
 							$search.= $query;
 						else
 							$matches[] = $query;
@@ -925,7 +925,7 @@
 
 					$queries = explode(" ", $_POST['filter_groups']);
 					foreach ($queries as $query)
-						if (!strpos($query, ":"))
+						if (!preg_match("/([a-z0-9_]+):(.+)/", $query))
 							$search.= $query;
 						else
 							$matches[] = $query;
@@ -961,7 +961,7 @@
 
 					$queries = explode(" ", $_POST['filter_users']);
 					foreach ($queries as $query)
-						if (!strpos($query, ":"))
+						if (!preg_match("/([a-z0-9_]+):(.+)/", $query))
 							$search.= $query;
 						else
 							$matches[] = $query;

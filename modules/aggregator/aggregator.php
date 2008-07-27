@@ -1,22 +1,32 @@
 <?php
-	# This module is outdated.
-	class RSS extends Modules {
+	class Aggregator extends Modules {
 		static function __install() {
 			$config = Config::current();
-			$config->set("rss_last_update", 0);
-			$config->set("rss_update_every", 30);
-			$config->set("rss_feeds", array());
+			$config->set("last_aggregation", 0);
+			$config->set("aggregate_every", 30);
+			$config->set("disable_aggregation", false);
+			$config->set("aggregation_author", 1);
+			$config->set("aggregations", array());
+		}
+
+		static function __uninstall() {
+			$config = Config::current();
+			$config->remove("last_aggregation");
+			$config->remove("aggregate_every");
+			$config->remove("disable_aggregation");
+			$config->remove("aggregation_author");
+			$config->remove("aggregations");
 		}
 
 		public function runtime() {
 			if (Route::current()->action != "index" or JAVASCRIPT or ADMIN) return;
 
 			$config = Config::current();
-			if (time() - $config->rss_last_update < ($config->rss_update_every * 60))
+			if ($config->disable_aggregation or time() - $config->last_aggregation < ($config->aggregate_every * 60))
 				return;
 
-			$rss_feeds = $config->rss_feeds;
-			foreach ($config->rss_feeds as $name => $feed) {
+			$aggregations = $config->aggregations;
+			foreach ($config->aggregations as $name => $feed) {
 				$xml_contents = preg_replace(array("/<(\/?)dc:date>/", "/xmlns=/"),
 				                             array("<\\1date>", "a="),
 				                             get_remote(trim($feed["url"])));
@@ -25,6 +35,7 @@
 				if ($xml == false)
 					continue;
 
+				# Flatten namespaces recursively
 				$this->flatten($xml);
 
 				$items = array();
@@ -48,19 +59,20 @@
 							$data[$attr] = (!empty($field)) ? $this->parse_field($field, $item) : "" ;
 
 						$_POST['feather'] = $feed["feather"];
+						$_POST['user_id'] = $config->aggregation_author;
 						Post::add($data);
 
-						$rss_feeds[$name]["last_updated"] = strtotime($date);
+						$aggregations[$name]["last_updated"] = strtotime($date);
 					}
 				}
 			}
-			$config->set("rss_feeds", $rss_feeds);
-			$config->set("rss_last_update", time());
+			$config->set("aggregations", $aggregations);
+			$config->set("last_aggregation", time());
 		}
 
 		public function settings_nav($navs) {
 			if (Visitor::current()->group()->can("change_settings"))
-				$navs["aggregation_settings"] = array("title" => __("Aggregation", "rss"));
+				$navs["aggregation_settings"] = array("title" => __("Aggregation", "aggregator"));
 
 			return $navs;
 		}
@@ -127,5 +139,26 @@
 				}
 
 			return $value;
+		}
+
+		public function admin_aggregation_settings($admin) {
+			if (!Visitor::current()->group()->can("change_settings"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+
+			$admin->context["users"] = User::find();
+
+			if (empty($_POST))
+				return;
+
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				show_403(__("Access Denied"), __("Invalid security key."));
+
+			$config = Config::current();
+			$set = array($config->set("aggregate_every", $_POST['aggregate_every']),
+			             $config->set("disable_aggregation", !empty($_POST['disable_aggregation'])),
+			             $config->set("aggregation_author", $_POST['aggregation_author']));
+
+			if (!in_array(false, $set))
+				Flash::notice(__("Settings updated."), "/admin/?action=aggregation_settings");
 		}
 	}

@@ -23,7 +23,7 @@
 	<generator uri="http://chyrp.net/" version="<?php echo CHYRP_VERSION; ?>">Chyrp</generator>
 <?php
 	foreach ($comments as $comment) {
-		$trigger->call("rss_comment", $comment->id);
+		$trigger->call("feed_comment", $comment);
 
 		$updated = ($comment->updated) ? $comment->updated_at : $comment->created_at ;
 

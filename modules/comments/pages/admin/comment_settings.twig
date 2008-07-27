@@ -21,6 +21,7 @@
 						<select name="default_comment_status">
 							<option value="approved"${ "approved" | option_selected(site.default_comment_status) }>${ "Approved" | translate("comments") }</option>
 							<option value="denied"${ "denied" | option_selected(site.default_comment_status) }>${ "Denied" | translate("comments") }</option>
+							<option value="spam"${ "spam" | option_selected(site.default_comment_status) }>${ "Spam" | translate("aggregator") }</option>
 						</select>
 					</p>
 					<p>

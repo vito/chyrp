@@ -787,6 +787,6 @@
 
 		public function route_comments_rss() {
 			header("HTTP/1.1 301 Moved Permanently");
-			redirect(url("comments_feed/"));
+			redirect("comments_feed/");
 		}
 	}

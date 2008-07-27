@@ -100,7 +100,7 @@
 			if (method_exists($admin, $action))
 				$admin->$action();
 
-			$trigger->call("admin_".$action);
+			$trigger->call("admin_".$action, $admin);
 
 			$admin->context["sql_debug"]  = SQL::current()->debug;
 
