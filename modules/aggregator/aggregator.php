@@ -54,7 +54,7 @@
 					$date = fallback($item->pubDate, fallback($item->date, fallback($item->published, 0, true), true), true);
 
 					if (strtotime($date) > $feed["last_updated"]) {
-						$data = array();
+						$data = array("aggregate" => $name);
 						foreach ($feed["data"] as $attr => $field)
 							$data[$attr] = (!empty($field)) ? $this->parse_field($field, $item) : "" ;
 

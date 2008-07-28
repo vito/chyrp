@@ -482,7 +482,7 @@ div.post.quote blockquote {
 div.post.quote .source {
 	color: #999;
 	display: block;
-	margin: .8em 0 1em 0;
+	margin: 1em 0;
 }
 div.post.link h2 a:link,
 div.post.link h2 a:visited {
