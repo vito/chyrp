@@ -127,16 +127,10 @@
 		 *     $clean_urls - Whether to link with dirty or clean URLs.
 		 */
 		public function next_page_url($clean_urls = true) {
-			$request = rtrim($_SERVER['REQUEST_URI'], "/");
-			$only_page = (count($_GET) == 2 and isset($_GET[$this->name]));
-
 			$config = Config::current();
-			if (!$config->clean_urls or !$clean_urls or ADMIN)
-				$mark = (strpos($request, "?") and !$only_page) ? "&amp;" : "?" ;
-
 			return ($config->clean_urls and $clean_urls and !ADMIN) ?
-			       preg_replace("/(\/{$this->name}\/([0-9]+)|$)/", "/".$this->name."/".($this->page + 1), "http://".$_SERVER['HTTP_HOST'].$request, 1) :
-			       preg_replace("/((\?|&){$this->name}=([0-9]+)|$)/", $mark.$this->name."=".($this->page + 1), "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 1) ;
+			       preg_replace("/(\/".$this->name."\/([0-9]+)|$)/", "/".$this->name."/".($this->page + 1), "http://".$_SERVER['HTTP_HOST'].$request, 1) :
+			       preg_replace("/((\?|&)".$this->name."=([0-9]+)|$)/", "\\2".$this->name."=".($this->page + 1), "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 1) ;
 		}
 
 		/**
@@ -147,15 +141,9 @@
 		 *     $clean_urls - Whether to link with dirty or clean URLs.
 		 */
 		public function prev_page_url($clean_urls = true) {
-			$request = rtrim($_SERVER['REQUEST_URI'], "/");
-			$only_page = (count($_GET) == 2 and isset($_GET[$this->name]));
-
 			$config = Config::current();
-			if (!$config->clean_urls or !$clean_urls or ADMIN)
-				$mark = (strpos($request, "?") and !$only_page) ? "&amp;" : "?" ;
-
 			return ($config->clean_urls and $clean_urls and !ADMIN) ?
 			       preg_replace("/(\/".$this->name."\/([0-9]+)|$)/", "/".$this->name."/".($this->page - 1), "http://".$_SERVER['HTTP_HOST'].$request, 1) :
-			       preg_replace("/([\?&]".$this->name."=([0-9]+)|$)/", $mark.$this->name."=".($this->page - 1), "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 1) ;
+			       preg_replace("/((\?|&)".$this->name."=([0-9]+)|$)/", "\\2".$this->name."=".($this->page - 1), "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 1) ;
 		}
 	}
