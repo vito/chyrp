@@ -7,11 +7,6 @@
 							{% if field.optional %}
 							<span class="sub">${ "(optional)" | translate }</span>
 							{% endif %}
-							{% if field.help %}
-							<span class="sub">
-								<a href="{% admin "help&id="~field.help %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
-							</span>
-							{% endif %}
 						</label>
 						{% if field.type == "text" or field.type == "file" %}
 						<input class="$field.type{% if field.classes %} ${ field.classes | join(" ") }{% endif %}" type="$field.type" name="$field.attr" value="{% if not field.no_value %}${ field.value | fallback(post[field.attr] | escape(true, false)) }{% endif %}" id="$field.attr" />
@@ -46,10 +41,7 @@
 							<small>${ "(shows this post above all others)" | translate }</small>
 						</p>
 						<p>
-							<label for="slug">
-								${ "Slug" | translate }
-								<a href="{% admin "help&id=slugs" %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
-							</label>
+							<label for="slug">${ "Slug" | translate }</label>
 							<input class="text" type="text" name="slug" value="${ post.slug | escape }" id="slug" />
 						</p>
 						<p>
@@ -58,10 +50,7 @@
 							<input type="hidden" name="original_time" value="${ post.created_at | fallback(now | date("r")) | strftime }" />
 						</p>
 						<p>
-							<label for="trackbacks">
-								${ "Trackbacks" | translate }
-								<a href="{% admin "help&id=trackbacks" %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
-							</label>
+							<label for="trackbacks">${ "Trackbacks" | translate }</label>
 
 							<input class="text" type="text" name="trackbacks" value="" id="trackbacks" />
 						</p>
