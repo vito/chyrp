@@ -5,8 +5,12 @@
 						{% if post.pinned %}<span class="pinned_text">${ "!" | translate }</span>{% endif %}
 						{% block content %}{% endblock %}
 						{% if route.action == "view" %}
-							$post.paginated.next_link
-							$post.paginated.prev_link
+						<div class="clear"></div>
+						$post.paginated.prev_link
+						$post.paginated.next_link
+						{% if post.paginated and post.paginated.pages > 1 %}
+						<span class="pages">Page $post.paginated.page of $post.paginated.pages</span>
+						{% endif %}
 						{% endif %}
 						<div class="clear"></div>
 						<span class="info">

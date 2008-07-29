@@ -44,10 +44,18 @@
 			switch(SQL::current()->method()) {
 				case "pdo":
 					try {
-						$this->query = $this->db->prepare($query);
-						$result = $this->query->execute($params);
-						$this->query->setFetchMode(PDO::FETCH_ASSOC);
-						if (!$result) throw new PDOException;
+						if (SQL::current()->adapter == "sqlite") {
+							foreach ($params as $name => $val)
+								$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", "'".$this->escape($val)."'\\1", $query);
+
+							if (!$this->query = $this->db->query($query))
+								throw new PDOException();
+						} else {
+							$this->query = $this->db->prepare($query);
+							$result = $this->query->execute($params);
+							$this->query->setFetchMode(PDO::FETCH_ASSOC);
+							if (!$result) throw new PDOException;
+						}
 					} catch (PDOException $error) {
 						return $this->handle($error);
 					}
