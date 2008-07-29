@@ -6,6 +6,7 @@
 					</fieldset>
 				</form>
 
+				{% if theme.pages_list %}
 				<h1>${ "Pages" | translate }</h1>
 				<ul>
 				{% for item in theme.pages_list %}
@@ -20,6 +21,7 @@
 					{% endfor %}
 				{% endfor %}
 				</ul>
+				{% endif %}
 
 				<h1>${ "Welcome, %s!" | translate | format(visitor.login | fallback("Guest" | translate)) }</h1>
 				<ul>
@@ -64,9 +66,11 @@ ${ trigger.call("sidebar") }
 				</ul>
 {% endif %}
 
+				{% if debug %}
 				<h1>${ "Stats" | translate }</h1>
 				<ul>
 					<li>${ "Queries:" | translate } $sql_queries</li>
 					<li>${ "Load time:" | translate } $theme.load_time</li>
 				</ul>
+				{% endif %}
 			</div>
