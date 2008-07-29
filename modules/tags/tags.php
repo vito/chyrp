@@ -125,7 +125,7 @@
 			global $posts;
 
 			$posts = new Paginator(Post::find(array("placeholders" => true,
-			                                        "where" => "__tags.clean LIKE :tag",
+			                                        "where" => "tags.clean LIKE :tag",
 			                                        "params" => array(":tag" => "%{{".$_GET['name']."}}%"))),
 			                       Config::current()->posts_per_page);
 
@@ -242,11 +242,11 @@
 		}
 
 		public function posts_get($options) {
-			$options["select"][] = "__tags.tags AS unclean_tags";
-			$options["select"][] = "__tags.clean AS clean_tags";
+			$options["select"][] = "tags.tags AS unclean_tags";
+			$options["select"][] = "tags.clean AS clean_tags";
 
 			$options["left_join"][] = array("table" => "tags",
-			                                "where" => "post_id = __posts.id");
+			                                "where" => "post_id = posts.id");
 
 			$options["group"][] = "id";
 
@@ -301,13 +301,13 @@
 			$sql = SQL::current();
 
 			$tags = $sql->select("posts",
-			                      "__tags.*",
+			                      "tags.*",
 			                      array(Post::$private, Post::$enabled_feathers),
 			                      null,
 			                      array(),
 			                      null, null, null,
 			                      array(array("table" => "tags",
-			                                  "where" => "post_id = __posts.id")));
+			                                  "where" => "post_id = posts.id")));
 
 			$unclean = array();
 			$clean = array();

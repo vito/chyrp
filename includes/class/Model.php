@@ -50,13 +50,13 @@
 				return;
 			}
 
-			fallback($options["select"], "__".pluralize($model_name).".*");
+			fallback($options["select"], "*");
 			fallback($options["from"], ($model_name == "visitor" ? "users" : pluralize($model_name)));
 			fallback($options["left_join"], array());
 			fallback($options["where"], array());
 			fallback($options["params"], array());
 			fallback($options["group"], array());
-			fallback($options["order"], "__".pluralize($model_name).".id DESC");
+			fallback($options["order"], "id DESC");
 			fallback($options["offset"], null);
 			fallback($options["read_from"], array());
 
@@ -65,7 +65,7 @@
 			$options["select"] = (array) $options["select"];
 
 			if (is_numeric($id)) {
-				$options["where"][] = "__".pluralize($model_name).".id = :id";
+				$options["where"][] = "id = :id";
 				$options["params"][":id"] = $id;
 			}
 
@@ -132,13 +132,13 @@
 			if ($model_name == "visitor")
 				$model_name = "user";
 
-			fallback($options["select"], "__".pluralize(strtolower($model)).".*");
+			fallback($options["select"], "*");
 			fallback($options["from"], pluralize(strtolower($model)));
 			fallback($options["left_join"], array());
 			fallback($options["where"], null);
 			fallback($options["params"], array());
 			fallback($options["group"], array());
-			fallback($options["order"], "__".pluralize(strtolower($model)).".id DESC");
+			fallback($options["order"], "id DESC");
 			fallback($options["offset"], null);
 			fallback($options["limit"], null);
 			fallback($options["placeholders"], false);
@@ -201,6 +201,6 @@
 			if (Trigger::current()->exists("delete_".$model))
 				Trigger::current()->call("delete_".$model, new $class($id));
 
-			SQL::current()->delete(pluralize($model), "__".pluralize($model).".id = :id", array(":id" => $id));
+			SQL::current()->delete(pluralize($model), "id = :id", array(":id" => $id));
 		}
 	}

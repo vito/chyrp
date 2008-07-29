@@ -363,7 +363,10 @@ function twig_split_filter($string, $cut = " ") {
 }
 
 function twig_first_filter($array) {
-	return $array[0];
+	foreach ($array as $key => &$val)
+		return $val; # Return the first one.
+
+	return false;
 }
 
 function twig_last_filter($array) {

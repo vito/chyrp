@@ -4,11 +4,6 @@
 	 * Contains the database settings and functions for interacting with the SQL database.
 	 */
 	class SQL {
-		# Array: $yaml
-		# An associative array of YAML-parsed settings.
-		# This is what gets altered/added to when using <SQL.set>.
-		public $yaml = array();
-
 		# Array: $debug
 		# Holds debug information for SQL queries.
 		public $debug = array();
@@ -30,7 +25,9 @@
 		 * The class constructor is private so there is only one connection.
 		 */
 		private function __construct() {
-			$database = (!UPGRADING) ? Config::current()->database : Config::get("database") ;
+			$database = (!UPGRADING) ?
+			            fallback(Config::current()->database, array(), true) :
+			            Config::get("database") ;
 
 			foreach ($database as $setting => $value)
 				$this->$setting = $value;
@@ -100,6 +97,9 @@
 		public function connect($checking = false) {
 			if ($this->connected)
 				return true;
+
+			if (!isset($this->database))
+				self::__construct();
 
 			switch($this->method()) {
 				case "pdo":

@@ -7,13 +7,13 @@
 		$tags = array();
 		$clean = array();
 		foreach($sql->select("posts",
-			                 "__tags.*",
+			                 "tags.*",
 			                 array(Post::$private, Post::$enabled_feathers),
 			                 null,
 			                 array(),
 			                 null, null, null,
 			                 array(array("table" => "tags",
-			                             "where" => "post_id = __posts.id")))->fetchAll() as $tag) {
+			                             "where" => "tags.post_id = posts.id")))->fetchAll() as $tag) {
 			$tags[] = $tag["tags"];
 			$clean[] = $tag["clean"];
 		}

@@ -8,6 +8,9 @@
 	define('ADMIN', false);
 	define('AJAX', false);
 	define('XML_RPC', false);
+	define('UPGRADING', false);
+	define('INSTALLING', true);
+
 	ini_set('error_reporting', E_ALL);
 	ini_set('display_errors', true);
 
@@ -15,6 +18,9 @@
 
 	if (version_compare(PHP_VERSION, "5.1.3", "<"))
 		exit("Chyrp requires PHP 5.1.3 or greater. Installation cannot continue.");
+
+	# Helpers
+	require INCLUDES_DIR."/helpers.php";
 
 	require_once INCLUDES_DIR."/class/Query.php"; # SQL query handler
 	require_once INCLUDES_DIR."/class/QueryBuilder.php"; # SQL query builder
@@ -32,9 +38,6 @@
 	# Translation stuff
 	require INCLUDES_DIR."/lib/gettext/gettext.php";
 	require INCLUDES_DIR."/lib/gettext/streams.php";
-
-	# Helpers
-	require INCLUDES_DIR."/helpers.php";
 
 	sanitize_input($_GET);
 	sanitize_input($_POST);
@@ -95,6 +98,39 @@
 			$errors[] = __("E-Mail address cannot be blank.");
 
 		if (empty($errors)) {
+
+			if (!$htaccess_has_chyrp)
+				if (!file_exists(MAIN_DIR."/.htaccess")) {
+					if (!@file_put_contents(MAIN_DIR."/.htaccess", $htaccess))
+						$errors[] = _f("Could not generate .htaccess file. Clean URLs will not be available unless you create it and put this in it:\n<pre>%s</pre>", array(fix($htaccess)));
+				} elseif (!@file_put_contents(MAIN_DIR."/.htaccess", "\n\n".$htaccess, FILE_APPEND)) {
+					$errors[] = _f("Could not generate .htaccess file. Clean URLs will not be available unless you create it and put this in it:\n<pre>%s</pre>", array(fix($htaccess)));
+				}
+
+			$config->set("database", array());
+			$config->set("name", $_POST['name']);
+			$config->set("description", $_POST['description']);
+			$config->set("url", $url);
+			$config->set("chyrp_url", $url);
+			$config->set("email", $_POST['email']);
+			$config->set("locale", "en_US");
+			$config->set("theme", "stardust");
+			$config->set("posts_per_page", 5);
+			$config->set("feed_items", 20);
+			$config->set("clean_urls", false);
+			$config->set("post_url", "(year)/(month)/(day)/(url)/");
+			$config->set("timezone", $_POST['timezone']);
+			$config->set("can_register", true);
+			$config->set("enable_trackbacking", true);
+			$config->set("send_pingbacks", false);
+			$config->set("enable_xmlrpc", true);
+			$config->set("secure_hashkey", md5(random(32, true)));
+			$config->set("uploads_path", "/uploads/");
+			$config->set("enabled_modules", array());
+			$config->set("enabled_feathers", array("text"));
+			$config->set("routes", array());
+
+			$_POST['prefix'] = "chyrp_";
 			foreach (array("host", "username", "password", "database", "prefix", "adapter") as $field)
 				$sql->set($field, $_POST[$field], true);
 
@@ -242,39 +278,8 @@
 				$group_id[$name] = $sql->latest();
 			}
 
-			if (!$htaccess_has_chyrp)
-				if (!file_exists(MAIN_DIR."/.htaccess")) {
-					if (!@file_put_contents(MAIN_DIR."/.htaccess", $htaccess))
-						$errors[] = _f("Could not generate .htaccess file. Clean URLs will not be available unless you create it and put this in it:\n<pre>%s</pre>", array(fix($htaccess)));
-				} elseif (!@file_put_contents(MAIN_DIR."/.htaccess", "\n\n".$htaccess, FILE_APPEND)) {
-					$errors[] = _f("Could not generate .htaccess file. Clean URLs will not be available unless you create it and put this in it:\n<pre>%s</pre>", array(fix($htaccess)));
-				}
-
-			$config->set("name", $_POST['name']);
-			$config->set("description", $_POST['description']);
-			$config->set("url", "");
-			$config->set("chyrp_url", $url);
-			$config->set("email", $_POST['email']);
-			$config->set("locale", "en_US");
-			$config->set("theme", "stardust");
-			$config->set("posts_per_page", 5);
-			$config->set("feed_items", 20);
-			$config->set("clean_urls", false);
-			$config->set("post_url", "(year)/(month)/(day)/(url)/");
-			$config->set("timezone", $_POST['timezone']);
-			$config->set("can_register", true);
 			$config->set("default_group", $group_id["member"]);
 			$config->set("guest_group", $group_id["guest"]);
-			$config->set("enable_trackbacking", true);
-			$config->set("send_pingbacks", false);
-			$config->set("enable_xmlrpc", true);
-			$config->set("secure_hashkey", md5(random(32, true)));
-			$config->set("uploads_path", "/uploads/");
-			$config->set("enabled_modules", array());
-			$config->set("enabled_feathers", array("text"));
-			$config->set("routes", array());
-
-			$config->load(INCLUDES_DIR."/config.yaml.php");
 
 			if (!$sql->select("users", "id", "login = :login", null, array(":login" => $_POST['login']))->fetchColumn())
 				$sql->insert("users",
@@ -583,7 +588,7 @@
 				<li><a href="http://chyrp.net/extend/browse/feathers"><?php echo __("Find some Feathers you want."); ?></a></li>
 				<li><a href="README.markdown"><?php echo __("Read &#8220;Getting Started&#8221;"); ?></a></li>
 			</ol>
-			<a class="big" href="<?php echo $config->url; ?>"><?php echo __("Take me to my site! &rarr;"); ?></a>
+			<a class="big" href="<?php echo $config->chyrp_url; ?>"><?php echo __("Take me to my site! &rarr;"); ?></a>
 <?php
 	endif;
 ?>

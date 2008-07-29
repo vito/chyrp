@@ -215,12 +215,13 @@
 		 *     $tables - An array of tables. The first one will be used for prepending.
 		 */
 		public static function tablefy(&$field, $tables) {
-			if (!preg_match_all("/(\(|^)?([a-z_\.]+)/", $field, $matches))
+			if (!preg_match_all("/(\(|[\s]+|^)([a-z_\.]+)(\)|[\s]+|$)/", $field, $matches))
 				return;
 
 			foreach ($matches[0] as $index => $full) {
-				$paren = $matches[1][$index];
-				$name  = $matches[2][$index];
+				$before = $matches[1][$index];
+				$name   = $matches[2][$index];
+				$after  = $matches[3][$index];
 
 				if (substr($full, 0, 2) == "__")
 					return;
@@ -229,7 +230,7 @@
 				if (!substr_count($full, ".")) {
 						                   # Don't replace things that are already either prefixed or paramized.
 					$field = preg_replace("/([^\.:'\"_]|^)".preg_quote($full, "/")."/",
-					                      "\\1".$paren."__".$tables[0].".".$name,
+					                      "\\1".$before."__".$tables[0].".".$name.$after,
 					                      $field,
 					                      1);
 				} else {
@@ -237,7 +238,7 @@
 					if (substr($full, 0, 2) != "__") {
 						                       # Don't replace things that are already either prefixed or paramized.
 						$field = preg_replace("/([^\.:'\"_]|^)".preg_quote($full, "/")."/",
-						                      "\\1".$paren."__".$name,
+						                      "\\1".$before."__".$name.$after,
 						                      $field,
 						                      1);
 					}
