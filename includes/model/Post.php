@@ -64,7 +64,7 @@
 			if (!XML_RPC)
 				$options["where"] = array_merge($options["where"], array(self::$enabled_feathers, self::$private));
 
-			fallback($options["order"], "pinned desc, created_at desc, id desc");
+			fallback($options["order"], "pinned DESC, created_at DESC, id DESC");
 
 			$posts = parent::search(get_class(), $options, $options_for_object);
 

@@ -38,7 +38,7 @@
 			if (isset($this->pages_list))
 				return $this->pages_list;
 
-			$this->pages = Page::find(array("where" => "show_in_list = 1", "order" => "list_order asc"));
+			$this->pages = Page::find(array("where" => "show_in_list = 1", "order" => "list_order ASC"));
 
 			foreach ($this->pages as $page)
 				$this->end_tags_for[$page->id] = $this->children[$page->id] = array();
@@ -114,7 +114,7 @@
 			$dates = $sql->select("posts",
 			                      array("DISTINCT YEAR(created_at) AS year",
 			                            "MONTH(created_at) AS month",
-			                            "created_at",
+			                            "created_at AS created_at",
 			                            "COUNT(id) AS posts"),
 			                      "status = 'public'",
 			                      $order_by." ".strtoupper($order),

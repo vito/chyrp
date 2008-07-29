@@ -686,7 +686,7 @@
 				                                            )
 				                                        )
 				                                    ))"),
-				                             "created_at asc", # order
+				                             "created_at ASC", # order
 				                             array(
 				                                 ":post_id" => $post->id,
 				                                 ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),

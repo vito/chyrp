@@ -408,7 +408,7 @@
 			$this->context["default_group"] = new Group($config->default_group);
 			$this->context["groups"] = Group::find(array("where" => array("id != :guest_id", "id != :default_id"),
 			                                             "params" => array(":guest_id" => $config->guest_group, ":default_id" => $config->default_group),
-			                                             "order" => "id desc"));
+			                                             "order" => "id DESC"));
 		}
 
 		/**
@@ -456,7 +456,7 @@
 				error(__("No ID Specified"), __("An ID is required to edit a user."));
 
 			$this->context["user"] = new User($_GET['id']);
-			$this->context["groups"] = Group::find(array("order" => "id asc",
+			$this->context["groups"] = Group::find(array("order" => "id ASC",
 			                                             "where" => "id != :guest_id",
 			                                             "params" => array(":guest_id" => Config::current()->guest_group)));
 		}
@@ -673,7 +673,7 @@
 
 			$this->context["group"] = new Group($_GET['id']);
 			$this->context["groups"] = Group::find(array("where" => "id != :group_id",
-			                                             "order" => "id asc",
+			                                             "order" => "id ASC",
 			                                             "params" => array(":group_id" => $_GET['id'])));
 		}
 
@@ -722,7 +722,7 @@
 				$user = new User(null, array("where" => "login = :search", "params" => array(":search" => $_GET['search'])));
 				$this->context["groups"] = array($user->group());
 			} else
-				$this->context["groups"] = new Paginator(Group::find(array("placeholders" => true, "order" => "id asc")), 10);
+				$this->context["groups"] = new Paginator(Group::find(array("placeholders" => true, "order" => "id ASC")), 10);
 		}
 
 		/**
@@ -1891,7 +1891,7 @@
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
-			$this->context["groups"] = Group::find(array("order" => "id desc"));
+			$this->context["groups"] = Group::find(array("order" => "id DESC"));
 
 			if (empty($_POST))
 				return;

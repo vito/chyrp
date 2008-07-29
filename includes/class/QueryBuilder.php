@@ -171,13 +171,26 @@
 		}
 
 		/**
+		 * Function: build_order
+		 * Creates a ORDER BY argument.
+		 */
+		public static function build_order($order, $tables = null) {
+			$tables = (array) $tables;
+
+			if (!is_array($order))
+				$order = explode(", ", $order);
+
+			foreach ($order as &$by)
+				self::tablefy($by, $tables);
+
+			return implode(", ", $order);
+		}
+
+		/**
 		 * Function: build_select
 		 * Creates a full SELECT query.
 		 */
 		public static function build_select($tables, $fields, $conds, $order = null, $limit = null, $offset = null, $group = null, $left_join = null) {
-			if (is_array($order))
-				$order = implode(", ", $order);
-
 			$query = "
 				SELECT ".self::build_select_header($fields, $tables)."
 				FROM ".self::build_from($tables);
@@ -187,7 +200,7 @@
 			$query.= "
 				".($conds ? "WHERE ".self::build_where($conds, $tables) : "")."
 				".($group ? "GROUP BY ".self::build_group($group, $tables) : "")."
-				".($order ? "ORDER BY ".$order : "")."
+				".($order ? "ORDER BY ".self::build_order($order, $tables) : "")."
 				".self::build_limits($offset, $limit)."
 			";
 			return $query;
