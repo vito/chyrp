@@ -46,8 +46,9 @@
 					try {
 						if (SQL::current()->adapter == "sqlite") {
 							foreach ($params as $name => $val)
-								$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", "'".$this->escape($val)."'\\1", $query);
+								$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", $this->escape($val)."\\1", $query);
 
+							$this->queryString = $query;
 							if (!$this->query = $this->db->query($query))
 								throw new PDOException;
 						} else {
@@ -170,6 +171,9 @@
 		 */
 		public function escape($string) {
 			switch(SQL::current()->method()) {
+				case "pdo":
+					$string = $this->db->quote($string);
+					break;
 				case "mysqli":
 					$string = $this->db->escape_string($string);
 					break;
