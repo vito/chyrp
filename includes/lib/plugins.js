@@ -284,3 +284,126 @@ this.reset();});};$.fn.enable=function(b){if(b==undefined)b=true;return this.eac
 this.checked=select;else if(this.tagName.toLowerCase()=='option'){var $sel=$(this).parent('select');if(select&&$sel[0]&&$sel[0].type=='select-one'){$sel.find('option').select(false);}
 this.selected=select;}});};function log(){if($.fn.ajaxSubmit.debug&&window.console&&window.console.log)
 window.console.log('[jquery.form] '+Array.prototype.join.call(arguments,''));};})(jQuery);
+
+
+// Our custom field expander
+$.fn.expand = function(){
+	$(this).each(function(){
+		if ($(this).parent().parent().attr("class") == "more_options") return
+
+		$(this).css("min-width", $(this).width())
+		$(this).css("max-width", $(this).parent().width() - 8)
+
+		$(document.createElement("span")).prependTo("body").addClass("dummy_"+$(this).attr("id")).css({
+			fontSize: $(this).css("font-size"),
+			fontFamily: $(this).css("font-family"),
+			padding: $(this).css("padding"),
+			display: "none"
+		}).text($(this).val())
+
+		$(this).width($(".dummy_"+$(this).attr("id")).width() + 20)
+
+		$(this).keypress(function(e){
+			var dummy = ".dummy_"+$(this).attr("id")
+
+			$(dummy).text($(this).val() + String.fromCharCode(e.which))
+
+			if (e.which == 8)
+				$(dummy).text($(this).val().substring(0, $(this).val().length - 1))
+
+			$(this).width($(".dummy_"+$(this).attr("id")).width() + 20)
+		})
+
+		if ($.browser.safari)
+			$(this).keydown(function(e){
+				var dummy = ".dummy_"+$(this).attr("id")
+
+				$(dummy).text($(this).val() + String.fromCharCode(e.which))
+
+				if (e.which == 8)
+					$(dummy).text($(this).val().substring(0, $(this).val().length - 1))
+
+				$(this).width($(".dummy_"+$(this).attr("id")).width() + 20)
+			})
+	})
+}
+
+// "Loading..." overlay.
+$.fn.loader = function(remove) {
+	if (remove) {
+		$(this).next().remove()
+		return this
+	}
+
+	var offset = $(this).offset()
+	var loading_top = ($(this).outerHeight() / 2) - 11
+	var loading_left = ($(this).outerWidth() / 2) - 63
+
+	$(this).after("<div class=\"load_overlay\"><img src=\"<?php echo $config->chyrp_url; ?>/includes/close.png\" style=\"display: none\" class=\"close\" /><img src=\"<?php echo $config->chyrp_url; ?>/includes/loading.gif\" style=\"display: none\" class=\"loading\" /></div>")
+
+	$(".load_overlay .loading").css({
+		position: "absolute",
+		top: loading_top+"px",
+		left: loading_left+"px",
+		display: "inline"
+	})
+
+	$(".load_overlay .close").css({
+		position: "absolute",
+		top: "3px",
+		right: "3px",
+		color: "#fff",
+		cursor: "pointer",
+		display: "inline"
+	}).click(function(){ $(this).parent().remove() })
+
+	$(".load_overlay").css({
+		position: "absolute",
+		top: offset.top,
+		left: offset.left,
+		zIndex: 100,
+		width: $(this).outerWidth(),
+		height: $(this).outerHeight(),
+		background: ($.browser.msie) ? "transparent" : "transparent url('<?php echo $config->chyrp_url; ?>/includes/trans.png')",
+		textAlign: "center",
+		filter: ($.browser.msie) ? "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src='<?php echo $config->chyrp_url; ?>/includes/trans.png');" : ""
+	})
+
+	return this
+}
+
+// Originally from http://livepipe.net/extra/cookie
+var Cookie = {
+	set: function (name, value, days) {
+		if (days) {
+			var d = new Date();
+			d.setTime(d.getTime() + (days * 1000 * 60 * 60 * 24));
+			var expiry = "; expires=" + d.toGMTString();
+		} else
+			var expiry = "";
+
+		document.cookie = name + "=" + value + expiry + "; path=/";
+	},
+	get: function(name){
+		var nameEQ = name + "=";
+		var ca = document.cookie.split(';');
+		for (var i = 0; i < ca.length; i++) {
+			var c = ca[i];
+
+			while(c.charAt(0) == " ")
+				c = c.substring(1,c.length);
+
+			if(c.indexOf(nameEQ) == 0)
+				return c.substring(nameEQ.length,c.length);
+		}
+		return null;
+	},
+	destroy: function(name){
+		Cookie.set(name, "", -1);
+	}
+}
+
+// Used to check if AJAX responses are errors.
+function isError(text) {
+	return /HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW$/m.test(text);
+}

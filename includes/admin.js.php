@@ -149,30 +149,7 @@ var Write = {
 		$(document.createElement("a")).text("<?php echo __("Chyrp!"); ?>").addClass("no_drag").attr("href", "javascript:var%20d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f=\'"+site_url+"/admin/?action=bookmarklet\',l=d.location,e=encodeURIComponent,p=\'&url=\'+e(l.href)+\'&title=\'+e(d.title)+\'&selection=\'+e(s),u=f+p;a=function(){if(!w.open(u,\'t\',\'toolbar=0,resizable=0,status=1,width=450,height=430\'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0)").appendTo(".bookmarklet")
 	},
 	auto_expand_fields: function(){
-		$("input.text").each(function(){
-			if ($(this).parent().parent().attr("class") == "more_options") return
-
-			$(this).css("min-width", $(this).width())
-			$(this).css("max-width", $(this).parent().width() - 8)
-
-			$(document.createElement("span")).prependTo("body").addClass("dummy_"+$(this).attr("id")).css({
-				fontSize: $(this).css("font-size"),
-				fontFamily: $(this).css("font-family"),
-				padding: $(this).css("padding"),
-				display: "none"
-			})
-
-			$(this).keypress(function(e){
-				var dummy = ".dummy_"+$(this).attr("id")
-
-				$(dummy).text($(this).val() + String.fromCharCode(e.which))
-
-				if (e.which == 8)
-					$(dummy).text($(this).val().substring(0, $(this).val().length - 1))
-
-				$(this).width($(".dummy_"+$(this).attr("id")).width() + 20)
-			})
-		})
+		$("input.text").expand()
 		$("textarea").each(function(){
 			$(this).css({
 				minHeight: $(this).outerHeight() + 2,
@@ -744,86 +721,6 @@ var Extend = {
 
 		return true
 	}
-}
-
-// "Loading..." overlay.
-$.fn.loader = function(remove) {
-	if (remove) {
-		$(this).next().remove()
-		return this
-	}
-
-	var offset = $(this).offset()
-	var loading_top = ($(this).outerHeight() / 2) - 11
-	var loading_left = ($(this).outerWidth() / 2) - 63
-
-	$(this).after("<div class=\"load_overlay\"><img src=\"<?php echo $config->chyrp_url; ?>/includes/close.png\" style=\"display: none\" class=\"close\" /><img src=\"<?php echo $config->chyrp_url; ?>/includes/loading.gif\" style=\"display: none\" class=\"loading\" /></div>")
-
-	$(".load_overlay .loading").css({
-		position: "absolute",
-		top: loading_top+"px",
-		left: loading_left+"px",
-		display: "inline"
-	})
-
-	$(".load_overlay .close").css({
-		position: "absolute",
-		top: "3px",
-		right: "3px",
-		color: "#fff",
-		cursor: "pointer",
-		display: "inline"
-	}).click(function(){ $(this).parent().remove() })
-
-	$(".load_overlay").css({
-		position: "absolute",
-		top: offset.top,
-		left: offset.left,
-		zIndex: 100,
-		width: $(this).outerWidth(),
-		height: $(this).outerHeight(),
-		background: ($.browser.msie) ? "transparent" : "transparent url('<?php echo $config->chyrp_url; ?>/includes/trans.png')",
-		textAlign: "center",
-		filter: ($.browser.msie) ? "progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale, src='<?php echo $config->chyrp_url; ?>/includes/trans.png');" : ""
-	})
-
-	return this
-}
-
-// Originally from http://livepipe.net/extra/cookie
-var Cookie = {
-	set: function (name, value, days) {
-		if (days) {
-			var d = new Date();
-			d.setTime(d.getTime() + (days * 1000 * 60 * 60 * 24));
-			var expiry = "; expires=" + d.toGMTString();
-		} else
-			var expiry = "";
-
-		document.cookie = name + "=" + value + expiry + "; path=/";
-	},
-	get: function(name){
-		var nameEQ = name + "=";
-		var ca = document.cookie.split(';');
-		for (var i = 0; i < ca.length; i++) {
-			var c = ca[i];
-
-			while(c.charAt(0) == " ")
-				c = c.substring(1,c.length);
-
-			if(c.indexOf(nameEQ) == 0)
-				return c.substring(nameEQ.length,c.length);
-		}
-		return null;
-	},
-	destroy: function(name){
-		Cookie.set(name, "", -1);
-	}
-}
-
-// Used to check if AJAX responses are errors.
-function isError(text) {
-	return /HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW$/m.test(text);
 }
 
 <?php $trigger->call("admin_javascript"); ?>

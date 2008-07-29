@@ -141,18 +141,10 @@
 				$$("#"+id+"_form").show()
 				$$(".nav_" + id).addClass("selected")
 
-				$$("#"+id+"_form input.text").each(function(){
-					var min = $$(this).outerWidth()
-					var max = $$(this).parent().outerWidth() - 8
-					$$(this).Autoexpand(max)
-				})
+				$$("#"+id+"_form input.text").expand()
 			}
 			$$(function(){
-				$$("form:visible input.text").each(function(){
-					var min = $$(this).outerWidth()
-					var max = $$(this).parent().outerWidth() - 8
-					$$(this).Autoexpand(max)
-				})
+				$$("form:visible input.text").expand()
 
 				$$(".navigation li").css("float", "left")
 				$$(".navigation").sortable({
