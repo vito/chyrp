@@ -41,6 +41,12 @@ $(function(){
 	if (/(edit|write)_/.test(Route.action))
 		Write.init()
 
+	if (Route.action == "delete_group")
+		$("form.confirm").submit(function(){
+			if (!confirm("<?php echo __("You are a member of this group. Are you sure you want to delete it?"); ?>"))
+				return false
+		})
+
 	if (Route.action == "manage_pages")
 		Manage.pages.init()
 
@@ -131,6 +137,9 @@ var Write = {
 		this.sortable_feathers()
 		this.prepare_previewer()
 		this.more_options()
+
+		if (Route.action == "edit_group")
+			this.confirm_group()
 	},
 	bookmarklet_link: function(){
 		// Add the list item
@@ -232,6 +241,13 @@ var Write = {
 				$("#more_options").parent().slideToggle()
 			})
 		}
+	},
+	confirm_group: function(msg){
+		$("form.confirm").submit(function(){
+			alert("<?php echo __("You are a member of this group. Please make sure all of the permissions are as you want them."); ?>")
+			$(this).unbind("submit")
+			return false
+		})
 	}
 }
 

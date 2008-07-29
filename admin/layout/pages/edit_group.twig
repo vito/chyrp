@@ -4,7 +4,7 @@
 
 {% block content %}
 			<h1>${ "Editing Group &#8220;%s&#8221;" | translate | format(group.name | escape) }</h1>
-			<form id="group_edit" class="split" action="{% admin "update_group" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+			<form id="group_edit" class="split{% if group.id == visitor.group.id %} confirm{% endif %}" action="{% admin "update_group" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 				<fieldset>
 					<p>
 						<label for="name">${ "Name" | translate }</label>
