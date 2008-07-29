@@ -121,6 +121,8 @@
 			$config->set("post_url", "(year)/(month)/(day)/(url)/");
 			$config->set("timezone", $_POST['timezone']);
 			$config->set("can_register", true);
+			$config->set("default_group", 0);
+			$config->set("guest_group", 0);
 			$config->set("enable_trackbacking", true);
 			$config->set("send_pingbacks", false);
 			$config->set("enable_xmlrpc", true);
@@ -130,7 +132,6 @@
 			$config->set("enabled_feathers", array("text"));
 			$config->set("routes", array());
 
-			$_POST['prefix'] = "chyrp_";
 			foreach (array("host", "username", "password", "database", "prefix", "adapter") as $field)
 				$sql->set($field, $_POST[$field], true);
 
