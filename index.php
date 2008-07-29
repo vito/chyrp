@@ -42,7 +42,7 @@
 				else if (file_exists(THEME_DIR."/content/$page->url.twig"))
 					$theme->load("content/".$page->url, array("page" => $page));
 				else
-					$theme->load("content/page", array("page" => $page));
+					$theme->load(array("pages/page", "content/page"), array("page" => $page));
 			} else
 				show_404();
 
