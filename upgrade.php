@@ -61,7 +61,7 @@
 		$yaml["config"] = Horde_Yaml::load(preg_replace("/<\?php(.+)\?>\n?/s", "", file_get_contents(config_file())));
 
 		if (database_file())
-			$yaml["config"]["database"] = Horde_Yaml::load(preg_replace("/<\?php(.+)\?>\n?/s",
+			$yaml["database"] = Horde_Yaml::load(preg_replace("/<\?php(.+)\?>\n?/s",
 			                                                            "",
 			                                                            file_get_contents(database_file())));
 	} else {
@@ -69,7 +69,7 @@
 			$yaml["config"][$name] = $val;
 
 		foreach ($sql as $name => $val)
-			$yaml["config"]["database"][$name] = $val;
+			$yaml["database"][$name] = $val;
 	}
 
 	# Load the current SQL library (this overrides the $sql variable)
@@ -78,7 +78,7 @@
 	require INCLUDES_DIR."/class/SQL.php";
 
 	foreach ($yaml["database"] as $name => $value)
-		$sql->set($name, $value);
+		$sql->$name = $value;
 
 	$sql->connect();
 
@@ -605,7 +605,7 @@
 	</head>
 	<body>
 		<div class="window">
-<?php if (!empty($_POST)): ?>
+<?php if (!empty($_POST) and $_POST['upgrade'] == "yes"): ?>
 			<pre class="pane"><?php
 		fix_htaccess();
 
@@ -634,6 +634,8 @@
 		Config::remove("rss_posts");
 
 		Config::remove("time_offset");
+
+		Config::fallback("database", $yaml["database"]);
 
 		default_db_adapter_to_mysql();
 
@@ -692,7 +694,7 @@
 			</ol>
 			<p><?php echo __("If any of the upgrade processes fail, you can safely keep refreshing &ndash; it will only attempt to do tasks that are not already successfully completed. If you cannot figure something out, please make a topic (with details!) at the <a href=\"http://chyrp.net/community/\">Chyrp Community</a>."); ?></p>
 			<form action="upgrade.php" method="post">
-				<button type="submit" name="upgrade"><?php echo __("Upgrade me!"); ?></button>
+				<button type="submit" name="upgrade" value="yes"><?php echo __("Upgrade me!"); ?></button>
 			</form>
 <?php endif; ?>
 		</div>

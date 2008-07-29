@@ -29,8 +29,9 @@
 			            fallback(Config::current()->database, array(), true) :
 			            Config::get("database") ;
 
-			foreach ($database as $setting => $value)
-				$this->$setting = $value;
+			if (!empty($database))
+				foreach ($database as $setting => $value)
+					$this->$setting = $value;
 
 			$this->connected = false;
 		}
