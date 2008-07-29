@@ -484,8 +484,10 @@
 				continue;
 
 			$split = array_filter(explode("/", $route));
+
 			if (!isset($split[0]))
 				return;
+
 			echo _f("Updating custom route %s to new format...", array($route)).
 			     test(isset($split[0]) and $new_routes[$route] = $split[0]);
 		}

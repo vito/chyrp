@@ -128,9 +128,21 @@
 		 */
 		public function next_page_url($clean_urls = true) {
 			$config = Config::current();
+
+			$request = "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+
+			# Only used for adding to the end of the URL and clean URLs is off.
+			$mark = (substr_count($request, "?")) ? "&amp;" : "?" ;
+
+			# No page is set, add it to the end.
+			if (!isset($_GET[$this->name]))
+				return ($config->clean_urls and $clean_urls and !ADMIN) ?
+				       rtrim($request, "/")."/".$this->name."/".($this->page + 1) :
+				       $request.$mark.$this->name."=".($this->page + 1) ;
+
 			return ($config->clean_urls and $clean_urls and !ADMIN) ?
-			       preg_replace("/(\/".$this->name."\/([0-9]+)|$)/", "/".$this->name."/".($this->page + 1), "http://".$_SERVER['HTTP_HOST'].$request, 1) :
-			       preg_replace("/((\?|&)".$this->name."=([0-9]+)|$)/", "\\2".$this->name."=".($this->page + 1), "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 1) ;
+			       preg_replace("/(\/".$this->name."\/([0-9]+)|$)/", "/".$this->name."/".($this->page + 1), $request, 1) :
+			       preg_replace("/((\?|&)".$this->name."=([0-9]+)|$)/", "\\2".$this->name."=".($this->page + 1), $request, 1) ;
 		}
 
 		/**
@@ -142,8 +154,20 @@
 		 */
 		public function prev_page_url($clean_urls = true) {
 			$config = Config::current();
+
+			$request = "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+
+			# Only used for adding to the end of the URL and clean URLs is off.
+			$mark = (substr_count($request, "?")) ? "&amp;" : "?" ;
+
+			# No page is set, add it to the end.
+			if (!isset($_GET[$this->name]))
+				return ($config->clean_urls and $clean_urls and !ADMIN) ?
+				       rtrim($request, "/")."/".$this->name."/".($this->page - 1) :
+				       $request.$mark.$this->name."=".($this->page - 1) ;
+
 			return ($config->clean_urls and $clean_urls and !ADMIN) ?
-			       preg_replace("/(\/".$this->name."\/([0-9]+)|$)/", "/".$this->name."/".($this->page - 1), "http://".$_SERVER['HTTP_HOST'].$request, 1) :
-			       preg_replace("/((\?|&)".$this->name."=([0-9]+)|$)/", "\\2".$this->name."=".($this->page - 1), "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'], 1) ;
+			       preg_replace("/(\/{$this->name}\/([0-9]+)|$)/", "/".$this->name."/".($this->page - 1), $request, 1) :
+			       preg_replace("/((\?|&){$this->name}=([0-9]+)|$)/", "\\2".$this->name."=".($this->page - 1), $request, 1) ;
 		}
 	}
