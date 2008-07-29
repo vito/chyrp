@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 5\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-07-22 21:08+0000\n"
+"POT-Creation-Date: 2008-07-29 19:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -17,29 +17,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: modules/cacher/pages/admin/cache_settings.twig:11
-msgid "(seconds)"
-msgstr ""
-
 #: modules/cacher/pages/admin/cache_settings.twig:3
 #: modules/cacher/pages/admin/cache_settings.twig:6
 msgid "Cache Settings"
 msgstr ""
 
-#: modules/cacher/info.yaml:6
-msgid "Please make sure that /includes/cache is writable by the server. If you are not certain whether it is or not, CHMOD it to 777."
+#: modules/cacher/pages/admin/cache_settings.twig:11
+msgid "text" type="text" name="cache_expire" value="${ site.cache_expire | escape }" id="cache_expire" /> <span class="sub">${ "(seconds)"
+msgstr ""
+
+#: modules/cacher/pages/admin/cache_settings.twig:10
+msgid "cache_expire">${ "Expire Cache After&hellip;"
 msgstr ""
 
 #: modules/cacher/info.yaml:4
 msgid "Caches pages, drastically reducing server load."
 msgstr ""
 
-#: modules/cacher/cacher.php:121
+#: modules/cacher/cacher.php:126
 msgid "Cache"
 msgstr ""
 
-#: modules/cacher/pages/admin/cache_settings.twig:10
-msgid "Expire Cache After&hellip;"
+#: modules/cacher/info.yaml:6
+msgid "Please make sure that /includes/caches is writable by the server. If you are not certain whether it is or not, CHMOD it to 777."
 msgstr ""
 
 #: modules/cacher/info.yaml:1

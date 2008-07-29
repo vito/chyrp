@@ -19,7 +19,7 @@
 						<input class="text" type="text" name="feed_url" value="${ site.feed_url | escape }" id="feed_url" />
 						<small>
 							{% if site.clean_urls %}
-							${ "Allows you to set an alternative URL for <code>/feed/</code>, e.g. your feed on FeedBurner." | translate }
+							${ "Allows you to set an alternative URL for <code>/feed/</code>, e.g. your feed on <a href=\"http://feedburner.com/\">FeedBurner</a>." | translate }
 							{% else %}
 							${ "Allows you to set an alternative URL for <code>/?feed</code>, e.g. your feed on FeedBurner." | translate }
 							{% endif %}
