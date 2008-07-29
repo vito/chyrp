@@ -64,6 +64,8 @@
 			$yaml["database"] = Horde_Yaml::load(preg_replace("/<\?php(.+)\?>\n?/s",
 			                                                            "",
 			                                                            file_get_contents(database_file())));
+		else
+			$yaml["database"] = fallback($yaml["config"]["database"], array());
 	} else {
 		foreach ($config as $name => $val)
 			$yaml["config"][$name] = $val;
