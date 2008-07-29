@@ -25,15 +25,16 @@
 		# Holds an error message from the last attempted query.
 		public $error = "";
 
-		# String: $interface
-		# What method to use for interacting with the database.
-		public $interface = "";
-
 		/**
 		 * Function: __construct
 		 * The class constructor is private so there is only one connection.
 		 */
 		private function __construct() {
+			$database = (!UPGRADING) ? Config::current()->database : Config::get("database") ;
+
+			foreach ($database as $setting => $value)
+				$this->$setting = $value;
+
 			$this->connected = false;
 		}
 
@@ -45,45 +46,24 @@
 			# We really don't need PDO anymore, since we have the two we supported with it hardcoded (kinda).
 			# Keeping this here for when/if we decide to add support for more database engines, like Postgres and MSSQL.
 			#if (class_exists("PDO") and (in_array("mysql", PDO::getAvailableDrivers()) or in_array("sqlite", PDO::getAvailableDrivers())))
-			#	return $this->interface = "pdo";
+			#	return "pdo";
 
 			if (isset($this->adapter)) {
 				if ($this->adapter == "mysql" and class_exists("MySQLi"))
-					return $this->interface = "mysqli";
+					return "mysqli";
 				elseif ($this->adapter == "mysql" and function_exists("mysql_connect"))
-					return $this->interface = "mysql";
+					return "mysql";
 				elseif ($this->adapter == "sqlite" and in_array("sqlite", PDO::getAvailableDrivers()))
-					return $this->interface = "pdo";
+					return "pdo";
 			} else
 				if (class_exists("MySQLi"))
-					return $this->interface = "mysqli";
+					return "mysqli";
 				elseif (function_exists("mysql_connect"))
-					return $this->interface = "mysql";
+					return "mysql";
 				elseif (in_array("mysql", PDO::getAvailableDrivers()))
-					return $this->interface = "pdo";
+					return "pdo";
 
 			exit(__("Cannot find a way to connect to a database."));
-		}
-
-		/**
-		 * Function: load
-		 * Loads a given database YAML file.
-		 *
-		 * Parameters:
-		 *     $file - The YAML file to load into <SQL>.
-		 */
-		public function load($file) {
-			if (!file_exists($file))
-				return false;
-
-			$contents = str_replace("<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n",
-			                        "",
-			                        file_get_contents($file));
-
-			$this->yaml = Horde_Yaml::load($contents);
-			foreach ($this->yaml as $setting => $value)
-				if (!is_int($setting)) # Don't load the "---"
-					$this->$setting = $value;
 		}
 
 		/**
@@ -99,22 +79,15 @@
 			if (isset($this->$setting) and $this->$setting == $value and !$overwrite and !UPGRADING)
 				return false;
 
-			# Add the PHP protection!
-			$contents = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
+			if (!UPGRADING)
+				$config = Config::current();
+
+			$database = (!UPGRADING) ? $config->database : Config::get("database") ;
 
 			# Add the setting
-			$this->yaml[$setting] = $this->$setting = $value;
+			$database[$setting] = $this->$setting = $value;
 
-			# Generate the new YAML settings
-			$contents.= Horde_Yaml::dump($this->yaml);
-
-			if (!@file_put_contents(INCLUDES_DIR."/database.yaml.php", $contents)) {
-				if (!UPGRADING)
-					Flash::warning(_f("Could not set \"<code>%s</code>\" database setting because <code>%s</code> is not writable.", array($setting, "/includes/database.yaml.php")));
-
-				return false;
-			} else
-				return true;
+			return (!UPGRADING) ? $config->set("database", $database) : Config::set("database", $database) ;
 		}
 
 		/**
@@ -201,7 +174,7 @@
 
 			$query = new Query($query, $params, $throw_exceptions);
 
-			return (!$query->query and (defined('UPGRADING') and UPGRADING)) ? false : $query ;
+			return (!$query->query and UPGRADING) ? false : $query ;
 		}
 
 		/**

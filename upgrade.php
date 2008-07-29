@@ -30,7 +30,7 @@
 		if (file_exists(INCLUDES_DIR."/database.php"))
 			return INCLUDES_DIR."/database.php";
 
-		exit("Database config file not found.");
+		return false;
 	}
 
 	function using_yaml() {
@@ -42,6 +42,7 @@
 		eval(str_replace(array("<?php", "?>", "Config"),
 		                 array("", "", "OldConfig"),
 		                 file_get_contents(config_file())));
+
 		eval(str_replace(array("<?php", "?>", "SQL"),
 		                 array("", "", "OldSQL"),
 		                 file_get_contents(database_file())));
@@ -58,13 +59,17 @@
 
 	if (using_yaml()) {
 		$yaml["config"] = Horde_Yaml::load(preg_replace("/<\?php(.+)\?>\n?/s", "", file_get_contents(config_file())));
-		$yaml["database"] = Horde_Yaml::load(preg_replace("/<\?php(.+)\?>\n?/s", "", file_get_contents(database_file())));
+
+		if (database_file())
+			$yaml["config"]["database"] = Horde_Yaml::load(preg_replace("/<\?php(.+)\?>\n?/s",
+			                                                            "",
+			                                                            file_get_contents(database_file())));
 	} else {
 		foreach ($config as $name => $val)
 			$yaml["config"][$name] = $val;
 
 		foreach ($sql as $name => $val)
-			$yaml["database"][$name] = $val;
+			$yaml["config"]["database"][$name] = $val;
 	}
 
 	# Load the current SQL library (this overrides the $sql variable)
@@ -245,27 +250,21 @@
 		if (file_exists(INCLUDES_DIR."/config.yml.php"))
 			echo __("Moving /includes/config.yml.php to /includes/config.yaml.php...").
 			     test(@rename(INCLUDES_DIR."/config.yml.php", INCLUDES_DIR."/config.yaml.php"));
-
-		if (file_exists(INCLUDES_DIR."/database.yml.php"))
-			echo __("Moving /includes/database.yml.php to /includes/database.yaml.php...").
-			     test(@rename(INCLUDES_DIR."/database.yml.php", INCLUDES_DIR."/database.yaml.php"));
 	}
 
 	function update_protection() {
-		foreach (array("database.yaml.php", "config.yaml.php") as $file) {
-			if (!file_exists(INCLUDES_DIR."/".$file) or
-			    substr_count(file_get_contents(INCLUDES_DIR."/".$file),
-			                 "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>"))
-				continue;
+		if (!file_exists(INCLUDES_DIR."/config.yaml.php") or
+		    substr_count(file_get_contents(INCLUDES_DIR."/config.yaml.php"),
+		                 "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>"))
+			return;
 
-			$contents = file_get_contents(INCLUDES_DIR."/".$file);
-			$new_error = preg_replace("/<\?php (.+) \?>/",
-			                     "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>",
-			                     $contents);
+		$contents = file_get_contents(INCLUDES_DIR."/config.yaml.php");
+		$new_error = preg_replace("/<\?php (.+) \?>/",
+		                     "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>",
+		                     $contents);
 
-			echo _f("Updating protection code in %s...", array($file)).
-			     test(@file_put_contents(INCLUDES_DIR."/".$file, $new_error));
-		}
+		echo __("Updating protection code in config.yaml.php...").
+		     test(@file_put_contents(INCLUDES_DIR."/config.yaml.php", $new_error));
 	}
 
 	function theme_default_to_stardust() {
@@ -481,7 +480,7 @@
 		$new_routes = array();
 		foreach ($custom_routes as $key => $route) {
 			if (!is_int($key))
-				continue;
+				return;
 
 			$split = array_filter(explode("/", $route));
 
@@ -493,6 +492,12 @@
 		}
 
 		Config::set("routes", $new_routes, "Setting new custom routes configuration...");
+	}
+
+	function remove_database_config() {
+		if (file_exists(INCLUDES_DIR."/database.yaml.php"))
+			echo __("Removing database.yaml.php file...").
+			     test(@unlink(INCLUDES_DIR."/database.yaml.php"));
 	}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -645,6 +650,8 @@
 		update_permissions_table();
 
 		update_custom_routes();
+
+		remove_database_config();
 
 		foreach ((array) Config::get("enabled_modules") as $module)
 			if (file_exists(MAIN_DIR."/modules/".$module."/upgrades.php")) {

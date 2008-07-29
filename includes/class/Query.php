@@ -191,7 +191,7 @@
 		public function handle($error) {
 			SQL::current()->error = $error;
 
-			if (defined('UPGRADING') and UPGRADING) return false;
+			if (UPGRADING) return false;
 
 			$message = $error->getMessage();
 

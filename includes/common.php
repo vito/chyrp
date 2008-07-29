@@ -32,6 +32,8 @@
 	if (!defined('XML_RPC'))    define('XML_RPC', false);
 	if (!defined('TRACKBACK'))  define('TRACKBACK', false);
 
+	define('UPGRADING', false);
+
 	# Constant: INDEX
 	# Is the requested file index.php?
 	define('INDEX', (pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME) == "index.php") and !ADMIN);
@@ -79,7 +81,7 @@
 	require_once INCLUDES_DIR."/helpers.php";
 
 	# Not installed?
-	if (!file_exists(INCLUDES_DIR."/config.yaml.php") or !file_exists(INCLUDES_DIR."/database.yaml.php"))
+	if (!file_exists(INCLUDES_DIR."/config.yaml.php"))
 		redirect("install.php");
 
 	require_once INCLUDES_DIR."/class/Query.php"; # SQL query handler
@@ -92,12 +94,6 @@
 	# Translation stuff
 	require_once INCLUDES_DIR."/lib/gettext/gettext.php";
 	require_once INCLUDES_DIR."/lib/gettext/streams.php";
-
-	# Load the configuration settings
-	$config->load(INCLUDES_DIR."/config.yaml.php");
-
-	# Load the database settings
-	$sql->load(INCLUDES_DIR."/database.yaml.php");
 
 	if (function_exists("date_default_timezone_set"))
 		date_default_timezone_set($config->timezone);

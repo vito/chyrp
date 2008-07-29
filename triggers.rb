@@ -2,7 +2,7 @@ require "find"
 require "optparse"
 
 OPTIONS = {
-  :exclude => [".git", "modules", "lib", "feathers", "themes", "config.yaml.php", "database.yaml.php"]
+  :exclude => [".git", "modules", "lib", "feathers", "themes", "config.yaml.php"]
 }
 
 ARGV.options do |o|

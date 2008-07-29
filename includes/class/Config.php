@@ -10,31 +10,17 @@
 		# Holds all of the YAML settings as a $key => $val array.
 		private $yaml = array();
 
-		# Variable: $file
-		# The current file loaded.
-		private $file = null;
-
 		/**
-		 * The class constructor is private so there is only one instance and config is guaranteed to be kept in sync.
+		 * Function: __construct
+		 * Loads the configuration YAML file.
 		 */
-		private function __construct() {}
-
-		/**
-		 * Function: load
-		 * Loads a given configuration YAML file.
-		 *
-		 * Parameters:
-		 *     $file - The YAML file to load into <Config>.
-		 */
-		public function load($file) {
-			if (!file_exists($file))
+		private function __construct() {
+			if (!file_exists(INCLUDES_DIR."/config.yaml.php"))
 				return false;
-
-			$this->file = $file;
 
 			$contents = str_replace("<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n",
 			                        "",
-			                        file_get_contents($file));
+			                        file_get_contents(INCLUDES_DIR."/config.yaml.php"));
 
 			$this->yaml = Horde_Yaml::load($contents);
 
@@ -81,8 +67,7 @@
 			$contents.= Horde_Yaml::dump($this->yaml);
 
 			if (!@file_put_contents(INCLUDES_DIR."/config.yaml.php", $contents)) {
-				if (!UPGRADING)
-					Flash::warning(_f("Could not set \"<code>%s</code>\" configuration setting because <code>%s</code> is not writable.", array($setting, "/includes/config.yaml.php")));
+				Flash::warning(_f("Could not set \"<code>%s</code>\" configuration setting because <code>%s</code> is not writable.", array($setting, "/includes/config.yaml.php")));
 
 				return false;
 			} else
