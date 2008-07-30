@@ -64,7 +64,7 @@
 				{% for item in theme.pages_list %}
 					<li class="page-item" id="page_list_$item.page.id">
 						<noscript><input type="text" size="2" name="list_order[$item.page.id]" value="$item.page.list_order" class="center" /></noscript>
-						<div><a href="$item.page.url">$item.page.title</a></div>
+						<div>$item.page.title</div>
 
 						{% if item.has_children %}<ul>{% endif %}
 					{% if not item.has_children %}</li>{% endif %}

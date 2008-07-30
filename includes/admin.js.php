@@ -80,6 +80,12 @@ function togglers() {
 
 	if ($("#toggler").size())
 		document.getElementById("toggle").checked = all_checked
+
+	$("td:has(:checkbox)").click(function(){
+		$(this).find(":checkbox").each(function(){
+			this.checked = true
+		})
+	})
 }
 
 Array.prototype.indicesOf = function(value) {
