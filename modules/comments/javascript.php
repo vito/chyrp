@@ -24,36 +24,28 @@ $(function(){
 				}
 				$("#last_comment").val(json.comment_id)
 				$(data).appendTo(".comments:not(:header)").hide().fadeIn("slow")
-				$("#comment_edit_"+json.comment_id).click(function(){
-					Comment.edit(json.comment_id)
-					return false
-				})
-				$("#comment_delete_"+json.comment_id).click(function(){
-					notice++
-
-					if (!confirm("<?php echo __("Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this.", "comments"); ?>")) {
-						notice--
-						return false
-					}
-					notice--
-
-					Comment.destroy(json.comment_id)
-					return false
-				})
 			})
 		}, complete: function(){
 			$("#add_comment").loader(true)
 		} })
 	}
-	$(".comment_edit_link").click(function(){
+	$(".comment_edit_link").livequery("click", function(){
 		var id = $(this).attr("id").replace(/comment_edit_/, "")
 		Comment.edit(id)
 		return false
 	})
-	$(".comment_delete_link").click(function(){
-		notice++
-		if (!confirm("<?php echo __("Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this.", "comments"); ?>")) return false
+	$(".comment_delete_link").livequery("click", function(){
 		var id = $(this).attr("id").replace(/comment_delete_/, "")
+
+		notice++
+
+		if (!confirm("<?php echo __("Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this.", "comments"); ?>")) {
+			notice--
+			return false
+		}
+
+		notice--
+
 		Comment.destroy(id)
 		return false
 	})
@@ -98,24 +90,7 @@ var Comment = {
 				$("#comment_cancel_edit_"+id).click(function(){
 					$("#comment_"+id).loader()
 					$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "show_comment", comment_id: id }, function(data){
-						$("#comment_"+id).replaceWith(data)
-						$("#comment_"+id).loader(true)
-						$("#comment_edit_"+id).click(function(){
-							Comment.edit(id)
-							return false
-						})
-						$("#comment_delete_"+id).click(function(){
-							notice++
-
-						if (!confirm("<?php echo __("Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this.", "comments"); ?>")) {
-							notice--
-							return false
-						}
-						notice--
-
-							Comment.destroy(id)
-							return false
-						})
+						$("#comment_"+id).replaceWith(data).loader(true)
 					})
 				})
 				$("#comment_edit_"+id).ajaxForm({ beforeSubmit: function(){
@@ -126,24 +101,9 @@ var Comment = {
 					$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "show_comment", comment_id: id, reason: "edited" }, function(data) {
 						if (isError(data)) return $("#comment_"+id).loader(true)
 						$("#comment_"+id).loader(true)
-						$("#comment_"+id).fadeOut("fast", function(){ $(this).replaceWith(data).fadeIn("fast", function(){
-							$("#comment_edit_"+id).click(function(){
-								Comment.edit(id)
-								return false
-							})
-							$("#comment_delete_"+id).click(function(){
-								notice++
-
-								if (!confirm("<?php echo __("Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this.", "comments"); ?>")) {
-									notice--
-									return false
-								}
-								notice--
-
-								Comment.destroy(id)
-								return false
-							})
-						}) })
+						$("#comment_"+id).fadeOut("fast", function(){
+							$(this).replaceWith(data).fadeIn("fast")
+						})
 					})
 				} })
 			}) })
