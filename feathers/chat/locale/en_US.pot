@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 5\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-07-29 19:06+0000\n"
+"POT-Creation-Date: 2008-07-30 21:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -17,31 +17,31 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: feathers/chat/chat.php:95
-msgid "Dialogue Formatting"
+#: feathers/chat/chat.php:96
+msgid "To give yourself a special CSS class, append \" (me)\" to your username, like so:"
 msgstr ""
 
 #: feathers/chat/info.yaml:1
 msgid "Chat"
 msgstr ""
 
-#: feathers/chat/chat.php:101
-msgid "This only has to be done to the first occurrence of the username."
-msgstr ""
-
 #: feathers/chat/info.yaml:4
 msgid "Post logs of IRC or other chat formats."
 msgstr ""
 
-#: feathers/chat/chat.php:96
-msgid "To give yourself a special CSS class, append \" (me)\" to your username, like so:"
+#: feathers/chat/chat.php:101
+msgid "This only has to be done to the first occurrence of the username."
 msgstr ""
 
-#: feathers/chat/chat.php:10
-msgid "Dialogue"
+#: feathers/chat/chat.php:95
+msgid "Dialogue Formatting"
 msgstr ""
 
 #: feathers/chat/chat.php:6
 msgid "Title"
+msgstr ""
+
+#: feathers/chat/chat.php:10
+msgid "Dialogue"
 msgstr ""
 

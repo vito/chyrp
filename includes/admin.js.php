@@ -83,51 +83,9 @@ function togglers() {
 
 	$("td:has(:checkbox)").click(function(){
 		$(this).find(":checkbox").each(function(){
-			this.checked = true
+			this.checked = !(this.checked)
 		})
 	})
-}
-
-Array.prototype.indicesOf = function(value) {
-	var results = []
-
-	for (var j = 0; j < this.length; j++)
-		if (typeof value != "string") {
-			if (value.test(this[j]))
-				results.push(j)
-		} else if (this[j] == value)
-			results.push(j)
-
-	return results
-}
-
-Array.prototype.find = function(match) {
-	var matches = []
-
-	for (var f = 0; f < this.length; f++)
-		if (match.test(this[f]))
-			matches.push(this[f])
-
-	return matches
-}
-
-Array.prototype.remove = function(value) {
-	if (value instanceof Array) {
-		for (var r = 0; r < value.length; r++)
-			this.remove(value[r])
-
-		return
-	}
-
-	var indices = this.indicesOf(value)
-
-	if (indices.length == 0)
-		return
-
-	for (var h = 0; h < indices.length; h++)
-		this.splice(indices[h] - h, 1)
-
-	return this
 }
 
 var Route = {

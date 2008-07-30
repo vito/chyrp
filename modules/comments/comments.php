@@ -34,13 +34,13 @@
 			$config->set("auto_reload_comments", 30);
 			$config->set("enable_reload_comments", false);
 
-			Group::add_permission("add_comment", __("Add Comments", "comments"));
-			Group::add_permission("add_comment_private", __("Add Comments to Private Posts", "comments"));
-			Group::add_permission("edit_comment", __("Edit Comments", "comments"));
-			Group::add_permission("edit_own_comment", __("Edit Own Comments", "comments"));
-			Group::add_permission("delete_comment", __("Delete Comments", "comments"));
-			Group::add_permission("delete_own_comment", __("Delete Own Comments", "comments"));
-			Group::add_permission("code_in_comments", __("Can Use HTML In Comments", "comments"));
+			Group::add_permission("add_comment", "Add Comments");
+			Group::add_permission("add_comment_private", "Add Comments to Private Posts");
+			Group::add_permission("edit_comment", "Edit Comments");
+			Group::add_permission("edit_own_comment", "Edit Own Comments");
+			Group::add_permission("delete_comment", "Delete Comments");
+			Group::add_permission("delete_own_comment", "Delete Own Comments");
+			Group::add_permission("code_in_comments", "Can Use HTML In Comments");
 		}
 
 		static function __uninstall($confirm) {

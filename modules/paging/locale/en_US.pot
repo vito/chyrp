@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 5\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-07-29 19:06+0000\n"
+"POT-Creation-Date: 2008-07-30 21:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: modules/paging/info.yaml:4
-msgid "Split entries into multiple pages at <code><!--page--></code> tags. Use $post.paginated.prev_link and $post.paginated.next_link in your theme."
-msgstr ""
-
 #: modules/paging/info.yaml:1
 msgid "Paging"
+msgstr ""
+
+#: modules/paging/info.yaml:4
+msgid "Split entries into multiple pages at <code><!--page--></code> tags. Use $post.paginated.prev_link and $post.paginated.next_link in your theme."
 msgstr ""
 

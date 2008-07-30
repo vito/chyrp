@@ -67,11 +67,11 @@
 							<td>${ comment.status | capitalize | translate("comments") }</td>
 							${ trigger.call("manage_comments_column", comment) }
 {% if comment.editable and comment.deletable %}
-						<td class="controls">${ comment.edit_link('<img src="images/icons/edit.png" alt="edit" /> '~("edit" | translate)) }</td>
-						<td class="controls">${ comment.delete_link('<img src="images/icons/delete.png" alt="delete" /> '~("delete" | translate)) }</td>
+							<td class="controls">${ comment.edit_link('<img src="images/icons/edit.png" alt="edit" /> '~("edit" | translate)) }</td>
+							<td class="controls">${ comment.delete_link('<img src="images/icons/delete.png" alt="delete" /> '~("delete" | translate)) }</td>
 {% elseif comment.editable or comment.deletable %}
-						${ comment.edit_link('<img src="images/icons/edit.png" alt="edit" /> '~("edit" | translate), '<td class="controls" colspan="2">', '</td>') }
-						${ comment.delete_link('<img src="images/icons/delete.png" alt="delete" /> '~("delete" | translate), '<td class="controls" colspan="2">', '</td>') }
+							${ comment.edit_link('<img src="images/icons/edit.png" alt="edit" /> '~("edit" | translate), '<td class="controls" colspan="2">', '</td>') }
+							${ comment.delete_link('<img src="images/icons/delete.png" alt="delete" /> '~("delete" | translate), '<td class="controls" colspan="2">', '</td>') }
 {% endif %}
 						</tr>
 						<tr class="excerpt">

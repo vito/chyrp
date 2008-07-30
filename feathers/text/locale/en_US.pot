@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 5\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-07-29 19:06+0000\n"
+"POT-Creation-Date: 2008-07-30 21:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -16,10 +16,6 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-
-#: feathers/text/info.yaml:6
-msgid "text"
-msgstr ""
 
 #: feathers/text/info.yaml:4
 msgid "A basic text feather."
@@ -35,5 +31,9 @@ msgstr ""
 
 #: feathers/text/text.php:6
 msgid "Title"
+msgstr ""
+
+#: feathers/text/info.yaml:6
+msgid "text"
 msgstr ""
 

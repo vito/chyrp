@@ -65,7 +65,16 @@ class Horde_Yaml
 
         if (is_callable(self::$loadfunc)) {
             $array = call_user_func(self::$loadfunc, $yaml);
-            return is_array($array) ? $array : array();
+
+			# Chyrp: Trim whitespace
+			$result = array();
+			foreach ((array) $array as $key => $val)
+				if (is_string($val))
+					$result[$key] = trim($val);
+				else
+					$result[$key] = $val;
+
+            return $result;
         }
 
         if (strpos($yaml, "\r") !== false) {
@@ -78,7 +87,15 @@ class Horde_Yaml
             $loader->parse($line);
         }
 
-        return $loader->toArray();
+		# Chyrp: Trim whitespace
+		$result = array();
+		foreach ($loader->toArray() as $key => $val)
+			if (is_string($val))
+				$result[$key] = trim($val);
+			else
+				$result[$key] = $val;
+
+        return $result;
     }
 
     /**

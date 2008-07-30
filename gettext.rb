@@ -12,6 +12,9 @@ OPTIONS = {
   :keys    => ["name", "description", "plural", "notifications", "confirm"]
 }
 
+# Shamelessly taken from the Twig lexer. :P
+STRING = /(?:"([^"\\]*(?:\\.[^"\\]*)*)"|'([^'\\]*(?:\\.[^'\\]*)*)')/sm
+
 ARGV.options do |o|
   script_name = File.basename($0)
 
@@ -66,9 +69,10 @@ class Gettext
         end
       else
         next unless path =~ /\.(php|twig|yaml)/
-        @files << [cleaned, path] if File.read(path) =~ /(__|_f|_p)\(("|').*?\2#{@domain}\)/
-        @files << [cleaned, path] if File.read(path) =~ /("|').*?\1 ?\| ?translate#{@twig_domain}/
-        @files << [cleaned, path] if File.read(path) =~ /("|').*?\1 ?\| ?translate_plural\(("|').*?\2, ?.*?#{@domain}\) ?\| ?format\(.*?\)/
+        @files << [cleaned, path] if File.read(path) =~ /(__|_f|_p)\((#{STRING})#{@domain}\)/
+        @files << [cleaned, path] if File.read(path) =~ /Group::add_permission\((#{STRING}), (#{STRING})\)/
+        @files << [cleaned, path] if File.read(path) =~ /(#{STRING})\s*\|\s*translate#{@twig_domain}/
+        @files << [cleaned, path] if File.read(path) =~ /(#{STRING})\s*\|\s*translate_plural\((#{STRING}),\s*.*?#{@domain}\)\s*\|\s*format\(.*?\)/
         @files << [cleaned, path] if path =~ /\.yaml/
       end
     end
@@ -84,8 +88,8 @@ class Gettext
       counter = 1
       File.open(file, "r") do |infile|
         while line = infile.gets
-          line.gsub!("\\\"", "{QUOTE}") # So that [^"]+ doesn't match \"'s in the translation.
           scan_normal      line, counter, file, cleaned
+          scan_permissions line, counter, file, cleaned
           scan_filter      line, counter, file, cleaned
           scan_plural      line, counter, file, cleaned
           scan_twig        line, counter, file, cleaned
@@ -98,7 +102,19 @@ class Gettext
   end
 
   def scan_normal(text, line, filename, clean_filename)
-    text.gsub(/__\(("|')([^\1]+)\1#{@domain}\)/) do
+    text.gsub(/__\((#{STRING})#{@domain}\)/) do
+      if @translations[$1].nil?
+        @translations[$1] = { :places => [clean_filename + ":" + line.to_s],
+                              :filter => false,
+                              :plural => false }
+      elsif not @translations[$1][:places].include?(clean_filename + ":" + line.to_s)
+        @translations[$1][:places] << clean_filename + ":" + line.to_s
+      end
+    end
+  end
+
+  def scan_permissions(text, line, filename, clean_filename)
+    text.gsub(/Group::add_permission\((#{STRING}), (#{STRING})\)/) do
       if @translations[$2].nil?
         @translations[$2] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => false,
@@ -110,61 +126,61 @@ class Gettext
   end
 
   def scan_filter(text, line, filename, clean_filename)
-    text.gsub(/_f\(("|')([^\1]+)\1, .*?#{@domain}\)/) do
-      if @translations[$2].nil?
-        @translations[$2] = { :places => [clean_filename + ":" + line.to_s],
+    text.gsub(/_f\((#{STRING}), .*?#{@domain}\)/) do
+      if @translations[$1].nil?
+        @translations[$1] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => true,
                               :plural => false }
-      elsif not @translations[$2][:places].include?(clean_filename + ":" + line.to_s)
-        @translations[$2][:places] << clean_filename + ":" + line.to_s
+      elsif not @translations[$1][:places].include?(clean_filename + ":" + line.to_s)
+        @translations[$1][:places] << clean_filename + ":" + line.to_s
       end
     end
   end
 
   def scan_plural(text, line, filename, clean_filename)
-    text.gsub(/_p\(("|')([^\1]+)\1, ("|')([^\3]+)\3, .*?#{@domain}\)/) do
-      if @translations[$2].nil?
-        @translations[$2] = { :places => [clean_filename + ":" + line.to_s],
+    text.gsub(/_p\((#{STRING}), (#{STRING}), .*?#{@domain}\)/) do
+      if @translations[$1].nil?
+        @translations[$1] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => true,
-                              :plural => $4 }
-      elsif not @translations[$2][:places].include?(clean_filename + ":" + line.to_s)
-        @translations[$2][:places] << clean_filename + ":" + line.to_s
+                              :plural => $2 }
+      elsif not @translations[$1][:places].include?(clean_filename + ":" + line.to_s)
+        @translations[$1][:places] << clean_filename + ":" + line.to_s
       end
     end
   end
 
   def scan_twig(text, line, filename, clean_filename)
-    text.gsub(/("|')([^\1]+)\1 ?\| ?translate(?!_plural)#{@twig_domain}(?! ?\| ?format)/) do
-      if @translations[$2].nil?
-        @translations[$2] = { :places => [clean_filename + ":" + line.to_s],
+    text.gsub(/[\s\{\(](#{STRING})\s*\|\s*translate(?!_plural)#{@twig_domain}(?!\s*\|\s*format)/) do
+      if @translations[$1].nil?
+        @translations[$1] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => false,
                               :plural => false }
-      elsif not @translations[$2][:places].include?(clean_filename + ":" + line.to_s)
-        @translations[$2][:places] << clean_filename + ":" + line.to_s
+      elsif not @translations[$1][:places].include?(clean_filename + ":" + line.to_s)
+        @translations[$1][:places] << clean_filename + ":" + line.to_s
       end
     end
   end
 
   def scan_twig_filter(text, line, filename, clean_filename)
-    text.gsub(/("|')([^\1]+)\1 ?\| ?translate(?!_plural)#{@twig_domain} ?\| ?format\(.*?\).*?/) do
-      if @translations[$2].nil?
-        @translations[$2] = { :places => [clean_filename + ":" + line.to_s],
+    text.gsub(/[\s\{\(](#{STRING})\s*\|\s*translate(?!_plural)#{@twig_domain}\s*\|\s*format\(.*?\).*?/) do
+      if @translations[$1].nil?
+        @translations[$1] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => true,
                               :plural => false }
-      elsif not @translations[$2][:places].include?(clean_filename + ":" + line.to_s)
-        @translations[$2][:places] << clean_filename + ":" + line.to_s
+      elsif not @translations[$1][:places].include?(clean_filename + ":" + line.to_s)
+        @translations[$1][:places] << clean_filename + ":" + line.to_s
       end
     end
   end
 
   def scan_twig_plural(text, line, filename, clean_filename)
-    text.gsub(/("|')([^\1]+)\1 ?\| ?translate_plural\(("|')([^\3]+)\3, .*?#{@domain}\) ?\| ?format\(.*?\)/) do
-      if @translations[$2].nil?
-        @translations[$2] = { :places => [clean_filename + ":" + line.to_s],
+    text.gsub(/[\s\{\(](#{STRING})\s*\|\s*translate_plural\((#{STRING}), .*?#{@domain}\)\s*\|\s*format\(.*?\)/) do
+      if @translations[$1].nil?
+        @translations[$1] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => true,
-                              :plural => $4 }
-      elsif not @translations[$2][:places].include?(clean_filename + ":" + line.to_s)
-        @translations[$2][:places] << clean_filename + ":" + line.to_s
+                              :plural => $2 }
+      elsif not @translations[$1][:places].include?(clean_filename + ":" + line.to_s)
+        @translations[$1][:places] << clean_filename + ":" + line.to_s
       end
     end
   end
@@ -177,7 +193,8 @@ class Gettext
       next unless OPTIONS[:keys].include?(key)
 
       if val.class == String
-        val.gsub!("\"", "{QUOTE}")
+        val.gsub!("\"", "\\\"")
+        val = '"'+val+'"'
         if @translations[val].nil?
           @translations[val] = { :places => [clean_filename + ":" + counter.to_s],
                                  :filter => false,
@@ -188,7 +205,8 @@ class Gettext
       end
       if val.class == Array
         val.each do |val|
-          val.gsub!("\"", "{QUOTE}")
+          val.gsub!("\"", "\\\"")
+          val = '"'+val+'"'
           if @translations[val].nil?
             @translations[val] = { :places => [clean_filename + ":" + counter.to_s],
                                    :filter => false,
@@ -229,8 +247,8 @@ class Gettext
         output << "#: "+place+"\n"
       end
       output << "#, php-format\n" if attr[:filter]
-      output << "msgid \""+text+"\"\n"
-      output << "msgid_plural \""+attr[:plural]+"\"\n" if attr[:plural]
+      output << "msgid "+text+"\n"
+      output << "msgid_plural "+attr[:plural]+"\n" if attr[:plural]
 
       if attr[:plural]
         output << "msgstr[0] \"#{OPTIONS[:msgstr]}\"\n"
@@ -241,7 +259,7 @@ class Gettext
 
       output << "\n"
     end
-    puts output.gsub("{QUOTE}", "\\\"")
+    puts output
   end
 end
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 5\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-07-29 19:06+0000\n"
+"POT-Creation-Date: 2008-07-30 21:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -17,8 +17,50 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+#: modules/aggregator/aggregator.php:93
+msgid "Aggregates"
+msgstr ""
+
+#: modules/aggregator/info.yaml:1
+msgid "Aggregator"
+msgstr ""
+
+#: modules/aggregator/pages/admin/manage_aggregates.twig:12
+msgid "Feather"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:118
+msgid "Aggregation"
+msgstr ""
+
+#: modules/aggregator/pages/admin/manage_aggregates.twig:3
+#: modules/aggregator/pages/admin/manage_aggregates.twig:6
+msgid "Manage Aggregates"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:13
+msgid delete_aggregate
+msgstr ""
+
+#: modules/aggregator/pages/admin/aggregation_settings.twig:10
+#, php-format
+msgid "Check Feeds Every %s Minutes"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:11
+msgid add_aggregate
+msgstr ""
+
 #: modules/aggregator/pages/admin/aggregation_settings.twig:14
-msgid "aggregation_author">${ "Import Feeds As&hellip;"
+msgid "Import Feeds As&hellip;"
+msgstr ""
+
+#: modules/aggregator/pages/admin/aggregation_settings.twig:11
+msgid "disable"
+msgstr ""
+
+#: modules/aggregator/info.yaml:4
+msgid "Pulls content RSS2/Atom feeds into your Chyrp installation as posts."
 msgstr ""
 
 #: modules/aggregator/pages/admin/aggregation_settings.twig:3
@@ -26,24 +68,19 @@ msgstr ""
 msgid "Aggregation Settings"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:75
-msgid "Aggregation"
+#: modules/aggregator/pages/admin/manage_aggregates.twig:11
+msgid "Source"
 msgstr ""
 
-#: modules/aggregator/info.yaml:1
-msgid "Aggregator"
+#: modules/aggregator/aggregator.php:12
+msgid edit_aggregate
 msgstr ""
 
-#: modules/aggregator/pages/admin/aggregation_settings.twig:11
-msgid "checkbox" class="checkbox" name="disable_aggregation"${ site.disable_aggregation | checked } /> ${ "disable"
+#: modules/aggregator/pages/admin/manage_aggregates.twig:13
+msgid "Author"
 msgstr ""
 
-#: modules/aggregator/info.yaml:4
-msgid "Pulls content RSS2/Atom feeds into your Chyrp installation as posts."
-msgstr ""
-
-#: modules/aggregator/pages/admin/aggregation_settings.twig:10
-#, php-format
-msgid "aggregate_every">${ "Check Feeds Every %s Minutes"
+#: modules/aggregator/pages/admin/manage_aggregates.twig:10
+msgid "Name"
 msgstr ""
 

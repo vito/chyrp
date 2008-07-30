@@ -7,6 +7,10 @@
 			$config->set("disable_aggregation", false);
 			$config->set("aggregation_author", Visitor::current()->id);
 			$config->set("aggregation_feeds", array());
+
+			Group::add_permission("add_aggregate", "Add Aggregate");
+			Group::add_permission("edit_aggregate", "Edit Aggregate");
+			Group::add_permission("delete_aggregate", "Delete Aggregate");
 		}
 
 		static function __uninstall() {
@@ -16,6 +20,10 @@
 			$config->remove("disable_aggregation");
 			$config->remove("aggregation_author");
 			$config->remove("aggregation_feeds");
+
+			Group::remove_permission("add_aggregate");
+			Group::remove_permission("edit_aggregate");
+			Group::remove_permission("delete_aggregate");
 		}
 
 		public function runtime() {
@@ -29,7 +37,7 @@
 			foreach ($config->aggregation_feeds as $name => $feed) {
 				$xml_contents = preg_replace(array("/<(\/?)dc:date>/", "/xmlns=/"),
 				                             array("<\\1date>", "a="),
-				                             get_remote(trim($feed["url"])));
+				                             get_remote($feed["url"]));
 				$xml = simplexml_load_string($xml_contents, "SimpleXMLElement", LIBXML_NOCDATA);
 
 				if ($xml == false)
@@ -68,6 +76,41 @@
 			}
 			$config->set("aggregation_feeds", $aggregation_feeds);
 			$config->set("last_aggregation", time());
+		}
+
+		public function admin_manage_aggregates($admin) {
+			$aggregates = array();
+
+			foreach (Config::current()->aggregation_feeds as $name => $aggregate)
+				$aggregates[] = array_merge(array("name" => $name), array("user" => new User($aggregate["author"])), $aggregate);
+
+			$admin->context["aggregates"] = new Paginator($aggregates, 25, "page", false);
+		}
+		public function manage_nav($navs) {
+			if (!Visitor::current()->group()->can("edit_aggregate", "delete_aggregate"))
+				return $navs;
+
+			$navs["manage_aggregates"] = array("title" => __("Aggregates", "aggregator"),
+			                                   "selected" => array("edit_aggregate", "delete_aggregate"));
+
+			return $navs;
+		}
+
+		public function manage_nav_pages($pages) {
+			array_push($pages, "manage_aggregates", "edit_aggregate", "delete_aggregate");
+			return $pages;
+		}
+
+		public function manage_nav_show($possibilities) {
+			$possibilities[] = Visitor::current()->group()->can("edit_aggregate", "delete_aggregate");
+			return $possibilities;
+		}
+
+		public function determine_action($action) {
+			if ($action != "manage") return;
+
+			if (Visitor::current()->group()->can("edit_aggregate", "delete_aggregate"))
+				return "manage_aggregates";
 		}
 
 		public function settings_nav($navs) {
