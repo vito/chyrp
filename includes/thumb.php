@@ -74,7 +74,8 @@
 	if (file_exists($cache_file) and filemtime($cache_file) > filemtime($filename)) {
 		header("Last-Modified: ".gmdate('D, d M Y H:i:s', filemtime($cache_file)).' GMT');
 		header("Content-type: image/".($extension == "jpg" ? "jpeg" : $extension));
-		header("Expires: ".date("r", strtotime("+30 seconds")));
+		header("Cache-Control: public");
+		header("Expires: ".date("r", strtotime("+30 days")));
 		header("Content-Disposition: inline; filename=".$cache_filename);
 		readfile($cache_file);
 		exit;

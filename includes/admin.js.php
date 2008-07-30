@@ -221,9 +221,8 @@ var Write = {
 	},
 	confirm_group: function(msg){
 		$("form.confirm").submit(function(){
-			alert("<?php echo __("You are a member of this group. Please make sure all of the permissions are as you want them."); ?>")
-			$(this).unbind("submit")
-			return false
+			if (!confirm("<?php echo __("You are a member of this group. Are you sure the permissions are as you want them?"); ?>"))
+				return false
 		})
 	}
 }
