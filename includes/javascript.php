@@ -28,6 +28,8 @@ var Route = {
 	action: "<?php echo $_GET['action']; ?>"
 }
 
+var site_url = "<?php echo $config->chyrp_url; ?>"
+
 var Post = {
 	delete_animations: { height: "hide", opacity: "hide" },
 	delete_wrap: "<div></div>",
@@ -58,9 +60,7 @@ var Post = {
 						$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "view_post", context: "all", id: id, reason: "cancelled" }, function(data) {
 							$("#post_edit_form_"+id).loader(true).fadeOut("fast", function(){
 								$(this).replaceWith(data)
-								$(this).hide().fadeIn("fast", function(){
-									Post.prepare_links(id)
-								})
+								$(this).hide().fadeIn("fast")
 							})
 						})
 						return false
@@ -86,9 +86,7 @@ var Post = {
 			$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "view_post", context: "all", id: id, reason: "edited" }, function(data) {
 				$("#post_edit_form_"+id).loader(true).fadeOut("fast", function(){
 					$(this).replaceWith(data)
-					$("#post_"+id).hide().fadeIn("fast", function(){
-						Post.prepare_links(id)
-					})
+					$("#post_"+id).hide().fadeIn("fast")
 				})
 			})
 		}
@@ -116,30 +114,18 @@ var Post = {
 		})
 	},
 	prepare_links: function(id) {
-		if (id != null) {
-			$("#post_edit_"+id).click(function(){
-				Post.edit(id)
-				return false
-			})
-			$("#post_delete_"+id).click(function(){
-				if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
-				Post.destroy(id)
-				return false
-			})
-		} else {
-			$(".post_edit_link").click(function(){
-				var id = $(this).attr("id").replace(/post_edit_/, "")
-				Post.edit(id)
-				return false
-			})
+		$(".post_edit_link").livequery("click", function(){
+			var id = $(this).attr("id").replace(/post_edit_/, "")
+			Post.edit(id)
+			return false
+		})
 
-			$(".post_delete_link").click(function(){
-				if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
-				var id = $(this).attr("id").replace(/post_delete_/, "")
-				Post.destroy(id)
-				return false
-			})
-		}
+		$(".post_delete_link").livequery("click", function(){
+			if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
+			var id = $(this).attr("id").replace(/post_delete_/, "")
+			Post.destroy(id)
+			return false
+		})
 	}
 }
 

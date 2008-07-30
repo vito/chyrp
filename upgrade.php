@@ -43,9 +43,10 @@
 		                 array("", "", "OldConfig"),
 		                 file_get_contents(config_file())));
 
-		eval(str_replace(array("<?php", "?>", "SQL"),
-		                 array("", "", "OldSQL"),
-		                 file_get_contents(database_file())));
+		if (database_file())
+			eval(str_replace(array("<?php", "?>", "SQL"),
+			                 array("", "", "OldSQL"),
+			                 file_get_contents(database_file())));
 	}
 
 	require_once INCLUDES_DIR."/helpers.php";

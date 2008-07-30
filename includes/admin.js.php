@@ -128,7 +128,7 @@ var Route = {
 	action: "<?php echo $_GET['action']; ?>"
 }
 
-var site_url = "<?php echo $config->url; ?>"
+var site_url = "<?php echo $config->chyrp_url; ?>"
 
 var Write = {
 	init: function(){
@@ -146,7 +146,7 @@ var Write = {
 		$(document.createElement("li")).addClass("bookmarklet right").text("Bookmarklet: ").prependTo(".write_post_nav")
 
 		// Add the link
-		$(document.createElement("a")).text("<?php echo __("Chyrp!"); ?>").addClass("no_drag").attr("href", "javascript:var%20d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f=\'"+site_url+"/admin/?action=bookmarklet\',l=d.location,e=encodeURIComponent,p=\'&url=\'+e(l.href)+\'&title=\'+e(d.title)+\'&selection=\'+e(s),u=f+p;a=function(){if(!w.open(u,\'t\',\'toolbar=0,resizable=0,status=1,width=450,height=430\'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0)").appendTo(".bookmarklet")
+		$(document.createElement("a")).text("<?php echo __("Chyrp!"); ?>").addClass("no_drag").attr("href", "javascript:var%20d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f=\'"+site_url+"/admin/?action=bookmarklet\',l=d.location,e=encodeURIComponent,p=\'&url=\'+e(l.href)+\'&title=\'+e(d.title)+\'&selection=\'+e(s),u=f+p;a=function(){if(!w.open(u,\'t\',\'toolbar=0,resizable=1,status=1,width=450,height=430\'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0)").appendTo(".bookmarklet")
 	},
 	auto_expand_fields: function(){
 		$("input.text").expand()

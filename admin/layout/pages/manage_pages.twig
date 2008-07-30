@@ -56,6 +56,7 @@
 			<br />
 			$pages.next_link
 			$pages.prev_link
+			{% if pages.total %}
 			<br />
 			<h2>${ "Reorder Pages" | translate }</h2>
 			<form id="reorder_pages" action="{% admin "reorder_pages" %}" method="post">
@@ -82,4 +83,5 @@
 					</div>
 				</noscript>
 			</form>
+			{% endif %}
 {% endblock %}
