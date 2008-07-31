@@ -790,7 +790,7 @@ button.lite img,
 	width: 48%;
 	margin: 0 2% 0 0;
 	height: 5.5em;
-	float: left;
+	_float: left;
 }
 .more_options p input.text {
 	width: 96.5%;

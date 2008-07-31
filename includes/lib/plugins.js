@@ -299,14 +299,10 @@ $.each($.livequery.queries,function(id){$.livequery.queries[id].stop();});}});$.
 var widths = {}
 $.fn.expand = function(){
 	$(this).each(function(){
-		if ($(this).parent().parent().attr("class") == "more_options") return
+		if ($(this).parent().parent().attr("class") == "more_options" || $.browser.msie) return
 
 		var id = $(this).attr("id")
 		var dummy = ".dummy_"+ id
-		var increment = ($.browser.msie) ? 0 : 20
-
-		if (widths[id] == null)
-			widths[id] = $(this).width()
 
 		$(this).css("min-width", $(this).width())
 
@@ -320,8 +316,7 @@ $.fn.expand = function(){
 			top: -9999
 		}).text($(this).val())
 
-		if (!$.browser.msie)
-			$(this).width($(dummy).width() + increment)
+		$(this).width($(dummy).width() + 20)
 
 		$(this).keypress(function(e){
 			$(dummy).text($(this).val() + String.fromCharCode(e.which))
@@ -329,11 +324,7 @@ $.fn.expand = function(){
 			if (e.which == 8)
 				$(dummy).text($(this).val().substring(0, $(this).val().length - 1))
 
-			if ($(dummy).width() + increment > widths[id])
-				$(this).width($(dummy).width() + increment)
-
-			if ($(dummy).width() + increment < widths[id])
-				$(this).width(widths[id])
+			$(this).width($(dummy).width() + 20)
 		})
 
 		if ($.browser.safari)
@@ -343,11 +334,7 @@ $.fn.expand = function(){
 				if (e.which == 8)
 					$(dummy).text($(this).val().substring(0, $(this).val().length - 1))
 
-				if ($(dummy).width() + increment > widths[id])
-					$(this).width($(dummy).width() + increment)
-
-				if ($(dummy).width() + increment < widths[id])
-					$(this).width(widths[id])
+				$(this).width($(dummy).width() + 20)
 			})
 	})
 }
