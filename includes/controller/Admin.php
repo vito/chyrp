@@ -1122,7 +1122,7 @@
 					                  datetime($entry->published),
 					                  ($entry->updated == $entry->published) ?
 					                      "0000-00-00 00:00:00" :
-					                      datetime($entry->updated)
+					                      datetime($entry->updated),
 					                  "",
 					                  false);
 
@@ -1375,7 +1375,7 @@
 				                      null,
 				                      false,
 				                      "public",
-				                      datetime((int) $post->attributes()->unix_timestamp)
+				                      datetime((int) $post->attributes()->unix_timestamp),
 					                  null,
 					                  "",
 					                  false);
@@ -1444,7 +1444,7 @@
 				                      null,
 				                      ($post["Status"] == "5"),
 				                      $status_translate[$post["Status"]],
-				                      $post["Posted"]
+				                      $post["Posted"],
 					                  null,
 					                  "",
 					                  false);
@@ -1521,7 +1521,7 @@
 					                      false,
 					                      $status_translate[$post["entry_status"]],
 					                      $post["entry_authored_on"],
-					                      $post["entry_modified_on"]
+					                      $post["entry_modified_on"],
 					                      "",
 					                      false);
 					$trigger->call("import_movabletype_post", $post, $new_post, $link);
