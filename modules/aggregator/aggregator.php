@@ -204,8 +204,14 @@
 		public function admin_new_aggregate($admin) {
 			$admin->context["users"] = User::find();
 
+			if (!Visitor::current()->group()->can("add_aggregate"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to add aggregates.", "aggregator"));
+
 			if (empty($_POST))
 				return;
+
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				show_403(__("Access Denied"), __("Invalid security key."));
 
 			$config = Config::current();
 
