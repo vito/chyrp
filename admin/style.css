@@ -787,13 +787,13 @@ button.lite img,
 .more_options {
 	background: #f9f9f9;
 	padding: 2% 0 0 2%;
-	float: left;
+	_float: left;
 }
 .more_options p {
 	width: 48%;
 	margin: 0 2% 0 0;
 	height: 5.5em;
-	_float: left;
+	float: left;
 }
 .more_options p input.text {
 	width: 96.5%;
