@@ -38,7 +38,7 @@ p {
 a:link,
 a:visited {
 	text-decoration: underline;
-	color: #626262;
+	_color: #626262;
 }
 /* @end */
 
@@ -623,15 +623,18 @@ p.message {
 	margin-bottom: 1.75em;
 	background: #f1f1f1;
 	border: 1px solid #ccc;
+	color: #fff;
+}
+p.message a:link,
+p.message a:visited {
+	color: #fff;
 }
 p.message.yay {
 	background: #189100;
-	color: #fff;
 	border-color: #105f00;
 }
 p.message.boo {
 	background: #d51800;
-	color: #fff;
 	border-color: #9f1000;
 }
 /* @end */

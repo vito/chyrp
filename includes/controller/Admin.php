@@ -1122,7 +1122,9 @@
 					                  datetime($entry->published),
 					                  ($entry->updated == $entry->published) ?
 					                      "0000-00-00 00:00:00" :
-					                      datetime($entry->updated));
+					                      datetime($entry->updated)
+					                  "",
+					                  false);
 
 					$trigger->call("import_chyrp_post", $entry, $post);
 				}
@@ -1232,7 +1234,10 @@
 					                  null,
 					                  false,
 					                  $status_translate[(string) $wordpress->status],
-					                  ($wordpress->post_date == "0000-00-00 00:00:00") ? datetime() : $wordpress->post_date);
+					                  ($wordpress->post_date == "0000-00-00 00:00:00") ? datetime() : $wordpress->post_date,
+					                  null,
+					                  "",
+					                  false);
 
 					$trigger->call("import_wordpress_post", $item, $post);
 				} elseif ($wordpress->post_type == "page") {
@@ -1370,7 +1375,10 @@
 				                      null,
 				                      false,
 				                      "public",
-				                      datetime((int) $post->attributes()->unix_timestamp));
+				                      datetime((int) $post->attributes()->unix_timestamp)
+					                  null,
+					                  "",
+					                  false);
 
 				Trigger::current()->call("import_tumble", $post, $new_post);
 			}
@@ -1436,7 +1444,10 @@
 				                      null,
 				                      ($post["Status"] == "5"),
 				                      $status_translate[$post["Status"]],
-				                      $post["Posted"]);
+				                      $post["Posted"]
+					                  null,
+					                  "",
+					                  false);
 
 				$trigger->call("import_textpattern_post", $post, $new_post);
 			}
@@ -1510,7 +1521,9 @@
 					                      false,
 					                      $status_translate[$post["entry_status"]],
 					                      $post["entry_authored_on"],
-					                      $post["entry_modified_on"]);
+					                      $post["entry_modified_on"]
+					                      "",
+					                      false);
 					$trigger->call("import_movabletype_post", $post, $new_post, $link);
 				} elseif ($post["entry_class"] == "page") {
 					$new_page = Page::add($post["entry_title"], $body, 0, true, 0, $clean, Page::check_url($clean));

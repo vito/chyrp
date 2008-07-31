@@ -113,7 +113,7 @@
 		 * See Also:
 		 *     <update>
 		 */
-		static function add($values, $clean = "", $url = "", $feather = null, $user = null, $pinned = null, $status = null, $timestamp = null, $updated_timestamp = null, $trackbacks = "", $options = null) {
+		static function add($values, $clean = "", $url = "", $feather = null, $user = null, $pinned = null, $status = null, $timestamp = null, $updated_timestamp = null, $trackbacks = "", $pingbacks = true, $options = null) {
 
 			if ($user instanceof User)
 				$user = $user->id;
@@ -183,7 +183,7 @@
 
 			$post = new self($id);
 
-			if (Config::current()->send_pingbacks)
+			if (Config::current()->send_pingbacks and $pingbacks)
 				array_walk_recursive($values, array("Post", "send_pingbacks"), $post);
 
 			$post->redirect = (isset($_POST['bookmarklet'])) ? url("/admin/?action=bookmarklet&done") : $post->url() ;
