@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 Beta 5\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-07-30 21:54+0000\n"
+"POT-Creation-Date: 2008-07-31 20:35+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -37,6 +37,13 @@ msgstr ""
 #: modules/tags/info.yaml:2
 msgid "Tagginator"
 msgstr ""
+
+#: modules/tags/pages/tags.php:40
+#, php-format
+msgid "%s post tagged with &quot;%s&quot;"
+msgid_plural "%s posts tagged with &quot;%s&quot;"
+msgstr[0] ""
+msgstr[1] ""
 
 #: modules/tags/info.yaml:5
 msgid "Adds tagging functionality to posts, allowing organization, grouping, and adding keywords to posts."

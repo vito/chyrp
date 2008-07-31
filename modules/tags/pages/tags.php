@@ -37,7 +37,7 @@
 			$context[] = array("size" => (100 + (($count - $min_qty) * $step)),
 			                   "popularity" => $count,
 			                   "name" => $tag,
-			                   "title" => sprintf(_p("%s post tagged with &quot;%s&quot;", "%s posts tagged with &quot;%s&quot;", $count), $count, $tag),
+			                   "title" => sprintf(_p("%s post tagged with &quot;%s&quot;", "%s posts tagged with &quot;%s&quot;", $count, "tags"), $count, $tag),
 			                   "clean" => $tag2clean[$tag],
 			                   "url" => url("tag/".$tag2clean[$tag]."/"));
 

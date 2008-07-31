@@ -70,7 +70,7 @@ class Gettext
       else
         next unless path =~ /\.(php|twig|yaml)/
         @files << [cleaned, path] if File.read(path) =~ /(__|_f|_p)\((#{STRING})#{@domain}\)/
-        @files << [cleaned, path] if File.read(path) =~ /Group::add_permission\((#{STRING}), (#{STRING})\)/
+        @files << [cleaned, path] if File.read(path) =~ /Group::add_permission\(([^,]+), (#{STRING})\)/
         @files << [cleaned, path] if File.read(path) =~ /(#{STRING})\s*\|\s*translate#{@twig_domain}/
         @files << [cleaned, path] if File.read(path) =~ /(#{STRING})\s*\|\s*translate_plural\((#{STRING}),\s*.*?#{@domain}\)\s*\|\s*format\(.*?\)/
         @files << [cleaned, path] if path =~ /\.yaml/
@@ -114,7 +114,7 @@ class Gettext
   end
 
   def scan_permissions(text, line, filename, clean_filename)
-    text.gsub(/Group::add_permission\((#{STRING}), (#{STRING})\)/) do
+    text.gsub(/Group::add_permission\(([^,]+), (#{STRING})\)/) do
       if @translations[$2].nil?
         @translations[$2] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => false,
@@ -142,7 +142,7 @@ class Gettext
       if @translations[$1].nil?
         @translations[$1] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => true,
-                              :plural => $2 }
+                              :plural => $4 }
       elsif not @translations[$1][:places].include?(clean_filename + ":" + line.to_s)
         @translations[$1][:places] << clean_filename + ":" + line.to_s
       end
@@ -178,7 +178,7 @@ class Gettext
       if @translations[$1].nil?
         @translations[$1] = { :places => [clean_filename + ":" + line.to_s],
                               :filter => true,
-                              :plural => $2 }
+                              :plural => $4 }
       elsif not @translations[$1][:places].include?(clean_filename + ":" + line.to_s)
         @translations[$1][:places] << clean_filename + ":" + line.to_s
       end
