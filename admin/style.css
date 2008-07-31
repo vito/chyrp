@@ -8,7 +8,7 @@ caption,th { text-align: left; }
 h1,h2,h3,h4,h5,h6 { font-size: 100%; font-weight: normal; }
 abbr,acronym { border: 0; font-variant: normal; }
 input,textarea,select { font-family: inherit; font-size: inherit; font-weight: inherit; }
-a { text-decoration: none; color: inherit; }
+a:link, a:visited { text-decoration: none; color: inherit; }
 /* @end */
 
 /* @group Core */
@@ -38,6 +38,7 @@ p {
 a:link,
 a:visited {
 	text-decoration: underline;
+	color: #626262;
 }
 /* @end */
 
@@ -45,6 +46,10 @@ a:visited {
 #header {
 	background: #353535 url('images/header.gif') repeat-x;
 	padding: 2.5em 0;
+	color: #fff;
+}
+#header a:link,
+#header a:visited {
 	color: #fff;
 }
 #header h1 {
@@ -73,10 +78,14 @@ a:visited {
 #header #navigation li a:hover {
 	opacity: 1;
 }
-#header #navigation li.write a  { border-color: #ef4646; }
-#header #navigation li.manage a { border-color: #e19a2c; }
-#header #navigation li.settings a  { border-color: #16d907; }
-#header #navigation li.extend a { border-color: #0096ff; }
+#header #navigation li.write a:link,
+#header #navigation li.write a:visited { border-color: #ef4646; }
+#header #navigation li.manage a:link,
+#header #navigation li.manage a:visited { border-color: #e19a2c; }
+#header #navigation li.settings a:link,
+#header #navigation li.settings a:visited { border-color: #16d907; }
+#header #navigation li.extend a:link,
+#header #navigation li.extend a:visited { border-color: #0096ff; }
 
 #welcome {
 	background: #dfdfdf url('images/welcome.gif') repeat-x;
@@ -88,6 +97,7 @@ a:visited {
 	background: rgba(0,0,0,.0625);
 	padding: 1em;
 	margin: -1em 0 -.8em;
+	color: #626262;
 }
 #welcome .right {
 	padding-bottom: .8em !important;
@@ -103,12 +113,14 @@ a:visited {
 /* @group Footer */
 #footer {
 	width: 425px;
-	margin: 2.5em auto !important;
+	margin: 2em auto !important;
 	font-size: 1.25em;
+	padding-top: .5em;
 }
 #footer img {
 	float: left;
 	margin: -.5em 2em 0 0;
+	x_margin: 0 2em 0 0;
 }
 #footer .sub {
 	color: #acacac;
@@ -119,6 +131,7 @@ a:visited {
 /* @group Sub-Navigation */
 #sub-nav {
 	margin-top: 1em;
+	_border: 1px solid #e8e8e8; /* Weird IE6 fix. */
 }
 #sub-nav li {
 	float: left;
@@ -634,7 +647,7 @@ a.prev_page {
 	font-size: 1.125em;
 	margin: 0 .5em 0 0;
 	color: #333;
-	padding: .5em .75em;
+	padding: .5em .75em !important;
 	background: #f1f1f1;
 	border: 1px solid #ccc;
 	border-top-color: #f1f1f1;

@@ -151,7 +151,7 @@ var Write = {
 
 		var feather = ($("#feather").size()) ? $("#feather").val() : ""
 		$(document.createElement("div")).css("display", "none").attr("id", "preview").insertBefore("#write_form, #edit_form")
-		$(document.createElement("button")).append("<?php echo __("Preview &#8594;"); ?>").attr({ "type": "submit", "accesskey": "p" }).click(function(){
+		$(document.createElement("button")).append("<?php echo __("Preview &#8594;"); ?>").attr("accesskey", "p").click(function(){
 			$("#preview").load("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "preview", content: $(".preview_me").val(), feather: feather }, function(){
 				$(this).fadeIn("fast")
 			})
@@ -397,6 +397,7 @@ var Extend = {
 		Extend.draw_dependencies()
 	},
 	draw_conflicts: function(){
+		if ($.browser.msie) return false
 		if (!$(".extend li.conflict").size() && !($.browser.safari || $.browser.opera || ($.browser.mozilla && $.browser.version >= 1.9)))
 			return false
 
@@ -534,6 +535,7 @@ var Extend = {
 		return true
 	},
 	draw_dependencies: function() {
+		if ($.browser.msie) return false
 		if (!$(".extend li.depends").size() && !($.browser.safari || $.browser.opera || ($.browser.mozilla && $.browser.version >= 1.9)))
 			return false
 

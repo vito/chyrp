@@ -307,7 +307,8 @@ $.fn.expand = function(){
 			fontSize: $(this).css("font-size"),
 			fontFamily: $(this).css("font-family"),
 			padding: $(this).css("padding"),
-			display: "none"
+			position: "absolute",
+			top: -9999
 		}).text($(this).val())
 
 		$(this).width($(".dummy_"+$(this).attr("id")).width() + 20)
