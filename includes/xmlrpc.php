@@ -299,6 +299,7 @@
 			$post->update(
 				array('title' => $args[3]['title'], 'body' => $body ),
 				null,
+				null,
 				$status,
 				sanitize(fallback($args[3]['mt_basename'], $args[3]['title'], true)),
 				fallback($this->convertFromDateCreated($args[3]), $post->created_at, true));

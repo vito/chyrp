@@ -1107,21 +1107,22 @@
 					$user_id = $sql->select("users", "id", "login = :login", "id DESC",
 					                        array(":login" => $login))->fetchColumn();
 
-					$_POST['user_id'] = ($user_id ? $user_id : $visitor->id);
-					$_POST['feather'] = $chyrp->feather;
-					$_POST['status']  = $chyrp->status;
-					$_POST['pinned']  = (bool) (int) $chyrp->pinned;
-					$_POST['created_at'] = datetime($entry->published);
-					$_POST['updated_at'] = ($entry->updated == $entry->published) ?
-					                       "0000-00-00 00:00:00" :
-					                       datetime($entry->updated) ;
-
 					$data = Post::xml2arr($entry->content);
 
 					if (!empty($_POST['media_url']))
 						array_walk_recursive($data, "media_url_scan");
 
-					$post = Post::add($data, $chyrp->clean, Post::check_url($chyrp->url));
+					$post = Post::add($data,
+					                  $chyrp->clean,
+					                  Post::check_url($chyrp->url),
+					                  $chyrp->feather,
+					                  ($user_id ? $user_id : $visitor->id),
+					                  (bool) (int) $chyrp->pinned,
+					                  $chyrp->status,
+					                  datetime($entry->published),
+					                  ($entry->updated == $entry->published) ?
+					                      "0000-00-00 00:00:00" :
+					                      datetime($entry->updated));
 
 					$trigger->call("import_chyrp_post", $entry, $post);
 				}
@@ -1222,14 +1223,16 @@
 					                          "future"  => "draft",
 					                          "pending" => "draft");
 
-					$_POST['status']  = str_replace(array_keys($status_translate), array_values($status_translate), $wordpress->status);
-					$_POST['pinned']  = false;
-					$_POST['created_at'] = ($wordpress->post_date == "0000-00-00 00:00:00") ? datetime() : $wordpress->post_date ;
-					$_POST['feather'] = "text";
-
 					$data = array("title" => trim($item->title), "body" => trim($content->encoded));
 
-					$post = Post::add($data, $clean, Post::check_url($clean));
+					$post = Post::add($data,
+					                  $clean,
+					                  Post::check_url($clean),
+					                  "text",
+					                  null,
+					                  false,
+					                  $status_translate[(string) $wordpress->status],
+					                  ($wordpress->post_date == "0000-00-00 00:00:00") ? datetime() : $wordpress->post_date);
 
 					$trigger->call("import_wordpress_post", $item, $post);
 				} elseif ($wordpress->post_type == "page") {
@@ -1241,7 +1244,8 @@
 					                  $clean,
 					                  Page::check_url($clean),
 					                  ($wordpress->post_date == "0000-00-00 00:00:00") ? datetime() : $wordpress->post_date);
-					$trigger->call("import_wordpress_page", $item, $post);
+
+					$trigger->call("import_wordpress_page", $item, $page);
 				}
 			}
 
@@ -1359,15 +1363,14 @@
 						break;
 				}
 
-
-				$_POST['status'] = "public";
-				$_POST['pinned'] = false;
-				$_POST['created_at'] = datetime((int) $post->attributes()->unix_timestamp);
-				$_POST['feather'] = str_replace(array_keys($translate_types),
-				                                array_values($translate_types),
-				                                $post->attributes()->type);
-
-				$new_post = Post::add($values, $clean, Post::check_url($clean));
+				$new_post = Post::add($values,
+				                      $clean,
+				                      Post::check_url($clean),
+				                      $translate_types[$post->attributes()->type],
+				                      null,
+				                      false,
+				                      "public",
+				                      datetime((int) $post->attributes()->unix_timestamp));
 
 				Trigger::current()->call("import_tumble", $post, $new_post);
 			}
@@ -1425,13 +1428,15 @@
 
 				$clean = fallback($post["url_title"], sanitize($post["Title"]));
 
-				$_POST['status'] = $status_translate[$post["Status"]];
-				$_POST['pinned'] = ($post["Status"] == "5");
-				$_POST['created_at'] = $post["Posted"];
-				$_POST['feather'] = "text";
-
 				$new_post = Post::add(array("title" => $post["Title"],
-				                            "body" => $post["Body"]), $clean, Post::check_url($clean));
+				                            "body" => $post["Body"]),
+				                      $clean,
+				                      Post::check_url($clean),
+				                      "text",
+				                      null,
+				                      ($post["Status"] == "5"),
+				                      $status_translate[$post["Status"]],
+				                      $post["Posted"]);
 
 				$trigger->call("import_textpattern_post", $post, $new_post);
 			}
@@ -1495,15 +1500,17 @@
 
 				$clean = fallback($post["entry_basename"], sanitize($post["entry_title"]));
 
-				$_POST['status'] = $status_translate[$post["entry_status"]];
-				$_POST['pinned'] = false;
-				$_POST['created_at'] = $post["entry_authored_on"];
-				$_POST['updated_at'] = $post["entry_modified_on"];
-				$_POST['feather'] = "text";
-
 				if ($post["entry_class"] == "entry") {
 					$new_post = Post::add(array("title" => $post["entry_title"],
-					                            "body" => $body), $clean, Post::check_url($clean));
+					                            "body" => $body),
+					                      $clean,
+					                      Post::check_url($clean),
+					                      "text",
+					                      null,
+					                      false,
+					                      $status_translate[$post["entry_status"]],
+					                      $post["entry_authored_on"],
+					                      $post["entry_modified_on"]);
 					$trigger->call("import_movabletype_post", $post, $new_post, $link);
 				} elseif ($post["entry_class"] == "page") {
 					$new_page = Page::add($post["entry_title"], $body, 0, true, 0, $clean, Page::check_url($clean));

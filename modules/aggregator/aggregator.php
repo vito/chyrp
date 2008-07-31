@@ -64,9 +64,7 @@
 						foreach ($feed["data"] as $attr => $field)
 							$data[$attr] = (!empty($field)) ? $this->parse_field($field, $item) : "" ;
 
-						$_POST['feather'] = $feed["feather"];
-						$_POST['user_id'] = $feed["author"];
-						Post::add($data);
+						Post::add($data, null, null, $feed["feather"], $feed["author"]);
 
 						$aggregates[$name]["last_updated"] = strtotime($date);
 					}
