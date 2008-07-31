@@ -5,7 +5,6 @@
 			$config->set("last_aggregation", 0);
 			$config->set("aggregate_every", 30);
 			$config->set("disable_aggregation", false);
-			$config->set("aggregation_author", Visitor::current()->id);
 			$config->set("aggregation_feeds", array());
 
 			Group::add_permission("add_aggregate", "Add Aggregate");
@@ -18,7 +17,6 @@
 			$config->remove("last_aggregation");
 			$config->remove("aggregate_every");
 			$config->remove("disable_aggregation");
-			$config->remove("aggregation_author");
 			$config->remove("aggregation_feeds");
 
 			Group::remove_permission("add_aggregate");
@@ -67,7 +65,7 @@
 							$data[$attr] = (!empty($field)) ? $this->parse_field($field, $item) : "" ;
 
 						$_POST['feather'] = $feed["feather"];
-						$_POST['user_id'] = $config->aggregation_author;
+						$_POST['user_id'] = $feed["author"];
 						Post::add($data);
 
 						$aggregation_feeds[$name]["last_updated"] = strtotime($date);
@@ -91,13 +89,13 @@
 				return $navs;
 
 			$navs["manage_aggregates"] = array("title" => __("Aggregates", "aggregator"),
-			                                   "selected" => array("edit_aggregate", "delete_aggregate"));
+			                                   "selected" => array("edit_aggregate", "delete_aggregate", "new_aggregate"));
 
 			return $navs;
 		}
 
 		public function manage_nav_pages($pages) {
-			array_push($pages, "manage_aggregates", "edit_aggregate", "delete_aggregate");
+			array_push($pages, "manage_aggregates", "edit_aggregate", "delete_aggregate", "new_aggregate");
 			return $pages;
 		}
 
@@ -140,13 +138,13 @@
 			}
 		}
 
-		static function image_from_html($html) {
+		static function image_from_content($html) {
 			preg_match("/img src=('|\")([^ \\1]+)\\1/", $html, $image);
 			return $image[2];
 		}
 
-		static function upload_image_from_html($html) {
-			return upload_from_url(self::image_from_html($html));
+		static function upload_image_from_content($html) {
+			return upload_from_url(self::image_from_content($html));
 		}
 
 		public function parse_field($value, $item) {
@@ -188,8 +186,6 @@
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
-			$admin->context["users"] = User::find();
-
 			if (empty($_POST))
 				return;
 
@@ -203,5 +199,127 @@
 
 			if (!in_array(false, $set))
 				Flash::notice(__("Settings updated."), "/admin/?action=aggregation_settings");
+		}
+
+		public function admin_new_aggregate($admin) {
+			$admin->context["users"] = User::find();
+
+			if (empty($_POST))
+				return;
+
+			$config = Config::current();
+
+			$aggregate = array("url" => $_POST['url'],
+			                   "last_updated" => 0,
+			                   "feather" => $_POST['feather'],
+			                   "author" => $_POST['author'],
+			                   "data" => Horde_Yaml::load($_POST['data']));
+
+			$config->aggregation_feeds[$_POST['name']] = $aggregate;
+			$config->set("aggregation_feeds", $config->aggregation_feeds);
+
+			Flash::notice(__("Aggregate created.", "aggregator"), "/admin/?action=manage_aggregates");
+		}
+
+		public function admin_edit_aggregate($admin) {
+			if (empty($_GET['id']))
+				error(__("No ID Specified"), __("An ID is required to delete an aggregate.", "aggregator"));
+
+			if (!Visitor::current()->group()->can("edit_aggregate"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this aggregate.", "aggregator"));
+
+			$admin->context["users"] = User::find();
+
+			$config = Config::current();
+
+			$_GET['id'] = urldecode($_GET['id']);
+
+			$aggregate = $config->aggregation_feeds[$_GET['id']];
+
+			$admin->context["aggregate"] = array("name" => $_GET['id'],
+			                                     "url" => $aggregate["url"],
+			                                     "feather" => $aggregate["feather"],
+			                                     "author" => $aggregate["author"],
+			                                     "data" => preg_replace("/^---\n/", "", Horde_Yaml::dump($aggregate["data"])));
+
+			if (empty($_POST))
+				return;
+
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				show_403(__("Access Denied"), __("Invalid security key."));
+
+			$aggregate = array("url" => $_POST['url'],
+			                   "last_updated" => 0,
+			                   "feather" => $_POST['feather'],
+			                   "author" => $_POST['author'],
+			                   "data" => Horde_Yaml::load($_POST['data']));
+
+			unset($config->aggregation_feeds[$_GET['id']]);
+			$config->aggregation_feeds[$_POST['name']] = $aggregate;
+
+			$config->set("aggregation_feeds", $config->aggregation_feeds);
+
+			Flash::notice(__("Aggregate updated.", "aggregator"), "/admin/?action=manage_aggregates");
+		}
+
+		public function admin_delete_aggregate($admin) {
+			if (empty($_GET['id']))
+				error(__("No ID Specified"), __("An ID is required to delete an aggregate.", "aggregator"));
+
+			if (!Visitor::current()->group()->can("delete_aggregate"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this aggregate.", "aggregator"));
+
+			$config = Config::current();
+
+			$_GET['id'] = urldecode($_GET['id']);
+
+			$aggregate = $config->aggregation_feeds[$_GET['id']];
+
+			$admin->context["aggregate"] = array("name" => $_GET['id'],
+			                                     "url" => $aggregate["url"]);
+		}
+
+		public function admin_destroy_aggregate($admin) {
+			if (empty($_POST['id']))
+				error(__("No ID Specified"), __("An ID is required to delete an aggregate.", "aggregator"));
+
+			if ($_POST['destroy'] == "bollocks")
+				redirect("/admin/?action=manage_aggregates");
+
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				show_403(__("Access Denied"), __("Invalid security key."));
+
+			if (!Visitor::current()->group()->can("delete_aggregate"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this aggregate.", "aggregator"));
+
+			$config = Config::current();
+			unset($config->aggregation_feeds[$_POST['id']]);
+			$config->set("aggregation_feeds", $config->aggregation_feeds);
+			Flash::notice(__("Aggregate deleted.", "aggregator"), "/admin/?action=manage_aggregates");
+		}
+
+		public function help_aggregation_syntax() {
+			global $title, $body;
+			$title = __("Post Values", "aggregator");
+			$body = "<p>".__("Use <a href=\"http://yaml.org/\">YAML</a> to specify what post attribute holds what value of the feed entry.", "aggregator")."</p>";
+
+			$body.= "<h2>".__("XPath", "aggregator")."</h2>";
+			$body.= "<cite><strong>".__("Usage")."</strong>: <code>feed[xp/ath]</code></cite>\n";
+			$body.= "<p>".__("You can use XPath to navigate the feed and find the correct attribute.", "aggregator")."</p>";
+
+			$body.= "<h2>".__("Attributes", "aggregator")."</h2>";
+			$body.= "<cite><strong>".__("Usage")."</strong>: <code>feed[xp/ath].attr[foo]</code></cite>\n";
+			$body.= "<p>".__("To get the attribute of an element, use XPath to find it and the <code>.attr[]</code> syntax to grab an attribute.", "aggregator")."</p>";
+
+			$body.= "<h2>".__("Functions", "aggregator")."</h2>";
+			$body.= "<cite><strong>".__("Usage")."</strong>: <code>call:foo_function(feed[foo] || feed[arg2])</code></cite>\n";
+			$body.= "<p>".__("To call a function and use its return value for the post's value, use <code>call:</code>. Separate arguments with <code> || </code>.")."</p>";
+			$body.= "<p>".__("The Aggregator module provides a couple helper functions:")."</p>";
+			$body.= "<cite><strong>".__("To upload an image from the content", "aggregator")."</strong>: <code>call:Aggregator::upload_image_from_content(feed[content])</code></cite>";
+			$body.= "<cite><strong>".__("To get the URL of an image in the content", "aggregator")."</strong>: <code>call:Aggregator::image_from_content(feed[content])</code></cite>";
+
+			$body.= "<h2>".__("Example", "aggregator")."</h2>";
+			$body.= "<p>".__("From the Photo feather:")."</pre>";
+			$body.= "<pre><code>filename: call:upload_from_url(feed[link].attr[href])\ncaption: feed[description]</code></pre>";
 		}
 	}

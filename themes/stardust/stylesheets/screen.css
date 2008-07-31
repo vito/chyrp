@@ -434,6 +434,10 @@ div.post li,
 div.page li {
 	font-size: 1.1em;
 }
+div.post li p,
+div.page li p {
+	font-size: 1em;
+}
 div.post pre,
 div.page pre {
 	padding: 0 0 1.5em;

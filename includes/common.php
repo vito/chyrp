@@ -285,7 +285,7 @@
 		if (!ADMIN) continue;
 
 		foreach (Horde_Yaml::loadFile(FEATHERS_DIR."/".$feather."/info.yaml") as $key => $val)
-			$feathers[$feather]->$key = $val;
+			$feathers[$feather]->$key = __($val, $feather);
 	}
 
 	/**
@@ -303,7 +303,7 @@
 		if (!ADMIN) continue;
 
 		foreach (Horde_Yaml::loadFile(MODULES_DIR."/".$module."/info.yaml") as $key => $val)
-			$modules[$module]->$key = $val;
+			$modules[$module]->$key = __($val, $module);
 	}
 
 	# Now that they're all instantiated, call __init().

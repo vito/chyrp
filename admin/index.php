@@ -17,6 +17,8 @@
 		}
 
 		public function load($action) {
+			global $feathers, $modules;
+
 			# Are there any extension-added pages?
 			$trigger = Trigger::current();
 			foreach (array("write" => array(),
@@ -42,6 +44,8 @@
 			$admin->context["now"]         = time();
 			$admin->context["version"]     = CHYRP_VERSION;
 			$admin->context["debug"]       = DEBUG;
+			$admin->context["feathers"]    = $feathers;
+			$admin->context["modules"]     = $modules;
 			$admin->context["POST"]        = $_POST;
 			$admin->context["GET"]         = $_GET;
 

@@ -23,19 +23,24 @@ $(function(){
 
 	// "Help" links should open in popup windows.
 	$(".help").click(function(){
-		window.open($(this).attr("href"), "help", "status=0, height=350, width=300")
-		return false;
+		window.open($(this).attr("href"), "help", "status=0, height=450, width=400")
+		return false
 	})
 
 	// Checkbox toggling.
 	togglers()
 
 	if ($.browser.safari)
-		$("code").each(function(){
+		$("code, .code").each(function(){
 			$(this).css({
 				fontFamily: "Monaco, monospace",
 				fontSize: "9px"
 			})
+
+			if ($(this).parent().parent().parent().hasClass("split") && $(this).attr("type") == "text") {
+				$(this).css("margin-top", "2px")
+				$(this).parent().css("margin-top", "-2px")
+			}
 		})
 
 	if (/(edit|write)_/.test(Route.action))
@@ -142,7 +147,7 @@ var Write = {
 	},
 	prepare_previewer: function() {
 		if (!$(".preview_me").size())
-			return;
+			return
 
 		var feather = ($("#feather").size()) ? $("#feather").val() : ""
 		$(document.createElement("div")).css("display", "none").attr("id", "preview").insertBefore("#write_form, #edit_form")
@@ -433,7 +438,7 @@ var Extend = {
 				var conflict = classes[i].replace("conflict_", "module_")
 
 				if (conflict_displayed[$(this).attr("id")+" :: "+conflict])
-					continue;
+					continue
 
 				canvas.strokeStyle = "#ef4646"
 				canvas.fillStyle = "#fbe3e4"
@@ -479,10 +484,10 @@ var Extend = {
 					var curve = line_from_x - 25
 
 					// Line
-					canvas.beginPath();
+					canvas.beginPath()
 					canvas.moveTo(line_from_x, line_from_y)
-					canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y);
-					canvas.stroke();
+					canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y)
+					canvas.stroke()
 
 					// Beginning circle
 					canvas.beginPath()
@@ -504,10 +509,10 @@ var Extend = {
 					var curve = line_from_x + 25
 
 					// Line
-					canvas.beginPath();
+					canvas.beginPath()
 					canvas.moveTo(line_from_x, line_from_y)
-					canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y);
-					canvas.stroke();
+					canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y)
+					canvas.stroke()
 
 					// Beginning circle
 					canvas.beginPath()
@@ -563,7 +568,7 @@ var Extend = {
 				var conflict = classes[i].replace("depends_", "module_")
 
 				if (dependency_displayed[$(this).attr("id")+" :: "+conflict])
-					continue;
+					continue
 
 				canvas.fillStyle = "#e4e3fb"
 				canvas.lineWidth = 3
@@ -585,8 +590,8 @@ var Extend = {
 					else
 						gradients[i] = canvas.createLinearGradient(0, line_from_y, 0, line_from_y + height)
 
-					gradients[i].addColorStop(0, '#0052cc');
-					gradients[i].addColorStop(1, '#0096ff');
+					gradients[i].addColorStop(0, '#0052cc')
+					gradients[i].addColorStop(1, '#0096ff')
 
 					canvas.strokeStyle = gradients[i]
 
@@ -621,17 +626,17 @@ var Extend = {
 					var height = line_to_y - line_from_y
 					var curve = line_from_x + 25
 
-					gradients[i] = canvas.createLinearGradient(0, line_from_y, 0, line_from_y + height);
-					gradients[i].addColorStop(0, '#0052cc');
-					gradients[i].addColorStop(1, '#0096ff');
+					gradients[i] = canvas.createLinearGradient(0, line_from_y, 0, line_from_y + height)
+					gradients[i].addColorStop(0, '#0052cc')
+					gradients[i].addColorStop(1, '#0096ff')
 
 					canvas.strokeStyle = gradients[i]
 
 					// Line
-					canvas.beginPath();
+					canvas.beginPath()
 					canvas.moveTo(line_from_x, line_from_y)
-					canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y);
-					canvas.stroke();
+					canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y)
+					canvas.stroke()
 
 					// Beginning circle
 					canvas.beginPath()
@@ -653,17 +658,17 @@ var Extend = {
 					var height = line_to_y - line_from_y
 					var curve = line_from_x - 25
 
-					gradients[i] = canvas.createLinearGradient(0, line_from_y, 0, line_from_y + height);
-					gradients[i].addColorStop(0, '#0052cc');
-					gradients[i].addColorStop(1, '#0096ff');
+					gradients[i] = canvas.createLinearGradient(0, line_from_y, 0, line_from_y + height)
+					gradients[i].addColorStop(0, '#0052cc')
+					gradients[i].addColorStop(1, '#0096ff')
 
 					canvas.strokeStyle = gradients[i]
 
 					// Line
-					canvas.beginPath();
+					canvas.beginPath()
 					canvas.moveTo(line_from_x, line_from_y)
-					canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y);
-					canvas.stroke();
+					canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y)
+					canvas.stroke()
 
 					// Beginning circle
 					canvas.beginPath()

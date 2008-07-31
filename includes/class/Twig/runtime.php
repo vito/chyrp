@@ -221,7 +221,7 @@ function twig_strftime_format_filter($timestamp, $format='%x %X')
 	return when($format, $timestamp, true);
 }
 
-function twig_urlencode_filter($string, $raw=false)
+function twig_urlencode_filter($url, $raw=false)
 {
 	if ($raw)
 		return rawurlencode($url);

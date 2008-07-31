@@ -49,7 +49,8 @@
 			.body p {
 				margin: 0 0 1em;
 			}
-			.body cite {
+			.body cite,
+			.body pre {
 				font-style: normal;
 				display: block;
 				padding: .25em 1em;

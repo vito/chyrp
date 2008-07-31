@@ -1,0 +1,53 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Edit Aggregate" | translate("aggregator") }{% endblock %}
+
+{% block content %}
+			<h1>${ "Edit Aggregate" | translate("aggregator") }</h1>
+			<form id="edit_aggregate" class="split" action="{% admin "edit_aggregate&id=" ~ (GET.id | urlencode) %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+				<fieldset>
+					<p>
+						<label for="full_name">${ "Name" | translate("aggregator") }</label>
+						<input class="text" type="text" name="name" value="${ aggregate.name | escape }" id="name" />
+					</p>
+					<p>
+						<label for="url">${ "Source URL" | translate("aggregator") }</label>
+						<input class="text code" type="text" name="url" value="${ aggregate.url | escape }" id="url" size="50" />
+					</p>
+					<p>
+						<label for="feather">${ "Feather" | translate("aggregator") }</label>
+						<select name="feather" id="feather">
+						{% for feather in feathers %}
+							<option value="$feather.safename"${ feather.safename | option_selected(aggregate.feather) }>$feather.name</option>
+						{% endfor %}
+						</select>
+					</p>
+					<p>
+						<label for="author">${ "Author" | translate("aggregator") }</label>
+						<select name="author" id="author">
+						{% for user in users %}
+							<option value="$user.id"${ user.id | option_selected(aggregate.author) }>${ user.full_name | fallback(user.login) }</option>
+						{% endfor %}
+						</select>
+					</p>
+					<p>
+						<label for="data">
+							${ "Post Attributes" | translate("aggregator") }
+							<span class="sub">
+								<a href="{% admin "help&id=aggregation_syntax" %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
+							</span>
+						</label>
+						<textarea class="code" name="data" rows="9" cols="50" id="data">${ aggregate.data | escape }</textarea>
+					</p>
+
+					<br />
+
+					<p>
+						<label for="done"></label>
+						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Update" | translate }</button>
+					</p>
+
+					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+				</fieldset>
+			</form>
+{% endblock %}

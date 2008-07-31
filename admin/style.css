@@ -417,6 +417,11 @@ form.split label {
 	padding: 4px 2% 5px;
 	color: #999;
 }
+form.split label.normal {
+	font-weight: normal;
+	font-size: 1em !important;
+	margin-top: 2px;
+}
 form.split label .sub {
 	display: block;
 }
@@ -424,7 +429,7 @@ form.split label input {
 	margin: -.5em 0;
 }
 form.split select {
-	margin: 3px 0 .5em;
+	margin: 3px 0 .2em;
 }
 form.split small,
 form.split .small {
@@ -478,16 +483,16 @@ textarea {
 	font-size: 1em;
 	font-family: "Monaco", "Consolas", monospace;
 }
+input.code,
+textarea.code,
+code {
+	font-family: "Consolas", "Monaco", monospace;
+}
 textarea.wide,
 input.text.wide {
 	padding: .5%;
 	width: 99%;
 	_width: 100%; /* Hooray for IE6's randomized box model. */
-}
-input.code,
-textarea.code,
-code {
-	font-family: "Consolas", "Monaco", monospace;
 }
 /* @end */
 
