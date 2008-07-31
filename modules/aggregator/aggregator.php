@@ -5,7 +5,7 @@
 			$config->set("last_aggregation", 0);
 			$config->set("aggregate_every", 30);
 			$config->set("disable_aggregation", false);
-			$config->set("aggregation_feeds", array());
+			$config->set("aggregates", array());
 
 			Group::add_permission("add_aggregate", "Add Aggregate");
 			Group::add_permission("edit_aggregate", "Edit Aggregate");
@@ -17,7 +17,7 @@
 			$config->remove("last_aggregation");
 			$config->remove("aggregate_every");
 			$config->remove("disable_aggregation");
-			$config->remove("aggregation_feeds");
+			$config->remove("aggregates");
 
 			Group::remove_permission("add_aggregate");
 			Group::remove_permission("edit_aggregate");
@@ -31,8 +31,8 @@
 			if ($config->disable_aggregation or time() - $config->last_aggregation < ($config->aggregate_every * 60))
 				return;
 
-			$aggregation_feeds = $config->aggregation_feeds;
-			foreach ($config->aggregation_feeds as $name => $feed) {
+			$aggregates = $config->aggregates;
+			foreach ($config->aggregates as $name => $feed) {
 				$xml_contents = preg_replace(array("/<(\/?)dc:date>/", "/xmlns=/"),
 				                             array("<\\1date>", "a="),
 				                             get_remote($feed["url"]));
@@ -68,18 +68,18 @@
 						$_POST['user_id'] = $feed["author"];
 						Post::add($data);
 
-						$aggregation_feeds[$name]["last_updated"] = strtotime($date);
+						$aggregates[$name]["last_updated"] = strtotime($date);
 					}
 				}
 			}
-			$config->set("aggregation_feeds", $aggregation_feeds);
+			$config->set("aggregates", $aggregates);
 			$config->set("last_aggregation", time());
 		}
 
 		public function admin_manage_aggregates($admin) {
 			$aggregates = array();
 
-			foreach (Config::current()->aggregation_feeds as $name => $aggregate)
+			foreach (Config::current()->aggregates as $name => $aggregate)
 				$aggregates[] = array_merge(array("name" => $name), array("user" => new User($aggregate["author"])), $aggregate);
 
 			$admin->context["aggregates"] = new Paginator($aggregates, 25, "page", false);
@@ -221,8 +221,8 @@
 			                   "author" => $_POST['author'],
 			                   "data" => Horde_Yaml::load($_POST['data']));
 
-			$config->aggregation_feeds[$_POST['name']] = $aggregate;
-			$config->set("aggregation_feeds", $config->aggregation_feeds);
+			$config->aggregates[$_POST['name']] = $aggregate;
+			$config->set("aggregates", $config->aggregates);
 
 			Flash::notice(__("Aggregate created.", "aggregator"), "/admin/?action=manage_aggregates");
 		}
@@ -240,7 +240,7 @@
 
 			$_GET['id'] = urldecode($_GET['id']);
 
-			$aggregate = $config->aggregation_feeds[$_GET['id']];
+			$aggregate = $config->aggregates[$_GET['id']];
 
 			$admin->context["aggregate"] = array("name" => $_GET['id'],
 			                                     "url" => $aggregate["url"],
@@ -260,10 +260,10 @@
 			                   "author" => $_POST['author'],
 			                   "data" => Horde_Yaml::load($_POST['data']));
 
-			unset($config->aggregation_feeds[$_GET['id']]);
-			$config->aggregation_feeds[$_POST['name']] = $aggregate;
+			unset($config->aggregates[$_GET['id']]);
+			$config->aggregates[$_POST['name']] = $aggregate;
 
-			$config->set("aggregation_feeds", $config->aggregation_feeds);
+			$config->set("aggregates", $config->aggregates);
 
 			Flash::notice(__("Aggregate updated.", "aggregator"), "/admin/?action=manage_aggregates");
 		}
@@ -279,7 +279,7 @@
 
 			$_GET['id'] = urldecode($_GET['id']);
 
-			$aggregate = $config->aggregation_feeds[$_GET['id']];
+			$aggregate = $config->aggregates[$_GET['id']];
 
 			$admin->context["aggregate"] = array("name" => $_GET['id'],
 			                                     "url" => $aggregate["url"]);
@@ -299,8 +299,8 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this aggregate.", "aggregator"));
 
 			$config = Config::current();
-			unset($config->aggregation_feeds[$_POST['id']]);
-			$config->set("aggregation_feeds", $config->aggregation_feeds);
+			unset($config->aggregates[$_POST['id']]);
+			$config->set("aggregates", $config->aggregates);
 			Flash::notice(__("Aggregate deleted.", "aggregator"), "/admin/?action=manage_aggregates");
 		}
 
