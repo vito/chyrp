@@ -80,6 +80,8 @@
 	require INCLUDES_DIR."/class/QueryBuilder.php";
 	require INCLUDES_DIR."/class/SQL.php";
 
+	fallback($yaml["database"]["adapter"], "mysql");
+
 	foreach ($yaml["database"] as $name => $value)
 		$sql->$name = $value;
 
