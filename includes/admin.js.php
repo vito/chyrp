@@ -103,7 +103,10 @@ var Write = {
 	init: function(){
 		this.bookmarklet_link()
 		this.auto_expand_fields()
-		this.sortable_feathers()
+
+		if (!$.browser.msie)
+			this.sortable_feathers()
+
 		this.prepare_previewer()
 		this.more_options()
 

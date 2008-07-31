@@ -3,6 +3,9 @@
 		public $insert_swfupload = array();
 
 		public function admin_head() {
+			if (substr_count($_SERVER['HTTP_USER_AGENT'], "MSIE"))
+				return;
+
 			$config = Config::current();
 
 			if (!empty($this->insert_swfupload)) {

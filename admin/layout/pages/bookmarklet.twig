@@ -56,12 +56,15 @@
 			input.code, code {
 				font-family: "Consolas", "Monaco", monospace;
 			}
+			.navigation {
+				_border: 1px solid #e8e8e8;
+			}
 			.navigation li a {
 				float: left;
 				padding: .4em .75em;
 				background: #dfdfdf;
 				border-top: .2em solid #e8e8e8;
-				border-bottom: 0;
+				border-bottom: 0 !important;
 				color: #737373;
 			}
 			.navigation li.selected a {
@@ -84,6 +87,8 @@
 			.content {
 				background: #fff;
 				padding: 1em;
+				position: absolute;
+				z-index: 100;
 {% if site.enabled_feathers | length == 1 %}
 				position: absolute;
 				border: 0;

@@ -296,14 +296,23 @@ $.each($.livequery.queries,function(id){$.livequery.queries[id].stop();});}});$.
 
 
 // Our custom field expander
+var widths = {}
 $.fn.expand = function(){
 	$(this).each(function(){
 		if ($(this).parent().parent().attr("class") == "more_options") return
 
+		var id = $(this).attr("id")
+		var dummy = ".dummy_"+ id
+		var increment = ($.browser.msie) ? 0 : 20
+
+		if (widths[id] == null)
+			widths[id] = $(this).width()
+
 		$(this).css("min-width", $(this).width())
+
 		$(this).css("max-width", $(this).parent().width() - 8)
 
-		$(document.createElement("span")).prependTo("body").addClass("dummy_"+$(this).attr("id")).css({
+		$(document.createElement("span")).prependTo("body").addClass("dummy_"+ id).css({
 			fontSize: $(this).css("font-size"),
 			fontFamily: $(this).css("font-family"),
 			padding: $(this).css("padding"),
@@ -311,29 +320,34 @@ $.fn.expand = function(){
 			top: -9999
 		}).text($(this).val())
 
-		$(this).width($(".dummy_"+$(this).attr("id")).width() + 20)
+		if (!$.browser.msie)
+			$(this).width($(dummy).width() + increment)
 
 		$(this).keypress(function(e){
-			var dummy = ".dummy_"+$(this).attr("id")
-
 			$(dummy).text($(this).val() + String.fromCharCode(e.which))
 
 			if (e.which == 8)
 				$(dummy).text($(this).val().substring(0, $(this).val().length - 1))
 
-			$(this).width($(".dummy_"+$(this).attr("id")).width() + 20)
+			if ($(dummy).width() + increment > widths[id])
+				$(this).width($(dummy).width() + increment)
+
+			if ($(dummy).width() + increment < widths[id])
+				$(this).width(widths[id])
 		})
 
 		if ($.browser.safari)
 			$(this).keydown(function(e){
-				var dummy = ".dummy_"+$(this).attr("id")
-
 				$(dummy).text($(this).val() + String.fromCharCode(e.which))
 
 				if (e.which == 8)
 					$(dummy).text($(this).val().substring(0, $(this).val().length - 1))
 
-				$(this).width($(".dummy_"+$(this).attr("id")).width() + 20)
+				if ($(dummy).width() + increment > widths[id])
+					$(this).width($(dummy).width() + increment)
+
+				if ($(dummy).width() + increment < widths[id])
+					$(this).width(widths[id])
 			})
 	})
 }

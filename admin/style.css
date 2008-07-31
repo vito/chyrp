@@ -665,12 +665,13 @@ button.lite {
 .button.lite,
 a.next_page,
 a.prev_page {
-	padding: .1em .4em .2em;
+	padding: .1em .4em .2em !important;
 }
 button.inline {
 	position: relative;
 	top: -1px;
-	padding: 4px 5px 4px 4px;
+	padding: 4px 5px 4px 4px !important;
+	_padding: 0 !important;
 }
 button.right,
 .button.right,
@@ -783,6 +784,7 @@ button.lite img,
 .more_options {
 	background: #f9f9f9;
 	padding: 2% 0 0 2%;
+	float: left;
 }
 .more_options p {
 	width: 48%;
