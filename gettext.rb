@@ -3,7 +3,7 @@ require "yaml"
 require "optparse"
 
 OPTIONS = {
-  :project => "Chyrp v2.0 Beta 5",
+  :project => "Chyrp v2.0 RC1",
   :maintainer => "Alex Suraci <suracil.icio.us@gmail.com>",
   :domain  => nil,
   :msgstr  => "",#"XXX",
