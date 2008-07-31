@@ -46,7 +46,7 @@ class Triggers
       else
         next unless path =~ /\.(php|twig)/
         @files << [cleaned, path] if File.read(path) =~ /(\$trigger|Trigger::current\(\))->call\("[^"]+"(.*?)\)/
-        @files << [cleaned, path] if File.read(path) =~ /(\$trigger|Trigger::current\(\))->filter\("[^"]+"(.*?)\)/
+        @files << [cleaned, path] if File.read(path) =~ /(\$trigger|Trigger::current\(\))->filter\(([^,]+), ?"[^"]+"(.*?)\)/
         @files << [cleaned, path] if File.read(path) =~ /\$\{ ?trigger\.call\("[^"]+"(, ?(.+))?\) ?\}/
       end
     end
