@@ -1371,7 +1371,7 @@
 				$new_post = Post::add($values,
 				                      $clean,
 				                      Post::check_url($clean),
-				                      $translate_types[$post->attributes()->type],
+				                      fallback($translate_types[(string) $post->attributes()->type], (string) $post->attributes()->type),
 				                      null,
 				                      false,
 				                      "public",
