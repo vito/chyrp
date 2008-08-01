@@ -32,7 +32,7 @@
 				return;
 
 			$aggregates = $config->aggregates;
-			foreach ($config->aggregates as $name => $feed) {
+			foreach ((array) $config->aggregates as $name => $feed) {
 				$xml_contents = preg_replace(array("/<(\/?)dc:date>/", "/xmlns=/"),
 				                             array("<\\1date>", "a="),
 				                             get_remote($feed["url"]));
@@ -77,7 +77,7 @@
 		public function admin_manage_aggregates($admin) {
 			$aggregates = array();
 
-			foreach (Config::current()->aggregates as $name => $aggregate)
+			foreach ((array) Config::current()->aggregates as $name => $aggregate)
 				$aggregates[] = array_merge(array("name" => $name), array("user" => new User($aggregate["author"])), $aggregate);
 
 			$admin->context["aggregates"] = new Paginator($aggregates, 25, "page", false);
