@@ -109,6 +109,7 @@ var Write = {
 
 		this.prepare_previewer()
 		this.more_options()
+		this.watch_slug()
 
 		if (Route.action == "edit_group")
 			this.confirm_group()
@@ -190,6 +191,14 @@ var Write = {
 				$("#more_options").parent().slideToggle()
 			})
 		}
+	},
+	watch_slug: function(){
+		$("input#slug").keyup(function(e){
+			if (/^([a-zA-Z0-9\-\._:]*)$/.test($(this).val()))
+				$(this).css("background", "")
+			else
+				$(this).css("background", "#ffdddd")
+		})
 	},
 	confirm_group: function(msg){
 		$("form.confirm").submit(function(){
