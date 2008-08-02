@@ -250,14 +250,25 @@
 			if (count($this->arg) == 1 and method_exists(MainController::current(), $this->arg[0]))
 				return $this->action = $this->arg[0];
 
-			$post_url = $this->key_regexp(rtrim($config->post_url, "/"));
-			preg_match_all("/([^\/]+)(\/|$)/", $config->post_url, $parameters);
-			if (preg_match("/".$post_url."/", rtrim($this->request, "/"), $matches)) {
+			$post_url = $config->post_url;
+
+			$request = $this->request;
+			foreach (explode("/", $post_url) as $path)
+				foreach (preg_split("/\(([^\)]+)\)/", $path) as $leftover) {
+					$request  = preg_replace("/".preg_quote($leftover)."/", "", $request, 1);
+					$post_url = preg_replace("/".preg_quote($leftover)."/", "", $post_url, 1);
+				}
+
+			$args = explode("/", trim($request, "/"));
+
+			$post_url = $this->key_regexp(rtrim($post_url, "/"));
+			preg_match_all("/\(([^\/]+)\)/", $config->post_url, $parameters);
+			if (preg_match("/".$post_url."/", rtrim($request, "/"), $matches)) {
 				array_shift($matches);
 
-				foreach ($parameters[1] as $index => $parameter)
-					if ($parameters[1][$index][0] == "(")
-						$this->post_url_attrs[rtrim(ltrim($parameter, "("), ")")] = urldecode($this->arg[$index]);
+				foreach ($parameters[0] as $index => $parameter)
+					if ($parameter[0] == "(")
+						$this->post_url_attrs[rtrim(ltrim($parameter, "("), ")")] = urldecode($args[$index]);
 
 				$check = Post::from_url($this->post_url_attrs);
 

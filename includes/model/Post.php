@@ -757,8 +757,11 @@
 					list($where, $params, $attr) = $tokens;
 
 					if ($attr !== null) {
+						if (!isset($get[$attr]))
+							continue;
+
 						$where[] = $attr." = :attr".$attr;
-						$params[':attr'.$attr] = $get[$attr];
+						$params[":attr".$attr] = $get[$attr];
 					}
 				}
 
