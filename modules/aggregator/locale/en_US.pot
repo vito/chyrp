@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC1\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-07-31 22:12+0000\n"
+"POT-Creation-Date: 2008-08-02 20:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -53,6 +53,10 @@ msgstr ""
 
 #: modules/aggregator/aggregator.php:114
 msgid "Aggregation"
+msgstr ""
+
+#: modules/aggregator/info.yaml:6
+msgid "Please remember to update the permission settings for your group in order to add aggregates."
 msgstr ""
 
 #: modules/aggregator/pages/admin/manage_aggregates.twig:3

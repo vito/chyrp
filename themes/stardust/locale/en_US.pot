@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC1\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-07-31 22:12+0000\n"
+"POT-Creation-Date: 2008-08-02 20:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -38,10 +38,6 @@ msgstr ""
 msgid "%B %e"
 msgstr ""
 
-#: themes/stardust/forms/comment/new.twig:4
-msgid "Log Out &rarr;"
-msgstr ""
-
 #: themes/stardust/pages/feather.twig:9
 #, php-format
 msgid "No %s"
@@ -49,6 +45,10 @@ msgstr ""
 
 #: themes/stardust/pages/feather.twig:10
 msgid "There don't seem to be any posts as the Feather you specified."
+msgstr ""
+
+#: themes/stardust/forms/comment/new.twig:4
+msgid "Log Out &rarr;"
 msgstr ""
 
 #: themes/stardust/content/sidebar.twig:10
@@ -122,7 +122,7 @@ msgid "Confirm"
 msgstr ""
 
 #: themes/stardust/pages/page.twig:8
-#: themes/stardust/content/post.twig:38
+#: themes/stardust/content/post.twig:36
 #: themes/stardust/content/comment.twig:9
 msgid "Delete"
 msgstr ""
@@ -135,7 +135,7 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: themes/stardust/content/post.twig:18
+#: themes/stardust/content/post.twig:16
 msgid "%B %e @ %I:%M %p"
 msgstr ""
 
@@ -201,17 +201,17 @@ msgstr ""
 msgid "Load time:"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:64
-msgid "Cancel"
-msgstr ""
-
 #: themes/stardust/forms/user/register.twig:6
 #: themes/stardust/forms/user/lost_password.twig:7
 #: themes/stardust/forms/user/login.twig:6
 msgid "Username"
 msgstr ""
 
-#: themes/stardust/content/post.twig:20
+#: themes/stardust/forms/post/edit.twig:64
+msgid "Cancel"
+msgstr ""
+
+#: themes/stardust/content/post.twig:18
 msgid "%I:%M %p"
 msgstr ""
 
@@ -324,13 +324,12 @@ msgstr ""
 msgid "or"
 msgstr ""
 
-#: themes/stardust/javascripts/theme.js.php:18
-msgid "Search..."
-msgstr ""
-
-#: themes/stardust/javascripts/theme.js.php:10
-msgid "(click to hide)"
-msgstr ""
+#: themes/stardust/content/post.twig:26
+#, php-format
+msgid "%s Comment"
+msgid_plural "%s Comments"
+msgstr[0] ""
+msgstr[1] ""
 
 #: themes/stardust/pages/archive.twig:28
 msgid "%B %e, %Y"
@@ -356,7 +355,7 @@ msgid "Stats"
 msgstr ""
 
 #: themes/stardust/content/sidebar.twig:45
-#: themes/stardust/content/post.twig:32
+#: themes/stardust/content/post.twig:30
 msgid "Tags"
 msgstr ""
 
