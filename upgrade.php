@@ -324,21 +324,23 @@
 		$groups = array();
 		# Generate an array of groups, name => permissions.
 		while ($group = $get_groups->fetchObject()) {
-			$groups[$group->name] = array();
+			$groups[$group->name] = array("permissions" => array());
 			foreach ($group as $key => $val)
-				if ($key != "name" and $val)
-					$groups[$group->name][] = $key;
+				if ($key != "name" and $key != "id" and $val)
+					$groups[$group->name]["permissions"][] = $key;
+				elseif ($key == "id")
+					$groups[$group->name]["id"] = $val;
 		}
 
 		# Convert permissions array to a YAML dump.
 		foreach ($groups as $key => &$val)
-			$val = Horde_Yaml::dump($val);
+			$val["permissions"] = Horde_Yaml::dump($val["permissions"]);
 
 		$drop_groups = SQL::current()->query("DROP TABLE __groups");
 		echo __("Dropping old groups table...").test($drop_groups);
 		if (!$drop_groups) return;
 
-		$groups_table = SQL::current()->query("CREATE TABLE IF NOT EXISTS __groups (
+		$groups_table = SQL::current()->query("CREATE TABLE __groups (
 		                                           id INTEGER PRIMARY KEY AUTO_INCREMENT,
 		                                           name VARCHAR(100) DEFAULT '',
 	                                               permissions LONGTEXT,
@@ -347,13 +349,15 @@
 		echo __("Creating new groups table...").test($groups_table);
 		if (!$groups_table) return;
 
-		foreach($groups as $name => $permissions)
-			echo _f("Restoring group \"%s\"...", array(ucfirst($name))).
+		foreach($groups as $name => $values)
+			echo _f("Restoring group \"%s\"...", array($name)).
 			     test(SQL::current()->insert("groups",
-			                                 array("name" => ":name",
+			                                 array("id" => ":id",
+			                                       "name" => ":name",
 			                                       "permissions" => ":permissions"),
-			                                 array(":name" => ucfirst($name),
-			                                       ":permissions" => $permissions)));
+			                                 array(":id" => $values["id"],
+			                                       ":name" => $name,
+			                                       ":permissions" => $values["permissions"])));
 	}
 
 	function add_permissions_table() {
