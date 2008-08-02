@@ -57,7 +57,10 @@
 		}
 
 		# Display the error.
-		require (defined('THEME_DIR') and file_exists(THEME_DIR."/content/error.php")) ? THEME_DIR."/content/error.php" : INCLUDES_DIR."/error.php" ;
+		if (class_exists("Theme") and Theme::current()->file_exists("pages/error"))
+			Theme::current()->load("pages/error", array("title" => $title, "body" => $body));
+		else
+			require INCLUDES_DIR."/error.php";
 
 		if ($foo !== false)
 			ob_end_flush();
