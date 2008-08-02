@@ -1286,7 +1286,7 @@
 
 			set_time_limit(3600);
 			$url = rtrim($_POST['tumblr_url'], "/")."/api/read?num=50";
-			$api = preg_replace("/<(\/?)([^\-]+)\-([^ >]+)/", "<\\1\\2_\\3", get_remote($url));
+			$api = preg_replace("/<(\/?)([a-z]+)\-([a-z]+)/", "<\\1\\2_\\3", get_remote($url));
 			$api = preg_replace("/ ([a-z]+)\-([a-z]+)=/", " \\1_\\2=", $api);
 			$xml = simplexml_load_string($api);
 
