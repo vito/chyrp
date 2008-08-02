@@ -375,8 +375,10 @@
 	 * Function: safe
 	 * Returns a HTML-sanitized version of a string.
 	 */
-	function safe($string) {
-		$string = html_entity_decode($string, ENT_QUOTES, "utf-8");
+	function safe($string, $decode_first = true) {
+		if ($decode_first)
+			$string = html_entity_decode($string, ENT_QUOTES, "utf-8");
+
 		return name2codepoint(htmlentities($string, ENT_NOQUOTES, "utf-8"));
 	}
 

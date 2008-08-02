@@ -41,7 +41,7 @@
 <?php endif; ?>
 		</author>
 		<content type="html">
-			<?php echo safe($post->feed_content()); ?>
+			<?php echo safe($post->feed_content(), false); ?>
 		</content>
 <?php $trigger->call("feed_item", $post->id); ?>
 	</entry>
