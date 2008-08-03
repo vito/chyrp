@@ -29,19 +29,19 @@
 			$author = __("Guest");
 ?>
 	<entry>
-		<title type="html"><?php echo safe(fallback($title, ucfirst($post->feather), true)); ?></title>
+		<title type="html"><?php echo fix(fallback($title, ucfirst($post->feather), true)); ?></title>
 		<id>tag:<?php echo $tagged; ?></id>
 		<updated><?php echo when("c", $updated); ?></updated>
 		<published><?php echo when("c", $post->created_at); ?></published>
 		<link rel="alternate" type="<?php echo $theme->type; ?>" href="<?php echo $trigger->filter($url, "feed_url", $post); ?>" />
 		<author>
-			<name><?php echo safe($author); ?></name>
+			<name><?php echo fix($author); ?></name>
 <?php if (!empty($post->user()->website)): ?>
-			<uri><?php echo safe($post->user()->website); ?></uri>
+			<uri><?php echo fix($post->user()->website); ?></uri>
 <?php endif; ?>
 		</author>
 		<content type="html">
-			<?php echo safe($post->feed_content(), false); ?>
+			<?php echo fix($post->feed_content(), false); ?>
 		</content>
 <?php $trigger->call("feed_item", $post->id); ?>
 	</entry>

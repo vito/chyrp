@@ -109,6 +109,8 @@
 	sanitize_input($_COOKIE);
 	sanitize_input($_REQUEST);
 
+	set_error_handler("error_panicker");
+
 	# File: Model
 	# See Also:
 	#     <Model>

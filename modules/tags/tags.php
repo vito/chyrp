@@ -375,7 +375,7 @@
 			$tags = SQL::current()->select("tags", "tags", "post_id = :post_id", "id DESC", array(":post_id" => $post->id))->fetchColumn();
 			if (empty($tags)) return;
 
-			$atom.= "		<chyrp:tags>".safe(implode(", ", self::unlinked_tags($tags)))."</chyrp:tags>\r";
+			$atom.= "		<chyrp:tags>".fix(implode(", ", self::unlinked_tags($tags)))."</chyrp:tags>\r";
 			return $atom;
 		}
 	}

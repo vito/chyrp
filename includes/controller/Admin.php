@@ -782,8 +782,8 @@
 
 				$posts_atom = '<?xml version="1.0" encoding="utf-8"?>'."\r";
 				$posts_atom.= '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:chyrp="http://chyrp.net/export/1.0/">'."\r";
-				$posts_atom.= '	<title>'.safe($config->name).' Posts</title>'."\r";
-				$posts_atom.= '	<subtitle>'.safe($config->description).'</subtitle>'."\r";
+				$posts_atom.= '	<title>'.fix($config->name).' Posts</title>'."\r";
+				$posts_atom.= '	<subtitle>'.fix($config->description).'</subtitle>'."\r";
 				$posts_atom.= '	<id>tag:'.parse_url($config->url, PHP_URL_HOST).','.date("Y", $latest_timestamp).':Chyrp</id>'."\r";
 				$posts_atom.= '	<updated>'.date("c", $latest_timestamp).'</updated>'."\r";
 				$posts_atom.= '	<link href="'.$config->url.'" rel="self" type="application/atom+xml" />'."\r";
@@ -813,19 +813,19 @@
 					$posts_atom.= '		<published>'.when("c", $post->created_at).'</published>'."\r";
 					$posts_atom.= '		<link href="'.fix($trigger->filter($url, "post_export_url", $post)).'" />'."\r";
 					$posts_atom.= '		<author chyrp:user_id="'.$post->user_id.'">'."\r";
-					$posts_atom.= '			<name>'.safe(fallback($post->user()->full_name, $post->user()->login, true)).'</name>'."\r";
+					$posts_atom.= '			<name>'.fix(fallback($post->user()->full_name, $post->user()->login, true)).'</name>'."\r";
 
 					if (!empty($post->user()->website))
-						$posts_atom.= '			<uri>'.safe($post->user()->website).'</uri>'."\r";
+						$posts_atom.= '			<uri>'.fix($post->user()->website).'</uri>'."\r";
 
-					$posts_atom.= '			<chyrp:login>'.safe($post->user()->login).'</chyrp:login>'."\r";
+					$posts_atom.= '			<chyrp:login>'.fix($post->user()->login).'</chyrp:login>'."\r";
 					$posts_atom.= '		</author>'."\r";
 					$posts_atom.= '		<content>'."\r";
 					$posts_atom.= '			'.$content;
 					$posts_atom.= '		</content>'."\r";
 
 					foreach (array("feather", "clean", "url", "pinned", "status") as $attr)
-						$posts_atom.= '		<chyrp:'.$attr.'>'.safe($post->$attr).'</chyrp:'.$attr.'>'."\r";
+						$posts_atom.= '		<chyrp:'.$attr.'>'.fix($post->$attr).'</chyrp:'.$attr.'>'."\r";
 
 					$trigger->filter($posts_atom, "posts_export", $post);
 
@@ -890,23 +890,23 @@
 
 					$url = $page->url();
 					$pages_atom.= '	<entry xml:base="'.fix($url).'" chyrp:parent_id="'.$page->parent_id.'">'."\r";
-					$pages_atom.= '		<title type="html">'.safe($page->title).'</title>'."\r";
+					$pages_atom.= '		<title type="html">'.fix($page->title).'</title>'."\r";
 					$pages_atom.= '		<id>tag:'.$tagged.'</id>'."\r";
 					$pages_atom.= '		<updated>'.when("c", $updated).'</updated>'."\r";
 					$pages_atom.= '		<published>'.when("c", $page->created_at).'</published>'."\r";
 					$pages_atom.= '		<link href="'.fix($trigger->filter($url, "page_export_url", $page)).'" />'."\r";
 					$pages_atom.= '		<author chyrp:user_id="'.fix($page->user_id).'">'."\r";
-					$pages_atom.= '			<name>'.safe(fallback($page->user()->full_name, $page->user()->login, true)).'</name>'."\r";
+					$pages_atom.= '			<name>'.fix(fallback($page->user()->full_name, $page->user()->login, true)).'</name>'."\r";
 
 					if (!empty($page->user()->website))
-						$pages_atom.= '			<uri>'.safe($page->user()->website).'</uri>'."\r";
+						$pages_atom.= '			<uri>'.fix($page->user()->website).'</uri>'."\r";
 
-					$pages_atom.= '			<chyrp:login>'.safe($page->user()->login).'</chyrp:login>'."\r";
+					$pages_atom.= '			<chyrp:login>'.fix($page->user()->login).'</chyrp:login>'."\r";
 					$pages_atom.= '		</author>'."\r";
-					$pages_atom.= '		<content type="html">'.safe($page->body).'</content>'."\r";
+					$pages_atom.= '		<content type="html">'.fix($page->body).'</content>'."\r";
 
 					foreach (array("show_in_list", "list_order", "clean", "url") as $attr)
-						$pages_atom.= '		<chyrp:'.$attr.'>'.safe($page->$attr).'</chyrp:'.$attr.'>'."\r";
+						$pages_atom.= '		<chyrp:'.$attr.'>'.fix($page->$attr).'</chyrp:'.$attr.'>'."\r";
 
 
 					$trigger->filter($pages_atom, "pages_export", $page);

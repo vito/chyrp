@@ -546,12 +546,12 @@
 				$user_id = $sql->select("users", "id", "login = :login", "id DESC",
 				                        array(":login" => $login))->fetchColumn();
 
-				Comment::add(unsafe($comment->content),
-				             unsafe($comment->author->name),
-				             unsafe($comment->author->uri),
-				             unsafe($comment->author->email),
+				Comment::add(unfix($comment->content),
+				             unfix($comment->author->name),
+				             unfix($comment->author->uri),
+				             unfix($comment->author->email),
 				             $chyrp->author->ip,
-				             unsafe($chyrp->author->agent),
+				             unfix($chyrp->author->agent),
 				             $chyrp->status,
 				             $chyrp->signature,
 				             datetime($comment->published),
@@ -754,18 +754,18 @@
 				$atom.= '			<updated>'.when("c", $updated).'</updated>'."\r";
 				$atom.= '			<published>'.when("c", $comment->created_at).'</published>'."\r";
 				$atom.= '			<author chyrp:user_id="'.$comment->user_id.'">'."\r";
-				$atom.= "				<name>".safe($comment->author)."</name>\r";
+				$atom.= "				<name>".fix($comment->author)."</name>\r";
 				if (!empty($comment->author_url))
-					$atom.= "				<uri>".safe($comment->author_url)."</uri>\r";
-				$atom.= "				<email>".safe($comment->author_email)."</email>\r";
-				$atom.= "				<chyrp:login>".safe(fallback($comment->user()->login))."</chyrp:login>\r";
+					$atom.= "				<uri>".fix($comment->author_url)."</uri>\r";
+				$atom.= "				<email>".fix($comment->author_email)."</email>\r";
+				$atom.= "				<chyrp:login>".fix(fallback($comment->user()->login))."</chyrp:login>\r";
 				$atom.= "				<chyrp:ip>".long2ip($comment->author_ip)."</chyrp:ip>\r";
-				$atom.= "				<chyrp:agent>".safe($comment->author_agent)."</chyrp:agent>\r";
+				$atom.= "				<chyrp:agent>".fix($comment->author_agent)."</chyrp:agent>\r";
 				$atom.= "			</author>\r";
-				$atom.= "			<content>".safe($comment->body)."</content>\r";
+				$atom.= "			<content>".fix($comment->body)."</content>\r";
 
 				foreach (array("status", "signature") as $attr)
-					$atom.= "			<chyrp:".$attr.">".safe($comment->$attr)."</chyrp:".$attr.">\r";
+					$atom.= "			<chyrp:".$attr.">".fix($comment->$attr)."</chyrp:".$attr.">\r";
 
 				$atom.= "		</chyrp:comment>\r";
 			}

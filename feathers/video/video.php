@@ -78,7 +78,7 @@
 		public function embed_tag_for($post, $max_width = 500) {
 			$post->embed = preg_replace("/&([[:alnum:]_]+)=/", "&amp;\\1=", $post->embed);
 
-			if (preg_match('/width=("|\')([0-9]+)("|\') height=("|\')([0-9]+)("|\')/', $post->embed, $scale)) {
+			if (preg_match("/width=(\"|')([0-9]+)(\"|') height=(\"|')([0-9]+)(\"|')/", $post->embed, $scale)) {
 				$match  = $scale[0];
 				$width  = $scale[2];
 				$height = $scale[5];
@@ -88,14 +88,16 @@
 				return str_replace($match, 'width="'.$max_width.'" height="'.$new_height.'"', $post->embed);
 			}
 
-			if (preg_match('/width:([0-9]+);height:([0-9]+);/', $post->embed, $scale)) {
+			if (preg_match("/width:([0-9]+)(px)?;(\s*)height:([0-9]+)(px)?;?/", $post->embed, $scale)) {
 				$match  = $scale[0];
 				$width  = $scale[1];
-				$height = $scale[2];
+				$height = $scale[4];
+				$px     = $scale[2];
+				$space  = $scape[3];
 
 				$new_height = (int) (($max_width / $width) * $height);
 
-				return str_replace($match, 'width:'.$max_width.';height:'.$new_height.';', $post->embed);
+				return str_replace($match, 'width:'.$max_width.$px.';'.$space.'height:'.$new_height.$px.';', $post->embed);
 			}
 		}
 		public function isVideo() {

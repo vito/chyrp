@@ -38,13 +38,13 @@
 		<published><?php echo when("c", $comment->created_at); ?></published>
 		<link href="<?php echo $comment->post()->url()."#comment_".$comment->id; ?>" />
 		<author>
-			<name><?php echo safe($comment->author); ?></name>
+			<name><?php echo fix($comment->author); ?></name>
 <?php if (!empty($comment->author_url)): ?>
-			<uri><?php echo safe($comment->author_url); ?></uri>
+			<uri><?php echo fix($comment->author_url); ?></uri>
 <?php endif; ?>
 		</author>
 		<content type="html">
-			<?php echo safe($comment->body); ?>
+			<?php echo fix($comment->body); ?>
 		</content>
 <?php $trigger->call("comments_feed_item", $comment->id); ?>
 	</entry>
