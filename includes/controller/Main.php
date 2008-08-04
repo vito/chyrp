@@ -160,7 +160,7 @@
 				$post = new Post(null, array("where" => "url = :url",
 				                             "params" => array(":url" => fallback($get['url']))));
 			else
-				$post = Post::from_url($route->post_url_attrs);
+				$post = Post::from_url($route->post_url_attrs, array("drafts" => true));
 
 			if ($post->no_results)
 				show_404();

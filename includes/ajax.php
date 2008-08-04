@@ -7,7 +7,7 @@
 			if (!isset($_POST['id']))
 				error(__("Unspecified ID"), __("Please specify an ID of the post you would like to edit."));
 
-			$post = new Post($_POST['id'], array("filter" => false));
+			$post = new Post($_POST['id'], array("filter" => false, "drafts" => true));
 
 			if (!$post->editable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit posts."));
@@ -18,13 +18,15 @@
 
 			$theme->load("forms/post/edit", array("post" => $post, "feather" => $feathers[$post->feather]));
 			break;
+
 		case "delete_post":
-			$post = new Post($_POST['id']);
+			$post = new Post($_POST['id'], array("drafts" => true));
 			if (!$post->deletable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this post."));
 
 			Post::delete($_POST['id']);
 			break;
+
 		case "view_post":
 			fallback($_POST['offset'], 0);
 			fallback($_POST['context']);
@@ -32,7 +34,7 @@
 			$reason = (isset($_POST['reason'])) ? $_POST['reason'] : "" ;
 
 			if (isset($_POST['id']))
-				$post = new Post($_POST['id']);
+				$post = new Post($_POST['id'], array("drafts" => true));
 
 			if ($post->no_results) {
 				header("HTTP/1.1 404 Not Found");
@@ -42,6 +44,7 @@
 
 			$theme->load("feathers/".$post->feather, array("post" => $post, "ajax_reason" => $reason));
 			break;
+
 		case "preview":
 			if (empty($_POST['content'])) break;
 
@@ -61,6 +64,7 @@
 				echo __($info["confirm"], $_POST['check']);
 
 			break;
+
 		case "organize_pages":
 			foreach ($_POST['parent'] as $id => $parent)
 				$sql->update("pages", "id = :id", array("parent_id" => ":parent"), array(":id" => $id, ":parent" => $parent));
@@ -69,6 +73,7 @@
 				$sql->update("pages", "id = :id", array("list_order" => ":index"), array(":id" => str_replace("page_list_", "", $page), ":index" => $index));
 
 			break;
+
 		case "enable_module": case "enable_feather":
 			$type = ($_POST['action'] == "enable_module") ? "module" : "feather" ;
 
@@ -114,6 +119,7 @@
 			exit('{ notifications: ['.(!empty($info["notifications"]) ? '"'.implode('", "', $info["notifications"]).'"' : "").'] }');
 
 			break;
+
 		case "disable_module": case "disable_feather":
 			$type = ($_POST['action'] == "disable_module") ? "module" : "feather" ;
 
@@ -138,6 +144,7 @@
 			exit('{ notifications: [] }');
 
 			break;
+
 		case "reorder_feathers":
 			$reorder = fallback($_POST['list'], $config->enabled_feathers, true);
 			foreach ($reorder as &$value)
@@ -148,9 +155,3 @@
 	}
 
 	$trigger->call("ajax");
-
-	$response = ob_get_contents();
-	ob_end_clean();
-
-	# XHTML compatibility
-	echo name2codepoint($response);

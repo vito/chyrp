@@ -33,9 +33,14 @@
 					$has_status = true;
 
 			if (!XML_RPC) {
+				$private = (isset($options["drafts"]) and $options["drafts"]) ?
+				               str_replace("')", "', 'draft')", self::$private) :
+				               self::$private;
+
 				$options["where"][] = self::$enabled_feathers;
+
 				if (!$has_status)
-					$options["where"][] = self::$private;
+					$options["where"][] = $private;
 			}
 
 			parent::grab($this, $post_id, $options);
@@ -61,8 +66,21 @@
 			elseif (!isset($options["where"]))
 				$options["where"] = array();
 
-			if (!XML_RPC)
-				$options["where"] = array_merge($options["where"], array(self::$enabled_feathers, self::$private));
+			$has_status = false;
+			foreach ($options["where"] as $where)
+				if (substr_count($where, "status"))
+					$has_status = true;
+
+			if (!XML_RPC) {
+				$private = (isset($options["drafts"]) and $options["drafts"]) ?
+				               str_replace("')", "', 'draft')", self::$private) :
+				               self::$private;
+
+				$options["where"][] = self::$enabled_feathers;
+
+				if (!$has_status)
+					$options["where"][] = $private;
+			}
 
 			fallback($options["order"], "pinned DESC, created_at DESC, id DESC");
 
@@ -726,7 +744,7 @@
 		 * Function: from_url
 		 * Attempts to grab a post from its clean URL.
 		 */
-		static function from_url($attrs = null) {
+		static function from_url($attrs = null, $options = array()) {
 			fallback($attrs, $_GET);
 			$get = array_map("urldecode", $attrs);
 
@@ -765,6 +783,6 @@
 					}
 				}
 
-			return new self(null, array("where" => $where, "params" => $params));
+			return new self(null, array_merge($options, array("where" => $where, "params" => $params)));
 		}
 	}

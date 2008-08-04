@@ -340,7 +340,7 @@
 	if ($visitor->group()->can("view_private"))
 		$statuses[] = "private";
 
-	$draft_situations = array($route->action == "view", $route->action == "drafts", ADMIN, AJAX);
+	$draft_situations = array(ADMIN, (AJAX and in_array($_POST['action'], array("edit_post", "view_post", "delete_post"))));
 	$trigger->filter($draft_situations, "draft_situations");
 	if (in_array(true, $draft_situations) and $visitor->group()->can("view_draft"))
 		$statuses[] = "draft";
