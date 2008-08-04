@@ -26,11 +26,10 @@
 			                 $_POST['slug'],
 			                 Post::check_url($_POST['slug']));
 		}
-		public function update() {
+		public function update($post) {
 			if (empty($_POST['quote']))
 				error(__("Error"), __("Quote can't be empty."));
 
-			$post = new Post($_POST['id']);
 			$post->update(array("quote" => $_POST['quote'],
 			                    "source" => $_POST['source']));
 		}

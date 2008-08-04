@@ -33,7 +33,8 @@
 					$has_status = true;
 
 			if (!XML_RPC) {
-				$private = (isset($options["drafts"]) and $options["drafts"]) ?
+				$visitor = Visitor::current();
+				$private = (isset($options["drafts"]) and $options["drafts"] and $visitor->group()->can("view_draft")) ?
 				               str_replace("')", "', 'draft')", self::$private) :
 				               self::$private;
 
@@ -72,7 +73,8 @@
 					$has_status = true;
 
 			if (!XML_RPC) {
-				$private = (isset($options["drafts"]) and $options["drafts"]) ?
+				$visitor = Visitor::current();
+				$private = (isset($options["drafts"]) and $options["drafts"] and $visitor->group()->can("view_draft")) ?
 				               str_replace("')", "', 'draft')", self::$private) :
 				               self::$private;
 

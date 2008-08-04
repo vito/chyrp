@@ -34,14 +34,13 @@
 			                 $_POST['slug'],
 			                 Post::check_url($_POST['slug']));
 		}
-		public function update() {
+		public function update($post) {
 			if (empty($_POST['source']))
 				error(__("Error"), __("URL can't be empty."));
 
 			if (!@parse_url($_POST['source'], PHP_URL_SCHEME))
 				$_POST['source'] = "http://".$_POST['source'];
 
-			$post = new Post($_POST['id']);
 			$post->update(array("name" => $_POST['name'],
 			                    "source" => $_POST['source'],
 			                    "description" => $_POST['description']));

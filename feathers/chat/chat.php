@@ -31,11 +31,10 @@
 			                 $_POST['slug'],
 			                 Post::check_url($_POST['slug']));
 		}
-		public function update() {
+		public function update($post) {
 			if (empty($_POST['dialogue']))
 				error(__("Error"), __("Dialogue can't be blank."));
 
-			$post = new Post($_POST['id']);
 			$post->update(array("title" => $_POST['title'],
 			                    "dialogue" => $_POST['dialogue']));
 		}

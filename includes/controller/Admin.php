@@ -102,7 +102,7 @@
 			if (empty($_GET['id']))
 				error(__("No ID Specified"), __("An ID is required to edit a post."));
 
-			$this->context["post"] = new Post($_GET['id'], array("filter" => false));
+			$this->context["post"] = new Post($_GET['id'], array("drafts" => true, "filter" => false));
 
 			if (!$this->context["post"]->editable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this post."));
@@ -116,7 +116,7 @@
 		 * Updates a post when the form is submitted.
 		 */
 		public function update_post() {
-			$post = new Post($_POST['id']);
+			$post = new Post($_POST['id'], array("drafts" => true));
 
 			if ($post->no_results)
 				Flash::warning(__("Post not found."), "/admin/?action=manage_posts");
@@ -128,7 +128,7 @@
 				show_403(__("Access Denied"), __("Invalid security key."));
 
 			global $feathers;
-			$feathers[$post->feather]->update();
+			$feathers[$post->feather]->update($post);
 
 			if (!isset($_POST['ajax']))
 				Flash::notice(_f("Post updated. <a href=\"%s\">View Post &rarr;</a>",
@@ -143,7 +143,7 @@
 		 * Post deletion (confirm page).
 		 */
 		public function delete_post() {
-			$this->context["post"] = new Post($_GET['id']);
+			$this->context["post"] = new Post($_GET['id'], array("drafts" => true));
 
 			if (!$this->context["post"]->deletable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this post."));
@@ -163,7 +163,7 @@
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				show_403(__("Access Denied"), __("Invalid security key."));
 
-			$post = new Post($_POST['id']);
+			$post = new Post($_POST['id'], array("drafts" => true));
 			if (!$post->deletable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this post."));
 
@@ -224,7 +224,10 @@
 				$params[':visitor_id'] = $visitor->id;
 			}
 
-			$this->context["posts"] = new Paginator(Post::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
+			$this->context["posts"] = new Paginator(Post::find(array("placeholders" => true,
+			                                                         "drafts" => true,
+			                                                         "where" => $where,
+			                                                         "params" => $params)), 25);
 		}
 
 		/**
@@ -768,7 +771,7 @@
 				} else
 					list($where, $params) = array(false, array());
 
-				$posts = Post::find(array("where" => $where, "params" => $params, "order" => "id ASC"),
+				$posts = Post::find(array("drafts" => true, "where" => $where, "params" => $params, "order" => "id ASC"),
 				                    array("filter" => false));
 
 				$latest_timestamp = 0;

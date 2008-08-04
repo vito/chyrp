@@ -17,7 +17,7 @@
 		 * Function: update
 		 * Handles updating a post.
 		 */
-		public function update();
+		public function update($post);
 
 		/**
 		 * Function: title

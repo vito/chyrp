@@ -30,11 +30,10 @@
 			                 $_POST['slug'],
 			                 Post::check_url($_POST['slug']));
 		}
-		public function update() {
+		public function update($post) {
 			if (empty($_POST['video']))
 				error(__("Error"), __("Video can't be blank."));
 
-			$post = new Post($_POST['id']);
 			$post->update(array("embed" => $this->embed_tag($_POST['video']),
 			                    "video" => $_POST['video'],
 			                    "caption" => $_POST['caption']));

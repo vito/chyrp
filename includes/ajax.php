@@ -52,6 +52,7 @@
 
 			echo "<h2 class=\"preview-header\">".__("Preview")."</h2>\n<div class=\"preview-content\">".$_POST['content']."</div>";
 			break;
+
 		case "check_confirm":
 			if (!$visitor->group()->can("toggle_extensions"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to enable/disable extensions."));

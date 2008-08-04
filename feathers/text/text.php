@@ -26,11 +26,10 @@
 			                 $_POST['slug'],
 			                 Post::check_url($_POST['slug']));
 		}
-		public function update() {
+		public function update($post) {
 			if (empty($_POST['body']))
 				error(__("Error"), __("Body can't be blank."));
 
-			$post = new Post($_POST['id']);
 			$post->update(array("title" => $_POST['title'],
 			                    "body" => $_POST['body']));
 		}
