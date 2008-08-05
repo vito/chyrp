@@ -56,7 +56,7 @@
 	        return 'true';
 	      case false === $value:
 	        return 'false';
-	      case ctype_digit($value):
+	      case (is_numeric($value) and !is_int($value)):
 	        return is_string($value) ? "'$value'" : (int) $value;
 	      case is_numeric($value):
 	        return is_infinite($value) ? str_ireplace('INF', '.Inf', strval($value)) : (is_string($value) ? "'$value'" : $value);
@@ -357,7 +357,7 @@
 	        return intval(self::parseScalar(substr($scalar, 2)));
 	      case 0 === strpos($scalar, '!!php/object:'):
 	        return unserialize(substr($scalar, 13));
-	      case ctype_digit($scalar):
+	      case (is_numeric($scalar) and !is_int($scalar)):
 	        return '0' == $scalar[0] ? octdec($scalar) : intval($scalar);
 	      case in_array(strtolower($scalar), array('true', 'on', '+', 'yes', 'y')):
 	        return true;

@@ -28,7 +28,7 @@
 			foreach ($this->yaml as $setting => $value)
 				if (in_array($setting, $arrays) and empty($value))
 					$this->$setting = array();
-				elseif (!is_int($setting)) # Don't load the "---"
+				elseif (!is_int($setting))
 					$this->$setting = (is_string($value)) ? stripslashes($value) : $value ;
 
 			fallback($this->url, $this->chyrp_url);

@@ -82,6 +82,7 @@
 
 			$admin->context["aggregates"] = new Paginator($aggregates, 25, "page", false);
 		}
+
 		public function manage_nav($navs) {
 			if (!Visitor::current()->group()->can("edit_aggregate", "delete_aggregate"))
 				return $navs;
@@ -244,7 +245,7 @@
 			                                     "url" => $aggregate["url"],
 			                                     "feather" => $aggregate["feather"],
 			                                     "author" => $aggregate["author"],
-			                                     "data" => preg_replace("/^---\n/", "", Yaml::dump($aggregate["data"])));
+			                                     "data" => Yaml::dump($aggregate["data"]));
 
 			if (empty($_POST))
 				return;
