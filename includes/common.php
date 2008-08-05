@@ -84,12 +84,12 @@
 	if (!file_exists(INCLUDES_DIR."/config.yaml.php"))
 		redirect("install.php");
 
-	require_once INCLUDES_DIR."/class/Query.php"; # SQL query handler
-	require_once INCLUDES_DIR."/class/QueryBuilder.php"; # SQL query builder
-	require_once INCLUDES_DIR."/lib/yaml/class.Yaml.php"; # YAML parser
+	require_once INCLUDES_DIR."/class/Query.php";
+	require_once INCLUDES_DIR."/class/QueryBuilder.php";
+	require_once INCLUDES_DIR."/lib/yaml/class.Yaml.php";
 
-	require_once INCLUDES_DIR."/class/Config.php"; # Configuration
-	require_once INCLUDES_DIR."/class/SQL.php"; # Database/SQL jazz
+	require_once INCLUDES_DIR."/class/Config.php";
+	require_once INCLUDES_DIR."/class/SQL.php";
 
 	# Translation stuff
 	require_once INCLUDES_DIR."/lib/gettext/gettext.php";

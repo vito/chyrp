@@ -50,7 +50,7 @@
 	}
 
 	require_once INCLUDES_DIR."/helpers.php";
-	require_once INCLUDES_DIR."/lib/Yaml.php";
+	require_once INCLUDES_DIR."/lib/yaml/class.Yaml.php";
 	require_once INCLUDES_DIR."/lib/gettext/gettext.php";
 	require_once INCLUDES_DIR."/lib/gettext/streams.php";
 

@@ -22,14 +22,14 @@
 	# Helpers
 	require INCLUDES_DIR."/helpers.php";
 
-	require_once INCLUDES_DIR."/class/Query.php"; # SQL query handler
-	require_once INCLUDES_DIR."/class/QueryBuilder.php"; # SQL query builder
-	require_once INCLUDES_DIR."/lib/Yaml.php"; # YAML parser
+	require_once INCLUDES_DIR."/class/Query.php";
+	require_once INCLUDES_DIR."/class/QueryBuilder.php";
+	require_once INCLUDES_DIR."/lib/yaml/class.Yaml.php";
 	require_once INCLUDES_DIR."/class/Trigger.php";
 	require_once INCLUDES_DIR."/class/Model.php";
 	require_once INCLUDES_DIR."/model/User.php";
 	require_once INCLUDES_DIR."/model/Visitor.php";
-	require_once INCLUDES_DIR."/class/Session.php"; # Session handler
+	require_once INCLUDES_DIR."/class/Session.php";
 
 	# Configuration files
 	require INCLUDES_DIR."/class/Config.php";
