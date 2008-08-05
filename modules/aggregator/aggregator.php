@@ -212,6 +212,9 @@
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				show_403(__("Access Denied"), __("Invalid security key."));
 
+			if (trim($_POST['data']) == "")
+				return Flash::warning(__("Please enter the attributes for the feed."));
+
 			$config = Config::current();
 
 			$aggregate = array("url" => $_POST['url'],
