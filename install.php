@@ -263,11 +263,11 @@
 				              array("id" => ":permission", "name" => ":name"),
 				              array(":permission" => $permission, ":name" => $name));
 
-			$groups = array("admin" => Horde_Yaml::dump(array_keys($permissions)),
-			                "member" => Horde_Yaml::dump(array("view_site")),
-			                "friend" => Horde_Yaml::dump(array("view_site", "view_private")),
-			                "banned" => Horde_Yaml::dump(array()),
-			                "guest" => Horde_Yaml::dump(array("view_site")));
+			$groups = array("admin" => Yaml::dump(array_keys($permissions)),
+			                "member" => Yaml::dump(array("view_site")),
+			                "friend" => Yaml::dump(array("view_site", "view_private")),
+			                "banned" => Yaml::dump(array()),
+			                "guest" => Yaml::dump(array("view_site")));
 
 			# Insert the default groups (see above)
 			$group_id = array();

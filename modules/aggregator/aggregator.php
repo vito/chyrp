@@ -217,7 +217,7 @@
 			                   "last_updated" => 0,
 			                   "feather" => $_POST['feather'],
 			                   "author" => $_POST['author'],
-			                   "data" => Horde_Yaml::load($_POST['data']));
+			                   "data" => Yaml::load($_POST['data']));
 
 			$config->aggregates[$_POST['name']] = $aggregate;
 			$config->set("aggregates", $config->aggregates);
@@ -244,7 +244,7 @@
 			                                     "url" => $aggregate["url"],
 			                                     "feather" => $aggregate["feather"],
 			                                     "author" => $aggregate["author"],
-			                                     "data" => preg_replace("/^---\n/", "", Horde_Yaml::dump($aggregate["data"])));
+			                                     "data" => preg_replace("/^---\n/", "", Yaml::dump($aggregate["data"])));
 
 			if (empty($_POST))
 				return;
@@ -256,7 +256,7 @@
 			                   "last_updated" => 0,
 			                   "feather" => $_POST['feather'],
 			                   "author" => $_POST['author'],
-			                   "data" => Horde_Yaml::load($_POST['data']));
+			                   "data" => Yaml::load($_POST['data']));
 
 			unset($config->aggregates[$_GET['id']]);
 			$config->aggregates[$_POST['name']] = $aggregate;

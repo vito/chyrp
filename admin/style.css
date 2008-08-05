@@ -16,7 +16,7 @@ html {
 	font-size: 62.5%;
 }
 body {
-	font: 1.25em/1.5em normal "Verdana", Helvetica, Arial, sans-serif;
+	font: 1.25em/1.5em normal "Verdana", "Lucida Grande", "Trebuchet MS", Helvetica, Arial, sans-serif;
 	color: #626262;
 	background: #e8e8e8;
 	padding: 0 0 5em;
@@ -439,7 +439,7 @@ form.split label .sub {
 	display: block;
 }
 form.split label input {
-	margin: -.5em 0;
+	xmargin: -.5em 0 !important;
 }
 form.split select {
 	margin: 3px 0 .2em;
@@ -663,7 +663,7 @@ a.prev_page {
 	padding: .6em 1em .5em .9em;
 }
 button.lite {
-	padding: .15em .375em .25em .275em;
+	padding: .15em .375em .25em .275em !important;
 }
 .button.lite,
 a.next_page,

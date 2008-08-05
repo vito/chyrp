@@ -17,7 +17,7 @@
 			if ($this->no_results)
 				return false;
 
-			$this->permissions = (!empty($this->permissions)) ? Horde_Yaml::load($this->permissions) : array() ;
+			$this->permissions = (!empty($this->permissions)) ? Yaml::load($this->permissions) : array() ;
 		}
 
 		/**
@@ -73,7 +73,7 @@
 		static function add($name, $permissions) {
 			$sql = SQL::current();
 			$sql->insert("groups", array("name" => ":name", "permissions" => ":permissions"),
-			                       array(":name"  => $name,   ":permissions"  => Horde_Yaml::dump($permissions)));
+			                       array(":name"  => $name,   ":permissions"  => Yaml::dump($permissions)));
 
 			$group = new self($sql->latest());
 
@@ -98,7 +98,7 @@
 			$sql = SQL::current();
 			$sql->update("groups", "id = :id",
 			             array("name" => ":name", "permissions" => ":permissions"),
-			             array(":name" => $name, ":permissions" => Horde_Yaml::dump($permissions), ":id" => $this->id));
+			             array(":name" => $name, ":permissions" => Yaml::dump($permissions), ":id" => $this->id));
 
 			Trigger::current()->call("update_group", $this, $name, $permissions);
 		}

@@ -59,10 +59,10 @@
 	$yaml["database"] = array();
 
 	if (using_yaml()) {
-		$yaml["config"] = Horde_Yaml::load(preg_replace("/<\?php(.+)\?>\n?/s", "", file_get_contents(config_file())));
+		$yaml["config"] = Yaml::load(preg_replace("/<\?php(.+)\?>\n?/s", "", file_get_contents(config_file())));
 
 		if (database_file())
-			$yaml["database"] = Horde_Yaml::load(preg_replace("/<\?php(.+)\?>\n?/s",
+			$yaml["database"] = Yaml::load(preg_replace("/<\?php(.+)\?>\n?/s",
 			                                                            "",
 			                                                            file_get_contents(database_file())));
 		else
@@ -105,7 +105,7 @@
 
 			$protection = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
 
-			$dump = $protection.Horde_Yaml::dump($yaml["config"]);
+			$dump = $protection.Yaml::dump($yaml["config"]);
 
 			echo $message.test(@file_put_contents(INCLUDES_DIR."/config.yaml.php", $dump));
 		}
@@ -129,7 +129,7 @@
 
 			$protection = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
 
-			$dump = $protection.Horde_Yaml::dump($yaml["config"]);
+			$dump = $protection.Yaml::dump($yaml["config"]);
 
 			echo _f("Removing %s setting...", array($setting)).
 			     test(@file_put_contents(INCLUDES_DIR."/config.yaml.php", $dump));
@@ -334,7 +334,7 @@
 
 		# Convert permissions array to a YAML dump.
 		foreach ($groups as $key => &$val)
-			$val["permissions"] = Horde_Yaml::dump($val["permissions"]);
+			$val["permissions"] = Yaml::dump($val["permissions"]);
 
 		$drop_groups = SQL::current()->query("DROP TABLE __groups");
 		echo __("Dropping old groups table...").test($drop_groups);
