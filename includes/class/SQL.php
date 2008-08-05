@@ -25,9 +25,12 @@
 		 * The class constructor is private so there is only one connection.
 		 */
 		private function __construct() {
+			if (!UPGRADING and !isset(Config::current()->sql))
+				error(__("Error"), __("Database configuration is not set. Please run the upgrader."));
+
 			$database = (!UPGRADING) ?
-			            fallback(Config::current()->database, array(), true) :
-			            Config::get("database") ;
+			            fallback(Config::current()->sql, array(), true) :
+			            Config::get("sql") ;
 
 			if (!empty($database))
 				foreach ($database as $setting => $value)
@@ -80,12 +83,12 @@
 			if (!UPGRADING)
 				$config = Config::current();
 
-			$database = (!UPGRADING) ? $config->database : Config::get("database") ;
+			$database = (!UPGRADING) ? $config->sql : Config::get("sql") ;
 
 			# Add the setting
 			$database[$setting] = $this->$setting = $value;
 
-			return (!UPGRADING) ? $config->set("database", $database) : Config::set("database", $database) ;
+			return (!UPGRADING) ? $config->set("sql", $database) : Config::set("sql", $database) ;
 		}
 
 		/**

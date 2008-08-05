@@ -1,4 +1,6 @@
 <?php
+	$permissions = array();
+
 	/**
 	 * Class: Group
 	 * The Group model.
@@ -12,12 +14,20 @@
 		 *     <Model::grab>
 		 */
 		public function __construct($group_id = null, $options = array()) {
+			global $permissions;
+
 			parent::grab($this, $group_id, $options);
 
 			if ($this->no_results)
 				return false;
 
-			$this->permissions = (!empty($this->permissions)) ? Yaml::load($this->permissions) : array() ;
+			# Cache group permissions.
+			if (isset($permissions[$group_id]))
+				$this->permissions = $permissions[$group_id];
+			else
+				$this->permissions = $permissions[$group_id] = (!empty($this->permissions)) ?
+				                                                   YAML::load($this->permissions) :
+				                                                   array() ;
 		}
 
 		/**
@@ -73,7 +83,7 @@
 		static function add($name, $permissions) {
 			$sql = SQL::current();
 			$sql->insert("groups", array("name" => ":name", "permissions" => ":permissions"),
-			                       array(":name"  => $name,   ":permissions"  => Yaml::dump($permissions)));
+			                       array(":name"  => $name,   ":permissions"  => YAML::dump($permissions)));
 
 			$group = new self($sql->latest());
 
@@ -98,7 +108,7 @@
 			$sql = SQL::current();
 			$sql->update("groups", "id = :id",
 			             array("name" => ":name", "permissions" => ":permissions"),
-			             array(":name" => $name, ":permissions" => Yaml::dump($permissions), ":id" => $this->id));
+			             array(":name" => $name, ":permissions" => YAML::dump($permissions), ":id" => $this->id));
 
 			Trigger::current()->call("update_group", $this, $name, $permissions);
 		}

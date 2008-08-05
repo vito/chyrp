@@ -212,8 +212,14 @@
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				show_403(__("Access Denied"), __("Invalid security key."));
 
-			if (trim($_POST['data']) == "")
-				return Flash::warning(__("Please enter the attributes for the feed."));
+			if (empty($_POST['data']))
+				return Flash::warning(__("Please enter the attributes for the Feather."));
+
+			if (empty($_POST['name']))
+				return Flash::warning(__("Please enter a name for the aggregate."));
+
+			if (empty($_POST['url']))
+				return Flash::warning(__("What are you, crazy?! I can't create an aggregate without a source!"));
 
 			$config = Config::current();
 
@@ -221,7 +227,7 @@
 			                   "last_updated" => 0,
 			                   "feather" => $_POST['feather'],
 			                   "author" => $_POST['author'],
-			                   "data" => Yaml::load($_POST['data']));
+			                   "data" => YAML::load($_POST['data']));
 
 			$config->aggregates[$_POST['name']] = $aggregate;
 			$config->set("aggregates", $config->aggregates);
@@ -248,7 +254,7 @@
 			                                     "url" => $aggregate["url"],
 			                                     "feather" => $aggregate["feather"],
 			                                     "author" => $aggregate["author"],
-			                                     "data" => Yaml::dump($aggregate["data"]));
+			                                     "data" => preg_replace("/---\n/", "", YAML::dump($aggregate["data"])));
 
 			if (empty($_POST))
 				return;
@@ -260,7 +266,7 @@
 			                   "last_updated" => 0,
 			                   "feather" => $_POST['feather'],
 			                   "author" => $_POST['author'],
-			                   "data" => Yaml::load($_POST['data']));
+			                   "data" => YAML::load($_POST['data']));
 
 			unset($config->aggregates[$_GET['id']]);
 			$config->aggregates[$_POST['name']] = $aggregate;

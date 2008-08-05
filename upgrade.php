@@ -50,7 +50,7 @@
 	}
 
 	require_once INCLUDES_DIR."/helpers.php";
-	require_once INCLUDES_DIR."/lib/yaml/class.Yaml.php";
+	require_once INCLUDES_DIR."/lib/YAML.php";
 	require_once INCLUDES_DIR."/lib/gettext/gettext.php";
 	require_once INCLUDES_DIR."/lib/gettext/streams.php";
 
@@ -59,10 +59,10 @@
 	$yaml["database"] = array();
 
 	if (using_yaml()) {
-		$yaml["config"] = Yaml::load(preg_replace("/<\?php(.+)\?>\n?/s", "", file_get_contents(config_file())));
+		$yaml["config"] = YAML::load(preg_replace("/<\?php(.+)\?>\n?/s", "", file_get_contents(config_file())));
 
 		if (database_file())
-			$yaml["database"] = Yaml::load(preg_replace("/<\?php(.+)\?>\n?/s",
+			$yaml["database"] = YAML::load(preg_replace("/<\?php(.+)\?>\n?/s",
 			                                                            "",
 			                                                            file_get_contents(database_file())));
 		else
@@ -105,7 +105,7 @@
 
 			$protection = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
 
-			$dump = $protection.Yaml::dump($yaml["config"]);
+			$dump = $protection.YAML::dump($yaml["config"]);
 
 			echo $message.test(@file_put_contents(INCLUDES_DIR."/config.yaml.php", $dump));
 		}
@@ -129,7 +129,7 @@
 
 			$protection = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
 
-			$dump = $protection.Yaml::dump($yaml["config"]);
+			$dump = $protection.YAML::dump($yaml["config"]);
 
 			echo _f("Removing %s setting...", array($setting)).
 			     test(@file_put_contents(INCLUDES_DIR."/config.yaml.php", $dump));
@@ -334,7 +334,7 @@
 
 		# Convert permissions array to a YAML dump.
 		foreach ($groups as $key => &$val)
-			$val["permissions"] = Yaml::dump($val["permissions"]);
+			$val["permissions"] = YAML::dump($val["permissions"]);
 
 		$drop_groups = SQL::current()->query("DROP TABLE __groups");
 		echo __("Dropping old groups table...").test($drop_groups);
@@ -508,6 +508,12 @@
 			echo __("Removing database.yaml.php file...").
 			     test(@unlink(INCLUDES_DIR."/database.yaml.php"));
 	}
+
+	function rename_database_config() {
+		if (Config::check("sql")) return;
+		Config::set("sql", Config::get("database"));
+		Config::remove("database");
+	}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -663,6 +669,8 @@
 		update_custom_routes();
 
 		remove_database_config();
+
+		rename_database_config();
 
 		foreach ((array) Config::get("enabled_modules") as $module)
 			if (file_exists(MAIN_DIR."/modules/".$module."/upgrades.php")) {

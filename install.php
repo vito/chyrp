@@ -24,7 +24,7 @@
 
 	require_once INCLUDES_DIR."/class/Query.php";
 	require_once INCLUDES_DIR."/class/QueryBuilder.php";
-	require_once INCLUDES_DIR."/lib/yaml/class.Yaml.php";
+	require_once INCLUDES_DIR."/lib/YAML.php";
 	require_once INCLUDES_DIR."/class/Trigger.php";
 	require_once INCLUDES_DIR."/class/Model.php";
 	require_once INCLUDES_DIR."/model/User.php";
@@ -263,11 +263,11 @@
 				              array("id" => ":permission", "name" => ":name"),
 				              array(":permission" => $permission, ":name" => $name));
 
-			$groups = array("admin" => Yaml::dump(array_keys($permissions)),
-			                "member" => Yaml::dump(array("view_site")),
-			                "friend" => Yaml::dump(array("view_site", "view_private")),
-			                "banned" => Yaml::dump(array()),
-			                "guest" => Yaml::dump(array("view_site")));
+			$groups = array("admin" => YAML::dump(array_keys($permissions)),
+			                "member" => YAML::dump(array("view_site")),
+			                "friend" => YAML::dump(array("view_site", "view_private")),
+			                "banned" => YAML::dump(array()),
+			                "guest" => YAML::dump(array("view_site")));
 
 			# Insert the default groups (see above)
 			$group_id = array();

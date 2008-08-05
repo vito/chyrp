@@ -138,7 +138,7 @@
 			$pages = array("manage" => array());
 
 			foreach (Config::current()->enabled_feathers as $index => $feather) {
-				$info = Yaml::load(FEATHERS_DIR."/".$feather."/info.yaml");
+				$info = YAML::load(FEATHERS_DIR."/".$feather."/info.yaml");
 				$subnav["write"]["write_post&feather=".$feather] = array("title" => __($info["name"], $feather),
 			                                                             "show" => $visitor->group()->can("add_draft", "add_post"),
 				                                                         "attributes" => ' id="list_feathers['.$feather.']"',

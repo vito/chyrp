@@ -954,7 +954,7 @@
 				foreach ($groups as $index => $group)
 					$groups_yaml["groups"][$group->name] = $group->permissions;
 
-				$exports["groups.yaml"] = Yaml::dump($groups_yaml);
+				$exports["groups.yaml"] = YAML::dump($groups_yaml);
 			}
 
 			if (isset($_POST['users'])) {
@@ -997,7 +997,7 @@
 							$users_yaml[$user->login]["group"] = $user->group()->name;
 				}
 
-				$exports["users.yaml"] = Yaml::dump($users_yaml);
+				$exports["users.yaml"] = YAML::dump($users_yaml);
 			}
 
 			$trigger->filter($exports, "export");
@@ -1067,7 +1067,7 @@
 			}
 
 			if (isset($_FILES['groups_file']) and $_FILES['groups_file']['error'] == 0) {
-				$import = Yaml::load($_FILES['groups_file']['tmp_name']);
+				$import = YAML::load($_FILES['groups_file']['tmp_name']);
 
 				foreach ($import["groups"] as $name => $permissions)
 					if (!$sql->count("groups", "name = :name", array(":name" => $name)))
@@ -1081,7 +1081,7 @@
 			}
 
 			if (isset($_FILES['users_file']) and $_FILES['users_file']['error'] == 0) {
-				$users = Yaml::load($_FILES['users_file']['tmp_name']);
+				$users = YAML::load($_FILES['users_file']['tmp_name']);
 
 				foreach ($users as $login => $user) {
 					$group_id = $sql->select("groups", "id", "name = :name", "id DESC",
@@ -1567,7 +1567,7 @@
 				else
 					array_unshift($classes[$folder], $folder);
 
-				$info = Yaml::load(MODULES_DIR."/".$folder."/info.yaml");
+				$info = YAML::load(MODULES_DIR."/".$folder."/info.yaml");
 
 				$info["conflicts_true"] = array();
 				$info["depends_true"] = array();
@@ -1656,7 +1656,7 @@
 				if (file_exists(FEATHERS_DIR."/".$folder."/locale/".$config->locale.".mo"))
 					load_translator($folder, FEATHERS_DIR."/".$folder."/locale/".$config->locale.".mo");
 
-				$info = Yaml::load(FEATHERS_DIR."/".$folder."/info.yaml");
+				$info = YAML::load(FEATHERS_DIR."/".$folder."/info.yaml");
 
 				fallback($info["name"], $folder);
 				fallback($info["version"], "0");
@@ -1702,7 +1702,7 @@
 				if (file_exists(THEMES_DIR."/".$folder."/locale/".$config->locale.".mo"))
 					load_translator($folder, THEMES_DIR."/".$folder."/locale/".$config->locale.".mo");
 
-				$info = Yaml::load(THEMES_DIR."/".$folder."/info.yaml");
+				$info = YAML::load(THEMES_DIR."/".$folder."/info.yaml");
 
 				fallback($info["name"], $folder);
 				fallback($info["version"], "0");
@@ -1768,7 +1768,7 @@
 			if (file_exists($folder."/".$_GET[$type]."/locale/".$config->locale.".mo"))
 				load_translator($_GET[$type], $folder."/".$_GET[$type]."/locale/".$config->locale.".mo");
 
-			$info = Yaml::load($folder."/".$_GET[$type]."/info.yaml");
+			$info = YAML::load($folder."/".$_GET[$type]."/info.yaml");
 			fallback($info["uploader"], false);
 			fallback($info["notifications"], array());
 
@@ -1826,7 +1826,7 @@
 			$config->set(($type == "module" ? "enabled_modules" : "enabled_feathers"),
 			             array_diff($config->$enabled_array, array($_GET[$type])));
 
-			$info = Yaml::load($folder."/".$_GET[$type]."/info.yaml");
+			$info = YAML::load($folder."/".$_GET[$type]."/info.yaml");
 			if ($type == "module")
 				Flash::notice(_f("&#8220;%s&#8221; module disabled.",
 				                 array($info["name"])),
@@ -1854,7 +1854,7 @@
 			if (file_exists(THEMES_DIR."/".$_GET['theme']."/locale/".$config->locale.".mo"))
 				load_translator($_GET['theme'], THEMES_DIR."/".$_GET['theme']."/locale/".$config->locale.".mo");
 
-			$info = Yaml::load(THEMES_DIR."/".$_GET['theme']."/info.yaml");
+			$info = YAML::load(THEMES_DIR."/".$_GET['theme']."/info.yaml");
 			fallback($info["notifications"], array());
 
 			foreach ($info["notifications"] as &$notification)

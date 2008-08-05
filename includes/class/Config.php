@@ -22,7 +22,7 @@
 			                        "",
 			                        file_get_contents(INCLUDES_DIR."/config.yaml.php"));
 
-			$this->yaml = Yaml::load($contents);
+			$this->yaml = YAML::load($contents);
 
 			$arrays = array("enabled_modules", "enabled_feathers", "routes");
 			foreach ($this->yaml as $setting => $value)
@@ -51,7 +51,7 @@
 				                        "",
 				                        file_get_contents($this->file));
 
-				$this->yaml = Yaml::load($contents);
+				$this->yaml = YAML::load($contents);
 			}
 
 			# Add the setting
@@ -64,7 +64,7 @@
 			$contents = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
 
 			# Generate the new YAML settings
-			$contents.= Yaml::dump($this->yaml);
+			$contents.= YAML::dump($this->yaml);
 
 			if (!@file_put_contents(INCLUDES_DIR."/config.yaml.php", $contents)) {
 				Flash::warning(_f("Could not set \"<code>%s</code>\" configuration setting because <code>%s</code> is not writable.", array($setting, "/includes/config.yaml.php")));
@@ -87,7 +87,7 @@
 				                        "",
 				                        file_get_contents($this->file));
 
-				$this->yaml = Yaml::load($contents);
+				$this->yaml = YAML::load($contents);
 			}
 
 			# Add the setting
@@ -97,7 +97,7 @@
 			$contents = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
 
 			# Generate the new YAML settings
-			$contents.= Yaml::dump($this->yaml);
+			$contents.= YAML::dump($this->yaml);
 
 			file_put_contents(INCLUDES_DIR."/config.yaml.php", $contents);
 		}

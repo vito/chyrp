@@ -86,7 +86,7 @@
 
 	require_once INCLUDES_DIR."/class/Query.php";
 	require_once INCLUDES_DIR."/class/QueryBuilder.php";
-	require_once INCLUDES_DIR."/lib/yaml/class.Yaml.php";
+	require_once INCLUDES_DIR."/lib/YAML.php";
 
 	require_once INCLUDES_DIR."/class/Config.php";
 	require_once INCLUDES_DIR."/class/SQL.php";
@@ -220,9 +220,6 @@
 			load_translator($feather, FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo");
 
 		require FEATHERS_DIR."/".$feather."/".$feather.".php";
-
-		$info = Yaml::load(FEATHERS_DIR."/".$feather."/info.yaml");
-		$pluralizations[$feather] = $pluralizations["feathers"][$feather] = fallback($info["plural"], pluralize($feather), true);
 	}
 
 	foreach ($config->enabled_modules as $index => $module) {
@@ -262,7 +259,7 @@
 
 	$theme = Theme::current();
 
-	foreach (Yaml::load(THEME_DIR."/info.yaml") as $key => $val)
+	foreach (YAML::load(THEME_DIR."/info.yaml") as $key => $val)
 		$theme->$key = $val;
 
 	if (INDEX)
@@ -284,9 +281,12 @@
 		$feathers[$feather] = new $camelized;
 		$feathers[$feather]->safename = $feather;
 
-		if (!ADMIN) continue;
+		if (!ADMIN and $route->action != "feed") continue;
 
-		foreach (Yaml::load(FEATHERS_DIR."/".$feather."/info.yaml") as $key => $val)
+		$info = YAML::load(FEATHERS_DIR."/".$feather."/info.yaml");
+		$pluralizations[$feather] = $pluralizations["feathers"][$feather] = fallback($info["plural"], pluralize($feather), true);
+
+		foreach ($info as $key => $val)
 			$feathers[$feather]->$key = (is_string($val)) ? __($val, $feather) : $val ;
 	}
 
@@ -304,7 +304,7 @@
 
 		if (!ADMIN) continue;
 
-		foreach (Yaml::load(MODULES_DIR."/".$module."/info.yaml") as $key => $val)
+		foreach (YAML::load(MODULES_DIR."/".$module."/info.yaml") as $key => $val)
 			$modules[$module]->$key = (is_string($val)) ? __($val, $module) : $val ;
 	}
 
