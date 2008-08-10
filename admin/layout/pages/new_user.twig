@@ -42,6 +42,7 @@
 						<label for="password2">${ "Confirm" | translate }</label>
 						<input class="text" type="password" name="password2" value="" id="password2" />
 					</p>
+					${ trigger.call("new_user_fields") }
 
 					<br />
 
