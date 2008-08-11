@@ -5,7 +5,7 @@
 {% block content %}
 			{% if visitor.group.can("add_aggregate") %}
 			<a href="{% admin "new_aggregate" %}" class="button yay right">
-				<img src="images/icons/add.png" alt="add" /> ${ "Add Aggregate" | translate }
+				<img src="images/icons/add.png" alt="add" /> ${ "Add Aggregate" | translate("aggregator") }
 			</a>
 			{% endif %}
 			<h1>${ "Manage Aggregates" | translate("aggregator") }</h1>
