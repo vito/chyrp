@@ -110,6 +110,13 @@
 					$info["notifications"][] = _f("Please CHMOD <code>%s</code> to 777.", array($config->uploads_path));
 
 			$class_name = camelize($_POST["extension"]);
+
+			if ($type == "module" and !is_subclass_of($class_name, "Modules"))
+				error("", __("Item is not a module."));
+
+			if ($type == "feather" and !is_subclass_of($class_name, "Feathers"))
+				error("", __("Item is not a feather."));
+
 			if (method_exists($class_name, "__install"))
 				call_user_func(array($class_name, "__install"));
 
