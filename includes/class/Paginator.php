@@ -99,7 +99,7 @@
 		 *     $clean_urls - Whether to link with dirty or clean URLs.
 		 */
 		public function next_link($text = null, $class = "next_page", $clean_urls = true) {
-			fallback($text, __("Next &rarr;", "theme"));
+			fallback($text, __("Next &rarr;"));
 			if ($this->next_page())
 				echo '<a class="'.$class.'" id="next_page_'.$this->name.'" href="'.$this->next_page_url($clean_urls).'">'.$text.'</a>';
 		}
@@ -114,7 +114,7 @@
 		 *     $clean_urls - Whether to link with dirty or clean URLs.
 		 */
 		public function prev_link($text = null, $class = "prev_page", $clean_urls = true) {
-			fallback($text, __("&larr; Previous", "theme"));
+			fallback($text, __("&larr; Previous"));
 			if ($this->prev_page())
 				echo '<a class="'.$class.'" id="prev_page_'.$this->name.'" href="'.$this->prev_page_url($clean_urls).'">'.$text.'</a>';
 		}

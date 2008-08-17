@@ -16,7 +16,7 @@
 				$post.comments.prev_link
 				$post.comments.next_link
 				{% if post.comments.paginated and post.comments.pages > 1 %}
-				<span class="pages">Page $post.comments.page of $post.comments.pages</span>
+				<span class="pages">${ "Page %d of %d" | translate | format(post.comments.page, post.comments.pages) }</span>
 				{% endif %}
 {% if post.commentable %}
 {% include "forms/comment/new.twig" %}

@@ -8,7 +8,7 @@
 						<div class="clear"></div>
 						$post.paginated.prev_link
 						$post.paginated.next_link
-						<span class="pages">Page $post.paginated.page of $post.paginated.pages</span>
+						<span class="pages">${ "Page %d of %d" | translate | format(post.paginated.page, post.paginated.pages) }</span>
 						{% endif %}
 						<div class="clear"></div>
 						<span class="info">

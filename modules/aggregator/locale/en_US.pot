@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC1\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-08-02 20:37+0000\n"
+"POT-Creation-Date: 2008-08-17 04:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: modules/aggregator/aggregator.php:322
+#: modules/aggregator/aggregator.php:332
 msgid "To upload an image from the content"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:312
+#: modules/aggregator/aggregator.php:322
 msgid "You can use XPath to navigate the feed and find the correct attribute."
 msgstr ""
 
@@ -29,11 +29,11 @@ msgstr ""
 msgid "Delete Aggregate"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:266
+#: modules/aggregator/aggregator.php:276
 msgid "Aggregate updated."
 msgstr ""
 
-#: modules/aggregator/aggregator.php:89
+#: modules/aggregator/aggregator.php:90
 msgid "Aggregates"
 msgstr ""
 
@@ -47,11 +47,11 @@ msgstr ""
 msgid "Feather"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:318
+#: modules/aggregator/aggregator.php:328
 msgid "Functions"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:114
+#: modules/aggregator/aggregator.php:115
 msgid "Aggregation"
 msgstr ""
 
@@ -64,21 +64,21 @@ msgstr ""
 msgid "Manage Aggregates"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:325
+#: modules/aggregator/aggregator.php:335
 msgid "Example"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:316
+#: modules/aggregator/aggregator.php:326
 msgid "To get the attribute of an element, use XPath to find it and the <code>.attr[]</code> syntax to grab an attribute."
 msgstr ""
 
-#: modules/aggregator/aggregator.php:308
+#: modules/aggregator/aggregator.php:318
 msgid "Use <a href=\"http://yaml.org/\">YAML</a> to specify what post attribute holds what value of the feed entry."
 msgstr ""
 
-#: modules/aggregator/aggregator.php:233
-#: modules/aggregator/aggregator.php:274
-#: modules/aggregator/aggregator.php:297
+#: modules/aggregator/aggregator.php:243
+#: modules/aggregator/aggregator.php:284
+#: modules/aggregator/aggregator.php:307
 msgid "You do not have sufficient privileges to delete this aggregate."
 msgstr ""
 
@@ -92,11 +92,11 @@ msgstr ""
 msgid "Source URL"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:323
+#: modules/aggregator/aggregator.php:333
 msgid "To get the URL of an image in the content"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:206
+#: modules/aggregator/aggregator.php:207
 msgid "You do not have sufficient privileges to add aggregates."
 msgstr ""
 
@@ -110,7 +110,7 @@ msgstr ""
 msgid "source"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:307
+#: modules/aggregator/aggregator.php:317
 msgid "Post Values"
 msgstr ""
 
@@ -123,17 +123,17 @@ msgstr ""
 msgid "Post Attributes"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:310
+#: modules/aggregator/aggregator.php:320
 msgid "XPath"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:225
+#: modules/aggregator/aggregator.php:235
 msgid "Aggregate created."
 msgstr ""
 
-#: modules/aggregator/aggregator.php:230
-#: modules/aggregator/aggregator.php:271
-#: modules/aggregator/aggregator.php:288
+#: modules/aggregator/aggregator.php:240
+#: modules/aggregator/aggregator.php:281
+#: modules/aggregator/aggregator.php:298
 msgid "An ID is required to delete an aggregate."
 msgstr ""
 
@@ -144,11 +144,12 @@ msgstr ""
 #: modules/aggregator/pages/admin/new_aggregate.twig:3
 #: modules/aggregator/pages/admin/new_aggregate.twig:6
 #: modules/aggregator/pages/admin/new_aggregate.twig:47
+#: modules/aggregator/pages/admin/manage_aggregates.twig:8
 #: modules/aggregator/aggregator.php:10
 msgid "Add Aggregate"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:314
+#: modules/aggregator/aggregator.php:324
 msgid "Attributes"
 msgstr ""
 
@@ -157,7 +158,7 @@ msgstr ""
 msgid "Aggregation Settings"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:302
+#: modules/aggregator/aggregator.php:312
 msgid "Aggregate deleted."
 msgstr ""
 

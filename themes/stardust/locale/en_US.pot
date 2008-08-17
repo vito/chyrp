@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC1\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-08-02 20:37+0000\n"
+"POT-Creation-Date: 2008-08-17 04:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -38,6 +38,10 @@ msgstr ""
 msgid "%B %e"
 msgstr ""
 
+#: themes/stardust/forms/comment/new.twig:4
+msgid "Log Out &rarr;"
+msgstr ""
+
 #: themes/stardust/pages/feather.twig:9
 #, php-format
 msgid "No %s"
@@ -45,10 +49,6 @@ msgstr ""
 
 #: themes/stardust/pages/feather.twig:10
 msgid "There don't seem to be any posts as the Feather you specified."
-msgstr ""
-
-#: themes/stardust/forms/comment/new.twig:4
-msgid "Log Out &rarr;"
 msgstr ""
 
 #: themes/stardust/content/sidebar.twig:10
@@ -147,6 +147,13 @@ msgstr ""
 msgid "Lost Password?"
 msgstr ""
 
+#: themes/stardust/pages/view.twig:19
+#: themes/stardust/layouts/default.twig:61
+#: themes/stardust/content/post.twig:11
+#, php-format
+msgid "Page %d of %d"
+msgstr ""
+
 #: themes/stardust/content/sidebar.twig:33
 msgid "Log Out"
 msgstr ""
@@ -197,7 +204,7 @@ msgstr ""
 msgid "Your search did not return any results."
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:73
+#: themes/stardust/content/sidebar.twig:72
 msgid "Load time:"
 msgstr ""
 
@@ -350,7 +357,7 @@ msgstr ""
 msgid "Your comment is awaiting moderation."
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:70
+#: themes/stardust/content/sidebar.twig:69
 msgid "Stats"
 msgstr ""
 
@@ -372,7 +379,7 @@ msgstr ""
 msgid "<strong>%s</strong> on <a href=\"%s\" class=\"permalink\">%s</a>"
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:72
+#: themes/stardust/content/sidebar.twig:71
 msgid "Queries:"
 msgstr ""
 
