@@ -175,7 +175,7 @@
 				}
 
 				if ($index == 0) # Don't set $this->action to "page" (bottom of this function).
-					return $this->action = "index";
+					return $this->action = (isset($config->routes["/"])) ? $config->routes["/"] : "index" ;
 			}
 
 			# Archive
