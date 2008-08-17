@@ -314,6 +314,7 @@ var Extend = {
 			}).appendTo(".tip_here")
 	},
 	handle_drop: function(ev, ui) {
+		var errored = false
 		var classes = $(this).parent().attr("class").split(" ")
 
 		Extend.Drop.pane = $(this)
@@ -346,7 +347,14 @@ var Extend = {
 					confirm: Extend.Drop.confirmed
 				},
 				beforeSend: function(){ Extend.Drop.pane.loader() },
-				success: Extend.finish_drop
+				success: Extend.finish_drop,
+				error: function() {
+					Extend.Drop.pane.loader(true)
+
+					$(ui.draggable).css({ left: 0, right: 0, top: 0, bottom: 0 }).appendTo($(".disable ul"))
+
+					Extend.redraw()
+				}
 			})
 		})
 
