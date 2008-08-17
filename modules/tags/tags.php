@@ -23,20 +23,96 @@
 			Route::current()->remove("tag/(name)/");
 		}
 
+		public function admin_head() {
+?>
+		<script type="text/javascript">
+			$(function(){
+				function scanTags(){
+					$(".tags_select a").each(function(){
+						regexp = new RegExp("(, ?|^)"+ $(this).text() +"(, ?|$)", "g")
+						if ($("#tags").val().match(regexp))
+							$(this).addClass("tag_added")
+						else
+							$(this).removeClass("tag_added")
+					})
+				}
+				scanTags()
+				$("#tags").livequery("keyup", scanTags)
+			})
+
+			function add_tag(name, link) {
+				if ($("#tags").val().match("(, |^)"+ name +"(, |$)")) {
+					regexp = new RegExp("(, |^)"+ name +"(, |$)", "g")
+					$("#tags").val($("#tags").val().replace(regexp, function(match, before, after){
+						if (before == ", " && after == ", ")
+							return ", "
+						else
+							return ""
+					}))
+
+					$(link).removeClass("tag_added")
+				} else {
+					if ($("#tags").val() == "")
+						$("#tags").val(name)
+					else
+						$("#tags").val($("#tags").val() + ", "+ name)
+
+					$(link).addClass("tag_added")
+				}
+			}
+		</script>
+		<style type="text/css" media="screen">
+			.tags_select {
+				display: inline-block;
+				margin-top: .5em;
+			}
+			.tags_select a {
+				padding: .1em .4em;
+				border: .1em solid #DDDDA8;
+				background: #FFFFCA;
+				text-decoration: none;
+				border-top-width: 0;
+				border-left-width: 0;
+				color: #555;
+			}
+			.tags_select a.tag_added {
+				background: #eee;
+				border-top-width: .1em;
+				border-bottom: 0;
+				border-left-width: .1em;
+				border-right: 0;
+				border-color: #ddd;
+			}
+		</style>
+<?php
+		}
+
 		public function new_post_options() {
+			$tags = self::list_tags();
 ?>
 					<p>
 						<label for="tags"><?php echo __("Tags", "tags"); ?> <span class="sub"><?php echo __("(comma separated)", "tags"); ?></span></label>
 						<input class="text" type="text" name="tags" value="" id="tags" />
+						<span class="tags_select">
+<?php foreach ($tags as $tag): ?>
+							<a href="javascript:add_tag('<?php echo addslashes($tag["name"]); ?>', '.tag_<?php echo addslashes($tag["url"]); ?>')" class="tag_<?php echo $tag["url"]; ?>"><?php echo $tag["name"]; ?></a>
+<?php endforeach; ?>
+						</span>
 					</p>
 <?php
 		}
 
 		public function edit_post_options($post) {
+			$tags = self::list_tags();
 ?>
 					<p>
 						<label for="tags"><?php echo __("Tags", "tags"); ?> <span class="sub"><?php echo __("(comma separated)", "tags"); ?></span></label>
 						<input class="text" type="text" name="tags" value="<?php echo implode(", ", self::unlinked_tags($post->unclean_tags)) ?>" id="tags" />
+						<span class="tags_select">
+<?php foreach ($tags as $tag): ?>
+							<a href="javascript:add_tag('<?php echo addslashes($tag["name"]); ?>', '.tag_<?php echo addslashes($tag["url"]); ?>')" class="tag_<?php echo $tag["url"]; ?>"><?php echo $tag["name"]; ?></a>
+<?php endforeach; ?>
+						</span>
 					</p>
 <?php
 		}

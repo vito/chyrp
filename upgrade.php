@@ -514,6 +514,20 @@
 		Config::set("sql", Config::get("database"));
 		Config::remove("database");
 	}
+
+	function update_post_status_column() {
+		$sql = SQL::current();
+		$column = $sql->query("SHOW COLUMNS FROM __posts WHERE Field = 'status'");
+		if (!$column)
+		     return;
+
+		$result = $column->fetchObject();
+		if ($result->Type == "varchar(32)")
+			return;
+
+		echo __("Updating `status` column on `posts` table...")
+		     .test($sql->query("ALTER TABLE __posts CHANGE status status VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'public'"));
+	}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -672,6 +686,8 @@
 		remove_database_config();
 
 		rename_database_config();
+
+		update_post_status_column();
 
 		foreach ((array) Config::get("enabled_modules") as $module)
 			if (file_exists(MAIN_DIR."/modules/".$module."/upgrades.php")) {
