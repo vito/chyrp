@@ -83,7 +83,7 @@
 			if (!UPGRADING)
 				$config = Config::current();
 
-			$database = (!UPGRADING) ? $config->sql : Config::get("sql") ;
+			$database = (!UPGRADING) ? fallback($config->sql, array()) : Config::get("sql") ;
 
 			# Add the setting
 			$database[$setting] = $this->$setting = $value;

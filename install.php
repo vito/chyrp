@@ -107,7 +107,7 @@
 					$errors[] = _f("Could not generate .htaccess file. Clean URLs will not be available unless you create it and put this in it:\n<pre>%s</pre>", array(fix($htaccess)));
 				}
 
-			$config->set("database", array());
+			$config->set("sql", array());
 			$config->set("name", $_POST['name']);
 			$config->set("description", $_POST['description']);
 			$config->set("url", $url);
