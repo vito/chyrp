@@ -126,11 +126,12 @@
 			$config->set("enable_trackbacking", true);
 			$config->set("send_pingbacks", false);
 			$config->set("enable_xmlrpc", true);
-			$config->set("secure_hashkey", md5(random(32, true)));
+			$config->set("enable_ajax", true);
 			$config->set("uploads_path", "/uploads/");
 			$config->set("enabled_modules", array());
 			$config->set("enabled_feathers", array("text"));
 			$config->set("routes", array());
+			$config->set("secure_hashkey", md5(random(32, true)));
 
 			foreach (array("host", "username", "password", "database", "prefix", "adapter") as $field)
 				$sql->set($field, $_POST[$field], true);

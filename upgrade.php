@@ -640,6 +640,7 @@
 
 		Config::fallback("secure_hashkey", md5(random(32, true)));
 		Config::fallback("enable_xmlrpc", true);
+		Config::fallback("enable_ajax", true);
 		Config::fallback("uploads_path", "/uploads/");
 		Config::fallback("chyrp_url", Config::get("url"));
 		Config::fallback("feed_items", Config::get("rss_posts"));

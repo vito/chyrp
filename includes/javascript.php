@@ -21,7 +21,7 @@ $(function(){
 		return false
 	})
 
-	Post.prepare_links()
+<?php if (!isset($config->enable_ajax) or $config->enable_ajax): ?>	Post.prepare_links()<?php endif; ?>
 })
 
 var Route = {

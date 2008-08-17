@@ -29,6 +29,7 @@ $(function(){
 			$("#add_comment").loader(true)
 		} })
 	}
+<?php echo "\n"; if (!isset($config->enable_ajax) or $config->enable_ajax): ?>
 	$(".comment_edit_link").livequery("click", function(){
 		var id = $(this).attr("id").replace(/comment_edit_/, "")
 		Comment.edit(id)
@@ -49,6 +50,7 @@ $(function(){
 		Comment.destroy(id)
 		return false
 	})
+<?php endif; ?>
 })
 
 var editing = 0

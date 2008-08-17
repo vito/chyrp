@@ -53,6 +53,10 @@
 							${ "XML-RPC support allows for remote access to your site. This allows you to use remote clients (e.g., <a href=\"http://www.red-sweater.com/marsedit/\">MarsEdit</a> or <a href=\"http://flickr.com/help/blogging/\">Flickr</a>) to create/edit content on your site." | translate }
 						</small>
 					</p>
+					<p>
+						<label for="enable_ajax">${ "Enable Inline Post Management" | translate }</label>
+						<input class="checkbox" type="checkbox" name="enable_ajax" id="enable_ajax"${ site.enable_ajax | checked } />
+					</p>
 
 					<p class="buttons">
 						<button type="submit" class="yay">
