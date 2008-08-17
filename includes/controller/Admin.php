@@ -1758,6 +1758,13 @@
 			require $folder."/".$_GET[$type]."/".$_GET[$type].".php";
 
 			$class_name = camelize($_GET[$type]);
+
+			if ($type == "module" and !is_subclass_of($class_name, "Modules"))
+				Flash::warning(__("Item is not a module."), "/admin/?action=modules");
+
+			if ($type == "feather" and !is_subclass_of($class_name, "Feathers"))
+				Flash::warning(__("Item is not a feather."), "/admin/?action=feathers");
+
 			if (method_exists($class_name, "__install"))
 				call_user_func(array($class_name, "__install"));
 
