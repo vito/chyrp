@@ -239,7 +239,7 @@
 			if (isset($user))
 				$user = $user->id;
 
-			fallback($user, fallback($_POST['user_id'], $this->id, true));
+			fallback($user, fallback($_POST['user_id'], $this->user_id, true));
 			fallback($pinned, (int) !empty($_POST['pinned']));
 			fallback($status, (isset($_POST['draft'])) ? "draft" : fallback($_POST['status'], $this->status, true));
 			fallback($slug, fallback($_POST['slug'], $this->feather.".".$this->id));
@@ -255,6 +255,17 @@
 			$xml = new SimpleXMLElement("<post></post>");
 			self::arr2xml($xml, $values);
 			self::arr2xml($xml, $options);
+
+			# Update all values of this post.
+			list($this->user_id,
+			     $this->pinned,
+			     $this->status,
+			     $this->url,
+			     $this->created_at,
+			     $this->updated_at) = array($user, $pinned, $status, $slug, $timestamp, $updated_timestamp);
+
+			foreach ($xml->post as $name => $val)
+				$this->$name = $val;
 
 			$sql = SQL::current();
 			$sql->update("posts",

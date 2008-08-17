@@ -22,7 +22,7 @@ $(function(){
 	$("img[@src$=.png]").ifixpng()
 
 	// "Help" links should open in popup windows.
-	$(".help").click(function(){
+	$(".help").livequery("click", function(){
 		window.open($(this).attr("href"), "help", "status=0, height=450, width=400")
 		return false
 	})
