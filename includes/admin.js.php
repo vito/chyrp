@@ -88,7 +88,8 @@ function togglers() {
 
 	$("td:has(:checkbox)").click(function(){
 		$(this).find(":checkbox").each(function(){
-			this.checked = !(this.checked)
+			if (e.target != this)
+				this.checked = !(this.checked)
 		})
 	})
 }
