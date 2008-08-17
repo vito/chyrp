@@ -377,7 +377,7 @@ var Extend = {
 					                })
 					                .css("cursor", "move")
 			}
-		} else {
+		} else if ($(".depends_"+ Extend.Drop.extension.name).size()) {
 			$(".depends_"+ Extend.Drop.extension.name).find(".description").parent().show()
 			$(".depends_"+ Extend.Drop.extension.name)
 				.find(".dependencies_list")
