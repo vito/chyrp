@@ -23,7 +23,8 @@
 		                         array("Session", "write"),
 		                         array("Session", "destroy"),
 		                         array("Session", "gc"));
-		session_set_cookie_params(60 * 60 * 24 * 30);
+		$domain = preg_replace("/^www\./", ".", $_SERVER['HTTP_HOST']);
+		session_set_cookie_params(60 * 60 * 24 * 30, "/", $domain);
 		session_name("ChyrpSession");
 		session_start();
 	}
