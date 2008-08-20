@@ -70,9 +70,9 @@
 				}
 
 				return $video;
-			} else {
-				return $video;
 			}
+
+			return $video;
 		}
 		public function embed_tag_for($post, $max_width = 500) {
 			$post->embed = preg_replace("/&([[:alnum:]_]+)=/", "&amp;\\1=", $post->embed);
@@ -98,6 +98,8 @@
 
 				return str_replace($match, 'width:'.$max_width.$px.';'.$space.'height:'.$new_height.$px.';', $post->embed);
 			}
+
+			return $post->embed;
 		}
 		public function isVideo() {
 			if (!isset($_GET['url']))
