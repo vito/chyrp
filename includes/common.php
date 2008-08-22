@@ -33,6 +33,7 @@
 	if (!defined('TRACKBACK'))  define('TRACKBACK', false);
 
 	define('UPGRADING', false);
+	define('INSTALLING', false);
 
 	# Constant: INDEX
 	# Is the requested file index.php?

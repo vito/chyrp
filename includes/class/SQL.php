@@ -25,7 +25,7 @@
 		 * The class constructor is private so there is only one connection.
 		 */
 		private function __construct() {
-			if (!UPGRADING and !isset(Config::current()->sql))
+			if (!UPGRADING and !INSTALLING and !isset(Config::current()->sql))
 				error(__("Error"), __("Database configuration is not set. Please run the upgrader."));
 
 			$database = (!UPGRADING) ?
