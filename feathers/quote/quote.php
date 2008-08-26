@@ -5,6 +5,7 @@
 			                      "type" => "text_block",
 			                      "rows" => 5,
 			                      "label" => __("Quote", "quote"),
+			                      "preview" => true,
 			                      "bookmarklet" => "selection"));
 			$this->setField(array("attr" => "source",
 			                      "type" => "text_block",

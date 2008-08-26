@@ -146,7 +146,8 @@ var Write = {
 			},
 			update: function(e, ui){
 				$(ui.item).find("a").unbind("click")
-				$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", "action=reorder_feathers&"+$("#sub-nav").sortable("serialize"))
+				$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php",
+				       "action=reorder_feathers&"+ $("#sub-nav").sortable("serialize"))
 			}
 		})
 	},
@@ -155,13 +156,30 @@ var Write = {
 			return
 
 		var feather = ($("#feather").size()) ? $("#feather").val() : ""
-		$(document.createElement("div")).css("display", "none").attr("id", "preview").insertBefore("#write_form, #edit_form")
-		$(document.createElement("button")).append("<?php echo __("Preview &#8594;"); ?>").attr("accesskey", "p").click(function(){
-			$("#preview").load("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "preview", content: $(".preview_me").val(), feather: feather }, function(){
-				$(this).fadeIn("fast")
+
+		$(".preview_me").each(function(){
+			var id = $(this).attr("id")
+			$(document.createElement("div"))
+				.css("display", "none")
+				.attr("id", "preview_"+ id)
+				.insertBefore("#write_form, #edit_form")
+		})
+
+		$(document.createElement("button"))
+			.append("<?php echo __("Preview &#8594;"); ?>").attr("accesskey", "p")
+			.click(function(){
+				$(".preview_me").each(function(){
+					var id = $(this).attr("id")
+					$("#preview_"+ id).load("<?php echo $config->chyrp_url; ?>/includes/ajax.php", {
+						action: "preview",
+						content: $("#"+ id).val(), feather: feather
+					}, function(){
+						$(this).fadeIn("fast")
+					})
+				})
+				return false
 			})
-			return false
-		}).appendTo(".buttons")
+			.appendTo(".buttons")
 	},
 	more_options: function(){
 		if ($("#more_options").size()) {
