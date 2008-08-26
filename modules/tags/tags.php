@@ -24,6 +24,7 @@
 		}
 
 		public function admin_head() {
+			$config = Config::current();
 ?>
 		<script type="text/javascript">
 			$(function(){
@@ -38,6 +39,11 @@
 				}
 				scanTags()
 				$("#tags").livequery("keyup", scanTags)
+				$(".tag_cloud > span").livequery("mouseover", function(){
+					$(this).find(".controls").css("opacity", 1)
+				}).livequery("mouseout", function(){
+					$(this).find(".controls").css("opacity", 0)
+				})
 			})
 
 			function add_tag(name, link) {
@@ -61,29 +67,7 @@
 				}
 			}
 		</script>
-		<style type="text/css" media="screen">
-			.tags_select {
-				display: inline-block;
-				margin-top: .5em;
-			}
-			.tags_select a {
-				padding: .1em .4em;
-				border: .1em solid #DDDDA8;
-				background: #FFFFCA;
-				text-decoration: none;
-				border-top-width: 0;
-				border-left-width: 0;
-				color: #555;
-			}
-			.tags_select a.tag_added {
-				background: #eee;
-				border-top-width: .1em;
-				border-bottom: 0;
-				border-left-width: .1em;
-				border-right: 0;
-				border-color: #ddd;
-			}
-		</style>
+		<link rel="stylesheet" href="<?php echo $config->chyrp_url; ?>/modules/tags/admin.css" type="text/css" media="screen" title="no title" charset="utf-8" />
 <?php
 		}
 
@@ -120,13 +104,13 @@
 		public function bookmarklet_submit_values($values) {
 			$tags = array();
 			foreach ($values as &$value) {
-				if (preg_match_all("/([^\\\\]|^)#([a-zA-Z0-9 ]+)(?!\\\\)#/", $value, $double)) {
+				if (preg_match_all("/(\s|^)#([a-zA-Z0-9 ]+)(?!\\\\)#/", $value, $double)) {
 					$tags = array_merge($double[2], $tags);
-					$value = preg_replace("/([^\\\\]|^)#([a-zA-Z0-9 ]+)(?!\\\\)#/", "\\1", $value);
+					$value = preg_replace("/(\s|^)#([a-zA-Z0-9 ]+)(?!\\\\)#/", "\\1", $value);
 				}
-				if (preg_match_all("/[^\\\\]#([a-zA-Z0-9]+)(?!\\\\#)/", $value, $single)) {
+				if (preg_match_all("/(\s|^)#([a-zA-Z0-9]+)(?!#)/", $value, $single)) {
 					$tags = array_merge($single[1], $tags);
-					$value = preg_replace("/([^\\\\]|^)#([a-zA-Z0-9]+)(?!\\\\#)/", "\\1\\2", $value);
+					$value = preg_replace("/(\s|^)#([a-zA-Z0-9]+)(?!#)/", "\\1\\2", $value);
 				}
 				$_POST['tags'] = implode(", ", $tags);
 				$value = str_replace("\\#", "#", $value);
@@ -195,6 +179,67 @@
 
 		public function manage_posts_column($post) {
 			echo "<td>".implode(", ", $post->tags["linked"])."</td>";
+		}
+
+		static function manage_nav($navs) {
+			if (!Post::any_editable())
+				return $navs;
+
+			$navs["manage_tags"] = array("title" => __("Tags", "tags"),
+			                             "selected" => array("bulk_tags", "rename_tag", "delete_tag"));
+
+			return $navs;
+		}
+
+		static function manage_nav_pages($pages) {
+			array_push($pages, "manage_tags", "bulk_tags", "rename_tag", "delete_tag");
+			return $pages;
+		}
+
+		public function admin_manage_tags($admin) {
+			$sql = SQL::current();
+
+			$tags = array();
+			$clean = array();
+			foreach($sql->select("posts",
+				                 "tags.*",
+				                 array(Post::$private, Post::$enabled_feathers),
+				                 null,
+				                 array(),
+				                 null, null, null,
+				                 array(array("table" => "tags",
+				                             "where" => "tags.post_id = posts.id")))->fetchAll() as $tag) {
+				if ($tag["id"] == null)
+					continue;
+
+				$tags[] = $tag["tags"];
+				$clean[] = $tag["clean"];
+			}
+
+			# array("{{foo}} {{bar}}", "{{foo}}") to "{{foo}} {{bar}} {{foo}}" to array("foo", "bar", "foo") to array("foo" => 2, "bar" => 1)
+			$tags = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $tags))));
+			$clean = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $clean))));
+			$tag2clean = array_combine(array_keys($tags), array_keys($clean));
+
+			$max_qty = max(array_values($tags));
+			$min_qty = min(array_values($tags));
+
+			$spread = $max_qty - $min_qty;
+			if ($spread == 0)
+				$spread = 1;
+
+			$step = 75 / $spread;
+
+			$context = array();
+			foreach ($tags as $tag => $count)
+				$context[] = array("size" => (100 + (($count - $min_qty) * $step)),
+				                   "popularity" => $count,
+				                   "name" => $tag,
+				                   "title" => sprintf(_p("%s post tagged with &quot;%s&quot;", "%s posts tagged with &quot;%s&quot;", $count, "tags"), $count, $tag),
+				                   "clean" => $tag2clean[$tag],
+				                   "url" => url("tag/".$tag2clean[$tag]."/"));
+
+			$admin->context["tag_cloud"] = $context;
 		}
 
 		public function check_route_tag() {
@@ -363,12 +408,15 @@
 		public function sort_tags_name_asc($a, $b) {
 			return strcmp($a["name"], $b["name"]);
 		}
+
 		public function sort_tags_name_desc($a, $b) {
 			return strcmp($b["name"], $a["name"]);
 		}
+
 		public function sort_tags_popularity_asc($a, $b) {
 			return $a["popularity"] > $b["popularity"];
 		}
+
 		public function sort_tags_popularity_desc($a, $b) {
 			return $a["popularity"] < $b["popularity"];
 		}

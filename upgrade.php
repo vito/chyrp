@@ -138,13 +138,15 @@
 
 	load_translator("chyrp", INCLUDES_DIR."/locale/".Config::get("locale").".mo");
 
-	function test($try) {
+	function test($try, $message = "") {
 		$sql = SQL::current();
+
 		if (!empty($sql->error)) {
-			$info = "\n".$sql->error."\n\n";
+			$message.= "\n".$sql->error."\n\n";
 			$sql->error = "";
-		} else
-			$info = "";
+		}
+
+		$info = $message;
 
 		if ($try)
 			return " <span class=\"yay\">".__("success!")."</span>\n";
@@ -201,10 +203,10 @@
 
 		if (!file_exists(MAIN_DIR."/.htaccess"))
 			echo __("Generating .htaccess file...").
-			     test(@file_put_contents(MAIN_DIR."/.htaccess", $htaccess));
+			     test(@file_put_contents(MAIN_DIR."/.htaccess", $htaccess), __("Try creating the file and/or CHMODding it to 777 temporarily."));
 		else
 			echo __("Appending to .htaccess file...").
-			     test(@file_put_contents(MAIN_DIR."/.htaccess", "\n\n".$htaccess, FILE_APPEND));
+			     test(@file_put_contents(MAIN_DIR."/.htaccess", "\n\n".$htaccess, FILE_APPEND), __("Try creating the file and/or CHMODding it to 777 temporarily."));
 	}
 
 	function tweets_to_posts() {
@@ -254,7 +256,7 @@
 	function move_yml_yaml() {
 		if (file_exists(INCLUDES_DIR."/config.yml.php"))
 			echo __("Moving /includes/config.yml.php to /includes/config.yaml.php...").
-			     test(@rename(INCLUDES_DIR."/config.yml.php", INCLUDES_DIR."/config.yaml.php"));
+			     test(@rename(INCLUDES_DIR."/config.yml.php", INCLUDES_DIR."/config.yaml.php"), __("Try CHMODding the file to 777."));
 	}
 
 	function update_protection() {
@@ -269,7 +271,7 @@
 		                     $contents);
 
 		echo __("Updating protection code in config.yaml.php...").
-		     test(@file_put_contents(INCLUDES_DIR."/config.yaml.php", $new_error));
+		     test(@file_put_contents(INCLUDES_DIR."/config.yaml.php", $new_error), __("Try CHMODding the file to 777."));
 	}
 
 	function theme_default_to_stardust() {
@@ -285,7 +287,7 @@
 
 	function move_upload() {
 		if (file_exists(MAIN_DIR."/upload") and !file_exists(MAIN_DIR."/uploads"))
-			echo __("Renaming /upload directory to /uploads...").test(@rename(MAIN_DIR."/upload", MAIN_DIR."/uploads"));
+			echo __("Renaming /upload directory to /uploads...").test(@rename(MAIN_DIR."/upload", MAIN_DIR."/uploads"), __("Try CHMODding the directory to 777."));
 	}
 
 	function make_posts_safe() {
@@ -506,7 +508,7 @@
 	function remove_database_config() {
 		if (file_exists(INCLUDES_DIR."/database.yaml.php"))
 			echo __("Removing database.yaml.php file...").
-			     test(@unlink(INCLUDES_DIR."/database.yaml.php"));
+			     test(@unlink(INCLUDES_DIR."/database.yaml.php"), __("Try deleting it manually."));
 	}
 
 	function rename_database_config() {
@@ -652,6 +654,7 @@
 
 		theme_default_to_stardust();
 
+		Config::fallback("routes", array());
 		Config::fallback("secure_hashkey", md5(random(32, true)));
 		Config::fallback("enable_xmlrpc", true);
 		Config::fallback("enable_ajax", true);

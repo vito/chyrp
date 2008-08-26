@@ -377,7 +377,7 @@ var Extend = {
 				$("#"+ dependee +" .dependencies_list ."+ Extend.Drop.extension.name).hide()
 
 				if ($("#"+ dependee).attr("class").split(" ").find(/needs_(.+)/).length == 0)
-					$("#"+ dependee).find(".description").parent().hide().end()
+					$("#"+ dependee).find(".description").parent().hide().end().end()
 					                .draggable({
 					                    zIndex: 100,
 					                    cancel: "a",
@@ -390,6 +390,10 @@ var Extend = {
 			$(".depends_"+ Extend.Drop.extension.name)
 				.find(".dependencies_list")
 				.append($(document.createElement("li")).text(Extend.Drop.extension.name).addClass(Extend.Drop.extension.name))
+				.show()
+				.end()
+				.find(".dependencies_message")
+				.show()
 				.end()
 				.addClass("needs_"+ Extend.Drop.extension.name)
 		}

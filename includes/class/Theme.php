@@ -116,7 +116,7 @@
 			                            "MONTH(created_at) AS month",
 			                            "created_at AS created_at",
 			                            "COUNT(id) AS posts"),
-			                      "status = 'public'",
+			                      array("status = 'public'", Post::$enabled_feathers),
 			                      $order_by." ".strtoupper($order),
 			                      array(),
 			                      ($limit == 0) ? null : $limit,
@@ -179,6 +179,9 @@
 			foreach($total as $file) {
 				$path = preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file);
 				$file = basename($file);
+
+				if (substr($file, -4) != ".css" and substr($file, -4) != ".php")
+					continue;
 
 				if ($file == "ie.css")
 				    $stylesheets.= "<!--[if IE]>";

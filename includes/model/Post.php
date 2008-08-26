@@ -122,8 +122,8 @@
 		 *     $pinned - Pin the post?
 		 *     $status - Post status
 		 *     $slug - A new URL for the post.
-		 *     $timestamp - New @created_at@ timestamp for the post.
-		 *     $updated_timestamp - New @updated_at@ timestamp for the post, or @false@ to not updated it.
+		 *     $created_at - New @created_at@ timestamp for the post.
+		 *     $updated_at - New @updated_at@ timestamp for the post, or @false@ to not updated it.
 		 *     $trackbacks - URLs separated by " " to send trackbacks to.
 		 *     $options - Options for the post.
 		 *
@@ -133,7 +133,7 @@
 		 * See Also:
 		 *     <update>
 		 */
-		static function add($values, $clean = "", $url = "", $feather = null, $user = null, $pinned = null, $status = null, $timestamp = null, $updated_timestamp = null, $trackbacks = "", $pingbacks = true, $options = null) {
+		static function add($values, $clean = "", $url = "", $feather = null, $user = null, $pinned = null, $status = null, $created_at = null, $updated_at = null, $trackbacks = "", $pingbacks = true, $options = null) {
 
 			if ($user instanceof User)
 				$user = $user->id;
@@ -142,11 +142,11 @@
 			fallback($user, fallback($_POST['user_id'], Visitor::current()->id, true));
 			fallback($pinned, (int) !empty($_POST['pinned']));
 			fallback($status, (isset($_POST['draft'])) ? "draft" : fallback($_POST['status'], "public", true));
-			fallback($timestamp,
+			fallback($created_at,
 			         (!empty($_POST['created_at']) and (!isset($_POST['original_time']) or $_POST['created_at'] != $_POST['original_time'])) ?
-			          when("Y-m-d H:i:s", $_POST['created_at']) :
+			          datetime($_POST['created_at']) :
 			          datetime());
-			fallback($updated_timestamp, fallback($_POST['updated_at'], "0000-00-00 00:00:00", true));
+			fallback($updated_at, fallback($_POST['updated_at'], "0000-00-00 00:00:00", true));
 			fallback($trackbacks, fallback($_POST['trackbacks'], "", true));
 			fallback($options, fallback($_POST['option'], array(), true));
 
@@ -178,8 +178,8 @@
 			                   ":status" => $status,
 			                   ":clean" => $clean,
 			                   ":url" => $url,
-			                   ":created_at" => $timestamp,
-			                   ":updated_at" => $updated_timestamp));
+			                   ":created_at" => $created_at,
+			                   ":updated_at" => $updated_at));
 			$id = $sql->latest();
 
 			if (empty($clean) or empty($url))
@@ -225,14 +225,14 @@
 		 *     $pinned - Pin the post?
 		 *     $status - Post status
 		 *     $slug - A new URL for the post.
-		 *     $timestamp - New @created_at@ timestamp for the post.
-		 *     $updated_timestamp - New @updated_at@ timestamp for the post, or @false@ to not updated it.
+		 *     $created_at - New @created_at@ timestamp for the post.
+		 *     $updated_at - New @updated_at@ timestamp for the post, or @false@ to not updated it.
 		 *     $options - Options for the post.
 		 *
 		 * See Also:
 		 *     <add>
 		 */
-		public function update($values, $user = null, $pinned = null, $status = null, $slug = null, $timestamp = null, $updated_timestamp = null, $options = null) {
+		public function update($values, $user = null, $pinned = null, $status = null, $slug = null, $created_at = null, $updated_at = null, $options = null) {
 			if ($this->no_results)
 				return false;
 
@@ -243,12 +243,12 @@
 			fallback($pinned, (int) !empty($_POST['pinned']));
 			fallback($status, (isset($_POST['draft'])) ? "draft" : fallback($_POST['status'], $this->status, true));
 			fallback($slug, fallback($_POST['slug'], $this->feather.".".$this->id));
-			fallback($timestamp, (!empty($_POST['created_at'])) ? when("Y-m-d H:i:s", $_POST['created_at']) : $this->created_at);
+			fallback($created_at, (!empty($_POST['created_at'])) ? datetime($_POST['created_at']) : $this->created_at);
 
-			if ($updated_timestamp === false)
-				$updated_timestamp = $this->updated_at;
+			if ($updated_at === false)
+				$updated_at = $this->updated_at;
 			else
-				fallback($updated_timestamp, fallback($_POST['updated_at'], $this->updated_at, true));
+				fallback($updated_at, fallback($_POST['updated_at'], datetime(), true));
 
 			fallback($options, fallback($_POST['option'], array(), true));
 
@@ -262,7 +262,7 @@
 			     $this->status,
 			     $this->url,
 			     $this->created_at,
-			     $this->updated_at) = array($user, $pinned, $status, $slug, $timestamp, $updated_timestamp);
+			     $this->updated_at) = array($user, $pinned, $status, $slug, $created_at, $updated_at);
 
 			foreach ($xml->post as $name => $val)
 				$this->$name = $val;
@@ -282,12 +282,12 @@
 			                   ":status" => $status,
 			                   ":clean" => $slug,
 			                   ":url" => $slug,
-			                   ":created_at" => $timestamp,
-			                   ":updated_at" => $updated_timestamp,
+			                   ":created_at" => $created_at,
+			                   ":updated_at" => $updated_at,
 			                   ":id" => $this->id));
 
 			$trigger = Trigger::current();
-			$trigger->call("update_post", $this, $values, $user, $pinned, $status, $slug, $timestamp, $updated_timestamp, $options);
+			$trigger->call("update_post", $this, $values, $user, $pinned, $status, $slug, $created_at, $updated_at, $options);
 		}
 
 		/**
