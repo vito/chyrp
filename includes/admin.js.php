@@ -172,7 +172,9 @@ var Write = {
 					var id = $(this).attr("id")
 					$("#preview_"+ id).load("<?php echo $config->chyrp_url; ?>/includes/ajax.php", {
 						action: "preview",
-						content: $("#"+ id).val(), feather: feather
+						content: $("#"+ id).val(),
+						feather: feather,
+						field: id
 					}, function(){
 						$(this).fadeIn("fast")
 					})

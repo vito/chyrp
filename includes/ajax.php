@@ -48,7 +48,7 @@
 		case "preview":
 			if (empty($_POST['content'])) break;
 
-			$trigger->filter($_POST['content'], array("preview_".$_POST['feather'], "preview"));
+			$trigger->filter($_POST['content'], array("preview_".$_POST['feather'], "preview"), $_POST['field'], $_POST['feather']);
 
 			echo "<h2 class=\"preview-header\">".__("Preview")."</h2>\n<div class=\"preview-content\">".$_POST['content']."</div>";
 			break;

@@ -5,6 +5,7 @@
 			                      "type" => "text_block",
 			                      "rows" => 4,
 			                      "label" => __("Video", "video"),
+			                      "preview" => true,
 			                      "bookmarklet" => $this->isVideo() ?
 			                                        "url" :
 			                                        ""));
@@ -18,6 +19,7 @@
 
 			$this->bookmarkletSelected($this->isVideo());
 
+			$this->respondTo("preview_video", "embed_tag");
 			$this->setFilter("caption", "markup_post_text");
 		}
 		public function submit() {
@@ -47,7 +49,10 @@
 		public function feed_content($post) {
 			return $post->embed."<br /><br />".$post->caption;
 		}
-		public function embed_tag($video) {
+		public function embed_tag($video, $field = null) { # We use this for previewing too
+			if (isset($field) and $field != "embed")
+				return $video; # If they're previewing and the field argument isn't the embed, return the original.
+
 			if (preg_match("/http:\/\/(www\.|[a-z]{2}\.)?youtube\.com\/watch\?v=([^&]+)/", $video, $matches)) {
 				return '<object type="application/x-shockwave-flash" class="object-youtube" data="http://'.$matches[1].'youtube.com/v/'.$matches[2].'" width="468" height="391"><param name="movie" value="http://'.$matches[1].'youtube.com/v/'.$matches[2].'" /><param name="FlashVars" value="playerMode=embedded" /></object>';
 			} else if (preg_match("/http:\/\/(www\.)?vimeo.com\/([0-9]+)/", $video, $matches)) {
