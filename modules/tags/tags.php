@@ -1,8 +1,9 @@
 <?php
 	class Tags extends Modules {
 		public function __init() {
-			$this->addAlias('metaWeblog_newPost_preQuery', 'metaWeblog_editPost_preQuery');
+			$this->addAlias("metaWeblog_newPost_preQuery", "metaWeblog_editPost_preQuery");
 			$this->addAlias("post_grab", "posts_get");
+			$this->addAlias("javascript", "cloudSelectorJS");
 		}
 
 		static function __install() {
@@ -27,45 +28,7 @@
 			$config = Config::current();
 ?>
 		<script type="text/javascript">
-			$(function(){
-				function scanTags(){
-					$(".tags_select a").each(function(){
-						regexp = new RegExp("(, ?|^)"+ $(this).text() +"(, ?|$)", "g")
-						if ($("#tags").val().match(regexp))
-							$(this).addClass("tag_added")
-						else
-							$(this).removeClass("tag_added")
-					})
-				}
-				scanTags()
-				$("#tags").livequery("keyup", scanTags)
-				$(".tag_cloud > span").livequery("mouseover", function(){
-					$(this).find(".controls").css("opacity", 1)
-				}).livequery("mouseout", function(){
-					$(this).find(".controls").css("opacity", 0)
-				})
-			})
-
-			function add_tag(name, link) {
-				if ($("#tags").val().match("(, |^)"+ name +"(, |$)")) {
-					regexp = new RegExp("(, |^)"+ name +"(, |$)", "g")
-					$("#tags").val($("#tags").val().replace(regexp, function(match, before, after){
-						if (before == ", " && after == ", ")
-							return ", "
-						else
-							return ""
-					}))
-
-					$(link).removeClass("tag_added")
-				} else {
-					if ($("#tags").val() == "")
-						$("#tags").val(name)
-					else
-						$("#tags").val($("#tags").val() + ", "+ name)
-
-					$(link).addClass("tag_added")
-				}
-			}
+<?php $this->cloudSelectorJS(); ?>
 		</script>
 		<link rel="stylesheet" href="<?php echo $config->chyrp_url; ?>/modules/tags/admin.css" type="text/css" media="screen" title="no title" charset="utf-8" />
 <?php
@@ -501,5 +464,49 @@
 
 			$atom.= "		<chyrp:tags>".fix(implode(", ", self::unlinked_tags($tags)))."</chyrp:tags>\r";
 			return $atom;
+		}
+
+		public function cloudSelectorJS() {
+?>
+			$(function(){
+				function scanTags(){
+					$(".tags_select a").each(function(){
+						regexp = new RegExp("(, ?|^)"+ $(this).text() +"(, ?|$)", "g")
+						if ($("#tags").val().match(regexp))
+							$(this).addClass("tag_added")
+						else
+							$(this).removeClass("tag_added")
+					})
+				}
+				scanTags()
+				$("#tags").livequery("keyup", scanTags)
+				$(".tag_cloud > span").livequery("mouseover", function(){
+					$(this).find(".controls").css("opacity", 1)
+				}).livequery("mouseout", function(){
+					$(this).find(".controls").css("opacity", 0)
+				})
+			})
+
+			function add_tag(name, link) {
+				if ($("#tags").val().match("(, |^)"+ name +"(, |$)")) {
+					regexp = new RegExp("(, |^)"+ name +"(, |$)", "g")
+					$("#tags").val($("#tags").val().replace(regexp, function(match, before, after){
+						if (before == ", " && after == ", ")
+							return ", "
+						else
+							return ""
+					}))
+
+					$(link).removeClass("tag_added")
+				} else {
+					if ($("#tags").val() == "")
+						$("#tags").val(name)
+					else
+						$("#tags").val($("#tags").val() + ", "+ name)
+
+					$(link).addClass("tag_added")
+				}
+			}
+<?php
 		}
 	}

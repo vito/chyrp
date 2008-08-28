@@ -651,6 +651,30 @@ span.waiting {
 }
 
 /* Miscellaneous */
-img.smiley {
-	margin: 0 0 -.3em;
-}
+	/* Emoticons module. */
+	img.smiley {
+		margin: 0 0 -.3em;
+	}
+
+	/* Tags module (ajax editing). */
+	.tags_select {
+		display: inline-block;
+		margin-top: .5em;
+	}
+	.tags_select a {
+		padding: .1em .4em;
+		border: .1em solid #DDDDA8;
+		background: #FFFFCA;
+		text-decoration: none;
+		border-top-width: 0;
+		border-left-width: 0;
+		color: #555;
+	}
+	.tags_select a.tag_added {
+		background: #111;
+		border-top-width: .1em;
+		border-bottom: 0;
+		border-left-width: .1em;
+		border-right: 0;
+		border-color: #000;
+	}
