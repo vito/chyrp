@@ -82,27 +82,20 @@
 		public function embed_tag_for($post, $max_width = 500) {
 			$post->embed = preg_replace("/&([[:alnum:]_]+)=/", "&amp;\\1=", $post->embed);
 
-			if (preg_match("/width=(\"|')([0-9]+)(\"|') height=(\"|')([0-9]+)(\"|')/", $post->embed, $scale)) {
-				$match  = $scale[0];
-				$width  = $scale[2];
-				$height = $scale[5];
+			if (preg_match("/width(=\"|='|:\s*)([0-9]+)/", $post->embed, $width)) {
+				$sep_w = $width[1];
+				$original_width = $width[2];
+			} else
+				return $post->embed;
 
-				$new_height = (int) (($max_width / $width) * $height);
+			if (preg_match("/height(=\"|='|:\s*)([0-9]+)/", $post->embed, $height)) {
+				$sep_h  = $height[1];
+				$original_height = $height[2];
 
-				return str_replace($match, 'width="'.$max_width.'" height="'.$new_height.'"', $post->embed);
+				$new_height = (int) (($max_width / $original_width) * $original_height);
 			}
 
-			if (preg_match("/width:([0-9]+)(px)?;(\s*)height:([0-9]+)(px)?;?/", $post->embed, $scale)) {
-				$match  = $scale[0];
-				$width  = $scale[1];
-				$height = $scale[4];
-				$px     = $scale[2];
-				$space  = $scape[3];
-
-				$new_height = (int) (($max_width / $width) * $height);
-
-				return str_replace($match, 'width:'.$max_width.$px.';'.$space.'height:'.$new_height.$px.';', $post->embed);
-			}
+			$post->embed = str_replace(array($width[0], $height[0]), array("width".$sep_w.$max_width, "height".$sep_h.$new_height), $post->embed);
 
 			return $post->embed;
 		}
