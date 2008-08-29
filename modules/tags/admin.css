@@ -1,0 +1,45 @@
+.tags_select {
+	display: inline-block;
+	margin-top: .5em;
+}
+.tags_select a {
+	padding: .1em .4em;
+	border: .1em solid #DDDDA8;
+	background: #FFFFCA;
+	text-decoration: none;
+	border-top-width: 0;
+	border-left-width: 0;
+	color: #555;
+}
+.tags_select a.tag_added {
+	background: #eee;
+	border-top-width: .1em;
+	border-bottom: 0;
+	border-left-width: .1em;
+	border-right: 0;
+	border-color: #ddd;
+}
+
+.tag_cloud {
+	text-align: center;
+}
+.tag_cloud span {
+	display: inline-block;
+}
+.tag_cloud span a.tag {
+	display: block;
+	line-height: 2.5em;
+	padding: 0 .75em;
+	background: #eee;
+	text-decoration: none;
+	font-weight: bold;
+	color: #777;
+}
+.tag_cloud span .controls {
+	opacity: 0;
+	padding: .1em .25em;
+	text-align: center;
+	background: #f9f9f9;
+	-webkit-border-bottom-right-radius: .5em;
+	-webkit-border-bottom-left-radius: .5em;
+}

@@ -179,10 +179,7 @@
 				$clean[] = $tag["clean"];
 			}
 
-			# array("{{foo}} {{bar}}", "{{foo}}") to "{{foo}} {{bar}} {{foo}}" to array("foo", "bar", "foo") to array("foo" => 2, "bar" => 1)
-			$tags = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $tags))));
-			$clean = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $clean))));
-			$tag2clean = array_combine(array_keys($tags), array_keys($clean));
+			list($tags, $clean, $tag2clean) = $this->parseTags($tags, $clean);
 
 			$max_qty = max(array_values($tags));
 			$min_qty = min(array_values($tags));
@@ -203,6 +200,78 @@
 				                   "url" => url("tag/".$tag2clean[$tag]."/"));
 
 			$admin->context["tag_cloud"] = $context;
+		}
+
+		public function admin_rename_tag($admin) {
+			$sql = SQL::current();
+
+			$tags = array();
+			$clean = array();
+			foreach($sql->select("posts",
+				                 "tags.*",
+				                 array(Post::$private, Post::$enabled_feathers),
+				                 null,
+				                 array(":tag" => "%{{".$_GET['name']."}}%"),
+				                 null, null, null,
+				                 array(array("table" => "tags",
+				                             "where" => array("post_id = posts.id", "clean LIKE :tag"))))->fetchAll() as $tag) {
+				if ($tag["id"] == null)
+					continue;
+
+				$tags[] = $tag["tags"];
+				$clean[] = $tag["clean"];
+			}
+
+			list($tags, $clean, $tag2clean) = $this->parseTags($tags, $clean);
+
+			foreach ($tags as $tag => $count)
+				if ($tag2clean[$tag] == $_GET['name'])
+					return $admin->context["tag"] = array("name" => $tag, "clean" => $tag2clean[$tag]);
+		}
+
+		public function admin_update_tag($admin) {
+			$sql = SQL::current();
+
+			$tags = array();
+			$clean = array();
+			foreach($sql->select("tags",
+				                 "*",
+				                 "clean LIKE :tag",
+				                 null,
+				                 array(":tag" => "%{{".$_POST['clean']."}}%"))->fetchAll() as $tag) {
+				$names = str_replace("{{".$_POST['clean']."}}", "{{".$_POST['name']."}}", $tag["tags"]);
+				$clean = str_replace("{{".$_POST['clean']."}}", "{{".sanitize($_POST['name'])."}}", $tag["clean"]);
+				$sql->update("tags",
+				             "id = :id",
+				             array("tags" => ":tags",
+				                   "clean" => ":clean"),
+				             array(":id" => $tag["id"],
+				                   ":tags" => $names,
+				                   ":clean" => $clean));
+			}
+
+			Flash::notice(__("Tag renamed.", "tags"), "/admin/?action=manage_tags");
+		}
+
+		public function admin_delete_tag($admin) {
+			$sql = SQL::current();
+
+			$tags = array();
+			$clean = array();
+			foreach($sql->select("tags",
+				                 "*",
+				                 "clean LIKE :tag",
+				                 null,
+				                 array(":tag" => "%{{".$_GET['name']."}}%"))->fetchAll() as $tag)
+				$sql->update("tags",
+				             "id = :id",
+				             array("tags" => ":tags",
+				                   "clean" => ":clean"),
+				             array(":id" => $tag["id"],
+				                   ":tags" => preg_replace("/\{\{{$_GET['name']}\}\},?/", "", $tag["tags"]),
+				                   ":clean" => preg_replace("/\{\{{$_GET['name']}\}\},?/", "", $tag["clean"])));
+
+			Flash::notice(__("Tag deleted.", "tags"), "/admin/?action=manage_tags");
 		}
 
 		public function check_route_tag() {
@@ -407,10 +476,7 @@
 			if (!count($unclean))
 				return array();
 
-			# array("{{foo}},{{bar}}", "{{foo}}") to "{{foo}},{{bar}},{{foo}}" to array("foo", "bar", "foo") to array("foo" => 2, "bar" => 1)
-			$unclean = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $unclean))));
-			$clean = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $clean))));
-			$tag2clean = array_combine(array_keys($unclean), array_keys($clean));
+			list($tags, $clean, $tag2clean) = $this->parseTags($tags, $clean);
 
 			foreach ($unclean as $name => $popularity)
 				$unclean[$name] = array("name" => $name, "popularity" => $popularity, "url" => $tag2clean[$name]);
@@ -434,10 +500,7 @@
 				$clean[] = $tag["clean"];
 			}
 
-			# array("{{foo}},{{bar}}", "{{foo}}") to "{{foo}},{{bar}},{{foo}}" to array("foo", "bar", "foo") to array("foo" => 2, "bar" => 1)
-			$tags = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $tags))));
-			$clean = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $clean))));
-			$clean2tag = array_combine(array_keys($clean), array_keys($tags));
+			list($tags, $clean, $tag2clean) = $this->parseTags($tags, $clean);
 
 			return $clean2tag[$clean_tag];
 		}
@@ -450,10 +513,7 @@
 				$clean[] = $tag["clean"];
 			}
 
-			# array("{{foo}},{{bar}}", "{{foo}}") to "{{foo}},{{bar}},{{foo}}" to array("foo", "bar", "foo") to array("foo" => 2, "bar" => 1)
-			$tags = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $tags))));
-			$clean = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $clean))));
-			$tag2clean = array_combine(array_keys($tags), array_keys($clean));
+			list($tags, $clean, $tag2clean) = $this->parseTags($tags, $clean);
 
 			return $tag2clean[$unclean_tag];
 		}
@@ -508,5 +568,19 @@
 				}
 			}
 <?php
+		}
+
+		# array("{{foo}},{{bar}}", "{{foo}}")
+		# to
+		# "{{foo}},{{bar}},{{foo}}"
+		# to
+		# array("foo", "bar", "foo")
+		# to
+		# array("foo" => 2, "bar" => 1)
+		public function parseTags($tags, $clean) {
+			$tags = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $tags))));
+			$clean = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $clean))));
+			$tag2clean = array_combine(array_keys($tags), array_keys($clean));
+			return array($tags, $clean, $tag2clean);
 		}
 	}

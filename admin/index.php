@@ -118,7 +118,7 @@
 							$template = $path."/".$extension."/pages/admin/".$action.".twig";
 
 				if (!file_exists($template))
-					error(__("Template Missing"), _f("Couldn't load template:<br /><br />%s", array("pages/".$action.".twig")));
+					error(__("Template Missing"), _f("Couldn't load template: <code>%s</code>", array("pages/".$action.".twig")));
 			}
 
 			return $this->twig->getTemplate($template)->display($admin->context);

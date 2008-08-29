@@ -1,0 +1,21 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Manage Tags" | translate("tags") }{% endblock %}
+
+{% block content %}
+			<h1>${ "Manage Tags" | translate("tags") } <span class="sub right">${ "(hover for controls)" | translate }</span></h1>
+			<div class="tag_cloud">
+				{% for tag in tag_cloud %}
+				<span class="tag_wrap">
+					<a class="tag" href="$tag.url" style="font-size: $tag.size%" title="$tag.title">$tag.name</a>
+					<div class="controls">
+						<a class="edit_tag" href="{% admin "rename_tag&name="~ tag.clean %}"><img src="images/icons/edit.png" alt="edit" /></a>
+						<a class="delete_tag" href="{% admin "delete_tag&name="~ tag.clean %}"><img src="images/icons/delete.png" alt="edit" /></a>
+					</div>
+				</span>
+				{% else %}
+				<h2>${ "You don't have any tags." | translate("tags") }</h2>
+				<br />
+				{% endfor %}
+			</div>
+{% endblock %}

@@ -198,6 +198,16 @@ a:visited {
 	font-weight: bold;
 	font-size: 1.2em;
 }
+#content h1 .sub {
+	font-size: .6em;
+	color: #ccc;
+}
+#content h2 .sub,
+#content h3 .sub,
+#content h4 .sub {
+	font-size: .8em;
+	color: #bcbcbc;
+}
 /* @end */
 
 /* @group Extend */
@@ -212,7 +222,6 @@ a:visited {
 }
 .enable h2 .sub,
 .disable h2 .sub {
-	font-size: .8em;
 	color: #bcbcbc;
 }
 .enable ul,
@@ -827,6 +836,9 @@ ul.sort_pages input {
 /* @end */
 
 /* @group Helpers & General */
+.big {
+	font-size: 1.5em !important;
+}
 .breakword {
 	word-wrap: break-word !important;
 }

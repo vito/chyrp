@@ -58,7 +58,7 @@ $twig_filters = array(
 	'offset' =>           'twig_offset_filter',
 	'last' =>             'twig_last_filter',
 	'reverse' =>          'array_reverse',
-	'length' =>           'count',
+	'length' =>           'twig_length_filter',
 	'count' =>            'count',
 
 	// iteration and runtime
@@ -427,4 +427,11 @@ function twig_depluralize_string_filter($string) {
 
 function twig_quotes_filter($string) {
 	return str_replace(array('"', "'"), array('\"', "\\'"), $string);
+}
+
+function twig_length_filter($thing) {
+	if (is_string($thing))
+		return strlen($thing);
+	else
+		return count($thing);
 }

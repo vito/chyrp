@@ -23,7 +23,7 @@
 
 	# Constant: DEBUG
 	# Should Chyrp use debugging processes?
-	define('DEBUG', false);
+	define('DEBUG', true);
 
 	# Fallback all these definitions.
 	if (!defined('JAVASCRIPT')) define('JAVASCRIPT', false);
