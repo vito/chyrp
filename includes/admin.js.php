@@ -86,7 +86,7 @@ function togglers() {
 	if ($("#toggler").size())
 		document.getElementById("toggle").checked = all_checked
 
-	$("td:has(:checkbox)").click(function(){
+	$("td:has(:checkbox)").click(function(e){
 		$(this).find(":checkbox").each(function(){
 			if (e.target != this)
 				this.checked = !(this.checked)
