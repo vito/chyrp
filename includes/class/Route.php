@@ -124,7 +124,7 @@
 
 			$this->action =& $_GET['action'];
 
-			# Correctly translate viewing feathers with dirty URLs on.
+			# Handle /?action=videos as /?action=feather&feather=videos
 			if (!$config->clean_urls and in_array($this->action, array_values($pluralizations["feathers"]))) {
 				$_GET['feather'] = $this->action;
 				$this->action = "feather";

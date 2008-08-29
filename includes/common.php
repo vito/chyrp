@@ -221,6 +221,9 @@
 			load_translator($feather, FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo");
 
 		require FEATHERS_DIR."/".$feather."/".$feather.".php";
+
+		$info = YAML::load(FEATHERS_DIR."/".$feather."/info.yaml");
+		$pluralizations[$feather] = $pluralizations["feathers"][$feather] = fallback($info["plural"], pluralize($feather), true);
 	}
 
 	foreach ($config->enabled_modules as $index => $module) {
@@ -247,9 +250,7 @@
 	                         !empty($_GET['action']) and
 	                         $_GET['action'] == "theme_preview" and
 	                         !empty($_GET['theme'])));
-	$theme = PREVIEWING ?
-	         $_GET['theme'] :
-	         $config->theme;
+	$theme = PREVIEWING ? $_GET['theme'] : $config->theme;
 
 	# Constant: THEME_DIR
 	# Absolute path to /themes/(current theme)
@@ -284,9 +285,6 @@
 		$feathers[$feather]->safename = $feather;
 
 		if (!ADMIN and $route->action != "feed") continue;
-
-		$info = YAML::load(FEATHERS_DIR."/".$feather."/info.yaml");
-		$pluralizations[$feather] = $pluralizations["feathers"][$feather] = fallback($info["plural"], pluralize($feather), true);
 
 		foreach ($info as $key => $val)
 			$feathers[$feather]->$key = (is_string($val)) ? __($val, $feather) : $val ;
