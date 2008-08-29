@@ -243,20 +243,21 @@
 	# Holds the current user and their group.
 	$visitor = Visitor::current();
 
-	$config->theme = ($visitor->group()->can("change_settings") and
-	                      !empty($_GET['action']) and
-	                      $_GET['action'] == "theme_preview" and
-	                      !empty($_GET['theme'])) ?
-	                 $_GET['theme'] :
-	                 $config->theme;
+	define('PREVIEWING', ($visitor->group()->can("change_settings") and
+	                         !empty($_GET['action']) and
+	                         $_GET['action'] == "theme_preview" and
+	                         !empty($_GET['theme'])));
+	$theme = PREVIEWING ?
+	         $_GET['theme'] :
+	         $config->theme;
 
 	# Constant: THEME_DIR
 	# Absolute path to /themes/(current theme)
-	define('THEME_DIR', MAIN_DIR."/themes/".$config->theme);
+	define('THEME_DIR', MAIN_DIR."/themes/".$theme);
 
 	# Constant: THEME_URL
 	# URL to /themes/(current theme)
-	define('THEME_URL', $config->chyrp_url."/themes/".$config->theme);
+	define('THEME_URL', $config->chyrp_url."/themes/".$theme);
 
 	$theme = Theme::current();
 

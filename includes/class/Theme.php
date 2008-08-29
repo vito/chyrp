@@ -27,7 +27,9 @@
 			$this->url = THEME_URL;
 
 			$this->twig = new Twig_Loader(THEME_DIR,
-				                          ((is_writable(INCLUDES_DIR."/caches") and !DEBUG) ? INCLUDES_DIR."/caches" : null));
+			                              ((is_writable(INCLUDES_DIR."/caches") and !DEBUG and !PREVIEWING) ?
+			                                  INCLUDES_DIR."/caches" :
+			                                  null));
 		}
 
 		/**
@@ -165,7 +167,7 @@
 				$stylesheets = "";
 
 			if (file_exists(THEME_DIR."/style.css"))
-				$stylesheets = '<link rel="stylesheet" href="'.$config->chyrp_url.'/themes/'.$config->theme.'/style.css" type="text/css" media="screen" charset="utf-8" />'."\n\t\t";
+				$stylesheets = '<link rel="stylesheet" href="'.THEME_URL.'/style.css" type="text/css" media="screen" charset="utf-8" />'."\n\t\t";
 
 			if (!file_exists(THEME_DIR."/stylesheets/") and !file_exists(THEME_DIR."/css/"))
 				return $stylesheets;
