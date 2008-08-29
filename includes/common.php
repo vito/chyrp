@@ -365,7 +365,7 @@
 
 		# Call any plugin route functions
 		if (INDEX)
-			$trigger->call("route_".$route->action);
+			$trigger->call("route_".$route->action, $theme);
 
 		if (isset($_GET['feed']))
 			if ($trigger->exists($route->action."_feed")) # What about custom feeds?

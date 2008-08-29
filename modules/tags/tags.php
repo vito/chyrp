@@ -476,7 +476,7 @@
 			if (!count($unclean))
 				return array();
 
-			list($tags, $clean, $tag2clean) = $this->parseTags($tags, $clean);
+			list($unclean, $clean, $tag2clean) = $this->parseTags($unclean, $clean);
 
 			foreach ($unclean as $name => $popularity)
 				$unclean[$name] = array("name" => $name, "popularity" => $popularity, "url" => $tag2clean[$name]);
