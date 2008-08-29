@@ -78,10 +78,23 @@ function togglers() {
 		})
 	})
 
-	$("form#new_group, form#group_edit").find(":checkbox").not("#toggle").each(function(){
+	// Some checkboxes are already checked when the page is loaded
+	$("form#new_group, form#group_edit, table").find(":checkbox").not("#toggle").each(function(){
 		if (!all_checked) return
 		all_checked = this.checked
 	})
+
+	$(":checkbox").click(function(){
+		var action_all_checked = true
+
+		$("form#new_group, form#group_edit, table").find(":checkbox").not("#toggle").each(function(){
+			if (!action_all_checked) return
+			action_all_checked = this.checked
+		})
+
+		document.getElementById("toggle").checked = action_all_checked
+	})
+
 
 	if ($("#toggler").size())
 		document.getElementById("toggle").checked = all_checked
