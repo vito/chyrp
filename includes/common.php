@@ -286,7 +286,7 @@
 
 		if (!ADMIN and $route->action != "feed") continue;
 
-		foreach ($info as $key => $val)
+		foreach (YAML::load(FEATHERS_DIR."/".$feather."/info.yaml") as $key => $val)
 			$feathers[$feather]->$key = (is_string($val)) ? __($val, $feather) : $val ;
 	}
 
