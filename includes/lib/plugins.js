@@ -218,9 +218,9 @@ $(this).parent().find("ul:first").append(ui.draggable);self.element.data("sortab
 		startExpand: function() {
 			var self = this;
 			this.interval = window.setInterval(function() { self.checkExpand() }, 400);
-			this.textarea.keydown(function() {
-				self.checkExpand()
-			})
+			// this.textarea.keydown(function() {
+			// 	self.checkExpand()
+			// })
 		},
 		stopExpand: function() {
 			clearInterval(this.interval);
@@ -260,7 +260,7 @@ $(this).parent().find("ul:first").append(ui.draggable);self.element.data("sortab
 /**
  * jQuery ifixpng plugin
  * (previously known as pngfix)
- * Version 2.1  (23/04/2008)
+ * Version 2.1	(23/04/2008)
  * @requires jQuery v1.1.3 or above
  *
  * Examples at: http://jquery.khurshid.com
@@ -283,12 +283,11 @@ doc=(new DOMParser()).parseFromString(s,'text/xml');return(doc&&doc.documentElem
  *
  * Examples and documentation at: http://malsup.com/jquery/form/
  * Dual licensed under the MIT and GPL licenses:
- *   http://www.opensource.org/licenses/mit-license.php
- *   http://www.gnu.org/licenses/gpl.html
+ *	 http://www.opensource.org/licenses/mit-license.php
+ *	 http://www.gnu.org/licenses/gpl.html
  *
  * Revision: $Id$
  */
-
 (function($){$.fn.ajaxSubmit=function(options){if(!this.length){log('ajaxSubmit: skipping submit process - no element selected');return this;}
 if(typeof options=='function')
 options={success:options};options=$.extend({url:this.attr('action')||window.location.toString(),type:this.attr('method')||'GET'},options||{});var veto={};this.trigger('form-pre-serialize',[this,options,veto]);if(veto.veto){log('ajaxSubmit: submit vetoed via form-pre-serialize trigger');return this;}
@@ -364,7 +363,6 @@ $.each($.livequery.queries,function(id){$.livequery.queries[id].stop();});}});$.
 
 
 // Our custom field expander
-var widths = {}
 $.fn.expand = function(){
 	$(this).each(function(){
 		if ($(this).parent().parent().attr("class") == "more_options" || $.browser.msie) return
