@@ -116,7 +116,7 @@
 		 * This meaty function determines what exactly to do with the URL.
 		 */
 		public function determine_action() {
-			global $pluralizations, $page;
+			global $page;
 			$config = Config::current();
 
 			if (!$config->clean_urls)

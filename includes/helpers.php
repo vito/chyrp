@@ -8,10 +8,6 @@
 	# Times Chyrp.
 	$time_start = 0;
 
-	# Integer: $pluralizations
-	# Holds predefined pluralizations, typically provided by modules/feathers.
-	$pluralizations = array();
-
 	/**
 	 * Function: session
 	 * Begins Chyrp's custom session storage whatnots.
@@ -185,44 +181,39 @@
 	 *     $string - The string to pluralize.
 	 */
 	function pluralize($string) {
-		global $pluralizations;
-		if (in_array($string, array_keys($pluralizations)))
-			return $pluralizations[$string];
-		else {
-			$uncountable = array("moose", "sheep", "fish", "series", "species", "rice", "money", "information", "equipment", "piss");
+		$uncountable = array("moose", "sheep", "fish", "series", "species", "rice", "money", "information", "equipment", "piss");
 
-			if (in_array($string, $uncountable))
-				return $string;
+		if (in_array($string, $uncountable))
+			return $string;
 
-			$replacements = array("/person/i" => "people",
-			                      "/man/i" => "men",
-			                      "/child/i" => "children",
-			                      "/cow/i" => "kine",
-			                      "/goose/i" => "geese",
-			                      "/(penis)$/i" => "\\1es", # Take that, Rails!
-			                      "/(ax|test)is$/i" => "\\1es",
-			                      "/(octop|vir)us$/i" => "\\1ii",
-			                      "/(cact)us$/i" => "\\1i",
-			                      "/(alias|status)$/i" => "\\1es",
-			                      "/(bu)s$/i" => "\\1ses",
-			                      "/(buffal|tomat)o$/i" => "\\1oes",
-			                      "/([ti])um$/i" => "\\1a",
-			                      "/sis$/i" => "ses",
-			                      "/(hive)$/i" => "\\1s",
-			                      "/([^aeiouy]|qu)y$/i" => "\\1ies",
-			                      "/^(ox)$/i" => "\\1en",
-			                      "/(matr|vert|ind)(?:ix|ex)$/i" => "\\1ices",
-			                      "/(x|ch|ss|sh)$/i" => "\\1es",
-			                      "/([m|l])ouse$/i" => "\\1ice",
-			                      "/(quiz)$/i" => "\\1zes");
+		$replacements = array("/person/i" => "people",
+		                      "/man/i" => "men",
+		                      "/child/i" => "children",
+		                      "/cow/i" => "kine",
+		                      "/goose/i" => "geese",
+		                      "/(penis)$/i" => "\\1es", # Take that, Rails!
+		                      "/(ax|test)is$/i" => "\\1es",
+		                      "/(octop|vir)us$/i" => "\\1ii",
+		                      "/(cact)us$/i" => "\\1i",
+		                      "/(alias|status)$/i" => "\\1es",
+		                      "/(bu)s$/i" => "\\1ses",
+		                      "/(buffal|tomat)o$/i" => "\\1oes",
+		                      "/([ti])um$/i" => "\\1a",
+		                      "/sis$/i" => "ses",
+		                      "/(hive)$/i" => "\\1s",
+		                      "/([^aeiouy]|qu)y$/i" => "\\1ies",
+		                      "/^(ox)$/i" => "\\1en",
+		                      "/(matr|vert|ind)(?:ix|ex)$/i" => "\\1ices",
+		                      "/(x|ch|ss|sh)$/i" => "\\1es",
+		                      "/([m|l])ouse$/i" => "\\1ice",
+		                      "/(quiz)$/i" => "\\1zes");
 
-			$replaced = preg_replace(array_keys($replacements), array_values($replacements), $string, 1);
+		$replaced = preg_replace(array_keys($replacements), array_values($replacements), $string, 1);
 
-			if ($replaced == $string)
-				return $pluralizations[$string] = $string."s";
-			else
-				return $pluralizations[$string] = $replaced;
-		}
+		if ($replaced == $string)
+			return $string."s";
+		else
+			return $replaced;
 	}
 
 	/**
@@ -233,44 +224,34 @@
 	 *     $string - The string to depluralize.
 	 */
 	function depluralize($string) {
-		global $pluralizations;
+		$replacements = array("/people/i" => "person",
+		                      "/^men/i" => "man",
+		                      "/children/i" => "child",
+		                      "/kine/i" => "cow",
+		                      "/geese/i" => "goose",
+		                      "/(penis)es$/i" => "\\1",
+		                      "/(ax|test)es$/i" => "\\1is",
+		                      "/(octopi|viri|cact)i$/i" => "\\1us",
+		                      "/(alias|status)es$/i" => "\\1",
+		                      "/(bu)ses$/i" => "\\1s",
+		                      "/(buffal|tomat)oes$/i" => "\\1o",
+		                      "/([ti])a$/i" => "\\1um",
+		                      "/ses$/i" => "sis",
+		                      "/(hive)s$/i" => "\\1",
+		                      "/([^aeiouy]|qu)ies$/i" => "\\1y",
+		                      "/^(ox)en$/i" => "\\1",
+		                      "/(vert|ind)ices$/i" => "\\1ex",
+		                      "/(matr)ices$/i" => "\\1ix",
+		                      "/(x|ch|ss|sh)es$/i" => "\\1",
+		                      "/([m|l])ice$/i" => "\\1ouse",
+		                      "/(quiz)zes$/i" => "\\1");
 
-		$reversed = array_flip($pluralizations);
+		$replaced = preg_replace(array_keys($replacements), array_values($replacements), $string, 1);
 
-		if (isset($reversed[$string]))
-			return $reversed[$string];
-		else {
-			$replacements = array("/people/i" => "person",
-			                      "/^men/i" => "man",
-			                      "/children/i" => "child",
-			                      "/kine/i" => "cow",
-			                      "/geese/i" => "goose",
-			                      "/(penis)es$/i" => "\\1",
-			                      "/(ax|test)es$/i" => "\\1is",
-			                      "/(octopi|viri|cact)i$/i" => "\\1us",
-			                      "/(alias|status)es$/i" => "\\1",
-			                      "/(bu)ses$/i" => "\\1s",
-			                      "/(buffal|tomat)oes$/i" => "\\1o",
-			                      "/([ti])a$/i" => "\\1um",
-			                      "/ses$/i" => "sis",
-			                      "/(hive)s$/i" => "\\1",
-			                      "/([^aeiouy]|qu)ies$/i" => "\\1y",
-			                      "/^(ox)en$/i" => "\\1",
-			                      "/(vert|ind)ices$/i" => "\\1ex",
-			                      "/(matr)ices$/i" => "\\1ix",
-			                      "/(x|ch|ss|sh)es$/i" => "\\1",
-			                      "/([m|l])ice$/i" => "\\1ouse",
-			                      "/(quiz)zes$/i" => "\\1");
-
-			$replaced = preg_replace(array_keys($replacements), array_values($replacements), $string, 1);
-
-			$pluralizations[$replaced] = $string;
-
-			if ($replaced == $string and substr($string, -1) == "s")
-				return substr($string, 0, -1);
-			else
-				return $replaced;
-		}
+		if ($replaced == $string and substr($string, -1) == "s")
+			return substr($string, 0, -1);
+		else
+			return $replaced;
 	}
 
 	/**
