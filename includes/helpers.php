@@ -10,7 +10,7 @@
 
 	# Integer: $pluralizations
 	# Holds predefined pluralizations, typically provided by modules/feathers.
-	$pluralizations = array("feathers" => array());
+	$pluralizations = array();
 
 	/**
 	 * Function: session
@@ -219,9 +219,9 @@
 			$replaced = preg_replace(array_keys($replacements), array_values($replacements), $string, 1);
 
 			if ($replaced == $string)
-				return $string."s";
+				return $pluralizations[$string] = $string."s";
 			else
-				return $replaced;
+				return $pluralizations[$string] = $replaced;
 		}
 	}
 
@@ -235,9 +235,7 @@
 	function depluralize($string) {
 		global $pluralizations;
 
-		$copy = $pluralizations;
-		unset($copy["feathers"]);
-		$reversed = array_flip($copy);
+		$reversed = array_flip($pluralizations);
 
 		if (isset($reversed[$string]))
 			return $reversed[$string];
@@ -265,6 +263,8 @@
 			                      "/(quiz)zes$/i" => "\\1");
 
 			$replaced = preg_replace(array_keys($replacements), array_values($replacements), $string, 1);
+
+			$pluralizations[$replaced] = $string;
 
 			if ($replaced == $string and substr($string, -1) == "s")
 				return substr($string, 0, -1);

@@ -23,7 +23,7 @@
 
 	# Constant: DEBUG
 	# Should Chyrp use debugging processes?
-	define('DEBUG', true);
+	define('DEBUG', false);
 
 	# Fallback all these definitions.
 	if (!defined('JAVASCRIPT')) define('JAVASCRIPT', false);
@@ -221,9 +221,6 @@
 			load_translator($feather, FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo");
 
 		require FEATHERS_DIR."/".$feather."/".$feather.".php";
-
-		$info = YAML::load(FEATHERS_DIR."/".$feather."/info.yaml");
-		$pluralizations[$feather] = $pluralizations["feathers"][$feather] = fallback($info["plural"], pluralize($feather), true);
 	}
 
 	foreach ($config->enabled_modules as $index => $module) {

@@ -4,7 +4,7 @@
 	$trigger->call("top");
 
 	switch($route->action) {
-		case "index": case "search": case "drafts": case "feather":
+		case "index": case "search": case "drafts":
 			$context = array("posts" => $posts);
 
 			if ($route->action == "feather") {

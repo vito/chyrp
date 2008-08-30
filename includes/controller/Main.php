@@ -77,18 +77,6 @@
 		}
 
 		/**
-		 * Function: feather
-		 * Views posts of a specific feather.
-		 */
-		public function feather() {
-			global $posts;
-			$posts = new Paginator(Post::find(array("placeholders" => true,
-			                                        "where" => "feather = :feather",
-			                                        "params" => array(":feather" => depluralize($_GET['feather'])))),
-				                   Config::current()->posts_per_page);
-		}
-
-		/**
 		 * Function: page
 		 * Handles page viewing.
 		 */

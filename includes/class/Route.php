@@ -124,12 +124,6 @@
 
 			$this->action =& $_GET['action'];
 
-			# Handle /?action=videos as /?action=feather&feather=videos
-			if (!$config->clean_urls and in_array($this->action, array_values($pluralizations["feathers"]))) {
-				$_GET['feather'] = $this->action;
-				$this->action = "feather";
-			}
-
 			# Parse the current URL and extract information.
 			$parse = parse_url($config->url);
 			fallback($parse["path"]);
@@ -212,12 +206,6 @@
 			if ($this->arg[0] == "bookmarklet") {
 				$_GET['status'] = $this->arg[1];
 				return $this->action = "bookmarklet";
-			}
-
-			# Viewing Feathers
-			if (in_array($this->arg[0], array_values($pluralizations["feathers"])) and (empty($this->arg[1]) or $this->arg[1] == "feed" or $this->arg[1] == "page")) {
-				$_GET['feather'] = $this->arg[0];
-				return $this->action = "feather";
 			}
 		}
 

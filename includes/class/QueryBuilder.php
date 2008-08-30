@@ -215,7 +215,7 @@
 		 *     $tables - An array of tables. The first one will be used for prepending.
 		 */
 		public static function tablefy(&$field, $tables) {
-			if (!preg_match_all("/(\(|[\s]+|^)([a-z0-9_\.\*]+)(\)|[\s]+|$)/", $field, $matches))
+			if (!preg_match_all("/(\(|[\s]+|^)(?!__)([a-z0-9_\.\*]+)(\)|[\s]+|$)/", $field, $matches))
 				return;
 
 			foreach ($matches[0] as $index => $full) {
@@ -224,9 +224,6 @@
 				$after  = $matches[3][$index];
 
 				if (is_numeric($name))
-					continue;
-
-				if (substr($name, 0, 2) == "__")
 					continue;
 
 				# Does it not already have a table specified?
