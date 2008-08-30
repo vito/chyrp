@@ -1,4 +1,5 @@
 {% extends "layouts/default.twig" %}
+
 {% block content %}
 				{% if not post.next.no_results %}<a class="right next_post" href="$post.next.url">${ post.next.title | truncate(40) } &rarr;</a>{% endif %}
 				{% if not post.prev.no_results %}<a class="left prev_post" href="$post.prev.url">&larr; ${ post.prev.title | truncate(40) }</a>{% endif %}

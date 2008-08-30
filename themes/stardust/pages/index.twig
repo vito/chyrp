@@ -1,4 +1,5 @@
 {% extends "layouts/default.twig" %}
+
 {% block content %}
 {% for post in posts.paginated %}
 {% include "feathers/" ~ post.feather ~ ".twig" %}

@@ -1,4 +1,5 @@
 {% extends "layouts/default.twig" %}
+
 {% block content %}
 {% if posts.paginated %}
 		<h1>${ "Posts tagged with &#8220;%s&#8221;" | translate | format(tag | escape) }</h1>
