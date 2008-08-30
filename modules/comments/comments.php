@@ -149,6 +149,7 @@
 			if (!Visitor::current()->group()->can("edit_comment", "delete_comment", true))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage any comments.", "comments"));
 
+			fallback($_GET['query'], "");
 			list($where, $params) = keywords(urldecode($_GET['query']), "body LIKE :query");
 
 			$where[] = "status = 'spam'";
@@ -310,6 +311,7 @@
 			if (!Comment::any_editable() and !Comment::any_deletable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage any comments.", "comments"));
 
+			fallback($_GET['query'], "");
 			list($where, $params) = keywords(urldecode($_GET['query']), "body LIKE :query");
 
 			$where[] = "status != 'spam'";

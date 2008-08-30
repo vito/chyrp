@@ -27,7 +27,7 @@
 							{% endif %}
 							{% if post.tags.linked | length > 0 %}
 							|
-							${ "Tags" | translate }: ${ post.tags.linked | join }
+							${ "Tags" | translate }: ${ post.tags.linked | join(", ") }
 							{% endif %}
 						</span>
 {% if visitor.group.can("edit_post", "delete_post") %}

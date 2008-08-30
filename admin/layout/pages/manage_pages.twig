@@ -18,7 +18,7 @@
 				</fieldset>
 			</form>
 			<br />
-			<h2>${ "Last 25 Pages" | translate }</h2>
+			<h2>{% if GET.query %}${ "Search Results" | translate }{% else %}${ "Last 25 Pages" | translate }{% endif %}</h2>
 			<table border="0" cellspacing="0" cellpadding="0" class="wide">
 				<thead>
 					<tr class="head">

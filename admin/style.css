@@ -208,6 +208,12 @@ a:visited {
 	font-size: .8em;
 	color: #bcbcbc;
 }
+#content h1.sub,
+#content h2.sub,
+#content h3.sub,
+#content h4.sub {
+	color: #bcbcbc;
+}
 /* @end */
 
 /* @group Extend */
@@ -534,8 +540,7 @@ table thead tr th {
 }
 table thead tr th input {
 	position: relative;
-	top: -2px;
-	right: -2px;
+	top: -.15em;
 }
 table thead tr th.header {
 	cursor: pointer;
@@ -561,7 +566,8 @@ table tbody tr td.main {
 	background: #f9f9f9;
 	font-weight: bold;
 }
-table tbody tr td.center {
+table tbody tr td.center,
+table tbody tr th.center {
 	text-align: center;
 	vertical-align: middle;
 }
@@ -952,5 +958,8 @@ br#after_options {
 }
 img.smiley {
 	margin: 0 0 -.3em;
+}
+.inline {
+	display: inline;
 }
 /* @end */

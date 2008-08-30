@@ -228,7 +228,7 @@ function twig_urlencode_filter($url, $raw=false)
 	return urlencode($url);
 }
 
-function twig_join_filter($value, $glue=', ')
+function twig_join_filter($value, $glue='')
 {
 	return implode($glue, $value);
 }

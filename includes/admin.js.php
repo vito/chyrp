@@ -27,6 +27,9 @@ $(function(){
 		return false
 	})
 
+	// Auto-expand input fields
+	$(".expand").expand()
+
 	// Checkbox toggling.
 	togglers()
 
@@ -68,12 +71,17 @@ function togglers() {
 
 	$(document.createElement("label")).attr("for", "toggle").text("<?php echo __("Toggle All"); ?>").appendTo("#toggler")
 	$(document.createElement("input")).attr({
-		"class": "checkbox",
 		type: "checkbox",
 		name: "toggle",
 		id: "toggle"
-	}).appendTo("#toggler, .toggler").click(function(){
+	}).prependTo("#toggler, .toggler")
+
+	$("#toggle").click(function(){
 		$("form#new_group, form#group_edit, table").find(":checkbox").not("#toggle").each(function(){
+			this.checked = document.getElementById("toggle").checked
+		})
+
+		$(this).parent().parent().find(":checkbox").not("#toggle").each(function(){
 			this.checked = document.getElementById("toggle").checked
 		})
 	})
@@ -84,10 +92,15 @@ function togglers() {
 		all_checked = this.checked
 	})
 
-	$(":checkbox").click(function(){
+	$(":checkbox:not(#toggle)").click(function(){
 		var action_all_checked = true
 
 		$("form#new_group, form#group_edit, table").find(":checkbox").not("#toggle").each(function(){
+			if (!action_all_checked) return
+			action_all_checked = this.checked
+		})
+
+		$("#toggle").parent().parent().find(":checkbox").not("#toggle").each(function(){
 			if (!action_all_checked) return
 			action_all_checked = this.checked
 		})

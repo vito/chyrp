@@ -149,13 +149,13 @@
 				return $navs;
 
 			$navs["manage_tags"] = array("title" => __("Tags", "tags"),
-			                             "selected" => array("bulk_tags", "rename_tag", "delete_tag"));
+			                             "selected" => array("rename_tag", "delete_tag", "edit_tags"));
 
 			return $navs;
 		}
 
 		static function manage_nav_pages($pages) {
-			array_push($pages, "manage_tags", "bulk_tags", "rename_tag", "delete_tag");
+			array_push($pages, "manage_tags", "rename_tag", "delete_tag", "edit_tags");
 			return $pages;
 		}
 
@@ -200,6 +200,23 @@
 				                   "url" => url("tag/".$tag2clean[$tag]."/"));
 
 			$admin->context["tag_cloud"] = $context;
+
+			if (!Post::any_editable() and !Post::any_deletable())
+				return;
+
+			fallback($_GET['query'], "");
+			list($where, $params) = keywords(urldecode($_GET['query']), "xml LIKE :query");
+
+			$visitor = Visitor::current();
+			if (!$visitor->group()->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post")) {
+				$where[] = "user_id = :visitor_id";
+				$params[':visitor_id'] = $visitor->id;
+			}
+
+			$admin->context["posts"] = new Paginator(Post::find(array("placeholders" => true,
+			                                                         "drafts" => true,
+			                                                         "where" => $where,
+			                                                         "params" => $params)), 25);
 		}
 
 		public function admin_rename_tag($admin) {
@@ -229,7 +246,33 @@
 					return $admin->context["tag"] = array("name" => $tag, "clean" => $tag2clean[$tag]);
 		}
 
+		public function admin_edit_tags($admin) {
+			$sql = SQL::current();
+
+			if (!isset($_GET['id']))
+				error(__("No ID Specified"), __("Please specify the ID of the post whose tags you would like to edit.", "tags"));
+
+			$admin->context["post"] = new Post($_GET['id']);
+		}
+
+		public function admin_update_tags($admin) {
+			$sql = SQL::current();
+
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				show_403(__("Access Denied"), __("Invalid security key."));
+
+			if (!isset($_POST['id']))
+				error(__("No ID Specified"), __("Please specify the ID of the post whose tags you would like to edit.", "tags"));
+
+			$this->update_post(new Post($_POST['id']));
+
+			Flash::notice(__("Tags updated.", "tags"), "/admin/?action=manage_tags");
+		}
+
 		public function admin_update_tag($admin) {
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				show_403(__("Access Denied"), __("Invalid security key."));
+
 			$sql = SQL::current();
 
 			$tags = array();
@@ -256,22 +299,49 @@
 		public function admin_delete_tag($admin) {
 			$sql = SQL::current();
 
-			$tags = array();
-			$clean = array();
 			foreach($sql->select("tags",
 				                 "*",
 				                 "clean LIKE :tag",
 				                 null,
-				                 array(":tag" => "%{{".$_GET['name']."}}%"))->fetchAll() as $tag)
+				                 array(":tag" => "%{{".$_GET['name']."}}%"))->fetchAll() as $tag)  {
+				$names = array();
+				foreach (explode("}},{{", substr(substr($tag["tags"], 0, -2), 2)) as $name)
+					if ($name != $_GET['name'])
+						$names[] = "{{".$name."}}";
+
+				$cleans = array();
+				foreach (explode("}},{{", substr(substr($tag["clean"], 0, -2), 2)) as $clean)
+					if ($clean != $_GET['clean'])
+						$cleans[] = "{{".$clean."}}";
+
 				$sql->update("tags",
 				             "id = :id",
 				             array("tags" => ":tags",
 				                   "clean" => ":clean"),
 				             array(":id" => $tag["id"],
-				                   ":tags" => preg_replace("/\{\{{$_GET['name']}\}\},?/", "", $tag["tags"]),
-				                   ":clean" => preg_replace("/\{\{{$_GET['name']}\}\},?/", "", $tag["clean"])));
+				                   ":tags" => join(",", $names),
+				                   ":clean" => join(",", $cleans)));
+			}
 
 			Flash::notice(__("Tag deleted.", "tags"), "/admin/?action=manage_tags");
+		}
+
+		public function admin_bulk_tag($admin) {
+			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+				show_403(__("Access Denied"), __("Invalid security key."));
+
+			if (empty($_POST['name']) or empty($_POST['post']))
+				redirect("/admin/?action=manage_tags");
+
+			$sql = SQL::current();
+
+			foreach ($_POST['post'] as $post_id) {
+				$post = new Post($post_id);
+				$_POST['tags'] = join(", ", $post->tags["unlinked"]).", ".$_POST['name'];
+				$this->update_post($post);
+			}
+
+			Flash::notice(__("Posts tagged.", "tags"), "/admin/?action=manage_tags");
 		}
 
 		public function check_route_tag() {
@@ -430,11 +500,22 @@
 		}
 
 		public function filter_post($post) {
-			if (!isset($post->unclean_tags))
-				$post->tags = array("unlinked" => array(), "linked" => array());
-			else
-				$post->tags = array("unlinked" => self::unlinked_tags($post->unclean_tags),
-				                    "linked"   => self::linked_tags($post->unclean_tags, $post->clean_tags));
+			if (empty($post->unclean_tags)) {
+				$post->tags = array("info" => array(), "unlinked" => array(), "linked" => array());
+				return;
+			}
+
+			list($tags, $clean, $tag2clean) = $this->parseTags(array($post->unclean_tags), array($post->clean_tags));
+
+			$post->tags = array();
+
+			foreach ($tags as $tag => $count)
+				$post->tags["info"][] = array("name" => $tag,
+			                                  "clean" => $tag2clean[$tag],
+			                                  "url" => url("tag/".$tag2clean[$tag]."/"));
+
+			$post->tags["unlinked"] = self::unlinked_tags($post->unclean_tags);
+			$post->tags["linked"]   = self::linked_tags($post->unclean_tags, $post->clean_tags);
 		}
 
 		public function sort_tags_name_asc($a, $b) {

@@ -5,7 +5,7 @@
 	switch($_POST['action']) {
 		case "edit_post":
 			if (!isset($_POST['id']))
-				error(__("Unspecified ID"), __("Please specify an ID of the post you would like to edit."));
+				error(__("No ID Specified"), __("Please specify an ID of the post you would like to edit."));
 
 			$post = new Post($_POST['id'], array("filter" => false, "drafts" => true));
 

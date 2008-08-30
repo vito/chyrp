@@ -48,6 +48,9 @@
 
 			global $posts;
 
+			if (empty($_GET['query']))
+				return Flash::warning(__("Please enter a search term."));
+
 			list($where, $params) = keywords(urldecode($_GET['query']), "xml LIKE :query");
 
 			$posts = new Paginator(Post::find(array("placeholders" => true,

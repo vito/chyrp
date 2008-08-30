@@ -23,10 +23,12 @@
 .tag_cloud {
 	text-align: center;
 }
-.tag_cloud span {
+.tag_cloud span,
+.post_tags a.tag {
 	display: inline-block;
 }
-.tag_cloud span a.tag {
+.tag_cloud span a.tag,
+.post_tags a.tag {
 	display: block;
 	line-height: 2.5em;
 	padding: 0 .75em;
@@ -34,6 +36,7 @@
 	text-decoration: none;
 	font-weight: bold;
 	color: #777;
+	text-align: center;
 }
 .tag_cloud span .controls {
 	opacity: 0;
@@ -42,4 +45,41 @@
 	background: #f9f9f9;
 	-webkit-border-bottom-right-radius: .5em;
 	-webkit-border-bottom-left-radius: .5em;
+}
+
+.post_tags {
+	list-style: none;
+}
+.post_tags li {
+	display: block;
+	margin-bottom: .5em;
+	padding: .75em;
+}
+.post_tags input,
+.post_tags h3 {
+	margin: 0 .5em 0 .25em;
+}
+.post_tags li.odd {
+	background: #fafafa;
+}
+.post_tags li a.tag,
+.post_tags li a.edit_tag {
+	margin: -.85em 0;
+}
+.post_tags li a.tag {
+	display: inline-block;
+	padding: 0 .75em;
+	background: #e5e5e5;
+	-webkit-border-radius: .5em;
+}
+.post_tags li a.edit_tag {
+	display: inline-block;
+	position: relative;
+	bottom: -.2em;
+	padding: .5em .75em .4em;
+	background: #f0f0f0;
+	-webkit-border-radius: .5em;
+}
+.post_tags li a.edit_tag:hover {
+	background: #f5f5f5;
 }
