@@ -356,6 +356,10 @@ ol.comments li blockquote {
 ol.comments li blockquote p {
 	padding: 0 0 1em;
 }
+ol.comments li blockquote a:link,
+ol.comments li blockquote a:visited {
+	color: #aaa;
+}
 ol.comments li blockquote blockquote {
 	padding: 0 1em;
 	color: #aaa;
