@@ -116,6 +116,9 @@
 							$this->db->sqliteCreateFunction("YEAR", array($this, "year_from_datetime"), 1);
 							$this->db->sqliteCreateFunction("MONTH", array($this, "month_from_datetime"), 1);
 							$this->db->sqliteCreateFunction("DAY", array($this, "day_from_datetime"), 1);
+							$this->db->sqliteCreateFunction("HOUR", array($this, "hour_from_datetime"), 1);
+							$this->db->sqliteCreateFunction("MINUTE", array($this, "minute_from_datetime"), 1);
+							$this->db->sqliteCreateFunction("SECOND", array($this, "second_from_datetime"), 1);
 						} else
 							$this->db = new PDO($this->adapter.":host=".$this->host.";".((isset($this->port)) ? "port=".$this->port.";" : "")."dbname=".$this->database,
 							                    $this->username,
@@ -315,6 +318,30 @@
 		 */
 		public function day_from_datetime($datetime) {
 			return when("d", $datetime);
+		}
+
+		/**
+		 * Function: hour_from_datetime
+		 * Returns the hour of a datetime.
+		 */
+		public function hour_from_datetime($datetime) {
+			return when("g", $datetime);
+		}
+
+		/**
+		 * Function: minute_from_datetime
+		 * Returns the minute of a datetime.
+		 */
+		public function minute_from_datetime($datetime) {
+			return when("i", $datetime);
+		}
+
+		/**
+		 * Function: second_from_datetime
+		 * Returns the second of a datetime.
+		 */
+		public function second_from_datetime($datetime) {
+			return when("s", $datetime);
 		}
 	}
 
