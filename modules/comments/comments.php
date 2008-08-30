@@ -149,33 +149,9 @@
 			if (!Visitor::current()->group()->can("edit_comment", "delete_comment", true))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage any comments.", "comments"));
 
-			$params = array();
-			$where = array("status = 'spam'");
+			list($where, $params) = keywords(urldecode($_GET['query']), "body LIKE :query");
 
-			if (!empty($_GET['query'])) {
-				$search = "";
-				$matches = array();
-
-				$queries = explode(" ", $_GET['query']);
-				foreach ($queries as $query)
-					if (!strpos($query, ":"))
-						$search.= $query;
-					else
-						$matches[] = $query;
-
-				foreach ($matches as $match) {
-					$match = explode(":", $match);
-					$test = $match[0];
-					$equals = $match[1];
-					$where[] = $test." = :".$test;
-					$params[":".$test] = $equals;
-				}
-
-				if (!empty($search)) {
-					$where[] = "(body LIKE :query)";
-					$params[":query"] = "%".$search."%";
-				}
-			}
+			$where[] = "status = 'spam'";
 
 			AdminController::current()->context["comments"] = new Paginator(Comment::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
 		}
@@ -334,33 +310,9 @@
 			if (!Comment::any_editable() and !Comment::any_deletable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage any comments.", "comments"));
 
-			$params = array();
-			$where = array("status != 'spam'");
+			list($where, $params) = keywords(urldecode($_GET['query']), "body LIKE :query");
 
-			if (!empty($_GET['query'])) {
-				$search = "";
-				$matches = array();
-
-				$queries = explode(" ", $_GET['query']);
-				foreach ($queries as $query)
-					if (!strpos($query, ":"))
-						$search.= $query;
-					else
-						$matches[] = $query;
-
-				foreach ($matches as $match) {
-					$match = explode(":", $match);
-					$test = $match[0];
-					$equals = $match[1];
-					$where[] = $test." = :".$test;
-					$params[":".$test] = $equals;
-				}
-
-				if (!empty($search)) {
-					$where[] = "(body LIKE :query)";
-					$params[":query"] = "%".$search."%";
-				}
-			}
+			$where[] = "status != 'spam'";
 
 			$visitor = Visitor::current();
 			if (!$visitor->group()->can("edit_comment", "delete_comment", true)) {

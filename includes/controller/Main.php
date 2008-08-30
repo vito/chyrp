@@ -48,37 +48,7 @@
 
 			global $posts;
 
-			if (!empty($_GET['query'])) {
-				$_GET['query'] = urldecode($_GET['query']);
-
-				$search = "";
-				$matches = array();
-
-				$queries = explode(" ", $_GET['query']);
-				foreach ($queries as $query)
-					if (!preg_match("/([a-z0-9_]+):(.+)/", $query))
-						$search.= $query;
-					else
-						$matches[] = $query;
-
-				foreach ($matches as $match) {
-					$match = explode(":", $match);
-					$test = $match[0];
-					$equals = $match[1];
-					if ($test == "author") {
-						$user = new User(null, array("where" => "login = :login", "params" => array(":login" => $equals)));
-						$test = "user_id";
-						$equals = $user->id;
-					}
-					$where[] = $test." = :".$test;
-					$params[":".$test] = $equals;
-				}
-
-				if (!empty($search)) {
-					$where[] = "xml LIKE :query";
-					$params[":query"] = "%".$search."%";
-				}
-			}
+			list($where, $params) = keywords(urldecode($_GET['query']), "xml LIKE :query");
 
 			$posts = new Paginator(Post::find(array("placeholders" => true,
 			                                        "where" => $where,

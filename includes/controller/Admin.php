@@ -180,38 +180,8 @@
 			if (!Post::any_editable() and !Post::any_deletable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage any posts."));
 
-			$params = array();
-			$where = array();
-
-			if (!empty($_GET['query'])) {
-				$search = "";
-				$matches = array();
-
-				$queries = explode(" ", $_GET['query']);
-				foreach ($queries as $query)
-					if (!preg_match("/([a-z0-9_]+):(.+)/", $query))
-						$search.= $query;
-					else
-						$matches[] = $query;
-
-				foreach ($matches as $match) {
-					$match = explode(":", $match);
-					$test = $match[0];
-					$equals = $match[1];
-					if ($test == "author") {
-						$user = new User(null, array("where" => "login = :login", "params" => array(":login" => $equals)));
-						$test = "user_id";
-						$equals = $user->id;
-					}
-					$where[] = $test." = :".$test;
-					$params[":".$test] = $equals;
-				}
-
-				if (!empty($search)) {
-					$where[] = "xml LIKE :query";
-					$params[":query"] = "%".$search."%";
-				}
-			}
+			fallback($_GET['query'], "");
+			list($where, $params) = keywords(urldecode($_GET['query']), "xml LIKE :query");
 
 			if (!empty($_GET['month'])) {
 				$where[] = "created_at LIKE :when";
@@ -362,38 +332,8 @@
 			if (!$visitor->group()->can("edit_page") and !$visitor->group()->can("delete_page"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage pages."));
 
-			$params = array();
-			$where = array();
-
-			if (!empty($_GET['query'])) {
-				$search = "";
-				$matches = array();
-
-				$queries = explode(" ", $_GET['query']);
-				foreach ($queries as $query)
-					if (!preg_match("/([a-z0-9_]+):(.+)/", $query))
-						$search.= $query;
-					else
-						$matches[] = $query;
-
-				foreach ($matches as $match) {
-					$match = explode(":", $match);
-					$test = $match[0];
-					$equals = $match[1];
-					if ($test == "author") {
-						$user = new User(null, array("where" => "login = :login", "params" => array(":login" => $equals)));
-						$test = "user_id";
-						$equals = ($user->no_results) ? 0 : $user->id ;
-					}
-					$where[] = $test." = :".$test;
-					$params[":".$test] = $equals;
-				}
-
-				if (!empty($search)) {
-					$where[] = "(title LIKE :query OR body LIKE :query)";
-					$params[":query"] = "%".$search."%";
-				}
-			}
+			fallback($_GET['query'], "");
+			list($where, $params) = keywords(urldecode($_GET['query']), "(title LIKE :query OR body LIKE :query)");
 
 			$this->context["pages"] = new Paginator(Page::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
 		}
@@ -568,38 +508,8 @@
 			if (!$visitor->group()->can("edit_user") and !$visitor->group()->can("delete_user") and !$visitor->group()->can("add_user"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage users."));
 
-			$params = array();
-			$where = array();
-
-			if (!empty($_GET['query'])) {
-				$search = "";
-				$matches = array();
-
-				$queries = explode(" ", $_GET['query']);
-				foreach ($queries as $query)
-					if (!preg_match("/([a-z0-9_]+):(.+)/", $query))
-						$search.= $query;
-					else
-						$matches[] = $query;
-
-				foreach ($matches as $match) {
-					$match = explode(":", $match);
-					$test = $match[0];
-					$equals = $match[1];
-					if ($test == "group") {
-						$group = new Group(null, array("where" => "name = :name", "params" => array(":name" => $equals)));
-						$test = "group_id";
-						$equals = ($group->no_results) ? 0 : $group->id ;
-					}
-					$where[] = $test." = :".$test;
-					$params[":".$test] = $equals;
-				}
-
-				if (!empty($search)) {
-					$where[] = "(login LIKE :query OR full_name LIKE :query OR email LIKE :query OR website LIKE :query)";
-					$params[":query"] = "%".$_GET['query']."%";
-				}
-			}
+			fallback($_GET['query'], "");
+			list($where, $params) = keywords(urldecode($_GET['query']), "(login LIKE :query OR full_name LIKE :query OR email LIKE :query OR website LIKE :query)");
 
 			$this->context["users"] = new Paginator(User::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
 		}
@@ -745,31 +655,7 @@
 			$exports = array();
 
 			if (isset($_POST['posts'])) {
-				if (!empty($_POST['filter_posts'])) {
-					$search = "";
-					$matches = array();
-
-					$queries = explode(" ", $_POST['filter_posts']);
-					foreach ($queries as $query)
-						if (!preg_match("/([a-z0-9_]+):(.+)/", $query))
-							$search.= $query;
-						else
-							$matches[] = $query;
-
-					foreach ($matches as $match) {
-						$match = explode(":", $match);
-						$test = $match[0];
-						$equals = $match[1];
-						$where[] = $test." = :".$test;
-						$params[":".$test] = $equals;
-					}
-
-					if (!empty($search)) {
-						$where[] = "xml LIKE :query";
-						$params[":query"] = "%".$search."%";
-					}
-				} else
-					list($where, $params) = array(false, array());
+				list($where, $params) = keywords(urldecode($_POST['filter_posts']), "xml LIKE :query");
 
 				$posts = Post::find(array("drafts" => true, "where" => $where, "params" => $params, "order" => "id ASC"),
 				                    array("filter" => false));
@@ -841,31 +727,7 @@
 			}
 
 			if (isset($_POST['pages'])) {
-				if (!empty($_POST['filter_pages'])) {
-					$search = "";
-					$matches = array();
-
-					$queries = explode(" ", $_POST['filter_pages']);
-					foreach ($queries as $query)
-						if (!preg_match("/([a-z0-9_]+):(.+)/", $query))
-							$search.= $query;
-						else
-							$matches[] = $query;
-
-					foreach ($matches as $match) {
-						$match = explode(":", $match);
-						$test = $match[0];
-						$equals = $match[1];
-						$where[] = $test." = :".$test;
-						$params[":".$test] = $equals;
-					}
-
-					if (!empty($search)) {
-						$where[] = "(title LIKE :query OR body LIKE :query)";
-						$params[":query"] = "%".$search."%";
-					}
-				} else
-					list($where, $params) = array(null, array());
+				list($where, $params) = keywords(urldecode($_POST['filter_pages']), "(title LIKE :query OR body LIKE :query)");
 
 				$pages = Page::find(array("where" => $where, "params" => $params, "order" => "id ASC"),
 				                    array("filter" => false));
@@ -922,26 +784,7 @@
 			}
 
 			if (isset($_POST['groups'])) {
-				if (!empty($_POST['filter_groups'])) {
-					$search = "";
-					$matches = array();
-
-					$queries = explode(" ", $_POST['filter_groups']);
-					foreach ($queries as $query)
-						if (!preg_match("/([a-z0-9_]+):(.+)/", $query))
-							$search.= $query;
-						else
-							$matches[] = $query;
-
-					foreach ($matches as $match) {
-						$match = explode(":", $match);
-						$test = $match[0];
-						$equals = $match[1];
-						$where[] = $test." = :".$test;
-						$params[":".$test] = $equals;
-					}
-				} else
-					list($where, $params) = array(null, array());
+				list($where, $params) = keywords(urldecode($_POST['filter_groups']), "name LIKE :query");
 
 				$groups = Group::find(array("where" => $where, "params" => $params, "order" => "id ASC"));
 
@@ -958,31 +801,7 @@
 			}
 
 			if (isset($_POST['users'])) {
-				if (!empty($_POST['filter_users'])) {
-					$search = "";
-					$matches = array();
-
-					$queries = explode(" ", $_POST['filter_users']);
-					foreach ($queries as $query)
-						if (!preg_match("/([a-z0-9_]+):(.+)/", $query))
-							$search.= $query;
-						else
-							$matches[] = $query;
-
-					foreach ($matches as $match) {
-						$match = explode(":", $match);
-						$test = $match[0];
-						$equals = $match[1];
-						$where[] = $test." = :".$test;
-						$params[":".$test] = $equals;
-					}
-
-					if (!empty($search)) {
-						$where[] = "(login LIKE :query OR full_name LIKE :query OR email LIKE :query OR website LIKE :query)";
-						$params[":query"] = "%".$_GET['query']."%";
-					}
-				} else
-					list($where, $params) = array(null, array());
+				list($where, $params) = keywords(urldecode($_POST['filter_users']), "(login LIKE :query OR full_name LIKE :query OR email LIKE :query OR website LIKE :query)");
 
 				$users = User::find(array("where" => $where, "params" => $params, "order" => "id ASC"));
 

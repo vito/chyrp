@@ -1533,3 +1533,60 @@
 
 		exit("ERROR: ".$message." (".$file." on line ".$line.")");
 	}
+
+	/**
+	 * Function: keywords
+	 * Handle keyword-searching.
+	 *
+	 * Parameters:
+	 *     $query - The query to parse.
+	 *     $plain - WHERE syntax to search for non-keyword queries.
+	 *
+	 * Returns:
+	 *     An array containing the "WHERE" queries and the corresponding parameters.
+	 */
+	function keywords($query, $plain) {
+		if (!trim($query))
+			return array(array(), array());
+
+		$search = "";
+		$matches = array();
+		$where = array();
+		$params = array();
+
+		$queries = explode(" ", $query);
+		foreach ($queries as $query)
+			if (!preg_match("/([a-z0-9_]+):(.+)/", $query))
+				$search.= $query;
+			else
+				$matches[] = $query;
+
+		$times = array("year", "month", "day", "hour", "minute", "second");
+
+		foreach ($matches as $match) {
+			list($test, $equals,) = explode(":", $match);
+
+			if (in_array($test, $times)) {
+				$where[] = strtoupper($test)."(created_at) = :created_".$test;
+				$params[":created_".$test] = $equals;
+			} elseif ($test == "author") {
+				$user = new User(null, array("where" => "login = :login", "params" => array(":login" => $equals)));
+				$where[] = "user_id = :user_id";
+				$params[":user_id"] = $user->id;
+			} elseif ($test == "group") {
+				$group = new Group(null, array("where" => "name = :name", "params" => array(":name" => $equals)));
+				$test = "group_id";
+				$equals = ($group->no_results) ? 0 : $group->id ;
+			} else {
+				$where[] = $test." = :".$test;
+				$params[":".$test] = $equals;
+			}
+		}
+
+		if (!empty($search)) {
+			$where[] = $plain;
+			$params[":query"] = "%".$search."%";
+		}
+
+		return array($where, $params);
+	}
