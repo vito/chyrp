@@ -733,7 +733,7 @@
 	 * Returns:
 	 *     $name - A unique version of the given $name.
 	 */
-	function unique_filename($name, $num = 2) {
+	function unique_filename($name, $path = "", $num = 2) {
 		if (!file_exists(MAIN_DIR.Config::current()->uploads_path.$name))
 			return $name;
 
@@ -752,10 +752,10 @@
 		$ext = ".".array_pop($name);
 
 		$try = implode(".", $name)."-".$num.$ext;
-		if (!file_exists(MAIN_DIR.Config::current()->uploads_path.$try))
+		if (!file_exists(MAIN_DIR.Config::current()->uploads_path.$path.$try))
 			return $try;
 
-		return unique_filename(implode(".", $name).$ext, $num + 1);
+		return unique_filename(implode(".", $name).$ext, $path, $num + 1);
 	}
 
 	/**
@@ -805,7 +805,7 @@
 		array_pop($file_split);
 		$file_clean = implode(".", $file_split);
 		$file_clean = sanitize($file_clean, false).".".$file_ext;
-		$filename = unique_filename($file_clean);
+		$filename = unique_filename($file_clean, $path);
 
 		$message = __("Couldn't upload file. CHMOD <code>".MAIN_DIR.Config::current()->uploads_path."</code> to 777 and try again. If this problem persists, it's probably timing out; in which case, you must contact your system administrator to increase the maximum POST and upload sizes.");
 		if ($put) {

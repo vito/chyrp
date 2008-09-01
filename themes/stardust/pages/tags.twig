@@ -2,7 +2,10 @@
 
 {% block content %}
 		{% for tag in tag_cloud %}
-		{% if loop.first %}<h1>${ "Tag Maelstrom" | translate }</h1>{% endif %}
+		{% if loop.first %}
+		<h1>${ "Tag Maelstrom" | translate }</h1>
+		<br />
+		{% endif %}
 		<a class="tag" href="$tag.url" style="font-size: $tag.size%" title="$tag.title">$tag.name</a>
 		{% else %}
 		<h1>${ "No Tags" | translate }</h1>
