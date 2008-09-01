@@ -192,6 +192,7 @@
 		 *     $tables - An array (or string) of tables to count results on.
 		 *     $conds - An array (or string) of conditions to match.
 		 *     $params - An associative array of parameters used in the query.
+		 *     $throw_exceptions - Should exceptions be thrown on error?
 		 */
 		public function count($tables, $conds = null, $params = array(), $throw_exceptions = false) {
 			return $this->query(QueryBuilder::build_count($tables, $conds, $params), $params, $throw_exceptions)->fetchColumn();
@@ -211,8 +212,9 @@
 		 *     $offset - Offset for the select statement.
 		 *     $group - GROUP BY statement. Can be an array.
 		 *     $left_join - An array of additional LEFT JOINs.
+		 *     $throw_exceptions - Should exceptions be thrown on error?
 		 */
-		public function select($tables, $fields = "*", $conds = null, $order = null, $params = array(), $limit = null, $offset = null, $group = null, $left_join = null, $throw_exceptions = false) {
+		public function select($tables, $fields = "*", $conds = null, $order = null, $params = array(), $limit = null, $offset = null, $group = null, $left_join = array(), $throw_exceptions = false) {
 			return $this->query(QueryBuilder::build_select($tables, $fields, $conds, $order, $limit, $offset, $group, $left_join, $params), $params, $throw_exceptions);
 		}
 
@@ -224,6 +226,7 @@
 		 *     $table - Table to insert to.
 		 *     $data - An associative array of data to insert.
 		 *     $params - An associative array of parameters used in the query.
+		 *     $throw_exceptions - Should exceptions be thrown on error?
 		 */
 		public function insert($table, $data, $params = array(), $throw_exceptions = false) {
 			return $this->query(QueryBuilder::build_insert($table, $data), $params, $throw_exceptions);
@@ -237,6 +240,7 @@
 		 *     $table - Table to insert to.
 		 *     $data - An associative array of data to insert.
 		 *     $params - An associative array of parameters used in the query.
+		 *     $throw_exceptions - Should exceptions be thrown on error?
 		 */
 		public function replace($table, $data, $params = array(), $throw_exceptions = false) {
 			return $this->query(QueryBuilder::build_replace($table, $data), $params, $throw_exceptions);
@@ -251,6 +255,7 @@
 		 *     $conds - Rows to update.
 		 *     $data - An associative array of data to update.
 		 *     $params - An associative array of parameters used in the query.
+		 *     $throw_exceptions - Should exceptions be thrown on error?
 		 */
 		public function update($table, $conds, $data, $params = array(), $throw_exceptions = false) {
 			return $this->query(QueryBuilder::build_update($table, $conds, $data, $params), $params, $throw_exceptions);
@@ -264,6 +269,7 @@
 		 *     $table - Table to delete from.
 		 *     $conds - Rows to delete..
 		 *     $params - An associative array of parameters used in the query.
+		 *     $throw_exceptions - Should exceptions be thrown on error?
 		 */
 		public function delete($table, $conds, $params = array(), $throw_exceptions = false) {
 			return $this->query(QueryBuilder::build_delete($table, $conds, $params), $params, $throw_exceptions);

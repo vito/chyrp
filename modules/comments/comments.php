@@ -430,23 +430,19 @@
 					if ($post->latest_comment > $_POST['last_comment']) {
 						$new_comments = $sql->select("comments",
 						                             "id",
-						                             array("post_id = :post_id",
+						                             array("post_id" => $_POST['post_id'],
 						                                   "id > :last_comment",
-						                                   "status != 'spam'",
-						                                   "(status != 'denied' OR (
-						                                        status = 'denied' AND (
-						                                            (
-						                                                author_ip != 0 AND
-						                                                author_ip = :current_ip
-						                                            ) OR (
-						                                                user_id != 0 AND
-						                                                user_id = :visitor_id
-						                                            )
+						                                   "status not" => "spam",
+						                                   "status != 'denied' OR (
+						                                        (
+						                                            user_id != 0 AND
+						                                            user_id = :visitor_id
+						                                        ) OR (
+						                                            id IN ".self::visitor_comments()."
 						                                        )
-						                                    ))"),
+						                                    )"),
 						                             "created_at ASC",
-						                             array(":post_id" => $_POST['post_id'],
-						                                   ":last_comment" => $_POST['last_comment'],
+						                             array(":last_comment" => $_POST['last_comment'],
 						                                   ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
 						                                   ":visitor_id" => $visitor->id
 						                             ));
@@ -627,24 +623,20 @@
 			if (isset($route->action) and $route->action == "view") {
 				$get_comments = $sql->select("comments", # table
 				                             "*", # fields
-				                             array("post_id = :post_id",
+				                             array("post_id" => $post->id,
 				                                   "status != 'spam'",
-				                                   "(status != 'denied' OR (
-				                                        status = 'denied' AND (
-				                                            (
-				                                                author_ip != 0 AND
-				                                                author_ip = :current_ip
-				                                            ) OR (
-				                                                user_id != 0 AND
-				                                                user_id = :visitor_id
-				                                            )
+				                                   "status != 'denied' OR (
+				                                        (
+				                                            user_id != 0 AND
+				                                            user_id = :visitor_id
+				                                        ) OR (
+				                                            id IN ".self::visitor_comments()."
 				                                        )
-				                                    ))"),
+				                                    )"),
 				                             "created_at ASC", # order
-				                             array(
-				                                 ":post_id" => $post->id,
-				                                 ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-				                                 ":visitor_id" => $visitor->id
+				                             array(":post_id" => $post->id,
+				                                   ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
+				                                   ":visitor_id" => $visitor->id
 				                             ));
 
 				$post->comments = array();
@@ -671,17 +663,14 @@
 			$options["left_join"][] = array("table" => "comments",
 			                                "where" => array("post_id = posts.id",
 			                                                 "status != 'spam'",
-			                                                 "(status != 'denied' OR (
-			                                                      status = 'denied' AND (
-			                                                          (
-			                                                              author_ip != 0 AND
-			                                                              author_ip = :current_ip
-			                                                          ) OR (
-			                                                              user_id != 0 AND
-			                                                              user_id = :visitor_id
-			                                                          )
+			                                                 "status != 'denied' OR (
+			                                                      (
+			                                                          user_id != 0 AND
+			                                                          user_id = :visitor_id
+			                                                      ) OR (
+			                                                          id IN ".self::visitor_comments()."
 			                                                      )
-			                                                  ))"));
+			                                                  )"));
 
 			$options["params"][":current_ip"] = ip2long($_SERVER['REMOTE_ADDR']);
 			$options["params"][":visitor_id"] = Visitor::current()->id;
@@ -741,5 +730,12 @@
 		public function route_comments_rss() {
 			header("HTTP/1.1 301 Moved Permanently");
 			redirect("comments_feed/");
+		}
+
+		static function visitor_comments() {
+			if (empty($_SESSION['comments']))
+				return "(0)";
+			else
+				return QueryBuilder::build_in($_SESSION['comments']);
 		}
 	}

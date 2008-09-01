@@ -5,6 +5,47 @@
 	 */
 	class QueryBuilder {
 		/**
+		 * Function: build_insert
+		 * Creates a full insert query.
+		 */
+		public static function build_insert($table, $data) {
+			return "INSERT INTO __$table\n".
+                   self::build_insert_header($data)."\n".
+                   "VALUES\n".
+                   self::build_insert_values($data);
+		}
+
+		/**
+		 * Function: build_replace
+		 * Creates a full replace query.
+		 */
+		public static function build_replace($table, $data) {
+			return "REPLACE INTO __$table\n".
+                   self::build_insert_header($data)."\n".
+                   "VALUES\n".
+                   self::build_insert_values($data);
+		}
+
+		/**
+		 * Function: build_update
+		 * Creates a full update query.
+		 */
+		public static function build_update($table, $conds, $data, &$params = array()) {
+			return "UPDATE __$table\n".
+                   "SET ".self::build_update_values($data, $params)."\n".
+                   ($conds ? "WHERE ".self::build_where($conds, $table, $params) : "");
+		}
+
+		/**
+		 * Function: build_delete
+		 * Creates a full delete query.
+		 */
+		public static function build_delete($table, $conds, &$params = array()) {
+			return "DELETE FROM __$table\n".
+                   ($conds ? "WHERE ".self::build_where($conds, $table, $params) : "");
+		}
+
+		/**
 		 * Function: build_update_values
 		 * Creates an update data part.
 		 */
@@ -35,64 +76,17 @@
 		}
 
 		/**
-		 * Function: build_insert
-		 * Creates a full insert query.
-		 */
-		public static function build_insert($table, $data) {
-			return "
-				INSERT INTO __$table
-				".self::build_insert_header($data)."
-				VALUES
-				".self::build_insert_values($data)."
-			";
-		}
-
-		/**
-		 * Function: build_replace
-		 * Creates a full replace query.
-		 */
-		public static function build_replace($table, $data) {
-			return "
-				REPLACE INTO __$table
-				".self::build_insert_header($data)."
-				VALUES
-				".self::build_insert_values($data)."
-			";
-		}
-
-		/**
-		 * Function: build_update
-		 * Creates a full update query.
-		 */
-		public static function build_update($table, $conds, $data, &$params = array()) {
-			return "
-				UPDATE __$table
-				SET ".self::build_update_values($data, $params)."
-				".($conds ? "WHERE ".self::build_where($conds, $table, $params) : "")."
-			";
-		}
-
-		/**
-		 * Function: build_delete
-		 * Creates a full delete query.
-		 */
-		public static function build_delete($table, $conds, &$params = array()) {
-			return "
-				DELETE FROM __$table
-				".($conds ? "WHERE ".self::build_where($conds, $table, $params) : "")."
-			";
-		}
-
-		/**
 		 * Function: build_limits
 		 * Creates a LIMIT part for a query.
 		 */
 		public static function build_limits($offset, $limit) {
 			if ($limit === null)
 				return "";
+
 			if ($offset !== null)
-				return "LIMIT $offset, $limit";
-			return "LIMIT $limit";
+				return "LIMIT ".$offset.", ".$limit;
+
+			return "LIMIT ".$limit;
 		}
 
 		/**
@@ -115,11 +109,9 @@
 		 * Creates a SELECT COUNT(1) query.
 		 */
 		public static function build_count($tables, $conds, &$params = array()) {
-			$query = "
-				SELECT COUNT(1) AS count
-				FROM ".self::build_from($tables);
-			$query.= "\n\t\t\t\t".($conds ? "WHERE ".self::build_where($conds, $tables, $params) : "");
-			return $query;
+			return "SELECT COUNT(1) AS count\n".
+			       "FROM ".self::build_from($tables)."\n".
+			       ($conds ? "WHERE ".self::build_where($conds, $tables, $params) : "");
 		}
 
 		/**
@@ -148,7 +140,7 @@
 
 			$conditions = self::build_conditions($conds, $params, $tables);
 
-			return implode(" AND ", array_filter($conditions));
+			return (empty($conditions)) ? "" : "(".implode(") AND (", array_filter($conditions)).")";
 		}
 
 		/**
@@ -231,8 +223,10 @@
 
 		public static function build_in($vals) {
 			$return = array();
+
 			foreach ($vals as $val)
 				$return[] = SQL::current()->escape($val);
+
 			return "(".join(",", $return).")";
 		}
 
@@ -240,19 +234,18 @@
 		 * Function: build_select
 		 * Creates a full SELECT query.
 		 */
-		public static function build_select($tables, $fields, $conds, $order = null, $limit = null, $offset = null, $group = null, $left_join = null, &$params = array()) {
-			$query = "
-				SELECT ".self::build_select_header($fields, $tables)."
-				FROM ".self::build_from($tables);
-			if (isset($left_join))
-				foreach ($left_join as $join)
-					$query.= "\n\t\t\t\tLEFT JOIN __".$join["table"]." ON ".self::build_where($join["where"], $join["table"], $params);
-			$query.= "
-				".($conds ? "WHERE ".self::build_where($conds, $tables, $params) : "")."
-				".($group ? "GROUP BY ".self::build_group($group, $tables) : "")."
-				".($order ? "ORDER BY ".self::build_order($order, $tables) : "")."
-				".self::build_limits($offset, $limit)."
-			";
+		public static function build_select($tables, $fields, $conds, $order = null, $limit = null, $offset = null, $group = null, $left_join = array(), &$params = array()) {
+			$query = "SELECT ".self::build_select_header($fields, $tables)."\n".
+			         "FROM ".self::build_from($tables)."\n";
+
+			foreach ($left_join as $join)
+				$query.= "LEFT JOIN __".$join["table"]." ON ".self::build_where($join["where"], $join["table"], $params)."\n";
+
+			$query.= ($conds ? "WHERE ".self::build_where($conds, $tables, $params) : "")."\n".
+			         ($group ? "GROUP BY ".self::build_group($group, $tables) : "")."\n".
+			         ($order ? "ORDER BY ".self::build_order($order, $tables) : "")."\n".
+			         self::build_limits($offset, $limit);
+
 			return $query;
 		}
 

@@ -107,6 +107,9 @@
 					                     $post,
 					                     $visitor->id);
 
+					fallback($_SESSION['comments'], array());
+					$_SESSION['comments'][] = $comment->id;
+
 					if (isset($_POST['ajax']))
 						exit("{ comment_id: ".$comment->id." }");
 
@@ -125,6 +128,9 @@
 					                 null,
 					                 $post,
 					                 $visitor->id);
+
+				fallback($_SESSION['comments'], array());
+				$_SESSION['comments'][] = $comment->id;
 
 				if (isset($_POST['ajax']))
 					exit("{ comment_id: ".$comment->id." }");
