@@ -314,12 +314,9 @@
 					$sql->delete("tags", array("id" => $tag["id"]));
 				else
 					$sql->update("tags",
-					             "id = :id",
-					             array("tags" => ":tags",
-					                   "clean" => ":clean"),
-					             array(":id" => $tag["id"],
-					                   ":tags" => join(",", $names),
-					                   ":clean" => join(",", $cleans)));
+					             array("id" => $tag["id"]),
+					             array("tags" => join(",", $names),
+					                   "clean" => join(",", $cleans)));
 			}
 
 			Flash::notice(__("Tag deleted.", "tags"), "/admin/?action=manage_tags");

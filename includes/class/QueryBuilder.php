@@ -8,12 +8,8 @@
 		 * Function: build_update_values
 		 * Creates an update data part.
 		 */
-		public static function build_update_values($data) {
-			$set = array();
-
-			foreach ($data as $field => $val)
-				array_push($set, "$field = $val");
-
+		public static function build_update_values($data, &$params = array()) {
+			$set = self::build_conditions($data, $params);
 			return implode(", ", $set);
 		}
 
@@ -71,7 +67,7 @@
 		public static function build_update($table, $conds, $data, &$params = array()) {
 			return "
 				UPDATE __$table
-				SET ".self::build_update_values($data)."
+				SET ".self::build_update_values($data, $params)."
 				".($conds ? "WHERE ".self::build_where($conds, $table, $params) : "")."
 			";
 		}
@@ -185,42 +181,48 @@
 			return implode(", ", $order);
 		}
 
-		public static function build_conditions($conds, &$params, $tables) {
+		public static function build_conditions($conds, &$params, $tables = null) {
 			foreach ($conds as $key => $val) {
 				if (is_numeric($key)) # Full expression
 					$cond = $val;
 				else { # Key => Val expression
-					if (substr($key, -4) == " not") { # Negation
-						$key = substr($key, 0, -4);
-						if (is_array($val))
-							$cond = $key." NOT IN ".self::build_in($val);
-						elseif ($val === null)
-							$cond = $key." IS NOT NULL";
-						else {
-							$cond = $key." != :".$key;
+					if (is_string($val) and $val[0] == ":")
+						$cond = $key." = ".$val;
+					else {
+						if (substr($key, -4) == " not") { # Negation
+							$key = substr($key, 0, -4);
+							if (is_array($val))
+								$cond = $key." NOT IN ".self::build_in($val);
+							elseif ($val === null)
+								$cond = $key." IS NOT NULL";
+							else {
+								$cond = $key." != :".$key;
+								$params[":".$key] = $val;
+							}
+						} elseif (substr($key, -5) == " like") { # LIKE
+							$key = substr($key, 0, -5);
+							$cond = $key." LIKE :".$key;
 							$params[":".$key] = $val;
-						}
-					} elseif (substr($key, -5) == " like") { # LIKE
-						$key = substr($key, 0, -5);
-						$cond = $key." LIKE :".$key;
-						$params[":".$key] = $val;
-					} elseif (substr($key, -9) == " not like") { # NOT LIKE
-						$key = substr($key, 0, -9);
-						$cond = $key." NOT LIKE :".$key;
-						$params[":".$key] = $val;
-					} else { # Equation
-						if (is_array($val))
-							$cond = $key." IN ".self::build_in($val);
-						elseif ($val === null)
-							$cond = $key." IS NULL";
-						else {
-							$cond = $key." = :".$key;
+						} elseif (substr($key, -9) == " not like") { # NOT LIKE
+							$key = substr($key, 0, -9);
+							$cond = $key." NOT LIKE :".$key;
 							$params[":".$key] = $val;
+						} else { # Equation
+							if (is_array($val))
+								$cond = $key." IN ".self::build_in($val);
+							elseif ($val === null)
+								$cond = $key." IS NULL";
+							else {
+								$cond = $key." = :".$key;
+								$params[":".$key] = $val;
+							}
 						}
 					}
 				}
 
-				self::tablefy($cond, $tables);
+				if ($tables)
+					self::tablefy($cond, $tables);
+
 				$conditions[] = $cond;
 			}
 
