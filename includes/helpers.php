@@ -1551,17 +1551,14 @@
 				$where[] = strtoupper($test)."(created_at) = :created_".$test;
 				$params[":created_".$test] = $equals;
 			} elseif ($test == "author") {
-				$user = new User(null, array("where" => "login = :login", "params" => array(":login" => $equals)));
-				$where[] = "user_id = :user_id";
-				$params[":user_id"] = $user->id;
+				$user = new User(null, array("where" => array("login" => $equals)));
+				$where["user_id"] = $user->id;
 			} elseif ($test == "group") {
-				$group = new Group(null, array("where" => "name = :name", "params" => array(":name" => $equals)));
+				$group = new Group(null, array("where" => array("name" => $equals)));
 				$test = "group_id";
 				$equals = ($group->no_results) ? 0 : $group->id ;
-			} else {
-				$where[] = $test." = :".$test;
-				$params[":".$test] = $equals;
-			}
+			} else
+				$where[$test] = $equals;
 		}
 
 		if (!empty($search)) {

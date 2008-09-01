@@ -42,8 +42,7 @@
 		 *     true - if a match is found.
 		 */
 		static function authenticate($login, $password) {
-			$check = new self(null, array("where" => array("login = :login", "password = :password"),
-			                              "params" => array(":login" => $login, ":password" => $password)));
+			$check = new self(null, array("where" => array("login" => $login, "password" => $password)));
 			return !$check->no_results;
 		}
 
@@ -167,8 +166,7 @@
 			if ($this->no_results)
 				return false;
 
-			return Post::find(array("where" => "user_id = :user_id",
-			                        "params" => array(":user_id" => $this->id)));
+			return Post::find(array("where" => array("user_id" => $this->id)));
 		}
 
 		/**
@@ -179,8 +177,7 @@
 			if ($this->no_results)
 				return false;
 
-			return Page::find(array("where" => "user_id = :user_id",
-			                        "params" => array(":user_id" => $this->id)));
+			return Page::find(array("where" => array("user_id" => $this->id)));
 		}
 
 		/**

@@ -697,8 +697,7 @@
 		}
 
 		public function posts_export($atom, $post) {
-			$comments = Comment::find(array("where" => "post_id = :post_id",
-			                                "params" => array(":post_id" => $post->id)),
+			$comments = Comment::find(array("where" => array("post_id" => $post->id)),
 			                          array("filter" => false));
 
 			foreach ($comments as $comment) {

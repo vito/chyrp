@@ -248,7 +248,7 @@
 
 			# Can they edit their own comments, and do they have any?
 			if ($visitor->group()->can("edit_own_comment") and
-			    self::find(array("where" => "user_id = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
+			    self::find(array("where" => array("user_id" => $visitor->id))))
 				return true;
 
 			return false;
@@ -267,7 +267,7 @@
 
 			# Can they delete their own comments, and do they have any?
 			if ($visitor->group()->can("delete_own_comment") and
-			    self::find(array("where" => "user_id = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
+			    self::find(array("where" => array("user_id" => $visitor->id))))
 				return true;
 
 			return false;

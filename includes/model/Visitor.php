@@ -16,10 +16,8 @@
 		 */
 		public function __construct() {
 			if (isset($_SESSION['login']) and isset($_SESSION['password']))
-				parent::__construct(null, array("where"  => array("login = :login",
-				                                                  "password = :password"),
-				                                "params" => array(":login"    => $_SESSION['login'],
-				                                                  ":password" => $_SESSION['password'])));
+				parent::__construct(null, array("where"  => array("login"    => $_SESSION['login'],
+				                                                  "password" => $_SESSION['password'])));
 		}
 
 		/**

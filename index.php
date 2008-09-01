@@ -86,8 +86,7 @@
 					                              "timestamp" => $timestamp,
 					                              "url" => url("archive/".when("Y/m/", $time->created_at)));
 
-					$archives[$timestamp]["posts"] = Post::find(array("where" => "created_at LIKE :created_at",
-					                                                  "params" => array(":created_at" => when("Y-m", $time->created_at)."%")));
+					$archives[$timestamp]["posts"] = Post::find(array("where" => array("created_at like" => when("Y-m", $time->created_at)."%")));
 				}
 
 				$theme->load("pages/archive", array("archives" => $archives));

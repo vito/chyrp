@@ -64,10 +64,8 @@
 			$options["from"] = (array) $options["from"];
 			$options["select"] = (array) $options["select"];
 
-			if (is_numeric($id)) {
-				$options["where"][] = "id = :id";
-				$options["params"][":id"] = $id;
-			}
+			if (is_numeric($id))
+				$options["where"]["id"] = $id;
 
 			$trigger = Trigger::current();
 			$trigger->filter($options, $model_name."_grab");

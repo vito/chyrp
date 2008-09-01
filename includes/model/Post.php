@@ -68,8 +68,8 @@
 				$options["where"] = array();
 
 			$has_status = false;
-			foreach ($options["where"] as $where)
-				if (substr_count($where, "status"))
+			foreach ($options["where"] as $key => $val)
+				if (is_int($key) and substr_count($val, "status") or $key == "status")
 					$has_status = true;
 
 			if (!XML_RPC) {
@@ -351,12 +351,12 @@
 
 			# Can they edit their own posts, and do they have any?
 			if ($visitor->group()->can("edit_own_post") and
-			    Post::find(array("where" => "user_id = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
+			    Post::find(array("where" => array("user_id" => $visitor->id))))
 				return true;
 
 			# Can they edit their own drafts, and do they have any?
 			if ($visitor->group()->can("edit_own_draft") and
-			    Post::find(array("where" => "status = 'draft' and user_id = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
+			    Post::find(array("where" => array("status" => "draft", "user_id" => $visitor->id))))
 				return true;
 
 			return false;
@@ -380,12 +380,12 @@
 
 			# Can they delete their own posts, and do they have any?
 			if ($visitor->group()->can("delete_own_post") and
-			    Post::find(array("where" => "user_id = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
+			    Post::find(array("where" => array("user_id" => $visitor->id))))
 				return true;
 
 			# Can they delete their own drafts, and do they have any?
 			if ($visitor->group()->can("delete_own_draft") and
-			    Post::find(array("where" => "status = 'draft' and user_id = :visitor_id", "params" => array(":visitor_id" => $visitor->id))))
+			    Post::find(array("where" => array("status" => "draft", "user_id" => $visitor->id))))
 				return true;
 
 			return false;
@@ -770,19 +770,17 @@
 				if (in_array($attr, $times)) {
 					$where[] = strtoupper($attr)."(created_at) = :created_".$attr;
 					$params[':created_'.$attr] = $get[$attr];
-				} elseif ($attr == "author") {
-					$where[] = "user_id = :attrauthor";
-					$params[':attrauthor'] = SQL::current()->select("users",
+				} elseif ($attr == "author")
+					$where["user_id"] = SQL::current()->select("users",
 					                                      "id",
 					                                      "login = :login",
 					                                      "id",
 					                                      array(
 					                                          ":login" => $get['author']
 					                                      ), 1)->fetchColumn();
-				} elseif ($attr == "feathers") {
-					$where[] = "feather = :feather";
-					$params[':feather'] = depluralize($get['feathers']);
-				} else {
+				elseif ($attr == "feathers")
+					$where["feather"] = depluralize($get['feathers']);
+				else {
 					$tokens = array($where, $params, $attr);
 					Trigger::current()->filter($tokens, "post_url_token");
 					list($where, $params, $attr) = $tokens;

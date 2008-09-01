@@ -68,11 +68,11 @@
 		 * Function: build_update
 		 * Creates a full update query.
 		 */
-		public static function build_update($table, $conds, $data) {
+		public static function build_update($table, $conds, $data, &$params = array()) {
 			return "
 				UPDATE __$table
 				SET ".self::build_update_values($data)."
-				".($conds ? "WHERE ".self::build_where($conds, $table) : "")."
+				".($conds ? "WHERE ".self::build_where($conds, $table, $params) : "")."
 			";
 		}
 
@@ -80,10 +80,10 @@
 		 * Function: build_delete
 		 * Creates a full delete query.
 		 */
-		public static function build_delete($table, $conds) {
+		public static function build_delete($table, $conds, &$params = array()) {
 			return "
 				DELETE FROM __$table
-				".($conds ? "WHERE ".self::build_where($conds, $table) : "")."
+				".($conds ? "WHERE ".self::build_where($conds, $table, $params) : "")."
 			";
 		}
 
@@ -118,11 +118,11 @@
 		 * Function: build_count
 		 * Creates a SELECT COUNT(1) query.
 		 */
-		public static function build_count($tables, $conds) {
+		public static function build_count($tables, $conds, &$params = array()) {
 			$query = "
 				SELECT COUNT(1) AS count
 				FROM ".self::build_from($tables);
-			$query.= "\n\t\t\t\t".($conds ? "WHERE ".self::build_where($conds, $tables) : "");
+			$query.= "\n\t\t\t\t".($conds ? "WHERE ".self::build_where($conds, $tables, $params) : "");
 			return $query;
 		}
 
@@ -146,12 +146,11 @@
 		 * Function: build_where
 		 * Creates a WHERE query.
 		 */
-		public static function build_where($conds, $tables = null) {
-			$conditions = (array) $conds;
+		public static function build_where($conds, $tables = null, &$params = array()) {
+			$conds = (array) $conds;
 			$tables = (array) $tables;
 
-			foreach ($conditions as &$condition)
-				self::tablefy($condition, $tables);
+			$conditions = self::build_conditions($conds, $params, $tables);
 
 			return implode(" AND ", array_filter($conditions));
 		}
@@ -186,19 +185,68 @@
 			return implode(", ", $order);
 		}
 
+		public static function build_conditions($conds, &$params, $tables) {
+			foreach ($conds as $key => $val) {
+				if (is_numeric($key)) # Full expression
+					$cond = $val;
+				else { # Key => Val expression
+					if (substr($key, -4) == " not") { # Negation
+						$key = substr($key, 0, -4);
+						if (is_array($val))
+							$cond = $key." NOT IN ".self::build_in($val);
+						elseif ($val === null)
+							$cond = $key." IS NOT NULL";
+						else {
+							$cond = $key." != :".$key;
+							$params[":".$key] = $val;
+						}
+					} elseif (substr($key, -5) == " like") { # LIKE
+						$key = substr($key, 0, -5);
+						$cond = $key." LIKE :".$key;
+						$params[":".$key] = $val;
+					} elseif (substr($key, -9) == " not like") { # NOT LIKE
+						$key = substr($key, 0, -9);
+						$cond = $key." NOT LIKE :".$key;
+						$params[":".$key] = $val;
+					} else { # Equation
+						if (is_array($val))
+							$cond = $key." IN ".self::build_in($val);
+						elseif ($val === null)
+							$cond = $key." IS NULL";
+						else {
+							$cond = $key." = :".$key;
+							$params[":".$key] = $val;
+						}
+					}
+				}
+
+				self::tablefy($cond, $tables);
+				$conditions[] = $cond;
+			}
+
+			return $conditions;
+		}
+
+		public static function build_in($vals) {
+			$return = array();
+			foreach ($vals as $val)
+				$return[] = SQL::current()->escape($val);
+			return "(".join(",", $return).")";
+		}
+
 		/**
 		 * Function: build_select
 		 * Creates a full SELECT query.
 		 */
-		public static function build_select($tables, $fields, $conds, $order = null, $limit = null, $offset = null, $group = null, $left_join = null) {
+		public static function build_select($tables, $fields, $conds, $order = null, $limit = null, $offset = null, $group = null, $left_join = null, &$params = array()) {
 			$query = "
 				SELECT ".self::build_select_header($fields, $tables)."
 				FROM ".self::build_from($tables);
 			if (isset($left_join))
 				foreach ($left_join as $join)
-					$query.= "\n\t\t\t\tLEFT JOIN __".$join["table"]." ON ".self::build_where($join["where"], $join["table"]);
+					$query.= "\n\t\t\t\tLEFT JOIN __".$join["table"]." ON ".self::build_where($join["where"], $join["table"], $params);
 			$query.= "
-				".($conds ? "WHERE ".self::build_where($conds, $tables) : "")."
+				".($conds ? "WHERE ".self::build_where($conds, $tables, $params) : "")."
 				".($group ? "GROUP BY ".self::build_group($group, $tables) : "")."
 				".($order ? "ORDER BY ".self::build_order($order, $tables) : "")."
 				".self::build_limits($offset, $limit)."

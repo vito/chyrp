@@ -179,7 +179,7 @@
 				$clean[] = $tag["clean"];
 			}
 
-			list($tags, $clean, $tag2clean) = $this->parseTags($tags, $clean);
+			list($tags, $clean, $tag2clean,) = self::parseTags($tags, $clean);
 
 			$max_qty = max(array_values($tags));
 			$min_qty = min(array_values($tags));
@@ -208,15 +208,13 @@
 			list($where, $params) = keywords(urldecode($_GET['query']), "xml LIKE :query");
 
 			$visitor = Visitor::current();
-			if (!$visitor->group()->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post")) {
-				$where[] = "user_id = :visitor_id";
-				$params[':visitor_id'] = $visitor->id;
-			}
+			if (!$visitor->group()->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post"))
+				$where["user_id"] = $visitor->id;
 
 			$admin->context["posts"] = new Paginator(Post::find(array("placeholders" => true,
-			                                                         "drafts" => true,
-			                                                         "where" => $where,
-			                                                         "params" => $params)), 25);
+			                                                          "drafts" => true,
+			                                                          "where" => $where,
+			                                                          "params" => $params)), 25);
 		}
 
 		public function admin_rename_tag($admin) {
@@ -239,7 +237,7 @@
 				$clean[] = $tag["clean"];
 			}
 
-			list($tags, $clean, $tag2clean) = $this->parseTags($tags, $clean);
+			list($tags, $clean, $tag2clean,) = self::parseTags($tags, $clean);
 
 			foreach ($tags as $tag => $count)
 				if ($tag2clean[$tag] == $_GET['name'])
@@ -348,8 +346,7 @@
 			global $posts;
 
 			$posts = new Paginator(Post::find(array("placeholders" => true,
-			                                        "where" => "tags.clean LIKE :tag",
-			                                        "params" => array(":tag" => "%{{".$_GET['name']."}}%"))),
+			                                        "where" => array("tags.clean like" => "%{{".$_GET['name']."}}%"))),
 			                       Config::current()->posts_per_page);
 
 			return !empty($posts->paginated);
@@ -505,7 +502,7 @@
 				return;
 			}
 
-			list($tags, $clean, $tag2clean) = $this->parseTags(array($post->unclean_tags), array($post->clean_tags));
+			list($tags, $clean, $tag2clean,) = self::parseTags(array($post->unclean_tags), array($post->clean_tags));
 
 			$post->tags = array();
 
@@ -557,7 +554,7 @@
 			if (!count($unclean))
 				return array();
 
-			list($unclean, $clean, $tag2clean) = $this->parseTags($unclean, $clean);
+			list($unclean, $clean, $tag2clean,) = self::parseTags($unclean, $clean);
 
 			foreach ($unclean as $name => $popularity)
 				$unclean[$name] = array("name" => $name, "popularity" => $popularity, "url" => $tag2clean[$name]);
@@ -581,7 +578,7 @@
 				$clean[] = $tag["clean"];
 			}
 
-			list($tags, $clean, $tag2clean) = $this->parseTags($tags, $clean);
+			list($tags, $clean, $tag2clean, $clean2tag) = self::parseTags($tags, $clean);
 
 			return $clean2tag[$clean_tag];
 		}
@@ -594,7 +591,7 @@
 				$clean[] = $tag["clean"];
 			}
 
-			list($tags, $clean, $tag2clean) = $this->parseTags($tags, $clean);
+			list($tags, $clean, $tag2clean) = self::parseTags($tags, $clean);
 
 			return $tag2clean[$unclean_tag];
 		}
@@ -658,10 +655,11 @@
 		# array("foo", "bar", "foo")
 		# to
 		# array("foo" => 2, "bar" => 1)
-		public function parseTags($tags, $clean) {
+		static function parseTags($tags, $clean) {
 			$tags = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $tags))));
 			$clean = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $clean))));
 			$tag2clean = array_combine(array_keys($tags), array_keys($clean));
-			return array($tags, $clean, $tag2clean);
+			$clean2tag = array_combine(array_keys($clean), array_keys($tags));
+			return array($tags, $clean, $tag2clean, $clean2tag);
 		}
 	}

@@ -25,13 +25,11 @@
 
 			if (isset($_GET['day']))
 				$posts = new Paginator(Post::find(array("placeholders" => true,
-				                                        "where" => "created_at LIKE :date",
-				                                        "params" => array(":date" => $_GET['year']."-".$_GET['month']."-".$_GET['day']."%"))),
+				                                        "where" => array("created_at like" => $_GET['year']."-".$_GET['month']."-".$_GET['day']."%"))),
 				                       Config::current()->posts_per_page);
 			else
 				$posts = new Paginator(Post::find(array("placeholders" => true,
-				                                        "where" => "created_at LIKE :date",
-				                                        "params" => array(":date" => $_GET['year']."-".$_GET['month']."%"))),
+				                                        "where" => array("created_at like" => $_GET['year']."-".$_GET['month']."%"))),
 				                       Config::current()->posts_per_page);
 		}
 
@@ -70,9 +68,8 @@
 
 			global $posts;
 			$posts = new Paginator(Post::find(array("placeholders" => true,
-			                                        "where" => array("status = 'draft'",
-			                                                         "user_id = :current_user"),
-			                                        "params" => array(":current_user" => $visitor->id))),
+			                                        "where" => array("status" => "draft",
+			                                                         "user_id" => $visitor->id))),
 				                   Config::current()->posts_per_page);
 		}
 
@@ -84,7 +81,7 @@
 			global $page;
 
 			if (!isset($page))
-				$page = new Page(null, array("where" => "url = :url", "params" => array(":url" => $_GET['url'])));
+				$page = new Page(null, array("where" => array("url" => $_GET['url'])));
 		}
 
 		/**
@@ -118,8 +115,7 @@
 			$get = array_map("urldecode", $_GET);
 
 			if (!$config->clean_urls)
-				$post = new Post(null, array("where" => "url = :url",
-				                             "params" => array(":url" => fallback($get['url']))));
+				$post = new Post(null, array("where" => array("url" => fallback($get['url']))));
 			else
 				$post = Post::from_url($route->post_url_attrs, array("drafts" => true));
 
@@ -187,8 +183,7 @@
 			if (empty($_POST['login']))
 				return Flash::warning(__("Please enter a username for your account."));
 
-			if (count(User::find(array("where" => "login = :login",
-			                           "params" => array(":login" => $_POST['login'])))))
+			if (count(User::find(array("where" => array("login" => $_POST['login'])))))
 				Flash::warning(__("That username is already in use."));
 
 			if (empty($_POST['password1']) and empty($_POST['password2']))
@@ -227,8 +222,7 @@
 			fallback($_POST['password']);
 
 			if (!User::authenticate($_POST['login'], md5($_POST['password'])))
-				if (!count(User::find(array("where" => "login = :login",
-				                           "params" => array(":login" => $_POST['login'])))))
+				if (!count(User::find(array("where" => array("login" => $_POST['login'])))))
 					Flash::warning(__("There is no user with that login name."));
 				else
 					Flash::warning(__("Password incorrect."));
@@ -294,7 +288,7 @@
 			if (empty($_POST))
 				return;
 
-			$user = new User(null, array("where" => "login = :login", "params" => array(":login" => $_POST['login'])));
+			$user = new User(null, array("where" => array("login" => $_POST['login'])));
 			if ($user->no_results)
 				return Flash::warning(__("Invalid user specified."));
 

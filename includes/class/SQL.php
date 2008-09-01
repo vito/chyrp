@@ -194,7 +194,7 @@
 		 *     $params - An associative array of parameters used in the query.
 		 */
 		public function count($tables, $conds = null, $params = array(), $throw_exceptions = false) {
-			return $this->query(QueryBuilder::build_count($tables, $conds), $params, $throw_exceptions)->fetchColumn();
+			return $this->query(QueryBuilder::build_count($tables, $conds, $params), $params, $throw_exceptions)->fetchColumn();
 		}
 
 		/**
@@ -213,7 +213,7 @@
 		 *     $left_join - An array of additional LEFT JOINs.
 		 */
 		public function select($tables, $fields = "*", $conds = null, $order = null, $params = array(), $limit = null, $offset = null, $group = null, $left_join = null, $throw_exceptions = false) {
-			return $this->query(QueryBuilder::build_select($tables, $fields, $conds, $order, $limit, $offset, $group, $left_join), $params, $throw_exceptions);
+			return $this->query(QueryBuilder::build_select($tables, $fields, $conds, $order, $limit, $offset, $group, $left_join, $params), $params, $throw_exceptions);
 		}
 
 		/**
@@ -253,7 +253,7 @@
 		 *     $params - An associative array of parameters used in the query.
 		 */
 		public function update($table, $conds, $data, $params = array(), $throw_exceptions = false) {
-			return $this->query(QueryBuilder::build_update($table, $conds, $data), $params, $throw_exceptions);
+			return $this->query(QueryBuilder::build_update($table, $conds, $data, $params), $params, $throw_exceptions);
 		}
 
 		/**
@@ -266,7 +266,7 @@
 		 *     $params - An associative array of parameters used in the query.
 		 */
 		public function delete($table, $conds, $params = array(), $throw_exceptions = false) {
-			return $this->query(QueryBuilder::build_delete($table, $conds), $params, $throw_exceptions);
+			return $this->query(QueryBuilder::build_delete($table, $conds, $params), $params, $throw_exceptions);
 		}
 
 		/**
@@ -288,12 +288,27 @@
 		}
 
 		/**
-		 * Function: current
-		 * Returns a singleton reference to the current connection.
+		 * Function: escape
+		 * Escapes a string, escaping things like $1 and C:\foo\bar so that they don't get borked by the preg_replace.
+		 * This also handles calling the SQL connection method's "escape_string" functions.
 		 */
-		public static function & current() {
-			static $instance = null;
-			return $instance = (empty($instance)) ? new self() : $instance ;
+		public function escape($string) {
+			switch(SQL::current()->method()) {
+				case "pdo":
+					$string = $this->db->quote($string);
+					break;
+				case "mysqli":
+					$string = "'".$this->db->escape_string($string)."'";
+					break;
+				case "mysql":
+					$string = "'".mysql_real_escape_string($string)."'";
+					break;
+			}
+
+			$string = str_replace('\\', '\\\\', $string);
+			$string = str_replace('$', '\$', $string);
+
+			return $string;
 		}
 
 		/**
@@ -342,6 +357,15 @@
 		 */
 		public function second_from_datetime($datetime) {
 			return when("s", $datetime);
+		}
+
+		/**
+		 * Function: current
+		 * Returns a singleton reference to the current connection.
+		 */
+		public static function & current() {
+			static $instance = null;
+			return $instance = (empty($instance)) ? new self() : $instance ;
 		}
 	}
 

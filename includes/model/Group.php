@@ -175,8 +175,7 @@
 			if ($this->no_results)
 				return false;
 
-			return User::find(array("where" => "group_id = :group_id",
-			                        "params" => array(":group_id" => $this->id)));
+			return User::find(array("where" => array("group_id" => $this->id)));
 		}
 
 		/**

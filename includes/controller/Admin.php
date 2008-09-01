@@ -183,16 +183,12 @@
 			fallback($_GET['query'], "");
 			list($where, $params) = keywords(urldecode($_GET['query']), "xml LIKE :query");
 
-			if (!empty($_GET['month'])) {
-				$where[] = "created_at LIKE :when";
-				$params[":when"] = $_GET['month']."-%";
-			}
+			if (!empty($_GET['month']))
+				$where["created_at like"] = $_GET['month']."-%";
 
 			$visitor = Visitor::current();
-			if (!$visitor->group()->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post")) {
-				$where[] = "user_id = :visitor_id";
-				$params[':visitor_id'] = $visitor->id;
-			}
+			if (!$visitor->group()->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post"))
+				$where["user_id"] = $visitor->id;
 
 			$this->context["posts"] = new Paginator(Post::find(array("placeholders" => true,
 			                                                         "drafts" => true,
@@ -243,7 +239,7 @@
 				error(__("No ID Specified"), __("An ID is required to edit a page."));
 
 			$this->context["page"] = new Page($_GET['id'], array("filter" => false));
-			$this->context["pages"] = Page::find(array("where" => "id != :id", "params" => array(":id" => $_GET['id'])));
+			$this->context["pages"] = Page::find(array("where" => array("id not" => $_GET['id'])));
 		}
 
 		/**
@@ -335,7 +331,9 @@
 			fallback($_GET['query'], "");
 			list($where, $params) = keywords(urldecode($_GET['query']), "(title LIKE :query OR body LIKE :query)");
 
-			$this->context["pages"] = new Paginator(Page::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
+			$this->context["pages"] = new Paginator(Page::find(array("placeholders" => true,
+			                                                         "where" => $where,
+			                                                         "params" => $params)), 25);
 		}
 
 		/**
@@ -349,8 +347,8 @@
 			$config = Config::current();
 
 			$this->context["default_group"] = new Group($config->default_group);
-			$this->context["groups"] = Group::find(array("where" => array("id != :guest_id", "id != :default_id"),
-			                                             "params" => array(":guest_id" => $config->guest_group, ":default_id" => $config->default_group),
+			$this->context["groups"] = Group::find(array("where" => array("id not" => array($config->guest_group,
+			                                                                                $config->default_group)),
 			                                             "order" => "id DESC"));
 		}
 
@@ -368,8 +366,7 @@
 			if (empty($_POST['login']))
 				error(__("Error"), __("Please enter a username for your account."));
 
-			$check = new User(null, array("where" => "login = :login",
-			                              "params" => array(":login" => $_POST['login'])));
+			$check = new User(null, array("where" => array("login" => $_POST['login'])));
 			if (!$check->no_results)
 				error(__("Error"), __("That username is already in use."));
 
@@ -400,8 +397,7 @@
 
 			$this->context["user"] = new User($_GET['id']);
 			$this->context["groups"] = Group::find(array("order" => "id ASC",
-			                                             "where" => "id != :guest_id",
-			                                             "params" => array(":guest_id" => Config::current()->guest_group)));
+			                                             "where" => array("id not" => Config::current()->guest_group)));
 		}
 
 		/**
@@ -446,8 +442,7 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete users."));
 
 			$this->context["user"] = new User($_GET['id']);
-			$this->context["users"] = User::find(array("where" => "id != :deleting_id",
-			                                           "params" => array(":deleting_id" => $_GET['id'])));
+			$this->context["users"] = User::find(array("where" => array("id not" => $_GET['id'])));
 		}
 
 		/**
@@ -585,9 +580,8 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete groups."));
 
 			$this->context["group"] = new Group($_GET['id']);
-			$this->context["groups"] = Group::find(array("where" => "id != :group_id",
-			                                             "order" => "id ASC",
-			                                             "params" => array(":group_id" => $_GET['id'])));
+			$this->context["groups"] = Group::find(array("where" => array("id not" => $_GET['id']),
+			                                             "order" => "id ASC"));
 		}
 
 		/**
@@ -632,7 +626,7 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage groups."));
 
 			if (!empty($_GET['search'])) {
-				$user = new User(null, array("where" => "login = :search", "params" => array(":search" => $_GET['search'])));
+				$user = new User(null, array("where" => array("login" => $_GET['search'])));
 				$this->context["groups"] = array($user->group());
 			} else
 				$this->context["groups"] = new Paginator(Group::find(array("placeholders" => true, "order" => "id ASC")), 10);

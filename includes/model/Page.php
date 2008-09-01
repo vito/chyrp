@@ -231,7 +231,7 @@
 			if ($this->no_results)
 				return false;
 
-			return self::find(array("where" => "parent_id = :id", "params" => array(":id" => $this->id)));
+			return self::find(array("where" => array("parent_id" => $this->id)));
 		}
 
 		/**
