@@ -37,8 +37,11 @@
 				SQL::current()->debug[] = array("number" => SQL::current()->queries,
 				                                "file" => str_replace(MAIN_DIR."/", "", $target["file"]),
 				                                "line" => $target["line"],
-				                                "query" => str_replace("\n", "\\n",
-				                                           str_replace(array_keys($params), array_values($params), $query)));
+				                                "query" => str_replace("\n",
+				                                                       "\\n",
+				                                                       str_replace(array_keys($params),
+				                                                                   array_values($params),
+				                                                                   $query)));
 			}
 
 			switch(SQL::current()->method()) {

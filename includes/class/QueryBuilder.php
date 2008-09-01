@@ -8,7 +8,15 @@
 		 * Function: build_insert
 		 * Creates a full insert query.
 		 */
-		public static function build_insert($table, $data) {
+		public static function build_insert($table, $data, &$params = array()) {
+			$conditions = self::build_conditions($data, $params);
+			$data = array();
+
+			foreach ($conditions as $cond) {
+				$split = explode(" = ", $cond);
+				$data[$split[0]] = $split[1];
+			}
+
 			return "INSERT INTO __$table\n".
                    self::build_insert_header($data)."\n".
                    "VALUES\n".
@@ -20,6 +28,14 @@
 		 * Creates a full replace query.
 		 */
 		public static function build_replace($table, $data) {
+			$conditions = self::build_conditions($data, $params);
+			$data = array();
+
+			foreach ($conditions as $cond) {
+				$split = explode(" = ", $cond);
+				$data[$split[0]] = $split[1];
+			}
+
 			return "REPLACE INTO __$table\n".
                    self::build_insert_header($data)."\n".
                    "VALUES\n".

@@ -229,7 +229,7 @@
 		 *     $throw_exceptions - Should exceptions be thrown on error?
 		 */
 		public function insert($table, $data, $params = array(), $throw_exceptions = false) {
-			return $this->query(QueryBuilder::build_insert($table, $data), $params, $throw_exceptions);
+			return $this->query(QueryBuilder::build_insert($table, $data, $params), $params, $throw_exceptions);
 		}
 
 		/**

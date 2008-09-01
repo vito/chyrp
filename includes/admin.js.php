@@ -478,9 +478,10 @@ var Extend = {
 		Extend.draw_dependencies()
 	},
 	draw_conflicts: function(){
-		if ($.browser.msie) return false
-		if (!$(".extend li.conflict").size() &&
-		    !($.browser.safari || $.browser.opera || ($.browser.mozilla && $.browser.version >= 1.9)))
+		if ($.browser.msie ||
+		    Route.action != "modules" ||
+		    (!$(".extend li.depends").size() &&
+		        !($.browser.safari || $.browser.opera || ($.browser.mozilla && $.browser.version >= 1.9))))
 			return false
 
 		$("#conflicts_canvas").remove()
@@ -544,24 +545,6 @@ var Extend = {
 					canvas.moveTo(line_from_x, line_from_y)
 					canvas.lineTo(line_to_x, line_to_y)
 					canvas.stroke()
-
-					// Beginning circle
-					canvas.beginPath()
-					if (conflict_status == "disabled")
-						canvas.arc(line_from_x, line_from_y, 5, 1.35, -1.35, false)
-					else
-						canvas.arc(line_from_x, line_from_y, 5, -1.35, 1.35, false)
-					canvas.fill()
-					canvas.stroke()
-
-					// Ending circle
-					canvas.beginPath()
-					if (conflict_status == "disabled")
-						canvas.arc(line_to_x, line_to_y, 5, -1.75, 1.75, false)
-					else
-						canvas.arc(line_to_x, line_to_y, 5, 1.75, -1.75, false)
-					canvas.fill()
-					canvas.stroke()
 				} else if (conflict_status == "disabled") {
 					var line_from_x = $("#"+conflict).offset().left
 					var line_from_y = $("#"+conflict).offset().top + 12
@@ -574,18 +557,6 @@ var Extend = {
 					canvas.beginPath()
 					canvas.moveTo(line_from_x, line_from_y)
 					canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y)
-					canvas.stroke()
-
-					// Beginning circle
-					canvas.beginPath()
-					canvas.arc(line_from_x, line_from_y, 5, 1.35, -1.35, false)
-					canvas.fill()
-					canvas.stroke()
-
-					// Ending circle
-					canvas.beginPath()
-					canvas.arc(line_to_x, line_to_y, 5, 1.35, -1.35, false)
-					canvas.fill()
 					canvas.stroke()
 				} else if (conflict_status == "enabled") {
 					var line_from_x = $("#"+conflict).offset().left + $("#"+conflict).outerWidth()
@@ -600,19 +571,19 @@ var Extend = {
 					canvas.moveTo(line_from_x, line_from_y)
 					canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y)
 					canvas.stroke()
-
-					// Beginning circle
-					canvas.beginPath()
-					canvas.arc(line_from_x, line_from_y, 5, -1.75, 1.75, false)
-					canvas.fill()
-					canvas.stroke()
-
-					// Ending circle
-					canvas.beginPath()
-					canvas.arc(line_to_x, line_to_y, 5, -1.75, 1.75, false)
-					canvas.fill()
-					canvas.stroke()
 				}
+
+				// Beginning circle
+				canvas.beginPath()
+				canvas.arc(line_from_x, line_from_y, 5, 0, Math.PI * 2, false)
+				canvas.fill()
+				canvas.stroke()
+
+				// Ending circle
+				canvas.beginPath()
+				canvas.arc(line_to_x, line_to_y, 5, 0, Math.PI * 2, false)
+				canvas.fill()
+				canvas.stroke()
 
 				conflict_displayed[conflict+" :: "+$(this).attr("id")] = true
 			}
@@ -621,12 +592,22 @@ var Extend = {
 		return true
 	},
 	draw_dependencies: function() {
-		if ($.browser.msie) return false
-		if (!$(".extend li.depends").size() &&
-		    !($.browser.safari || $.browser.opera || ($.browser.mozilla && $.browser.version >= 1.9)))
+		if ($.browser.msie ||
+		    Route.action != "modules" ||
+		    (!$(".extend li.depends").size() &&
+		        !($.browser.safari || $.browser.opera || ($.browser.mozilla && $.browser.version >= 1.9))))
 			return false
 
 		$("#depends_canvas").remove()
+
+		$("#header, #welcome, #sub-nav, #content a.button, .extend li, #footer, h1, h2").css({
+			position: "relative",
+			zIndex: 2
+		})
+		$("#header ul li a").css({
+			position: "relative",
+			zIndex: 3
+		})
 
 		$(document.createElement("canvas")).attr("id", "depends_canvas").prependTo("body")
 		$("#depends_canvas").css({
@@ -654,26 +635,22 @@ var Extend = {
 			var gradients = []
 
 			for (i = 0; i < classes.length; i++) {
-				var conflict = classes[i].replace("depends_", "module_")
+				var depend = classes[i].replace("depends_", "module_")
 
-				if (dependency_displayed[$(this).attr("id")+" :: "+conflict])
+				if (dependency_displayed[$(this).attr("id")+" :: "+depend])
 					continue
 
 				canvas.fillStyle = "#e4e3fb"
 				canvas.lineWidth = 3
 
 				var this_status = $(this).parent().parent().attr("class").split(" ")[0] + "d"
-				var conflict_status = $("#"+conflict).parent().parent().attr("class").split(" ")[0] + "d"
+				var depend_status = $("#"+depend).parent().parent().attr("class").split(" ")[0] + "d"
 
-				if (conflict_status != this_status) {
-					var line_from_x = (conflict_status == "disabled") ?
-					                  $("#"+conflict).offset().left :
-					                  $("#"+conflict).offset().left + $("#"+conflict).outerWidth()
-					var line_from_y = $("#"+conflict).offset().top + 12
+				if (depend_status != this_status) {
+					var line_from_x = (depend_status == "disabled") ? $("#"+depend).offset().left : $("#"+depend).offset().left + $("#"+depend).outerWidth()
+					var line_from_y = $("#"+depend).offset().top + 12
 
-					var line_to_x = (conflict_status == "enabled") ?
-					                $(this).offset().left :
-					                $(this).offset().left + $(this).outerWidth()
+					var line_to_x = (depend_status == "enabled") ? $(this).offset().left : $(this).offset().left + $(this).outerWidth()
 					var line_to_y   = $(this).offset().top + 12
 					var height = line_to_y - line_from_y
 					var width = line_to_x - line_from_x
@@ -692,27 +669,9 @@ var Extend = {
 					canvas.moveTo(line_from_x, line_from_y)
 					canvas.lineTo(line_to_x, line_to_y)
 					canvas.stroke()
-
-					// Beginning circle
-					canvas.beginPath()
-					if (conflict_status == "disabled")
-						canvas.arc(line_from_x, line_from_y, 5, 1.35, -1.35, false)
-					else
-						canvas.arc(line_from_x, line_from_y, 5, -1.35, 1.35, false)
-					canvas.fill()
-					canvas.stroke()
-
-					// Ending circle
-					canvas.beginPath()
-					if (conflict_status == "disabled")
-						canvas.arc(line_to_x, line_to_y, 5, -1.75, 1.75, false)
-					else
-						canvas.arc(line_to_x, line_to_y, 5, 1.75, -1.75, false)
-					canvas.fill()
-					canvas.stroke()
-				} else if (conflict_status == "disabled") {
-					var line_from_x = $("#"+conflict).offset().left + $("#"+conflict).outerWidth()
-					var line_from_y = $("#"+conflict).offset().top + 12
+				} else if (depend_status == "disabled") {
+					var line_from_x = $("#"+depend).offset().left + $("#"+depend).outerWidth()
+					var line_from_y = $("#"+depend).offset().top + 12
 					var line_to_x   = $(this).offset().left + $(this).outerWidth()
 					var line_to_y   = $(this).offset().top + 12
 					var median = line_from_y + ((line_to_y - line_from_y) / 2)
@@ -730,21 +689,9 @@ var Extend = {
 					canvas.moveTo(line_from_x, line_from_y)
 					canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y)
 					canvas.stroke()
-
-					// Beginning circle
-					canvas.beginPath()
-					canvas.arc(line_from_x, line_from_y, 5, -1.75, 1.75, false)
-					canvas.fill()
-					canvas.stroke()
-
-					// Ending circle
-					canvas.beginPath()
-					canvas.arc(line_to_x, line_to_y, 5, -1.75, 1.75, false)
-					canvas.fill()
-					canvas.stroke()
-				} else if (conflict_status == "enabled") {
-					var line_from_x = $("#"+conflict).offset().left
-					var line_from_y = $("#"+conflict).offset().top + 12
+				} else if (depend_status == "enabled") {
+					var line_from_x = $("#"+depend).offset().left
+					var line_from_y = $("#"+depend).offset().top + 12
 					var line_to_x   = $(this).offset().left
 					var line_to_y   = $(this).offset().top + 12
 					var median = line_from_y + ((line_to_y - line_from_y) / 2)
@@ -762,21 +709,21 @@ var Extend = {
 					canvas.moveTo(line_from_x, line_from_y)
 					canvas.quadraticCurveTo(curve, median, line_to_x, line_to_y)
 					canvas.stroke()
-
-					// Beginning circle
-					canvas.beginPath()
-					canvas.arc(line_from_x, line_from_y, 5, 1.35, -1.35, false)
-					canvas.fill()
-					canvas.stroke()
-
-					// Ending circle
-					canvas.beginPath()
-					canvas.arc(line_to_x, line_to_y, 5, 1.35, -1.35, false)
-					canvas.fill()
-					canvas.stroke()
 				}
 
-				dependency_displayed[conflict+" :: "+$(this).attr("id")] = true
+				// Beginning circle
+				canvas.beginPath()
+				canvas.arc(line_from_x, line_from_y, 5, 0, Math.PI * 2, false)
+				canvas.fill()
+				canvas.stroke()
+
+				// Ending circle
+				canvas.beginPath()
+				canvas.arc(line_to_x, line_to_y, 5, 0, Math.PI * 2, false)
+				canvas.fill()
+				canvas.stroke()
+
+				dependency_displayed[depend+" :: "+$(this).attr("id")] = true
 			}
 		})
 

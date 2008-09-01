@@ -201,7 +201,7 @@
 					trackback_send($id, $url);
 			}
 
-			$post = new self($id);
+			$post = new self($id, array("drafts" => true));
 
 			if (Config::current()->send_pingbacks and $pingbacks)
 				array_walk_recursive($values, array("Post", "send_pingbacks"), $post);
