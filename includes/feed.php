@@ -18,8 +18,12 @@
 
 		$tagged = substr(strstr(url("id/".$post->id."/"), "//"), 2);
 		$tagged = str_replace("#", "/", $tagged);
-		$tagged = preg_replace("/(".preg_quote(parse_url($post->url(), PHP_URL_HOST)).")/", "\\1,".when("Y-m-d", $updated).":", $tagged, 1);
+		$tagged = preg_replace("/(".preg_quote(parse_url($post->url(), PHP_URL_HOST)).")/",
+		                       "\\1,".when("Y-m-d", $updated).":",
+		                       $tagged,
+		                       1);
 
+		$feed_url = $trigger->filter($url, "feed_url", $post);
 		$url = $post->url();
 		$title = $post->title();
 
@@ -33,7 +37,7 @@
 		<id>tag:<?php echo $tagged; ?></id>
 		<updated><?php echo when("c", $updated); ?></updated>
 		<published><?php echo when("c", $post->created_at); ?></published>
-		<link rel="alternate" type="<?php echo $theme->type; ?>" href="<?php echo $trigger->filter($url, "feed_url", $post); ?>" />
+		<link rel="alternate" type="<?php echo $theme->type; ?>" href="<?php echo $feed_url; ?>" />
 		<author>
 			<name><?php echo fix($author); ?></name>
 <?php if (!empty($post->user()->website)): ?>

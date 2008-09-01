@@ -64,7 +64,7 @@
 
 			$_SESSION['notices'][] = Trigger::current()->filter($message, "flash_notice_message", $redirect_to);
 
-			if (isset($_SERVER['HTTP_USER_AGENT']) and $_SERVER['HTTP_USER_AGENT'] == "tester.rb")
+			if (TESTER)
 				exit("SUCCESS: ".$message);
 
 			if (isset($redirect_to))
@@ -84,7 +84,7 @@
 
 			$_SESSION['warnings'][] = Trigger::current()->filter($message, "flash_warning_message", $redirect_to);
 
-			if (isset($_SERVER['HTTP_USER_AGENT']) and $_SERVER['HTTP_USER_AGENT'] == "tester.rb")
+			if (TESTER)
 				exit("ERROR: ".$message);
 
 			if (isset($redirect_to))

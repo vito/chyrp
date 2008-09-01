@@ -35,8 +35,10 @@
 	define('UPGRADING', false);
 	define('INSTALLING', false);
 
+	define('TESTER', isset($_SERVER['HTTP_USER_AGENT']) and $_SERVER['HTTP_USER_AGENT'] == "tester.rb");
+
 	# Constant: INDEX
-	# Is the requested file index.php?
+	# Is the requested file /index.php?
 	define('INDEX', (pathinfo($_SERVER['SCRIPT_NAME'], PATHINFO_BASENAME) == "index.php") and !ADMIN);
 
 	# Use GZip compression if available.
@@ -110,7 +112,9 @@
 	sanitize_input($_COOKIE);
 	sanitize_input($_REQUEST);
 
-	set_error_handler("error_panicker");
+	# Set the error handler to exit on error.
+	if (TESTER)
+		set_error_handler("error_panicker");
 
 	# File: Model
 	# See Also:
@@ -348,7 +352,8 @@
 		load_translator("theme", THEME_DIR."/locale/".$config->locale.".mo");
 
 	if (INDEX or ADMIN or AJAX) {
-		if (!$visitor->group()->can("view_site") and !in_array($route->action, array("login", "logout", "register", "lost_password")))
+		if (!$visitor->group()->can("view_site") and
+		    !in_array($route->action, array("login", "logout", "register", "lost_password")))
 			if ($trigger->exists("can_not_view_site"))
 				$trigger->call("can_not_view_site");
 			else

@@ -23,7 +23,8 @@ $(function(){
 
 	// "Help" links should open in popup windows.
 	$(".help").livequery("click", function(){
-		window.open($(this).attr("href"), "help", "status=0, scrollbars=1, location=0, menubar=0, toolbar=0, resizable=1, height=450, width=400")
+		window.open($(this).attr("href"), "help", "status=0, scrollbars=1, location=0, menubar=0, "+
+		                                          "toolbar=0, resizable=1, height=450, width=400")
 		return false
 	})
 
@@ -146,7 +147,15 @@ var Write = {
 		$(document.createElement("li")).addClass("bookmarklet right").text("Bookmarklet: ").prependTo(".write_post_nav")
 
 		// Add the link
-		$(document.createElement("a")).text("<?php echo __("Chyrp!"); ?>").addClass("no_drag").attr("href", "javascript:var%20d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f=\'"+site_url+"/admin/?action=bookmarklet\',l=d.location,e=encodeURIComponent,p=\'&url=\'+e(l.href)+\'&title=\'+e(d.title)+\'&selection=\'+e(s),u=f+p;a=function(){if(!w.open(u,\'t\',\'toolbar=0,resizable=1,status=1,width=450,height=430\'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0)").appendTo(".bookmarklet")
+		$(document.createElement("a"))
+			.text("<?php echo __("Chyrp!"); ?>")
+			.addClass("no_drag")
+			.attr("href", "javascript:var%20d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,"+
+			              "s=(e?e():(k)?k():(x?x.createRange().text:0)),f=\'"+site_url+"/admin/?action=bookmarklet\',"+
+			              "l=d.location,e=encodeURIComponent,p=\'&url=\'+e(l.href)+\'&title=\'+e(d.title)+\'&selection=\'+"+
+			              "e(s),u=f+p;a=function(){if(!w.open(u,\'t\',\'toolbar=0,resizable=1,status=1,width=450,"+
+			              "height=430\'))l.href=u;};if(/Firefox/.test(navigator.userAgent))setTimeout(a,0);else%20a();void(0)")
+			.appendTo(".bookmarklet")
 	},
 	auto_expand_fields: function(){
 		$("input.text").expand()
@@ -351,7 +360,8 @@ var Extend = {
 		Extend.equalize_lists()
 
 		if ($(".feather").size())
-			<?php $tip = _f("(tip: drag the tabs on the <a href=\\\"%s\\\">write</a> page to reorder them)", array(url("/admin/?action=write"))); ?>
+			<?php $tip = _f("(tip: drag the tabs on the <a href=\\\"%s\\\">write</a> page to reorder them)",
+			                array(url("/admin/?action=write"))); ?>
 			$(document.createElement("small")).html("<?php echo $tip; ?>").css({
 				position: "relative",
 				bottom: "-1em",
@@ -469,7 +479,8 @@ var Extend = {
 	},
 	draw_conflicts: function(){
 		if ($.browser.msie) return false
-		if (!$(".extend li.conflict").size() && !($.browser.safari || $.browser.opera || ($.browser.mozilla && $.browser.version >= 1.9)))
+		if (!$(".extend li.conflict").size() &&
+		    !($.browser.safari || $.browser.opera || ($.browser.mozilla && $.browser.version >= 1.9)))
 			return false
 
 		$("#conflicts_canvas").remove()
@@ -520,9 +531,13 @@ var Extend = {
 				var conflict_status = $("#"+conflict).parent().parent().attr("class").split(" ")[0] + "d"
 
 				if (conflict_status != this_status) {
-					var line_from_x = (conflict_status == "disabled") ? $("#"+conflict).offset().left : $("#"+conflict).offset().left + $("#"+conflict).outerWidth()
+					var line_from_x = (conflict_status == "disabled") ?
+					                  $("#"+conflict).offset().left :
+					                  $("#"+conflict).offset().left + $("#"+conflict).outerWidth()
 					var line_from_y = $("#"+conflict).offset().top + 12
-					var line_to_x = (conflict_status == "enabled") ? $(this).offset().left : $(this).offset().left + $(this).outerWidth()
+					var line_to_x = (conflict_status == "enabled") ?
+					                $(this).offset().left :
+					                $(this).offset().left + $(this).outerWidth()
 					var line_to_y   = $(this).offset().top + 12
 
 					// Line
@@ -607,7 +622,8 @@ var Extend = {
 	},
 	draw_dependencies: function() {
 		if ($.browser.msie) return false
-		if (!$(".extend li.depends").size() && !($.browser.safari || $.browser.opera || ($.browser.mozilla && $.browser.version >= 1.9)))
+		if (!$(".extend li.depends").size() &&
+		    !($.browser.safari || $.browser.opera || ($.browser.mozilla && $.browser.version >= 1.9)))
 			return false
 
 		$("#depends_canvas").remove()
@@ -650,10 +666,14 @@ var Extend = {
 				var conflict_status = $("#"+conflict).parent().parent().attr("class").split(" ")[0] + "d"
 
 				if (conflict_status != this_status) {
-					var line_from_x = (conflict_status == "disabled") ? $("#"+conflict).offset().left : $("#"+conflict).offset().left + $("#"+conflict).outerWidth()
+					var line_from_x = (conflict_status == "disabled") ?
+					                  $("#"+conflict).offset().left :
+					                  $("#"+conflict).offset().left + $("#"+conflict).outerWidth()
 					var line_from_y = $("#"+conflict).offset().top + 12
 
-					var line_to_x = (conflict_status == "enabled") ? $(this).offset().left : $(this).offset().left + $(this).outerWidth()
+					var line_to_x = (conflict_status == "enabled") ?
+					                $(this).offset().left :
+					                $(this).offset().left + $(this).outerWidth()
 					var line_to_y   = $(this).offset().top + 12
 					var height = line_to_y - line_from_y
 					var width = line_to_x - line_from_x

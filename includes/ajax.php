@@ -46,11 +46,16 @@
 			break;
 
 		case "preview":
-			if (empty($_POST['content'])) break;
+			if (empty($_POST['content']))
+				break;
 
-			$trigger->filter($_POST['content'], array("preview_".$_POST['feather'], "preview"), $_POST['field'], $_POST['feather']);
+			$trigger->filter($_POST['content'],
+			                 array("preview_".$_POST['feather'], "preview"),
+			                 $_POST['field'],
+			                 $_POST['feather']);
 
-			echo "<h2 class=\"preview-header\">".__("Preview")."</h2>\n<div class=\"preview-content\">".$_POST['content']."</div>";
+			echo "<h2 class=\"preview-header\">".__("Preview")."</h2>\n".
+			     "<div class=\"preview-content\">".$_POST['content']."</div>";
 			break;
 
 		case "check_confirm":
@@ -68,10 +73,10 @@
 
 		case "organize_pages":
 			foreach ($_POST['parent'] as $id => $parent)
-				$sql->update("pages", "id = :id", array("parent_id" => ":parent"), array(":id" => $id, ":parent" => $parent));
+				$sql->update("pages", array("id" => $parent), array("parent_id" => $parent));
 
 			foreach ($_POST['page_list'] as $index => $page)
-				$sql->update("pages", "id = :id", array("list_order" => ":index"), array(":id" => str_replace("page_list_", "", $page), ":index" => $index));
+				$sql->update("pages", array("id" => str_replace("page_list_", "", $page)), array("list_order" => $index));
 
 			break;
 
@@ -124,7 +129,9 @@
 			array_push($new, $_POST["extension"]);
 			$config->set($enabled_array, $new);
 
-			exit('{ notifications: ['.(!empty($info["notifications"]) ? '"'.implode('", "', $info["notifications"]).'"' : "").'] }');
+			exit('{ notifications: ['.
+			     (!empty($info["notifications"]) ? '"'.implode('", "', $info["notifications"]).'"' : "").
+			     '] }');
 
 			break;
 

@@ -80,13 +80,11 @@
 				$archives = array();
 				while ($time = $timestamps->fetchObject()) {
 					$timestamp = mktime(0, 0, 0, $time->month + 1, 0, $time->year);
-					$archives[$timestamp] = array("posts" => array(),
+					$archives[$timestamp] = array("posts" => Post::find(array("where" => array("created_at like" => when("Y-m", $time->created_at)."%"))),
 					                              "year" => $time->year,
 					                              "month" => strftime("%B", $timestamp),
 					                              "timestamp" => $timestamp,
 					                              "url" => url("archive/".when("Y/m/", $time->created_at)));
-
-					$archives[$timestamp]["posts"] = Post::find(array("where" => array("created_at like" => when("Y-m", $time->created_at)."%")));
 				}
 
 				$theme->load("pages/archive", array("archives" => $archives));
