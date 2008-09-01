@@ -66,7 +66,7 @@
 				$filename = $_POST['filename'];
 
 			return Post::add(array("filename" => $filename,
-			                        "caption" => $_POST['caption']),
+			                       "caption" => $_POST['caption']),
 			                 $_POST['slug'],
 			                 Post::check_url($_POST['slug']));
 		}

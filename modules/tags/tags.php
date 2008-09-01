@@ -299,9 +299,7 @@
 
 			foreach($sql->select("tags",
 				                 "*",
-				                 "clean LIKE :tag",
-				                 null,
-				                 array(":tag" => "%{{".$_GET['name']."}}%"))->fetchAll() as $tag)  {
+				                 array("clean like" => "%{{".urldecode($_GET['clean'])."}}%"))->fetchAll() as $tag)  {
 				$names = array();
 				foreach (explode("}},{{", substr(substr($tag["tags"], 0, -2), 2)) as $name)
 					if ($name != $_GET['name'])

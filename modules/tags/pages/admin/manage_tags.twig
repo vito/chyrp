@@ -23,29 +23,19 @@
 			<br />
 			<h2>${ "Post Tags" | translate("tags") }</h2>
 			<br />
-			<div class="left pad margin-right">
-				<form class="detail" action="index.php" method="get" accept-charset="utf-8">
+			<h2>
+				{% if GET.query %}${ "Search Results" | translate }{% else %}${ "Last 25 Posts" | translate }{% endif %}
+				<form class="detail inline" action="index.php" method="get" accept-charset="utf-8">
 					<fieldset>
 						<input type="hidden" name="action" value="manage_tags" />
-						<h3>
-							${ "Search&hellip;" | translate }
-							<a href="{% admin "help&id=filtering_results" %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
-						</h3>
-						<input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" /> <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
+						<input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" size="15" />
+						<button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
+						<a href="{% admin "help&id=filtering_results" %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
 					</fieldset>
 				</form>
-			</div>
+			</h2>
 			<form class="detail" action="{% admin "bulk_tag" %}" method="post" accept-charset="utf-8">
 				<fieldset>
-					<div class="left pad">
-						<h3>${ "Tag Selected:" | translate("tags") }</h3>
-						<input type="text" name="name" value="" id="name" />
-						<button type="submit" class="inline">${ "Tag &rarr;" | translate("tags") }</button>
-						<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
-					</div>
-					<div class="clear"></div>
-					<br />
-					<h2>{% if GET.query %}${ "Search Results" | translate }{% else %}${ "Last 25 Posts" | translate }{% endif %}</h2>
 					<ul class="post_tags">
 						<li class="odd js_enabled toggler">
 							<h3 class="inline sub">${ "Toggle All" | translate }</h3>
@@ -65,9 +55,15 @@
 						</li>
 					{% endfor %}
 					</ul>
+					<div class="left pad">
+						<h3>${ "Tag Selected:" | translate("tags") }</h3>
+						<input type="text" name="name" value="" id="name" />
+						<button type="submit" class="inline">${ "Tag &rarr;" | translate("tags") }</button>
+						<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+					</div>
 				</fieldset>
 			</form>
-			<br />
+			<div class="clear"></div>
 			$posts.next_link
 			$posts.prev_link
 {% endblock %}

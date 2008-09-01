@@ -83,3 +83,6 @@
 .post_tags li a.edit_tag:hover {
 	background: #f5f5f5;
 }
+.post_tags li a.tag:hover {
+	background: #f0f0f0;
+}

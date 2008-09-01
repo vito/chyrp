@@ -26,10 +26,10 @@
 					</p>
 					<p>
 						<label for="comments_per_page">${ "Comments Per Page" | translate("comments") }</label>
-						<input class="text nowidth" type="text" name="comments_per_page" value="${ site.comments_per_page | escape }" size="2" id="comments_per_page" />
+						<input class="text" type="text" name="comments_per_page" value="${ site.comments_per_page | escape }" size="2" id="comments_per_page" />
 					</p>
 					<p>
-						<label for="auto_reload_comments">${ "Reload Comments Every %s Seconds" | translate("comments") | format("<input class=\"text nowidth\" type=\"text\" name=\"auto_reload_comments\" value=\"" ~ site.auto_reload_comments | escape ~ "\" size=\"2\" id=\"auto_reload_comments\" />") }</label>
+						<label for="auto_reload_comments">${ "Reload Comments Every %s Seconds" | translate("comments") | format("<input class=\"text\" type=\"text\" name=\"auto_reload_comments\" value=\"" ~ site.auto_reload_comments | escape ~ "\" size=\"2\" id=\"auto_reload_comments\" />") }</label>
 						<input type="checkbox" class="checkbox" name="enable_reload_comments"${ site.enable_reload_comments | checked } /> ${ "enabled" | translate("comments") }
 					</p>
 

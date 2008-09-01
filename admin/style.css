@@ -470,6 +470,17 @@ form.split button {
 form .buttons {
 	margin-top: 2em;
 }
+form.inline,
+form.inline fieldset {
+	display: inline;
+}
+h1 form.inline,
+h2 form.inline,
+h3 form.inline,
+h4 form.inline {
+	font-size: .625em;
+	margin-left: 1em;
+}
 label {
 	display: block;
 	font-size: 1.1em;
