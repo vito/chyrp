@@ -30,10 +30,8 @@
 		static function read($id) {
 			self::$data = SQL::current()->select("sessions",
 			                                     "data",
-			                                     "id = :id",
-			                                     "id",
-			                                     array(":id" => $id),
-			                                     null, null, null, null, true)->fetchColumn();
+			                                     array("id" => $id),
+			                                     "id")->fetchColumn();
 
 			return fallback(self::$data, "");
 		}
@@ -50,26 +48,16 @@
 
 			if ($sql->count("sessions", "id = :id", array(":id" => $id)))
 				$sql->update("sessions",
-				             "id = :id",
-				             array("data" => ":data",
-				                   "user_id" => ":visitor_id",
-				                   "updated_at" => ":updated_at"),
-				             array(":id" => $id,
-				                   ":data" => $data,
-				                   ":visitor_id" => Visitor::current()->id,
-				                   ":updated_at" => datetime()),
-				             true);
+				             array("id" => $id),
+				             array("data" => $data,
+				                   "user_id" => Visitor::current()->id,
+				                   "updated_at" => datetime()));
 			else
 				$sql->insert("sessions",
-				             array("id" => ":id",
-				                   "data" => ":data",
-				                   "user_id" => ":visitor_id",
-				                   "created_at" => ":created_at"),
-				             array(":id" => $id,
-				                   ":data" => $data,
-				                   ":visitor_id" => Visitor::current()->id,
-				                   ":created_at" => datetime()),
-				             true);
+				             array("id" => $id,
+				                   "data" => $data,
+				                   "user_id" => Visitor::current()->id,
+				                   "created_at" => datetime()));
 		}
 
 		/**
@@ -77,7 +65,7 @@
 		 * Destroys their session.
 		 */
 		static function destroy($id) {
-			if (SQL::current()->delete("sessions", "id = :id", array(":id" => $id), true))
+			if (SQL::current()->delete("sessions", array("id" => $id)))
 				return true;
 
 			return false;
@@ -90,8 +78,7 @@
 		static function gc() {
 			SQL::current()->delete("sessions",
 			                       "created_at >= :thirty_days OR data = '' OR data IS NULL",
-			                       array(":thirty_days" => datetime(strtotime("+30 days"))),
-			                       true);
+			                       array(":thirty_days" => datetime(strtotime("+30 days"))));
 			return true;
 		}
 	}
