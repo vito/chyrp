@@ -310,13 +310,16 @@
 					if ($clean != $_GET['clean'])
 						$cleans[] = "{{".$clean."}}";
 
-				$sql->update("tags",
-				             "id = :id",
-				             array("tags" => ":tags",
-				                   "clean" => ":clean"),
-				             array(":id" => $tag["id"],
-				                   ":tags" => join(",", $names),
-				                   ":clean" => join(",", $cleans)));
+				if (empty($names) or empty($cleans))
+					$sql->delete("tags", array("id" => $tag["id"]));
+				else
+					$sql->update("tags",
+					             "id = :id",
+					             array("tags" => ":tags",
+					                   "clean" => ":clean"),
+					             array(":id" => $tag["id"],
+					                   ":tags" => join(",", $names),
+					                   ":clean" => join(",", $cleans)));
 			}
 
 			Flash::notice(__("Tag deleted.", "tags"), "/admin/?action=manage_tags");
