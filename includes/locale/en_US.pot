@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC1\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-09-01 21:32+0000\n"
+"POT-Creation-Date: 2008-09-01 23:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -2213,7 +2213,7 @@ msgstr ""
 #: includes/class/SQL.php:131
 #: includes/class/SQL.php:139
 #: includes/class/SQL.php:147
-#: includes/class/Query.php:174
+#: includes/class/Query.php:177
 msgid "Database Error"
 msgstr ""
 
