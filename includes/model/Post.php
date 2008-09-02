@@ -695,11 +695,11 @@
 					if (in_array(0, array_keys($val))) { # Numeric-indexed things need to be added as duplicates
 						foreach ($val as $dup) {
 							$xml = $object->addChild($key);
-							arr2xml($xml, $dup);
+							self::arr2xml($xml, $dup);
 						}
 					} else {
 						$xml = $object->addChild($key);
-						arr2xml($xml, $val);
+						self::arr2xml($xml, $val);
 					}
 				} else
 					$object->addChild($key, fix($val, false, false));
