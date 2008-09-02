@@ -169,31 +169,18 @@
 
 			$sql = SQL::current();
 			$sql->insert("comments",
-			             array("body" => ":body",
-			                   "author" => ":author",
-			                   "author_url" => ":author_url",
-			                   "author_email" => ":author_email",
-			                   "author_ip" => ":author_ip",
-			                   "author_agent" => ":author_agent",
-			                   "status" => ":status",
-			                   "signature" => ":signature",
-			                   "post_id" => ":post_id",
-			                   "user_id" => ":user_id",
-			                   "created_at" => ":created_at",
-			                   "updated_at" => ":updated_at"),
-			             array(":body" => $body,
-			                   ":author" => strip_tags($author),
-			                   ":author_url" => strip_tags($url),
-			                   ":author_email" => strip_tags($email),
-			                   ":author_ip" => $ip,
-			                   ":author_agent" => $agent,
-			                   ":status" => $status,
-			                   ":signature" => $signature,
-			                   ":post_id" => $post->id,
-			                   ":user_id"=> $user_id,
-			                   ":created_at" => fallback($created_at, datetime()),
-			                   ":updated_at" => fallback($updated_at, "0000-00-00 00:00:00")
-			             ));
+			             array("body" => $body,
+			                   "author" => strip_tags($author),
+			                   "author_url" => strip_tags($url),
+			                   "author_email" => strip_tags($email),
+			                   "author_ip" => $ip,
+			                   "author_agent" => $agent,
+			                   "status" => $status,
+			                   "signature" => $signature,
+			                   "post_id" => $post->id,
+			                   "user_id"=> $user_id,
+			                   "created_at" => fallback($created_at, datetime()),
+			                   "updated_at" => fallback($updated_at, "0000-00-00 00:00:00")));
 			$new = new self($sql->latest());;
 
 			Trigger::current()->call("add_comment", $new);

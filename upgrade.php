@@ -352,12 +352,9 @@
 		foreach($groups as $name => $values)
 			echo _f("Restoring group \"%s\"...", array($name)).
 			     test(SQL::current()->insert("groups",
-			                                 array("id" => ":id",
-			                                       "name" => ":name",
-			                                       "permissions" => ":permissions"),
-			                                 array(":id" => $values["id"],
-			                                       ":name" => $name,
-			                                       ":permissions" => $values["permissions"])));
+			                                 array("id" => $values["id"],
+			                                       "name" => $name,
+			                                       "permissions" => $values["permissions"])));
 	}
 
 	function add_permissions_table() {
@@ -399,10 +396,8 @@
 		foreach ($permissions as $id => $name)
 			echo _f("Inserting permission \"%s\"...", array($name)).
 			     test(SQL::current()->insert("permissions",
-			                                 array("id" => ":id",
-			                                       "name" => ":name"),
-			                                 array(":id" => $id,
-			                                       ":name" => $name)));
+			                                 array("id" => $id,
+			                                       "name" => $name)));
 	}
 
 	function add_sessions_table() {
@@ -474,10 +469,8 @@
 			$name = isset($permissions[$id]) ? $permissions[$id] : camelize($id, true);
 			echo _f("Restoring permission \"%s\"...", array($name)).
 			     test(SQL::current()->insert("permissions",
-			                                 array("id" => ":id",
-			                                       "name" => ":name"),
-			                                 array(":id" => $id,
-			                                       ":name" => $name)));
+			                                 array("id" => $id,
+			                                       "name" => $name)));
 		}
 
 	}

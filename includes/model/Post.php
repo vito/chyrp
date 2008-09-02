@@ -162,24 +162,15 @@
 			$sql = SQL::current();
 			$visitor = Visitor::current();
 			$sql->insert("posts",
-			             array("xml" => ":xml",
-			                   "feather" => ":feather",
-			                   "user_id" => ":user_id",
-			                   "pinned" => ":pinned",
-			                   "status" => ":status",
-			                   "clean" => ":clean",
-			                   "url" => ":url",
-			                   "created_at" => ":created_at",
-			                   "updated_at" => ":updated_at"),
-			             array(":xml" => $xml->asXML(),
-			                   ":feather" => $feather,
-			                   ":user_id" => $user,
-			                   ":pinned" => (int) $pinned,
-			                   ":status" => $status,
-			                   ":clean" => $clean,
-			                   ":url" => $url,
-			                   ":created_at" => $created_at,
-			                   ":updated_at" => $updated_at));
+			             array("xml" => $xml->asXML(),
+			                   "feather" => $feather,
+			                   "user_id" => $user,
+			                   "pinned" => (int) $pinned,
+			                   "status" => $status,
+			                   "clean" => $clean,
+			                   "url" => $url,
+			                   "created_at" => $created_at,
+			                   "updated_at" => $updated_at));
 			$id = $sql->latest();
 
 			if (empty($clean) or empty($url))
@@ -547,17 +538,15 @@
 			if ($this->no_results)
 				return false;
 
-			$where = array("(created_at > :created_at OR id > :id)");
+			$where = array("created_at > :created_at OR id > :id");
 
-			$statuses = array("public");
+			$where["status"] = array("public");
 			if ($this->status == "draft")
-				$statuses[] = "draft";
+				$where["status"][] = "draft";
 			if (logged_in())
-				$statuses[] = "registered_only";
+				$where["status"][] = "registered_only";
 			if (Visitor::current()->group()->can("view_private"))
-				$statuses[] = "private";
-
-			$where[] = "status IN ('".implode("', '", $statuses)."')";
+				$where["status"][] = "private";
 
 			return new self(null, array("where" => $where,
 			                            "order" => "created_at ASC, id ASC",

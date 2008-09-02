@@ -265,9 +265,7 @@
 			                     "delete_group" => "Delete Groups");
 
 			foreach ($permissions as $permission => $name)
-				$sql->replace("permissions",
-				              array("id" => ":permission", "name" => ":name"),
-				              array(":permission" => $permission, ":name" => $name));
+				$sql->replace("permissions", array("id" => $permission, "name" => $name));
 
 			$groups = array("admin" => YAML::dump(array_keys($permissions)),
 			                "member" => YAML::dump(array("view_site")),
@@ -278,9 +276,7 @@
 			# Insert the default groups (see above)
 			$group_id = array();
 			foreach($groups as $name => $permissions) {
-				$sql->replace("groups",
-				              array("name" => ":name", "permissions" => ":permissions"),
-				              array(":name" => ucfirst($name), ":permissions" => $permissions));
+				$sql->replace("groups", array("name" => ucfirst($name), "permissions" => $permissions));
 
 				$group_id[$name] = $sql->latest();
 			}

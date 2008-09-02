@@ -65,30 +65,16 @@
 			$sql = SQL::current();
 			$visitor = Visitor::current();
 			$sql->insert("pages",
-			             array(
-			                 "title" => ":title",
-			                 "body" => ":body",
-			                 "user_id" => ":user_id",
-			                 "parent_id" => ":parent_id",
-			                 "show_in_list" => ":show_in_list",
-			                 "list_order" => ":list_order",
-			                 "clean" => ":clean",
-			                 "url" => ":url",
-			                 "created_at" => ":created_at",
-			                 "updated_at" => ":updated_at"
-			             ),
-			             array(
-			                 ":title" => $title,
-			                 ":body" => $body,
-			                 ":user_id" => fallback($user_id, $visitor->id),
-			                 ":parent_id" => $parent_id,
-			                 ":show_in_list" => $show_in_list,
-			                 ":list_order" => $list_order,
-			                 ":clean" => $clean,
-			                 ":url" => $url,
-			                 ":created_at" => fallback($created_at, datetime()),
-			                 ":updated_at" => fallback($updated_at, "0000-00-00 00:00:00")
-			             ));
+			             array("title" => $title,
+			                   "body" => $body,
+			                   "user_id" => fallback($user_id, $visitor->id),
+			                   "parent_id" => $parent_id,
+			                   "show_in_list" => $show_in_list,
+			                   "list_order" => $list_order,
+			                   "clean" => $clean,
+			                   "url" => $url,
+			                   "created_at" => fallback($created_at, datetime()),
+			                   "updated_at" => fallback($updated_at, "0000-00-00 00:00:00")));
 
 			$page = new self($sql->latest());
 

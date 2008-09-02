@@ -33,12 +33,9 @@
 		foreach ($tags as $post => $tag)
 			echo _f("Inserting tags for post #%s...", array($post), "tags").
 			     test(SQL::current()->insert("tags",
-			                                 array("tags" => ":tags",
-			                                       "clean" => ":clean",
-			                                       "post_id" => ":post_id"),
-			                                 array(":tags" => implode(",", $tag["normal"]),
-			                                       ":clean" => implode(",", $tag["clean"]),
-			                                       ":post_id" => $post)));
+			                                 array("tags" => implode(",", $tag["normal"]),
+			                                       "clean" => implode(",", $tag["clean"]),
+			                                       "post_id" => $post)));
 	}
 
 	update_tags_structure();

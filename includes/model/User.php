@@ -67,23 +67,13 @@
 			$config = Config::current();
 			$sql = SQL::current();
 			$sql->insert("users",
-			             array(
-			                 "login" => ":login",
-			                 "password" => ":password",
-			                 "email" => ":email",
-			                 "full_name" => ":full_name",
-			                 "website" => ":website",
-			                 "group_id" => ":group_id",
-			                 "joined_at" => ":joined_at"),
-			             array(
-			                 ":login" => strip_tags($login),
-			                 ":password" => md5($password),
-			                 ":email" => strip_tags($email),
-			                 ":full_name" => strip_tags($full_name),
-			                 ":website" => strip_tags($website),
-			                 ":group_id" => ($group_id) ? intval($group_id) : $config->default_group,
-			                 ":joined_at" => fallback($joined_at, datetime())
-			            ));
+			             array("login" => strip_tags($login),
+			                   "password" => md5($password),
+			                   "email" => strip_tags($email),
+			                   "full_name" => strip_tags($full_name),
+			                   "website" => strip_tags($website),
+			                   "group_id" => ($group_id) ? intval($group_id) : $config->default_group,
+			                   "joined_at" => fallback($joined_at, datetime())));
 
 			$user = new self($sql->latest());
 

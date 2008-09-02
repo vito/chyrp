@@ -94,11 +94,7 @@
 			$tags_cleaned_string = "{{".implode("}},{{", $tags_cleaned)."}}";
 
 			$sql = SQL::current();
-			$sql->insert("tags", array("tags" => ":tags", "clean" => ":clean", "post_id" => ":post_id"), array(
-			                 ":tags"    => $tags_string,
-			                 ":clean"   => $tags_cleaned_string,
-			                 ":post_id" => $post->id
-			             ));
+			$sql->insert("tags", array("tags" => $tags_string, "clean" => $tags_cleaned_string, "post_id" => $post->id));
 		}
 
 		public function update_post($post) {
@@ -120,11 +116,7 @@
 			if (empty($tags_string) and empty($tags_cleaned_string))
 				$sql->delete("tags", array("post_id" => $post->id));
 			else
-				$sql->insert("tags", array("tags" => ":tags", "clean" => ":clean", "post_id" => ":post_id"), array(
-				                 ":tags"    => $tags_string,
-				                 ":clean"   => $tags_cleaned_string,
-				                 ":post_id" => $post->id
-				             ));
+				$sql->insert("tags", array("tags" => $tags_string, "clean" => $tags_cleaned_string, "post_id" => $post->id));
 		}
 
 		public function delete_post($post) {
@@ -226,10 +218,12 @@
 				                 "tags.*",
 				                 array(Post::$private, Post::$enabled_feathers),
 				                 null,
-				                 array(":tag" => "%{{".$_GET['name']."}}%"),
-				                 null, null, null,
+				                 array(),
+				                 null,
+				                 null,
+				                 null,
 				                 array(array("table" => "tags",
-				                             "where" => array("post_id = posts.id", "clean LIKE :tag"))))->fetchAll() as $tag) {
+				                             "where" => array("post_id = posts.id", array("clean like" => "%{{".$_GET['name']."}}%"))))->fetchAll() as $tag) {
 				if ($tag["id"] == null)
 					continue;
 
@@ -277,9 +271,7 @@
 			$clean = array();
 			foreach($sql->select("tags",
 				                 "*",
-				                 "clean LIKE :tag",
-				                 null,
-				                 array(":tag" => "%{{".$_POST['clean']."}}%"))->fetchAll() as $tag) {
+				                 array("clean like" => "%{{".$_POST['clean']."}}%"))->fetchAll() as $tag) {
 				$names = str_replace("{{".$_POST['clean']."}}", "{{".$_POST['name']."}}", $tag["tags"]);
 				$clean = str_replace("{{".$_POST['clean']."}}", "{{".sanitize($_POST['name'])."}}", $tag["clean"]);
 				$sql->update("tags",
@@ -369,12 +361,9 @@
 
 			if (!empty($tags) and !empty($cleaned))
 				SQL::current()->insert("tags",
-				                       array("tags"     => ":tags",
-				                             "clean"    => ":clean",
-				                             "post_id"  => ":post_id"),
-				                       array(":tags"    => rtrim($tags, ","),
-				                             ":clean"   => rtrim($cleaned, ","),
-				                             ":post_id" => $post->id));
+				                       array("tags" => rtrim($tags, ","),
+				                             "clean" => rtrim($cleaned, ","),
+				                             "post_id" => $post->id));
 		}
 
 		public function import_wordpress_post($item, $post) {
@@ -389,12 +378,9 @@
 
 			if (!empty($tags) and !empty($cleaned))
 				SQL::current()->insert("tags",
-				                       array("tags"     => ":tags",
-				                             "clean"    => ":clean",
-				                             "post_id"  => ":post_id"),
-				                       array(":tags"    => rtrim($tags, ","),
-				                             ":clean"   => rtrim($cleaned, ","),
-				                             ":post_id" => $post->id));
+				                       array("tags" => rtrim($tags, ","),
+				                             "clean" => rtrim($cleaned, ","),
+				                             "post_id" => $post->id));
 		}
 
 		public function import_movabletype_post($array, $post, $link) {
@@ -426,11 +412,7 @@
 			$clean_string = "{{".implode("}},{{", array_values($tags))."}}";
 
 			$sql = SQL::current();
-			$sql->insert("tags", array("tags" => ":tags", "clean" => ":clean", "post_id" => ":post_id"), array(
-			                 ":tags"    => $dirty_string,
-			                 ":clean"   => $clean_string,
-			                 ":post_id" => $post->id
-			             ));
+			$sql->insert("tags", array("tags" => $dirty_string, "clean" => $clean_string, "post_id" => $post->id));
 		}
 
 		public function metaWeblog_getPost($struct, $post) {

@@ -82,8 +82,7 @@
 		 */
 		static function add($name, $permissions) {
 			$sql = SQL::current();
-			$sql->insert("groups", array("name" => ":name", "permissions" => ":permissions"),
-			                       array(":name"  => $name,   ":permissions"  => YAML::dump($permissions)));
+			$sql->insert("groups", array("name" => $name, "permissions" => YAML::dump($permissions)));
 
 			$group = new self($sql->latest());
 
