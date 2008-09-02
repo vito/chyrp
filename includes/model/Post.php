@@ -28,8 +28,8 @@
 				$options["where"] = array();
 
 			$has_status = false;
-			foreach ($options["where"] as $where)
-				if (substr_count($where, "status"))
+			foreach ($options["where"] as $key => $val)
+				if (is_int($key) and substr_count($val, "status") or $key == "status")
 					$has_status = true;
 
 			if (!XML_RPC) {
