@@ -223,7 +223,7 @@
 				                 null,
 				                 null,
 				                 array(array("table" => "tags",
-				                             "where" => array("post_id = posts.id", array("clean like" => "%{{".$_GET['name']."}}%"))))->fetchAll() as $tag) {
+				                             "where" => array("post_id = posts.id", array("clean like" => "%{{".$_GET['name']."}}%")))))->fetchAll() as $tag) {
 				if ($tag["id"] == null)
 					continue;
 
