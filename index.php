@@ -60,10 +60,11 @@
 					                                 "MONTH(created_at) AS month",
 					                                 "created_at AS created_at",
 					                                 "COUNT(id) AS posts"),
-					                           array("YEAR(created_at) = :year"),
+					                           array("YEAR(created_at)" => $_GET['year']),
 					                           "created_at DESC, id DESC",
-					                           array(":year" => $_GET['year']),
-					                           null, null,
+					                           array(),
+					                           null,
+					                           null,
 					                           array("YEAR(created_at)", "MONTH(created_at)"));
 				else
 					$timestamps = $sql->select("posts",
@@ -74,7 +75,8 @@
 					                           null,
 					                           "created_at DESC, id DESC",
 					                           array(),
-					                           null, null,
+					                           null,
+					                           null,
 					                           array("YEAR(created_at)", "MONTH(created_at)"));
 
 				$archives = array();
@@ -101,8 +103,7 @@
 				                                                       "month" => strftime("%B", $timestamp),
 				                                                       "day" => strftime("%e", $timestamp),
 				                                                       "timestamp" => $timestamp,
-				                                                       "depth" => $depth)
-				                              ));
+				                                                       "depth" => $depth)));
 			}
 			break;
 		case "login":

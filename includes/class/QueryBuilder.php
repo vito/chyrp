@@ -191,7 +191,7 @@
 
 		public static function build_conditions($conds, &$params, $tables = null) {
 			foreach ($conds as $key => $val) {
-				if (is_numeric($key)) # Full expression
+				if (is_int($key)) # Full expression
 					$cond = $val;
 				else { # Key => Val expression
 					if (is_string($val) and $val[0] == ":")
@@ -199,30 +199,34 @@
 					else {
 						if (substr($key, -4) == " not") { # Negation
 							$key = substr($key, 0, -4);
+							$param = str_replace(array("(", ")"), "_", $key);
 							if (is_array($val))
 								$cond = $key." NOT IN ".self::build_in($val);
 							elseif ($val === null)
 								$cond = $key." IS NOT NULL";
 							else {
-								$cond = $key." != :".$key;
-								$params[":".$key] = $val;
+								$cond = $key." != :".$param;
+								$params[":".$param] = $val;
 							}
 						} elseif (substr($key, -5) == " like") { # LIKE
 							$key = substr($key, 0, -5);
-							$cond = $key." LIKE :".$key;
-							$params[":".$key] = $val;
+							$param = str_replace(array("(", ")"), "_", $key);
+							$cond = $key." LIKE :".$param;
+							$params[":".$param] = $val;
 						} elseif (substr($key, -9) == " not like") { # NOT LIKE
 							$key = substr($key, 0, -9);
-							$cond = $key." NOT LIKE :".$key;
-							$params[":".$key] = $val;
+							$param = str_replace(array("(", ")"), "_", $key);
+							$cond = $key." NOT LIKE :".$param;
+							$params[":".$param] = $val;
 						} else { # Equation
 							if (is_array($val))
 								$cond = $key." IN ".self::build_in($val);
 							elseif ($val === null)
 								$cond = $key." IS NULL";
 							else {
-								$cond = $key." = :".$key;
-								$params[":".$key] = $val;
+								$param = str_replace(array("(", ")"), "_", $key);
+								$cond = $key." = :".$param;
+								$params[":".$param] = $val;
 							}
 						}
 					}

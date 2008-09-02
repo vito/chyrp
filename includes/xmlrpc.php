@@ -446,25 +446,21 @@
 			if (!in_array(XML_RPC_FEATHER, Config::current()->enabled_feathers))
 				throw new Exception(_f("The %s feather is not enabled.", array(XML_RPC_FEATHER)));
 
-			$where = array('feather = :feather');
-			$params = array(':feather' => XML_RPC_FEATHER);
+			$where = array('feather' => XML_RPC_FEATHER);
 
 			if ($user->group()->can('view_own_draft', 'view_draft'))
-				$where[] = 'status IN ( "public", "draft" )';
+				$where['status'] = array('public', 'draft');
 			else
-				$where[] = 'status = "public"';
+				$where['status'] = 'public';
 
-			if (!$user->group()->can('view_draft', 'edit_draft', 'edit_post', 'delete_draft', 'delete_post')) {
-				$where[] = 'user_id = :user_id';
-				$params[':user_id'] = $user->id;
-			}
+			if (!$user->group()->can('view_draft', 'edit_draft', 'edit_post', 'delete_draft', 'delete_post'))
+				$where['user_id'] = $user->id;
 
 			return Post::find(
 				array(
 					'where'  => $where,
 					'order'  => 'created_at DESC, id DESC',
-					'limit'  => $limit,
-					'params' => $params),
+					'limit'  => $limit),
 				array('filter' => false));
 		}
 
@@ -492,11 +488,8 @@
 				null,
 				array(
 					'where' => array(
-						'login = :login',
-						'password = :password'),
-					'params' => array(
-						':login' => $login,
-						':password' => md5($password))));
+						'login' => $login,
+						'password' => md5($password))));
 
 			if ($user->no_results)
 				throw new Exception(__("Login incorrect."));

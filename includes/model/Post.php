@@ -748,10 +748,9 @@
 			preg_match_all("/\(([^\)]+)\)/", Config::current()->post_url, $matches);
 			$params = array();
 			foreach ($matches[1] as $attr)
-				if (in_array($attr, $times)) {
-					$where[] = strtoupper($attr)."(created_at) = :created_".$attr;
-					$params[':created_'.$attr] = $get[$attr];
-				} elseif ($attr == "author") {
+				if (in_array($attr, $times))
+					$where[strtoupper($attr)."(created_at)"] = $get[$attr];
+				elseif ($attr == "author") {
 					$user = new User(array("where" => array("login" => $get['author'])));
 					$where["user_id"] = $user->id;
 				} elseif ($attr == "feathers")

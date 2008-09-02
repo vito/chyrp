@@ -1106,10 +1106,9 @@
 		foreach ($matches as $match) {
 			list($test, $equals,) = explode(":", $match);
 
-			if (in_array($test, $times)) {
-				$where[] = strtoupper($test)."(created_at) = :created_".$test;
-				$params[":created_".$test] = $equals;
-			} elseif ($test == "author") {
+			if (in_array($test, $times))
+				$where[strtoupper($test)."(created_at)"] = $equals;
+			elseif ($test == "author") {
 				$user = new User(null, array("where" => array("login" => $equals)));
 				$where["user_id"] = $user->id;
 			} elseif ($test == "group") {
