@@ -184,12 +184,9 @@
 
 			if (empty($clean) or empty($url))
 				$sql->update("posts",
-				             "id = :id",
-				             array("clean" => ":clean",
-				                   "url" => ":url"),
-				             array(":clean" => $feather.".".$id,
-				                   ":url" => $feather.".".$id,
-				                   ":id" => $id));
+				             array("id" => $id),
+				             array("clean" => $feather.".".$id,
+				                   "url" => $feather.".".$id));
 
 			if ($trackbacks !== "") {
 				$trackbacks = explode(",", $trackbacks);
@@ -269,22 +266,14 @@
 
 			$sql = SQL::current();
 			$sql->update("posts",
-			             "id = :id",
-			             array("xml" => ":xml",
-			                   "pinned" => ":pinned",
-			                   "status" => ":status",
-			                   "clean" => ":clean",
-			                   "url" => ":url",
-			                   "created_at" => ":created_at",
-			                   "updated_at" => ":updated_at"),
-			             array(":xml" => $xml->asXML(),
-			                   ":pinned" => $pinned,
-			                   ":status" => $status,
-			                   ":clean" => $slug,
-			                   ":url" => $slug,
-			                   ":created_at" => $created_at,
-			                   ":updated_at" => $updated_at,
-			                   ":id" => $this->id));
+			             array("id" => $this->id),
+			             array("xml" => $xml->asXML(),
+			                   "pinned" => $pinned,
+			                   "status" => $status,
+			                   "clean" => $slug,
+			                   "url" => $slug,
+			                   "created_at" => $created_at,
+			                   "updated_at" => $updated_at));
 
 			$trigger = Trigger::current();
 			$trigger->call("update_post", $this, $values, $user, $pinned, $status, $slug, $created_at, $updated_at, $options);
@@ -402,7 +391,7 @@
 		 *     true - if a post with that ID is in the database.
 		 */
 		static function exists($post_id) {
-			return SQL::current()->count("posts", "id = :id", array(":id" => $post_id));
+			return SQL::current()->count("posts", array("id" => $post_id));
 		}
 
 		/**
@@ -416,11 +405,7 @@
 		 *     $url - The unique version of the passed clean URL. If it's not used, it's the same as $clean. If it is, a number is appended.
 		 */
 		static function check_url($clean) {
-			$sql = SQL::current();
-			$count = $sql->count("posts",
-			                     "clean = :clean",
-			                     array(":clean" => $clean));
-
+			$count = SQL::current()->count("posts", array("clean" => $clean));
 			return (!$count or empty($clean)) ? $clean : $clean."-".($count + 1) ;
 		}
 
@@ -712,14 +697,21 @@
 		 */
 		static function arr2xml(&$object, $data) {
 			foreach ($data as $key => $val) {
-				if (is_int($key) and (empty($val) or trim($val) == "")) {
+				if (is_int($key) and (empty($val) or (is_string($val) and trim($val) == ""))) {
 					unset($data[$key]);
 					continue;
 				}
 
 				if (is_array($val)) {
-					$xml = $object->addChild($key);
-					self::arr2xml($xml, $val);
+					if (in_array(0, array_keys($val))) { # Numeric-indexed things need to be added as duplicates
+						foreach ($val as $dup) {
+							$xml = $object->addChild($key);
+							arr2xml($xml, $dup);
+						}
+					} else {
+						$xml = $object->addChild($key);
+						arr2xml($xml, $val);
+					}
 				} else
 					$object->addChild($key, fix($val, false, false));
 			}
@@ -770,15 +762,10 @@
 				if (in_array($attr, $times)) {
 					$where[] = strtoupper($attr)."(created_at) = :created_".$attr;
 					$params[':created_'.$attr] = $get[$attr];
-				} elseif ($attr == "author")
-					$where["user_id"] = SQL::current()->select("users",
-					                                      "id",
-					                                      "login = :login",
-					                                      "id",
-					                                      array(
-					                                          ":login" => $get['author']
-					                                      ), 1)->fetchColumn();
-				elseif ($attr == "feathers")
+				} elseif ($attr == "author") {
+					$user = new User(array("where" => array("login" => $get['author'])));
+					$where["user_id"] = $user->id;
+				} elseif ($attr == "feathers")
 					$where["feather"] = depluralize($get['feathers']);
 				else {
 					$tokens = array($where, $params, $attr);
@@ -789,8 +776,7 @@
 						if (!isset($get[$attr]))
 							continue;
 
-						$where[] = $attr." = :attr".$attr;
-						$params[":attr".$attr] = $get[$attr];
+						$where[$attr] = $get[$attr];
 					}
 				}
 

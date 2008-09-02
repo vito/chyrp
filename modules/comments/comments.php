@@ -198,10 +198,8 @@
 		static function trackback_receive($url, $title, $excerpt, $blog_name) {
 			$sql = SQL::current();
 			$count = $sql->count("comments",
-			                     array("post_id = :id",
-			                           "author_url = :url"),
-			                     array(":id" => $_GET['id'],
-			                           ":url" => $_POST['url']));
+			                     array("post_id" => $_GET['id'],
+			                           "author_url" => $_POST['url']));
 			if ($count)
 				trackback_respond(true, __("A ping from that URL is already registered.", "comments"));
 
@@ -216,10 +214,8 @@
 		static function pingback($id, $to, $from, $title, $excerpt) {
 			$sql = SQL::current();
 			$count = $sql->count("comments",
-			                     array("post_id = :id",
-			                           "author_url = :url"),
-			                     array(":id" => $id,
-			                           ":url" => $from));
+			                     array("post_id" => $id,
+			                           "author_url" => $from));
 			if ($count)
 				return new IXR_Error(48, __("A ping from that URL is already registered.", "comments"));
 
@@ -232,11 +228,11 @@
 		}
 
 		static function delete_post($post) {
-			SQL::current()->delete("comments", "post_id = :id", array(":id" => $post->id));
+			SQL::current()->delete("comments", array("post_id" => $post->id));
 		}
 
 		static function delete_user($user) {
-			SQL::current()->update("comments", "user_id = :id", array("user_id" => 0), array(":id" => $user->id));
+			SQL::current()->update("comments", array("user_id" => $user->id), array("user_id" => 0));
 		}
 
 		static function admin_comment_settings() {
@@ -317,10 +313,8 @@
 			$where[] = "status != 'spam'";
 
 			$visitor = Visitor::current();
-			if (!$visitor->group()->can("edit_comment", "delete_comment", true)) {
-				$where[] = "user_id = :visitor_id";
-				$params[":visitor_id"] = $visitor->id;
-			}
+			if (!$visitor->group()->can("edit_comment", "delete_comment", true))
+				$where["user_id"] = $visitor->id;
 
 			AdminController::current()->context["comments"] = new Paginator(Comment::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
 		}
@@ -358,7 +352,7 @@
 					if ($comment->status == "spam")
 						$false_positives[] = $comment->signature;
 
-					$sql->update("comments", "id = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "denied"));
+					$sql->update("comments", array("id" => $comment->id), array("status" => "denied"));
 				}
 
 				Flash::notice(__("Selected comments denied.", "comments"));
@@ -372,7 +366,7 @@
 					if ($comment->status == "spam")
 						$false_positives[] = $comment->signature;
 
-					$sql->update("comments", "id = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "approved"));
+					$sql->update("comments", array("id" => $comment->id), array("status" => "approved"));
 				}
 
 				Flash::notice(__("Selected comments approved.", "comments"));
@@ -383,7 +377,7 @@
 					if (!$comment->editable())
 						continue;
 
-					$sql->update("comments", "id = :id", array("status" => ":status"), array(":id" => $comment->id, ":status" => "spam"));
+					$sql->update("comments", array("id" => $comment->id), array("status" => "spam"));
 
 					$false_negatives[] = $comment->signature;
 				}
@@ -443,9 +437,7 @@
 						                                    )"),
 						                             "created_at ASC",
 						                             array(":last_comment" => $_POST['last_comment'],
-						                                   ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-						                                   ":visitor_id" => $visitor->id
-						                             ));
+						                                   ":visitor_id" => $visitor->id));
 
 						$ids = array();
 						while ($the_comment = $new_comments->fetchObject())
@@ -493,8 +485,7 @@
 				$comment = $comment->children("http://www.w3.org/2005/Atom");
 
 				$login = $comment->author->children("http://chyrp.net/export/1.0/")->login;
-				$user_id = $sql->select("users", "id", "login = :login", "id DESC",
-				                        array(":login" => $login))->fetchColumn();
+				$user_id = $sql->select("users", "id", array("login" => $login), "id DESC")->fetchColumn();
 
 				Comment::add(unfix($comment->content),
 				             unfix($comment->author->name),
@@ -634,10 +625,7 @@
 				                                        )
 				                                    )"),
 				                             "created_at ASC", # order
-				                             array(":post_id" => $post->id,
-				                                   ":current_ip" => ip2long($_SERVER['REMOTE_ADDR']),
-				                                   ":visitor_id" => $visitor->id
-				                             ));
+				                             array(":visitor_id" => $visitor->id));
 
 				$post->comments = array();
 				foreach ($get_comments->fetchAll() as $comment)
@@ -672,7 +660,6 @@
 			                                                      )
 			                                                  )"));
 
-			$options["params"][":current_ip"] = ip2long($_SERVER['REMOTE_ADDR']);
 			$options["params"][":visitor_id"] = Visitor::current()->id;
 
 			$options["group"][] = "id";

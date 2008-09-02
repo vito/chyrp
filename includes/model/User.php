@@ -115,23 +115,13 @@
 
 			$sql = SQL::current();
 			$sql->update("users",
-			             "id = :id",
-			             array(
-			                 "login" => ":login",
-			                 "password" => ":password",
-			                 "email" => ":email",
-			                 "full_name" => ":full_name",
-			                 "website" => ":website",
-			                 "group_id" => ":group_id"),
-			             array(
-			                 ":login" => strip_tags($login),
-			                 ":password" => $password,
-			                 ":email" => strip_tags($email),
-			                 ":full_name" => strip_tags($full_name),
-			                 ":website" => strip_tags($website),
-			                 ":group_id" => $group_id,
-			                 ":id" => $this->id
-			            ));
+			             array("id" => $this->id),
+			             array("login" => strip_tags($login),
+			                   "password" => $password,
+			                   "email" => strip_tags($email),
+			                   "full_name" => strip_tags($full_name),
+			                   "website" => strip_tags($website),
+			                   "group_id" => $group_id));
 
 			Trigger::current()->call("update_user", $this, $login, $password, $full_name, $email, $website, $group_id);
 		}

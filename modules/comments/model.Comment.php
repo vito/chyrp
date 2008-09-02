@@ -203,22 +203,14 @@
 		public function update($author, $author_email, $author_url, $body, $status, $timestamp, $update_timestamp = true) {
 			$sql = SQL::current();
 			$sql->update("comments",
-			             "id = :id",
-			             array("body" => ":body",
-			                   "author" => ":author",
-			                   "author_email" => ":author_email",
-			                   "author_url" => ":author_url",
-			                   "status" => ":status",
-			                   "created_at" => ":created_at",
-			                   "updated_at" => ":updated_at"),
-			             array(":body" => $body,
-			                   ":author" => strip_tags($author),
-			                   ":author_email" => strip_tags($author_email),
-			                   ":author_url" => strip_tags($author_url),
-			                   ":status" => $status,
-			                   ":created_at" => $timestamp,
-			                   ":updated_at" => ($update_timestamp) ? datetime() : $this->updated_at,
-			                   ":id" => $this->id));
+			             array("id" => $this->id),
+			             array("body" => $body,
+			                   "author" => strip_tags($author),
+			                   "author_email" => strip_tags($author_email),
+			                   "author_url" => strip_tags($author_url),
+			                   "status" => $status,
+			                   "created_at" => $timestamp,
+			                   "updated_at" => ($update_timestamp) ? datetime() : $this->updated_at));
 
 			Trigger::current()->call("update_comment", $this, $author, $author_email, $author_url, $body, $status, $timestamp, $update_timestamp);
 		}
@@ -228,7 +220,7 @@
 			if ($trigger->exists("delete_comment"))
 				$trigger->call("delete_comment", new self($comment_id));
 
-			SQL::current()->delete("comments", "id = :id", array(":id" => $comment_id));
+			SQL::current()->delete("comments", array("id" => $comment_id));
 		}
 
 		public function editable() {
@@ -314,9 +306,7 @@
 		}
 
 		static function user_count($user_id) {
-			$sql = SQL::current();
-			$count = $sql->count("comments", "user_id = :user_id",
-			                     array(":user_id" => $user_id));
+			$count = SQL::current()->count("comments", array("user_id" => $user_id));
 			return $count;
 		}
 

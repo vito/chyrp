@@ -288,21 +288,14 @@
 			$config->set("default_group", $group_id["member"]);
 			$config->set("guest_group", $group_id["guest"]);
 
-			if (!$sql->select("users", "id", "login = :login", null, array(":login" => $_POST['login']))->fetchColumn())
+			if (!$sql->select("users", "id", array("login" => $_POST['login']))->fetchColumn())
 				$sql->insert("users",
-				             array("login" => ":login",
-				                   "password" => ":password",
-				                   "email" => ":email",
-				                   "website" => ":website",
-				                   "group_id" => ":group_id",
-				                   "joined_at" => ":joined_at"),
-				             array(":login" => $_POST['login'],
-				                   ":password" => md5($_POST['password_1']),
-				                   ":email" => $_POST['email'],
-				                   ":website" => $config->url,
-				                   ":group_id" => $group_id["admin"],
-				                   ":joined_at" => datetime()
-				             ));
+				             array("login" => $_POST['login'],
+				                   "password" => md5($_POST['password_1']),
+				                   "email" => $_POST['email'],
+				                   "website" => $config->url,
+				                   "group_id" => $group_id["admin"],
+				                   "joined_at" => datetime()));
 
 			$installed = true;
 		}

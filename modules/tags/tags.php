@@ -105,7 +105,7 @@
 			if (!isset($_POST['tags'])) return;
 
 			$sql = SQL::current();
-			$sql->delete("tags", "post_id = :post_id", array(":post_id" => $post->id));
+			$sql->delete("tags", array("post_id" => $post->id));
 
 			$tags = explode(",", $_POST['tags']); // Split at the comma
 			$tags = array_map('trim', $tags); // Remove whitespace
@@ -118,7 +118,7 @@
 			$tags_cleaned_string = (!empty($tags_cleaned)) ? "{{".implode("}},{{", $tags_cleaned)."}}" : "" ;
 
 			if (empty($tags_string) and empty($tags_cleaned_string))
-				$sql->delete("tags", "post_id = :post_id", array(":post_id" => $post->id));
+				$sql->delete("tags", array("post_id" => $post->id));
 			else
 				$sql->insert("tags", array("tags" => ":tags", "clean" => ":clean", "post_id" => ":post_id"), array(
 				                 ":tags"    => $tags_string,
@@ -128,7 +128,7 @@
 		}
 
 		public function delete_post($post) {
-			SQL::current()->delete("tags", "post_id = :post_id", array(":post_id" => $post->id));
+			SQL::current()->delete("tags", array("post_id" => $post->id));
 		}
 
 		public function parse_urls($urls) {
@@ -283,12 +283,9 @@
 				$names = str_replace("{{".$_POST['clean']."}}", "{{".$_POST['name']."}}", $tag["tags"]);
 				$clean = str_replace("{{".$_POST['clean']."}}", "{{".sanitize($_POST['name'])."}}", $tag["clean"]);
 				$sql->update("tags",
-				             "id = :id",
-				             array("tags" => ":tags",
-				                   "clean" => ":clean"),
-				             array(":id" => $tag["id"],
-				                   ":tags" => $names,
-				                   ":clean" => $clean));
+				             array("id" => $tag["id"]),
+				             array("id" => $tag["id"],
+				                   "tags" => $names));
 			}
 
 			Flash::notice(__("Tag renamed.", "tags"), "/admin/?action=manage_tags");
@@ -595,7 +592,7 @@
 		}
 
 		public function posts_export($atom, $post) {
-			$tags = SQL::current()->select("tags", "tags", "post_id = :post_id", "id DESC", array(":post_id" => $post->id))->fetchColumn();
+			$tags = SQL::current()->select("tags", "tags", array("post_id" => $post->id), "id DESC")->fetchColumn();
 			if (empty($tags)) return;
 
 			$atom.= "		<chyrp:tags>".fix(implode(", ", self::unlinked_tags($tags)))."</chyrp:tags>\r";

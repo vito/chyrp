@@ -471,10 +471,8 @@
 						Post::delete($post->id);
 				elseif ($_POST['posts'] == "move")
 					$sql->update("posts",
-					             "user_id = :deleting_id",
-					             array("user_id" => ":user_id"),
-					             array(":user_id" => $_POST['move_posts'],
-					                   ":deleting_id" => $user->id));
+					             array("user_id" => $user->id),
+					             array("user_id" => $_POST['move_posts']));
 			}
 
 			if (isset($_POST['pages'])) {
@@ -483,10 +481,8 @@
 						Page::delete($page->id);
 				elseif ($_POST['pages'] == "move")
 					$sql->update("pages",
-					             "user_id = :deleting_id",
-					             array("user_id" => ":user_id"),
-					             array(":user_id" => $_POST['move_pages'],
-					                   ":deleting_id" => $user->id));
+					             array("user_id" => $user->id),
+					             array("user_id" => $_POST['move_pages']));
 			}
 
 			User::delete($_POST['id']);
@@ -883,26 +879,23 @@
 				$import = YAML::load($_FILES['groups_file']['tmp_name']);
 
 				foreach ($import["groups"] as $name => $permissions)
-					if (!$sql->count("groups", "name = :name", array(":name" => $name)))
+					if (!$sql->count("groups", array("name" => $name)))
 						$trigger->call("import_chyrp_group", Group::add($name, (array) $permissions));
 
 				foreach ($import["permissions"] as $id => $name)
-					if (!$sql->count("permissions", "id = :id", array(":id" => $id)))
-						$sql->insert("permissions",
-						             array("id" => ":id", "name" => ":name"),
-						             array(":id" => $id, ":name" => $name));
+					if (!$sql->count("permissions", array("id" => $id)))
+						$sql->insert("permissions", array("id" => $id, "name" => $name));
 			}
 
 			if (isset($_FILES['users_file']) and $_FILES['users_file']['error'] == 0) {
 				$users = YAML::load($_FILES['users_file']['tmp_name']);
 
 				foreach ($users as $login => $user) {
-					$group_id = $sql->select("groups", "id", "name = :name", "id DESC",
-					                         array(":name" => $user["group"]))->fetchColumn();
+					$group_id = $sql->select("groups", "id", array("name" => $user["group"]), "id DESC")->fetchColumn();
 
 					$group = ($group_id) ? $group_id : $config->default_group ;
 
-					if (!$sql->count("users", "login = :login", array(":login" => $login)))
+					if (!$sql->count("users", array("login" => $login)))
 						$user = User::add($login,
 						                  $user["password"],
 						                  $user["email"],
@@ -920,8 +913,7 @@
 					$chyrp = $entry->children("http://chyrp.net/export/1.0/");
 
 					$login = $entry->author->children("http://chyrp.net/export/1.0/")->login;
-					$user_id = $sql->select("users", "id", "login = :login", "id DESC",
-					                        array(":login" => $login))->fetchColumn();
+					$user_id = $sql->select("users", "id", array("login" => $login), "id DESC")->fetchColumn();
 
 					$data = Post::xml2arr($entry->content);
 
@@ -951,8 +943,7 @@
 					$attr  = $entry->attributes("http://chyrp.net/export/1.0/");
 
 					$login = $entry->author->children("http://chyrp.net/export/1.0/")->login;
-					$user_id = $sql->select("users", "id", "login = :login", "id DESC",
-					                        array(":login" => $login))->fetchColumn();
+					$user_id = $sql->select("users", "id", array("login" => $login), "id DESC")->fetchColumn();
 
 					$page = Page::add($entry->title,
 					                  $entry->content,

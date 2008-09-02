@@ -246,7 +246,7 @@
 		                      "/(vert|ind)ices$/i" => "\\1ex",
 		                      "/(matr)ices$/i" => "\\1ix",
 		                      "/(x|ch|ss|sh)es$/i" => "\\1",
-		                      "/([m|l])ice$/i" => "\\1ouse",
+		                      "/([ml])ice$/i" => "\\1ouse",
 		                      "/(quiz)zes$/i" => "\\1");
 
 		$replaced = preg_replace(array_keys($replacements), array_values($replacements), $string, 1);

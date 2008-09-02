@@ -106,9 +106,9 @@
 				return false;
 
 			$sql = SQL::current();
-			$sql->update("groups", "id = :id",
-			             array("name" => ":name", "permissions" => ":permissions"),
-			             array(":name" => $name, ":permissions" => YAML::dump($permissions), ":id" => $this->id));
+			$sql->update("groups",
+			             array("id" => $this->id),
+			             array("name" => $name, "permissions" => YAML::dump($permissions)));
 
 			Trigger::current()->call("update_group", $this, $name, $permissions);
 		}
@@ -135,11 +135,11 @@
 		static function add_permission($id, $name = null) {
 			$sql = SQL::current();
 
-			if ($sql->count("permissions", "id = :id", array(":id" => $id)))
+			if ($sql->count("permissions", array("id" => $id)))
 				return; # Permission already exists.
 
 			fallback($name, camelize($id, true));
-			$sql->insert("permissions", array("id" => ":id", "name" => ":name"), array(":id" => $id, ":name" => $name));
+			$sql->insert("permissions", array("id" => $id, "name" => $name));
 		}
 
 		/**
@@ -150,7 +150,7 @@
 		 *     $id - The ID of the permission to remove.
 		 */
 		static function remove_permission($id) {
-			SQL::current()->delete("permissions", "id = :id", array(":id" => $id));
+			SQL::current()->delete("permissions", array("id" => $id));
 		}
 
 		/**
@@ -163,8 +163,7 @@
 
 			return (isset($this->size)) ? $this->size :
 			       $this->size = SQL::current()->count("users",
-			                                           "group_id = :group_id",
-			                                           array(":group_id" => $this->id)) ;
+			                                           array("group_id" => $this->id)) ;
 		}
 
 		/**

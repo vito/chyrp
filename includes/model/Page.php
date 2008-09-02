@@ -114,26 +114,14 @@
 
 			$sql = SQL::current();
 			$sql->update("pages",
-			             "id = :id",
-			             array(
-			                 "title" => ":title",
-			                 "body" => ":body",
-			                 "parent_id" => ":parent_id",
-			                 "show_in_list" => ":show_in_list",
-			                 "list_order" => ":list_order",
-			                 "updated_at" => ":updated_at",
-			                 "url" => ":url"
-			             ),
-			             array(
-			                 ":title" => $title,
-			                 ":body" => $body,
-			                 ":parent_id" => $parent_id,
-			                 ":show_in_list" => $show_in_list,
-			                 ":list_order" => $list_order,
-			                 ":updated_at" => ($update_timestamp) ? datetime() : $this->updated_at,
-			                 ":url" => $url,
-			                 ":id" => $this->id
-			             ));
+			             array("id" => $this->id),
+			             array("title" => $title,
+			                   "body" => $body,
+			                   "parent_id" => $parent_id,
+			                   "show_in_list" => $show_in_list,
+			                   "list_order" => $list_order,
+			                   "updated_at" => ($update_timestamp) ? datetime() : $this->updated_at,
+			                   "url" => $url));
 
 			$trigger = Trigger::current();
 			$trigger->call("update_page", $this, $title, $body, $parent_id, $show_in_list, $list_order, $url, $update_timestamp);
@@ -167,7 +155,7 @@
 		 *     true - if a page with that ID is in the database.
 		 */
 		static function exists($page_id) {
-			return SQL::current()->count("pages", "id = :id", array(":id" => $post_id));
+			return SQL::current()->count("pages", array("id" => $post_id));
 		}
 
 		/**
@@ -181,11 +169,7 @@
 		 *     $url - The unique version of the passed clean URL. If it's not used, it's the same as $clean. If it is, a number is appended.
 		 */
 		static function check_url($clean) {
-			$sql = SQL::current();
-			$count = $sql->count("pages",
-			                     "clean = :clean",
-			                     array(":clean" => $clean));
-
+			$count = SQL::current()->count("pages", array("clean" => $clean));
 			return (!$count or empty($clean)) ? $clean : $clean."-".($count + 1) ;
 		}
 

@@ -46,7 +46,7 @@
 
 			$sql = SQL::current();
 
-			if ($sql->count("sessions", "id = :id", array(":id" => $id)))
+			if ($sql->count("sessions", array("id" => $id)))
 				$sql->update("sessions",
 				             array("id" => $id),
 				             array("data" => $data,

@@ -199,6 +199,6 @@
 			if (Trigger::current()->exists("delete_".$model))
 				Trigger::current()->call("delete_".$model, new $class($id));
 
-			SQL::current()->delete(pluralize($model), "id = :id", array(":id" => $id));
+			SQL::current()->delete(pluralize($model), array("id" => $id));
 		}
 	}
