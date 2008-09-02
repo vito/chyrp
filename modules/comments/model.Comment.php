@@ -64,8 +64,7 @@
 				$status = $type;
 
 			if (!empty($config->defensio_api_key)) {
-				$comment = array("owner-url" => $config->url,
-				                 "user-ip" => $_SERVER['REMOTE_ADDR'],
+				$comment = array("user-ip" => $_SERVER['REMOTE_ADDR'],
 				                 "article-date" => when("Y/m/d", $post->created_at),
 				                 "comment-author" => $author,
 				                 "comment-type" => $type,

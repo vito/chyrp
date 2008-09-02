@@ -357,6 +357,7 @@
 
 				Flash::notice(__("Selected comments denied.", "comments"));
 			}
+
 			if (isset($_POST['approve'])) {
 				foreach ($comments as $comment) {
 					$comment = new Comment($comment);
@@ -371,6 +372,7 @@
 
 				Flash::notice(__("Selected comments approved.", "comments"));
 			}
+
 			if (isset($_POST['spam'])) {
 				foreach ($comments as $comment) {
 					$comment = new Comment($comment);
@@ -388,9 +390,9 @@
 			if (!empty($config->defensio_api_key)) {
 				$defensio = new Defensio($config->url, $config->defensio_api_key);
 				if (!empty($false_positives))
-					$defensio->submitFalsePositives(array("owner-url" => $config->url, "signatures" => implode(",", $false_positives)));
+					$defensio->submitFalsePositives(implode(",", $false_positives));
 				if (!empty($false_negatives))
-					$defensio->submitFalseNegatives(array("owner-url" => $config->url, "signatures" => implode(",", $false_negatives)));
+					$defensio->submitFalseNegatives(implode(",", $false_negatives));
 			}
 
 			redirect("/admin/?action=".$from);
