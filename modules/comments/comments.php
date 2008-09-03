@@ -427,7 +427,7 @@
 						$new_comments = $sql->select("comments",
 						                             "id",
 						                             array("post_id" => $_POST['post_id'],
-						                                   "id > :last_comment",
+						                                   "id >" => $_POST['last_comment'],
 						                                   "status not" => "spam",
 						                                   "status != 'denied' OR (
 						                                        (
@@ -438,8 +438,7 @@
 						                                        )
 						                                    )"),
 						                             "created_at ASC",
-						                             array(":last_comment" => $_POST['last_comment'],
-						                                   ":visitor_id" => $visitor->id));
+						                             array(":visitor_id" => $visitor->id));
 
 						$ids = array();
 						while ($the_comment = $new_comments->fetchObject())

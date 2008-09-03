@@ -194,7 +194,7 @@
 				if (is_int($key)) # Full expression
 					$cond = $val;
 				else { # Key => Val expression
-					if (is_string($val) and $val[0] == ":")
+					if (is_string($val) and strlen($val) and $val[0] == ":")
 						$cond = $key." = ".$val;
 					else {
 						if (substr($key, -4) == " not") { # Negation
@@ -217,6 +217,11 @@
 							$key = substr($key, 0, -9);
 							$param = str_replace(array("(", ")"), "_", $key);
 							$cond = $key." NOT LIKE :".$param;
+							$params[":".$param] = $val;
+						} elseif (substr_count($key, " ")) { # Custom operation, e.g. array("foo >" => $bar)
+							list($param,) = explode(" ", $key);
+							$param = str_replace(array("(", ")"), "_", $param);
+							$cond = $key." :".$param;
 							$params[":".$param] = $val;
 						} else { # Equation
 							if (is_array($val))
