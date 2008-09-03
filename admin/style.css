@@ -464,7 +464,8 @@ form.split .small {
 	display: block;
 	margin-left: 45%;
 }
-form.split button {
+form.split button,
+form.split .button {
 	margin-left: 45%;
 }
 form .buttons {
@@ -671,6 +672,7 @@ button,
 .button,
 a.next_page,
 a.prev_page {
+	display: inline-block;
 	font-family: "Verdana", Helvetica, Arial, sans-serif;
 	font-weight: bold;
 	font-size: 1.125em;
@@ -776,13 +778,15 @@ button.yay:active,
 	border-bottom-color: #067000 !important;
 }
 button[disabled="disabled"],
-button.disabled {
+button.disabled,
+.button.disabled {
 	background: #f0f0f0;
 	border-color: #f0f0f0 !important;
 	color: #999;
 }
 button[disabled="disabled"]:hover,
-button.disabled:hover {
+button.disabled:hover,
+.button.disabled:hover {
 	background: #f0f0f0;
 	border-color: #f0f0f0 !important;
 	color: #999;
@@ -865,7 +869,8 @@ div.controls.right {
 div.controls h4 {
 	display: inline;
 }
-div.controls button {
+div.controls button,
+div.controls .button {
 	position: relative;
 	top: -2px;
 	right: -1px;

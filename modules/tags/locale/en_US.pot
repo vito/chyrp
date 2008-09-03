@@ -1,14 +1,14 @@
-# Chyrp v2.0 RC1 Translation File.
+# Chyrp v2.0 Translation File.
 # Copyright (C) YEAR Alex Suraci
-# This file is distributed under the same license as the Chyrp v2.0 RC1 package.
+# This file is distributed under the same license as the Chyrp v2.0 package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Chyrp v2.0 RC1\n"
+"Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-09-01 23:16+0000\n"
+"POT-Creation-Date: 2008-09-03 20:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -21,12 +21,12 @@ msgstr ""
 msgid "Do you want to remove your Tags from the database?"
 msgstr ""
 
-#: modules/tags/tags.php:294
+#: modules/tags/tags.php:283
 msgid "Tag renamed."
 msgstr ""
 
-#: modules/tags/tags.php:251
-#: modules/tags/tags.php:263
+#: modules/tags/tags.php:245
+#: modules/tags/tags.php:257
 msgid "Please specify the ID of the post whose tags you would like to edit."
 msgstr ""
 
@@ -53,7 +53,7 @@ msgstr ""
 msgid "Edit Tags"
 msgstr ""
 
-#: modules/tags/tags.php:267
+#: modules/tags/tags.php:261
 msgid "Tags updated."
 msgstr ""
 
@@ -65,7 +65,7 @@ msgstr ""
 msgid "Post Tags"
 msgstr ""
 
-#: modules/tags/tags.php:340
+#: modules/tags/tags.php:329
 msgid "Posts tagged."
 msgstr ""
 
@@ -86,7 +86,7 @@ msgstr ""
 msgid "You don't have any tags."
 msgstr ""
 
-#: modules/tags/tags.php:198
+#: modules/tags/tags.php:190
 #: modules/tags/pages/tags.php:40
 #, php-format
 msgid "%s post tagged with &quot;%s&quot;"
@@ -100,8 +100,8 @@ msgstr ""
 
 #: modules/tags/tags.php:41
 #: modules/tags/tags.php:56
-#: modules/tags/tags.php:140
-#: modules/tags/tags.php:151
+#: modules/tags/tags.php:132
+#: modules/tags/tags.php:143
 #: modules/tags/pages/tags.php:2
 msgid "Tags"
 msgstr ""
@@ -114,7 +114,7 @@ msgstr ""
 msgid "Tag &rarr;"
 msgstr ""
 
-#: modules/tags/tags.php:322
+#: modules/tags/tags.php:311
 msgid "Tag deleted."
 msgstr ""
 

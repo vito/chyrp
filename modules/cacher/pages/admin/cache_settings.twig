@@ -12,7 +12,12 @@
 					</p>
 
 					<p class="buttons">
-						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Update" | translate }</button>
+						<p>
+							<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Update" | translate }</button>
+						</p>
+						<p>
+							<a class="button boo" href="{% admin "clear_cache" %}"><img src="images/icons/cancel.png" alt="clear" />${ "Clear Cache" | translate }</a>
+						</p>
 					</p>
 
 					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />

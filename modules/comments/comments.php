@@ -440,6 +440,7 @@
 						                             "created_at ASC",
 						                             array(":visitor_id" => $visitor->id));
 
+						error_log(print_r($new_comments, true));
 						$ids = array();
 						while ($the_comment = $new_comments->fetchObject())
 							$ids[] = $the_comment->id;

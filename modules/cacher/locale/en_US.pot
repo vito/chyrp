@@ -1,14 +1,14 @@
-# Chyrp v2.0 RC1 Translation File.
+# Chyrp v2.0 Translation File.
 # Copyright (C) YEAR Alex Suraci
-# This file is distributed under the same license as the Chyrp v2.0 RC1 package.
+# This file is distributed under the same license as the Chyrp v2.0 package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Chyrp v2.0 RC1\n"
+"Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-09-01 23:16+0000\n"
+"POT-Creation-Date: 2008-09-03 20:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -23,6 +23,10 @@ msgstr ""
 
 #: modules/cacher/cacher.php:126
 msgid "Cache"
+msgstr ""
+
+#: modules/cacher/cacher.php:151
+msgid "Cache cleared."
 msgstr ""
 
 #: modules/cacher/info.yaml:1

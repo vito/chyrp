@@ -141,4 +141,13 @@
 			if (Config::current()->set("cache_expire", $_POST['cache_expire']))
 				Flash::notice(__("Settings updated."), "/admin/?action=cache_settings");
 		}
+
+		public function admin_clear_cache() {
+			if (!Visitor::current()->group()->can("change_settings"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+
+			$this->regenerate();
+
+			Flash::notice(__("Cache cleared.", "cacher"), "/admin/?action=cache_settings");
+		}
 	}

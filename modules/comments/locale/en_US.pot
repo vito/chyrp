@@ -1,14 +1,14 @@
-# Chyrp v2.0 RC1 Translation File.
+# Chyrp v2.0 Translation File.
 # Copyright (C) YEAR Alex Suraci
-# This file is distributed under the same license as the Chyrp v2.0 RC1 package.
+# This file is distributed under the same license as the Chyrp v2.0 package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Chyrp v2.0 RC1\n"
+"Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-09-01 23:16+0000\n"
+"POT-Creation-Date: 2008-09-03 20:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -71,12 +71,12 @@ msgstr ""
 msgid "Please remember to update the permission settings for each group."
 msgstr ""
 
-#: modules/comments/comments.php:206
-#: modules/comments/comments.php:224
+#: modules/comments/comments.php:204
+#: modules/comments/comments.php:220
 msgid "A ping from that URL is already registered."
 msgstr ""
 
-#: modules/comments/comments.php:589
+#: modules/comments/comments.php:582
 #, php-format
 msgid "Comments on &#8220;%s&#8221;"
 msgstr ""
@@ -85,7 +85,7 @@ msgstr ""
 msgid "enabled"
 msgstr ""
 
-#: modules/comments/comments.php:300
+#: modules/comments/comments.php:296
 msgid "An ID is required to edit a comment."
 msgstr ""
 
@@ -98,7 +98,7 @@ msgid "Delete Comment"
 msgstr ""
 
 #: modules/comments/comments.php:150
-#: modules/comments/comments.php:312
+#: modules/comments/comments.php:308
 msgid "You do not have sufficient privileges to manage any comments."
 msgstr ""
 
@@ -202,7 +202,7 @@ msgstr ""
 msgid "Approved"
 msgstr ""
 
-#: modules/comments/comments.php:391
+#: modules/comments/comments.php:387
 msgid "Selected comments marked as spam."
 msgstr ""
 
@@ -220,7 +220,7 @@ msgid "Adding updated_at column to comments table..."
 msgstr ""
 
 #: modules/comments/edit_form.php:25
-#: modules/comments/comments.php:288
+#: modules/comments/comments.php:284
 msgid "Spam"
 msgstr ""
 
@@ -242,7 +242,7 @@ msgid "Open"
 msgstr ""
 
 #: modules/comments/comments.php:88
-#: modules/comments/comments.php:307
+#: modules/comments/comments.php:303
 msgid "You do not have sufficient privileges to edit this comment."
 msgstr ""
 
@@ -259,7 +259,7 @@ msgstr ""
 msgid "Comment Status"
 msgstr ""
 
-#: modules/comments/model.Comment.php:95
+#: modules/comments/model.Comment.php:94
 msgid "Your comment has been marked as spam. It will have to be approved before it will show up."
 msgstr ""
 
@@ -271,11 +271,11 @@ msgstr ""
 msgid "Edit Own Comments"
 msgstr ""
 
-#: modules/comments/comments.php:343
+#: modules/comments/comments.php:337
 msgid "Selected comments deleted."
 msgstr ""
 
-#: modules/comments/comments.php:364
+#: modules/comments/comments.php:358
 msgid "Selected comments denied."
 msgstr ""
 
@@ -292,7 +292,7 @@ msgstr ""
 msgid "Manage Spam"
 msgstr ""
 
-#: modules/comments/comments.php:378
+#: modules/comments/comments.php:373
 msgid "Selected comments approved."
 msgstr ""
 
@@ -300,9 +300,9 @@ msgstr ""
 msgid "Body"
 msgstr ""
 
-#: modules/comments/comments.php:275
-#: modules/comments/comments.php:284
-#: modules/comments/comments.php:406
+#: modules/comments/comments.php:271
+#: modules/comments/comments.php:280
+#: modules/comments/comments.php:402
 msgid "Comments"
 msgstr ""
 

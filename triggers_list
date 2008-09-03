@@ -27,7 +27,7 @@ Called from:
 import_textpattern_post
 -----------------------
 Called from:
-	includes/controller/Admin.php on line 1268
+	includes/controller/Admin.php on line 1259
 Arguments:
 	$post, $new_post
 
@@ -35,7 +35,7 @@ Arguments:
 import_wordpress_post
 ---------------------
 Called from:
-	includes/controller/Admin.php on line 1058
+	includes/controller/Admin.php on line 1049
 Arguments:
 	$item, $post
 
@@ -43,7 +43,7 @@ Arguments:
 import_chyrp_page
 -----------------
 Called from:
-	includes/controller/Admin.php on line 968
+	includes/controller/Admin.php on line 959
 Arguments:
 	$entry, $page
 
@@ -51,7 +51,7 @@ Arguments:
 update_post
 -----------
 Called from:
-	includes/model/Post.php on line 290
+	includes/model/Post.php on line 270
 Arguments:
 	$this, $values, $user, $pinned, $status, $slug, $created_at, $updated_at, $options
 
@@ -67,7 +67,7 @@ Arguments:
 bottom
 ------
 Called from:
-	index.php on line 158
+	index.php on line 159
 
 
 manage_pages_column_header
@@ -85,7 +85,7 @@ Called from:
 add_post
 --------
 Called from:
-	includes/model/Post.php on line 211
+	includes/model/Post.php on line 199
 Arguments:
 	$post, $options
 
@@ -93,7 +93,7 @@ Arguments:
 update_user
 -----------
 Called from:
-	includes/model/User.php on line 136
+	includes/model/User.php on line 116
 Arguments:
 	$this, $login, $password, $full_name, $email, $website, $group_id
 
@@ -123,7 +123,7 @@ Arguments:
 import_tumble
 -------------
 Called from:
-	includes/controller/Admin.php on line 1199
+	includes/controller/Admin.php on line 1190
 Arguments:
 	$post, $new_post
 
@@ -131,7 +131,7 @@ Arguments:
 import_chyrp_group
 ------------------
 Called from:
-	includes/controller/Admin.php on line 887
+	includes/controller/Admin.php on line 883
 Arguments:
 	Group::add($name, (array) $permissions)
 
@@ -139,7 +139,7 @@ Arguments:
 add_user
 --------
 Called from:
-	includes/model/User.php on line 90
+	includes/model/User.php on line 80
 Arguments:
 	$user
 
@@ -173,7 +173,7 @@ Called from:
 import_movabletype_page
 -----------------------
 Called from:
-	includes/controller/Admin.php on line 1346
+	includes/controller/Admin.php on line 1337
 Arguments:
 	$post, $new_page, $link
 
@@ -181,7 +181,7 @@ Arguments:
 import_wordpress_page
 ---------------------
 Called from:
-	includes/controller/Admin.php on line 1069
+	includes/controller/Admin.php on line 1060
 Arguments:
 	$item, $page
 
@@ -211,7 +211,7 @@ Arguments:
 add_group
 ---------
 Called from:
-	includes/model/Group.php on line 90
+	includes/model/Group.php on line 89
 Arguments:
 	$group
 
@@ -219,7 +219,7 @@ Arguments:
 update_page
 -----------
 Called from:
-	includes/model/Page.php on line 139
+	includes/model/Page.php on line 113
 Arguments:
 	$this, $title, $body, $parent_id, $show_in_list, $list_order, $url, $update_timestamp
 
@@ -260,7 +260,7 @@ Called from:
 import_movabletype_post
 -----------------------
 Called from:
-	includes/controller/Admin.php on line 1343
+	includes/controller/Admin.php on line 1334
 Arguments:
 	$post, $new_post, $link
 
@@ -274,7 +274,7 @@ Called from:
 add_page
 --------
 Called from:
-	includes/model/Page.php on line 95
+	includes/model/Page.php on line 81
 Arguments:
 	$page
 
@@ -302,7 +302,7 @@ Called from:
 import_chyrp_post
 -----------------
 Called from:
-	includes/controller/Admin.php on line 945
+	includes/controller/Admin.php on line 937
 Arguments:
 	$entry, $post
 
@@ -310,7 +310,7 @@ Arguments:
 import_chyrp_user
 -----------------
 Called from:
-	includes/controller/Admin.php on line 914
+	includes/controller/Admin.php on line 907
 Arguments:
 	$user
 
@@ -366,7 +366,7 @@ Arguments:
 update_group
 ------------
 Called from:
-	includes/model/Group.php on line 113
+	includes/model/Group.php on line 112
 Arguments:
 	$this, $name, $permissions
 
@@ -410,7 +410,7 @@ posts_export
 Target:
 	$posts_atom
 Called from:
-	includes/controller/Admin.php on line 713
+	includes/controller/Admin.php on line 709
 Arguments:
 	$post
 
@@ -420,7 +420,7 @@ filter_post
 Target:
 	$this
 Called from:
-	includes/model/Post.php on line 634
+	includes/model/Post.php on line 608
 
 
 admin_subnav
@@ -462,7 +462,7 @@ page_export_url
 Target:
 	$url
 Called from:
-	includes/controller/Admin.php on line 756
+	includes/controller/Admin.php on line 752
 Arguments:
 	$page)
 
@@ -480,7 +480,7 @@ title
 Target:
 	$title
 Called from:
-	includes/model/Post.php on line 515
+	includes/model/Post.php on line 491
 Arguments:
 	$post
 
@@ -490,7 +490,7 @@ url_vals
 Target:
 	$vals
 Called from:
-	includes/model/Post.php on line 455
+	includes/model/Post.php on line 431
 Arguments:
 	$this
 
@@ -510,7 +510,7 @@ post_export_url
 Target:
 	$url
 Called from:
-	includes/controller/Admin.php on line 697
+	includes/controller/Admin.php on line 693
 Arguments:
 	$post)
 
@@ -530,7 +530,7 @@ post_url_token
 Target:
 	$tokens
 Called from:
-	includes/model/Post.php on line 785
+	includes/model/Post.php on line 760
 
 
 flash_notice_message
@@ -548,7 +548,7 @@ pages_export
 Target:
 	$pages_atom
 Called from:
-	includes/controller/Admin.php on line 771
+	includes/controller/Admin.php on line 767
 Arguments:
 	$page
 
@@ -566,7 +566,7 @@ excerpt
 Target:
 	$excerpt
 Called from:
-	includes/model/Post.php on line 534
+	includes/model/Post.php on line 510
 Arguments:
 	$post
 
@@ -584,7 +584,7 @@ admin_redirectables
 Target:
 	$redirectable
 Called from:
-	includes/controller/Admin.php on line 1862
+	includes/controller/Admin.php on line 1853
 
 
 determine_action
@@ -592,7 +592,7 @@ determine_action
 Target:
 	$extended
 Called from:
-	includes/controller/Admin.php on line 1852
+	includes/controller/Admin.php on line 1843
 
 
 feed_content
@@ -600,7 +600,7 @@ feed_content
 Target:
 	$feed_content
 Called from:
-	includes/model/Post.php on line 553
+	includes/model/Post.php on line 529
 Arguments:
 	$post
 
@@ -634,7 +634,7 @@ title_from_excerpt
 Target:
 	$excerpt
 Called from:
-	includes/model/Post.php on line 488
+	includes/model/Post.php on line 464
 
 
 bookmarklet_submit_values
@@ -666,7 +666,7 @@ export
 Target:
 	$exports
 Called from:
-	includes/controller/Admin.php on line 816
+	includes/controller/Admin.php on line 812
 
 
 markup_page_text
