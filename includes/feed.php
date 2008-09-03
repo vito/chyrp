@@ -23,9 +23,10 @@
 		                       $tagged,
 		                       1);
 
-		$feed_url = $trigger->filter($url, "feed_url", $post);
 		$url = $post->url();
 		$title = $post->title();
+
+		$feed_url = $trigger->filter($url, "feed_url", $post);
 
 		if (!$post->user()->no_results)
 			$author = fallback($post->user()->full_name, $post->user()->login, true);
