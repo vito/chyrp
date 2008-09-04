@@ -1049,12 +1049,12 @@
 
 		$zones = array();
 		$offsets = array();
-		$reverse = (isset(Config::current()->timezone)) ? $timezones[Config::current()->timezone] : 0 ;
+		$undo = $timezones[get_timezone()];
 		foreach ($timezones as $timezone => $offset) {
 			if (!in_array($offset, $offsets))
 				$zones[] = array("offset" => ($offsets[] = $offset) / 3600,
 				                 "name" => $timezone,
-				                 "now" => time() - $reverse + $offset);
+				                 "now" => time() - $undo + $offset);
 		}
 
 		function by_time($a, $b) {
@@ -1064,6 +1064,31 @@
 		usort($zones, "by_time");
 
 		return $zones;
+	}
+
+	/**
+	 * Function: set_timezone
+	 * Sets the timezone.
+	 *
+	 * Parameters:
+	 *     $timezone - The timezone to set.
+	 */
+	function set_timezone($timezone) {
+		if (function_exists("date_default_timezone_set"))
+			date_default_timezone_set($timezone);
+		else
+			ini_set("date.timezone", $timezone);
+	}
+
+	/**
+	 * Function: get_timezone()
+	 * Returns the current timezone.
+	 */
+	function get_timezone() {
+		if (function_exists("date_default_timezone_set"))
+			return date_default_timezone_get();
+		else
+			return ini_get("date.timezone");
 	}
 
 	/**

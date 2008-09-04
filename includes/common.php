@@ -98,10 +98,7 @@
 	require_once INCLUDES_DIR."/lib/gettext/gettext.php";
 	require_once INCLUDES_DIR."/lib/gettext/streams.php";
 
-	if (function_exists("date_default_timezone_set"))
-		date_default_timezone_set($config->timezone);
-	else
-		ini_set("date.timezone", $config->timezone);
+	set_timezone($config->timezone);
 
 	header("X-Pingback: ".$config->chyrp_url."/includes/xmlrpc.php");
 

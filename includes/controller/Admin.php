@@ -1696,7 +1696,7 @@
 				closedir($open);
 			}
 
-			$this->context["timezones"] = timezones(true);
+			$this->context["timezones"] = timezones();
 
 			if (empty($_POST))
 				return;

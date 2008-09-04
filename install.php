@@ -10,7 +10,8 @@
 	define('XML_RPC', false);
 	define('UPGRADING', false);
 	define('INSTALLING', true);
-	define('TESTER', true);
+
+	define('TESTER', isset($_SERVER['HTTP_USER_AGENT']) and $_SERVER['HTTP_USER_AGENT'] == "tester.rb");
 
 	ini_set('error_reporting', E_ALL);
 	ini_set('display_errors', true);
@@ -22,6 +23,10 @@
 
 	# Helpers
 	require INCLUDES_DIR."/helpers.php";
+
+	# Atlantic/Reykjavik is 0 offset. Set it so the timezones() function is
+	# always accurate, even if the server has its own timezone settings.
+	set_timezone("Atlantic/Reykjavik");
 
 	require_once INCLUDES_DIR."/class/Query.php";
 	require_once INCLUDES_DIR."/class/QueryBuilder.php";
