@@ -243,7 +243,7 @@
 		 *     $throw_exceptions - Should exceptions be thrown on error?
 		 */
 		public function replace($table, $data, $params = array(), $throw_exceptions = false) {
-			return $this->query(QueryBuilder::build_replace($table, $data), $params, $throw_exceptions);
+			return $this->query(QueryBuilder::build_replace($table, $data, $params), $params, $throw_exceptions);
 		}
 
 		/**

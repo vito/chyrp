@@ -10,6 +10,7 @@
 	define('XML_RPC', false);
 	define('UPGRADING', false);
 	define('INSTALLING', true);
+	define('TESTER', true);
 
 	ini_set('error_reporting', E_ALL);
 	ini_set('display_errors', true);

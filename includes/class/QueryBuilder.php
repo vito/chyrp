@@ -27,7 +27,7 @@
 		 * Function: build_replace
 		 * Creates a full replace query.
 		 */
-		public static function build_replace($table, $data) {
+		public static function build_replace($table, $data, &$params = array()) {
 			$conditions = self::build_conditions($data, $params);
 			$data = array();
 
@@ -189,6 +189,15 @@
 			return implode(", ", $order);
 		}
 
+		/**
+		 * Function: build_conditions
+		 * Builds an associative array of SQL values into PDO-esque paramized query strings.
+		 *
+		 * Parameters:
+		 *     $conds - Conditions.
+		 *     $params - Parameters array to fill.
+		 *     $tables - If specified, conditions will be tablefied with these tables.
+		 */
 		public static function build_conditions($conds, &$params, $tables = null) {
 			foreach ($conds as $key => $val) {
 				if (is_int($key)) # Full expression
