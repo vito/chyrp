@@ -10,7 +10,7 @@ $(function(){
 <?php if ($config->auto_reload_comments and $config->enable_reload_comments): ?>
 		var updater = setInterval("Comment.reload()", <?php echo $config->auto_reload_comments * 1000; ?>);
 <?php endif; ?>
-		$("#add_comment").append($(document.createElement("input")).attr({ type: "hidden", name: "ajax", value: "true", id: "ajax" }));
+		$("#add_comment").append($(document.createElement("input")).attr({ type: "hidden", name: "ajax", value: "true", id: "ajax" }))
 		$("#add_comment").ajaxForm({ dataType: "json", resetForm: true, beforeSubmit: function(){
 			$("#add_comment").loader();
 		}, success: function(json){
@@ -22,7 +22,7 @@ $(function(){
 					var plural = (count == 1) ? "" : "s"
 					$(".comment_plural").text(plural)
 				}
-				$("#last_comment").val(json.comment_id)
+				$("#last_comment").val(json.comment_timestamp)
 				$(data).appendTo(".comments:not(:header)").hide().fadeIn("slow")
 			})
 		}, complete: function(){
@@ -64,8 +64,8 @@ var Comment = {
 		var id = $(".comments:not(:header)").attr("id").replace(/comments_/, "")
 		if (editing == 0 && notice == 0 && $(".comments:not(:header)").children().size() < <?php echo $config->comments_per_page; ?>) {
 			$.ajax({ type: "post", dataType: "json", url: "<?php echo $config->chyrp_url; ?>/includes/ajax.php", data: "action=reload_comments&post_id="+id+"&last_comment="+$("#last_comment").val(), success: function(json) {
+				$("#last_comment").val(json.last_comment)
 				$.each(json.comment_ids, function(i, id) {
-					$("#last_comment").val(id)
 					$.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "show_comment", comment_id: id }, function(data){
 						$(data).appendTo(".comments:not(:header)").hide().fadeIn("slow")
 					})

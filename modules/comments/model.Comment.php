@@ -14,6 +14,9 @@
 		public function __construct($comment_id, $options = array()) {
 			parent::grab($this, $comment_id, $options);
 
+			if ($this->no_results)
+				return false;
+
 			$this->body_unfiltered = $this->body;
 			$group = ($this->user_id and !$this->user()->no_results) ? $this->user()->group() : new Group(Config::current()->guest_group) ;
 
@@ -110,7 +113,7 @@
 					$_SESSION['comments'][] = $comment->id;
 
 					if (isset($_POST['ajax']))
-						exit("{ comment_id: ".$comment->id." }");
+						exit("{ comment_id: ".$comment->id.", comment_timestamp: \"".$comment->created_at."\" }");
 
 					Flash::notice(__("Comment added."), $post->url()."#comment_".$comment->id);
 				}
@@ -132,7 +135,7 @@
 				$_SESSION['comments'][] = $comment->id;
 
 				if (isset($_POST['ajax']))
-					exit("{ comment_id: ".$comment->id." }");
+					exit("{ comment_id: ".$comment->id.", comment_timestamp: \"".$comment->created_at."\" }");
 
 				Flash::notice(__("Comment added."), $post->url()."#comment_".$comment->id);
 			}

@@ -98,7 +98,7 @@
 			                 $created_at);
 
 			if (isset($_POST['ajax']))
-				exit("{ comment_id: ".$_POST['id']." }");
+				exit("{ comment_id: ".$_POST['id'].", comment_timestamp: \"".$created_at."\" }");
 
 			if ($_POST['status'] == "spam")
 				Flash::notice(__("Comment updated."), "/admin/?action=manage_spam");
@@ -425,9 +425,9 @@
 					$post = new Post($_POST['post_id']);
 					if ($post->latest_comment > $_POST['last_comment']) {
 						$new_comments = $sql->select("comments",
-						                             "id",
+						                             "id, created_at",
 						                             array("post_id" => $_POST['post_id'],
-						                                   "id >" => $_POST['last_comment'],
+						                                   "created_at >" => $_POST['last_comment'],
 						                                   "status not" => "spam",
 						                                   "status != 'denied' OR (
 						                                        (
@@ -440,12 +440,16 @@
 						                             "created_at ASC",
 						                             array(":visitor_id" => $visitor->id));
 
-						error_log(print_r($new_comments, true));
 						$ids = array();
-						while ($the_comment = $new_comments->fetchObject())
+						$last_comment = "";
+						while ($the_comment = $new_comments->fetchObject()) {
 							$ids[] = $the_comment->id;
+
+							if (strtotime($last_comment) < strtotime($the_comment->created_at))
+								$last_comment = $the_comment->created_at;
+						}
 ?>
-{ "comment_ids": [ <?php echo implode(", ", $ids); ?> ] }
+{ comment_ids: [ <?php echo implode(", ", $ids); ?> ], last_comment: "<?php echo $last_comment; ?>" }
 <?php
 					}
 					break;
