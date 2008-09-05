@@ -69,7 +69,7 @@
 			                   "body" => $body,
 			                   "user_id" => fallback($user_id, $visitor->id),
 			                   "parent_id" => $parent_id,
-			                   "show_in_list" => $show_in_list,
+			                   "show_in_list" => (int) $show_in_list,
 			                   "list_order" => $list_order,
 			                   "clean" => $clean,
 			                   "url" => $url,
