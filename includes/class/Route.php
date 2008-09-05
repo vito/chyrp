@@ -207,7 +207,8 @@
 			global $page;
 
 			$config = Config::current();
-			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls or !empty($this->action))
+
+			if (!empty($this->action))
 				return;
 
 			if (count($this->arg) == 1 and method_exists(MainController::current(), $this->arg[0]))
@@ -226,7 +227,7 @@
 		public function check_viewing_post($i_have_the_power = false) {
 			$config = Config::current();
 
-			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls or !empty($this->action))
+			if (!empty($this->action))
 				return;
 
 			if (count($this->arg) == 1 and method_exists(MainController::current(), $this->arg[0]))
