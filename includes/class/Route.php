@@ -119,9 +119,6 @@
 			global $page;
 			$config = Config::current();
 
-			if (!$config->clean_urls)
-				fallback($_GET['action'], "index");
-
 			$this->action =& $_GET['action'];
 
 			# Parse the current URL and extract information.
@@ -131,9 +128,6 @@
 			$this->safe_path = str_replace("/", "\\/", $parse["path"]);
 			$this->request = preg_replace("/".$this->safe_path."/", "", $_SERVER['REQUEST_URI'], 1);
 			$this->arg = explode("/", trim($this->request, "/"));
-
-			if (ADMIN or JAVASCRIPT or AJAX or XML_RPC or !$config->clean_urls)
-				return;
 
 			if (empty($this->arg[0])) # If they're just at /, don't bother with all this.
 				return $this->action = "index";
