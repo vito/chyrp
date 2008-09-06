@@ -10,6 +10,8 @@ FUZZER = {
 
 SERVER = Net::HTTP.new "localhost"
 
+CHYRP = "/chyrp"
+
 HEADERS = {
   "Cookie" => "ChyrpSession=835e560250f81a6790747c40aa405a60", # NOTE: This has to be changed to keep in sync with your browser.
   "User-Agent" => "tester.rb"
@@ -17,7 +19,7 @@ HEADERS = {
 
 class Chyrp < Test::Unit::TestCase
   def test_add_post
-    resp, write = get "/chyrp/admin/?action=write_post"
+    resp, write = get "/admin/?action=write_post"
 
     page = Hpricot(write)
 
@@ -25,7 +27,7 @@ class Chyrp < Test::Unit::TestCase
   end
 
   def test_add_draft
-    resp, write = get "/chyrp/admin/?action=write_post"
+    resp, write = get "/admin/?action=write_post"
 
     page = Hpricot(write)
 
@@ -45,7 +47,7 @@ class Chyrp < Test::Unit::TestCase
   end
 
   def test_add_page
-    resp, write = get "/chyrp/admin/?action=write_page"
+    resp, write = get "/admin/?action=write_page"
 
     page = Hpricot(write)
 
@@ -62,7 +64,7 @@ class Chyrp < Test::Unit::TestCase
   end
 
   def test_general_settings
-    resp, page = get "/chyrp/admin/?action=general_settings"
+    resp, page = get "/admin/?action=general_settings"
     page = Hpricot(page)
 
     settings = form_get(page/"form")
@@ -72,75 +74,77 @@ class Chyrp < Test::Unit::TestCase
   end
 
   def test_content_settings
-    resp, page = get"/chyrp/admin/?action=content_settings"
+    resp, page = get"/admin/?action=content_settings"
     page = Hpricot(page)
 
     post (page/"form").attr("action"), form_get(page/"form")
   end
 
   def test_user_settings
-    resp, page = get "/chyrp/admin/?action=user_settings"
+    resp, page = get "/admin/?action=user_settings"
     page = Hpricot(page)
 
     post (page/"form").attr("action"), form_get(page/"form")
   end
 
   def test_route_settings
-    resp, page = get "/chyrp/admin/?action=route_settings"
+    resp, page = get "/admin/?action=route_settings"
     page = Hpricot(page)
 
     post (page/"form").attr("action"), form_get(page/"form")
   end
 
   def test_archive
-    get "/chyrp/archive/"
+    get "/archive/"
   end
 
   def test_archive_year
-    get "/chyrp/archive/"+ Time.now.strftime("%y/")
+    get "/archive/"+ Time.now.strftime("%y/")
   end
 
   def test_archive_month
-    get "/chyrp/archive/"+ Time.now.strftime("%y/%m/")
+    get "/archive/"+ Time.now.strftime("%y/%m/")
   end
 
   def test_archive_day
-    get "/chyrp/archive/"+ Time.now.strftime("%y/%m/%d/")
+    get "/archive/"+ Time.now.strftime("%y/%m/%d/")
   end
 
   def test_index
-    get "/chyrp/"
+    get "/"
   end
 
   def test_feed
-    get "/chyrp/feed/"
+    get "/feed/"
   end
 
   def test_search
-    resp, page = get("/chyrp/search/Lorem+ipsum/")
+    resp, page = get("/search/Lorem+ipsum/")
     assert_no_match /No Results/, page, "No search results listed."
   end
 
   def test_pagination
-    resp, page = get("/chyrp/page/2/")
+    resp, page = get("/page/2/")
     assert_match /Page 2 of /, page, "No pagination links displayed."
   end
 
   def test_drafts
-    resp, page = get("/chyrp/drafts/")
+    resp, page = get("/drafts/")
     assert_no_match /No Drafts/, page, "No draft posts listed."
   end
 
   def test_404
-    assert (error?(get("/chyrp/rghtueighntrwiu5ytn5ueygn/", false)) == "404 Not Found"), "Fuzzed dirty route was not a 404."
+    assert (error?(get("/rghtueighntrwiu5ytn5ueygn/", false)) == "404 Not Found"), "Fuzzed dirty route was not a 404."
   end
 
   def test_dirty_404
-    assert (error?(get("/chyrp/?action=rghtueighntrwiu5ytn5ueygn", false)) == "404 Not Found"), "Fuzzed dirty route was not a 404."
+    assert (error?(get("/?action=rghtueighntrwiu5ytn5ueygn", false)) == "404 Not Found"), "Fuzzed dirty route was not a 404."
   end
 
   private
     def get url, test = true
+      url = CHYRP + url if url[0] == 47 # /
+
       receive = SERVER.get(url, HEADERS)
 
       if test
@@ -156,6 +160,8 @@ class Chyrp < Test::Unit::TestCase
       data.each do |key, val|
         send << key +"="+ val
       end
+
+      url = CHYRP + url if url[0] == 47 # /
 
       send = SERVER.post(url, send.join("&"), HEADERS)
 
