@@ -1,8 +1,10 @@
 from path import *
 import re
 
-def walk(filename):
-    """docstring for walk"""
+def sanitize(filename):
+    """
+    Walks the directory recursively and sanitizes filenames that match the given pattern.
+    """
     for f in path(".").walkfiles(filename):
         source = f.text()
 
@@ -16,9 +18,9 @@ def walk(filename):
         sanitized = re.sub("([ ]+)\t", "\\1    ", sanitized)
         f.write_text(sanitized)
 
-walk("*.php")
-walk("*.rb")
-walk("*.js")
-walk("*.css")
-walk("*.twig")
-walk("triggers_list")
+sanitize("*.php")
+sanitize("*.rb")
+sanitize("*.js")
+sanitize("*.css")
+sanitize("*.twig")
+sanitize("triggers_list")
