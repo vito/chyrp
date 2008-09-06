@@ -48,6 +48,11 @@
 				</tbody>
 			</table>
 			<br />
-			$aggregates.next_link
-			$aggregates.prev_link
+			<div class="pagination">
+				$aggregates.next_link
+				$aggregates.prev_link
+				{% if aggregates.paginated and aggregates.pages > 1 %}
+				<span class="pages">${ "Page %d of %d" | translate | format(aggregates.page, aggregates.pages) }</span>
+				{% endif %}
+			</div>
 {% endblock %}

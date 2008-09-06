@@ -104,6 +104,11 @@
 {% endif %}
 			</form>
 			<br />
-			$comments.next_link
-			$comments.prev_link
+			<div class="pagination">
+				$comments.next_link
+				$comments.prev_link
+				{% if comments.paginated and comments.pages > 1 %}
+				<span class="pages">${ "Page %d of %d" | translate | format(comments.page, comments.pages) }</span>
+				{% endif %}
+			</div>
 {% endblock %}

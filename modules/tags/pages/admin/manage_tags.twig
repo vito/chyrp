@@ -65,6 +65,11 @@
 				</fieldset>
 			</form>
 			<div class="clear"></div>
-			$posts.next_link
-			$posts.prev_link
+			<div class="pagination">
+				$posts.next_link
+				$posts.prev_link
+				{% if posts.paginated and posts.pages > 1 %}
+				<span class="pages">${ "Page %d of %d" | translate | format(posts.page, posts.pages) }</span>
+				{% endif %}
+			</div>
 {% endblock %}

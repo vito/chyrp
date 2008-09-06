@@ -65,6 +65,11 @@
 				</tbody>
 			</table>
 			<br />
-			$users.next_link
-			$users.prev_link
+			<div class="pagination">
+				$users.next_link
+				$users.prev_link
+				{% if users.paginated and users.pages > 1 %}
+				<span class="pages">${ "Page %d of %d" | translate | format(users.page, users.pages) }</span>
+				{% endif %}
+			</div>
 {% endblock %}

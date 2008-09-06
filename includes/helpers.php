@@ -1114,7 +1114,7 @@
 		if (!trim($query))
 			return array(array(), array());
 
-		$search = "";
+		$search = array();
 		$matches = array();
 		$where = array();
 		$params = array();
@@ -1122,7 +1122,7 @@
 		$queries = explode(" ", $query);
 		foreach ($queries as $query)
 			if (!preg_match("/([a-z0-9_]+):(.+)/", $query))
-				$search.= $query;
+				$search[] = $query;
 			else
 				$matches[] = $query;
 
@@ -1146,7 +1146,7 @@
 
 		if (!empty($search)) {
 			$where[] = $plain;
-			$params[":query"] = "%".$search."%";
+			$params[":query"] = "%".join(" ", $search)."%";
 		}
 
 		return array($where, $params);

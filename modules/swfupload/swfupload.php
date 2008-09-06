@@ -9,14 +9,14 @@
 			$config = Config::current();
 
 			if (!empty($this->insert_swfupload)) {
-				echo '		<script src="'.$config->chyrp_url.'/modules/swfupload/lib/FlashDevelop/swfupload.js" type="text/javascript" charset="utf-8"></script>'."\n";
+				echo '		<script src="'.$config->chyrp_url.'/modules/swfupload/lib/swfupload.js" type="text/javascript" charset="utf-8"></script>'."\n";
 				echo '		<script src="'.$config->chyrp_url.'/modules/swfupload/lib/handlers.js" type="text/javascript" charset="utf-8"></script>'."\n";
 				echo '		<link rel="stylesheet" href="'.$config->chyrp_url.'/modules/swfupload/style.css" type="text/css" media="screen" title="no title" charset="utf-8" />'."\n";
 				echo '		<script type="text/javascript">'."\n";
 				echo "			$(function(){\n";
 				foreach ($this->insert_swfupload as $id => $options) {
 					$upload_url                   = $config->chyrp_url."/modules/swfupload/upload_handler.php";
-					$flash_url                    = $config->chyrp_url."/modules/swfupload/lib/FlashDevelop/Flash9/swfupload_f9.swf";
+					$flash_url                    = $config->chyrp_url."/modules/swfupload/lib/swfupload_f9.swf";
 					$file_types                   = "*";
 					$file_types_description       = "All Files";
 					$debug                        = false;

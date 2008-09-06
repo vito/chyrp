@@ -38,6 +38,11 @@
 				</h1>
 			</div>
 			{% endfor %}
-			$groups.next_link
-			$groups.prev_link
+			<div class="pagination">
+				$groups.next_link
+				$groups.prev_link
+				{% if groups.paginated and groups.pages > 1 %}
+				<span class="pages">${ "Page %d of %d" | translate | format(groups.page, groups.pages) }</span>
+				{% endif %}
+			</div>
 {% endblock %}

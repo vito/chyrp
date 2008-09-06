@@ -978,4 +978,15 @@ img.smiley {
 .inline {
 	display: inline;
 }
+.pagination a.prev_page {
+	float: left;
+}
+.pagination .pages {
+	display: block;
+	text-align: center;
+	width: 20em;
+	margin: 0 auto;
+	font-weight: bold;
+	color: #bbb;
+}
 /* @end */
