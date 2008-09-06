@@ -17,22 +17,22 @@ HEADERS = {
 
 class Chyrp < Test::Unit::TestCase
   def test_add_post
-    resp, write = get("/chyrp/admin/?action=write_post")
+    resp, write = get "/chyrp/admin/?action=write_post"
 
     page = Hpricot(write)
 
-    post (page/"form").attr("action"), form_fuzz(page/"form"), true
+    post (page/"form").attr("action"), form_fuzz(page/"form")
   end
 
   def test_add_draft
-    resp, write = get("/chyrp/admin/?action=write_post")
+    resp, write = get "/chyrp/admin/?action=write_post"
 
     page = Hpricot(write)
 
     data = form_fuzz(page/"form")
     data['draft'] = "true"
 
-    post (page/"form").attr("action"), data, true
+    post (page/"form").attr("action"), data
   end
 
   def test_view_post
@@ -41,15 +41,15 @@ class Chyrp < Test::Unit::TestCase
 
     post_url = (page/".post:first/h2/a").attr("href")
 
-    get post_url, true
+    get post_url
   end
 
   def test_add_page
-    resp, write = get("/chyrp/admin/?action=write_page")
+    resp, write = get "/chyrp/admin/?action=write_page"
 
     page = Hpricot(write)
 
-    post (page/"form").attr("action"), form_fuzz(page/"form"), true
+    post (page/"form").attr("action"), form_fuzz(page/"form")
   end
 
   def test_view_page
@@ -58,62 +58,62 @@ class Chyrp < Test::Unit::TestCase
 
     page_url = (page/"#sidebar/ul:nth(0)/li:nth(0)/a").attr("href")
 
-    get page_url, true
+    get page_url
   end
 
   def test_general_settings
-    resp, page = get("/chyrp/admin/?action=general_settings")
+    resp, page = get "/chyrp/admin/?action=general_settings"
     page = Hpricot(page)
 
     settings = form_get(page/"form")
     settings['description'].reverse!
 
-    post (page/"form").attr("action"), settings, true
+    post (page/"form").attr("action"), settings
   end
 
   def test_content_settings
-    resp, page = get("/chyrp/admin/?action=content_settings")
+    resp, page = get"/chyrp/admin/?action=content_settings"
     page = Hpricot(page)
 
-    post (page/"form").attr("action"), form_get(page/"form"), true
+    post (page/"form").attr("action"), form_get(page/"form")
   end
 
   def test_user_settings
-    resp, page = get("/chyrp/admin/?action=user_settings")
+    resp, page = get "/chyrp/admin/?action=user_settings"
     page = Hpricot(page)
 
-    post (page/"form").attr("action"), form_get(page/"form"), true
+    post (page/"form").attr("action"), form_get(page/"form")
   end
 
   def test_route_settings
-    resp, page = get("/chyrp/admin/?action=route_settings")
+    resp, page = get "/chyrp/admin/?action=route_settings"
     page = Hpricot(page)
 
-    post (page/"form").attr("action"), form_get(page/"form"), true
+    post (page/"form").attr("action"), form_get(page/"form")
   end
 
   def test_archive
-    get "/chyrp/archive/", true
+    get "/chyrp/archive/"
   end
 
   def test_archive_year
-    get "/chyrp/archive/"+ Time.now.strftime("%y/"), true
+    get "/chyrp/archive/"+ Time.now.strftime("%y/")
   end
 
   def test_archive_month
-    get "/chyrp/archive/"+ Time.now.strftime("%y/%m/"), true
+    get "/chyrp/archive/"+ Time.now.strftime("%y/%m/")
   end
 
   def test_archive_day
-    get "/chyrp/archive/"+ Time.now.strftime("%y/%m/%d/"), true
+    get "/chyrp/archive/"+ Time.now.strftime("%y/%m/%d/")
   end
 
   def test_index
-    get "/chyrp/", true
+    get "/chyrp/"
   end
 
   def test_feed
-    get "/chyrp/feed/", true
+    get "/chyrp/feed/"
   end
 
   def test_search
@@ -132,15 +132,15 @@ class Chyrp < Test::Unit::TestCase
   end
 
   def test_404
-    assert (error?(get("/chyrp/rghtueighntrwiu5ytn5ueygn/")) == "404 Not Found"), "Fuzzed dirty route was not a 404."
+    assert (error?(get("/chyrp/rghtueighntrwiu5ytn5ueygn/", false)) == "404 Not Found"), "Fuzzed dirty route was not a 404."
   end
 
   def test_dirty_404
-    assert (error?(get("/chyrp/?action=rghtueighntrwiu5ytn5ueygn")) == "404 Not Found"), "Fuzzed dirty route was not a 404."
+    assert (error?(get("/chyrp/?action=rghtueighntrwiu5ytn5ueygn", false)) == "404 Not Found"), "Fuzzed dirty route was not a 404."
   end
 
   private
-    def get url, test = false
+    def get url, test = true
       receive = SERVER.get(url, HEADERS)
 
       if test
@@ -151,7 +151,7 @@ class Chyrp < Test::Unit::TestCase
       receive
     end
 
-    def post url, data, test = false
+    def post url, data, test = true
       send = []
       data.each do |key, val|
         send << key +"="+ val
