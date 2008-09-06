@@ -173,7 +173,8 @@ class Chyrp < Test::Unit::TestCase
       (form/"*[@name]").each do |field|
         if field['type'] == "hidden" or (field.name != "textarea" and field['value'] != "") or (field.name == "textarea" and !field.empty?)
           if field.name == "select"
-            option = (field/"option[@selected='selected']") || (field/"option:nth(0)")
+            selected = (field/"option[@selected]")
+            option = selected.length > 0 ? selected : (field/"option:nth(0)")
             data[field['name']] = option.attr("value")
           elsif field.name != "button"
             if field['type'] == "checkbox"
@@ -205,7 +206,9 @@ class Chyrp < Test::Unit::TestCase
 
       (form/"*[@name]").each do |field|
         if field.name == "select"
-          data[field['name']] = (field/"option:nth(0)").attr("value")
+          selected = (field/"option[@selected]")
+          option = selected.length > 0 ? selected : (field/"option:nth(0)")
+          data[field['name']] = option.attr("value")
         elsif field.name != "button"
           if field['type'] == "checkbox"
             data[field['name']] = (field['checked'] || "no") == "checked" ? "1" : "0"
