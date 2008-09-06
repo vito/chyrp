@@ -602,6 +602,9 @@
 	 *
 	 * Returns:
 	 *     A CamelCased string.
+	 *
+	 * See Also:
+	 *     <decamelize>
 	 */
 	function camelize($string, $keep_spaces = false) {
 		$lower = strtolower($string);
@@ -626,7 +629,7 @@
 	 *     A de_camel_cased string.
 	 *
 	 * See Also:
-	 * <camelize>
+	 *     <camelize>
 	 */
 	function decamelize($string) {
 		return strtolower(preg_replace("/([a-z])([A-Z])/", "\\1_\\2", $string));
@@ -1031,6 +1034,11 @@
 	 */
 	 function cancel_module($target) {
 		$this_disabled = array();
+
+		global $modules;
+
+		if (isset($modules[$target]))
+			$modules[$target]->cancelled = true;
 
 		$config = Config::current();
 		foreach ($config->enabled_modules as $module)

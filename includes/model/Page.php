@@ -2,6 +2,7 @@
 	/**
 	 * Class: Page
 	 * The Page model.
+	 *
 	 * See Also:
 	 *     <Model>
 	 */

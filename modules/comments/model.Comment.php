@@ -2,6 +2,9 @@
 	/**
 	 * Class: Comment
 	 * The model for the Comments SQL table.
+	 *
+	 * See Also:
+	 *     <Model>
 	 */
 	class Comment extends Model {
 		public $no_results = false;

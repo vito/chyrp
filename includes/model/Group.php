@@ -4,6 +4,7 @@
 	/**
 	 * Class: Group
 	 * The Group model.
+	 *
 	 * See Also:
 	 *     <Model>
 	 */

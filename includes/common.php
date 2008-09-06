@@ -148,9 +148,6 @@
 	#     <Session>
 	require_once INCLUDES_DIR."/class/Session.php";
 
-	if (!JAVASCRIPT)
-		session();
-
 	# File: Flash
 	# See Also:
 	#     <Flash>
@@ -205,13 +202,17 @@
 	#     <Feather>
 	require_once INCLUDES_DIR."/interface/Feather.php";
 
+	session();
 	timer_start();
+	set_locale($config->locale);
 
 	$flash = Flash::current();
 
-	set_locale($config->locale);
-
-	# Require feathers/modules and load their translations.
+	/**
+	 * Array: $feathers
+	 * Contains all of the enabled Feather's Classes.
+	 */
+	$feathers = array();
 	foreach ($config->enabled_feathers as $index => $feather) {
 		if (!file_exists(FEATHERS_DIR."/".$feather."/".$feather.".php")) {
 			unset($config->enabled_feathers[$index]);
@@ -222,8 +223,26 @@
 			load_translator($feather, FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo");
 
 		require FEATHERS_DIR."/".$feather."/".$feather.".php";
+
+		$camelized = camelize($feather);
+		if (!class_exists($camelized))
+			continue;
+
+		$feathers[$feather] = new $camelized;
+		$feathers[$feather]->safename = $feather;
+
+		if (!ADMIN and $route->action != "feed")
+			continue;
+
+		foreach (YAML::load(FEATHERS_DIR."/".$feather."/info.yaml") as $key => $val)
+			$feathers[$feather]->$key = (is_string($val)) ? __($val, $feather) : $val ;
 	}
 
+	/**
+	 * Array: $modules
+	 * Contains all of the enabled Module's Classes.
+	 */
+	$modules = array();
 	foreach ($config->enabled_modules as $index => $module) {
 		if (!file_exists(MODULES_DIR."/".$module."/".$module.".php")) {
 			unset($config->enabled_modules[$index]);
@@ -234,11 +253,31 @@
 			load_translator($module, MODULES_DIR."/".$module."/locale/".$config->locale.".mo");
 
 		require MODULES_DIR."/".$module."/".$module.".php";
+
+		$camelized = camelize($module);
+		if (!class_exists($camelized))
+			continue;
+
+		$modules[$module] = new $camelized;
+		$modules[$module]->safename = $module;
+
+		if (!ADMIN)
+			continue;
+
+		foreach (YAML::load(MODULES_DIR."/".$module."/info.yaml") as $key => $val)
+			$modules[$module]->$key = (is_string($val)) ? __($val, $module) : $val ;
 	}
 
-	# Load the /clean/urls into their correct $_GET values.
-	if (INDEX or ADMIN)
-		$route->determine_action();
+	# Now that they're all instantiated, call __init().
+	foreach ($feathers as $feather)
+		if (method_exists($feather, "__init"))
+			$feather->__init();
+
+	foreach ($modules as $module)
+		if (method_exists($module, "__init"))
+			$module->__init();
+
+	$route->determine_action();
 
 	# Variable: $visitor
 	# Holds the current user and their group.
@@ -251,11 +290,11 @@
 	$theme = PREVIEWING ? $_GET['theme'] : $config->theme;
 
 	# Constant: THEME_DIR
-	# Absolute path to /themes/(current theme)
+	# Absolute path to /themes/(current/previewed theme)
 	define('THEME_DIR', MAIN_DIR."/themes/".$theme);
 
 	# Constant: THEME_URL
-	# URL to /themes/(current theme)
+	# URL to /themes/(current/previewed theme)
 	define('THEME_URL', $config->chyrp_url."/themes/".$theme);
 
 	$theme = Theme::current();
@@ -263,56 +302,7 @@
 	foreach (YAML::load(THEME_DIR."/info.yaml") as $key => $val)
 		$theme->$key = $val;
 
-	if (INDEX)
-		header("Content-type: ".fallback($theme->type, "text/html")."; charset=UTF-8");
-	elseif (AJAX)
-		header("Content-type: text/html; charset=UTF-8");
-
-	# These are down here so that the modules are
-	# initialized after the $_GET values are filled.
-	/**
-	 * Array: $feathers
-	 * Contains all of the enabled Feather's Classes.
-	 */
-	$feathers = array();
-	foreach ($config->enabled_feathers as $feather) {
-		$camelized = camelize($feather);
-		if (!class_exists($camelized)) continue;
-
-		$feathers[$feather] = new $camelized;
-		$feathers[$feather]->safename = $feather;
-
-		if (!ADMIN and $route->action != "feed") continue;
-
-		foreach (YAML::load(FEATHERS_DIR."/".$feather."/info.yaml") as $key => $val)
-			$feathers[$feather]->$key = (is_string($val)) ? __($val, $feather) : $val ;
-	}
-
-	/**
-	 * Array: $modules
-	 * Contains all of the enabled Module's Classes.
-	 */
-	$modules = array();
-	foreach ($config->enabled_modules as $module) {
-		$camelized = camelize($module);
-		if (!class_exists($camelized)) continue;
-
-		$modules[$module] = new $camelized;
-		$modules[$module]->safename = $module;
-
-		if (!ADMIN) continue;
-
-		foreach (YAML::load(MODULES_DIR."/".$module."/info.yaml") as $key => $val)
-			$modules[$module]->$key = (is_string($val)) ? __($val, $module) : $val ;
-	}
-
-	# Now that they're all instantiated, call __init().
-	foreach ($feathers as $feather)
-		if (method_exists($feather, "__init"))
-			$feather->__init();
-	foreach ($modules as $module)
-		if (method_exists($module, "__init"))
-			$module->__init();
+	header("Content-type: ".(INDEX ? fallback($theme->type, "text/html") : "text/html")."; charset=UTF-8");
 
 	if (INDEX) {
 		$route->check_custom_routes();
@@ -322,12 +312,12 @@
 			$route->check_viewing_page();
 			$route->check_viewing_post(true);
 		} else {
-			$route->check_viewing_post();
 			$route->check_viewing_page(true);
+			$route->check_viewing_post();
 		}
-	}
 
-	if (INDEX or ADMIN)
+		$trigger->call("runtime");
+	} elseif (ADMIN)
 		$trigger->call("runtime");
 
 	# Array: $statuses
@@ -335,6 +325,7 @@
 	$statuses = array("public");
 	if (logged_in())
 		$statuses[] = "registered_only";
+
 	if ($visitor->group()->can("view_private"))
 		$statuses[] = "private";
 

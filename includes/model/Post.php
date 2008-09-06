@@ -2,6 +2,7 @@
 	/**
 	 * Class: Post
 	 * The Post model.
+	 *
 	 * See Also:
 	 *     <Model>
 	 */

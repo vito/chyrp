@@ -219,7 +219,7 @@ $(this).parent().find("ul:first").append(ui.draggable);self.element.data("sortab
 			var self = this;
 			this.interval = window.setInterval(function() { self.checkExpand() }, 400);
 			// this.textarea.keydown(function() {
-			// 	self.checkExpand()
+			//     self.checkExpand()
 			// })
 		},
 		stopExpand: function() {

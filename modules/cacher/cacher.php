@@ -1,6 +1,16 @@
 <?php
 	class Cacher extends Modules {
-		public function __init() {
+		static function __install() {
+			$config = Config::current();
+			$config->set("cache_expire", 1800);
+		}
+
+		static function __uninstall() {
+			$config = Config::current();
+			$config->remove("cache_expire");
+		}
+
+		public function prepare() {
 			$this->user = (logged_in()) ? Visitor::current()->login : "guest" ;
 			$this->caches = INCLUDES_DIR."/caches";
 			$this->path = INCLUDES_DIR."/caches/".sanitize($this->user);
@@ -18,18 +28,10 @@
 			$this->remove_expired();
 		}
 
-		static function __install() {
-			$config = Config::current();
-			$config->set("cache_expire", 1800);
-		}
-
-		static function __uninstall() {
-			$config = Config::current();
-			$config->remove("cache_expire");
-		}
-
 		public function runtime() {
-			if (!file_exists($this->file) or Flash::exists())
+			$this->prepare();
+
+			if ($this->cancelled or !file_exists($this->file) or Flash::exists())
 				return;
 
 			$action = Route::current()->action;

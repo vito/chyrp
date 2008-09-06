@@ -2,6 +2,7 @@
 	/**
 	 * Class: User
 	 * The User model.
+	 *
 	 * See Also:
 	 *     <Model>
 	 */

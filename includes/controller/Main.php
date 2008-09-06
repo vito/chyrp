@@ -223,6 +223,11 @@
 			fallback($_POST['login']);
 			fallback($_POST['password']);
 
+			$trigger = Trigger::current();
+
+			if ($trigger->exists("authenticate"))
+				return $trigger->call("authenticate");
+
 			if (!User::authenticate($_POST['login'], md5($_POST['password'])))
 				if (!count(User::find(array("where" => array("login" => $_POST['login'])))))
 					Flash::warning(__("There is no user with that login name."));
