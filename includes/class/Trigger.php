@@ -33,19 +33,23 @@
 			$arguments = func_get_args();
 			array_shift($arguments);
 
+			$return = null;
+
 			$this->called[$name] = array();
 			if (isset($this->priorities[$name])) { # Predefined priorities?
 				usort($this->priorities[$name], array($this, "cmp"));
 
 				foreach ($this->priorities[$name] as $action) {
-					call_user_func_array($action["function"], $arguments);
+					$return = call_user_func_array($action["function"], $arguments);
 					$this->called[$name][] = $action["function"];
 				}
 			}
 
 			foreach ($modules as $module)
 				if (!in_array(array($module, $name), $this->called[$name]) and is_callable(array($module, $name)))
-					call_user_func_array(array($module, $name), $arguments);
+					$return = call_user_func_array(array($module, $name), $arguments);
+
+			return $return;
 		}
 
 		/**
