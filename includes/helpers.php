@@ -1159,3 +1159,78 @@
 
 		return array($where, $params);
 	}
+
+	/**
+	 * Function: init_extensions
+	 * Initialize all Modules and Feathers and return them as two arrays.
+	 */
+	function init_extensions() {
+		$config = Config::current();
+		$route = Route::current();
+
+		$modules = array();
+		$feathers = array();
+
+		# Load the $modules array.
+		foreach ($config->enabled_modules as $index => $module) {
+			if (!file_exists(MODULES_DIR."/".$module."/".$module.".php")) {
+				unset($config->enabled_modules[$index]);
+				continue;
+			}
+
+			if (file_exists(MODULES_DIR."/".$module."/locale/".$config->locale.".mo"))
+				load_translator($module, MODULES_DIR."/".$module."/locale/".$config->locale.".mo");
+
+			require MODULES_DIR."/".$module."/".$module.".php";
+
+			$camelized = camelize($module);
+			if (!class_exists($camelized))
+				continue;
+
+			$modules[$module] = new $camelized;
+			$modules[$module]->safename = $module;
+
+			if (!ADMIN)
+				continue;
+
+			foreach (YAML::load(MODULES_DIR."/".$module."/info.yaml") as $key => $val)
+				$modules[$module]->$key = (is_string($val)) ? __($val, $module) : $val ;
+		}
+
+		# Load the $feathers array.
+		foreach ($config->enabled_feathers as $index => $feather) {
+			if (!file_exists(FEATHERS_DIR."/".$feather."/".$feather.".php")) {
+				unset($config->enabled_feathers[$index]);
+				continue;
+			}
+
+			if (file_exists(FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo"))
+				load_translator($feather, FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo");
+
+			require FEATHERS_DIR."/".$feather."/".$feather.".php";
+
+			$camelized = camelize($feather);
+			if (!class_exists($camelized))
+				continue;
+
+			$feathers[$feather] = new $camelized;
+			$feathers[$feather]->safename = $feather;
+
+			if (!ADMIN and $route->action != "feed")
+				continue;
+
+			foreach (YAML::load(FEATHERS_DIR."/".$feather."/info.yaml") as $key => $val)
+				$feathers[$feather]->$key = (is_string($val)) ? __($val, $feather) : $val ;
+		}
+
+		# Initialize all modules.
+		foreach ($feathers as $feather)
+			if (method_exists($feather, "__init"))
+				$feather->__init();
+
+		foreach ($modules as $module)
+			if (method_exists($module, "__init"))
+				$module->__init();
+
+		return array($modules, $feathers);
+	}

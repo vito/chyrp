@@ -36,7 +36,7 @@
 
 			$action = Route::current()->action;
 
-			if (in_array($action, array("login", "logout", "register", "lost_password", "controls")))
+			if (!empty($_POST))
 				return;
 
 			if (DEBUG)

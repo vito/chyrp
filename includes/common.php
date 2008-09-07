@@ -130,19 +130,6 @@
 	#     <SQL>
 	require_once INCLUDES_DIR."/class/SQL.php";
 
-	set_timezone($config->timezone);
-
-	$sql->connect();
-
-	sanitize_input($_GET);
-	sanitize_input($_POST);
-	sanitize_input($_COOKIE);
-	sanitize_input($_REQUEST);
-
-	# Set the error handler to exit on error.
-	if (TESTER)
-		set_error_handler("error_panicker");
-
 	# File: Model
 	# See Also:
 	#     <Model>
@@ -232,90 +219,44 @@
 	#     <Feather>
 	require_once INCLUDES_DIR."/interface/Feather.php";
 
-	# Start the session.
+	# Set the timezone for date(), etc.
+	set_timezone($config->timezone);
+
+	# Initialize connection to SQL server.
+	$sql->connect();
+
+	# Sanitize all input depending on magic_quotes_gpc's enabled status.
+	sanitize_input($_GET);
+	sanitize_input($_POST);
+	sanitize_input($_COOKIE);
+	sanitize_input($_REQUEST);
+
+	# Set the error handler to exit on error.
+	if (TESTER)
+		set_error_handler("error_panicker");
+
+	# Begin the session.
 	session();
 
-	# Begin the timer.
+	# Start the timer that keeps track of Chyrp's load time.
 	timer_start();
 
-	# Set the locale to their config.
+	# Set the locale for gettext.
 	set_locale($config->locale);
 
 	# Prepare the notifier.
 	$flash = Flash::current();
 
-	/**
-	 * Array: $feathers
-	 * Contains all of the enabled Feather's Classes.
-	 */
+	# Array: $feathers
+	# Contains all of the enabled Feather's Classes.
 	$feathers = array();
 
-	/**
-	 * Array: $modules
-	 * Contains all of the enabled Module's Classes.
-	 */
+	# Array: $modules
+	# Contains all of the enabled Module's Classes.
 	$modules = array();
 
-	# Load the $feathers array.
-	foreach ($config->enabled_feathers as $index => $feather) {
-		if (!file_exists(FEATHERS_DIR."/".$feather."/".$feather.".php")) {
-			unset($config->enabled_feathers[$index]);
-			continue;
-		}
-
-		if (file_exists(FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo"))
-			load_translator($feather, FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo");
-
-		require FEATHERS_DIR."/".$feather."/".$feather.".php";
-
-		$camelized = camelize($feather);
-		if (!class_exists($camelized))
-			continue;
-
-		$feathers[$feather] = new $camelized;
-		$feathers[$feather]->safename = $feather;
-
-		if (!ADMIN and $route->action != "feed")
-			continue;
-
-		foreach (YAML::load(FEATHERS_DIR."/".$feather."/info.yaml") as $key => $val)
-			$feathers[$feather]->$key = (is_string($val)) ? __($val, $feather) : $val ;
-	}
-
-	# Load the $modules array.
-	foreach ($config->enabled_modules as $index => $module) {
-		if (!file_exists(MODULES_DIR."/".$module."/".$module.".php")) {
-			unset($config->enabled_modules[$index]);
-			continue;
-		}
-
-		if (file_exists(MODULES_DIR."/".$module."/locale/".$config->locale.".mo"))
-			load_translator($module, MODULES_DIR."/".$module."/locale/".$config->locale.".mo");
-
-		require MODULES_DIR."/".$module."/".$module.".php";
-
-		$camelized = camelize($module);
-		if (!class_exists($camelized))
-			continue;
-
-		$modules[$module] = new $camelized;
-		$modules[$module]->safename = $module;
-
-		if (!ADMIN)
-			continue;
-
-		foreach (YAML::load(MODULES_DIR."/".$module."/info.yaml") as $key => $val)
-			$modules[$module]->$key = (is_string($val)) ? __($val, $module) : $val ;
-	}
-
-	# Initialize all modules.
-	foreach ($feathers as $feather)
-		if (method_exists($feather, "__init"))
-			$feather->__init();
-
-	foreach ($modules as $module)
-		if (method_exists($module, "__init"))
-			$module->__init();
+	# Initiate the extensions.
+	list($modules, $feathers) = init_extensions();
 
 	# Parse the clean URL into $_GET actions.
 	$route->determine_action();
@@ -361,7 +302,7 @@
 	}
 
 	if (INDEX or ADMIN)
-		$trigger->call("runtime");
+		$trigger->call(ADMIN ? "admin_runtime" : "runtime");
 
 	# Array: $statuses
 	# An array of post statuses that <Visitor> can view.
