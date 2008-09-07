@@ -45,15 +45,15 @@ class Chyrp < Test::Unit::TestCase
     POSTS.each do |feather, attrs|
       resp, write = get "/admin/?action=write_post&feather="+ feather.to_s
 
-      page = Hpricot(write)
+      page, data = Hpricot(write), attrs.clone
 
       form_fuzz(page/"form").each do |key, val|
-        attrs[key] = val unless attrs.has_key? key
+        data[key] = val unless data.has_key? key
       end
 
-      attrs['feather'] = feather.to_s
+      data['feather'] = feather.to_s
 
-      post (page/"form").attr("action"), attrs
+      post (page/"form").attr("action"), data
     end
   end
 
@@ -61,16 +61,16 @@ class Chyrp < Test::Unit::TestCase
     POSTS.each do |feather, attrs|
       resp, write = get "/admin/?action=write_post&feather="+ feather.to_s
 
-      page = Hpricot(write)
+      page, data = Hpricot(write), attrs.clone
 
       form_fuzz(page/"form").each do |key, val|
-        attrs[key] = val unless attrs.has_key? key
+        data[key] = val unless data.has_key? key
       end
 
-      attrs['feather'] = feather.to_s
-      attrs['draft'] = "true"
+      data['feather'] = feather.to_s
+      data['draft'] = "true"
 
-      post (page/"form").attr("action"), attrs
+      post (page/"form").attr("action"), data
     end
   end
 
