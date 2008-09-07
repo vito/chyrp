@@ -57,11 +57,13 @@
 								<option value="public"${ post.status | option_selected("public") }>${ "Public" | translate }</option>
 								<option value="private"${ post.status | option_selected("private") }>${ "Private" | translate }</option>
 								<option value="registered_only"${ post.status | option_selected("registered_only") }>${ "Registered Only" | translate }</option>
+								{% if groups %}
 								<optgroup label="${ "Group" | translate }">
 									{% for group in groups %}
 									<option value="{$group.id}"${ post.status | option_selected("{"~ group.id ~"}") }>${ group.name | escape }</option>
 									{% endfor %}
 								</optgroup>
+								{% endif %}
 							</select>
 						</p>
 						{% endif %}

@@ -22,7 +22,13 @@
 			$theme_file = THEME_DIR."/forms/feathers/".$post->feather.".php";
 			$default_file = FEATHERS_DIR."/".$post->feather."/fields.php";
 
-			$theme->load("forms/post/edit", array("post" => $post, "feather" => $feathers[$post->feather]));
+			$options = array();
+			Trigger::current()->filter($options, array("edit_post_options", "post_options"), $post);
+
+			$theme->load("forms/post/edit", array("post" => $post,
+			                                      "feather" => $feathers[$post->feather],
+			                                      "options" => $options,
+			                                      "groups" => Group::find(array("order" => "id ASC"))));
 			break;
 
 		case "delete_post":

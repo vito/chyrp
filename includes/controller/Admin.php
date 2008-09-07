@@ -119,6 +119,7 @@
 			$options = array();
 			Trigger::current()->filter($options, array("edit_post_options", "post_options"), $this->context["post"]);
 
+			$this->context["groups"]  = Group::find(array("order" => "id ASC"));
 			$this->context["options"] = $options;
 
 			global $feathers;
