@@ -70,13 +70,16 @@
 			global $modules;
 
 			if (is_array($name))
-				foreach ($name as $index => $filter)
+				foreach ($name as $index => $filter) {
+					$args = func_get_args();
+					$args[1] = $filter;
 					if ($index + 1 == count($name))
-						return $this->filter($target, $filter);
+						return $target = call_user_func_array(array($this, "filter"), $args);
 					else
-						$this->filter($target, $filter);
+						$target = call_user_func_array(array($this, "filter"), $args);
+				}
 
-			if (!isset($modules) or (isset($this->exists[$name]) and !$this->exists[$name]) or !$this->exists($name))
+			if (!isset($modules) or !$this->exists($name))
 				return $target;
 
 			$arguments = func_get_args();
@@ -155,4 +158,5 @@
 			return $instance = (empty($instance)) ? new self() : $instance ;
 		}
 	}
+
 	$trigger = Trigger::current();

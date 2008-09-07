@@ -40,7 +40,7 @@
 		 *     attr - The technical name for the field. Think $post->attr.
 		 *     type - The field type. (text, file, text_block, or select)
 		 *     label - The label for the field.
-		 *     preview - Is this field previewable? (Only use one per feather.)
+		 *     preview - Is this field previewable?
 		 *     optional - Is this field optional?
 		 *     bookmarklet - What to fill this field by in the bookmarklet.
 		 *                   url or page_url - The URL of the page they're viewing when they open the bookmarklet.

@@ -18,7 +18,7 @@
 
 		/**
 		 * Function: __construct
-		 * Loads the Twig parser into <Theme>.
+		 * Loads the Twig parser into <Theme>, and sets up the theme l10n domain.
 		 */
 		private function __construct() {
 			$config = Config::current();

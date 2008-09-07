@@ -387,5 +387,3 @@
 			return $instance = (empty($instance)) ? new self() : $instance ;
 		}
 	}
-
-	$sql = SQL::current();

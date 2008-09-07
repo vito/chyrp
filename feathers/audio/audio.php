@@ -12,14 +12,14 @@
 			                      "bookmarklet" => "selection"));
 
 			$this->setFilter("description", "markup_post_text");
+
 			$this->respondTo("delete_post", "delete_file");
 			$this->respondTo("javascript", "player_js");
 			$this->respondTo("feed_item", "enclose_mp3");
 			$this->respondTo("filter_post", "filter_post");
 			$this->respondTo("admin_write_post", "swfupload");
 			$this->respondTo("admin_edit_post", "swfupload");
-			$this->respondTo("new_post_options", "optional_fields");
-			$this->respondTo("edit_post_options", "optional_fields");
+			$this->respondTo("post_options", "add_option");
 		}
 		public function swfupload($admin, $post = null) {
 			if (isset($post) and $post->feather != "audio" or
@@ -133,15 +133,15 @@ var ap_clearID = setInterval( ap_registerPlayers, 100 );
 
 			return $player;
 		}
-		public function optional_fields($post = null) {
+		public function add_option($options, $post = null) {
 			if (isset($post) and $post->feather != "audio") return;
 			if (!isset($_GET['feather']) and Config::current()->enabled_feathers[0] != "audio" or
 			    isset($_GET['feather']) and $_GET['feather'] != "audio") return;
-?>
-					<p>
-						<label for="from_url"><?php echo __("From URL?", "photo"); ?></label>
-						<input class="text" type="text" name="from_url" value="" id="from_url" />
-					</p>
-<?php
+
+			$options[] = array("attr" => "from_url",
+			                   "label" => __("From URL?", "audio"),
+			                   "type" => "text");
+
+			return $options;
 		}
 	}

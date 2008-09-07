@@ -28,13 +28,18 @@
 			if (empty($config->enabled_feathers))
 				error(__("No Feathers"), __("Please install a feather or two in order to add a post."));
 
+			$options = array();
+			Trigger::current()->filter($options, array("write_post_options", "post_options"));
+
+			$this->context["groups"]  = Group::find(array("order" => "id ASC"));
+			$this->context["options"] = $options;
+
 			fallback($_GET['feather'], $config->enabled_feathers[0]);
 
 			global $feathers;
 
-			$this->context["feathers"]       = $feathers;
-			$this->context["feather"]        = $feathers[$_GET['feather']];
-			$this->context["groups"]         = Group::find(array("order" => "id ASC"));
+			$this->context["feathers"] = $feathers;
+			$this->context["feather"]  = $feathers[$_GET['feather']];
 		}
 
 		/**
@@ -111,7 +116,13 @@
 			if (!$this->context["post"]->editable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this post."));
 
+			$options = array();
+			Trigger::current()->filter($options, array("edit_post_options", "post_options"), $this->context["post"]);
+
+			$this->context["options"] = $options;
+
 			global $feathers;
+
 			$this->context["feather"] = $feathers[$this->context["post"]->feather];
 		}
 
@@ -395,14 +406,21 @@
 
 			if (empty($_POST['password1']) or empty($_POST['password2']))
 				error(__("Error"), __("Password cannot be blank."));
+			elseif ($_POST['password1'] != $_POST['password2'])
+				error(__("Error"), __("Passwords do not match."));
+
 			if (empty($_POST['email']))
 				error(__("Error"), __("E-mail address cannot be blank."));
-			if ($_POST['password1'] != $_POST['password2'])
-				error(__("Error"), __("Passwords do not match."));
-			if (!eregi("^[[:alnum:]][a-z0-9_.-\+]*@[a-z0-9.-]+\.[a-z]{2,6}$",$_POST['email']))
+			elseif (!preg_match("/^[[:alnum:]][a-z0-9_.-\+]*@[a-z0-9.-]+\.[a-z]{2,6}$/i", $_POST['email']))
 				error(__("Error"), __("Unsupported e-mail address."));
 
-			User::add($_POST['login'], $_POST['password1'], $_POST['email'], $_POST['full_name'], $_POST['website'], null, $_POST['group']);
+			User::add($_POST['login'],
+			          $_POST['password1'],
+			          $_POST['email'],
+			          $_POST['full_name'],
+			          $_POST['website'],
+			          null,
+			          $_POST['group']);
 
 			Flash::notice(__("User added."), "/admin/?action=manage_users");
 		}
@@ -1926,4 +1944,5 @@
 			return $instance = (empty($instance)) ? new self() : $instance ;
 		}
 	}
+
 	$admin = AdminController::current();

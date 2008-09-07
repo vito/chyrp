@@ -49,19 +49,24 @@
 <?php
 		}
 
-		public function edit_post_options($post) {
+		public function post_options($fields, $post = null) {
 			$tags = self::list_tags();
-?>
-					<p>
-						<label for="tags"><?php echo __("Tags", "tags"); ?> <span class="sub"><?php echo __("(comma separated)", "tags"); ?></span></label>
-						<input class="text" type="text" name="tags" value="<?php echo implode(", ", self::unlinked_tags($post->unclean_tags)) ?>" id="tags" />
-						<span class="tags_select">
-<?php foreach ($tags as $tag): ?>
-							<a href="javascript:add_tag('<?php echo addslashes($tag["name"]); ?>', '.tag_<?php echo addslashes($tag["url"]); ?>')" class="tag_<?php echo $tag["url"]; ?>"><?php echo $tag["name"]; ?></a>
-<?php endforeach; ?>
-						</span>
-					</p>
-<?php
+
+			$selector = '<span class="tags_select">'."\n";
+
+			foreach (array_reverse($tags) as $tag)
+				$selector.= "\t\t\t\t\t\t\t\t".'<a href="javascript:add_tag(\''.addslashes($tag["name"]).'\', \'.tag_'.addslashes($tag["url"]).'\')" class="tag_'.$tag["url"].'">'.$tag["name"].'</a>'."\n";
+
+			$selector.= "\t\t\t\t\t\t\t</span>";
+
+			$fields[] = array("attr" => "tags",
+			                  "label" => __("Tags", "tags"),
+			                  "note" => __("(comma separated)", "tags"),
+			                  "type" => "text",
+			                  "value" => ($post ? implode(", ", self::unlinked_tags($post->unclean_tags)) : ""),
+			                  "extra" => $selector);
+
+			return $fields;
 		}
 
 		public function bookmarklet_submit_values($values) {

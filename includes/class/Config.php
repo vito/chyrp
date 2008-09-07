@@ -111,4 +111,3 @@
 			return $instance = (empty($instance)) ? new self() : $instance ;
 		}
 	}
-	$config = Config::current();

@@ -44,6 +44,7 @@
 
 if (!defined('TWIG_BASE'))
 	define('TWIG_BASE', dirname(__FILE__) . '/Twig');
+
 define('TWIG_VERSION', '0.1-dev');
 
 

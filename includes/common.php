@@ -81,10 +81,6 @@
 	# Absolute path to /themes
 	define('THEMES_DIR', MAIN_DIR."/themes");
 
-	# Not installed?
-	if (!file_exists(INCLUDES_DIR."/config.yaml.php"))
-		redirect("install.php");
-
 	# Set error reporting levels, and headers for Chyrp's JS files.
 	if (JAVASCRIPT) {
 		error_reporting(0);
@@ -219,6 +215,23 @@
 	#     <Feather>
 	require_once INCLUDES_DIR."/interface/Feather.php";
 
+	# Set the error handler to exit on error if this is being run from the tester.
+	if (TESTER)
+		set_error_handler("error_panicker");
+
+	# Redirect to the installer if there is no config.
+	if (!file_exists(INCLUDES_DIR."/config.yaml.php"))
+		redirect("install.php");
+
+	# Start the timer that keeps track of Chyrp's load time.
+	timer_start();
+
+	# Load the config settings.
+	$config = Config::current();
+
+	# Prepare the SQL interface.
+	$sql = SQL::current();
+
 	# Set the timezone for date(), etc.
 	set_timezone($config->timezone);
 
@@ -231,15 +244,8 @@
 	sanitize_input($_COOKIE);
 	sanitize_input($_REQUEST);
 
-	# Set the error handler to exit on error.
-	if (TESTER)
-		set_error_handler("error_panicker");
-
 	# Begin the session.
 	session();
-
-	# Start the timer that keeps track of Chyrp's load time.
-	timer_start();
 
 	# Set the locale for gettext.
 	set_locale($config->locale);

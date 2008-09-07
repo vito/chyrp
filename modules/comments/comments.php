@@ -166,33 +166,26 @@
 			Flash::notice(__("All spam deleted.", "comments"), "/admin/?action=manage_spam");
 		}
 
-		static function new_post_options() {
-?>
-					<p>
-						<label for="comment_status"><?php echo __("Comment Status", "comments"); ?></label>
-						<select name="option[comment_status]" id="comment_status">
-							<option value="open"><?php echo __("Open", "comments"); ?></option>
-							<option value="closed"><?php echo __("Closed", "comments"); ?></option>
-							<option value="private"><?php echo __("Private"); ?></option>
-							<option value="registered_only"><?php echo __("Registered Only"); ?></option>
-						</select>
-					</p>
-<?php
-		}
-
-		static function edit_post_options($post) {
+		public function post_options($fields, $post = null) {
 			fallback($post->comment_status, "open");
-?>
-					<p>
-						<label for="comment_status"><?php echo __("Comment Status", "comments"); ?></label>
-						<select name="option[comment_status]" id="comment_status">
-							<option value="open"<?php selected($post->comment_status, "open"); ?>><?php echo __("Open", "comments"); ?></option>
-							<option value="closed"<?php selected($post->comment_status, "closed"); ?>><?php echo __("Closed", "comments"); ?></option>
-							<option value="private"<?php selected($post->comment_status, "private"); ?>><?php echo __("Private"); ?></option>
-							<option value="registered_only"<?php selected($post->comment_status, "registered_only"); ?>><?php echo __("Registered Only", "comments"); ?></option>
-						</select>
-					</p>
-<?php
+
+			$fields[] = array("attr" => "option[comment_status]",
+			                  "label" => __("Comment Status", "comments"),
+			                  "type" => "select",
+			                  "options" => array(array("name" => __("Open", "comments"),
+			                                           "value" => "open",
+			                                           "selected" => ($post ? $post->comment_status == "open" : true)),
+			                                     array("name" => __("Closed", "comments"),
+			                                           "value" => "closed",
+			                                           "selected" => ($post ? $post->comment_status == "closed" : false)),
+			                                     array("name" => __("Private", "comments"),
+			                                           "value" => "private",
+			                                           "selected" => ($post ? $post->comment_status == "private" : false)),
+			                                     array("name" => __("Registered Only", "comments"),
+			                                           "value" => "registered_only",
+			                                           "selected" => ($post ? $post->comment_status == "registered_only" : false))));
+
+			return $fields;
 		}
 
 		static function trackback_receive($url, $title, $excerpt, $blog_name) {

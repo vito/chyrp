@@ -46,10 +46,6 @@
 		# Contains an associative array of URL key to value arguments if we're viewing a post.
 		public $post_url_attrs = array();
 
-		/**
-		 * Function: __construct
-		 * Filters the key => val code so that modules may extend it.
-		 */
 		private function __construct() {}
 
 		/**
@@ -364,4 +360,5 @@
 			return $instance = (empty($instance)) ? new self() : $instance ;
 		}
 	}
+
 	$route = Route::current();
