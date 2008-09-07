@@ -9,6 +9,12 @@
 
 			$post = new Post($_POST['id'], array("filter" => false, "drafts" => true));
 
+			if ($post->no_results) {
+				header("HTTP/1.1 404 Not Found");
+				$trigger->call("not_found");
+				exit;
+			}
+
 			if (!$post->editable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit posts."));
 
@@ -21,6 +27,13 @@
 
 		case "delete_post":
 			$post = new Post($_POST['id'], array("drafts" => true));
+
+			if ($post->no_results) {
+				header("HTTP/1.1 404 Not Found");
+				$trigger->call("not_found");
+				exit;
+			}
+
 			if (!$post->deletable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this post."));
 
