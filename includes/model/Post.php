@@ -36,7 +36,7 @@
 			if (!XML_RPC) {
 				$visitor = Visitor::current();
 				$private = (isset($options["drafts"]) and $options["drafts"] and $visitor->group()->can("view_draft")) ?
-				               str_replace("')", "', 'draft')", self::$private) :
+				               str_replace("') OR", "', 'draft') OR", self::$private) :
 				               self::$private;
 
 				$options["where"][] = self::$enabled_feathers;
@@ -76,7 +76,7 @@
 			if (!XML_RPC) {
 				$visitor = Visitor::current();
 				$private = (isset($options["drafts"]) and $options["drafts"] and $visitor->group()->can("view_draft")) ?
-				               str_replace("')", "', 'draft')", self::$private) :
+				               str_replace("') OR", "', 'draft') OR", self::$private) :
 				               self::$private ;
 
 				$options["where"][] = self::$enabled_feathers;

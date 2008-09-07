@@ -203,7 +203,10 @@
 			}
 		}
 
-		public function check_viewing_page($i_have_the_power = false) {
+		public function check_viewing_page() {
+			if (!INDEX)
+				return;
+
 			global $page;
 
 			$config = Config::current();
@@ -220,11 +223,14 @@
 				foreach ($valids as $page)
 					if ($page->url == end($this->arg))
 						return list($_GET['url'], $this->action) = array($page->url, "page");
-			} elseif ($i_have_the_power)
+			} elseif (!preg_match("/^\((clean|url)\)\/?$/", $config->post_url)) # This is the last route parse.
 				return $this->action = fallback($this->arg[0], "index");
 		}
 
-		public function check_viewing_post($i_have_the_power = false) {
+		public function check_viewing_post() {
+			if (!INDEX)
+				return;
+
 			$config = Config::current();
 
 			if (!empty($this->action))
@@ -259,11 +265,14 @@
 					return $this->action = "view";
 			}
 
-			if ($i_have_the_power)
+			if (preg_match("/^\((clean|url)\)\/?$/", $config->post_url)) # This is the last route parse.
 				return $this->action = fallback($this->arg[0], "index");
 		}
 
 		public function check_custom_routes() {
+			if (!INDEX)
+				return;
+
 			$config = Config::current();
 
 			# Custom pages added by Modules, Feathers, Themes, etc.

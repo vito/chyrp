@@ -52,11 +52,16 @@
 							<label for="status">${ "Status" | translate }</label>
 							<select name="status" id="status">
 {% if route.action == "edit_post" %}
-								<option value="draft"{% if post.status == "draft" %} selected="selected"{% endif %}>${ "Draft" | translate }</option>
+								<option value="draft"${ post.status | option_selected("draft") }>${ "Draft" | translate }</option>
 {% endif %}
-								<option value="public"{% if post.status == "public" %} selected="selected"{% endif %}>${ "Public" | translate }</option>
-								<option value="private"{% if post.status == "private" %} selected="selected"{% endif %}>${ "Private" | translate }</option>
-								<option value="registered_only"{% if post.status == "registered_only" %} selected="selected"{% endif %}>${ "Registered Only" | translate }</option>
+								<option value="public"${ post.status | option_selected("public") }>${ "Public" | translate }</option>
+								<option value="private"${ post.status | option_selected("private") }>${ "Private" | translate }</option>
+								<option value="registered_only"${ post.status | option_selected("registered_only") }>${ "Registered Only" | translate }</option>
+								<optgroup label="${ "Group" | translate }">
+									{% for group in groups %}
+									<option value="{$group.id}"${ post.status | option_selected("{"~ group.id ~"}") }>${ group.name | escape }</option>
+									{% endfor %}
+								</optgroup>
 							</select>
 						</p>
 						{% endif %}

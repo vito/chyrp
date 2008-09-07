@@ -1,4 +1,14 @@
 <?php
+	# File: Query
+	# See Also:
+	#     <Query>
+	require_once INCLUDES_DIR."/class/Query.php";
+
+	# File: QueryBuilder
+	# See Also:
+	#     <QueryBuilder>
+	require_once INCLUDES_DIR."/class/QueryBuilder.php";
+
 	/**
 	 * Class: SQL
 	 * Contains the database settings and functions for interacting with the SQL database.
@@ -298,21 +308,24 @@
 		 * Escapes a string, escaping things like $1 and C:\foo\bar so that they don't get borked by the preg_replace.
 		 * This also handles calling the SQL connection method's "escape_string" functions.
 		 */
-		public function escape($string) {
+		public function escape($string, $quotes = true) {
 			switch(SQL::current()->method()) {
 				case "pdo":
-					$string = $this->db->quote($string);
+					$string = ltrim(rtrim($this->db->quote($string), "'"), "'");
 					break;
 				case "mysqli":
-					$string = "'".$this->db->escape_string($string)."'";
+					$string = $this->db->escape_string($string);
 					break;
 				case "mysql":
-					$string = "'".mysql_real_escape_string($string)."'";
+					$string = mysql_real_escape_string($string);
 					break;
 			}
 
 			$string = str_replace('\\', '\\\\', $string);
 			$string = str_replace('$', '\$', $string);
+
+			if ($quotes)
+				$string = "'".$string."'";
 
 			return $string;
 		}

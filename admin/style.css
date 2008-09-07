@@ -989,4 +989,7 @@ img.smiley {
 	font-weight: bold;
 	color: #bbb;
 }
+.group_prefix {
+	color: #999;
+}
 /* @end */

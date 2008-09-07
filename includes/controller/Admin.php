@@ -34,6 +34,7 @@
 
 			$this->context["feathers"]       = $feathers;
 			$this->context["feather"]        = $feathers[$_GET['feather']];
+			$this->context["groups"]         = Group::find(array("order" => "id ASC"));
 		}
 
 		/**
@@ -87,6 +88,9 @@
 			global $feathers;
 
 			$post = $feathers[$_POST['feather']]->submit();
+
+			if (!$post->redirect)
+				$post->redirect = "/admin/?action=write_post";
 
 			if (!isset($_POST['bookmarklet']))
 				Flash::notice(__("Post created!"), $post->redirect);
@@ -194,6 +198,25 @@
 			                                                         "drafts" => true,
 			                                                         "where" => $where,
 			                                                         "params" => $params)), 25);
+
+			foreach ($this->context["posts"]->paginated as &$post) {
+				if (preg_match_all("/\{([0-9]+)\}/", $post->status, $matches)) {
+					$groups = array();
+					$groupClasses = array();
+
+					foreach ($matches[1] as $id) {
+						$group = new Group($id);
+						$groups[] = "<span class=\"group_prefix\">Group:</span> ".$group->name;
+						$groupClasses[] = "group-".$id;
+					}
+
+					$post->status_name = join(", ", $groups);
+					$post->status_class = join(" ", $groupClasses);
+				} else {
+					$post->status_name = camelize($post->status, true);
+					$post->status_class = $post->status;
+				}
+			}
 		}
 
 		/**

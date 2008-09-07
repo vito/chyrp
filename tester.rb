@@ -3,6 +3,9 @@ require "net/http"
 require "rubygems"
 require "hpricot"
 
+`rm -Rfv uploads/*`
+`mysql -f --user=root -D chyrp -e 'TRUNCATE TABLE chyrp_posts; TRUNCATE TABLE chyrp_pages; TRUNCATE TABLE chyrp_comments; TRUNCATE TABLE chyrp_tags;' > /dev/null`
+
 FUZZER = {
   :textarea => "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam urna. Vivamus nisl. Mauris iaculis rutrum elit. Cras ornare congue mi. Nullam mi quam, luctus dapibus, euismod ut, dapibus sed, dui. Praesent est lectus, rutrum ac, blandit vitae, hendrerit at, massa. Morbi mauris purus, lobortis vel, commodo vitae, aliquet vehicula, ante. Nunc commodo. Pellentesque vel lacus. Quisque eros. Maecenas et quam. Curabitur eget justo a ante dignissim dapibus. Sed et lacus. Suspendisse potenti. Vivamus ipsum mi, blandit vitae, scelerisque a, pellentesque vitae, nisl. Donec vitae est et est egestas laoreet. Vestibulum commodo elit ut nisl. Nullam volutpat nisi non elit. Morbi sapien eros, ornare et, dapibus id, mattis id, nibh. Suspendisse ut nisl id est scelerisque faucibus.\n\nPraesent viverra felis nec justo. Duis gravida tempor massa. Aliquam lobortis tortor eu purus. Phasellus volutpat, justo eget molestie rhoncus, nibh tortor suscipit justo, non vehicula tortor tortor id sapien. Vivamus quis nisl et neque ullamcorper viverra. Vestibulum accumsan, elit luctus auctor fermentum, lorem tellus dignissim odio, a lobortis magna nulla eget arcu. Phasellus vel erat at dolor sagittis luctus. Nulla facilisi. In eros eros, molestie sit amet, ornare a, fermentum et, dui. Vivamus vel turpis quis diam iaculis dapibus. Nunc lacinia. Integer commodo, urna interdum imperdiet pretium, libero nulla pellentesque turpis, in ultrices neque tortor at arcu. Sed mollis odio eget mauris ultricies bibendum. Vivamus malesuada metus vel arcu. Nam sit amet metus. Pellentesque quis felis non nibh adipiscing adipiscing.",
   :text => "Test Input"
@@ -17,29 +20,64 @@ HEADERS = {
   "User-Agent" => "tester.rb"
 }
 
+POSTS = {
+  :text => {
+    "title" => "Test Text Post",
+    "body" => FUZZER[:textarea]
+  },
+  :quote => {
+    "quote" => FUZZER[:textarea].split(". ")[0] + ".",
+    "source" => "Chyrp Tester"
+  },
+  :chat => {
+    "title" => "Test Chat Post",
+    "dialogue" => "Person: Hi!\nMe (me): Hello!\nPerson: How are you?\nMe: Great, thanks! And you?\nPerson: FUCKING AWESOME."
+  },
+  :link => {
+    "name" => "Google Search",
+    "source" => "http://google.com/",
+    "description" => "I can't believe how long I've gone without finding this site."
+  }
+}
+
 class Chyrp < Test::Unit::TestCase
   def test_add_post
-    resp, write = get "/admin/?action=write_post"
+    POSTS.each do |feather, attrs|
+      resp, write = get "/admin/?action=write_post&feather="+ feather.to_s
 
-    page = Hpricot(write)
+      page = Hpricot(write)
 
-    post (page/"form").attr("action"), form_fuzz(page/"form")
+      form_fuzz(page/"form").each do |key, val|
+        attrs[key] = val unless attrs.has_key? key
+      end
+
+      attrs['feather'] = feather.to_s
+
+      post (page/"form").attr("action"), attrs
+    end
   end
 
   def test_add_draft
-    resp, write = get "/admin/?action=write_post"
+    POSTS.each do |feather, attrs|
+      resp, write = get "/admin/?action=write_post&feather="+ feather.to_s
 
-    page = Hpricot(write)
+      page = Hpricot(write)
 
-    data = form_fuzz(page/"form")
-    data['draft'] = "true"
+      form_fuzz(page/"form").each do |key, val|
+        attrs[key] = val unless attrs.has_key? key
+      end
 
-    post (page/"form").attr("action"), data
+      attrs['feather'] = feather.to_s
+      attrs['draft'] = "true"
+
+      post (page/"form").attr("action"), attrs
+    end
   end
 
   def test_view_post
     resp, page = test_index
     page = Hpricot(page)
+    return unless page =~ /class="post /
 
     post_url = (page/".post:first/h2/a").attr("href")
 
@@ -58,7 +96,10 @@ class Chyrp < Test::Unit::TestCase
     resp, page = test_index
     page = Hpricot(page)
 
-    page_url = (page/"#sidebar/ul:nth(0)/li:nth(0)/a").attr("href")
+    first_page = (page/"#sidebar/ul:nth(0)/li:nth(0)/a")
+    return unless first_page
+
+    page_url = first_page.attr("href")
 
     get page_url
   end
@@ -125,6 +166,7 @@ class Chyrp < Test::Unit::TestCase
 
   def test_pagination
     resp, page = get("/page/2/")
+    return unless page =~ /class="post /
     assert_match /Page 2 of /, page, "No pagination links displayed."
   end
 
@@ -174,33 +216,16 @@ class Chyrp < Test::Unit::TestCase
     end
 
     def form_fuzz form
-      data = {}
+      data = form_get form
 
       (form/"*[@name]").each do |field|
-        if field['type'] == "hidden" or (field.name != "textarea" and field['value'] != "") or (field.name == "textarea" and !field.empty?)
-          if field.name == "select"
-            selected = (field/"option[@selected]")
-            option = selected.length > 0 ? selected : (field/"option:nth(0)")
-            data[field['name']] = option.attr("value")
-          elsif field.name != "button"
-            if field['type'] == "checkbox"
-              data[field['name']] = (field['checked'] || "no") == "checked" ? "1" : "0"
-            else
-              data[field['name']] = field['value'] || field.html
-            end
-          end
-          next
-        end
+        next unless data[field['name']].nil? or data[field['name']].empty?
 
         if field.name == "textarea"
           data[field['name']] = FUZZER[:textarea]
         elsif field.name == "input"
-          next if field['name'] == "trackbacks"
-          if field['name'] == "slug"
-            data[field['name']] = "test-slug"
-          else
-            data[field['name']] = FUZZER[:text]
-          end
+          next if field['type'] != "text" or field['name'] == "trackbacks" or field['name'] == "slug"
+          data[field['name']] = FUZZER[:text]
         end
       end
 

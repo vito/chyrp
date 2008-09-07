@@ -23,7 +23,7 @@
 
 	# Constant: DEBUG
 	# Should Chyrp use debugging processes?
-	define('DEBUG', false);
+	define('DEBUG', true);
 
 	# Fallback all these definitions.
 	if (!defined('JAVASCRIPT')) define('JAVASCRIPT', false);
@@ -87,16 +87,20 @@
 	if (!file_exists(INCLUDES_DIR."/config.yaml.php"))
 		redirect("install.php");
 
-	require_once INCLUDES_DIR."/class/Query.php";
-	require_once INCLUDES_DIR."/class/QueryBuilder.php";
-	require_once INCLUDES_DIR."/lib/YAML.php";
-
-	require_once INCLUDES_DIR."/class/Config.php";
-	require_once INCLUDES_DIR."/class/SQL.php";
-
-	# Translation stuff
+	# Libraries
 	require_once INCLUDES_DIR."/lib/gettext/gettext.php";
 	require_once INCLUDES_DIR."/lib/gettext/streams.php";
+	require_once INCLUDES_DIR."/lib/YAML.php";
+
+	# File: Config
+	# See Also:
+	#     <Config>
+	require_once INCLUDES_DIR."/class/Config.php";
+
+	# File: SQL
+	# See Also:
+	#     <SQL>
+	require_once INCLUDES_DIR."/class/SQL.php";
 
 	set_timezone($config->timezone);
 
@@ -287,6 +291,7 @@
 	                         !empty($_GET['action']) and
 	                         $_GET['action'] == "theme_preview" and
 	                         !empty($_GET['theme'])));
+
 	$theme = PREVIEWING ? $_GET['theme'] : $config->theme;
 
 	# Constant: THEME_DIR
@@ -304,20 +309,18 @@
 
 	header("Content-type: ".(INDEX ? fallback($theme->type, "text/html") : "text/html")."; charset=UTF-8");
 
-	if (INDEX) {
-		$route->check_custom_routes();
+	$route->check_custom_routes();
 
-		# If the post viewing URL is the same as the page viewing URL, check for viewing a page first.
-		if (preg_match("/^\((clean|url)\)\/?$/", $config->post_url)) {
-			$route->check_viewing_page();
-			$route->check_viewing_post(true);
-		} else {
-			$route->check_viewing_page(true);
-			$route->check_viewing_post();
-		}
+	# If the post viewing URL is the same as the page viewing URL, check for viewing a page first.
+	if (preg_match("/^\((clean|url)\)\/?$/", $config->post_url)) {
+		$route->check_viewing_page();
+		$route->check_viewing_post();
+	} else {
+		$route->check_viewing_post();
+		$route->check_viewing_page();
+	}
 
-		$trigger->call("runtime");
-	} elseif (ADMIN)
+	if (INDEX or ADMIN)
 		$trigger->call("runtime");
 
 	# Array: $statuses
@@ -329,7 +332,8 @@
 	if ($visitor->group()->can("view_private"))
 		$statuses[] = "private";
 
-	Post::$private = "status IN ('".implode("', '", $statuses)."')";
+	Post::$private = "(status IN ('".implode("', '", $statuses)."') OR".
+	                 " status LIKE '%{".$visitor->group()->id."}%')";
 	Post::$enabled_feathers = "feather IN ('".implode("', '", $config->enabled_feathers)."')";
 
 	# Load the translation engine
