@@ -39,4 +39,3 @@
 	}
 
 	update_tags_structure();
-?>

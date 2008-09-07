@@ -4,6 +4,14 @@
 			$this->setField(array("attr" => "photo",
 			                      "type" => "file",
 			                      "label" => __("Photo", "photo")));
+
+			if (isset($_GET['action']) and $_GET['action'] == "bookmarklet")
+				$this->setField(array("attr" => "from_url",
+				                      "type" => "text",
+				                      "label" => __("From URL?", "photo"),
+				                      "optional" => true,
+				                      "no_value" => true));
+
 			$this->setField(array("attr" => "caption",
 			                      "type" => "text_block",
 			                      "label" => __("Caption", "photo"),
@@ -44,7 +52,8 @@
 		}
 		public function swfupload($admin, $post = null) {
 			if (isset($post) and $post->feather != "photo" or
-			    isset($_GET['feather']) and $_GET['feather'] != "photo") return;
+			    isset($_GET['feather']) and $_GET['feather'] != "photo")
+				return;
 
 			Trigger::current()->call("prepare_swfupload", "photo", "*.jpg;*.jpeg;*.png;*.gif;*.bmp");
 		}

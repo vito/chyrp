@@ -13,4 +13,3 @@
 	Config::fallback("enable_reload_comments", false);
 
 	add_signature_updated_at();
-?>

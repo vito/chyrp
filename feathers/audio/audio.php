@@ -4,6 +4,14 @@
 			$this->setField(array("attr" => "audio",
 			                      "type" => "file",
 			                      "label" => __("MP3 File", "audio")));
+
+			if (isset($_GET['action']) and $_GET['action'] == "bookmarklet")
+				$this->setField(array("attr" => "from_url",
+				                      "type" => "text",
+				                      "label" => __("From URL?", "audio"),
+				                      "optional" => true,
+				                      "no_value" => true));
+
 			$this->setField(array("attr" => "description",
 			                      "type" => "text_block",
 			                      "label" => __("Description", "audio"),
@@ -23,7 +31,9 @@
 		}
 		public function swfupload($admin, $post = null) {
 			if (isset($post) and $post->feather != "audio" or
-			    isset($_GET['feather']) and $_GET['feather'] != "audio") return;
+			    isset($_GET['feather']) and $_GET['feather'] != "audio")
+				return;
+
 			Trigger::current()->call("prepare_swfupload", "audio", "*.mp3");
 		}
 		public function submit() {
