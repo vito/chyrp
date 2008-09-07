@@ -21,8 +21,11 @@
 		 * Loads the Twig parser into <Theme>.
 		 */
 		private function __construct() {
-			$visitor = Visitor::current();
 			$config = Config::current();
+
+			# Load the theme translator
+			if (file_exists(THEME_DIR."/locale/".$config->locale.".mo"))
+				load_translator("theme", THEME_DIR."/locale/".$config->locale.".mo");
 
 			$this->url = THEME_URL;
 
