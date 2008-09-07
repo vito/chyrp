@@ -4,11 +4,6 @@
 			$this->setField(array("attr" => "audio",
 			                      "type" => "file",
 			                      "label" => __("MP3 File", "audio")));
-			$this->setField(array("attr" => "from_url",
-			                      "type" => "text",
-			                      "label" => __("From URL?", "audio"),
-			                      "optional" => true,
-			                      "no_value" => true));
 			$this->setField(array("attr" => "description",
 			                      "type" => "text_block",
 			                      "label" => __("Description", "audio"),
@@ -23,6 +18,8 @@
 			$this->respondTo("filter_post", "filter_post");
 			$this->respondTo("admin_write_post", "swfupload");
 			$this->respondTo("admin_edit_post", "swfupload");
+			$this->respondTo("new_post_options", "optional_fields");
+			$this->respondTo("edit_post_options", "optional_fields");
 		}
 		public function swfupload($admin, $post = null) {
 			if (isset($post) and $post->feather != "audio" or
@@ -135,5 +132,16 @@ var ap_clearID = setInterval( ap_registerPlayers, 100 );
 			$player.= '</object>'."\n";
 
 			return $player;
+		}
+		public function optional_fields($post = null) {
+			if (isset($post) and $post->feather != "audio") return;
+			if (!isset($_GET['feather']) and Config::current()->enabled_feathers[0] != "audio" or
+			    isset($_GET['feather']) and $_GET['feather'] != "audio") return;
+?>
+					<p>
+						<label for="from_url"><?php echo __("From URL?", "photo"); ?></label>
+						<input class="text" type="text" name="from_url" value="" id="from_url" />
+					</p>
+<?php
 		}
 	}

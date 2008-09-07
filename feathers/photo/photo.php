@@ -4,11 +4,6 @@
 			$this->setField(array("attr" => "photo",
 			                      "type" => "file",
 			                      "label" => __("Photo", "photo")));
-			$this->setField(array("attr" => "from_url",
-			                      "type" => "text",
-			                      "label" => __("From URL?", "photo"),
-			                      "optional" => true,
-			                      "no_value" => true));
 			$this->setField(array("attr" => "caption",
 			                      "type" => "text_block",
 			                      "label" => __("Caption", "photo"),
@@ -19,8 +14,8 @@
 			$this->setFilter("caption", "markup_post_text");
 			$this->respondTo("delete_post", "delete_file");
 			$this->respondTo("filter_post", "filter_post");
-			$this->respondTo("new_post_options", "alt_text_field");
-			$this->respondTo("edit_post_options", "alt_text_field");
+			$this->respondTo("new_post_options", "optional_fields");
+			$this->respondTo("edit_post_options", "optional_fields");
 			$this->respondTo("admin_write_post", "swfupload");
 			$this->respondTo("admin_edit_post", "swfupload");
 
@@ -111,7 +106,7 @@
 			$config = Config::current();
 			return '<a href="'.fallback($post->source, $config->chyrp_url.$config->uploads_path.$filename, true).'"><img src="'.$config->chyrp_url.'/includes/thumb.php?file=..'.$config->uploads_path.urlencode($filename).'&amp;max_width='.$max_width.'&amp;max_height='.$max_height.'&amp;'.$more_args.'" alt="'.fallback($post->alt_text, $filename, true).'" /></a>';
 		}
-		public function alt_text_field($post = null) {
+		public function optional_fields($post = null) {
 			if (isset($post) and $post->feather != "photo") return;
 			if (!isset($_GET['feather']) and Config::current()->enabled_feathers[0] != "photo" or
 			    isset($_GET['feather']) and $_GET['feather'] != "photo") return;
@@ -119,6 +114,10 @@
 					<p>
 						<label for="option_alt_text"><?php echo __("Alt-Text", "photo"); ?></label>
 						<input class="text" type="text" name="option[alt_text]" value="<?php echo fix(fallback($post->alt_text, "", true)); ?>" id="alt_text" />
+					</p>
+					<p>
+						<label for="from_url"><?php echo __("From URL?", "photo"); ?></label>
+						<input class="text" type="text" name="from_url" value="" id="from_url" />
 					</p>
 <?php
 		}
