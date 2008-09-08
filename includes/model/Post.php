@@ -180,17 +180,18 @@
 				             array("clean" => $feather.".".$id,
 				                   "url" => $feather.".".$id));
 
+			$post = new self($id, array("drafts" => true));
+
 			if ($trackbacks !== "") {
 				$trackbacks = explode(",", $trackbacks);
 				$trackbacks = array_map("trim", $trackbacks);
 				$trackbacks = array_map("strip_tags", $trackbacks);
 				$trackbacks = array_unique($trackbacks);
 				$trackbacks = array_diff($trackbacks, array(""));
-				foreach ($trackbacks as $url)
-					trackback_send($id, $url);
-			}
 
-			$post = new self($id, array("drafts" => true));
+				foreach ($trackbacks as $url)
+					trackback_send($post, $url);
+			}
 
 			if (Config::current()->send_pingbacks and $pingbacks)
 				array_walk_recursive($values, array("Post", "send_pingbacks"), $post);
