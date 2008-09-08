@@ -884,7 +884,7 @@
 		$trimmed = trim($string);
 		$newlines = str_replace("\n\n", " ", $trimmed);
 		$newlines = str_replace("\n", "", $newlines);
-		$normalized = preg_replace("/\s+/", " ", $newlines);
+		$normalized = preg_replace("/[\s\n\r\t]+/", " ", $newlines);
 		return $normalized;
 	}
 

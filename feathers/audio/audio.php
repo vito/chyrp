@@ -116,8 +116,7 @@ function ap_registerPlayers() {
 var ap_clearID = setInterval( ap_registerPlayers, 100 );
 <?php
 		}
-		public function enclose_mp3($id) {
-			$post = new Post($id);
+		public function enclose_mp3($post) {
 			$config = Config::current();
 			if ($post->feather != "audio" or !file_exists(MAIN_DIR.$config->uploads_path.$post->filename))
 				return;

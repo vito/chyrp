@@ -47,55 +47,41 @@
 		#
 		public function pingback_ping($args) {
 			$config = Config::current();
+
 			$linked_from = str_replace('&amp;', '&', $args[0]);
 			$linked_to   = str_replace('&amp;', '&', $args[1]);
-			$post_url    = str_replace($config->url, "", $linked_to);
-			$url         = extract(parse_url($linked_to));
 
 			$cleaned_url = str_replace(array("http://www.", "http://"), "", $config->url);
 
 			if ($linked_to == $linked_from)
 				return new IXR_ERROR(0, __("The from and to URLs cannot be the same."));
 
-			if(!strpos($linked_to, $cleaned_url))
+			if (!substr_count($linked_to, $cleaned_url))
 				return new IXR_Error(0, __("There doesn't seem to be a valid link in your request."));
 
-			if (!$config->clean_urls) {
-				# Figure out what they're grabbing by
-				$count = 0;
-				$get = array();
-				$queries = explode("&", $query);
-				foreach ($queries as $query) {
-					list($key, $value) = explode("=", $query);
-					$get[$count]["key"] = $key;
-					$get[$count]["value"] = $value;
-					$count++;
-				}
-				$where = $get[1]["key"]." = :val";
-				$params = array(":val" => $get[1]["value"]);
-			} else {
-				$route = Route::current();
-				$where = substr($route->parse_url_to_sql($linked_to, $post_url), 0, -4);
-				$params = array();
-			}
+			if (preg_match("/url=([^&#]+)/", $linked_to, $url))
+				$post = new Post(null, array("where" => array("url" => $url[1])));
+			else
+				$post = Route::current()->check_viewing_post($linked_to);
 
-			$id = SQL::current()->select("posts", "id", $where, null, $params)->fetchColumn();
-			if (!Post::exists($id))
+			if (!$post)
 				return new IXR_Error(33, __("I can't find a post from that URL."));
 
 			# Wait for the "from" server to publish
 			sleep(1);
 
-			extract(parse_url($linked_from), EXTR_SKIP);
-			if (!isset($host)) return false;
+			$from = parse_url($linked_from);
 
-			if (!isset($scheme) or !in_array($scheme, array("http")))
+			if (empty($from["host"]))
+				return false;
+
+			if (empty($from["scheme"]) or $from["scheme"] != "http")
 				$linked_from = "http://".$linked_from;
 
-			# Connect
+			# Grab the page that linked here.
 			$content = get_remote($linked_from);
 
-			$content = str_replace("<!DOC", "<DOC", $content);
+			# Get the title of the page.
 			preg_match("/<title>([^<]+)<\/title>/i", $content, $title);
 			$title = $title[1];
 
@@ -104,17 +90,26 @@
 
 			$content = strip_tags($content, "<a>");
 
-			preg_match("|<a[^>]+?".preg_quote($linked_to)."[^>]*>([^>]+?)</a>|", $content, $context);
-			$context[1] = truncate($context[1], 100, false);
-			$excerpt = str_replace($context[0], $context[1], $content);
-			$excerpt = strip_tags($excerpt);
-			$excerpt = preg_replace("|.*?\s(.{0,100}".preg_quote($context[1]).".{0,100})\s.*|s", '$1', $excerpt);
-			$excerpt = preg_replace("/[\s\n\r\t]+/", " ", $excerpt);
-			$excerpt = "[...] ".trim($excerpt)." [...]";
+			$url = preg_quote($linked_to, "/");
+			if (!preg_match("/<a[^>]*{$url}[^>]*>([^>]*)<\/a>/", $content, $context)) {
+				$url = str_replace("&", "&amp;", preg_quote($linked_to, "/"));
+				if (!preg_match("/<a[^>]*{$url}[^>]*>([^>]*)<\/a>/", $content, $context)) {
+					$url = str_replace("&", "&#038;", preg_quote($linked_to, "/"));
+					if (!preg_match("/<a[^>]*{$url}[^>]*>([^>]*)<\/a>/", $content, $context))
+						return false;
+				}
+			}
 
-			$linked_to = str_replace('&', '&amp;', $linked_to);
-			$trigger = Trigger::current();
-			$trigger->call("pingback", $id, $linked_to, $linked_from, $title, $excerpt);
+			$context[1] = truncate($context[1], 100, false);
+
+			$excerpt = strip_tags(str_replace($context[0], $context[1], $content));
+
+			$match = preg_quote($context[1], "/");
+			$excerpt = preg_replace("/.*?\s(.{0,100}{$match}.{0,100})\s.*/s", "\\1", $excerpt);
+
+			$excerpt = "[...] ".trim(normalize($excerpt))." [...]";
+
+			Trigger::current()->call("pingback", $post, $linked_to, $linked_from, $title, $excerpt);
 
 			return _f("Pingback from %s to %s registered!", array($linked_from, $linked_to));
 		}

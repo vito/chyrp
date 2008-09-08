@@ -196,18 +196,22 @@
 			if ($count)
 				trackback_respond(true, __("A ping from that URL is already registered.", "comments"));
 
+			$post = new Post($_GET["id"]);
+			if ($post->no_results)
+				return false;
+
 			Comment::create($blog_name,
 			                "",
 			                $_POST["url"],
 			                '<strong><a href="'.fix($url).'">'.fix($title).'</a></strong>'."\n".$excerpt,
-			                new Post($_GET["id"]),
+			                $post,
 			                "trackback");
 		}
 
-		static function pingback($id, $to, $from, $title, $excerpt) {
+		public function pingback($post, $to, $from, $title, $excerpt) {
 			$sql = SQL::current();
 			$count = $sql->count("comments",
-			                     array("post_id" => $id,
+			                     array("post_id" => $post->id,
 			                           "author_url" => $from));
 			if ($count)
 				return new IXR_Error(48, __("A ping from that URL is already registered.", "comments"));
@@ -216,7 +220,7 @@
 			                "",
 			                $from,
 			                $excerpt,
-			                new Post($id),
+			                $post,
 			                "pingback");
 		}
 

@@ -57,7 +57,8 @@
 		 *     $type - The type of comment. Optional, used for trackbacks/pingbacks.
 		 */
 		static function create($author, $email, $url, $body, $post, $type = null) {
-			if (!self::user_can($post->id)) return;
+			if (!self::user_can($post->id) and !in_array($type, array("trackback", "pingback")))
+				return;
 
 			$config = Config::current();
 			$route = Route::current();

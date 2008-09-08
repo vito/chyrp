@@ -223,21 +223,21 @@
 				return $this->action = fallback($this->arg[0], "index");
 		}
 
-		public function check_viewing_post() {
-			if (!INDEX)
+		public function check_viewing_post($url = false) {
+			if (!$url and !INDEX)
 				return;
 
 			$config = Config::current();
 
-			if (!empty($this->action))
+			if (!$url and !empty($this->action))
 				return;
 
-			if (count($this->arg) == 1 and method_exists(MainController::current(), $this->arg[0]))
+			if (!$url and count($this->arg) == 1 and method_exists(MainController::current(), $this->arg[0]))
 				return $this->action = $this->arg[0];
 
 			$post_url = $config->post_url;
 
-			$request = $this->request;
+			$request = ($url ? $url : $this->request);
 			foreach (explode("/", $post_url) as $path)
 				foreach (preg_split("/\(([^\)]+)\)/", $path) as $leftover) {
 					$request  = preg_replace("/".preg_quote($leftover)."/", "", $request, 1);
@@ -258,7 +258,9 @@
 				$check = Post::from_url($this->post_url_attrs);
 
 				if (!$check->no_results)
-					return $this->action = "view";
+					return ($url ? $check : $this->action = "view");
+				elseif ($url)
+					return false;
 			}
 
 			if (preg_match("/^\((clean|url)\)\/?$/", $config->post_url)) # This is the last route parse.

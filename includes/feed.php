@@ -48,7 +48,7 @@
 		<content type="html">
 			<?php echo fix($post->feed_content(), false); ?>
 		</content>
-<?php $trigger->call("feed_item", $post->id); ?>
+<?php $trigger->call("feed_item", $post); ?>
 	</entry>
 <?php
 	}
