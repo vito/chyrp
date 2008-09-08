@@ -108,7 +108,9 @@
 
 			$admin->context["sql_debug"]  = SQL::current()->debug;
 
-			$template = MAIN_DIR."/admin/layout/pages/".$action.".twig";
+			$template = (file_exists(THEME_DIR."/admin/layout/pages/".$action.".twig")) ?
+			                THEME_DIR."/admin/pages/".$action.".twig") :
+			                MAIN_DIR."/admin/layout/pages/".$action.".twig" ;
 
 			$config = Config::current();
 			if (!file_exists($template)) {
