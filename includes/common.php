@@ -250,6 +250,9 @@
 	# Set the locale for gettext.
 	set_locale($config->locale);
 
+	# Load the Visitor.
+	$visitor = Visitor::current();
+
 	# Prepare the notifier.
 	$flash = Flash::current();
 
@@ -264,11 +267,12 @@
 	# Initiate the extensions.
 	list($modules, $feathers) = init_extensions();
 
-	# Parse the clean URL into $_GET actions.
-	$route->determine_action();
+	# Filter the visitor immediately after the Modules are initialized.
+	# Example usage scenario: custom auth systems (e.g. OpenID)
+	$trigger->filter($visitor, "visitor");
 
-	# Load the Visitor.
-	$visitor = Visitor::current();
+	# Parse the route.
+	$route = Route::current();
 
 	# Constant: PREVIEWING
 	# Is the user previewing a theme?
@@ -294,18 +298,6 @@
 
 	# Set the content-type to the theme's "type" setting, or "text/html".
 	header("Content-type: ".(INDEX ? fallback($theme->type, "text/html") : "text/html")."; charset=UTF-8");
-
-	# Check if we are viewing a custom route, and set the action/GET parameters accordingly.
-	$route->check_custom_routes();
-
-	# If the post viewing URL is the same as the page viewing URL, check for viewing a page first.
-	if (preg_match("/^\((clean|url)\)\/?$/", $config->post_url)) {
-		$route->check_viewing_page();
-		$route->check_viewing_post();
-	} else {
-		$route->check_viewing_post();
-		$route->check_viewing_page();
-	}
 
 	if (INDEX or ADMIN)
 		$trigger->call(ADMIN ? "admin_runtime" : "runtime");

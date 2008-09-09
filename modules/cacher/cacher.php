@@ -2,20 +2,11 @@
 	class Cacher extends Modules {
 		public $cancelled = false;
 
-		static function __install() {
-			$config = Config::current();
-			$config->set("cache_expire", 1800);
-		}
-
-		static function __uninstall() {
-			$config = Config::current();
-			$config->remove("cache_expire");
-		}
-
-		public function prepare() {
+		public function __init() {
 			$this->user = (logged_in()) ? Visitor::current()->login : "guest" ;
-			$this->caches = INCLUDES_DIR."/caches";
 			$this->path = INCLUDES_DIR."/caches/".sanitize($this->user);
+
+			$this->caches = INCLUDES_DIR."/caches";
 			$this->url = self_url();
 			$this->file = $this->path."/".md5($this->url).".html";
 
@@ -28,6 +19,16 @@
 
 			# Remove all expired files.
 			$this->remove_expired();
+		}
+
+		static function __install() {
+			$config = Config::current();
+			$config->set("cache_expire", 1800);
+		}
+
+		static function __uninstall() {
+			$config = Config::current();
+			$config->remove("cache_expire");
 		}
 
 		public function runtime() {

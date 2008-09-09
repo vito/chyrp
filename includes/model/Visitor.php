@@ -16,13 +16,9 @@
 		 * Checks if a valid user is logged in.
 		 */
 		public function __construct() {
-			$trigger = Trigger::current();
-
-			if (!$trigger->exists("authenticate") and isset($_SESSION['login']) and isset($_SESSION['password']))
+			if (isset($_SESSION['login']) and isset($_SESSION['password']))
 				parent::__construct(null, array("where" => array("login"    => $_SESSION['login'],
 				                                                 "password" => $_SESSION['password'])));
-
-			$trigger->filter($this, "visitor");
 		}
 
 		/**

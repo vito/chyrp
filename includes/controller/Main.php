@@ -4,7 +4,7 @@
 	 * The logic behind the Chyrp install.
 	 */
 	class MainController {
-		private function __construct() { }
+		private function __construct() {}
 
 		/**
 		 * Function: index

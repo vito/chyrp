@@ -46,70 +46,29 @@
 		# Contains an associative array of URL key to value arguments if we're viewing a post.
 		public $post_url_attrs = array();
 
-		private function __construct() {}
-
 		/**
-		 * Function: url
-		 * Attempts to change the specified clean URL to a dirty URL if clean URLs is disabled.
-		 * Use this for linking to things. The applicable URL conversions are passed through the
-		 * parse_urls trigger.
-		 *
-		 * Parameters:
-		 *     $url - The clean URL.
-		 *
-		 * Returns:
-		 *     Clean URL - if $config->clean_urls is set to *true*.
-		 *     Dirty URL - if $config->clean_urls is set to *false*.
+		 * Function: __construct
+		 * Parse the URL to determine what to do.
 		 */
-		public function url($url, $use_chyrp_url = false) {
-			$config = Config::current();
+		private function __construct() {
+			$this->determine_action();
 
-			if ($url[0] == "/")
-				return (ADMIN or $use_chyrp_url) ?
-				       Config::current()->chyrp_url.$url :
-				       Config::current()->url.$url ;
+			# Check if we are viewing a custom route, and set the action/GET parameters accordingly.
+			$this->check_custom_routes();
 
-			if ($config->clean_urls) { # If their post URL doesn't have a trailing slash, remove it from these as well.
-				if (substr($url, 0, 5) == "page/") # Different URL for viewing a page
-					$url = substr($url, 5);
-
-				return (substr($config->post_url, -1) == "/" or $url == "search/") ?
-				       $config->url."/".$url :
-				       $config->url."/".rtrim($url, "/") ;
+			# If the post viewing URL is the same as the page viewing URL, check for viewing a page first.
+			if (preg_match("/^\((clean|url)\)\/?$/", Config::current()->post_url)) {
+				$this->check_viewing_page();
+				$this->check_viewing_post();
+			} else {
+				$this->check_viewing_post();
+				$this->check_viewing_page();
 			}
-
-			$urls = $this->urls;
-			Trigger::current()->filter($urls, "parse_urls");
-
-			foreach (array_diff_assoc($urls, $this->urls) as $key => $value)
-				$urls[substr($key, 0, -1)."feed\//"] = "/".$value."&amp;feed";
-
-			$urls["/\/(.*?)\/$/"] = "/?action=$1";
-
-			return $config->url.preg_replace(
-			       array_keys($urls),
-			       array_values($urls),
-			       "/".$url, 1);
-		}
-
-		/**
-		 * Function: key_regexp
-		 * Converts the values in $config->post_url to regular expressions.
-		 *
-		 * Parameters:
-		 *     $key - Input URL with the keys from <Routes->$code>.
-		 *
-		 * Returns:
-		 *     $key values replaced with their regular expressions from <Routes->$code>.
-		 */
-		private function key_regexp($key) {
-			Trigger::current()->filter($this->code, "url_code");
-			return str_replace(array_keys($this->code), array_values($this->code), str_replace("/", "\\/", $key));
 		}
 
 		/**
 		 * Function: determine_action
-		 * This meaty function determines what exactly to do with the URL.
+		 * Determine the action of the current URL.
 		 */
 		public function determine_action() {
 			global $page;
@@ -199,74 +158,10 @@
 			}
 		}
 
-		public function check_viewing_page() {
-			if (!INDEX)
-				return;
-
-			global $page;
-
-			$config = Config::current();
-
-			if (!empty($this->action))
-				return;
-
-			if (count($this->arg) == 1 and method_exists(MainController::current(), $this->arg[0]))
-				return $this->action = $this->arg[0];
-
-			$valids = Page::find(array("where" => "url IN ('".implode("', '", $this->arg)."')"));
-
-			if (count($valids) == count($this->arg)) {
-				foreach ($valids as $page)
-					if ($page->url == end($this->arg))
-						return list($_GET['url'], $this->action) = array($page->url, "page");
-			} elseif (!preg_match("/^\((clean|url)\)\/?$/", $config->post_url)) # This is the last route parse.
-				return $this->action = fallback($this->arg[0], "index");
-		}
-
-		public function check_viewing_post($url = false) {
-			if (!$url and !INDEX)
-				return;
-
-			$config = Config::current();
-
-			if (!$url and !empty($this->action))
-				return;
-
-			if (!$url and count($this->arg) == 1 and method_exists(MainController::current(), $this->arg[0]))
-				return $this->action = $this->arg[0];
-
-			$post_url = $config->post_url;
-
-			$request = ($url ? $url : $this->request);
-			foreach (explode("/", $post_url) as $path)
-				foreach (preg_split("/\(([^\)]+)\)/", $path) as $leftover) {
-					$request  = preg_replace("/".preg_quote($leftover)."/", "", $request, 1);
-					$post_url = preg_replace("/".preg_quote($leftover)."/", "", $post_url, 1);
-				}
-
-			$args = explode("/", trim($request, "/"));
-
-			$post_url = $this->key_regexp(rtrim($post_url, "/"));
-			preg_match_all("/\(([^\/]+)\)/", $config->post_url, $parameters);
-			if (preg_match("/".$post_url."/", rtrim($request, "/"), $matches)) {
-				array_shift($matches);
-
-				foreach ($parameters[0] as $index => $parameter)
-					if ($parameter[0] == "(")
-						$this->post_url_attrs[rtrim(ltrim($parameter, "("), ")")] = urldecode($args[$index]);
-
-				$check = Post::from_url($this->post_url_attrs);
-
-				if (!$check->no_results)
-					return ($url ? $check : $this->action = "view");
-				elseif ($url)
-					return false;
-			}
-
-			if (preg_match("/^\((clean|url)\)\/?$/", $config->post_url)) # This is the last route parse.
-				return $this->action = fallback($this->arg[0], "index");
-		}
-
+		/**
+		 * Function: check_custom_routes
+		 * Check to see if we're viewing a custom route, and if it is, parse it.
+		 */
 		public function check_custom_routes() {
 			if (!INDEX)
 				return;
@@ -312,6 +207,145 @@
 						return $this->action = $action;
 				}
 			}
+		}
+
+		/**
+		 * Function: check_viewing_page
+		 * Check to see if we're viewing a page, and if it is, handle it.
+		 */
+		public function check_viewing_page() {
+			if (!INDEX)
+				return;
+
+			global $page;
+
+			$config = Config::current();
+
+			if (!empty($this->action))
+				return;
+
+			if (count($this->arg) == 1 and method_exists(MainController::current(), $this->arg[0]))
+				return $this->action = $this->arg[0];
+
+			$valids = Page::find(array("where" => "url IN ('".implode("', '", $this->arg)."')"));
+
+			if (count($valids) == count($this->arg)) {
+				foreach ($valids as $page)
+					if ($page->url == end($this->arg))
+						return list($_GET['url'], $this->action) = array($page->url, "page");
+			} elseif (!preg_match("/^\((clean|url)\)\/?$/", $config->post_url)) # This is the last route parse.
+				return $this->action = fallback($this->arg[0], "index");
+		}
+
+		/**
+		 * Function: check_viewing_post
+		 * Check to see if we're viewing a post, and if it is, handle it.
+		 *
+		 * Parameters:
+		 *     $url - If this argument is passed, it will attempt to grab a post from a given URL.
+		 *            If a post is found by that URL, it will be returned.
+		 */
+		public function check_viewing_post($url = false) {
+			if (!$url and !INDEX)
+				return;
+
+			$config = Config::current();
+
+			if (!$url and !empty($this->action))
+				return;
+
+			if (!$url and count($this->arg) == 1 and method_exists(MainController::current(), $this->arg[0]))
+				return $this->action = $this->arg[0];
+
+			$post_url = $config->post_url;
+
+			$request = ($url ? $url : $this->request);
+			foreach (explode("/", $post_url) as $path)
+				foreach (preg_split("/\(([^\)]+)\)/", $path) as $leftover) {
+					$request  = preg_replace("/".preg_quote($leftover)."/", "", $request, 1);
+					$post_url = preg_replace("/".preg_quote($leftover)."/", "", $post_url, 1);
+				}
+
+			$args = explode("/", trim($request, "/"));
+
+			$post_url = $this->key_regexp(rtrim($post_url, "/"));
+			preg_match_all("/\(([^\/]+)\)/", $config->post_url, $parameters);
+			if (preg_match("/".$post_url."/", rtrim($request, "/"), $matches)) {
+				array_shift($matches);
+
+				foreach ($parameters[0] as $index => $parameter)
+					if ($parameter[0] == "(")
+						$this->post_url_attrs[rtrim(ltrim($parameter, "("), ")")] = urldecode($args[$index]);
+
+				$check = Post::from_url($this->post_url_attrs);
+
+				if (!$check->no_results)
+					return ($url ? $check : $this->action = "view");
+				elseif ($url)
+					return false;
+			}
+
+			if (preg_match("/^\((clean|url)\)\/?$/", $config->post_url)) # This is the last route parse.
+				return $this->action = fallback($this->arg[0], "index");
+		}
+
+		/**
+		 * Function: url
+		 * Attempts to change the specified clean URL to a dirty URL if clean URLs is disabled.
+		 * Use this for linking to things. The applicable URL conversions are passed through the
+		 * parse_urls trigger.
+		 *
+		 * Parameters:
+		 *     $url - The clean URL.
+		 *
+		 * Returns:
+		 *     Clean URL - if $config->clean_urls is set to *true*.
+		 *     Dirty URL - if $config->clean_urls is set to *false*.
+		 */
+		public function url($url, $use_chyrp_url = false) {
+			$config = Config::current();
+
+			if ($url[0] == "/")
+				return (ADMIN or $use_chyrp_url) ?
+				       Config::current()->chyrp_url.$url :
+				       Config::current()->url.$url ;
+
+			if ($config->clean_urls) { # If their post URL doesn't have a trailing slash, remove it from these as well.
+				if (substr($url, 0, 5) == "page/") # Different URL for viewing a page
+					$url = substr($url, 5);
+
+				return (substr($config->post_url, -1) == "/" or $url == "search/") ?
+				       $config->url."/".$url :
+				       $config->url."/".rtrim($url, "/") ;
+			}
+
+			$urls = $this->urls;
+			Trigger::current()->filter($urls, "parse_urls");
+
+			foreach (array_diff_assoc($urls, $this->urls) as $key => $value)
+				$urls[substr($key, 0, -1)."feed\//"] = "/".$value."&amp;feed";
+
+			$urls["/\/(.*?)\/$/"] = "/?action=$1";
+
+			return $config->url.preg_replace(
+			       array_keys($urls),
+			       array_values($urls),
+			       "/".$url, 1);
+		}
+
+		/**
+		 * Function: key_regexp
+		 * Converts the values in $config->post_url to regular expressions.
+		 *
+		 * Parameters:
+		 *     $key - Input URL with the keys from <Routes->$code>.
+		 *
+		 * Returns:
+		 *     $key values replaced with their regular expressions from <Routes->$code>.
+		 */
+		private function key_regexp($key) {
+			Trigger::current()->filter($this->code, "url_code");
+			return str_replace(array_keys($this->code), array_values($this->code), str_replace("/", "\\/", $key));
 		}
 
 		/**
@@ -362,5 +396,3 @@
 			return $instance = (empty($instance)) ? new self() : $instance ;
 		}
 	}
-
-	$route = Route::current();
