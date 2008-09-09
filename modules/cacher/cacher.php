@@ -1,5 +1,7 @@
 <?php
 	class Cacher extends Modules {
+		public $cancelled = false;
+
 		static function __install() {
 			$config = Config::current();
 			$config->set("cache_expire", 1800);
