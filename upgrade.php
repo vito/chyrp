@@ -1,12 +1,30 @@
 <?php
 	header("Content-type: text/html; charset=UTF-8");
 
+	# Constant: DEBUG
+	# Should Chyrp use debugging processes?
 	define('DEBUG', true);
+
+	# Constant: UPGRADING
+	# Is the user running the upgrader? (true)
 	define('UPGRADING', true);
+
+	# Constant: XML_RPC
+	# Is this being run from XML-RPC?
 	define('XML_RPC', true);
+
+	# Constant: MAIN_DIR
+	# Absolute path to the Chyrp root
 	define('MAIN_DIR', dirname(__FILE__));
+
+	# Constant: INCLUDES_DIR
+	# Absolute path to /includes
 	define('INCLUDES_DIR', dirname(__FILE__)."/includes");
 
+	/**
+	 * Function: config_file
+	 * Returns what config file their install is set up for.
+	 */
 	function config_file() {
 		if (file_exists(INCLUDES_DIR."/config.yaml.php"))
 			return INCLUDES_DIR."/config.yaml.php";
@@ -20,6 +38,10 @@
 		exit("Config file not found.");
 	}
 
+	/**
+	 * Function: database_file
+	 * Returns what database config file their install is set up for.
+	 */
 	function database_file() {
 		if (file_exists(INCLUDES_DIR."/database.yaml.php"))
 			return INCLUDES_DIR."/database.yaml.php";
@@ -33,6 +55,10 @@
 		return false;
 	}
 
+	/**
+	 * Function: using_yaml
+	 * Are they using YAML config storage?
+	 */
 	function using_yaml() {
 		return (basename(config_file()) != "config.php" and basename(database_file()) != "database.php");
 	}
@@ -49,10 +75,21 @@
 			                 file_get_contents(database_file())));
 	}
 
+	# File: Helpers
+	# Various functions used throughout Chyrp's code.
 	require_once INCLUDES_DIR."/helpers.php";
-	require_once INCLUDES_DIR."/lib/YAML.php";
+
+	# File: Gettext
+	# Gettext library.
 	require_once INCLUDES_DIR."/lib/gettext/gettext.php";
+
+	# File: Streams
+	# Streams library.
 	require_once INCLUDES_DIR."/lib/gettext/streams.php";
+
+	# File: YAML
+	# Horde YAML parsing library.
+	require_once INCLUDES_DIR."/lib/YAML.php";
 
 	$yaml = array();
 	$yaml["config"] = array();
@@ -75,24 +112,48 @@
 			$yaml["database"][$name] = $val;
 	}
 
-	# Load the current SQL library (this overrides the $sql variable)
-	require INCLUDES_DIR."/class/Query.php";
-	require INCLUDES_DIR."/class/QueryBuilder.php";
+	# File: SQL
+	# See Also:
+	#     <SQL>
 	require INCLUDES_DIR."/class/SQL.php";
 
-	fallback($yaml["database"]["adapter"], "mysql");
+	# Prepare the SQL interface.
+	$sql = SQL::current();
 
+	# Set the SQL info.
+	fallback($yaml["database"]["adapter"], "mysql");
 	foreach ($yaml["database"] as $name => $value)
 		$sql->$name = $value;
 
+	# Initialize connection to SQL server.
 	$sql->connect();
 
+	/**
+	 * Class: Config
+	 * Handles writing to whichever config file they're using.
+	 */
 	class Config {
+		/**
+		 * Function: get
+		 * Returns a config setting.
+		 *
+		 * Parameters:
+		 *     $setting - The setting to return.
+		 */
 		static function get($setting) {
 			global $yaml;
 			return (isset($yaml["config"][$setting])) ? $yaml["config"][$setting] : false ;
 		}
 
+		/**
+		 * Function: set
+		 * Sets a config setting.
+		 *
+		 * Parameters:
+		 *     $setting - The config setting to set.
+		 *     $value - The value for the setting.
+		 *     $message - The message to display with test().
+		 */
 		static function set($setting, $value, $message = null) {
 			if (self::get($setting) == $value) return;
 
@@ -110,16 +171,42 @@
 			echo $message.test(@file_put_contents(INCLUDES_DIR."/config.yaml.php", $dump));
 		}
 
+		/**
+		 * Function: check
+		 * Goes a config exist?
+		 *
+		 * Parameters:
+		 *     $setting - Name of the config to check.
+		 */
 		static function check($setting) {
 			global $yaml;
 			return (isset($yaml["config"][$setting]));
 		}
 
-		static function fallback($setting, $value) {
+		/**
+		 * Function: fallback
+		 * Sets a config setting to $value if it does not exist.
+		 *
+		 * Parameters:
+		 *     $setting - The config setting to set.
+		 *     $value - The value for the setting.
+		 *     $message - The message to display with test().
+		 */
+		static function fallback($setting, $value, $message = null) {
+			if (!isset($message))
+				$message = _f("Adding %s setting...", array($setting));
+
 			if (!self::check($setting))
-				echo self::set($setting, $value, _f("Adding %s setting...", array($setting)));
+				echo self::set($setting, $value, $message);
 		}
 
+		/**
+		 * Function: remove
+		 * Removes a setting if it exists.
+		 *
+		 * Parameters:
+		 *     $setting - The setting to remove.
+		 */
 		static function remove($setting) {
 			if (!self::check($setting)) return;
 
@@ -138,6 +225,14 @@
 
 	load_translator("chyrp", INCLUDES_DIR."/locale/".Config::get("locale").".mo");
 
+	/**
+	 * Function: test
+	 * Attempts to perform a task, and displays a "success" or "failed" message determined by the outcome.
+	 *
+	 * Parameters:
+	 *     $try - The task to attempt. Should return something that evaluates to true or false.
+	 *     $message - Message to display for the test.
+	 */
 	function test($try, $message = "") {
 		$sql = SQL::current();
 
