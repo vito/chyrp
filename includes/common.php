@@ -292,29 +292,11 @@
 	# Initialize the theme.
 	$theme = Theme::current();
 
-	# Load the theme's info into the Theme class.
-	foreach (YAML::load(THEME_DIR."/info.yaml") as $key => $val)
-		$theme->$key = $val;
-
 	# Set the content-type to the theme's "type" setting, or "text/html".
 	header("Content-type: ".(INDEX ? fallback($theme->type, "text/html") : "text/html")."; charset=UTF-8");
 
 	if (INDEX or ADMIN)
 		$trigger->call(ADMIN ? "admin_runtime" : "runtime");
-
-	# Array: $statuses
-	# An array of post statuses that <Visitor> can view.
-	$statuses = array("public");
-
-	if (logged_in())
-		$statuses[] = "registered_only";
-
-	if ($visitor->group()->can("view_private"))
-		$statuses[] = "private";
-
-	Post::$private = "(status IN ('".implode("', '", $statuses)."') OR".
-	                 " status LIKE '%{".$visitor->group()->id."}%')";
-	Post::$enabled_feathers = "feather IN ('".implode("', '", $config->enabled_feathers)."')";
 
 	# Load the translation engine
 	load_translator("chyrp", INCLUDES_DIR."/locale/".$config->locale.".mo");

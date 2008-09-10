@@ -27,6 +27,10 @@
 			if (file_exists(THEME_DIR."/locale/".$config->locale.".mo"))
 				load_translator("theme", THEME_DIR."/locale/".$config->locale.".mo");
 
+			# Load the theme's info into the Theme class.
+			foreach (YAML::load(THEME_DIR."/info.yaml") as $key => $val)
+				$this->$key = $val;
+
 			$this->url = THEME_URL;
 
 			$this->twig = new Twig_Loader(THEME_DIR,
@@ -121,7 +125,7 @@
 			                            "MONTH(created_at) AS month",
 			                            "created_at AS created_at",
 			                            "COUNT(id) AS posts"),
-			                      array("status = 'public'", Post::$enabled_feathers),
+			                      array("status = 'public'", Post::feathers()),
 			                      $order_by." ".strtoupper($order),
 			                      array(),
 			                      ($limit == 0) ? null : $limit,

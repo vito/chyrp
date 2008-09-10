@@ -163,7 +163,7 @@
 			$clean = array();
 			foreach($sql->select("posts",
 				                 "tags.*",
-				                 array(Post::$private, Post::$enabled_feathers),
+				                 array(Post::statuses(), Post::feathers()),
 				                 null,
 				                 array(),
 				                 null, null, null,
@@ -221,7 +221,7 @@
 			$clean = array();
 			foreach($sql->select("posts",
 				                 "tags.*",
-				                 array(Post::$private, Post::$enabled_feathers),
+				                 array(Post::statuses(), Post::feathers()),
 				                 null,
 				                 array(),
 				                 null,
@@ -518,7 +518,7 @@
 
 			$tags = $sql->select("posts",
 			                      "tags.*",
-			                      array(Post::$private, Post::$enabled_feathers),
+			                      array(Post::statuses(), Post::feathers()),
 			                      null,
 			                      array(),
 			                      null, null, null,

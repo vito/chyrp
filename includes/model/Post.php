@@ -36,10 +36,10 @@
 			if (!XML_RPC) {
 				$visitor = Visitor::current();
 				$private = (isset($options["drafts"]) and $options["drafts"] and $visitor->group()->can("view_draft")) ?
-				               str_replace("') OR", "', 'draft') OR", self::$private) :
-				               self::$private;
+				               str_replace("') OR", "', 'draft') OR", self::statuses()) :
+				               self::statuses();
 
-				$options["where"][] = self::$enabled_feathers;
+				$options["where"][] = self::feathers();
 
 				if (!$has_status)
 					$options["where"][] = $private;
@@ -76,10 +76,10 @@
 			if (!XML_RPC) {
 				$visitor = Visitor::current();
 				$private = (isset($options["drafts"]) and $options["drafts"] and $visitor->group()->can("view_draft")) ?
-				               str_replace("') OR", "', 'draft') OR", self::$private) :
-				               self::$private ;
+				               str_replace("') OR", "', 'draft') OR", self::statuses()) :
+				               self::statuses() ;
 
-				$options["where"][] = self::$enabled_feathers;
+				$options["where"][] = self::feathers();
 
 				if (!$has_status)
 					$options["where"][] = $private;
@@ -771,5 +771,31 @@
 				}
 
 			return new self(null, array_merge($options, array("where" => $where, "params" => $params)));
+		}
+
+		/**
+		 * Function: statuses
+		 * Returns a SQL query "chunk" for the "status" column permissions of the current user.
+		 */
+		static function statuses() {
+			$visitor = Visitor::current();
+
+			$statuses = array("public");
+
+			if (logged_in())
+				$statuses[] = "registered_only";
+
+			if ($visitor->group()->can("view_private"))
+				$statuses[] = "private";
+
+			return "(status IN ('".implode("', '", $statuses)."') OR status LIKE '%{".$visitor->group()->id."}%')";
+		}
+
+		/**
+		 * Function: enabled_feathers
+		 * Returns a SQL query "chunk" for the "feather" column so that it matches enabled feathers.
+		 */
+		static function feathers() {
+			return "feather IN ('".implode("', '", Config::current()->enabled_feathers)."')";
 		}
 	}
