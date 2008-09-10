@@ -21,13 +21,15 @@ Arguments:
 not_found
 ---------
 Called from:
-	includes/ajax.php on line 41
+	includes/ajax.php on line 14
+	includes/ajax.php on line 39
+	includes/ajax.php on line 60
 
 
 import_textpattern_post
 -----------------------
 Called from:
-	includes/controller/Admin.php on line 1259
+	includes/controller/Admin.php on line 1301
 Arguments:
 	$post, $new_post
 
@@ -35,7 +37,7 @@ Arguments:
 import_wordpress_post
 ---------------------
 Called from:
-	includes/controller/Admin.php on line 1049
+	includes/controller/Admin.php on line 1091
 Arguments:
 	$item, $post
 
@@ -43,7 +45,7 @@ Arguments:
 import_chyrp_page
 -----------------
 Called from:
-	includes/controller/Admin.php on line 959
+	includes/controller/Admin.php on line 1001
 Arguments:
 	$entry, $page
 
@@ -51,7 +53,7 @@ Arguments:
 update_post
 -----------
 Called from:
-	includes/model/Post.php on line 270
+	includes/model/Post.php on line 272
 Arguments:
 	$this, $values, $user, $pinned, $status, $slug, $created_at, $updated_at, $options
 
@@ -59,7 +61,7 @@ Arguments:
 filter_user
 -----------
 Called from:
-	includes/model/User.php on line 20
+	includes/model/User.php on line 21
 Arguments:
 	$this
 
@@ -76,16 +78,10 @@ Called from:
 	admin/layout/pages/manage_pages.twig on line 29
 
 
-new_post_options
-----------------
-Called from:
-	admin/layout/partials/post_fields.twig on line 91
-
-
 add_post
 --------
 Called from:
-	includes/model/Post.php on line 199
+	includes/model/Post.php on line 201
 Arguments:
 	$post, $options
 
@@ -93,7 +89,7 @@ Arguments:
 update_user
 -----------
 Called from:
-	includes/model/User.php on line 116
+	includes/model/User.php on line 117
 Arguments:
 	$this, $login, $password, $full_name, $email, $website, $group_id
 
@@ -123,7 +119,7 @@ Arguments:
 import_tumble
 -------------
 Called from:
-	includes/controller/Admin.php on line 1190
+	includes/controller/Admin.php on line 1232
 Arguments:
 	$post, $new_post
 
@@ -131,7 +127,7 @@ Arguments:
 import_chyrp_group
 ------------------
 Called from:
-	includes/controller/Admin.php on line 883
+	includes/controller/Admin.php on line 925
 Arguments:
 	Group::add($name, (array) $permissions)
 
@@ -139,7 +135,7 @@ Arguments:
 add_user
 --------
 Called from:
-	includes/model/User.php on line 80
+	includes/model/User.php on line 81
 Arguments:
 	$user
 
@@ -153,9 +149,9 @@ Called from:
 pingback
 --------
 Called from:
-	includes/xmlrpc.php on line 117
+	includes/xmlrpc.php on line 112
 Arguments:
-	$id, $linked_to, $linked_from, $title, $excerpt
+	$post, $linked_to, $linked_from, $title, $excerpt
 
 
 delete_user_form
@@ -167,13 +163,13 @@ Called from:
 ajax
 ----
 Called from:
-	includes/ajax.php on line 172
+	includes/ajax.php on line 191
 
 
 import_movabletype_page
 -----------------------
 Called from:
-	includes/controller/Admin.php on line 1337
+	includes/controller/Admin.php on line 1379
 Arguments:
 	$post, $new_page, $link
 
@@ -181,7 +177,7 @@ Arguments:
 import_wordpress_page
 ---------------------
 Called from:
-	includes/controller/Admin.php on line 1060
+	includes/controller/Admin.php on line 1102
 Arguments:
 	$item, $page
 
@@ -189,7 +185,7 @@ Arguments:
 trackback_receive
 -----------------
 Called from:
-	includes/trackback.php on line 26
+	includes/trackback.php on line 24
 Arguments:
 	$url, $title, $excerpt, $blog_name
 
@@ -211,7 +207,7 @@ Arguments:
 add_group
 ---------
 Called from:
-	includes/model/Group.php on line 89
+	includes/model/Group.php on line 90
 Arguments:
 	$group
 
@@ -219,7 +215,7 @@ Arguments:
 update_page
 -----------
 Called from:
-	includes/model/Page.php on line 113
+	includes/model/Page.php on line 114
 Arguments:
 	$this, $title, $body, $parent_id, $show_in_list, $list_order, $url, $update_timestamp
 
@@ -251,16 +247,10 @@ Called from:
 	admin/layout/partials/page_fields.twig on line 10
 
 
-runtime
--------
-Called from:
-	includes/common.php on line 334
-
-
 import_movabletype_post
 -----------------------
 Called from:
-	includes/controller/Admin.php on line 1334
+	includes/controller/Admin.php on line 1376
 Arguments:
 	$post, $new_post, $link
 
@@ -274,7 +264,7 @@ Called from:
 add_page
 --------
 Called from:
-	includes/model/Page.php on line 81
+	includes/model/Page.php on line 82
 Arguments:
 	$page
 
@@ -302,7 +292,7 @@ Called from:
 import_chyrp_post
 -----------------
 Called from:
-	includes/controller/Admin.php on line 937
+	includes/controller/Admin.php on line 979
 Arguments:
 	$entry, $post
 
@@ -310,7 +300,7 @@ Arguments:
 import_chyrp_user
 -----------------
 Called from:
-	includes/controller/Admin.php on line 907
+	includes/controller/Admin.php on line 949
 Arguments:
 	$user
 
@@ -347,26 +337,18 @@ Called from:
 	admin/layout/partials/page_fields.twig on line 1
 
 
-edit_post_options
------------------
-Called from:
-	admin/layout/partials/post_fields.twig on line 89
-Arguments:
-	post
-
-
 feed_item
 ---------
 Called from:
-	includes/feed.php on line 50
+	includes/feed.php on line 51
 Arguments:
-	$post->id
+	$post
 
 
 update_group
 ------------
 Called from:
-	includes/model/Group.php on line 112
+	includes/model/Group.php on line 113
 Arguments:
 	$this, $name, $permissions
 
@@ -383,7 +365,13 @@ Arguments:
 can_not_view_site
 -----------------
 Called from:
-	includes/common.php on line 358
+	includes/common.php on line 309
+
+
+authenticate
+------------
+Called from:
+	includes/controller/Main.php on line 229
 
 
 top
@@ -402,7 +390,7 @@ url_code
 Target:
 	$this->code
 Called from:
-	includes/class/Route.php on line 110
+	includes/class/Route.php on line 347
 
 
 posts_export
@@ -410,7 +398,7 @@ posts_export
 Target:
 	$posts_atom
 Called from:
-	includes/controller/Admin.php on line 709
+	includes/controller/Admin.php on line 751
 Arguments:
 	$post
 
@@ -420,7 +408,7 @@ filter_post
 Target:
 	$this
 Called from:
-	includes/model/Post.php on line 608
+	includes/model/Post.php on line 610
 
 
 admin_subnav
@@ -428,7 +416,7 @@ admin_subnav
 Target:
 	$subnav
 Called from:
-	admin/index.php on line 220
+	admin/index.php on line 222
 
 
 extend_nav
@@ -436,7 +424,7 @@ extend_nav
 Target:
 	$subnav["extend"]
 Called from:
-	admin/index.php on line 209
+	admin/index.php on line 211
 
 
 manage_nav
@@ -444,7 +432,7 @@ manage_nav
 Target:
 	$subnav["manage"]
 Called from:
-	admin/index.php on line 172
+	admin/index.php on line 174
 
 
 flash_message
@@ -462,7 +450,7 @@ page_export_url
 Target:
 	$url
 Called from:
-	includes/controller/Admin.php on line 752
+	includes/controller/Admin.php on line 794
 Arguments:
 	$page)
 
@@ -472,7 +460,7 @@ markup_page_title
 Target:
 	$this->title
 Called from:
-	includes/model/Page.php on line 28
+	includes/model/Page.php on line 29
 
 
 title
@@ -480,7 +468,7 @@ title
 Target:
 	$title
 Called from:
-	includes/model/Post.php on line 491
+	includes/model/Post.php on line 493
 Arguments:
 	$post
 
@@ -490,7 +478,7 @@ url_vals
 Target:
 	$vals
 Called from:
-	includes/model/Post.php on line 431
+	includes/model/Post.php on line 433
 Arguments:
 	$this
 
@@ -510,7 +498,7 @@ post_export_url
 Target:
 	$url
 Called from:
-	includes/controller/Admin.php on line 693
+	includes/controller/Admin.php on line 735
 Arguments:
 	$post)
 
@@ -520,7 +508,7 @@ feed_url
 Target:
 	$url
 Called from:
-	includes/feed.php on line 26
+	includes/feed.php on line 29
 Arguments:
 	$post
 
@@ -530,7 +518,7 @@ post_url_token
 Target:
 	$tokens
 Called from:
-	includes/model/Post.php on line 760
+	includes/model/Post.php on line 762
 
 
 flash_notice_message
@@ -548,7 +536,7 @@ pages_export
 Target:
 	$pages_atom
 Called from:
-	includes/controller/Admin.php on line 767
+	includes/controller/Admin.php on line 809
 Arguments:
 	$page
 
@@ -566,7 +554,7 @@ excerpt
 Target:
 	$excerpt
 Called from:
-	includes/model/Post.php on line 510
+	includes/model/Post.php on line 512
 Arguments:
 	$post
 
@@ -584,7 +572,7 @@ admin_redirectables
 Target:
 	$redirectable
 Called from:
-	includes/controller/Admin.php on line 1853
+	includes/controller/Admin.php on line 1895
 
 
 determine_action
@@ -592,7 +580,7 @@ determine_action
 Target:
 	$extended
 Called from:
-	includes/controller/Admin.php on line 1843
+	includes/controller/Admin.php on line 1885
 
 
 feed_content
@@ -600,7 +588,7 @@ feed_content
 Target:
 	$feed_content
 Called from:
-	includes/model/Post.php on line 529
+	includes/model/Post.php on line 531
 Arguments:
 	$post
 
@@ -610,7 +598,15 @@ settings_nav
 Target:
 	$subnav["settings"]
 Called from:
-	admin/index.php on line 199
+	admin/index.php on line 201
+
+
+visitor
+-------
+Target:
+	$visitor
+Called from:
+	includes/common.php on line 272
 
 
 link_regexp
@@ -626,7 +622,7 @@ scripts
 Target:
 	$javascripts
 Called from:
-	includes/class/Theme.php on line 231
+	includes/class/Theme.php on line 238
 
 
 title_from_excerpt
@@ -634,7 +630,7 @@ title_from_excerpt
 Target:
 	$excerpt
 Called from:
-	includes/model/Post.php on line 464
+	includes/model/Post.php on line 466
 
 
 bookmarklet_submit_values
@@ -642,7 +638,7 @@ bookmarklet_submit_values
 Target:
 	$values
 Called from:
-	includes/model/Post.php on line 154
+	includes/model/Post.php on line 155
 
 
 parse_urls
@@ -650,7 +646,7 @@ parse_urls
 Target:
 	$urls
 Called from:
-	includes/class/Route.php on line 86
+	includes/class/Route.php on line 323
 
 
 stylesheets
@@ -658,7 +654,7 @@ stylesheets
 Target:
 	$stylesheets
 Called from:
-	includes/class/Theme.php on line 160
+	includes/class/Theme.php on line 167
 
 
 export
@@ -666,7 +662,7 @@ export
 Target:
 	$exports
 Called from:
-	includes/controller/Admin.php on line 812
+	includes/controller/Admin.php on line 854
 
 
 markup_page_text
@@ -674,7 +670,7 @@ markup_page_text
 Target:
 	$this->body
 Called from:
-	includes/model/Page.php on line 27
+	includes/model/Page.php on line 28
 
 
 bookmarklet_submit_options
@@ -682,4 +678,4 @@ bookmarklet_submit_options
 Target:
 	$options
 Called from:
-	includes/model/Post.php on line 155
+	includes/model/Post.php on line 156

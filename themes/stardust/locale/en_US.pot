@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-09-03 20:51+0000\n"
+"POT-Creation-Date: 2008-09-10 22:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -67,7 +67,7 @@ msgstr ""
 msgid "Stardust"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:64
+#: themes/stardust/forms/post/edit.twig:97
 msgid "Save"
 msgstr ""
 
@@ -91,7 +91,7 @@ msgstr ""
 msgid "User Controls"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:54
+#: themes/stardust/forms/post/edit.twig:61
 msgid "Trackbacks"
 msgstr ""
 
@@ -118,7 +118,7 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:42
+#: themes/stardust/forms/post/edit.twig:49
 msgid "(shows this post above all others)"
 msgstr ""
 
@@ -149,7 +149,7 @@ msgstr ""
 msgid "Log Out"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:49
+#: themes/stardust/forms/post/edit.twig:56
 msgid "Timestamp"
 msgstr ""
 
@@ -205,7 +205,7 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:65
+#: themes/stardust/forms/post/edit.twig:98
 msgid "Cancel"
 msgstr ""
 
@@ -254,7 +254,7 @@ msgstr ""
 msgid "(optional)"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:40
+#: themes/stardust/forms/post/edit.twig:47
 msgid "Pinned?"
 msgstr ""
 
@@ -273,13 +273,13 @@ msgstr ""
 msgid "Permanent Link to"
 msgstr ""
 
-#: themes/stardust/forms/user/controls.twig:15
-msgid "Website"
-msgstr ""
-
 #: themes/stardust/forms/comment/new.twig:5
 #, php-format
 msgid "Logged in as %s"
+msgstr ""
+
+#: themes/stardust/forms/user/controls.twig:15
+msgid "Website"
 msgstr ""
 
 #: themes/stardust/pages/drafts.twig:5
@@ -318,7 +318,7 @@ msgstr ""
 msgid "Add Page"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:64
+#: themes/stardust/forms/post/edit.twig:97
 msgid "or"
 msgstr ""
 
@@ -359,6 +359,10 @@ msgstr ""
 
 #: themes/stardust/forms/post/edit.twig:34
 msgid "Private"
+msgstr ""
+
+#: themes/stardust/forms/post/edit.twig:37
+msgid "Group"
 msgstr ""
 
 #: themes/stardust/pages/drafts.twig:11
@@ -413,7 +417,7 @@ msgstr ""
 msgid "Full Name"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:45
+#: themes/stardust/forms/post/edit.twig:52
 msgid "Slug"
 msgstr ""
 
