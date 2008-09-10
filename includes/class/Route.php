@@ -277,7 +277,7 @@
 					if ($parameter[0] == "(")
 						$this->post_url_attrs[rtrim(ltrim($parameter, "("), ")")] = urldecode($args[$index]);
 
-				$check = Post::from_url($this->post_url_attrs);
+				$check = Post::from_url($this->post_url_attrs, array("filter" => false));
 
 				if (!$check->no_results)
 					return ($url ? $check : $this->action = "view");

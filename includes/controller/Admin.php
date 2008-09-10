@@ -36,10 +36,8 @@
 
 			fallback($_GET['feather'], $config->enabled_feathers[0]);
 
-			global $feathers;
-
-			$this->context["feathers"] = $feathers;
-			$this->context["feather"]  = $feathers[$_GET['feather']];
+			$this->context["feathers"] = Feathers::$instances;
+			$this->context["feather"]  = Feathers::$instances[$_GET['feather']];
 		}
 
 		/**
@@ -61,12 +59,10 @@
 			else
 				$feather = $this->selected_bookmarklet;
 
-			global $feathers;
-
 			$this->context["done"] = isset($_GET['done']);
 
-			$this->context["feathers"]         = $feathers;
-			$this->context["selected_feather"] = $feathers[$feather];
+			$this->context["feathers"]         = Feathers::$instances;
+			$this->context["selected_feather"] = Feathers::$instances[$feather];
 
 			if (!$this->context["done"]) {
 				$this->context["args"] = array("url" => urldecode(stripslashes($_GET['url'])),
@@ -90,9 +86,7 @@
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				show_403(__("Access Denied"), __("Invalid security key."));
 
-			global $feathers;
-
-			$post = $feathers[$_POST['feather']]->submit();
+			$post = Feathers::$instances[$_POST['feather']]->submit();
 
 			if (!$post->redirect)
 				$post->redirect = "/admin/?action=write_post";
@@ -122,9 +116,7 @@
 			$this->context["groups"]  = Group::find(array("order" => "id ASC"));
 			$this->context["options"] = $options;
 
-			global $feathers;
-
-			$this->context["feather"] = $feathers[$this->context["post"]->feather];
+			$this->context["feather"] = Feathers::$instances[$this->context["post"]->feather];
 		}
 
 		/**
@@ -143,8 +135,7 @@
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				show_403(__("Access Denied"), __("Invalid security key."));
 
-			global $feathers;
-			$feathers[$post->feather]->update($post);
+			Feathers::$instances[$post->feather]->update($post);
 
 			if (!isset($_POST['ajax']))
 				Flash::notice(_f("Post updated. <a href=\"%s\">View Post &rarr;</a>",

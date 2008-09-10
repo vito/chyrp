@@ -27,8 +27,8 @@
 		 *     $name - The name of the trigger.
 		 */
 		public function call($name) {
-			global $modules;
-			if (!isset($modules)) return;
+			if (empty(Modules::$instances) or !$this->exists($name))
+				return;
 
 			$arguments = func_get_args();
 			array_shift($arguments);
@@ -45,7 +45,7 @@
 				}
 			}
 
-			foreach ($modules as $module)
+			foreach (Modules::$instances as $module)
 				if (!in_array(array($module, $name), $this->called[$name]) and is_callable(array($module, $name)))
 					$return = call_user_func_array(array($module, $name), $arguments);
 
@@ -67,8 +67,6 @@
 		 *     $target, filtered through any/all actions for the trigger $name.
 		 */
 		public function filter(&$target, $name) {
-			global $modules;
-
 			if (is_array($name))
 				foreach ($name as $index => $filter) {
 					$args = func_get_args();
@@ -79,7 +77,7 @@
 						$target = call_user_func_array(array($this, "filter"), $args);
 				}
 
-			if (!isset($modules) or !$this->exists($name))
+			if (empty(Modules::$instances) or !$this->exists($name))
 				return $target;
 
 			$arguments = func_get_args();
@@ -95,7 +93,7 @@
 					$target = fallback($call, $target);
 				}
 
-			foreach ($modules as $module)
+			foreach (Modules::$instances as $module)
 				if (!in_array(array($module, $name), $this->called[$name]) and is_callable(array($module, $name))) {
 					$call = call_user_func_array(array($module, $name),
 					                             array_merge(array($target), $arguments));
@@ -137,9 +135,7 @@
 			if (isset($this->exists[$name]))
 				return $this->exists[$name];
 
-			global $modules;
-
-			foreach ($modules as $module)
+			foreach (Modules::$instances as $module)
 				if (is_callable(array($module, $name)))
 					return $this->exists[$name] = true;
 

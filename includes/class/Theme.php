@@ -284,8 +284,6 @@
 		}
 
 		public function prepare($context) {
-			global $modules, $feathers;
-
 			$this->context = array_merge($context, $this->context);
 
 			$trigger = Trigger::current();
@@ -295,8 +293,8 @@
 			$this->context["theme"]        = $this;
 			$this->context["flash"]        = Flash::current();
 			$this->context["trigger"]      = $trigger;
-			$this->context["modules"]      = $modules;
-			$this->context["feathers"]     = $feathers;
+			$this->context["modules"]      = Modules::$instances;
+			$this->context["feathers"]     = Feathers::$instances;
 			$this->context["title"]        = $this->title;
 			$this->context["site"]         = $config;
 			$this->context["visitor"]      = $visitor;

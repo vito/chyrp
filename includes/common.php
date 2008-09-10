@@ -256,16 +256,8 @@
 	# Prepare the notifier.
 	$flash = Flash::current();
 
-	# Array: $feathers
-	# Contains all of the enabled Feather's Classes.
-	$feathers = array();
-
-	# Array: $modules
-	# Contains all of the enabled Module's Classes.
-	$modules = array();
-
 	# Initiate the extensions.
-	list($modules, $feathers) = init_extensions();
+	init_extensions();
 
 	# Filter the visitor immediately after the Modules are initialized.
 	# Example usage scenario: custom auth systems (e.g. OpenID)

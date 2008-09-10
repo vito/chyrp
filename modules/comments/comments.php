@@ -606,7 +606,7 @@
 				$_POST['option']['comment_status'] = ($struct['mt_allow_comments'] == 1) ? 'open' : 'closed';
 		}
 
-		static function filter_post($post) {
+		public function filter_post($post) {
 			$sql = SQL::current();
 			$config = Config::current();
 			$trigger = Trigger::current();

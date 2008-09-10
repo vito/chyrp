@@ -4,7 +4,16 @@
 	 * Contains various functions, acts as the backbone for all feathers.
 	 */
 	class Feathers {
+		# Array: $instances
+		# Holds all Module instantiations.
+		static $instances = array();
+
+		# Array: $custom_filters
+		# Manages named Trigger filters for Feather fields.
 		static $filters = array();
+
+		# Array: $custom_filters
+		# Manages custom Feather-provided Trigger filters.
 		static $custom_filters = array();
 
 		/**

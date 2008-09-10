@@ -4,6 +4,10 @@
 	 * Contains various functions, acts as the backbone for all modules.
 	 */
 	class Modules {
+		# Array: $instances
+		# Holds all Module instantiations.
+		static $instances = array();
+
 		/**
 		 * Function: setPriority
 		 * Sets the priority of an action for the module this function is called from.

@@ -1035,10 +1035,8 @@
 	 function cancel_module($target) {
 		$this_disabled = array();
 
-		global $modules;
-
-		if (isset($modules[$target]))
-			$modules[$target]->cancelled = true;
+		if (isset(Modules::$instances[$target]))
+			Modules::$instances[$target]->cancelled = true;
 
 		$config = Config::current();
 		foreach ($config->enabled_modules as $module)
@@ -1166,12 +1164,8 @@
 	 */
 	function init_extensions() {
 		$config = Config::current();
-		$route = Route::current();
 
-		$modules = array();
-		$feathers = array();
-
-		# Load the $modules array.
+		# Instantiate all Modules.
 		foreach ($config->enabled_modules as $index => $module) {
 			if (!file_exists(MODULES_DIR."/".$module."/".$module.".php")) {
 				unset($config->enabled_modules[$index]);
@@ -1187,17 +1181,14 @@
 			if (!class_exists($camelized))
 				continue;
 
-			$modules[$module] = new $camelized;
-			$modules[$module]->safename = $module;
-
-			if (!ADMIN)
-				continue;
+			Modules::$instances[$module] = new $camelized;
+			Modules::$instances[$module]->safename = $module;
 
 			foreach (YAML::load(MODULES_DIR."/".$module."/info.yaml") as $key => $val)
-				$modules[$module]->$key = (is_string($val)) ? __($val, $module) : $val ;
+				Modules::$instances[$module]->$key = (is_string($val)) ? __($val, $module) : $val ;
 		}
 
-		# Load the $feathers array.
+		# Instantiate all Feathers.
 		foreach ($config->enabled_feathers as $index => $feather) {
 			if (!file_exists(FEATHERS_DIR."/".$feather."/".$feather.".php")) {
 				unset($config->enabled_feathers[$index]);
@@ -1213,24 +1204,19 @@
 			if (!class_exists($camelized))
 				continue;
 
-			$feathers[$feather] = new $camelized;
-			$feathers[$feather]->safename = $feather;
-
-			if (!ADMIN and $route->action != "feed")
-				continue;
+			Feathers::$instances[$feather] = new $camelized;
+			Feathers::$instances[$feather]->safename = $feather;
 
 			foreach (YAML::load(FEATHERS_DIR."/".$feather."/info.yaml") as $key => $val)
-				$feathers[$feather]->$key = (is_string($val)) ? __($val, $feather) : $val ;
+				Feathers::$instances[$feather]->$key = (is_string($val)) ? __($val, $feather) : $val ;
 		}
 
 		# Initialize all modules.
-		foreach ($feathers as $feather)
+		foreach (Feathers::$instances as $feather)
 			if (method_exists($feather, "__init"))
 				$feather->__init();
 
-		foreach ($modules as $module)
+		foreach (Modules::$instances as $module)
 			if (method_exists($module, "__init"))
 				$module->__init();
-
-		return array($modules, $feathers);
 	}

@@ -456,8 +456,6 @@
 			if ($this->no_results)
 				return false;
 
-			global $feathers;
-
 			# Excerpts are likely to have some sort of markup module applied to them;
 			# if the current instantiation is not filtered, make one that is.
 			$post = ($this->filtered) ? $this : new Post($this->id) ;
@@ -483,13 +481,11 @@
 			if ($this->no_results)
 				return false;
 
-			global $feathers;
-
 			# Excerpts are likely to have some sort of markup module applied to them;
 			# if the current instantiation is not filtered, make one that is.
 			$post = ($this->filtered) ? $this : new Post($this->id) ;
 
-			$title = $feathers[$this->feather]->title($post);
+			$title = Feathers::$instances[$this->feather]->title($post);
 			return Trigger::current()->filter($title, "title", $post);
 		}
 
@@ -502,13 +498,11 @@
 			if ($this->no_results)
 				return false;
 
-			global $feathers;
-
 			# Excerpts are likely to have some sort of markup module applied to them;
 			# if the current instantiation is not filtered, make one that is.
 			$post = ($this->filtered) ? $this : new Post($this->id) ;
 
-			$excerpt = $feathers[$this->feather]->excerpt($post);
+			$excerpt = Feathers::$instances[$this->feather]->excerpt($post);
 			return Trigger::current()->filter($excerpt, "excerpt", $post);
 		}
 
@@ -521,13 +515,11 @@
 			if ($this->no_results)
 				return false;
 
-			global $feathers;
-
 			# Excerpts are likely to have some sort of markup module applied to them;
 			# if the current instantiation is not filtered, make one that is.
 			$post = ($this->filtered) ? $this : new Post($this->id) ;
 
-			$feed_content = $feathers[$this->feather]->feed_content($post);
+			$feed_content = Feathers::$instances[$this->feather]->feed_content($post);
 			return Trigger::current()->filter($feed_content, "feed_content", $post);
 		}
 
@@ -602,8 +594,6 @@
 			if (!$this->filtered)
 				return;
 
-			global $feathers;
-
 			$class = camelize($this->feather);
 
 			$trigger = Trigger::current();
@@ -616,7 +606,7 @@
 					if (!isset($this->$varname))
 						$this->$varname = $this->$custom_filter["field"];
 
-					$this->$custom_filter["field"] = call_user_func_array(array($feathers[$this->feather], $custom_filter["name"]),
+					$this->$custom_filter["field"] = call_user_func_array(array(Feathers::$instances[$this->feather], $custom_filter["name"]),
 					                                                      array($this->$custom_filter["field"], $this));
 				}
 

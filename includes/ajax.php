@@ -26,7 +26,7 @@
 			Trigger::current()->filter($options, array("edit_post_options", "post_options"), $post);
 
 			$theme->load("forms/post/edit", array("post" => $post,
-			                                      "feather" => $feathers[$post->feather],
+			                                      "feather" => Feathers::$instances[$post->feather],
 			                                      "options" => $options,
 			                                      "groups" => Group::find(array("order" => "id ASC"))));
 			break;
