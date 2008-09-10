@@ -2,21 +2,17 @@
 	if (defined('AJAX') and AJAX or isset($_POST['ajax']))
 	     exit($body."HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW");
 
-	$type = (isset($theme->type)) ? $theme->type : "text/html" ;
-	$url = Config::current()->url;
+	$jquery = is_callable(array("Config", "current")) ?
+	              Config::current()->url."/includes/lib/gz.php?file=jquery.js" :
+	              "http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" ;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<meta http-equiv="Content-Type" content="<?php echo $type; ?>; charset=utf-8"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<title>Chyrp: <?php echo $title; ?></title>
-<?php if (class_exists("Config")): ?>
-		<script src="<?php echo $url; ?>/includes/lib/gz.php?file=jquery.js" type="text/javascript" charset="utf-8"></script>
-<?php else: ?>
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" type="text/javascript" charset="utf-8">
-		</script>
-<?php endif; ?>
+		<script src="<?php echo $jquery; ?>" type="text/javascript" charset="utf-8"></script>
 		<style type="text/css">
 			html, body, ul, ol, li,
 			h1, h2, h3, h4, h5, h6,
