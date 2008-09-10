@@ -523,7 +523,7 @@
 				             $comment->comment_author_email,
 				             $comment->comment_author_IP,
 				             "",
-				             (isset($comment->comment_approved) && $comment->comment_approved == "1" ? "approved" : "denied"),
+				             ((isset($comment->comment_approved) and $comment->comment_approved == "1") ? "approved" : "denied"),
 				             "",
 				             $comment->comment_date,
 				             null,

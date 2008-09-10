@@ -38,9 +38,9 @@
 			if (!UPGRADING and !INSTALLING and !isset(Config::current()->sql))
 				error(__("Error"), __("Database configuration is not set. Please run the upgrader."));
 
-			$database = (!UPGRADING) ?
-			            fallback(Config::current()->sql, array(), true) :
-			            Config::get("sql") ;
+			$database = !UPGRADING ?
+			                fallback(Config::current()->sql, array(), true) :
+			                Config::get("sql") ;
 
 			if (!empty($database))
 				foreach ($database as $setting => $value)

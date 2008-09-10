@@ -4,10 +4,8 @@
 
 	if ($config->enable_trackbacking) {
 		$post = new Post($_GET['id']);
-		if (empty($_POST['title']) && empty($_POST['url']) && empty($_POST['blog_name'])) {
+		if (empty($_POST['title']) and empty($_POST['url']) and empty($_POST['blog_name']))
 			redirect($post->url());
-			exit;
-		}
 
 		if (!Post::exists($_GET['id']))
 			trackback_respond(true, __("Fake post ID, or nonexistant post."));

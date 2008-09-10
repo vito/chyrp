@@ -26,7 +26,7 @@
 			if (isset($permissions[$group_id]))
 				$this->permissions = $permissions[$group_id];
 			else
-				$this->permissions = $permissions[$group_id] = (!empty($this->permissions)) ?
+				$this->permissions = $permissions[$group_id] = !empty($this->permissions) ?
 				                                                   YAML::load($this->permissions) :
 				                                                   array() ;
 		}

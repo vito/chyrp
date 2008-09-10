@@ -158,8 +158,8 @@
 		# Handle URIs without domain
 		if ($url[0] == "/")
 			$url = (ADMIN or $use_chyrp_url) ?
-			       Config::current()->chyrp_url.$url :
-			       Config::current()->url.$url ;
+			           Config::current()->chyrp_url.$url :
+			           Config::current()->url.$url ;
 		elseif (class_exists("Route") and !substr_count($url, "://"))
 			$url = url($url);
 

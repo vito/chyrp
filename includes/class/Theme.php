@@ -264,14 +264,14 @@
 		public function feeds() {
 			$config = Config::current();
 			$request = ($config->clean_urls) ? rtrim(Route::current()->request, "/") : fix($_SERVER['REQUEST_URI']) ;
-			$append = ($config->clean_urls) ?
+			$append = $config->clean_urls ?
 			              "/feed" :
 			              ((count($_GET) == 1 and Route::current()->action == "index") ?
-			                "/?feed" :
-			                  "&amp;feed") ;
-			$append.= ($config->clean_urls) ?
-			             "/".urlencode($this->title) :
-			             '&amp;title='.urlencode($this->title) ;
+			                   "/?feed" :
+			                   "&amp;feed") ;
+			$append.= $config->clean_urls ?
+			              "/".urlencode($this->title) :
+			              "&amp;title=".urlencode($this->title) ;
 
 			$route = Route::current();
 			$feeds = '<link rel="alternate" type="application/atom+xml" title="'.$config->name.' Feed" href="'.fallback($config->feed_url, url("feed/"), true).'" />'."\n";
@@ -335,9 +335,9 @@
 		public function load($file, $context = array()) {
 			if (is_array($file))
 				for ($i = 0; $i < count($file); $i++) {
-					$check = ($file[$i][0] == '/' or preg_match("/[a-zA-Z]:\\\/", $file[$i])) ?
-					         $file[$i] :
-					         THEME_DIR."/".$file[$i] ;
+					$check = ($file[$i][0] == "/" or preg_match("/[a-zA-Z]:\\\/", $file[$i])) ?
+					             $file[$i] :
+					             THEME_DIR."/".$file[$i] ;
 
 					if (file_exists($check.".twig") or ($i + 1) == count($file))
 						return $this->load($file[$i], $context);

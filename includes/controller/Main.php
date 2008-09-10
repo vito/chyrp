@@ -272,8 +272,8 @@
 			$visitor = Visitor::current();
 
 			$password = (!empty($_POST['new_password1']) and $_POST['new_password1'] == $_POST['new_password2']) ?
-			            md5($_POST['new_password1']) :
-			            $visitor->password ;
+			                md5($_POST['new_password1']) :
+			                $visitor->password ;
 
 			$visitor->update($visitor->login,
 			                 $password,

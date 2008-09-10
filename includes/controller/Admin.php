@@ -464,8 +464,8 @@
 				Flash::warning(__("User not found."), "/admin/?action=manage_user");
 
 			$password = (!empty($_POST['new_password1']) and $_POST['new_password1'] == $_POST['new_password2']) ?
-			            md5($_POST['new_password1']) :
-			            $user->password ;
+			                md5($_POST['new_password1']) :
+			                $user->password ;
 
 			$user->update($_POST['login'], $password, $_POST['email'], $_POST['full_name'], $_POST['website'], $_POST['group']);
 
@@ -1459,9 +1459,9 @@
 				                                    array("'<code>'.fix('\\1').'</code>'", "'<pre>'.fix('\\1').'</pre>'"),
 				                                    $info["description"]);
 
-				$info["author"]["link"] = (!empty($info["author"]["url"])) ?
-				                          '<a href="'.fix($info["author"]["url"]).'">'.fix($info["author"]["name"]).'</a>' :
-				                          $info["author"]["name"] ;
+				$info["author"]["link"] = !empty($info["author"]["url"]) ?
+				                              '<a href="'.fix($info["author"]["url"]).'">'.fix($info["author"]["name"]).'</a>' :
+				                              $info["author"]["name"] ;
 
 				$category = (module_enabled($folder)) ? "enabled_modules" : "disabled_modules" ;
 				$this->context[$category][$folder] = array("name" => $info["name"],
@@ -1515,7 +1515,7 @@
 				$info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.fix('\\1').'</code>'", $info["description"]);
 				$info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.fix('\\1').'</pre>'", $info["description"]);
 
-				$info["author"]["link"] = (!empty($info["author"]["url"])) ?
+				$info["author"]["link"] = !empty($info["author"]["url"]) ?
 				                              '<a href="'.fix($info["author"]["url"]).'">'.fix($info["author"]["name"]).'</a>' :
 				                              $info["author"]["name"] ;
 
@@ -1556,7 +1556,7 @@
 				fallback($info["description"]);
 				fallback($info["author"], array("name" => "", "url" => ""));
 
-				$info["author"]["link"] = (!empty($info["author"]["url"])) ?
+				$info["author"]["link"] = !empty($info["author"]["url"]) ?
 				                              '<a href="'.$info["author"]["url"].'">'.$info["author"]["name"].'</a>' :
 				                              $info["author"]["name"] ;
 				$info["description"] = preg_replace("/<code>(.+)<\/code>/se",
