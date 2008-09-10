@@ -802,14 +802,26 @@
 
 		foreach ((array) Config::get("enabled_modules") as $module)
 			if (file_exists(MAIN_DIR."/modules/".$module."/upgrades.php")) {
-				echo _f("Calling \"%s\" module's upgrader...", array($module))."\n";
+				ob_start();
+				echo $begin = _f("Calling <span class=\"yay\">%s</span> Module's upgrader...", array($module))."\n";
 				require MAIN_DIR."/modules/".$module."/upgrades.php";
+				$buf = ob_get_contents();
+				if (ob_get_contents() == $begin)
+					ob_end_clean();
+				else
+					ob_end_flush();
 			}
 
 		foreach ((array) Config::get("enabled_feathers") as $feather)
 			if (file_exists(MAIN_DIR."/feathers/".$feather."/upgrades.php")) {
-				echo _f("Calling \"%s\" feather's upgrader...", array($feather))."\n";
+				ob_start();
+				echo $begin = _f("Calling <span class=\"yay\">%s</span> Feather's upgrader...", array($feather))."\n";
 				require MAIN_DIR."/feathers/".$feather."/upgrades.php";
+				$buf = ob_get_contents();
+				if (ob_get_contents() == $begin)
+					ob_end_clean();
+				else
+					ob_end_flush();
 			}
 ?>
 
