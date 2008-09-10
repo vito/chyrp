@@ -103,7 +103,7 @@
 			                                                            "",
 			                                                            file_get_contents(database_file())));
 		else
-			$yaml["database"] = fallback($yaml["config"]["database"], array());
+			$yaml["database"] = fallback($yaml["config"]["sql"], array());
 	} else {
 		foreach ($config as $name => $val)
 			$yaml["config"][$name] = $val;
