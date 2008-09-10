@@ -60,7 +60,7 @@
 	 * Are they using YAML config storage?
 	 */
 	function using_yaml() {
-		return (basename(config_file()) != "config.php" and basename(database_file()) != "database.php");
+		return (basename(config_file()) != "config.php" and basename(database_file()) != "database.php") or !database_file();
 	}
 
 	# Evaluate the code in their config files, but with the classes renamed, so we can safely retrieve the values.
@@ -103,7 +103,7 @@
 			                                                            "",
 			                                                            file_get_contents(database_file())));
 		else
-			$yaml["database"] = fallback($yaml["config"]["sql"], array());
+			$yaml["database"] = fallback($yaml["config"]["sql"], array(), true);
 	} else {
 		# $config and $sql here are loaded from the eval()'s above.
 
@@ -118,17 +118,6 @@
 	# See Also:
 	#     <SQL>
 	require INCLUDES_DIR."/class/SQL.php";
-
-	# Prepare the SQL interface.
-	$sql = SQL::current();
-
-	# Set the SQL info.
-	fallback($yaml["database"]["adapter"], "mysql");
-	foreach ($yaml["database"] as $name => $value)
-		$sql->$name = $value;
-
-	# Initialize connection to SQL server.
-	$sql->connect();
 
 	/**
 	 * Class: Config
@@ -251,10 +240,13 @@
 			return " <span class=\"boo\">".__("failed!")."</span>\n".$info;
 	}
 
-	function make_xml_safe(&$text) {
-		return htmlspecialchars($text, ENT_NOQUOTES, "utf-8");
-	}
-
+	/**
+	 * Function: xml2arr
+	 * Recursively converts a SimpleXML object (and children) to an array.
+	 *
+	 * Parameters:
+	 *     $parse - The SimpleXML object to convert into an array.
+	 */
 	function xml2arr($parse) {
 		if (empty($parse))
 			return "";
@@ -263,23 +255,38 @@
 
 		foreach ($parse as &$val)
 			if (get_class($val) == "SimpleXMLElement")
-				$val = xml2arr($val);
+				$val = self::xml2arr($val);
 
 		return $parse;
 	}
 
+	/**
+	 * Function: arr2xml
+	 * Recursively adds an array (or object I guess) to a SimpleXML object.
+	 *
+	 * Parameters:
+	 *     $object - The SimpleXML object to add to.
+	 *     $data - The data to add to the SimpleXML object.
+	 */
 	function arr2xml(&$object, $data) {
 		foreach ($data as $key => $val) {
-			if (is_int($key) and (empty($val) or trim($val) == "")) {
+			if (is_int($key) and (empty($val) or (is_string($val) and trim($val) == ""))) {
 				unset($data[$key]);
 				continue;
 			}
 
 			if (is_array($val)) {
-				$xml = $object->addChild($key);
-				arr2xml($xml, $val);
+				if (in_array(0, array_keys($val))) { # Numeric-indexed things need to be added as duplicates
+					foreach ($val as $dup) {
+						$xml = $object->addChild($key);
+						arr2xml($xml, $dup);
+					}
+				} else {
+					$xml = $object->addChild($key);
+					arr2xml($xml, $val);
+				}
 			} else
-				$object->addChild($key, trim(fix($val, false, false)));
+				$object->addChild($key, fix($val, false, false));
 		}
 	}
 
@@ -399,7 +406,7 @@
 			$xml = simplexml_load_string($post->xml, "SimpleXMLElement", LIBXML_NOCDATA);
 
 			$parse = xml2arr($xml);
-			array_walk_recursive($parse, "make_xml_safe");
+			array_walk_recursive($parse, "fix");
 
 			$new_xml = new SimpleXMLElement("<post></post>");
 			arr2xml($new_xml, $parse);
@@ -593,13 +600,13 @@
 		Config::set("routes", $new_routes, "Setting new custom routes configuration...");
 	}
 
-	function remove_database_config() {
+	function remove_database_config_file() {
 		if (file_exists(INCLUDES_DIR."/database.yaml.php"))
 			echo __("Removing database.yaml.php file...").
 			     test(@unlink(INCLUDES_DIR."/database.yaml.php"), __("Try deleting it manually."));
 	}
 
-	function rename_database_config() {
+	function rename_database_setting_to_sql() {
 		if (Config::check("sql")) return;
 		Config::set("sql", Config::get("database"));
 		Config::remove("database");
@@ -726,13 +733,9 @@
 		<div class="window">
 <?php if (!empty($_POST) and $_POST['upgrade'] == "yes"): ?>
 			<pre class="pane"><?php
+		# Begin with file/config upgrade tasks.
+
 		fix_htaccess();
-
-		tweets_to_posts();
-
-		pages_parent_id_column();
-
-		pages_list_order_column();
 
 		remove_beginning_slash_from_post_url();
 
@@ -749,18 +752,39 @@
 		Config::fallback("uploads_path", "/uploads/");
 		Config::fallback("chyrp_url", Config::get("url"));
 		Config::fallback("feed_items", Config::get("rss_posts"));
-
+		Config::fallback("sql", $yaml["database"]);
 		Config::fallback("timezone", "America/Indiana/Indianapolis");
 
 		Config::remove("rss_posts");
-
 		Config::remove("time_offset");
 
-		Config::fallback("database", $yaml["database"]);
+		move_upload();
+
+		remove_database_config_file();
+
+		rename_database_setting_to_sql();
+
+		update_custom_routes();
 
 		default_db_adapter_to_mysql();
 
-		move_upload();
+		# Perform database upgrade tasks after all the files/config upgrade tasks are done.
+
+		# Prepare the SQL interface.
+		$sql = SQL::current();
+
+		# Set the SQL info.
+		foreach ($yaml["config"]["sql"] as $name => $value)
+			$sql->$name = $value;
+
+		# Initialize connection to SQL server.
+		$sql->connect();
+
+		tweets_to_posts();
+
+		pages_parent_id_column();
+
+		pages_list_order_column();
 
 		make_posts_safe();
 
@@ -772,13 +796,9 @@
 
 		update_permissions_table();
 
-		update_custom_routes();
-
-		remove_database_config();
-
-		rename_database_config();
-
 		update_post_status_column();
+
+		# Perform Module/Feather upgrades.
 
 		foreach ((array) Config::get("enabled_modules") as $module)
 			if (file_exists(MAIN_DIR."/modules/".$module."/upgrades.php")) {

@@ -35,7 +35,7 @@
 	 */
 	function error($title, $body) {
 		# Clear all output sent before this error.
-		if (($foo = ob_get_contents()) !== false) {
+		if (($buffer = ob_get_contents()) !== false) {
 			ob_end_clean();
 
 			# Since the header might already be set to gzip, start output buffering again.
@@ -46,7 +46,7 @@
 				header("Content-Encoding: gzip");
 			} else
 				ob_start();
-		} else {
+		} elseif (!UPGRADING) {
 			# If output buffering is not started, assume this
 			# is sent from the Session class or somewhere deep.
 			error_log($title.": ".$body);
@@ -57,12 +57,12 @@
 			exit("ERROR: ".$body);
 
 		# Display the error.
-		if (class_exists("Theme") and Theme::current()->file_exists("pages/error"))
+		if (defined('THEME_DIR') and class_exists("Theme") and Theme::current()->file_exists("pages/error"))
 			Theme::current()->load("pages/error", array("title" => $title, "body" => $body));
 		else
 			require INCLUDES_DIR."/error.php";
 
-		if ($foo !== false)
+		if ($buffer !== false)
 			ob_end_flush();
 
 		exit;

@@ -115,6 +115,9 @@
 			if (!isset($this->database))
 				self::__construct();
 
+			if (UPGRADING)
+				$checking = true;
+
 			switch($this->method()) {
 				case "pdo":
 					try {
@@ -176,6 +179,9 @@
 		 *     $throw_exceptions - Should an exception be thrown if the query fails?
 		 */
 		public function query($query, $params = array(), $throw_exceptions = false) {
+			if (!$this->connected)
+				return false;
+
 			# Ensure that every param in $params exists in the query.
 			# If it doesn't, remove it from $params.
 			foreach ($params as $name => $val)
