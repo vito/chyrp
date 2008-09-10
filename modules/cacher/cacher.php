@@ -32,8 +32,6 @@
 		}
 
 		public function runtime() {
-			$this->prepare();
-
 			if ($this->cancelled or !file_exists($this->file) or Flash::exists())
 				return;
 

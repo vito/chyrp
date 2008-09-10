@@ -105,6 +105,8 @@
 		else
 			$yaml["database"] = fallback($yaml["config"]["sql"], array());
 	} else {
+		# $config and $sql here are loaded from the eval()'s above.
+
 		foreach ($config as $name => $val)
 			$yaml["config"][$name] = $val;
 
