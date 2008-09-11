@@ -55,6 +55,8 @@
 		 *                   url or page_url - The URL of the page they're viewing when they open the bookmarklet.
 		 *                   title or page_title - The title of the page they're viewing when they open the bookmarklet.
 		 *                   selection - Their selection on the page they're viewing when they open the bookmarklet.
+		 *     extra - Stuff to output after the input field. Can be anything.
+		 *     note - A minor note to display next to the label text.
 		 */
 		protected function setField($options) {
 			fallback($options["classes"], array());

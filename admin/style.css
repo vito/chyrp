@@ -834,7 +834,7 @@ button.lite img,
 .more_options p {
 	width: 48%;
 	margin: 0 2% 0 0;
-	height: 5.5em; /* TODO: This is too small sometimes. */
+	height: 6.25em;
 	float: left;
 }
 .more_options p input.text {

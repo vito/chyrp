@@ -11,6 +11,9 @@
 								<a href="{% admin "help&id="~field.help %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
 							</span>
 							{% endif %}
+							{% if field.note %}
+							<span class="sub">$field.note</span>
+							{% endif %}
 						</label>
 						{% if field.type == "text" or field.type == "file" %}
 						<input class="$field.type{% if field.classes %} ${ field.classes | join(" ") }{% endif %}" type="$field.type" name="$field.attr" value="{% if not field.no_value %}${ field.value | fallback(post[field.attr] | escape(true, false)) }{% endif %}" id="$field.attr" />
@@ -23,6 +26,7 @@
 							{% endfor %}
 						</select>
 						{% endif %}
+						$field.extra
 					</p>
 					{% endfor %}
 					${ trigger.call("after_post_fields", feather) }
