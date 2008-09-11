@@ -188,7 +188,7 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage any posts."));
 
 			fallback($_GET['query'], "");
-			list($where, $params) = keywords(urldecode($_GET['query']), "xml LIKE :query");
+			list($where, $params) = keywords(urldecode($_GET['query']), "xml LIKE :query OR url LIKE :query");
 
 			if (!empty($_GET['month']))
 				$where["created_at like"] = $_GET['month']."-%";
@@ -678,7 +678,7 @@
 			$exports = array();
 
 			if (isset($_POST['posts'])) {
-				list($where, $params) = keywords(urldecode($_POST['filter_posts']), "xml LIKE :query");
+				list($where, $params) = keywords(urldecode($_POST['filter_posts']), "xml LIKE :query OR url LIKE :query");
 
 				$posts = Post::find(array("drafts" => true, "where" => $where, "params" => $params, "order" => "id ASC"),
 				                    array("filter" => false));

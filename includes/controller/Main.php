@@ -51,7 +51,7 @@
 			if (empty($_GET['query']))
 				return Flash::warning(__("Please enter a search term."));
 
-			list($where, $params) = keywords($_GET['query'], "xml LIKE :query");
+			list($where, $params) = keywords($_GET['query'], "xml LIKE :query OR url LIKE :query");
 
 			$posts = new Paginator(Post::find(array("placeholders" => true,
 			                                        "where" => $where,

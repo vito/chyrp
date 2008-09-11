@@ -191,7 +191,7 @@
 				return;
 
 			fallback($_GET['query'], "");
-			list($where, $params) = keywords(urldecode($_GET['query']), "xml LIKE :query");
+			list($where, $params) = keywords(urldecode($_GET['query']), "xml LIKE :query OR url LIKE :query");
 
 			$visitor = Visitor::current();
 			if (!$visitor->group()->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post"))
