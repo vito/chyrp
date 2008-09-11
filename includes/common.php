@@ -23,6 +23,7 @@
 
 	# Constant: DEBUG
 	# Should Chyrp use debugging processes?
+	# This will also toggle Twig template caching. Disable it if you're live-developing your theme.
 	define('DEBUG', true);
 
 	# Constant: ADMIN
@@ -250,6 +251,21 @@
 	# Set the locale for gettext.
 	set_locale($config->locale);
 
+	# Constant: PREVIEWING
+	# Is the user previewing a theme?
+	define('PREVIEWING', !ADMIN and !empty($_SESSION['theme']));
+
+	# Constant: THEME_DIR
+	# Absolute path to /themes/(current/previewed theme)
+	define('THEME_DIR', MAIN_DIR."/themes/".(PREVIEWING ? $_SESSION['theme'] : $config->theme));
+
+	# Constant: THEME_URL
+	# URL to /themes/(current/previewed theme)
+	define('THEME_URL', $config->chyrp_url."/themes/".(PREVIEWING ? $_SESSION['theme'] : $config->theme));
+
+	# Initialize the theme.
+	$theme = Theme::current();
+
 	# Load the Visitor.
 	$visitor = Visitor::current();
 
@@ -265,24 +281,6 @@
 
 	# Parse the route.
 	$route = Route::current();
-
-	# Constant: PREVIEWING
-	# Is the user previewing a theme?
-	define('PREVIEWING', ($visitor->group()->can("change_settings") and
-	                         !empty($_GET['action']) and
-	                         $_GET['action'] == "theme_preview" and
-	                         !empty($_GET['theme'])));
-
-	# Constant: THEME_DIR
-	# Absolute path to /themes/(current/previewed theme)
-	define('THEME_DIR', MAIN_DIR."/themes/".(PREVIEWING ? $_GET['theme'] : $config->theme));
-
-	# Constant: THEME_URL
-	# URL to /themes/(current/previewed theme)
-	define('THEME_URL', $config->chyrp_url."/themes/".(PREVIEWING ? $_GET['theme'] : $config->theme));
-
-	# Initialize the theme.
-	$theme = Theme::current();
 
 	# Set the content-type to the theme's "type" setting, or "text/html".
 	header("Content-type: ".(INDEX ? fallback($theme->type, "text/html") : "text/html")."; charset=UTF-8");

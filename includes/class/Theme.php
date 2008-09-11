@@ -4,10 +4,8 @@
 	 * Various helper functions for the theming engine.
 	 */
 	class Theme {
-		/**
-		 * String: $title
-		 * The title for the current page.
-		 */
+		# String: $title
+		# The title for the current page.
 		public $title = "";
 		private $twig;
 		private $directory;

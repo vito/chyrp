@@ -17,7 +17,7 @@
 				<span class="button yay center"><img src="images/icons/success.png" alt="current theme" />${ "Current Theme" | translate }</span>
 				{% else %}
 				<a class="button center" href="{% admin "change_theme&theme=" ~ theme.name %}"><img src="images/icons/appearance.png" alt="Select" />${ "Select" | translate }</a>
-				<a class="button center" href="{% url "theme_preview/" ~ theme.name ~ "/" %}"><img src="images/icons/magnifier.png" alt="Preview" />${ "Preview" | translate }</a>
+				<a class="button center${ preview | selected(theme.name, true) }" href="{% admin "preview_theme&theme=" ~ theme.name %}"><img src="images/icons/magnifier.png" alt="Preview" />${ "Preview" | translate }</a>
 				{% endif %}
 			</div>
 			{% endfor %}

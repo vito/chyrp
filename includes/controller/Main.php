@@ -135,24 +135,6 @@
 		}
 
 		/**
-		 * Function: theme_preview
-		 * Handles theme previewing.
-		 */
-		public function theme_preview() {
-			$visitor = Visitor::current();
-			$route = Route::current();
-
-			if (!$visitor->group()->can("change_settings"))
-				redirect("/");
-
-			if (empty($_GET['theme']))
-				error(__("Error"), __("Please specify a theme to preview."));
-
-			$this->index();
-			return $route->action = "index";
-		}
-
-		/**
 		 * Function: toggle_admin
 		 * Toggles the Admin control panel (if available).
 		 */

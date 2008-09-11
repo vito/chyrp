@@ -722,7 +722,11 @@ a.prev_page:hover {
 button:active,
 .button:active,
 a.next_page:active,
-a.prev_page:active {
+a.prev_page:active,
+button.selected,
+.button.selected,
+a.next_page.selected,
+a.prev_page.selected {
 	background-color: #d7d7d7;
 	border-color: #d7d7d7;
 	border-left-color: #b1b1b1;
@@ -746,7 +750,11 @@ button.boo:hover,
 	border-right-color: #9f1000;
 }
 button.boo:active,
-.button.boo:active {
+.button.boo:active,
+button.boo.selected,
+.button.boo.selected,
+a.next_page.boo.selected,
+a.prev_page.boo.selected {
     background: #b30600;
     border-color: #b30600;
     border-left-color: #7d0000;
@@ -770,7 +778,11 @@ button.yay:hover,
 	border-right-color: #105f00;
 }
 button.yay:active,
-.button.yay:active {
+.button.yay:active,
+button.yay.selected,
+.button.yay.selected,
+a.next_page.yay.selected,
+a.prev_page.yay.selected {
     background: #067000;
     border-color: #067000;
     border-left-color: #003d00;

@@ -1527,6 +1527,8 @@
 		public function themes() {
 			$config = Config::current();
 
+			$this->context["preview"] = !empty($_SESSION['theme']) ? $_SESSION['theme'] : "" ;
+
 			$this->context["themes"] = array();
 
 			if (!$open = @opendir(THEMES_DIR))
@@ -1564,6 +1566,7 @@
 				                                                       $config->chyrp_url."/admin/images/noscreenshot.png"),
 				                                   "info" => $info);
 			}
+
 			closedir($open);
 		}
 
@@ -1708,6 +1711,28 @@
 				Flash::message($message);
 
 			Flash::notice(_f("Theme changed to &#8220;%s&#8221;.", array($info["name"])), "/admin/?action=themes");
+		}
+
+		/**
+		 * Function: preview_theme
+		 * Previews the theme.
+		 */
+		public function preview_theme() {
+			if (!Visitor::current()->group()->can("change_settings"))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to preview themes."));
+			if (empty($_GET['theme']))
+				error(__("No Theme Specified"), __("You did not specify a theme to preview."));
+
+			$info = YAML::load(THEMES_DIR."/".$_GET['theme']."/info.yaml");
+
+			if (!empty($_SESSION['theme'])) {
+				error_log(print_r($_SESSION['theme'], true));
+				unset($_SESSION['theme']);
+				Flash::notice(_f("Stopped previewing &#8220;%s&#8221;.", array($info["name"])), "/admin/?action=themes");
+			} else {
+				$_SESSION['theme'] = $_GET['theme'];
+				Flash::notice(_f("Previewing theme &#8220;%s&#8221;. Press the theme's &#8220;Preview&#8221; button again to stop previewing.", array($info["name"])), "/");
+			}
 		}
 
 		/**
