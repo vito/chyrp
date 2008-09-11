@@ -335,22 +335,15 @@
 		}
 
 		public function check_route_tag() {
-			global $posts;
-
-			$posts = new Paginator(Post::find(array("placeholders" => true,
-			                                        "where" => array("tags.clean like" => "%{{".$_GET['name']."}}%"))),
-			                       Config::current()->posts_per_page);
-
-			return !empty($posts->paginated);
+			return SQL::current()->count("tags", array("clean like" => "%{{".$_GET['name']."}}%"));
 		}
 
 		public function route_tag() {
 			global $posts;
 
-			if (isset($posts))
-				return;
-			else
-				return $this->check_route_tag();
+			$posts = new Paginator(Post::find(array("placeholders" => true,
+			                                        "where" => array("tags.clean like" => "%{{".$_GET['name']."}}%"))),
+			                       Config::current()->posts_per_page);
 		}
 
 		public function import_chyrp_post($entry, $post) {
@@ -598,8 +591,11 @@
 							$(this).removeClass("tag_added")
 					})
 				}
+
 				scanTags()
+
 				$("#tags").livequery("keyup", scanTags)
+
 				$(".tag_cloud > span").livequery("mouseover", function(){
 					$(this).find(".controls").css("opacity", 1)
 				}).livequery("mouseout", function(){

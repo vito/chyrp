@@ -194,6 +194,9 @@
 					}
 
 					$its_fine = true;
+
+					# This trigger filter must stay low-level and not call anything that
+					# ends up calling Route::current() in any way, to prevent recursion.
 					Trigger::current()->filter($its_fine, "check_route_".$action, $action);
 
 					if ($its_fine)
