@@ -37,40 +37,19 @@
 		# The current action.
 		public $action = "";
 
+		# Array: $try
+		# An array of (string) actions to try until one doesn't return false.
+		public $try = array();
+
 		# Boolean: $ajax
 		# Shortcut to the AJAX constant (useful for Twig).
 		public $ajax = AJAX;
-
-		# Array: $post_url_attrs
-		# Contains an associative array of URL key to value arguments if we're viewing a post.
-		public $post_url_attrs = array();
 
 		/**
 		 * Function: __construct
 		 * Parse the URL to determine what to do.
 		 */
 		private function __construct() {
-			$this->determine_action();
-
-			# Check if we are viewing a custom route, and set the action/GET parameters accordingly.
-			$this->check_custom_routes();
-
-			# If the post viewing URL is the same as the page viewing URL, check for viewing a page first.
-			if (preg_match("/^\((clean|url)\)\/?$/", Config::current()->post_url)) {
-				$this->check_viewing_page();
-				$this->check_viewing_post();
-			} else {
-				$this->check_viewing_post();
-				$this->check_viewing_page();
-			}
-		}
-
-		/**
-		 * Function: determine_action
-		 * Determine the action of the current URL.
-		 */
-		public function determine_action() {
-			global $page;
 			$config = Config::current();
 
 			$this->action =& $_GET['action'];
@@ -82,6 +61,72 @@
 			$this->safe_path = str_replace("/", "\\/", $parse["path"]);
 			$this->request = preg_replace("/".$this->safe_path."/", "", $_SERVER['REQUEST_URI'], 1);
 			$this->arg = explode("/", trim($this->request, "/"));
+
+			$this->determine_action();
+
+			if (!INDEX)
+				return;
+
+			# Check if we are viewing a custom route, and set the action/GET parameters accordingly.
+			$this->check_custom_routes();
+
+			# If the post viewing URL is the same as the page viewing URL, check for viewing a page first.
+			if (preg_match("/^\((clean|url)\)\/?$/", $config->post_url)) {
+				$this->check_viewing_page();
+				$this->check_viewing_post();
+			} else {
+				$this->check_viewing_post();
+				$this->check_viewing_page();
+			}
+
+			$this->try[] = fallback($this->arg[0], "index", true);
+		}
+
+		/**
+		 * Function: init
+		 * Begin running Controller actions until one of them doesn't return false.
+		 *
+		 * This will also call the route_xxxxx Triggers.
+		 *
+		 * Parameters:
+		 *     $controller - The Controller to run methods on.
+		 */
+		public function init($controller) {
+			$trigger = Trigger::current();
+
+			$try = $this->try;
+			$try[] = $this->action;
+
+			foreach ($try as $key => $val) {
+				if (is_numeric($key))
+					list($method, $args) = array($val, array());
+				else
+					list($method, $args) = array($key, $val);
+
+				$this->action = $method;
+
+				if (method_exists($controller, $method))
+					$call = call_user_func_array(array($controller, $method), $args);
+				else
+					$call = false;
+
+				if (!$call and $trigger->exists("route_".$method))
+					$call = $trigger->call("route_".$method, Theme::current());
+
+				if ($call !== false)
+					return;
+			}
+
+			# If we get to this point it means none of the routes worked.
+			$this->action = null;
+		}
+
+		/**
+		 * Function: determine_action
+		 * Determine the action of the current URL.
+		 */
+		public function determine_action() {
+			$config = Config::current();
 
 			if (empty($this->arg[0])) # If they're just at /, don't bother with all this.
 				return $this->action = "index";
@@ -103,21 +148,19 @@
 					return $this->action = "index";
 			}
 
+			# Paginator
+			if (preg_match_all("/\/((([^_\/]+)_)?page)\/([0-9]+)/", $this->request, $page_matches)) {
+				foreach ($page_matches[1] as $key => $page_var)
+					$_GET[$page_var] = (int) $page_matches[4][$key];
+
+				if ($this->arg[0] == $page_matches[1][0]) # Don't fool ourselves into thinking we're viewing a page.
+					return $this->action = (isset($config->routes["/"])) ? $config->routes["/"] : "index" ;
+			}
+
 			# Viewing a post by its ID
 			if ($this->arg[0] == "id") {
 				$_GET['id'] = $this->arg[1];
 				return $this->action = "id";
-			}
-
-			# Paginator
-			if (preg_match_all("/\/((([^_\/]+)_)?page)\/([0-9]+)/", $this->request, $page_matches)) {
-				foreach ($page_matches[1] as $key => $page_var) {
-					$index = array_search($page_var, $this->arg);
-					$_GET[$page_var] = $this->arg[$index + 1];
-				}
-
-				if ($index == 0) # Don't set $this->action to "page" (bottom of this function).
-					return $this->action = (isset($config->routes["/"])) ? $config->routes["/"] : "index" ;
 			}
 
 			# Archive
@@ -135,19 +178,13 @@
 
 			# Searching
 			if ($this->arg[0] == "search") {
-				if (isset($this->arg[1]) and strpos($this->request, "?action=search&query="))
+				if (isset($this->arg[1]) and substr_count($this->request, "?action=search&query="))
 					redirect(str_replace("?action=search&query=", "", $this->request));
 
 				if (isset($this->arg[1]))
 					$_GET['query'] = $this->arg[1];
 
 				return $this->action = "search";
-			}
-
-			# Bookmarklet
-			if ($this->arg[0] == "bookmarklet") {
-				$_GET['status'] = $this->arg[1];
-				return $this->action = "bookmarklet";
 			}
 		}
 
@@ -156,9 +193,6 @@
 		 * Check to see if we're viewing a custom route, and if it is, parse it.
 		 */
 		public function check_custom_routes() {
-			if (!INDEX)
-				return;
-
 			$config = Config::current();
 
 			# Custom pages added by Modules, Feathers, Themes, etc.
@@ -193,14 +227,7 @@
 						$_GET[$split[0]] = $split[1];
 					}
 
-					$its_fine = true;
-
-					# This Trigger filter must stay low-level and not call anything that
-					# ends up calling Route::current() in any way, to prevent recursion.
-					Trigger::current()->filter($its_fine, "check_route_".$action, $action);
-
-					if ($its_fine)
-						return $this->action = $action;
+					$this->try[] = $action;
 				}
 			}
 		}
@@ -210,27 +237,12 @@
 		 * Check to see if we're viewing a page, and if it is, handle it.
 		 */
 		public function check_viewing_page() {
-			if (!INDEX)
-				return;
-
 			global $page;
 
-			$config = Config::current();
-
-			if (!empty($this->action))
+			if (empty($this->arg[0]))
 				return;
 
-			if (count($this->arg) == 1 and method_exists(MainController::current(), $this->arg[0]))
-				return $this->action = $this->arg[0];
-
-			$valids = Page::find(array("where" => "url IN ('".implode("', '", $this->arg)."')"));
-
-			if (count($valids) == count($this->arg)) {
-				foreach ($valids as $page)
-					if ($page->url == end($this->arg))
-						return list($_GET['url'], $this->action) = array($page->url, "page");
-			} elseif (!preg_match("/^\((clean|url)\)\/?$/", $config->post_url)) # This is the last route parse.
-				return $this->action = fallback($this->arg[0], "index");
+			$this->try["page"] = array($this->arg);
 		}
 
 		/**
@@ -242,9 +254,6 @@
 		 *            If a post is found by that URL, it will be returned.
 		 */
 		public function check_viewing_post($url = false) {
-			if (!$url and !INDEX)
-				return;
-
 			$config = Config::current();
 
 			if (!$url and !empty($this->action))
@@ -265,24 +274,17 @@
 			$args = explode("/", trim($request, "/"));
 
 			$post_url = $this->key_regexp(rtrim($post_url, "/"));
+			$post_url_attrs = array();
 			preg_match_all("/\(([^\/]+)\)/", $config->post_url, $parameters);
 			if (preg_match("/".$post_url."/", rtrim($request, "/"), $matches)) {
 				array_shift($matches);
 
 				foreach ($parameters[0] as $index => $parameter)
 					if ($parameter[0] == "(")
-						$this->post_url_attrs[rtrim(ltrim($parameter, "("), ")")] = urldecode($args[$index]);
+						$post_url_attrs[rtrim(ltrim($parameter, "("), ")")] = urldecode($args[$index]);
 
-				$check = Post::from_url($this->post_url_attrs, array("filter" => false));
-
-				if (!$check->no_results)
-					return ($url ? $check : $this->action = "view");
-				elseif ($url)
-					return false;
+				$this->try["view"] = array($post_url_attrs);
 			}
-
-			if (preg_match("/^\((clean|url)\)\/?$/", $config->post_url)) # This is the last route parse.
-				return $this->action = fallback($this->arg[0], "index");
 		}
 
 		/**

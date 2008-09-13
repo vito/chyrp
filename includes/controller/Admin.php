@@ -1920,11 +1920,11 @@
 		 * Function: help
 		 * Sets the $title and $body for various help IDs.
 		 */
-		public function help($id = null) {
+		public function help($id = null, &$title, &$body) {
 			if (!isset($id))
 				redirect("/admin/");
 
-			global $title, $body;
+			list($title, $body) = Trigger::current()->call("help_".$_GET['id']);
 
 			switch($id) {
 				case "filtering_results":

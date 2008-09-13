@@ -420,6 +420,10 @@
 			switch($_POST['action']) {
 				case "reload_comments":
 					$post = new Post($_POST['post_id']);
+
+					if ($post->no_results)
+						break;
+
 					if ($post->latest_comment > $_POST['last_comment']) {
 						$new_comments = $sql->select("comments",
 						                             "id, created_at",

@@ -305,12 +305,8 @@
 			$config->posts_per_page = $config->feed_items;
 
 		# Call the controller function for the current action, and any extension routes.
-		if (INDEX) {
-			if (method_exists($main, $route->action))
-				call_user_func(array($main, $route->action));
-
-			$trigger->call("route_".$route->action, $theme);
-		}
+		if (INDEX)
+			$route->init($main);
 
 		# Serve the feed.
 		if (isset($_GET['feed']))

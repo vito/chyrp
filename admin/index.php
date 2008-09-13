@@ -95,7 +95,7 @@
 			                                                "show" => in_array(true, $show["extend"]),
 			                                                "selected" => (in_array($action, $extend)));
 
-			$this->subnav_context();
+			$this->subnav_context($action);
 
 			$trigger->filter($admin->context["selected"], "nav_selected");
 
@@ -124,9 +124,7 @@
 			return $this->twig->getTemplate($template)->display($admin->context);
 		}
 
-		public function subnav_context() {
-			global $action;
-
+		public function subnav_context($action) {
 			$trigger = Trigger::current();
 			$visitor = Visitor::current();
 			$admin   = AdminController::current();

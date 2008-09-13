@@ -76,14 +76,49 @@
 		}
 
 		/**
+		 * Function: view
+		 * Views a post.
+		 */
+		public function view($attrs = null) {
+			global $post;
+
+			$config = Config::current();
+
+			if (isset($attrs))
+				$post = Post::from_url($attrs, array("drafts" => true));
+			else
+				$post = new Post(null, array("where" => array("url" => urldecode(fallback($_GET['url'])))));
+
+			if ($post->no_results)
+				return false;
+		}
+
+		/**
 		 * Function: page
 		 * Handles page viewing.
 		 */
-		public function page() {
+		public function page($urls = null) {
 			global $page;
 
-			if (!isset($page))
+			if (empty($urls) and empty($_GET['url']))
+				return false;
+
+			$config = Config::current();
+			if (isset($urls)) {
+				$valids = Page::find(array("where" => array("url" => $urls)));
+
+				if (count($valids) == count($urls)) {
+					foreach ($valids as $page)
+						if ($page->url == end($urls))
+							return;
+				}
+
+				return false;
+			} else
 				$page = new Page(null, array("where" => array("url" => $_GET['url'])));
+
+			if ($page->no_results)
+				return false;
 		}
 
 		/**
@@ -102,27 +137,6 @@
 		public function rss() {
 			header("HTTP/1.1 301 Moved Permanently");
 			redirect(fallback(Config::current()->feed_url, url("feed/"), true));
-		}
-
-		/**
-		 * Function: view
-		 * Views a post.
-		 */
-		public function view() {
-			global $post;
-
-			$config = Config::current();
-			$route = Route::current();
-
-			$get = array_map("urldecode", $_GET);
-
-			if (!$config->clean_urls)
-				$post = new Post(null, array("where" => array("url" => fallback($get['url']))));
-			else
-				$post = Post::from_url($route->post_url_attrs, array("drafts" => true));
-
-			if ($post->no_results)
-				show_404();
 		}
 
 		/**

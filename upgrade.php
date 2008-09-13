@@ -91,29 +91,6 @@
 	# Horde YAML parsing library.
 	require_once INCLUDES_DIR."/lib/YAML.php";
 
-	$yaml = array();
-	$yaml["config"] = array();
-	$yaml["database"] = array();
-
-	if (using_yaml()) {
-		$yaml["config"] = YAML::load(preg_replace("/<\?php(.+)\?>\n?/s", "", file_get_contents(config_file())));
-
-		if (database_file())
-			$yaml["database"] = YAML::load(preg_replace("/<\?php(.+)\?>\n?/s",
-			                                                            "",
-			                                                            file_get_contents(database_file())));
-		else
-			$yaml["database"] = fallback($yaml["config"]["sql"], array(), true);
-	} else {
-		# $config and $sql here are loaded from the eval()'s above.
-
-		foreach ($config as $name => $val)
-			$yaml["config"][$name] = $val;
-
-		foreach ($sql as $name => $val)
-			$yaml["database"][$name] = $val;
-	}
-
 	# File: SQL
 	# See Also:
 	#     <SQL>
@@ -124,6 +101,11 @@
 	 * Handles writing to whichever config file they're using.
 	 */
 	class Config {
+		# Array: $yaml
+		# Stores all of the YAML data.
+		static $yaml = array("config" => array(),
+		                     "database" => array());
+
 		/**
 		 * Function: get
 		 * Returns a config setting.
@@ -132,8 +114,7 @@
 		 *     $setting - The setting to return.
 		 */
 		static function get($setting) {
-			global $yaml;
-			return (isset($yaml["config"][$setting])) ? $yaml["config"][$setting] : false ;
+			return (isset(Config::$yaml["config"][$setting])) ? Config::$yaml["config"][$setting] : false ;
 		}
 
 		/**
@@ -148,16 +129,14 @@
 		static function set($setting, $value, $message = null) {
 			if (self::get($setting) == $value) return;
 
-			global $yaml;
-
 			if (!isset($message))
 				$message = _f("Setting %s to %s...", array($setting, normalize(print_r($value, true))));
 
-			$yaml["config"][$setting] = $value;
+			Config::$yaml["config"][$setting] = $value;
 
 			$protection = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
 
-			$dump = $protection.YAML::dump($yaml["config"]);
+			$dump = $protection.YAML::dump(Config::$yaml["config"]);
 
 			echo $message.test(@file_put_contents(INCLUDES_DIR."/config.yaml.php", $dump));
 		}
@@ -170,8 +149,7 @@
 		 *     $setting - Name of the config to check.
 		 */
 		static function check($setting) {
-			global $yaml;
-			return (isset($yaml["config"][$setting]));
+			return (isset(Config::$yaml["config"][$setting]));
 		}
 
 		/**
@@ -201,17 +179,34 @@
 		static function remove($setting) {
 			if (!self::check($setting)) return;
 
-			global $yaml;
-
-			unset($yaml["config"][$setting]);
+			unset(Config::$yaml["config"][$setting]);
 
 			$protection = "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>\n";
 
-			$dump = $protection.YAML::dump($yaml["config"]);
+			$dump = $protection.YAML::dump(Config::$yaml["config"]);
 
 			echo _f("Removing %s setting...", array($setting)).
 			     test(@file_put_contents(INCLUDES_DIR."/config.yaml.php", $dump));
 		}
+	}
+
+	if (using_yaml()) {
+		Config::$yaml["config"] = YAML::load(preg_replace("/<\?php(.+)\?>\n?/s", "", file_get_contents(config_file())));
+
+		if (database_file())
+			Config::$yaml["database"] = YAML::load(preg_replace("/<\?php(.+)\?>\n?/s",
+			                                                            "",
+			                                                            file_get_contents(database_file())));
+		else
+			Config::$yaml["database"] = fallback(Config::$yaml["config"]["sql"], array(), true);
+	} else {
+		# $config and $sql here are loaded from the eval()'s above.
+
+		foreach ($config as $name => $val)
+			Config::$yaml["config"][$name] = $val;
+
+		foreach ($sql as $name => $val)
+			Config::$yaml["database"][$name] = $val;
 	}
 
 	load_translator("chyrp", INCLUDES_DIR."/locale/".Config::get("locale").".mo");
@@ -752,7 +747,7 @@
 		Config::fallback("uploads_path", "/uploads/");
 		Config::fallback("chyrp_url", Config::get("url"));
 		Config::fallback("feed_items", Config::get("rss_posts"));
-		Config::fallback("sql", $yaml["database"]);
+		Config::fallback("sql", Config::$yaml["database"]);
 		Config::fallback("timezone", "America/Indiana/Indianapolis");
 
 		Config::remove("rss_posts");
@@ -774,7 +769,7 @@
 		$sql = SQL::current();
 
 		# Set the SQL info.
-		foreach ($yaml["config"]["sql"] as $name => $value)
+		foreach (Config::$yaml["config"]["sql"] as $name => $value)
 			$sql->$name = $value;
 
 		# Initialize connection to SQL server.

@@ -215,17 +215,12 @@
 		 * Outputs the default JavaScript script references.
 		 */
 		public function javascripts() {
-			global $posts;
-
 			$route = Route::current();
 
 			$args = "";
 			foreach ($_GET as $key => $val)
 				if (!empty($val) and $val != $route->action)
 					$args.= "&amp;".$key."=".urlencode($val);
-
-			# if (isset($posts))
-			#     $args.= "&amp;next_post=".$posts->next()->paginated[0]->id;
 
 			$config = Config::current();
 			$trigger = Trigger::current();

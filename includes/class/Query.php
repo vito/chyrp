@@ -34,14 +34,16 @@
 					else
 						break;
 
+				$logQuery = $query;
+				foreach ($params as $name => $val)
+					$logQuery = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", SQL::current()->escape($val)."\\1", $logQuery);
+
 				SQL::current()->debug[] = array("number" => SQL::current()->queries,
 				                                "file" => str_replace(MAIN_DIR."/", "", $target["file"]),
 				                                "line" => $target["line"],
 				                                "query" => str_replace("\n",
 				                                                       "\\n",
-				                                                       str_replace(array_keys($params),
-				                                                                   array_values($params),
-				                                                                   $query)));
+				                                                       $logQuery));
 			}
 
 			switch(SQL::current()->method()) {

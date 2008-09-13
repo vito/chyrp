@@ -313,8 +313,8 @@
 		}
 
 		public function help_aggregation_syntax() {
-			global $title, $body;
 			$title = __("Post Values", "aggregator");
+
 			$body = "<p>".__("Use <a href=\"http://yaml.org/\">YAML</a> to specify what post attribute holds what value of the feed entry.", "aggregator")."</p>";
 
 			$body.= "<h2>".__("XPath", "aggregator")."</h2>";
@@ -335,5 +335,7 @@
 			$body.= "<h2>".__("Example", "aggregator")."</h2>";
 			$body.= "<p>".__("From the Photo feather:")."</pre>";
 			$body.= "<pre><code>filename: call:upload_from_url(feed[link].attr[href])\ncaption: feed[description]</code></pre>";
+
+			return array($title, $body);
 		}
 	}

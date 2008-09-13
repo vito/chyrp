@@ -2,8 +2,7 @@
 	$title = "Title";
 	$body = "Body";
 
-	$trigger->call("help_".$_GET['id']);
-	$admin->help($_GET['id']);
+	$admin->help($_GET['id'], $title, $body);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
