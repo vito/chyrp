@@ -74,8 +74,9 @@ function togglers() {
 	$(document.createElement("input")).attr({
 		type: "checkbox",
 		name: "toggle",
-		id: "toggle"
-	}).prependTo("#toggler, .toggler")
+		id: "toggle",
+		"class": "checkbox"
+	}).appendTo("#toggler, .toggler")
 
 	$("#toggle").click(function(){
 		$("form#new_group, form#group_edit, table").find(":checkbox").not("#toggle").each(function(){
