@@ -13,6 +13,17 @@
 		public $context = array();
 
 		/**
+		 * Function: __construct
+		 * Loads the Twig parser into <Theme>, and sets up the theme l10n domain.
+		 */
+		private function __construct() {
+			$this->twig = new Twig_Loader(THEME_DIR,
+			                              ((is_writable(INCLUDES_DIR."/caches") and !DEBUG and !PREVIEWING) ?
+			                                  INCLUDES_DIR."/caches" :
+			                                  null));
+		}
+
+		/**
 		 * Function: index
 		 * Grabs the posts for the main page.
 		 */
@@ -443,22 +454,19 @@
 
 			$this->displayed = true;
 
-			$theme = Theme::current();
-			$theme->title = $title;
-
-			$this->context = $context;
+			$this->context = array_merge($context, $this->context);
 
 			$trigger->filter($this->context, array("main_context", "main_context_".str_replace("/", "_", $file)));
 
 			$visitor = Visitor::current();
 			$config = Config::current();
 
-			$this->context["theme"]        = $theme;
+			$this->context["theme"]        = Theme::current();
 			$this->context["flash"]        = Flash::current();
 			$this->context["trigger"]      = $trigger;
 			$this->context["modules"]      = Modules::$instances;
 			$this->context["feathers"]     = Feathers::$instances;
-			$this->context["title"]        = $theme->title;
+			$this->context["title"]        = $title;
 			$this->context["site"]         = $config;
 			$this->context["visitor"]      = $visitor;
 			$this->context["route"]        = Route::current();
@@ -482,7 +490,21 @@
 
 			$this->context["sql_debug"] =& SQL::current()->debug;
 
-			return $theme->load($file, $this->context);
+			if (is_array($file))
+				for ($i = 0; $i < count($file); $i++) {
+					$check = ($file[$i][0] == "/" or preg_match("/[a-zA-Z]:\\\/", $file[$i])) ?
+					             $file[$i] :
+					             THEME_DIR."/".$file[$i] ;
+
+					if (file_exists($check.".twig") or ($i + 1) == count($file))
+						return $this->display($file[$i], $context);
+				}
+
+			$file = ($file[0] == "/" or preg_match("/[a-zA-Z]:\\\/", $file)) ? $file : THEME_DIR."/".$file ;
+			if (!file_exists($file.".twig"))
+				error(__("Template Missing"), _f("Couldn't load template: <code>%s</code>", array($file.".twig")));
+
+			return $this->twig->getTemplate($file.".twig")->display($this->context);
 		}
 
 		/**
@@ -494,5 +516,3 @@
 			return $instance = (empty($instance)) ? new self() : $instance ;
 		}
 	}
-
-	$main = MainController::current();

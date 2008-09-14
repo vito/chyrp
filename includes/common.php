@@ -36,7 +36,7 @@
 
 	# Constant: AJAX
 	# Is this being run from an AJAX request?
-	if (!defined('AJAX')) define('AJAX', false);
+	if (!defined('AJAX')) define('AJAX', isset($_POST['ajax']) and $_POST['ajax'] == "true");
 
 	# Constant: XML_RPC
 	# Is this being run from XML-RPC?

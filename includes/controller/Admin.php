@@ -4,6 +4,10 @@
 	 * The logic behind the Admin area.
 	 */
 	class AdminController {
+		# Boolean: $displayed
+		# Has anything been displayed?
+		public $displayed = false;
+
 		# Array: $context
 		# Contains the context for various admin pages, to be passed to the Twig templates.
 		public $context = array();
@@ -1931,127 +1935,6 @@
 		}
 
 		/**
-		 * Function: display
-		 * Renders the page.
-		 *
-		 * Parameters:
-		 *     $action - The template file to display, in /admin/layout/pages.
-		 *     $context - Context for the template.
-		 *     $title - The title for the page. Defaults to a camlelization of the action, e.g. foo_bar -> Foo Bar.
-		 */
-		public function display($action, $context = array(), $title = "") {
-			if (!isset($action))
-				return false; # If they viewed /subnav_context, this'll get called.
-
-			fallback($title, camelize($action, true));
-
-			$this->context = array_merge($context, $this->context);
-
-			$trigger = Trigger::current();
-
-			$trigger->filter($this->context, array("admin_context", "admin_context_".str_replace("/", "_", $action)));
-
-			# Are there any extension-added pages?
-			foreach (array("write" => array(),
-			               "manage" => array("import", "export"),
-			               "settings" => array(),
-			               "extend" => array("modules", "feathers", "themes")) as $main_nav => $val) {
-				$$main_nav = $val;
-				$trigger->filter($$main_nav, $main_nav."_pages");
-			}
-
-			$visitor = Visitor::current();
-
-			$this->context["theme"]      = Theme::current();
-			$this->context["flash"]      = Flash::current();
-			$this->context["trigger"]    = $trigger;
-			$this->context["title"]      = $title;
-			$this->context["site"]       = Config::current();
-			$this->context["visitor"]    = $visitor;
-			$this->context["logged_in"]  = logged_in();
-			$this->context["route"]      = Route::current();
-			$this->context["hide_admin"] = isset($_SESSION["hide_admin"]);
-			$this->context["now"]        = time();
-			$this->context["version"]    = CHYRP_VERSION;
-			$this->context["debug"]      = DEBUG;
-			$this->context["feathers"]   = Feathers::$instances;
-			$this->context["modules"]    = Modules::$instances;
-			$this->context["POST"]       = $_POST;
-			$this->context["GET"]        = $_GET;
-
-			$this->context["navigation"] = array();
-
-			$show = array("write" => array($visitor->group()->can("add_draft", "add_post", "add_page")),
-			              "manage" => array($visitor->group()->can("view_own_draft",
-			                                                       "view_draft",
-			                                                       "edit_own_draft",
-			                                                       "edit_own_post",
-			                                                       "edit_post",
-			                                                       "delete_own_draft",
-			                                                       "delete_own_post",
-			                                                       "delete_post",
-			                                                       "add_page",
-			                                                       "edit_page",
-			                                                       "delete_page",
-			                                                       "add_user",
-			                                                       "edit_user",
-			                                                       "delete_user",
-			                                                       "add_group",
-			                                                       "edit_group",
-			                                                       "delete_group")),
-			              "settings" => array($visitor->group()->can("change_settings")),
-			              "extend" => array($visitor->group()->can("toggle_extensions")));
-
-			foreach ($show as $name => &$arr)
-				$trigger->filter($arr, $name."_nav_show");
-
-			$this->context["navigation"]["write"] = array("title" => __("Write"),
-			                                              "show" => in_array(true, $show["write"]),
-			                                              "selected" => (in_array($action, $write) or
-			                                                            match("/^write_/", $action)));
-
-			$this->context["navigation"]["manage"] = array("title" => __("Manage"),
-			                                               "show" => in_array(true, $show["manage"]),
-			                                               "selected" => (in_array($action, $manage) or
-			                                                             match(array("/^manage_/",
-			                                                                         "/^edit_/",
-			                                                                         "/^delete_/",
-			                                                                         "/^new_/"), $action)));
-
-			$this->context["navigation"]["settings"] = array("title" => __("Settings"),
-			                                                 "show" => in_array(true, $show["settings"]),
-			                                                 "selected" => (in_array($action, $settings) or
-			                                                               match("/_settings$/", $action)));
-
-			$this->context["navigation"]["extend"] = array("title" => __("Extend"),
-			                                               "show" => in_array(true, $show["extend"]),
-			                                               "selected" => (in_array($action, $extend)));
-
-			$this->subnav_context($action);
-
-			$trigger->filter($this->context["selected"], "nav_selected");
-
-			$this->context["sql_debug"]  = SQL::current()->debug;
-
-			$template = file_exists(THEME_DIR."/admin/layout/pages/".$action.".twig") ?
-			                THEME_DIR."/admin/pages/".$action.".twig" :
-			                MAIN_DIR."/admin/layout/pages/".$action.".twig" ;
-
-			$config = Config::current();
-			if (!file_exists($template)) {
-				foreach (array(MODULES_DIR => $config->enabled_modules, FEATHERS_DIR => $config->enabled_feathers) as $path => $try)
-					foreach ($try as $extension)
-						if (file_exists($path."/".$extension."/pages/admin/".$action.".twig"))
-							$template = $path."/".$extension."/pages/admin/".$action.".twig";
-
-				if (!file_exists($template))
-					error(__("Template Missing"), _f("Couldn't load template: <code>%s</code>", array("pages/".$action.".twig")));
-			}
-
-			return $this->twig->getTemplate($template)->display($this->context);
-		}
-
-		/**
 		 * Function: subnav_context
 		 * Generates the context variables for the subnav.
 		 */
@@ -2152,6 +2035,131 @@
 		}
 
 		/**
+		 * Function: display
+		 * Renders the page.
+		 *
+		 * Parameters:
+		 *     $action - The template file to display, in /admin/layout/pages.
+		 *     $context - Context for the template.
+		 *     $title - The title for the page. Defaults to a camlelization of the action, e.g. foo_bar -> Foo Bar.
+		 */
+		public function display($action, $context = array(), $title = "") {
+			if (!isset($action))
+				return false; # If they viewed /subnav_context, this'll get called.
+
+			$this->displayed = true;
+
+			fallback($title, camelize($action, true));
+
+			$this->context = array_merge($context, $this->context);
+
+			$trigger = Trigger::current();
+
+			$trigger->filter($this->context, array("admin_context", "admin_context_".str_replace("/", "_", $action)));
+
+			# Are there any extension-added pages?
+			foreach (array("write" => array(),
+			               "manage" => array("import", "export"),
+			               "settings" => array(),
+			               "extend" => array("modules", "feathers", "themes")) as $main_nav => $val) {
+				$$main_nav = $val;
+				$trigger->filter($$main_nav, $main_nav."_pages");
+			}
+
+			$visitor = Visitor::current();
+			$route   = Route::current();
+
+			$this->context["theme"]      = Theme::current();
+			$this->context["flash"]      = Flash::current();
+			$this->context["trigger"]    = $trigger;
+			$this->context["title"]      = $title;
+			$this->context["site"]       = Config::current();
+			$this->context["visitor"]    = $visitor;
+			$this->context["logged_in"]  = logged_in();
+			$this->context["route"]      = $route;
+			$this->context["hide_admin"] = isset($_SESSION["hide_admin"]);
+			$this->context["now"]        = time();
+			$this->context["version"]    = CHYRP_VERSION;
+			$this->context["debug"]      = DEBUG;
+			$this->context["feathers"]   = Feathers::$instances;
+			$this->context["modules"]    = Modules::$instances;
+			$this->context["POST"]       = $_POST;
+			$this->context["GET"]        = $_GET;
+
+			$this->context["navigation"] = array();
+
+			$show = array("write" => array($visitor->group()->can("add_draft", "add_post", "add_page")),
+			              "manage" => array($visitor->group()->can("view_own_draft",
+			                                                       "view_draft",
+			                                                       "edit_own_draft",
+			                                                       "edit_own_post",
+			                                                       "edit_post",
+			                                                       "delete_own_draft",
+			                                                       "delete_own_post",
+			                                                       "delete_post",
+			                                                       "add_page",
+			                                                       "edit_page",
+			                                                       "delete_page",
+			                                                       "add_user",
+			                                                       "edit_user",
+			                                                       "delete_user",
+			                                                       "add_group",
+			                                                       "edit_group",
+			                                                       "delete_group")),
+			              "settings" => array($visitor->group()->can("change_settings")),
+			              "extend" => array($visitor->group()->can("toggle_extensions")));
+
+			foreach ($show as $name => &$arr)
+				$trigger->filter($arr, $name."_nav_show");
+
+			$this->context["navigation"]["write"] = array("title" => __("Write"),
+			                                              "show" => in_array(true, $show["write"]),
+			                                              "selected" => (in_array($action, $write) or
+			                                                            match("/^write_/", $action)));
+
+			$this->context["navigation"]["manage"] = array("title" => __("Manage"),
+			                                               "show" => in_array(true, $show["manage"]),
+			                                               "selected" => (in_array($action, $manage) or
+			                                                             match(array("/^manage_/",
+			                                                                         "/^edit_/",
+			                                                                         "/^delete_/",
+			                                                                         "/^new_/"), $action)));
+
+			$this->context["navigation"]["settings"] = array("title" => __("Settings"),
+			                                                 "show" => in_array(true, $show["settings"]),
+			                                                 "selected" => (in_array($action, $settings) or
+			                                                               match("/_settings$/", $action)));
+
+			$this->context["navigation"]["extend"] = array("title" => __("Extend"),
+			                                               "show" => in_array(true, $show["extend"]),
+			                                               "selected" => (in_array($action, $extend)));
+
+			$this->subnav_context($route->action);
+
+			$trigger->filter($this->context["selected"], "nav_selected");
+
+			$this->context["sql_debug"]  = SQL::current()->debug;
+
+			$template = file_exists(THEME_DIR."/admin/layout/pages/".$action.".twig") ?
+			                THEME_DIR."/admin/pages/".$action.".twig" :
+			                MAIN_DIR."/admin/layout/pages/".$action.".twig" ;
+
+			$config = Config::current();
+			if (!file_exists($template)) {
+				foreach (array(MODULES_DIR => $config->enabled_modules,
+				               FEATHERS_DIR => $config->enabled_feathers) as $path => $try)
+					foreach ($try as $extension)
+						if (file_exists($path."/".$extension."/pages/admin/".$action.".twig"))
+							$template = $path."/".$extension."/pages/admin/".$action.".twig";
+
+				if (!file_exists($template))
+					error(__("Template Missing"), _f("Couldn't load template: <code>%s</code>", array($template)));
+			}
+
+			return $this->twig->getTemplate($template)->display($this->context);
+		}
+
+		/**
 		 * Function: current
 		 * Returns a singleton reference to the current class.
 		 */
@@ -2160,5 +2168,3 @@
 			return $instance = (empty($instance)) ? new self() : $instance ;
 		}
 	}
-
-	$admin = AdminController::current();

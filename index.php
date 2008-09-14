@@ -1,6 +1,9 @@
 <?php
 	require_once "includes/common.php";
 
+	# Prepare the Main Controller.
+	$main = MainController::current();
+
 	$trigger->call("top");
 
 	$route->init($main);

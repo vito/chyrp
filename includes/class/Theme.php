@@ -28,11 +28,6 @@
 				$this->$key = $val;
 
 			$this->url = THEME_URL;
-
-			$this->twig = new Twig_Loader(THEME_DIR,
-			                              ((is_writable(INCLUDES_DIR."/caches") and !DEBUG and !PREVIEWING) ?
-			                                  INCLUDES_DIR."/caches" :
-			                                  null));
 		}
 
 		/**
@@ -276,28 +271,6 @@
 
 		public function load_time() {
 			return timer_stop();
-		}
-
-		/**
-		 * Function: load
-		 * Loads a theme's file and extracts the passed array into the scope.
-		 */
-		public function load($file, $context = array()) {
-			if (is_array($file))
-				for ($i = 0; $i < count($file); $i++) {
-					$check = ($file[$i][0] == "/" or preg_match("/[a-zA-Z]:\\\/", $file[$i])) ?
-					             $file[$i] :
-					             THEME_DIR."/".$file[$i] ;
-
-					if (file_exists($check.".twig") or ($i + 1) == count($file))
-						return $this->load($file[$i], $context);
-				}
-
-			$file = ($file[0] == "/" or preg_match("/[a-zA-Z]:\\\/", $file)) ? $file : THEME_DIR."/".$file ;
-			if (!file_exists($file.".twig"))
-				error(__("Template Missing"), _f("Couldn't load template: <code>%s</code>", array($file.".twig")));
-
-			return $this->twig->getTemplate($file.".twig")->display($context);
 		}
 
 		/**
