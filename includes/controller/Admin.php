@@ -13,6 +13,17 @@
 		public $selected_bookmarklet;
 
 		/**
+		 * Function: __construct
+		 * Prepares Twig.
+		 */
+		private function __construct() {
+			$this->twig = new Twig_Loader(MAIN_DIR."/admin/layout",
+			                              (is_writable(INCLUDES_DIR."/caches") and !DEBUG) ?
+			                                  INCLUDES_DIR."/caches" :
+			                                  null);
+		}
+
+		/**
 		 * Function: write
 		 * Post writing.
 		 */
@@ -26,16 +37,15 @@
 			if (empty($config->enabled_feathers))
 				error(__("No Feathers"), __("Please install a feather or two in order to add a post."));
 
-			$options = array();
 			Trigger::current()->filter($options, array("write_post_options", "post_options"));
-
-			$this->context["groups"]  = Group::find(array("order" => "id ASC"));
-			$this->context["options"] = $options;
 
 			fallback($_GET['feather'], $config->enabled_feathers[0]);
 
-			$this->context["feathers"] = Feathers::$instances;
-			$this->context["feather"]  = Feathers::$instances[$_GET['feather']];
+			$this->display("write_post",
+			               array("groups" => Group::find(array("order" => "id ASC")),
+			                     "options" => $options,
+			                     "feathers" => Feathers::$instances,
+			                     "feather" => Feathers::$instances[$_GET['feather']]));
 		}
 
 		/**
@@ -57,19 +67,15 @@
 			else
 				$feather = $this->selected_bookmarklet;
 
-			$this->context["done"] = isset($_GET['done']);
-
-			$this->context["feathers"]         = Feathers::$instances;
-			$this->context["selected_feather"] = Feathers::$instances[$feather];
-
-			if (!$this->context["done"]) {
-				$this->context["args"] = array("url" => urldecode(stripslashes($_GET['url'])),
-				                               "title" => urldecode(stripslashes($_GET['title'])),
-				                               "selection" => urldecode(stripslashes($_GET['selection'])));
-
-				$this->context["args"]["page_url"]   =& $this->context["args"]["url"];
-				$this->context["args"]["page_title"] =& $this->context["args"]["title"];
-			}
+			$this->display("bookmarklet",
+			               array("done" => isset($_GET['done']),
+			                     "feathers" => Feathers::$instances,
+			                     "selected_feather" => Feathers::$instances[$feather],
+			                     "args" => array("url" => urldecode(stripslashes($_GET['url'])),
+			                                     "page_url" => urldecode(stripslashes($_GET['url'])),
+				                                 "title" => urldecode(stripslashes($_GET['title'])),
+				                                 "page_title" => urldecode(stripslashes($_GET['title'])),
+				                                 "selection" => urldecode(stripslashes($_GET['selection'])))));
 		}
 
 		/**
@@ -103,18 +109,18 @@
 			if (empty($_GET['id']))
 				error(__("No ID Specified"), __("An ID is required to edit a post."));
 
-			$this->context["post"] = new Post($_GET['id'], array("drafts" => true, "filter" => false));
+			$post = new Post($_GET['id'], array("drafts" => true, "filter" => false));
 
 			if (!$this->context["post"]->editable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this post."));
 
-			$options = array();
-			Trigger::current()->filter($options, array("edit_post_options", "post_options"), $this->context["post"]);
+			Trigger::current()->filter($options, array("edit_post_options", "post_options"), $post);
 
-			$this->context["groups"]  = Group::find(array("order" => "id ASC"));
-			$this->context["options"] = $options;
-
-			$this->context["feather"] = Feathers::$instances[$this->context["post"]->feather];
+			$this->display("edit_post",
+			               array("post" => $post,
+			                     "groups" => Group::find(array("order" => "id ASC")),
+			                     "options" => $options,
+			                     "feather" => Feathers::$instances[$this->context["post"]->feather]));
 		}
 
 		/**
@@ -148,10 +154,15 @@
 		 * Post deletion (confirm page).
 		 */
 		public function delete_post() {
-			$this->context["post"] = new Post($_GET['id'], array("drafts" => true));
+			if (empty($_GET['id']))
+				error(__("No ID Specified"), __("An ID is required to delete a post."));
 
-			if (!$this->context["post"]->deletable())
+			$post = new Post($_GET['id'], array("drafts" => true));
+
+			if (!$post->deletable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this post."));
+
+			$this->display("delete_post", array("post" => $post));
 		}
 
 		/**
@@ -195,12 +206,12 @@
 			if (!$visitor->group()->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post"))
 				$where["user_id"] = $visitor->id;
 
-			$this->context["posts"] = new Paginator(Post::find(array("placeholders" => true,
+			$posts = new Paginator(Post::find(array("placeholders" => true,
 			                                                         "drafts" => true,
 			                                                         "where" => $where,
 			                                                         "params" => $params)), 25);
 
-			foreach ($this->context["posts"]->paginated as &$post) {
+			foreach ($posts->paginated as &$post) {
 				if (preg_match_all("/\{([0-9]+)\}/", $post->status, $matches)) {
 					$groups = array();
 					$groupClasses = array();
@@ -218,6 +229,8 @@
 					$post->status_class = $post->status;
 				}
 			}
+
+			$this->display("manage_posts", array("posts" => $posts));
 		}
 
 		/**
@@ -228,7 +241,7 @@
 			if (!Visitor::current()->group()->can("add_page"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to create pages."));
 
-			$this->context["pages"] = Page::find();
+			$this->display("write_page", array("pages" => Page::find()));
 		}
 
 		/**
@@ -262,8 +275,9 @@
 			if (empty($_GET['id']))
 				error(__("No ID Specified"), __("An ID is required to edit a page."));
 
-			$this->context["page"] = new Page($_GET['id'], array("filter" => false));
-			$this->context["pages"] = Page::find(array("where" => array("id not" => $_GET['id'])));
+			$this->display("write_page",
+			               array("page" => new Page($_GET['id'], array("filter" => false)),
+			                     "pages" => Page::find()));
 		}
 
 		/**
@@ -311,7 +325,10 @@
 			if (!Visitor::current()->group()->can("delete_page"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete pages."));
 
-			$this->context["page"] = new Page($_GET['id']);
+			if (empty($_GET['id']))
+				error(__("No ID Specified"), __("An ID is required to delete a page."));
+
+			$this->display("delete_page", array("page" => new Page($_GET['id'])));
 		}
 
 		/**
@@ -355,9 +372,10 @@
 			fallback($_GET['query'], "");
 			list($where, $params) = keywords(urldecode($_GET['query']), "(title LIKE :query OR body LIKE :query)");
 
-			$this->context["pages"] = new Paginator(Page::find(array("placeholders" => true,
-			                                                         "where" => $where,
-			                                                         "params" => $params)), 25);
+			$this->display("manage_pages",
+			               array("pages" => new Paginator(Page::find(array("placeholders" => true,
+			                                                               "where" => $where,
+			                                                               "params" => $params)), 25)));
 		}
 
 		/**
@@ -370,10 +388,11 @@
 
 			$config = Config::current();
 
-			$this->context["default_group"] = new Group($config->default_group);
-			$this->context["groups"] = Group::find(array("where" => array("id not" => array($config->guest_group,
-			                                                                                $config->default_group)),
-			                                             "order" => "id DESC"));
+			$this->display("new_user",
+			               array("default_group" => new Group($config->default_group),
+			                     "groups" => Group::find(array("where" => array("id not" => array($config->guest_group,
+			                                                                                      $config->default_group)),
+			                                                   "order" => "id DESC"))));
 		}
 
 		/**
@@ -426,9 +445,10 @@
 			if (empty($_GET['id']))
 				error(__("No ID Specified"), __("An ID is required to edit a user."));
 
-			$this->context["user"] = new User($_GET['id']);
-			$this->context["groups"] = Group::find(array("order" => "id ASC",
-			                                             "where" => array("id not" => Config::current()->guest_group)));
+			$this->display("edit_user",
+			               array("user" => new User($_GET['id']),
+			                     "groups" => Group::find(array("order" => "id ASC",
+			                                                   "where" => array("id not" => Config::current()->guest_group)))));
 		}
 
 		/**
@@ -472,8 +492,12 @@
 			if (!Visitor::current()->group()->can("delete_user"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete users."));
 
-			$this->context["user"] = new User($_GET['id']);
-			$this->context["users"] = User::find(array("where" => array("id not" => $_GET['id'])));
+			if (empty($_GET['id']))
+				error(__("No ID Specified"), __("An ID is required to delete a user."));
+
+			$this->display("delete_user",
+			               array("user" => new User($_GET['id']),
+			                     "users" => User::find(array("where" => array("id not" => $_GET['id'])))));
 		}
 
 		/**
@@ -533,7 +557,11 @@
 			fallback($_GET['query'], "");
 			list($where, $params) = keywords(urldecode($_GET['query']), "(login LIKE :query OR full_name LIKE :query OR email LIKE :query OR website LIKE :query)");
 
-			$this->context["users"] = new Paginator(User::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
+			$this->display("manage_users",
+			               array("users" => new Paginator(User::find(array("placeholders" => true,
+			                                                               "where" => $where,
+			                                                               "params" => $params)),
+			                                              25)));
 		}
 
 		/**
@@ -544,7 +572,8 @@
 			if (!Visitor::current()->group()->can("add_group"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to create groups."));
 
-			$this->context["permissions"] = SQL::current()->select("permissions")->fetchAll();
+			$this->display("new_group",
+			               array("permissions" => SQL::current()->select("permissions")->fetchAll()));
 		}
 
 		/**
@@ -571,8 +600,12 @@
 			if (!Visitor::current()->group()->can("edit_group"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit groups."));
 
-			$this->context["group"] = new Group($_GET['id']);
-			$this->context["permissions"] = SQL::current()->select("permissions")->fetchAll();
+			if (empty($_GET['id']))
+				error(__("No ID Specified"), __("An ID is required to edit a group."));
+
+			$this->display("edit_group",
+			               array("group" => new Group($_GET['id']),
+			                     "permissions" => SQL::current()->select("permissions")->fetchAll()));
 		}
 
 		/**
@@ -606,9 +639,13 @@
 			if (!Visitor::current()->group()->can("delete_group"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete groups."));
 
-			$this->context["group"] = new Group($_GET['id']);
-			$this->context["groups"] = Group::find(array("where" => array("id not" => $_GET['id']),
-			                                             "order" => "id ASC"));
+			if (empty($_GET['id']))
+				error(__("No ID Specified"), __("An ID is required to delete a group."));
+
+			$this->display("delete_group",
+			               array("group" => new Group($_GET['id']),
+			                     "permissions" => Group::find(array("where" => array("id not" => $_GET['id']),
+			                                                        "order" => "id ASC"))));
 		}
 
 		/**
@@ -654,9 +691,15 @@
 
 			if (!empty($_GET['search'])) {
 				$user = new User(null, array("where" => array("login" => $_GET['search'])));
-				$this->context["groups"] = array($user->group());
+				if (!$user->no_results)
+					$groups = new Paginator(array($user->group()), 10, "page", false);
+				else
+					$groups = new Paginator(array(), 10, "page", false);
 			} else
-				$this->context["groups"] = new Paginator(Group::find(array("placeholders" => true, "order" => "id ASC")), 10);
+				$groups = new Paginator(Group::find(array("placeholders" => true, "order" => "id ASC")), 10);
+
+			$this->display("manage_groups",
+			               array("groups" => $groups));
 		}
 
 		/**
@@ -668,7 +711,7 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to export content."));
 
 			if (empty($_POST))
-				return;
+				return $this->display("export");
 
 			$config = Config::current();
 			$trigger = Trigger::current();
@@ -856,8 +899,6 @@
 			header("Content-length: ".strlen($zip_contents)."\n\n");
 
 			echo $zip_contents;
-
-			exit;
 		}
 
 		/**
@@ -867,6 +908,8 @@
 		public function import() {
 			if (!Visitor::current()->group()->can("add_post"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+
+			$this->display("import");
 		}
 
 		/**
@@ -1468,6 +1511,8 @@
 
 			foreach ($this->context["disabled_modules"] as $module => &$attrs)
 				$attrs["classes"] = $classes[$module];
+
+			$this->display("modules");
 		}
 
 		/**
@@ -1516,6 +1561,8 @@
 				                                           "author" => $info["author"],
 				                                           "help" => $info["help"]);
 			}
+
+			$this->display("feathers");
 		}
 
 		/**
@@ -1566,6 +1613,8 @@
 			}
 
 			closedir($open);
+
+			$this->display("themes");
 		}
 
 		/**
@@ -1741,21 +1790,21 @@
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
-			$this->context["locales"] = array();
+			$locales = array();
 
 			if ($open = opendir(INCLUDES_DIR."/locale/")) {
 			     while (($folder = readdir($open)) !== false) {
 					$split = explode(".", $folder);
 					if (end($split) == "mo")
-						$this->context["locales"][] = array("code" => $split[0], "name" => lang_code($split[0]));
+						$locales[] = array("code" => $split[0], "name" => lang_code($split[0]));
 				}
 				closedir($open);
 			}
 
-			$this->context["timezones"] = timezones();
-
 			if (empty($_POST))
-				return;
+				return $this->display("general_settings",
+				                      array("locales" => $locales,
+				                            "timezones" => timezones()));
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				show_403(__("Access Denied"), __("Invalid security key."));
@@ -1781,10 +1830,8 @@
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
-			$this->context["groups"] = Group::find(array("order" => "id DESC"));
-
 			if (empty($_POST))
-				return;
+				return $this->display("user_settings", array("groups" => Group::find(array("order" => "id DESC"))));
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				show_403(__("Access Denied"), __("Invalid security key."));
@@ -1807,7 +1854,7 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
 			if (empty($_POST))
-				return;
+				return $this->display("content_settings");
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				show_403(__("Access Denied"), __("Invalid security key."));
@@ -1835,7 +1882,7 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
 			if (empty($_POST))
-				return;
+				return $this->display("route_settings");
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				show_403(__("Access Denied"), __("Invalid security key."));
@@ -1849,82 +1896,13 @@
 		}
 
 		/**
-		 * Function: determine_action
-		 * Determines through simple logic which page should be shown as the default when browsing to /admin/.
-		 */
-		public function determine_action($action = null) {
-			$visitor = Visitor::current();
-
-			if (!isset($action) or $action == "write") {
-				# "Write > Post", if they can add posts or drafts.
-				if (($visitor->group()->can("add_post") or $visitor->group()->can("add_draft")) and !empty(Config::current()->enabled_feathers))
-					return "write_post";
-
-				# "Write > Page", if they can add pages.
-				if ($visitor->group()->can("add_page"))
-					return "write_page";
-			}
-
-			if (!isset($action) or $action == "manage") {
-				# "Manage > Posts", if they can manage any posts.
-				if (Post::any_editable() or Post::any_deletable())
-					return "manage_posts";
-
-				# "Manage > Pages", if they can manage pages.
-				if ($visitor->group()->can("edit_page") or $visitor->group()->can("delete_page"))
-					return "manage_pages";
-
-				# "Manage > Users", if they can manage users.
-				if ($visitor->group()->can("edit_user") or $visitor->group()->can("delete_user"))
-					return "manage_users";
-
-				# "Manage > Groups", if they can manage groups.
-				if ($visitor->group()->can("edit_group") or $visitor->group()->can("delete_group"))
-					return "manage_groups";
-			}
-
-			if (!isset($action) or $action == "settings") {
-				# "General Settings", if they can configure the installation.
-				if ($visitor->group()->can("change_settings"))
-					return "general_settings";
-			}
-
-			if (!isset($action) or $action == "extend") {
-				# "Modules", if they can configure the installation.
-				if ($visitor->group()->can("toggle_extensions"))
-					return "modules";
-			}
-
-			$extended = $action;
-			Trigger::current()->filter($extended, "determine_action");
-			if ($extended != $action)
-				return $extended;
-
-			if (!isset($action))
-				show_403(__("Access Denied"), __("You do not have sufficient privileges to access this area."));
-		}
-
-		public function handle_redirects($action) {
-			$redirectable = array("write", "manage", "settings", "extend");
-			Trigger::current()->filter($redirectable, "admin_redirectables");
-			if (!in_array($action, $redirectable)) return;
-
-			$redirect = $this->determine_action($action);
-			if (!empty($redirect))
-				redirect("/admin/?action=".$redirect);
-		}
-
-		/**
 		 * Function: help
 		 * Sets the $title and $body for various help IDs.
 		 */
-		public function help($id = null, &$title, &$body) {
-			if (!isset($id))
-				redirect("/admin/");
-
+		public function help() {
 			list($title, $body) = Trigger::current()->call("help_".$_GET['id']);
 
-			switch($id) {
+			switch($_GET['id']) {
 				case "filtering_results":
 					$title = __("Filtering Results");
 					$body = "<p>".__("Use this to search for specific items. You can either enter plain text to match the item with, or use keywords:")."</pre>";
@@ -1948,6 +1926,229 @@
 ?&gt;</code></pre>";
 					$body.= "</li>\n\t<li>".__("Move the .htaccess file from the original Chyrp directory, and change the <code>RewriteBase</code> line to reflect the new website location.")."</li>\n</ol>";
 			}
+
+			require "help.php";
+		}
+
+		/**
+		 * Function: display
+		 * Renders the page.
+		 *
+		 * Parameters:
+		 *     $action - The template file to display, in /admin/layout/pages.
+		 *     $context - Context for the template.
+		 *     $title - The title for the page. Defaults to a camlelization of the action, e.g. foo_bar -> Foo Bar.
+		 */
+		public function display($action, $context = array(), $title = "") {
+			if (!isset($action))
+				return false; # If they viewed /subnav_context, this'll get called.
+
+			fallback($title, camelize($action, true));
+
+			$this->context = array_merge($context, $this->context);
+
+			$trigger = Trigger::current();
+
+			$trigger->filter($this->context, array("admin_context", "admin_context_".str_replace("/", "_", $action)));
+
+			# Are there any extension-added pages?
+			foreach (array("write" => array(),
+			               "manage" => array("import", "export"),
+			               "settings" => array(),
+			               "extend" => array("modules", "feathers", "themes")) as $main_nav => $val) {
+				$$main_nav = $val;
+				$trigger->filter($$main_nav, $main_nav."_pages");
+			}
+
+			$visitor = Visitor::current();
+
+			$this->context["theme"]      = Theme::current();
+			$this->context["flash"]      = Flash::current();
+			$this->context["trigger"]    = $trigger;
+			$this->context["title"]      = $title;
+			$this->context["site"]       = Config::current();
+			$this->context["visitor"]    = $visitor;
+			$this->context["logged_in"]  = logged_in();
+			$this->context["route"]      = Route::current();
+			$this->context["hide_admin"] = isset($_SESSION["hide_admin"]);
+			$this->context["now"]        = time();
+			$this->context["version"]    = CHYRP_VERSION;
+			$this->context["debug"]      = DEBUG;
+			$this->context["feathers"]   = Feathers::$instances;
+			$this->context["modules"]    = Modules::$instances;
+			$this->context["POST"]       = $_POST;
+			$this->context["GET"]        = $_GET;
+
+			$this->context["navigation"] = array();
+
+			$show = array("write" => array($visitor->group()->can("add_draft", "add_post", "add_page")),
+			              "manage" => array($visitor->group()->can("view_own_draft",
+			                                                       "view_draft",
+			                                                       "edit_own_draft",
+			                                                       "edit_own_post",
+			                                                       "edit_post",
+			                                                       "delete_own_draft",
+			                                                       "delete_own_post",
+			                                                       "delete_post",
+			                                                       "add_page",
+			                                                       "edit_page",
+			                                                       "delete_page",
+			                                                       "add_user",
+			                                                       "edit_user",
+			                                                       "delete_user",
+			                                                       "add_group",
+			                                                       "edit_group",
+			                                                       "delete_group")),
+			              "settings" => array($visitor->group()->can("change_settings")),
+			              "extend" => array($visitor->group()->can("toggle_extensions")));
+
+			foreach ($show as $name => &$arr)
+				$trigger->filter($arr, $name."_nav_show");
+
+			$this->context["navigation"]["write"] = array("title" => __("Write"),
+			                                              "show" => in_array(true, $show["write"]),
+			                                              "selected" => (in_array($action, $write) or
+			                                                            match("/^write_/", $action)));
+
+			$this->context["navigation"]["manage"] = array("title" => __("Manage"),
+			                                               "show" => in_array(true, $show["manage"]),
+			                                               "selected" => (in_array($action, $manage) or
+			                                                             match(array("/^manage_/",
+			                                                                         "/^edit_/",
+			                                                                         "/^delete_/",
+			                                                                         "/^new_/"), $action)));
+
+			$this->context["navigation"]["settings"] = array("title" => __("Settings"),
+			                                                 "show" => in_array(true, $show["settings"]),
+			                                                 "selected" => (in_array($action, $settings) or
+			                                                               match("/_settings$/", $action)));
+
+			$this->context["navigation"]["extend"] = array("title" => __("Extend"),
+			                                               "show" => in_array(true, $show["extend"]),
+			                                               "selected" => (in_array($action, $extend)));
+
+			$this->subnav_context($action);
+
+			$trigger->filter($this->context["selected"], "nav_selected");
+
+			$this->context["sql_debug"]  = SQL::current()->debug;
+
+			$template = file_exists(THEME_DIR."/admin/layout/pages/".$action.".twig") ?
+			                THEME_DIR."/admin/pages/".$action.".twig" :
+			                MAIN_DIR."/admin/layout/pages/".$action.".twig" ;
+
+			$config = Config::current();
+			if (!file_exists($template)) {
+				foreach (array(MODULES_DIR => $config->enabled_modules, FEATHERS_DIR => $config->enabled_feathers) as $path => $try)
+					foreach ($try as $extension)
+						if (file_exists($path."/".$extension."/pages/admin/".$action.".twig"))
+							$template = $path."/".$extension."/pages/admin/".$action.".twig";
+
+				if (!file_exists($template))
+					error(__("Template Missing"), _f("Couldn't load template: <code>%s</code>", array("pages/".$action.".twig")));
+			}
+
+			return $this->twig->getTemplate($template)->display($this->context);
+		}
+
+		/**
+		 * Function: subnav_context
+		 * Generates the context variables for the subnav.
+		 */
+		public function subnav_context($action = null) {
+			if (!isset($action))
+				return false; # If they viewed /subnav_context, this'll get called.
+
+			$trigger = Trigger::current();
+			$visitor = Visitor::current();
+
+			$this->context["subnav"] = array();
+			$subnav =& $this->context["subnav"];
+
+			$subnav["write"] = array();
+			$pages = array("manage" => array());
+
+			foreach (Config::current()->enabled_feathers as $index => $feather) {
+				$info = YAML::load(FEATHERS_DIR."/".$feather."/info.yaml");
+				$subnav["write"]["write_post&feather=".$feather] = array("title" => __($info["name"], $feather),
+			                                                             "show" => $visitor->group()->can("add_draft", "add_post"),
+				                                                         "attributes" => ' id="list_feathers['.$feather.']"',
+				                                                         "selected" => (isset($_GET['feather']) and $_GET['feather'] == $feather) or
+				                                                                       (!isset($_GET['feather']) and $action == "write_post" and !$index));
+			}
+
+			# Write navs
+			$subnav["write"]["write_page"] = array("title" => __("Page"),
+			                                       "show" => $visitor->group()->can("add_page"));
+			$trigger->filter($subnav["write"], array("admin_write_nav", "write_nav"));
+			$pages["write"] = array_merge(array("write_post"), array_keys($subnav["write"]));;
+
+			# Manage navs
+			$subnav["manage"] = array("manage_posts"  => array("title" => __("Posts"),
+			                                                   "show" => (Post::any_editable() or Post::any_deletable()),
+			                                                   "selected" => array("edit_post", "delete_post")),
+			                          "manage_pages"  => array("title" => __("Pages"),
+			                                                   "show" => ($visitor->group()->can("edit_page", "delete_page")),
+			                                                   "selected" => array("edit_page", "delete_page")),
+			                          "manage_users"  => array("title" => __("Users"),
+			                                                   "show" => ($visitor->group()->can("add_user",
+			                                                                                     "edit_user",
+			                                                                                     "delete_user")),
+			                                                   "selected" => array("edit_user", "delete_user", "new_user")),
+			                          "manage_groups" => array("title" => __("Groups"),
+			                                                   "show" => ($visitor->group()->can("add_group",
+			                                                                                     "edit_group",
+			                                                                                     "delete_group")),
+			                                                   "selected" => array("edit_group", "delete_group", "new_group")));
+			$trigger->filter($subnav["manage"], "manage_nav");
+
+			$subnav["manage"]["import"] = array("title" => __("Import"),
+			                                    "show" => ($visitor->group()->can("add_post")));
+			$subnav["manage"]["export"] = array("title" => __("Export"),
+			                                    "show" => ($visitor->group()->can("add_post")));
+
+			$pages["manage"][] = "new_user";
+			$pages["manage"][] = "new_group";
+			foreach (array_keys($subnav["manage"]) as $manage)
+				$pages["manage"] = array_merge($pages["manage"], array($manage,
+				                                                       preg_replace("/manage_(.+)/e",
+				                                                                    "'edit_'.depluralize('\\1')",
+				                                                                    $manage),
+				                                                       preg_replace("/manage_(.+)/e",
+				                                                                    "'delete_'.depluralize('\\1')",
+				                                                                    $manage)));
+
+			# Settings navs
+			$subnav["settings"] = array("general_settings" => array("title" => __("General"),
+			                                                        "show" => $visitor->group()->can("change_settings")),
+			                            "content_settings" => array("title" => __("Content"),
+			                                                        "show" => $visitor->group()->can("change_settings")),
+			                            "user_settings"    => array("title" => __("Users"),
+			                                                        "show" => $visitor->group()->can("change_settings")),
+			                            "route_settings"   => array("title" => __("Routes"),
+			                                                        "show" => $visitor->group()->can("change_settings")));
+			$trigger->filter($subnav["settings"], "settings_nav");
+			$pages["settings"] = array_keys($subnav["settings"]);
+
+			# Extend navs
+			$subnav["extend"] = array("modules"  => array("title" => __("Modules"),
+			                                              "show" => $visitor->group()->can("toggle_extensions")),
+			                          "feathers" => array("title" => __("Feathers"),
+			                                              "show" => $visitor->group()->can("toggle_extensions")),
+			                          "themes"   => array("title" => __("Themes"),
+			                                              "show" => $visitor->group()->can("toggle_extensions")));
+			$trigger->filter($subnav["extend"], "extend_nav");
+			$pages["extend"] = array_keys($subnav["extend"]);
+
+			foreach (array_keys($subnav) as $main_nav)
+				foreach ($trigger->filter($pages[$main_nav], $main_nav."_nav_pages") as $extend)
+					$subnav[$extend] =& $subnav[$main_nav];
+
+			foreach ($subnav as $main_nav => &$sub_nav)
+				foreach ($sub_nav as &$nav)
+					$nav["show"] = (!isset($nav["show"]) or $nav["show"]);
+
+			$trigger->filter($subnav, "admin_subnav");
 		}
 
 		/**

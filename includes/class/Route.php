@@ -121,8 +121,9 @@
 				else
 					$call = false;
 
-				if (!$call and $trigger->exists("route_".$method))
-					$call = $trigger->call("route_".$method, $controller);
+				$name = strtolower(str_replace("Controller", "", get_class($controller)));
+				if (!$call and $trigger->exists($name."_".$method) or $trigger->exists("route_".$method))
+					$call = $trigger->call(array($name."_".$method, "route_".$method), $controller);
 
 				if ($call !== false)
 					return $this->success = true;
@@ -135,6 +136,55 @@
 		 */
 		public function determine_action() {
 			$config = Config::current();
+
+			if (ADMIN) {
+				$visitor = Visitor::current();
+
+				if (!isset($this->action) or $this->action == "write") {
+					# "Write > Post", if they can add posts or drafts.
+					if (($visitor->group()->can("add_post") or $visitor->group()->can("add_draft")) and
+					    !empty(Config::current()->enabled_feathers))
+						return $this->action = "write_post";
+
+					# "Write > Page", if they can add pages.
+					if ($visitor->group()->can("add_page"))
+						return $this->action = "write_page";
+				}
+
+				if (!isset($this->action) or $this->action == "manage") {
+					# "Manage > Posts", if they can manage any posts.
+					if (Post::any_editable() or Post::any_deletable())
+						return $this->action = "manage_posts";
+
+					# "Manage > Pages", if they can manage pages.
+					if ($visitor->group()->can("edit_page") or $visitor->group()->can("delete_page"))
+						return $this->action = "manage_pages";
+
+					# "Manage > Users", if they can manage users.
+					if ($visitor->group()->can("edit_user") or $visitor->group()->can("delete_user"))
+						return $this->action = "manage_users";
+
+					# "Manage > Groups", if they can manage groups.
+					if ($visitor->group()->can("edit_group") or $visitor->group()->can("delete_group"))
+						return $this->action = "manage_groups";
+				}
+
+				if (!isset($this->action) or $this->action == "settings") {
+					# "General Settings", if they can configure the installation.
+					if ($visitor->group()->can("change_settings"))
+						return $this->action = "general_settings";
+				}
+
+				if (!isset($this->action) or $this->action == "extend") {
+					# "Modules", if they can configure the installation.
+					if ($visitor->group()->can("toggle_extensions"))
+						return $this->action = "modules";
+				}
+
+				Trigger::current()->filter($this->action, "admin_determine_action");
+
+				return;
+			}
 
 			if (empty($this->arg[0])) # If they're just at /, don't bother with all this.
 				return $this->action = "index";

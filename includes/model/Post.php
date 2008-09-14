@@ -135,7 +135,6 @@
 		 *     <update>
 		 */
 		static function add($values, $clean = "", $url = "", $feather = null, $user = null, $pinned = null, $status = null, $created_at = null, $updated_at = null, $trackbacks = "", $pingbacks = true, $options = null) {
-
 			if ($user instanceof User)
 				$user = $user->id;
 

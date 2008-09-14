@@ -12,6 +12,10 @@
 		# Keeps track of called Triggers.
 		private $called = array();
 
+		# Array: $exists
+		# Caches trigger exist states.
+		private $exists = array();
+
 		/**
 		 * Function: cmp
 		 * Sorts actions by priority when used with usort.
@@ -26,10 +30,20 @@
 		 * Calls a trigger, passing any additional arguments to it.
 		 *
 		 * Parameters:
-		 *     $name - The name of the trigger.
+		 *     $name - The name of the trigger, or an array of triggers to call.
 		 */
 		public function call($name) {
-			if (empty(Modules::$instances) or !$this->exists($name))
+			if (is_array($name))
+				foreach ($name as $index => $call) {
+					$args = func_get_args();
+					$args[0] = $call;
+					if ($index + 1 == count($name))
+						return call_user_func_array(array($this, "call"), $args);
+					else
+						call_user_func_array(array($this, "call"), $args);
+				}
+
+			if (!$this->exists($name))
 				return;
 
 			$arguments = func_get_args();
@@ -80,7 +94,7 @@
 						$target = call_user_func_array(array($this, "filter"), $args);
 				}
 
-			if (empty(Modules::$instances) or !$this->exists($name))
+			if (!$this->exists($name))
 				return $target;
 
 			$arguments = func_get_args();
@@ -145,7 +159,7 @@
 			if (isset($this->priorities[$name]))
 				return $this->exists[$name] = true;
 
-			$this->exists[$name] = false;
+			return $this->exists[$name] = false;
 		}
 
 		/**
