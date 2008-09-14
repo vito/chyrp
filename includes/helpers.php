@@ -8,6 +8,10 @@
 	# Times Chyrp.
 	$time_start = 0;
 
+	# Array: $l10n
+	# Stores loaded gettext domains.
+	$l10n = array();
+
 	/**
 	 * Function: session
 	 * Begins Chyrp's custom session storage whatnots.
@@ -136,9 +140,9 @@
 	 */
 	function _p($single, $plural, $number, $domain = "chyrp") {
 		global $l10n;
-		return (isset($l10n[$domain])) ?
-		       $l10n[$domain]->ngettext($single, $plural, $number) :
-		       (($number != 1) ? $plural : $single) ;
+		return isset($l10n[$domain]) ?
+		           $l10n[$domain]->ngettext($single, $plural, $number) :
+		           (($number != 1) ? $plural : $single) ;
 	}
 
 	/**

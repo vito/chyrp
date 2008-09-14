@@ -1,5 +1,7 @@
 <?php
 	$config = Config::current();
+	$trigger = Trigger::current();
+
 	$split_locale = explode("_", $config->locale);
 
 	fallback($comments, Comment::find(array("limit" => 20,

@@ -579,8 +579,6 @@
 		}
 
 		static function view_feed($context) {
-			global $comments, $title;
-
 			$post = $context["post"];
 
 			$title = $post->title();
@@ -595,9 +593,7 @@
 				if (isset($ids[$i]))
 					$comments[] = new Comment(null, array("read_from" => $ids[$i]));
 
-			Route::current()->action = "comments_feed";
-
-			return true;
+			require "pages/comments_feed.php";
 		}
 
 		static function metaWeblog_getPost($struct, $post) {
