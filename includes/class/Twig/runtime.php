@@ -24,8 +24,8 @@ $twig_filters = array(
 	'odd' =>               'twig_is_odd_filter',
 
 	// escaping and encoding
-	'escape' =>           'fix',
-	'e' =>                'fix',
+	'escape' =>           'twig_escape_filter',
+	'e' =>                'twig_escape_filter',
 	'urlencode' =>        'twig_urlencode_filter',
 	'quotes' =>           'twig_quotes_filter',
 	'slashes' =>          'addslashes',
@@ -434,4 +434,8 @@ function twig_length_filter($thing) {
 		return strlen($thing);
 	else
 		return count($thing);
+}
+
+function twig_escape_filter($string, $quotes = true) {
+	return fix($string, $quotes);
 }
