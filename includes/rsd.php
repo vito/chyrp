@@ -1,8 +1,9 @@
 <?php
 	require_once "common.php";
 	header("Content-Type: text/xml; charset=utf-8", true);
+
+	echo '<?xml version="1.0" encoding="utf-8"?'.">\n";
 ?>
-<?php echo '<?xml version="1.0" encoding="utf-8"?'.">\n"; ?>
 <rsd version="1.0" xmlns="http://archipelago.phrasewise.com/rsd">
 	<service>
 		<engineName>Chyrp</engineName>
@@ -15,4 +16,5 @@
 	</service>
 </rsd>
 
-<?php exit; ?>
+<?php
+	exit;

@@ -12,8 +12,6 @@
 		# Holds the name of the Feather to be selected when they open the bookmarklet.
 		public $selected_bookmarklet;
 
-		private function __construct() {}
-
 		/**
 		 * Function: write
 		 * Post writing.

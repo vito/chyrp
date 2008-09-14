@@ -7,12 +7,10 @@
 		# String: $title
 		# The title for the current page.
 		public $title = "";
-		private $twig;
-		private $directory;
-		private $pages = array();
-		private $context = array();
 
-		public $pages_flat = array();
+		# Variable: $twig
+		# Contains the Twig_Loader instance.
+		private $twig;
 
 		/**
 		 * Function: __construct
@@ -45,16 +43,16 @@
 			if (isset($this->pages_list))
 				return $this->pages_list;
 
-			$this->pages = Page::find(array("where" => "show_in_list = 1", "order" => "list_order ASC"));
+			$pages = Page::find(array("where" => "show_in_list = 1", "order" => "list_order ASC"));
 
-			foreach ($this->pages as $page)
+			foreach ($pages as $page)
 				$this->end_tags_for[$page->id] = $this->children[$page->id] = array();
 
-			foreach ($this->pages as $page)
+			foreach ($pages as $page)
 				if ($page->parent_id != 0)
 					$this->children[$page->parent_id][] = $page;
 
-			foreach ($this->pages as $page)
+			foreach ($pages as $page)
 				if ($page->parent_id == 0)
 					$this->recurse_pages($page);
 
@@ -299,10 +297,7 @@
 			if (!file_exists($file.".twig"))
 				error(__("Template Missing"), _f("Couldn't load template: <code>%s</code>", array($file.".twig")));
 
-			$this->file = $file;
-
-			$template = $this->twig->getTemplate($file.".twig");
-			return $template->display($context);
+			return $this->twig->getTemplate($file.".twig")->display($context);
 		}
 
 		/**

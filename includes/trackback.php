@@ -2,26 +2,27 @@
 	define('TRACKBACK', true);
 	require_once "common.php";
 
-	if ($config->enable_trackbacking) {
-		$post = new Post($_GET['id']);
-		if (empty($_POST['title']) and empty($_POST['url']) and empty($_POST['blog_name']))
-			redirect($post->url());
+	if (!$config->enable_trackbacking)
+		exit;
 
-		if (!Post::exists($_GET['id']))
-			trackback_respond(true, __("Fake post ID, or nonexistant post."));
+	$post = new Post($_GET['id']);
+	if (empty($_POST['title']) and empty($_POST['url']) and empty($_POST['blog_name']))
+		redirect($post->url());
 
-		if (!empty($_POST['url'])) {
-			header('Content-Type: text/xml; charset=utf-8');
+	if (!Post::exists($_GET['id']))
+		trackback_respond(true, __("Fake post ID, or nonexistant post."));
 
-			$url = strip_tags($_POST['url']);
-			$title = strip_tags($_POST['title']);
-			$excerpt = strip_tags($_POST['excerpt']);
-			$blog_name = strip_tags($_POST['blog_name']);
+	if (!empty($_POST['url'])) {
+		header('Content-Type: text/xml; charset=utf-8');
 
-			$excerpt = truncate($excerpt, 255);
-			$title = truncate($title, 250);
+		$url = strip_tags($_POST['url']);
+		$title = strip_tags($_POST['title']);
+		$excerpt = strip_tags($_POST['excerpt']);
+		$blog_name = strip_tags($_POST['blog_name']);
 
-			$trigger->call("trackback_receive", $url, $title, $excerpt, $blog_name);
-			trackback_respond();
-		}
+		$excerpt = truncate($excerpt, 255);
+		$title = truncate($title, 250);
+
+		$trigger->call("trackback_receive", $url, $title, $excerpt, $blog_name);
+		trackback_respond();
 	}

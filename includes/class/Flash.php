@@ -4,12 +4,24 @@
 	 * Stores messages (notice, warning, message) to display to the user after a redirect.
 	 */
 	class Flash {
+		# Array: $notices
+		# Manages notices.
 		private $notices = array();
+
+		# Array: $warnings
+		# Manages warnings.
 		private $warnings = array();
+
+		# Array: $messages
+		# Manages messages.
 		private $messages = array();
 
+		# Array: $all
+		# Manages all Flashes.
 		private $all = array();
 
+		# Boolean: $exists
+		# Do any Flashes exist?
 		static $exists = false;
 
 		/**

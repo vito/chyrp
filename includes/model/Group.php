@@ -7,6 +7,8 @@
 	 *     <Model>
 	 */
 	class Group extends Model {
+		# Array: $permissionCache
+		# Caches the permissions of every group so they don't have to be parsed on every grab.
 		static $permissionsCache = array();
 
 		/**

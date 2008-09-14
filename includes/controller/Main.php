@@ -12,8 +12,6 @@
 		# Context for displaying pages.
 		public $context = array();
 
-		private function __construct() {}
-
 		/**
 		 * Function: index
 		 * Grabs the posts for the main page.

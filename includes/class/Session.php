@@ -4,6 +4,8 @@
 	 * Handles their session.
 	 */
 	class Session {
+		# Variable: $data
+		# Caches session data.
 		static $data = "";
 
 		/**

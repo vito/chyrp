@@ -4,11 +4,13 @@
 	 * Controls and keeps track of all of the Triggers and events.
 	 */
 	class Trigger {
-		private $called = array();
+		# Array: $priorities
+		# Custom prioritized callbacks.
 		public $priorities = array();
-		private $modified = array();
 
-		private function __construct() {}
+		# Array: $called
+		# Keeps track of called Triggers.
+		private $called = array();
 
 		/**
 		 * Function: cmp
