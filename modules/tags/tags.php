@@ -97,11 +97,11 @@
 			$sql = SQL::current();
 			$sql->delete("tags", array("post_id" => $post->id));
 
-			$tags = explode(",", $_POST['tags']); // Split at the comma
-			$tags = array_map('trim', $tags); // Remove whitespace
-			$tags = array_map('strip_tags', $tags); // Remove HTML
-			$tags = array_unique($tags); // Remove duplicates
-			$tags = array_diff($tags, array("")); // Remove empties
+			$tags = explode(",", $_POST['tags']); # Split at the comma
+			$tags = array_map('trim', $tags); # Remove whitespace
+			$tags = array_map('strip_tags', $tags); # Remove HTML
+			$tags = array_unique($tags); # Remove duplicates
+			$tags = array_diff($tags, array("")); # Remove empties
 			$tags_cleaned = array_map("sanitize", $tags);
 
 			$tags_string = (!empty($tags)) ? "{{".implode("}},{{", $tags)."}}" : "" ;
