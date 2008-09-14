@@ -22,7 +22,10 @@
 
 		# Boolean: $exists
 		# Do any Flashes exist?
-		static $exists = false;
+		static $exists = array("message" => false,
+		                       "notice" => false,
+		                       "warning" => false,
+		                       null => false);
 
 		/**
 		 * Function: __construct
@@ -173,11 +176,11 @@
 		 *     $type - message, notice, or warning.
 		 */
 		static function exists($type = null) {
-			if (self::$exists)
-				return self::$exists;
+			if (self::$exists[$type])
+				return self::$exists[$type];
 
 			if (isset($type))
-				return self::$exists = !empty($_SESSION[pluralize($type)]);
+				return self::$exists[$type] = !empty($_SESSION[pluralize($type)]);
 			else
 				foreach (array("messages", "notices", "warnings") as $type)
 					if (!empty($_SESSION[$type]))
