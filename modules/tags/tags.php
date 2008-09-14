@@ -58,7 +58,7 @@
 			return $fields;
 		}
 
-		public function bookmarklet_submit_values($values) {
+		public function bookmarklet_submit_values(&$values) {
 			$tags = array();
 			foreach ($values as &$value) {
 				if (preg_match_all("/(\s|^)#([a-zA-Z0-9 ]+)(?!\\\\)#/", $value, $double)) {
@@ -66,7 +66,7 @@
 					$value = preg_replace("/(\s|^)#([a-zA-Z0-9 ]+)(?!\\\\)#/", "\\1", $value);
 				}
 				if (preg_match_all("/(\s|^)#([a-zA-Z0-9]+)(?!#)/", $value, $single)) {
-					$tags = array_merge($single[1], $tags);
+					$tags = array_merge($single[2], $tags);
 					$value = preg_replace("/(\s|^)#([a-zA-Z0-9]+)(?!#)/", "\\1\\2", $value);
 				}
 				$_POST['tags'] = implode(", ", $tags);
@@ -77,11 +77,11 @@
 		public function add_post($post) {
 			if (empty($_POST['tags'])) return;
 
-			$tags = explode(",", $_POST['tags']); // Split at the comma
-			$tags = array_map("trim", $tags); // Remove whitespace
-			$tags = array_map("strip_tags", $tags); // Remove HTML
-			$tags = array_unique($tags); // Remove duplicates
-			$tags = array_diff($tags, array("")); // Remove empties
+			$tags = explode(",", $_POST['tags']); # Split at the comma
+			$tags = array_map("trim", $tags); # Remove whitespace
+			$tags = array_map("strip_tags", $tags); # Remove HTML
+			$tags = array_unique($tags); # Remove duplicates
+			$tags = array_diff($tags, array("")); # Remove empties
 			$tags_cleaned = array_map("sanitize", $tags);
 
 			$tags_string = "{{".implode("}},{{", $tags)."}}";
