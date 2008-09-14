@@ -8,6 +8,6 @@
 {% include "feathers/" ~ post.feather ~ ".twig" %}
 {% else %}
 					<h1>${ "No Posts" | translate }</h1>
-					<p>${ "There don't be any posts tagged as &#8220;%s&#8221;." | translate | format(tag | escape) }</p>
+					<p>${ "There don't seem to be any posts tagged as &#8220;%s&#8221;." | translate | format(tag | escape) }</p>
 {% endfor %}
 {% endblock %}

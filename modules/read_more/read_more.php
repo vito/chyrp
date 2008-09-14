@@ -6,7 +6,7 @@
 		static function makesafe($text, $post = null) {
 			if (!is_string($text) or !strstr($text, "<!--more-->")) return $text;
 
-			if (isset($_GET['feed']))
+			if (Route::current()->feed)
 				return str_replace("<!--more-->", "", $text);
 
 			$url = (isset($post) and !$post->no_results) ? fix($post->url()) : "#" ;

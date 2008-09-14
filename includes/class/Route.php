@@ -45,6 +45,14 @@
 		# Shortcut to the AJAX constant (useful for Twig).
 		public $ajax = AJAX;
 
+		# Boolean: $success
+		# Did <Route.init> call a successful route?
+		public $success = false;
+
+		# Boolean: $feed
+		# Is the visitor requesting a feed?
+		public $feed = false;
+
 		/**
 		 * Function: __construct
 		 * Parse the URL to determine what to do.
@@ -53,6 +61,9 @@
 			$config = Config::current();
 
 			$this->action =& $_GET['action'];
+
+			if (isset($_GET['feed']))
+				$this->feed = true;
 
 			# Parse the current URL and extract information.
 			$parse = parse_url($config->url);
@@ -95,7 +106,7 @@
 			$trigger = Trigger::current();
 
 			$try = $this->try;
-			$try[] = $this->action;
+			array_unshift($try, $this->action);
 
 			foreach ($try as $key => $val) {
 				if (is_numeric($key))
@@ -111,14 +122,11 @@
 					$call = false;
 
 				if (!$call and $trigger->exists("route_".$method))
-					$call = $trigger->call("route_".$method, Theme::current());
+					$call = $trigger->call("route_".$method, $controller);
 
 				if ($call !== false)
-					return;
+					return $this->success = true;
 			}
-
-			# If we get to this point it means none of the routes worked.
-			$this->action = null;
 		}
 
 		/**
@@ -133,7 +141,7 @@
 
 			# Feed
 			if (preg_match("/\/feed\/?$/", $this->request)) {
-				$_GET['feed'] = "true";
+				$this->feed = true;
 
 				if ($this->arg[0] == "feed") # Don't set $this->action to "feed" (bottom of this function).
 					return $this->action = "index";
@@ -141,7 +149,7 @@
 
 			# Feed with a title parameter
 			if (preg_match("/\/feed\/([^\/]+)\/?$/", $this->request, $title)) {
-				$_GET['feed'] = "true";
+				$this->feed = true;
 				$_GET['title'] = $title[1];
 
 				if ($this->arg[0] == "feed") # Don't set $this->action to "feed" (bottom of this function).
@@ -178,9 +186,6 @@
 
 			# Searching
 			if ($this->arg[0] == "search") {
-				if (isset($this->arg[1]) and substr_count($this->request, "?action=search&query="))
-					redirect(str_replace("?action=search&query=", "", $this->request));
-
 				if (isset($this->arg[1]))
 					$_GET['query'] = $this->arg[1];
 

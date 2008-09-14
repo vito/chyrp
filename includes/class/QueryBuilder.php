@@ -255,6 +255,10 @@
 			return $conditions;
 		}
 
+		/**
+		 * Function: build_in
+		 * Creates ('one', 'two') from array("one", "two")
+		 */
 		public static function build_in($vals) {
 			$return = array();
 

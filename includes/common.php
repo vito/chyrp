@@ -301,19 +301,6 @@
 				show_403(__("Access Denied"), __("You are not allowed to view this site."));
 
 		# If we're viewing a feed, make sure the feed items displayed is correct.
-		if (isset($_GET['feed']))
+		if ($route->feed)
 			$config->posts_per_page = $config->feed_items;
-
-		# Call the controller function for the current action, and any extension routes.
-		if (INDEX)
-			$route->init($main);
-
-		# Serve the feed.
-		if (isset($_GET['feed']))
-			if ($trigger->exists($route->action."_feed")) # Custom feeds?
-				$trigger->call($route->action."_feed");
-			elseif (isset($posts)) # Are there already posts to show?
-				$route->action = "feed";
-			else
-				redirect(fallback($config->feed_url, url("feed/"), true)); # Really? Nothing? Too bad. MAIN FEED 4 U.
 	}

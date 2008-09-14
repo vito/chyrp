@@ -1,4 +1,8 @@
 <?php
+	$config = Config::current();
+	$trigger = Trigger::current();
+	$theme = Theme::current();
+
 	$title = (!empty($_GET['title'])) ? ": ".html_entity_decode(urldecode($_GET['title'])) : "" ;
 	echo "<".'?xml version="1.0" encoding="utf-8"?'.">\r";
 ?>
@@ -13,7 +17,7 @@
 	<link href="<?php echo fix($config->url, true); ?>" />
 	<generator uri="http://chyrp.net/" version="<?php echo CHYRP_VERSION; ?>">Chyrp</generator>
 <?php
-	foreach ($posts->paginated as $post) {
+	foreach ($posts as $post) {
 		$updated = ($post->updated) ? $post->updated_at : $post->created_at ;
 
 		$tagged = substr(strstr(url("id/".$post->id."/"), "//"), 2);

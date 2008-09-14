@@ -323,9 +323,7 @@
 			Flash::notice(__("Posts tagged.", "tags"), "/admin/?action=manage_tags");
 		}
 
-		public function route_tag() {
-			global $posts;
-
+		public function route_tag($main) {
 			if (!isset($_GET['name']))
 				return false;
 
@@ -338,6 +336,12 @@
 
 			if (empty($posts))
 				return false;
+
+			$tag = Tags::clean2tag($_GET['name']);
+
+			$main->display(array("pages/tag", "pages/index"),
+			               array("posts" => $posts, "tag" => $tag),
+			               _f("Posts tagged with \"%s\"", array($tag), "tags"));
 		}
 
 		public function import_chyrp_post($entry, $post) {
