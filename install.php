@@ -1,19 +1,53 @@
 <?php
 	header("Content-type: text/html; charset=UTF-8");
 
-	define('MAIN_DIR', dirname(__FILE__));
-	define('INCLUDES_DIR', MAIN_DIR."/includes");
+	# Constant: DEBUG
+	# Should Chyrp use debugging processes?
+	# This will also toggle Twig template caching. Disable it if you're live-developing your theme.
 	define('DEBUG', true);
+
+	# Constant: ADMIN
+	# Is this the JavaScript file?
 	define('JAVASCRIPT', false);
+
+	# Constant: ADMIN
+	# Is the user in the admin area?
 	define('ADMIN', false);
+
+	# Constant: AJAX
+	# Is this being run from an AJAX request?
 	define('AJAX', false);
+
+	# Constant: XML_RPC
+	# Is this being run from XML-RPC?
 	define('XML_RPC', false);
+
+	# Constant: TRACKBACK
+	# Is this being run from a trackback request?
+	define('TRACKBACK', false);
+
+	# Constant: UPGRADING
+	# Is the user running the upgrader? (false)
 	define('UPGRADING', false);
+
+	# Constant: INSTALLING
+	# Is the user running the installer? (false)
 	define('INSTALLING', true);
 
+	# Constant: TESTER
+	# Is the site being run by the automated tester?
 	define('TESTER', isset($_SERVER['HTTP_USER_AGENT']) and $_SERVER['HTTP_USER_AGENT'] == "tester.rb");
 
-	ini_set('error_reporting', E_ALL);
+	# Constant: MAIN_DIR
+	# Absolute path to the Chyrp root
+	define('MAIN_DIR', dirname(__FILE__));
+
+	# Constant: INCLUDES_DIR
+	# Absolute path to /includes
+	define('INCLUDES_DIR', MAIN_DIR."/includes");
+
+	# Make sure E_STRICT is on so Chyrp remains errorless.
+	error_reporting(E_ALL | E_STRICT);
 	ini_set('display_errors', true);
 
 	ob_start();
@@ -21,30 +55,53 @@
 	if (version_compare(PHP_VERSION, "5.1.3", "<"))
 		exit("Chyrp requires PHP 5.1.3 or greater. Installation cannot continue.");
 
-	# Helpers
-	require INCLUDES_DIR."/helpers.php";
+	# File: Helpers
+	# Various functions used throughout Chyrp's code.
+	require_once INCLUDES_DIR."/helpers.php";
+
+	# File: Gettext
+	# Gettext library.
+	require_once INCLUDES_DIR."/lib/gettext/gettext.php";
+
+	# File: Streams
+	# Streams library.
+	require_once INCLUDES_DIR."/lib/gettext/streams.php";
+
+	# File: YAML
+	# Horde YAML parsing library.
+	require_once INCLUDES_DIR."/lib/YAML.php";
+
+	# File: Model
+	# See Also:
+	#     <Model>
+	require_once INCLUDES_DIR."/class/Model.php";
+
+	# File: User
+	# See Also:
+	#     <User>
+	require_once INCLUDES_DIR."/model/User.php";
+
+	# File: Config
+	# See Also:
+	#     <Config>
+	require_once INCLUDES_DIR."/class/Config.php";
+
+	# File: SQL
+	# See Also:
+	#     <SQL>
+	require INCLUDES_DIR."/class/SQL.php";
+
+	# Prepare the Config interface.
+	$config = Config::current();
+
+	# Prepare the SQL interface.
+	$sql = SQL::current();
 
 	# Atlantic/Reykjavik is 0 offset. Set it so the timezones() function is
 	# always accurate, even if the server has its own timezone settings.
 	set_timezone("Atlantic/Reykjavik");
 
-	require_once INCLUDES_DIR."/class/Query.php";
-	require_once INCLUDES_DIR."/class/QueryBuilder.php";
-	require_once INCLUDES_DIR."/lib/YAML.php";
-	require_once INCLUDES_DIR."/class/Trigger.php";
-	require_once INCLUDES_DIR."/class/Model.php";
-	require_once INCLUDES_DIR."/model/User.php";
-	require_once INCLUDES_DIR."/model/Visitor.php";
-	require_once INCLUDES_DIR."/class/Session.php";
-
-	# Configuration files
-	require INCLUDES_DIR."/class/Config.php";
-	require INCLUDES_DIR."/class/SQL.php";
-
-	# Translation stuff
-	require INCLUDES_DIR."/lib/gettext/gettext.php";
-	require INCLUDES_DIR."/lib/gettext/streams.php";
-
+	# Sanitize all input depending on magic_quotes_gpc's enabled status.
 	sanitize_input($_GET);
 	sanitize_input($_POST);
 	sanitize_input($_COOKIE);

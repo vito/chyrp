@@ -58,7 +58,7 @@
 
 			$array = array();
 
-			foreach ($this->pages_flat as $page) {
+			foreach (fallback($this->pages_flat, array(), true) as $page) {
 				$array[$page->id] = array();
 				$my_array =& $array[$page->id];
 
