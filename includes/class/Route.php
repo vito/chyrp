@@ -242,8 +242,6 @@
 		 * Check to see if we're viewing a page, and if it is, handle it.
 		 */
 		public function check_viewing_page() {
-			global $page;
-
 			if (empty($this->arg[0]))
 				return;
 

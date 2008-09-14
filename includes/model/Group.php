@@ -1,6 +1,4 @@
 <?php
-	$permissions = array();
-
 	/**
 	 * Class: Group
 	 * The Group model.
@@ -9,26 +7,26 @@
 	 *     <Model>
 	 */
 	class Group extends Model {
+		static $permissionsCache = array();
+
 		/**
 		 * Function: __construct
 		 * See Also:
 		 *     <Model::grab>
 		 */
 		public function __construct($group_id = null, $options = array()) {
-			global $permissions;
-
 			parent::grab($this, $group_id, $options);
 
 			if ($this->no_results)
 				return false;
 
 			# Cache group permissions.
-			if (isset($permissions[$group_id]))
-				$this->permissions = $permissions[$group_id];
+			if (isset(self::$permissionsCache[$group_id]))
+				$this->permissions = self::$permissionsCache[$group_id];
 			else
-				$this->permissions = $permissions[$group_id] = !empty($this->permissions) ?
-				                                                   YAML::load($this->permissions) :
-				                                                   array() ;
+				$this->permissions = self::$permissionsCache[$group_id] = !empty($this->permissions) ?
+				                                                              YAML::load($this->permissions) :
+				                                                              array() ;
 		}
 
 		/**

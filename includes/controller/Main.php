@@ -425,11 +425,13 @@
 			$route = Route::current();
 
 			# Serve feeds.
-			if (isset($context["posts"]) and $route->feed)
-				return $this->feed($context["posts"]);
+			if ($route->feed) {
+				if (Trigger::current()->call($route->action."_feed", $context))
+					return;
 
-			if ($trigger->call($route->action."_feed", $context))
-				return;
+				if (isset($context["posts"]))
+					return $this->feed($context["posts"]);
+			}
 
 			$this->displayed = true;
 

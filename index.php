@@ -5,12 +5,11 @@
 
 	$route->init($main);
 
-	if (!$route->success and !$main->displayed) {
-		# Unknown action. Check for:
-		#     1. Module-provided pages.
-		#     2. Feather-provided pages.
-		#     3. Theme-provided pages.
-
+	# If the route failed or nothing was displayed, check for:
+	#     1. Module-provided pages.
+	#     2. Feather-provided pages.
+	#     3. Theme-provided pages.
+	if (!$route->success or !$main->displayed) {
 		$displayed = false;
 
 		foreach ($config->enabled_modules as $module)

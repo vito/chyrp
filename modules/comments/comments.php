@@ -578,8 +578,10 @@
 				             0);
 		}
 
-		static function view_feed() {
-			global $post, $comments, $title;
+		static function view_feed($context) {
+			global $comments, $title;
+
+			$post = $context["post"];
 
 			$title = $post->title();
 			fallback($title, ucfirst($post->feather)." Post #".$post->id);
@@ -594,6 +596,8 @@
 					$comments[] = new Comment(null, array("read_from" => $ids[$i]));
 
 			Route::current()->action = "comments_feed";
+
+			return true;
 		}
 
 		static function metaWeblog_getPost($struct, $post) {
