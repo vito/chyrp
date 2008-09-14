@@ -416,6 +416,7 @@
 			$trigger = Trigger::current();
 			$visitor = Visitor::current();
 			$theme   = Theme::current();
+			$main    = MainController::current();
 
 			switch($_POST['action']) {
 				case "reload_comments":
@@ -458,7 +459,7 @@
 					$comment = new Comment($_POST['comment_id']);
 					$trigger->call("show_comment", $comment);
 
-					$theme->load("content/comment", array("comment" => $comment));
+					$main->display("content/comment", array("comment" => $comment));
 					break;
 				case "delete_comment":
 					$comment = new Comment($_POST['id']);
@@ -473,7 +474,7 @@
 						break;
 
 					if ($theme->file_exists("forms/comment/edit"))
-						$theme->load("forms/comment/edit", array("comment" => $comment));
+						$main->display("forms/comment/edit", array("comment" => $comment));
 					else
 						require "edit_form.php";
 

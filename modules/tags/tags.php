@@ -429,7 +429,7 @@
 				$_POST['tags'] = '';
 		}
 
-		public function twig_global_context($context) {
+		public function main_context($context) {
 			$context["tags"] = self::list_tags();
 			return $context;
 		}

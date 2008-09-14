@@ -62,7 +62,7 @@
 
 		# Display the error.
 		if (defined('THEME_DIR') and class_exists("Theme") and Theme::current()->file_exists("pages/error"))
-			Theme::current()->load("pages/error", array("title" => $title, "body" => $body));
+			MainController::current()->display("pages/error", array("title" => $title, "body" => $body));
 		else
 			require INCLUDES_DIR."/error.php";
 
@@ -962,11 +962,10 @@
 			exit("404 Not Found");
 
 		$theme = Theme::current();
-
-		$theme->title = "404";
+		$main = MainController::current();
 
 		if ($theme->file_exists("pages/404"))
-			$theme->load("pages/404");
+			$main->display("pages/404", array(), "404");
 		else {
 ?>
 		<h1><?php echo __("Not Found", "theme"); ?></h1>

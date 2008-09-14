@@ -22,7 +22,7 @@
 					$displayed = require FEATHERS_DIR."/".$feather."/pages/".$route->action.".php";
 
 		if (!$displayed and $theme->file_exists("pages/".$route->action))
-			$theme->load("pages/".$route->action);
+			$main->display("pages/".$route->action);
 		elseif (!$displayed)
 			show_404();
 	}

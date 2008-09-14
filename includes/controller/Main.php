@@ -4,7 +4,13 @@
 	 * The logic behind the Chyrp install.
 	 */
 	class MainController {
+		# Boolean: $displayed
+		# Has anything been displayed?
 		public $displayed = false;
+
+		# Array: $context
+		# Context for displaying pages.
+		public $context = array();
 
 		private function __construct() {}
 
@@ -426,10 +432,11 @@
 				return false; # If they viewed /display, this'll get called.
 
 			$route = Route::current();
+			$trigger = Trigger::current();
 
 			# Serve feeds.
 			if ($route->feed) {
-				if (Trigger::current()->call($route->action."_feed", $context))
+				if ($trigger->call($route->action."_feed", $context))
 					return;
 
 				if (isset($context["posts"]))
@@ -441,7 +448,43 @@
 			$theme = Theme::current();
 			$theme->title = $title;
 
-			return $theme->load($file, $context);
+			$this->context = $context;
+
+			$trigger->filter($this->context, array("main_context", "main_context_".str_replace("/", "_", $file)));
+
+			$visitor = Visitor::current();
+			$config = Config::current();
+
+			$this->context["theme"]        = $theme;
+			$this->context["flash"]        = Flash::current();
+			$this->context["trigger"]      = $trigger;
+			$this->context["modules"]      = Modules::$instances;
+			$this->context["feathers"]     = Feathers::$instances;
+			$this->context["title"]        = $theme->title;
+			$this->context["site"]         = $config;
+			$this->context["visitor"]      = $visitor;
+			$this->context["route"]        = Route::current();
+			$this->context["hide_admin"]   = isset($_COOKIE["hide_admin"]);
+			$this->context["version"]      = CHYRP_VERSION;
+			$this->context["now"]          = time();
+			$this->context["debug"]        = DEBUG;
+			$this->context["POST"]         = $_POST;
+			$this->context["GET"]          = $_GET;
+			$this->context["sql_queries"]  =& SQL::current()->queries;
+
+			$this->context["visitor"]->logged_in = logged_in();
+
+			$this->context["enabled_modules"] = array();
+			foreach ($config->enabled_modules as $module)
+				$this->context["enabled_modules"][$module] = true;
+
+			$context["enabled_feathers"] = array();
+			foreach ($config->enabled_feathers as $feather)
+				$this->context["enabled_feathers"][$feather] = true;
+
+			$this->context["sql_debug"] =& SQL::current()->debug;
+
+			return $theme->load($file, $this->context);
 		}
 
 		/**

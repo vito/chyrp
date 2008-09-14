@@ -1,6 +1,4 @@
 <?php
-	$theme->title = __("Tags", "tags");
-
 	$trigger->call("tags_top");
 
 	if ($sql->count("tags") > 0) {
@@ -41,6 +39,5 @@
 			                   "clean" => $tag2clean[$tag],
 			                   "url" => url("tag/".$tag2clean[$tag]."/"));
 
-		$theme->load("pages/tags", array("tag_cloud" => $context));
+		$main->display("pages/tags", array("tag_cloud" => $context), __("Tags", "tags"));
 	}
-?>

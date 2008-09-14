@@ -276,45 +276,6 @@
 			return $feeds;
 		}
 
-		public function prepare($context) {
-			$this->context = array_merge($context, $this->context);
-
-			$trigger = Trigger::current();
-			$visitor = Visitor::current();
-			$config = Config::current();
-
-			$this->context["theme"]        = $this;
-			$this->context["flash"]        = Flash::current();
-			$this->context["trigger"]      = $trigger;
-			$this->context["modules"]      = Modules::$instances;
-			$this->context["feathers"]     = Feathers::$instances;
-			$this->context["title"]        = $this->title;
-			$this->context["site"]         = $config;
-			$this->context["visitor"]      = $visitor;
-			$this->context["route"]        = Route::current();
-			$this->context["hide_admin"]   = isset($_COOKIE["hide_admin"]);
-			$this->context["version"]      = CHYRP_VERSION;
-			$this->context["now"]          = time();
-			$this->context["debug"]        = DEBUG;
-			$this->context["POST"]         = $_POST;
-			$this->context["GET"]          = $_GET;
-			$this->context["sql_queries"]  =& SQL::current()->queries;
-
-			$this->context["visitor"]->logged_in = logged_in();
-			$local_file = str_replace(THEME_DIR."/", "", $this->file);
-			$trigger->filter($this->context, array("twig_global_context", "twig_context_".str_replace("/", "_", $local_file)));
-
-			$this->context["enabled_modules"] = array();
-			foreach ($config->enabled_modules as $module)
-				$this->context["enabled_modules"][$module] = true;
-
-			$this->context["enabled_feathers"] = array();
-			foreach ($config->enabled_feathers as $feather)
-				$this->context["enabled_feathers"][$feather] = true;
-
-			$this->context["sql_debug"] =& SQL::current()->debug;
-		}
-
 		public function load_time() {
 			return timer_stop();
 		}
@@ -339,10 +300,9 @@
 				error(__("Template Missing"), _f("Couldn't load template: <code>%s</code>", array($file.".twig")));
 
 			$this->file = $file;
-			$this->prepare($context);
 
 			$template = $this->twig->getTemplate($file.".twig");
-			return $template->display($this->context);
+			return $template->display($context);
 		}
 
 		/**
