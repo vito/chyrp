@@ -72,6 +72,7 @@
 			if (is_array($name))
 				foreach ($name as $index => $filter) {
 					$args = func_get_args();
+					$args[0] =& $target;
 					$args[1] = $filter;
 					if ($index + 1 == count($name))
 						return $target = call_user_func_array(array($this, "filter"), $args);
@@ -91,14 +92,14 @@
 			if (isset($this->priorities[$name]) and usort($this->priorities[$name], array($this, "cmp")))
 				foreach ($this->priorities[$name] as $action) {
 					$call = call_user_func_array($this->called[$name][] = $action["function"],
-					                             array_merge(array($target), $arguments));
+					                             array_merge(array(&$target), $arguments));
 					$target = fallback($call, $target);
 				}
 
 			foreach (Modules::$instances as $module)
 				if (!in_array(array($module, $name), $this->called[$name]) and is_callable(array($module, $name))) {
 					$call = call_user_func_array(array($module, $name),
-					                             array_merge(array($target), $arguments));
+					                             array_merge(array(&$target), $arguments));
 					$target = fallback($call, $target);
 				}
 
