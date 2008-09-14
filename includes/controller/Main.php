@@ -403,7 +403,7 @@
 				foreach ($posts->array[0] as $result)
 					$ids[] = $result["id"];
 
-				$posts = Post::find(array("where" => array("id" => $ids)));
+				$posts = empty($ids) ? array() : Post::find(array("where" => array("id" => $ids)));
 			}
 
 			$latest_timestamp = 0;
