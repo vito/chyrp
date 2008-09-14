@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-09-10 22:53+0000\n"
+"POT-Creation-Date: 2008-09-14 06:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -76,7 +76,7 @@ msgstr ""
 msgid "A ping from that URL is already registered."
 msgstr ""
 
-#: modules/comments/comments.php:583
+#: modules/comments/comments.php:589
 #, php-format
 msgid "Comments on &#8220;%s&#8221;"
 msgstr ""

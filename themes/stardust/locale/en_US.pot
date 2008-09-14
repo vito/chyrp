@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-09-10 22:53+0000\n"
+"POT-Creation-Date: 2008-09-14 06:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -54,6 +54,11 @@ msgstr ""
 msgid "Registered Only"
 msgstr ""
 
+#: themes/stardust/pages/tag.twig:11
+#, php-format
+msgid "There aren't any posts tagged as &#8220;%s&#8221;."
+msgstr ""
+
 #: themes/stardust/forms/user/register.twig:19
 #: themes/stardust/forms/user/controls.twig:11
 msgid "E-Mail"
@@ -93,11 +98,6 @@ msgstr ""
 
 #: themes/stardust/forms/post/edit.twig:61
 msgid "Trackbacks"
-msgstr ""
-
-#: themes/stardust/pages/tag.twig:11
-#, php-format
-msgid "There don't be any posts tagged as &#8220;%s&#8221;."
 msgstr ""
 
 #: themes/stardust/layouts/default.twig:65
@@ -278,6 +278,10 @@ msgstr ""
 msgid "Logged in as %s"
 msgstr ""
 
+#: themes/stardust/pages/archive.twig:41
+msgid "There aren't any posts in the timeframe you specified."
+msgstr ""
+
 #: themes/stardust/forms/user/controls.twig:15
 msgid "Website"
 msgstr ""
@@ -292,10 +296,6 @@ msgstr ""
 
 #: themes/stardust/forms/user/lost_password.twig:12
 msgid "Submit"
-msgstr ""
-
-#: themes/stardust/pages/archive.twig:41
-msgid "There don't seem to be any posts in the timeframe you specified."
 msgstr ""
 
 #: themes/stardust/pages/search.twig:10

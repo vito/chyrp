@@ -421,7 +421,10 @@
 		 *     $context - The context for the file.
 		 *     $title - The title for the page.
 		 */
-		public function display($file, $context = array(), $title = "") {
+		public function display($file = null, $context = array(), $title = "") {
+			if (!isset($file))
+				return false; # If they viewed /display, this'll get called.
+
 			$route = Route::current();
 
 			# Serve feeds.
