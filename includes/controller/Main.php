@@ -435,19 +435,19 @@
 			if (!isset($file))
 				return false; # If they viewed /display, this'll get called.
 
+			$this->displayed = true;
+
 			$route = Route::current();
 			$trigger = Trigger::current();
 
 			# Serve feeds.
 			if ($route->feed) {
-				if ($trigger->call($route->action."_feed", $context))
-					return;
+				if ($trigger->exists($route->action."_feed"))
+					return $trigger->call($route->action."_feed", $context);
 
 				if (isset($context["posts"]))
 					return $this->feed($context["posts"]);
 			}
-
-			$this->displayed = true;
 
 			$this->context = array_merge($context, $this->context);
 

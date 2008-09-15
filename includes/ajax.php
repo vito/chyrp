@@ -1,6 +1,15 @@
 <?php
+	# Constant: AJAX
+	# Is this being run from an AJAX request? (true)
 	define('AJAX', true);
+
 	require_once "common.php";
+
+	if (!$visitor->group()->can("view_site"))
+		if ($trigger->exists("can_not_view_site"))
+			$trigger->call("can_not_view_site");
+		else
+			show_403(__("Access Denied"), __("You are not allowed to view this site."));
 
 	switch($_POST['action']) {
 		case "edit_post":

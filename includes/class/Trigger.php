@@ -49,7 +49,7 @@
 			$arguments = func_get_args();
 			array_shift($arguments);
 
-			$return = null;
+			$return = false;
 
 			$this->called[$name] = array();
 			if (isset($this->priorities[$name])) { # Predefined priorities?
