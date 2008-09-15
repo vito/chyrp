@@ -1,12 +1,26 @@
 <?php
 	require_once "includes/common.php";
 
-	# Prepare the Main Controller.
+	# Prepare the controller.
 	$main = MainController::current();
 
-	$trigger->call("top");
+	# Parse the route.
+	$route = Route::current($main);
 
-	$route->init($main);
+	# Check if the user can view the site.
+	if (!$visitor->group()->can("view_site") and
+	    !in_array($route->action, array("login", "logout", "register", "lost_password")))
+		if ($trigger->exists("can_not_view_site"))
+			$trigger->call("can_not_view_site");
+		else
+			show_403(__("Access Denied"), __("You are not allowed to view this site."));
+
+	# If we're viewing a feed, make sure the feed items displayed is correct.
+	if ($route->feed)
+		$config->posts_per_page = $config->feed_items;
+
+	# Execute the appropriate Controller responder.
+	$route->init();
 
 	# If the route failed or nothing was displayed, check for:
 	#     1. Module-provided pages.
@@ -30,6 +44,6 @@
 			show_404();
 	}
 
-	$trigger->call("bottom");
+	$trigger->call("end", $route);
 
 	ob_end_flush();

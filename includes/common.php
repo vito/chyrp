@@ -251,6 +251,9 @@
 	# Set the locale for gettext.
 	set_locale($config->locale);
 
+	# Load the translation engine.
+	load_translator("chyrp", INCLUDES_DIR."/locale/".$config->locale.".mo");
+
 	# Constant: PREVIEWING
 	# Is the user previewing a theme?
 	define('PREVIEWING', !ADMIN and !empty($_SESSION['theme']));
@@ -279,28 +282,7 @@
 	# Example usage scenario: custom auth systems (e.g. OpenID)
 	$trigger->filter($visitor, "visitor");
 
-	# Parse the route.
-	$route = Route::current();
+	$trigger->call("runtime");
 
 	# Set the content-type to the theme's "type" setting, or "text/html".
 	header("Content-type: ".(INDEX ? fallback($theme->type, "text/html") : "text/html")."; charset=UTF-8");
-
-	if (INDEX or ADMIN)
-		$trigger->call(ADMIN ? "admin_runtime" : "runtime");
-
-	# Load the translation engine
-	load_translator("chyrp", INCLUDES_DIR."/locale/".$config->locale.".mo");
-
-	# Check if the user can view the site, call the appropriate controller functions, and serve any feeds.
-	if (INDEX or ADMIN or AJAX) {
-		if (!$visitor->group()->can("view_site") and
-		    !in_array($route->action, array("login", "logout", "register", "lost_password")))
-			if ($trigger->exists("can_not_view_site"))
-				$trigger->call("can_not_view_site");
-			else
-				show_403(__("Access Denied"), __("You are not allowed to view this site."));
-
-		# If we're viewing a feed, make sure the feed items displayed is correct.
-		if ($route->feed)
-			$config->posts_per_page = $config->feed_items;
-	}

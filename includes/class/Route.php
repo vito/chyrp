@@ -53,11 +53,17 @@
 		# Is the visitor requesting a feed?
 		public $feed = false;
 
+		# Variable: $controller
+		# The Route's Controller.
+		public $controller;
+
 		/**
 		 * Function: __construct
 		 * Parse the URL to determine what to do.
 		 */
-		private function __construct() {
+		private function __construct($controller) {
+			$this->controller = $controller;
+
 			$config = Config::current();
 
 			$this->action =& $_GET['action'];
@@ -73,10 +79,13 @@
 			$this->request = preg_replace("/".$this->safe_path."/", "", $_SERVER['REQUEST_URI'], 1);
 			$this->arg = explode("/", trim($this->request, "/"));
 
-			$this->determine_action();
+			if ($controller instanceof AdminController)
+				$this->default_admin_action();
 
-			if (!INDEX)
+			if (!($controller instanceof MainController))
 				return;
+
+			$this->determine_action();
 
 			# Check if we are viewing a custom route, and set the action/GET parameters accordingly.
 			$this->check_custom_routes();
@@ -102,8 +111,10 @@
 		 * Parameters:
 		 *     $controller - The Controller to run methods on.
 		 */
-		public function init($controller) {
+		public function init() {
 			$trigger = Trigger::current();
+
+			$trigger->call("route_init", $this);
 
 			$try = $this->try;
 			array_unshift($try, $this->action);
@@ -116,18 +127,71 @@
 
 				$this->action = $method;
 
-				if (method_exists($controller, $method))
-					$call = call_user_func_array(array($controller, $method), $args);
+				if (method_exists($this->controller, $method))
+					$response = call_user_func_array(array($this->controller, $method), $args);
+				else
+					$response = false;
+
+				$name = strtolower(str_replace("Controller", "", get_class($this->controller)));
+				if ($trigger->exists($name."_".$method) or $trigger->exists("route_".$method))
+					$call = $trigger->call(array($name."_".$method, "route_".$method), $this->controller);
 				else
 					$call = false;
 
-				$name = strtolower(str_replace("Controller", "", get_class($controller)));
-				if (!$call and $trigger->exists($name."_".$method) or $trigger->exists("route_".$method))
-					$call = $trigger->call(array($name."_".$method, "route_".$method), $controller);
-
-				if ($call !== false)
+				if ($response !== false or $call !== false)
 					return $this->success = true;
 			}
+		}
+
+		/**
+		 * Function: default_admin_action
+		 * Determines what action to set as the default in the Admin for various situations.
+		 */
+		public function default_admin_action() {
+			$visitor = Visitor::current();
+
+			if (empty($this->action) or $this->action == "write") {
+				# "Write > Post", if they can add posts or drafts.
+				if (($visitor->group()->can("add_post") or $visitor->group()->can("add_draft")) and
+				    !empty(Config::current()->enabled_feathers))
+					return $this->action = "write_post";
+
+				# "Write > Page", if they can add pages.
+				if ($visitor->group()->can("add_page"))
+					return $this->action = "write_page";
+			}
+
+			if (empty($this->action) or $this->action == "manage") {
+				# "Manage > Posts", if they can manage any posts.
+				if (Post::any_editable() or Post::any_deletable())
+					return $this->action = "manage_posts";
+
+				# "Manage > Pages", if they can manage pages.
+				if ($visitor->group()->can("edit_page") or $visitor->group()->can("delete_page"))
+					return $this->action = "manage_pages";
+
+				# "Manage > Users", if they can manage users.
+				if ($visitor->group()->can("edit_user") or $visitor->group()->can("delete_user"))
+					return $this->action = "manage_users";
+
+				# "Manage > Groups", if they can manage groups.
+				if ($visitor->group()->can("edit_group") or $visitor->group()->can("delete_group"))
+					return $this->action = "manage_groups";
+			}
+
+			if (empty($this->action) or $this->action == "settings") {
+				# "General Settings", if they can configure the installation.
+				if ($visitor->group()->can("change_settings"))
+					return $this->action = "general_settings";
+			}
+
+			if (empty($this->action) or $this->action == "extend") {
+				# "Modules", if they can configure the installation.
+				if ($visitor->group()->can("toggle_extensions"))
+					return $this->action = "modules";
+			}
+
+			Trigger::current()->filter($this->action, "admin_determine_action");
 		}
 
 		/**
@@ -136,55 +200,6 @@
 		 */
 		public function determine_action() {
 			$config = Config::current();
-
-			if (ADMIN) {
-				$visitor = Visitor::current();
-
-				if (!isset($this->action) or $this->action == "write") {
-					# "Write > Post", if they can add posts or drafts.
-					if (($visitor->group()->can("add_post") or $visitor->group()->can("add_draft")) and
-					    !empty(Config::current()->enabled_feathers))
-						return $this->action = "write_post";
-
-					# "Write > Page", if they can add pages.
-					if ($visitor->group()->can("add_page"))
-						return $this->action = "write_page";
-				}
-
-				if (!isset($this->action) or $this->action == "manage") {
-					# "Manage > Posts", if they can manage any posts.
-					if (Post::any_editable() or Post::any_deletable())
-						return $this->action = "manage_posts";
-
-					# "Manage > Pages", if they can manage pages.
-					if ($visitor->group()->can("edit_page") or $visitor->group()->can("delete_page"))
-						return $this->action = "manage_pages";
-
-					# "Manage > Users", if they can manage users.
-					if ($visitor->group()->can("edit_user") or $visitor->group()->can("delete_user"))
-						return $this->action = "manage_users";
-
-					# "Manage > Groups", if they can manage groups.
-					if ($visitor->group()->can("edit_group") or $visitor->group()->can("delete_group"))
-						return $this->action = "manage_groups";
-				}
-
-				if (!isset($this->action) or $this->action == "settings") {
-					# "General Settings", if they can configure the installation.
-					if ($visitor->group()->can("change_settings"))
-						return $this->action = "general_settings";
-				}
-
-				if (!isset($this->action) or $this->action == "extend") {
-					# "Modules", if they can configure the installation.
-					if ($visitor->group()->can("toggle_extensions"))
-						return $this->action = "modules";
-				}
-
-				Trigger::current()->filter($this->action, "admin_determine_action");
-
-				return;
-			}
 
 			if (empty($this->arg[0])) # If they're just at /, don't bother with all this.
 				return $this->action = "index";
@@ -442,8 +457,8 @@
 		 * Function: current
 		 * Returns a singleton reference to the current class.
 		 */
-		public static function & current() {
+		public static function & current($controller = null) {
 			static $instance = null;
-			return $instance = (empty($instance)) ? new self() : $instance ;
+			return $instance = (empty($instance)) ? new self($controller) : $instance ;
 		}
 	}

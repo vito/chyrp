@@ -20,7 +20,7 @@
 			$this->twig = new Twig_Loader(THEME_DIR,
 			                              ((is_writable(INCLUDES_DIR."/caches") and !DEBUG and !PREVIEWING) ?
 			                                  INCLUDES_DIR."/caches" :
-			                                  null));
+			                                  null)) ;
 		}
 
 		/**
@@ -409,13 +409,8 @@
 
 			header("Content-Type: application/atom+xml; charset=UTF-8");
 
-			if (!is_array($posts)) {
-				$ids = array();
-				foreach ($posts->array[0] as $result)
-					$ids[] = $result["id"];
-
-				$posts = empty($ids) ? array() : Post::find(array("where" => array("id" => $ids)));
-			}
+			if (!is_array($posts))
+				$posts = $posts->paginated;
 
 			$latest_timestamp = 0;
 			foreach ($posts as $post)

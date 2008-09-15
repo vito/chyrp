@@ -31,11 +31,11 @@
 			$config->remove("cache_expire");
 		}
 
-		public function runtime() {
+		public function route_init($route) {
 			if ($this->cancelled or !file_exists($this->file) or Flash::exists())
 				return;
 
-			$action = Route::current()->action;
+			$action = $route->action;
 
 			if (!empty($_POST))
 				return;
@@ -51,7 +51,7 @@
 			exit($cache);
 		}
 
-		public function bottom() {
+		public function end() {
 			if (file_exists($this->file) or Flash::exists())
 				return;
 
