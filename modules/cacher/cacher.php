@@ -32,7 +32,10 @@
 		}
 
 		public function route_init($route) {
-			if ($this->cancelled or !file_exists($this->file) or Flash::exists())
+			if (!($route->controller instanceof MainController) or
+			    $this->cancelled or
+			    !file_exists($this->file) or
+			    Flash::exists())
 				return;
 
 			$action = $route->action;
@@ -51,8 +54,11 @@
 			exit($cache);
 		}
 
-		public function end() {
-			if (file_exists($this->file) or Flash::exists())
+		public function end($route) {
+			if (!($route->controller instanceof MainController) or
+			    $this->cancelled or
+			    !file_exists($this->file) or
+			    Flash::exists())
 				return;
 
 			if (DEBUG)

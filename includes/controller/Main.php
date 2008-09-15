@@ -435,6 +435,16 @@
 			if (!isset($file))
 				return false; # If they viewed /display, this'll get called.
 
+			if (is_array($file))
+				for ($i = 0; $i < count($file); $i++) {
+					$check = ($file[$i][0] == "/" or preg_match("/[a-zA-Z]:\\\/", $file[$i])) ?
+					             $file[$i] :
+					             THEME_DIR."/".$file[$i] ;
+
+					if (file_exists($check.".twig") or ($i + 1) == count($file))
+						return $this->display($file[$i], $context, $title);
+				}
+
 			$this->displayed = true;
 
 			$route = Route::current();
@@ -450,8 +460,6 @@
 			}
 
 			$this->context = array_merge($context, $this->context);
-
-			$trigger->filter($this->context, array("main_context", "main_context_".str_replace("/", "_", $file)));
 
 			$visitor = Visitor::current();
 			$config = Config::current();
@@ -485,15 +493,7 @@
 
 			$this->context["sql_debug"] =& SQL::current()->debug;
 
-			if (is_array($file))
-				for ($i = 0; $i < count($file); $i++) {
-					$check = ($file[$i][0] == "/" or preg_match("/[a-zA-Z]:\\\/", $file[$i])) ?
-					             $file[$i] :
-					             THEME_DIR."/".$file[$i] ;
-
-					if (file_exists($check.".twig") or ($i + 1) == count($file))
-						return $this->display($file[$i], $context);
-				}
+			$trigger->filter($this->context, array("main_context", "main_context_".str_replace("/", "_", $file)));
 
 			$file = ($file[0] == "/" or preg_match("/[a-zA-Z]:\\\/", $file)) ? $file : THEME_DIR."/".$file ;
 			if (!file_exists($file.".twig"))

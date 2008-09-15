@@ -5,6 +5,8 @@
 
 	require_once "common.php";
 
+	$main = MainController::current();
+
 	if (!$visitor->group()->can("view_site"))
 		if ($trigger->exists("can_not_view_site"))
 			$trigger->call("can_not_view_site");
