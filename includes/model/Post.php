@@ -23,14 +23,6 @@
 		                               '(feather)'  => '([^\/]+)',
 		                               '(feathers)' => '([^\/]+)');
 
-		# String: $private
-		# SQL "where" text for which posts the current user can view.
-		static $private;
-
-		# String: $enabled_feathers
-		# SQL "where" text for each of the feathers. Prevents posts of a disabled Feather from showing.
-		static $enabled_feathers;
-
 		/**
 		 * Function: __construct
 		 * See Also:
@@ -52,7 +44,7 @@
 			if (!XML_RPC) {
 				$visitor = Visitor::current();
 				$private = (isset($options["drafts"]) and $options["drafts"] and $visitor->group()->can("view_draft")) ?
-				               str_replace("') OR", "', 'draft') OR", self::statuses()) :
+				               self::statuses(array("draft")) :
 				               self::statuses();
 
 				$options["where"][] = self::feathers();
@@ -92,7 +84,7 @@
 			if (!XML_RPC) {
 				$visitor = Visitor::current();
 				$private = (isset($options["drafts"]) and $options["drafts"] and $visitor->group()->can("view_draft")) ?
-				               str_replace("') OR", "', 'draft') OR", self::statuses()) :
+				               self::statuses(array("draft")) :
 				               self::statuses() ;
 
 				$options["where"][] = self::feathers();
@@ -547,20 +539,11 @@
 			if ($this->no_results)
 				return false;
 
-			$where = array("created_at > :created_at OR id > :id");
-
-			$where["status"] = array("public");
-			if ($this->status == "draft")
-				$where["status"][] = "draft";
-			if (logged_in())
-				$where["status"][] = "registered_only";
-			if (Visitor::current()->group()->can("view_private"))
-				$where["status"][] = "private";
-
-			return new self(null, array("where" => $where,
-			                            "order" => "created_at ASC, id ASC",
-			                            "params" => array(":created_at" => $this->created_at,
-			                                              ":id" => $this->id)));
+			return new self(null, array("where" => array("created_at >" => $this->created_at,
+			                                             $this->status == "draft" ?
+			                                                 self::statuses(array("draft")) :
+			                                                 self::statuses()),
+			                            "order" => "created_at ASC, id ASC"));
 		}
 
 		/**
@@ -572,22 +555,11 @@
 			if ($this->no_results)
 				return false;
 
-			$where = array("(created_at < :created_at OR id < :id)");
-
-			$statuses = array("public");
-			if ($this->status == "draft")
-				$statuses[] = "draft";
-			if (logged_in())
-				$statuses[] = "registered_only";
-			if (Visitor::current()->group()->can("view_private"))
-				$statuses[] = "private";
-
-			$where[] = "status IN ('".implode("', '", $statuses)."')";
-
-			return new self(null, array("where" => $where,
-			                            "order" => "created_at DESC, id DESC",
-			                            "params" => array(":created_at" => $this->created_at,
-			                                              ":id" => $this->id)));
+			return new self(null, array("where" => array("created_at <" => $this->created_at,
+			                                             $this->status == "draft" ?
+			                                                 self::statuses(array("draft")) :
+			                                                 self::statuses()),
+			                            "order" => "created_at DESC, id DESC"));
 		}
 
 		/**
@@ -782,10 +754,10 @@
 		 * Function: statuses
 		 * Returns a SQL query "chunk" for the "status" column permissions of the current user.
 		 */
-		static function statuses() {
+		static function statuses($start = array()) {
 			$visitor = Visitor::current();
 
-			$statuses = array("public");
+			$statuses = array_merge(array("public"), $start);
 
 			if (logged_in())
 				$statuses[] = "registered_only";
