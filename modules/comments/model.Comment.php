@@ -21,7 +21,9 @@
 				return false;
 
 			$this->body_unfiltered = $this->body;
-			$group = ($this->user_id and !$this->user()->no_results) ? $this->user()->group() : new Group(Config::current()->guest_group) ;
+			$group = ($this->user_id and !$this->user()->no_results) ?
+			             $this->user()->group() :
+			             new Group(Config::current()->guest_group) ;
 
 			if (isset($options["filter"]) and !$options["filter"])
 				return;

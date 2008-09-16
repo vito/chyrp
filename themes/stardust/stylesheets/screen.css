@@ -682,3 +682,33 @@ span.waiting {
 		border-right: 0;
 		border-color: #000;
 	}
+
+/* Debugger */
+#debug {
+	background: #ffffdd;
+	color: #666;
+	padding: .4em .75em .5em .75em;
+	border-top: .1em solid #ddd;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	max-height: 33%;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+#debug h5 {
+	margin: 0;
+	font-size: 1.1em;
+	opacity: .75;
+}
+#debug ol.queries li {
+	margin: 0 0 1em;
+}
+#debug pre {
+	background: #fff;
+	border: 1px solid #ddd;
+	padding: 0 .5em;
+	xoverflow-x: scroll;
+	word-wrap: break-word;
+}

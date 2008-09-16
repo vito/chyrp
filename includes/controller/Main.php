@@ -653,7 +653,7 @@
 			$this->context["debug"]        = DEBUG;
 			$this->context["POST"]         = $_POST;
 			$this->context["GET"]          = $_GET;
-			$this->context["sql_queries"]  =& SQL::current()->queries;
+			$this->context["sql_queries"] =& SQL::current()->queries;
 
 			$this->context["visitor"]->logged_in = logged_in();
 

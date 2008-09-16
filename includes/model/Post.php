@@ -539,11 +539,14 @@
 			if ($this->no_results)
 				return false;
 
-			return new self(null, array("where" => array("created_at >" => $this->created_at,
-			                                             $this->status == "draft" ?
-			                                                 self::statuses(array("draft")) :
-			                                                 self::statuses()),
-			                            "order" => "created_at ASC, id ASC"));
+			if (isset($this->next))
+				return $this->next;
+
+			return $this->next = new self(null, array("where" => array("created_at >" => $this->created_at,
+			                                                           $this->status == "draft" ?
+			                                                               self::statuses(array("draft")) :
+			                                                               self::statuses()),
+			                                          "order" => "created_at ASC, id ASC"));
 		}
 
 		/**
@@ -555,11 +558,14 @@
 			if ($this->no_results)
 				return false;
 
-			return new self(null, array("where" => array("created_at <" => $this->created_at,
-			                                             $this->status == "draft" ?
-			                                                 self::statuses(array("draft")) :
-			                                                 self::statuses()),
-			                            "order" => "created_at DESC, id DESC"));
+			if (isset($this->prev))
+				return $this->prev;
+
+			return $this->prev = new self(null, array("where" => array("created_at <" => $this->created_at,
+			                                                           $this->status == "draft" ?
+			                                                               self::statuses(array("draft")) :
+			                                                               self::statuses()),
+			                                          "order" => "created_at DESC, id DESC"));
 		}
 
 		/**
@@ -768,7 +774,7 @@
 			if ($visitor->group()->can("view_private"))
 				$statuses[] = "private";
 
-			return "(status IN ('".implode("', '", $statuses)."') OR status LIKE '%{".$visitor->group()->id."}%')";
+			return "status IN ('".implode("', '", $statuses)."') OR status LIKE '%{".$visitor->group()->id."}%'";
 		}
 
 		/**

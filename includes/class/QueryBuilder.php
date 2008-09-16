@@ -265,7 +265,7 @@
 			foreach ($vals as $val)
 				$return[] = SQL::current()->escape($val);
 
-			return "(".join(",", $return).")";
+			return "(".join(", ", $return).")";
 		}
 
 		/**
@@ -279,9 +279,9 @@
 			foreach ($left_join as $join)
 				$query.= "LEFT JOIN __".$join["table"]." ON ".self::build_where($join["where"], $join["table"], $params)."\n";
 
-			$query.= ($conds ? "WHERE ".self::build_where($conds, $tables, $params) : "")."\n".
-			         ($group ? "GROUP BY ".self::build_group($group, $tables) : "")."\n".
-			         ($order ? "ORDER BY ".self::build_order($order, $tables) : "")."\n".
+			$query.= ($conds ? "WHERE ".self::build_where($conds, $tables, $params)."\n" : "").
+			         ($group ? "GROUP BY ".self::build_group($group, $tables)."\n" : "").
+			         ($order ? "ORDER BY ".self::build_order($order, $tables)."\n" : "").
 			         self::build_limits($offset, $limit);
 
 			return $query;

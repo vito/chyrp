@@ -17,7 +17,11 @@
 		 *     $params - An associative array of parameters used in the query.
 		 */
 		public function __construct($query, $params = array(), $throw_exceptions = false) {
-			$this->db =& SQL::current()->db;
+			$sql = SQL::current();
+
+			++$sql->queries;
+
+			$this->db =& $sql->db;
 
 			$this->params = $params;
 			$this->throw_exceptions = $throw_exceptions;
@@ -36,17 +40,15 @@
 
 				$logQuery = $query;
 				foreach ($params as $name => $val)
-					$logQuery = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", SQL::current()->escape($val)."\\1", $logQuery);
+					$logQuery = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", $sql->escape($val)."\\1", $logQuery);
 
-				SQL::current()->debug[] = array("number" => SQL::current()->queries,
-				                                "file" => str_replace(MAIN_DIR."/", "", $target["file"]),
-				                                "line" => $target["line"],
-				                                "query" => str_replace("\n",
-				                                                       "\\n",
-				                                                       $logQuery));
+				$sql->debug[] = array("number" => $sql->queries,
+				                      "file" => str_replace(MAIN_DIR."/", "", $target["file"]),
+				                      "line" => $target["line"],
+				                      "query" => $logQuery);
 			}
 
-			switch(SQL::current()->method()) {
+			switch($sql->method()) {
 				case "pdo":
 					try {
 						$this->query = $this->db->prepare($query);
@@ -61,7 +63,9 @@
 					break;
 				case "mysqli":
 					foreach ($params as $name => $val)
-						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", SQL::current()->escape($val)."\\1", $query);
+						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", $sql->escape($val)."\\1", $query);
+
+					$this->queryString = $query;
 
 					try {
 						if (!$this->query = $this->db->query($query))
@@ -72,7 +76,9 @@
 					break;
 				case "mysql":
 					foreach ($params as $name => $val)
-						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", SQL::current()->escape($val)."\\1", $query);
+						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", $sql->escape($val)."\\1", $query);
+
+					$this->queryString = $query;
 
 					try {
 						if (!$this->query = @mysql_query($query))

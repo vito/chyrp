@@ -56,8 +56,8 @@
 		public function method() {
 			# We really don't need PDO anymore, since we have the two we supported with it hardcoded (kinda).
 			# Keeping this here for when/if we decide to add support for more database engines, like Postgres and MSSQL.
-			#if (class_exists("PDO") and (in_array("mysql", PDO::getAvailableDrivers()) or in_array("sqlite", PDO::getAvailableDrivers())))
-			#	return "pdo";
+			# if (class_exists("PDO") and (in_array("mysql", PDO::getAvailableDrivers()) or in_array("sqlite", PDO::getAvailableDrivers())))
+			# 	return "pdo";
 
 			if (isset($this->adapter)) {
 				if ($this->adapter == "mysql" and class_exists("MySQLi"))
@@ -192,8 +192,6 @@
 
 			if ($this->adapter == "sqlite")
 				$query = str_ireplace(" DEFAULT CHARSET=utf8", "", str_ireplace("AUTO_INCREMENT", "AUTOINCREMENT", $query));
-
-			++$this->queries;
 
 			$query = new Query($query, $params, $throw_exceptions);
 
@@ -330,7 +328,7 @@
 			$string = str_replace('\\', '\\\\', $string);
 			$string = str_replace('$', '\$', $string);
 
-			if ($quotes)
+			if ($quotes and !is_numeric($string))
 				$string = "'".$string."'";
 
 			return $string;

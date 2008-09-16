@@ -371,7 +371,7 @@
 				if ($spread == 0)
 					$spread = 1;
 
-				$step = 75 / $spread;
+				$step = 250 / $spread; # Increase for bigger difference.
 
 				$context = array();
 				foreach ($tags as $tag => $count)

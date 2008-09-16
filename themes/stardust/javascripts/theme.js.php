@@ -17,5 +17,8 @@ $(function(){
 		$("input#search").attr({
 			placeholder: "<?php echo __("Search...", "theme"); ?>"
 		})
+
+	if ($("#debug").size())
+		$("#wrapper").css("padding-bottom", $("#debug").height())
 })
 <!-- --></script>

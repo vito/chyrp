@@ -66,14 +66,27 @@ ${ trigger.call("head") }
 					<a class="atom" href="{% url "feed/" %}">atom</a>
 				</div>
 			</div>
+			<div class="clear"></div>
 		</div>
 {% if debug %}
-		<script type="text/javascript">
+		<div id="debug">
+			<h5>${ "Stats" | translate }</h5>
+			<ul>
+				<li><strong>${ "Queries:" | translate }</strong> $sql_queries</li>
+				<li><strong>${ "Load Time:" | translate }</strong> $theme.load_time ${ "seconds" | translate }</li>
+			</ul>
+			<br />
+			<h5>${ "Queries" | translate }</h5>
+			<ol class="queries">
 {% for debug in sql_debug %}
-			console.log("$debug.number: ${ debug.query | quotes | strip } (Called from $debug.file on line $debug.line\.)")
+				<li>
+					<pre>${ debug.query | replace("\t", "    ") }</pre>
+					<em>Called from $debug.file on line ${ debug.line }.</em>
+				</li>
 {% endfor %}
-			console.log("Total: $sql_queries")
-		</script>
+			</ol>
+			<div class="clear"></div>
+		</div>
 {% endif %}
 ${ trigger.call("end_content") }
 		<!-- Queries: $sql_queries | Load Time: $theme.load_time -->
