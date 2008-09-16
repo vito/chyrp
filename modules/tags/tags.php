@@ -323,7 +323,7 @@
 			Flash::notice(__("Posts tagged.", "tags"), "/admin/?action=manage_tags");
 		}
 
-		public function route_tag($main) {
+		public function main_tag($main) {
 			if (!isset($_GET['name']))
 				return false;
 
@@ -342,6 +342,48 @@
 			$main->display(array("pages/tag", "pages/index"),
 			               array("posts" => $posts, "tag" => $tag),
 			               _f("Posts tagged with \"%s\"", array($tag), "tags"));
+		}
+
+		public function main_tags($main) {
+			$sql = SQL::current();
+
+			if ($sql->count("tags") > 0) {
+				$tags = array();
+				$clean = array();
+				foreach($sql->select("posts",
+					                 "tags.*",
+					                 array(Post::statuses(), Post::feathers()),
+					                 null,
+					                 array(),
+					                 null, null, null,
+					                 array(array("table" => "tags",
+					                             "where" => "tags.post_id = posts.id")))->fetchAll() as $tag) {
+					$tags[] = $tag["tags"];
+					$clean[] = $tag["clean"];
+				}
+
+				list($tags, $clean, $tag2clean,) = self::parseTags($tags, $clean);
+
+				$max_qty = max(array_values($tags));
+				$min_qty = min(array_values($tags));
+
+				$spread = $max_qty - $min_qty;
+				if ($spread == 0)
+					$spread = 1;
+
+				$step = 75 / $spread;
+
+				$context = array();
+				foreach ($tags as $tag => $count)
+					$context[] = array("size" => (100 + (($count - $min_qty) * $step)),
+					                   "popularity" => $count,
+					                   "name" => $tag,
+					                   "title" => sprintf(_p("%s post tagged with &quot;%s&quot;", "%s posts tagged with &quot;%s&quot;", $count, "tags"), $count, $tag),
+					                   "clean" => $tag2clean[$tag],
+					                   "url" => url("tag/".$tag2clean[$tag]."/"));
+
+				$main->display("pages/tags", array("tag_cloud" => $context), __("Tags", "tags"));
+			}
 		}
 
 		public function import_chyrp_post($entry, $post) {
