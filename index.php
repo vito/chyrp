@@ -15,10 +15,6 @@
 		else
 			show_403(__("Access Denied"), __("You are not allowed to view this site."));
 
-	# If we're viewing a feed, make sure the feed items displayed is correct.
-	if ($route->feed)
-		$config->posts_per_page = $config->feed_items;
-
 	# Execute the appropriate Controller responder.
 	$route->init();
 

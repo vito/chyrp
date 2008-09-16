@@ -30,12 +30,22 @@
 		public function parse($route) {
 			$config = Config::current();
 
+			if ($route->feed)
+				$this->post_limit = $config->feed_items;
+			else
+				$this->post_limit = $config->posts_per_page;
+
 			if (empty($route->arg[0])) # If they're just at /, don't bother with all this.
 				return $route->action = "index";
+
+			# Protect non-responder functions.
+			if (in_array($route->arg[0], array("__construct", "parse", "post_from_url", "display", "current")))
+				show_404();
 
 			# Feed
 			if (preg_match("/\/feed\/?$/", $route->request)) {
 				$route->feed = true;
+				$this->post_limit = $config->feed_items;
 
 				if ($route->arg[0] == "feed") # Don't set $route->action to "feed" (bottom of this function).
 					return $route->action = "index";
@@ -44,6 +54,7 @@
 			# Feed with a title parameter
 			if (preg_match("/\/feed\/([^\/]+)\/?$/", $route->request, $title)) {
 				$route->feed = true;
+				$this->post_limit = $config->feed_items;
 				$_GET['title'] = $title[1];
 
 				if ($route->arg[0] == "feed") # Don't set $route->action to "feed" (bottom of this function).
@@ -193,7 +204,7 @@
 		public function index() {
 			$this->display("pages/index",
 			               array("posts" => new Paginator(Post::find(array("placeholders" => true)),
-			                                              Config::current()->posts_per_page)));
+			                                              $this->post_limit)));
 		}
 
 		/**
@@ -208,11 +219,11 @@
 			if (isset($_GET['year']) and isset($_GET['month']) and isset($_GET['day']))
 				$posts = new Paginator(Post::find(array("placeholders" => true,
 				                                        "where" => array("created_at like" => $_GET['year']."-".$_GET['month']."-".$_GET['day']."%"))),
-				                       Config::current()->posts_per_page);
+				                       $this->post_limit);
 			elseif (isset($_GET['year']) and isset($_GET['month']))
 				$posts = new Paginator(Post::find(array("placeholders" => true,
 				                                        "where" => array("created_at like" => $_GET['year']."-".$_GET['month']."%"))),
-				                       Config::current()->posts_per_page);
+				                       $this->post_limit);
 
 			$sql = SQL::current();
 
@@ -292,7 +303,7 @@
 			$posts = new Paginator(Post::find(array("placeholders" => true,
 			                                        "where" => $where,
 			                                        "params" => $params)),
-				                   Config::current()->posts_per_page);
+				                   $this->post_limit);
 
 			$this->display(array("pages/search", "pages/index"),
 			               array("posts" => $posts,
@@ -313,7 +324,7 @@
 			$posts = new Paginator(Post::find(array("placeholders" => true,
 			                                        "where" => array("status" => "draft",
 			                                                         "user_id" => $visitor->id))),
-				                   Config::current()->posts_per_page);
+				                   $this->post_limit);
 
 			$this->display(array("pages/drafts", "pages/index"),
 			               array("posts" => $posts),

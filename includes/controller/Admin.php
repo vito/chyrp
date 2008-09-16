@@ -34,6 +34,10 @@
 		public function parse($route) {
 			$visitor = Visitor::current();
 
+			# Protect non-responder functions.
+			if (in_array($route->action, array("__construct", "parse", "subnav_context", "display", "current")))
+				show_404();
+
 			if (empty($route->action) or $route->action == "write") {
 				# "Write > Post", if they can add posts or drafts.
 				if (($visitor->group()->can("add_post") or $visitor->group()->can("add_draft")) and
@@ -1988,10 +1992,7 @@
 		 * Function: subnav_context
 		 * Generates the context variables for the subnav.
 		 */
-		public function subnav_context($action = null) {
-			if (!isset($action))
-				return false; # If they viewed /subnav_context, this'll get called.
-
+		public function subnav_context($action) {
 			$trigger = Trigger::current();
 			$visitor = Visitor::current();
 
@@ -2094,9 +2095,6 @@
 		 *     $title - The title for the page. Defaults to a camlelization of the action, e.g. foo_bar -> Foo Bar.
 		 */
 		public function display($action, $context = array(), $title = "") {
-			if (!isset($action))
-				return false; # If they viewed /subnav_context, this'll get called.
-
 			$this->displayed = true;
 
 			fallback($title, camelize($action, true));
