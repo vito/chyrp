@@ -753,6 +753,9 @@
 		/**
 		 * Function: statuses
 		 * Returns a SQL query "chunk" for the "status" column permissions of the current user.
+		 *
+		 * Parameters:
+		 *     $start - An array of additional statuses to allow; "registered_only" and "private" are added deterministically.
 		 */
 		static function statuses($start = array()) {
 			$visitor = Visitor::current();
