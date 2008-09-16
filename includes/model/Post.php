@@ -7,6 +7,22 @@
 	 *     <Model>
 	 */
 	class Post extends Model {
+		# Array: $url_attrs
+		# The translation array of the post URL setting to regular expressions.
+		# Passed through the route_code filter.
+		static $url_attrs = array('(year)'     => '([0-9]{4})',
+		                               '(month)'    => '([0-9]{1,2})',
+		                               '(day)'      => '([0-9]{1,2})',
+		                               '(hour)'     => '([0-9]{1,2})',
+		                               '(minute)'   => '([0-9]{1,2})',
+		                               '(second)'   => '([0-9]{1,2})',
+		                               '(id)'       => '([0-9]+)',
+		                               '(author)'   => '([^\/]+)',
+		                               '(clean)'    => '([^\/]+)',
+		                               '(url)'      => '([^\/]+)',
+		                               '(feather)'  => '([^\/]+)',
+		                               '(feathers)' => '([^\/]+)');
+
 		# String: $private
 		# SQL "where" text for which posts the current user can view.
 		static $private;
@@ -430,7 +446,7 @@
 			              urlencode(pluralize($this->feather)));
 
 			Trigger::current()->filter($vals, "url_vals", $this);
-			return $config->url."/".str_replace(array_keys(Route::current()->code), $vals, $config->post_url);
+			return $config->url."/".str_replace(array_keys(self::$url_attrs), $vals, $config->post_url);
 		}
 
 		/**

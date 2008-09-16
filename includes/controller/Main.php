@@ -24,6 +24,163 @@
 		}
 
 		/**
+		 * Function: parse
+		 * Determines the action.
+		 */
+		public function parse($route) {
+			$config = Config::current();
+
+			if (empty($route->arg[0])) # If they're just at /, don't bother with all this.
+				return $route->action = "index";
+
+			# Feed
+			if (preg_match("/\/feed\/?$/", $route->request)) {
+				$route->feed = true;
+
+				if ($route->arg[0] == "feed") # Don't set $route->action to "feed" (bottom of this function).
+					return $route->action = "index";
+			}
+
+			# Feed with a title parameter
+			if (preg_match("/\/feed\/([^\/]+)\/?$/", $route->request, $title)) {
+				$route->feed = true;
+				$_GET['title'] = $title[1];
+
+				if ($route->arg[0] == "feed") # Don't set $route->action to "feed" (bottom of this function).
+					return $route->action = "index";
+			}
+
+			# Paginator
+			if (preg_match_all("/\/((([^_\/]+)_)?page)\/([0-9]+)/", $route->request, $page_matches)) {
+				foreach ($page_matches[1] as $key => $page_var)
+					$_GET[$page_var] = (int) $page_matches[4][$key];
+
+				if ($route->arg[0] == $page_matches[1][0]) # Don't fool ourselves into thinking we're viewing a page.
+					return $route->action = (isset($config->routes["/"])) ? $config->routes["/"] : "index" ;
+			}
+
+			# Viewing a post by its ID
+			if ($route->arg[0] == "id") {
+				$_GET['id'] = $route->arg[1];
+				return $route->action = "id";
+			}
+
+			# Archive
+			if ($route->arg[0] == "archive") {
+				# Make sure they're numeric; there might be a /page/ in there.
+				if (isset($route->arg[1]) and is_numeric($route->arg[1]))
+					$_GET['year'] = $route->arg[1];
+				if (isset($route->arg[2]) and is_numeric($route->arg[2]))
+					$_GET['month'] = $route->arg[2];
+				if (isset($route->arg[3]) and is_numeric($route->arg[3]))
+					$_GET['day'] = $route->arg[3];
+
+				return $route->action = "archive";
+			}
+
+			# Searching
+			if ($route->arg[0] == "search") {
+				if (isset($route->arg[1]))
+					$_GET['query'] = $route->arg[1];
+
+				return $route->action = "search";
+			}
+
+			# Custom pages added by Modules, Feathers, Themes, etc.
+			foreach ($config->routes as $path => $action) {
+				if (is_numeric($action))
+					$action = $route->arg[0];
+
+				preg_match_all("/\(([^\)]+)\)/", $path, $matches);
+
+				if ($path != "/")
+					$path = trim($path, "/");
+
+				$escape = preg_quote($path, "/");
+				$to_regexp = preg_replace("/\\\\\(([^\)]+)\\\\\)/", "([^\/]+)", $escape);
+
+				if ($path == "/")
+					$to_regexp = "\$";
+
+				if (preg_match("/^\/{$to_regexp}/", $route->request, $url_matches)) {
+					array_shift($url_matches);
+
+					if (isset($matches[1]))
+						foreach ($matches[1] as $index => $parameter)
+							$_GET[$parameter] = $url_matches[$index];
+
+					$params = explode(";", $action);
+					$action = $params[0];
+
+					array_shift($params);
+					foreach ($params as $param) {
+						$split = explode("=", $param);
+						$_GET[$split[0]] = $split[1];
+					}
+
+					$route->try[] = $action;
+				}
+			}
+
+			# Are we viewing a post?
+			$this->check_viewing_post($route);
+
+			# Try viewing a page.
+			$route->try["page"] = array($route->arg);
+		}
+
+		/**
+		 * Function: check_viewing_post
+		 * Check to see if we're viewing a post, and if it is, handle it.
+		 *
+		 * Parameters:
+		 *     $url - If this argument is passed, it will attempt to grab a post from a given URL.
+		 *            If a post is found by that URL, it will be returned.
+		 */
+		public function check_viewing_post($route, $url = false) {
+			$config = Config::current();
+
+			$post_url = $config->post_url;
+
+			$request = ($url ? $url : $route->request);
+			foreach (explode("/", $post_url) as $path)
+				foreach (preg_split("/\(([^\)]+)\)/", $path) as $leftover) {
+					$request  = preg_replace("/".preg_quote($leftover)."/", "", $request, 1);
+					$post_url = preg_replace("/".preg_quote($leftover)."/", "", $post_url, 1);
+				}
+
+			$args = explode("/", trim($request, "/"));
+
+			$post_url = $this->key_regexp(rtrim($post_url, "/"));
+			$post_url_attrs = array();
+			preg_match_all("/\(([^\/]+)\)/", $config->post_url, $parameters);
+			if (preg_match("/".$post_url."/", rtrim($request, "/"), $matches)) {
+				array_shift($matches);
+
+				foreach ($parameters[0] as $index => $parameter)
+					if ($parameter[0] == "(")
+						$post_url_attrs[rtrim(ltrim($parameter, "("), ")")] = urldecode($args[$index]);
+
+				$route->try["view"] = array($post_url_attrs);
+			}
+		}
+
+		/**
+		 * Function: key_regexp
+		 * Converts the values in $config->post_url to regular expressions.
+		 *
+		 * Parameters:
+		 *     $key - Input URL with the keys from <Post.$url_attrs>.
+		 *
+		 * Returns:
+		 *     $key values replaced with their regular expressions from <Routes->$code>.
+		 */
+		private function key_regexp($key) {
+			Trigger::current()->filter(Post::$url_attrs, "url_code");
+			return str_replace(array_keys(Post::$url_attrs), array_values(Post::$url_attrs), str_replace("/", "\\/", $key));
+		}
+
+		/**
 		 * Function: index
 		 * Grabs the posts for the main page.
 		 */

@@ -28,6 +28,57 @@
 		}
 
 		/**
+		 * Function: parse
+		 * Determines the action.
+		 */
+		public function parse($route) {
+			$visitor = Visitor::current();
+
+			if (empty($route->action) or $route->action == "write") {
+				# "Write > Post", if they can add posts or drafts.
+				if (($visitor->group()->can("add_post") or $visitor->group()->can("add_draft")) and
+				    !empty(Config::current()->enabled_feathers))
+					return $route->action = "write_post";
+
+				# "Write > Page", if they can add pages.
+				if ($visitor->group()->can("add_page"))
+					return $route->action = "write_page";
+			}
+
+			if (empty($route->action) or $route->action == "manage") {
+				# "Manage > Posts", if they can manage any posts.
+				if (Post::any_editable() or Post::any_deletable())
+					return $route->action = "manage_posts";
+
+				# "Manage > Pages", if they can manage pages.
+				if ($visitor->group()->can("edit_page") or $visitor->group()->can("delete_page"))
+					return $route->action = "manage_pages";
+
+				# "Manage > Users", if they can manage users.
+				if ($visitor->group()->can("edit_user") or $visitor->group()->can("delete_user"))
+					return $route->action = "manage_users";
+
+				# "Manage > Groups", if they can manage groups.
+				if ($visitor->group()->can("edit_group") or $visitor->group()->can("delete_group"))
+					return $route->action = "manage_groups";
+			}
+
+			if (empty($route->action) or $route->action == "settings") {
+				# "General Settings", if they can configure the installation.
+				if ($visitor->group()->can("change_settings"))
+					return $route->action = "general_settings";
+			}
+
+			if (empty($route->action) or $route->action == "extend") {
+				# "Modules", if they can configure the installation.
+				if ($visitor->group()->can("toggle_extensions"))
+					return $route->action = "modules";
+			}
+
+			Trigger::current()->filter($route->action, "admin_determine_action");
+		}
+
+		/**
 		 * Function: write
 		 * Post writing.
 		 */
