@@ -62,7 +62,9 @@
 			if (preg_match("/url=([^&#]+)/", $linked_to, $url))
 				$post = new Post(null, array("where" => array("url" => $url[1])));
 			else
-				$post = Route::current()->check_viewing_post($linked_to);
+				$post = MainController::current()->post_from_url(null,
+				                                                 str_replace(rtrim($config->url, "/"), "/", $linked_to),
+				                                                 true);
 
 			if (!$post)
 				return new IXR_Error(33, __("I can't find a post from that URL."));

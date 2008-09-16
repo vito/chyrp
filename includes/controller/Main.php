@@ -123,26 +123,29 @@
 			}
 
 			# Are we viewing a post?
-			$this->check_viewing_post($route);
+			$this->post_from_url($route, $route->request);
 
 			# Try viewing a page.
 			$route->try["page"] = array($route->arg);
 		}
 
 		/**
-		 * Function: check_viewing_post
+		 * Function: post_from_url
 		 * Check to see if we're viewing a post, and if it is, handle it.
 		 *
+		 * This can also be used for grabbing a Post from a given URL.
+		 *
 		 * Parameters:
+		 *     $route - The route to respond to.
 		 *     $url - If this argument is passed, it will attempt to grab a post from a given URL.
 		 *            If a post is found by that URL, it will be returned.
+		 *     $return_post - Return a Post?
 		 */
-		public function check_viewing_post($route, $url = false) {
+		public function post_from_url($route, $request, $return_post = false) {
 			$config = Config::current();
 
 			$post_url = $config->post_url;
 
-			$request = ($url ? $url : $route->request);
 			foreach (explode("/", $post_url) as $path)
 				foreach (preg_split("/\(([^\)]+)\)/", $path) as $leftover) {
 					$request  = preg_replace("/".preg_quote($leftover)."/", "", $request, 1);
@@ -161,7 +164,10 @@
 					if ($parameter[0] == "(")
 						$post_url_attrs[rtrim(ltrim($parameter, "("), ")")] = urldecode($args[$index]);
 
-				$route->try["view"] = array($post_url_attrs);
+				if ($return_post)
+					return Post::from_url($post_url_attrs);
+				else
+					$route->try["view"] = array($post_url_attrs);
 			}
 		}
 
