@@ -121,12 +121,12 @@
 		public function url($url, $use_chyrp_url = false) {
 			$config = Config::current();
 
-			$url = substr($url, -1) == "/" ? $url : $url."/" ;
-
 			if ($url[0] == "/")
 				return (ADMIN or $use_chyrp_url) ?
 				           $config->chyrp_url.$url :
 				           $config->url.$url ;
+			else
+				$url = substr($url, -1) == "/" ? $url : $url."/" ;
 
 			if ($config->clean_urls) { # If their post URL doesn't have a trailing slash, remove it from these as well.
 				if (substr($url, 0, 5) == "page/") # Different URL for viewing a page
