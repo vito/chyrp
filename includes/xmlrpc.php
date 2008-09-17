@@ -1,4 +1,9 @@
 <?php
+	/**
+	 * File: XML-RPC
+	 * Extensible XML-RPC interface for remotely controlling your Chyrp install.
+	 */
+
 	define('XML_RPC', true);
 	require 'common.php';
 	require INCLUDES_DIR.'/lib/ixr.php';
@@ -9,7 +14,6 @@
 	# Provides functionality for using external clients, services, etc. for accessing and adding to Chyrp.
 	#
 	class XMLRPC extends IXR_Server {
-
 		#
 		# Function: __construct
 		# Registers the various XMLRPC methods.

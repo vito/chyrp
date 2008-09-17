@@ -1,6 +1,4 @@
 <?php
-	# Constant: AJAX
-	# Is this being run from an AJAX request? (true)
 	define('AJAX', true);
 
 	require_once "common.php";

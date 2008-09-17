@@ -36,11 +36,12 @@
 
 		/**
 		 * Function: set
-		 * Sets a variable's value.
+		 * Adds or replaces a configuration setting with the given value.
 		 *
 		 * Parameters:
 		 *     $setting - The setting name.
-		 *     $value - The new value. Can be boolean, numeric, an array, a string, etc.
+		 *     $value - The value.
+		 *     $overwrite - If the setting exists and is the same value, should it be overwritten?
 		 */
 		public function set($setting, $value, $overwrite = true) {
 			if (isset($this->$setting) and $this->$setting == $value and !$overwrite)
@@ -67,8 +68,8 @@
 			$contents.= YAML::dump($this->yaml);
 
 			if (!@file_put_contents(INCLUDES_DIR."/config.yaml.php", $contents)) {
-				Flash::warning(_f("Could not set \"<code>%s</code>\" configuration setting because <code>%s</code> is not writable.", array($setting, "/includes/config.yaml.php")));
-
+				Flash::warning(_f("Could not set \"<code>%s</code>\" configuration setting because <code>%s</code> is not writable.",
+				                  array($setting, "/includes/config.yaml.php")));
 				return false;
 			} else
 				return true;

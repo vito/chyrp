@@ -161,7 +161,7 @@
 		 *     $action - The action the path points to.
 		 *
 		 * See Also:
-		 *     <remove_route>
+		 *     <remove>
 		 */
 		public function add($path, $action) {
 			$config = Config::current();
@@ -173,14 +173,14 @@
 		}
 
 		/**
-		 * Function: remove_route
-		 * Removes a route from the install's .htaccess file.
+		 * Function: route
+		 * Removes a route added by <add>.
 		 *
 		 * Parameters:
 		 *     $path - The path to remove. Same as <add>.
 		 *
 		 * See Also:
-		 *     <add_route>
+		 *     <add>
 		 */
 		public function remove($path) {
 			$config = Config::current();

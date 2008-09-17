@@ -1,6 +1,4 @@
 <?php
-	# Constant: ADMIN
-	# Is the user in the admin area? (true)
 	define('ADMIN', true);
 
 	require_once "../includes/common.php";

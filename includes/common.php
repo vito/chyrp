@@ -26,7 +26,7 @@
 	# This will also toggle Twig template caching. Disable it if you're live-developing your theme.
 	define('DEBUG', true);
 
-	# Constant: ADMIN
+	# Constant: JAVASCRIPT
 	# Is this the JavaScript file?
 	if (!defined('JAVASCRIPT')) define('JAVASCRIPT', false);
 

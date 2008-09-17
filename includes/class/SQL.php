@@ -1,4 +1,9 @@
 <?php
+	/**
+	 * Class: SQL
+	 * Contains the database settings and functions for interacting with the SQL database.
+	 */
+
 	# File: Query
 	# See Also:
 	#     <Query>
@@ -9,10 +14,6 @@
 	#     <QueryBuilder>
 	require_once INCLUDES_DIR."/class/QueryBuilder.php";
 
-	/**
-	 * Class: SQL
-	 * Contains the database settings and functions for interacting with the SQL database.
-	 */
 	class SQL {
 		# Array: $debug
 		# Holds debug information for SQL queries.

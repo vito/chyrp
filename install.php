@@ -1,49 +1,16 @@
 <?php
 	header("Content-type: text/html; charset=UTF-8");
 
-	# Constant: DEBUG
-	# Should Chyrp use debugging processes?
-	# This will also toggle Twig template caching. Disable it if you're live-developing your theme.
-	define('DEBUG', true);
-
-	# Constant: ADMIN
-	# Is this the JavaScript file?
-	define('JAVASCRIPT', false);
-
-	# Constant: ADMIN
-	# Is the user in the admin area?
-	define('ADMIN', false);
-
-	# Constant: AJAX
-	# Is this being run from an AJAX request?
-	define('AJAX', false);
-
-	# Constant: XML_RPC
-	# Is this being run from XML-RPC?
-	define('XML_RPC', false);
-
-	# Constant: TRACKBACK
-	# Is this being run from a trackback request?
-	define('TRACKBACK', false);
-
-	# Constant: UPGRADING
-	# Is the user running the upgrader? (false)
-	define('UPGRADING', false);
-
-	# Constant: INSTALLING
-	# Is the user running the installer? (false)
-	define('INSTALLING', true);
-
-	# Constant: TESTER
-	# Is the site being run by the automated tester?
-	define('TESTER', isset($_SERVER['HTTP_USER_AGENT']) and $_SERVER['HTTP_USER_AGENT'] == "tester.rb");
-
-	# Constant: MAIN_DIR
-	# Absolute path to the Chyrp root
-	define('MAIN_DIR', dirname(__FILE__));
-
-	# Constant: INCLUDES_DIR
-	# Absolute path to /includes
+	define('DEBUG',        true);
+	define('JAVASCRIPT',   false);
+	define('ADMIN',        false);
+	define('AJAX',         false);
+	define('XML_RPC',      false);
+	define('TRACKBACK',    false);
+	define('UPGRADING',    false);
+	define('INSTALLING',   true);
+	define('TESTER',       isset($_SERVER['HTTP_USER_AGENT']) and $_SERVER['HTTP_USER_AGENT'] == "tester.rb");
+	define('MAIN_DIR',     dirname(__FILE__));
 	define('INCLUDES_DIR', MAIN_DIR."/includes");
 
 	# Make sure E_STRICT is on so Chyrp remains errorless.
@@ -55,41 +22,17 @@
 	if (version_compare(PHP_VERSION, "5.1.3", "<"))
 		exit("Chyrp requires PHP 5.1.3 or greater. Installation cannot continue.");
 
-	# File: Helpers
-	# Various functions used throughout Chyrp's code.
 	require_once INCLUDES_DIR."/helpers.php";
 
-	# File: Gettext
-	# Gettext library.
 	require_once INCLUDES_DIR."/lib/gettext/gettext.php";
-
-	# File: Streams
-	# Streams library.
 	require_once INCLUDES_DIR."/lib/gettext/streams.php";
-
-	# File: YAML
-	# Horde YAML parsing library.
 	require_once INCLUDES_DIR."/lib/YAML.php";
 
-	# File: Model
-	# See Also:
-	#     <Model>
+	require_once INCLUDES_DIR."/class/Config.php";
+	require_once INCLUDES_DIR."/class/SQL.php";
 	require_once INCLUDES_DIR."/class/Model.php";
 
-	# File: User
-	# See Also:
-	#     <User>
 	require_once INCLUDES_DIR."/model/User.php";
-
-	# File: Config
-	# See Also:
-	#     <Config>
-	require_once INCLUDES_DIR."/class/Config.php";
-
-	# File: SQL
-	# See Also:
-	#     <SQL>
-	require INCLUDES_DIR."/class/SQL.php";
 
 	# Prepare the Config interface.
 	$config = Config::current();

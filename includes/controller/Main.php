@@ -4,7 +4,7 @@
 	 * The logic behind the Chyrp install.
 	 */
 	class MainController {
-		# Function: $urls
+		# Array: $urls
 		# An array of clean URL => dirty URL translations.
 		public $urls = array('/\/id\/([0-9]+)\//'             => '/?action=view&amp;id=$1',
 		                     '/\/page\/(([^\/]+)\/)+/'        => '/?action=page&amp;url=$2',

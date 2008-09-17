@@ -1,24 +1,19 @@
 <?php
+	/**
+	 * File: Upgrader
+	 * A task-based general-purpose Chyrp upgrader.
+	 *
+	 * Performs upgrade functions based on individual tasks, and checks whether or not they need to be done.
+	 *
+	 * Version-agnostic. Completely safe to be run at all times, by anyone.
+	 */
+
 	header("Content-type: text/html; charset=UTF-8");
 
-	# Constant: DEBUG
-	# Should Chyrp use debugging processes?
-	define('DEBUG', true);
-
-	# Constant: UPGRADING
-	# Is the user running the upgrader? (true)
-	define('UPGRADING', true);
-
-	# Constant: XML_RPC
-	# Is this being run from XML-RPC?
-	define('XML_RPC', true);
-
-	# Constant: MAIN_DIR
-	# Absolute path to the Chyrp root
-	define('MAIN_DIR', dirname(__FILE__));
-
-	# Constant: INCLUDES_DIR
-	# Absolute path to /includes
+	define('DEBUG',        true);
+	define('UPGRADING',    true);
+	define('XML_RPC',      true);
+	define('MAIN_DIR',     dirname(__FILE__));
 	define('INCLUDES_DIR', dirname(__FILE__)."/includes");
 
 	/**
