@@ -341,7 +341,7 @@
 			if (empty($_GET['id']))
 				error(__("No ID Specified"), __("An ID is required to edit a page."));
 
-			$this->display("write_page",
+			$this->display("edit_page",
 			               array("page" => new Page($_GET['id'], array("filter" => false)),
 			                     "pages" => Page::find()));
 		}
