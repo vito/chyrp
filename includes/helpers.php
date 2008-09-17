@@ -37,7 +37,21 @@
 	 *     $title - The title for the error dialog.
 	 *     $body - The message for the error dialog.
 	 */
-	function error($title, $body) {
+	function error($title, $body, $backtrace = array()) {
+		if (defined('MAIN_DIR') and !empty($backtrace))
+			foreach ($backtrace as $index => &$trace)
+				if (!isset($trace["file"]) or !isset($trace["line"]))
+					unset($backtrace[$index]);
+				else
+					$trace["file"] = str_replace(MAIN_DIR."/", "", $trace["file"]);
+				# $trace["file"] = isset($trace["file"]) ?
+				#                       :
+				#                      (isset($trace["function"]) ?
+				#                          (isset($trace["class"]) ?
+				#                              $trace["class"].$trace["type"] :
+				#                              "").$trace["function"] :
+				#                          "[internal]");
+
 		# Clear all output sent before this error.
 		if (($buffer = ob_get_contents()) !== false) {
 			ob_end_clean();
@@ -54,6 +68,10 @@
 			# If output buffering is not started, assume this
 			# is sent from the Session class or somewhere deep.
 			error_log($title.": ".$body);
+
+			foreach ($backtrace as $index => $trace)
+				error_log("    ".($index + 1).": "._f("%s on line %d", array($trace["file"], $trace["line"])));
+
 			exit;
 		}
 
@@ -62,7 +80,10 @@
 
 		# Display the error.
 		if (defined('THEME_DIR') and class_exists("Theme") and Theme::current()->file_exists("pages/error"))
-			MainController::current()->display("pages/error", array("title" => $title, "body" => $body));
+			MainController::current()->display("pages/error",
+			                                   array("title" => $title,
+			                                         "body" => $body,
+			                                         "backtrace" => $backtrace));
 		else
 			require INCLUDES_DIR."/error.php";
 

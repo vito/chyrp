@@ -48,6 +48,9 @@
 				color: #06B;
 				font-family: Monaco, monospace;
 			}
+			ul, ol {
+				margin: 1em 3em;
+			}
 			.footer {
 				color: #777;
 				margin-top: 1em;
@@ -94,6 +97,13 @@
 			<h1><?php echo $title; ?></h1>
 			<div class="message">
 				<?php echo $body; ?>
+<?php if (!empty($backtrace)): ?>
+				<ol>
+<?php foreach ($backtrace as $trace): ?>
+					<li><code><?php echo _f("%s on line %d", array($trace["file"], fallback($trace["line"], 0))); ?></code></li>
+<?php endforeach; ?>
+				</ol>
+<?php endif; ?>
 			</div>
 		</div>
 <?php if (defined("CHYRP_VERSION")): ?>
