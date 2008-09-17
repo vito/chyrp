@@ -183,7 +183,7 @@
 				                   "name" => $tag,
 				                   "title" => sprintf(_p("%s post tagged with &quot;%s&quot;", "%s posts tagged with &quot;%s&quot;", $count, "tags"), $count, $tag),
 				                   "clean" => $tag2clean[$tag],
-				                   "url" => url("tag/".$tag2clean[$tag]."/"));
+				                   "url" => url("tag/".$tag2clean[$tag]));
 
 			$admin->context["tag_cloud"] = $context;
 
@@ -380,7 +380,7 @@
 					                   "name" => $tag,
 					                   "title" => sprintf(_p("%s post tagged with &quot;%s&quot;", "%s posts tagged with &quot;%s&quot;", $count, "tags"), $count, $tag),
 					                   "clean" => $tag2clean[$tag],
-					                   "url" => url("tag/".$tag2clean[$tag]."/"));
+					                   "url" => url("tag/".$tag2clean[$tag]));
 
 				$main->display("pages/tags", array("tag_cloud" => $context), __("Tags", "tags"));
 			}
@@ -499,7 +499,7 @@
 
 			$linked = array();
 			foreach ($tags as $clean => $tag)
-				$linked[] = '<a href="'.url("tag/".$clean."/").'" rel="tag">'.$tag.'</a>';
+				$linked[] = '<a href="'.url("tag/".$clean).'" rel="tag">'.$tag.'</a>';
 
 			return $linked;
 		}
@@ -524,7 +524,7 @@
 			foreach ($tags as $tag => $count)
 				$post->tags["info"][] = array("name" => $tag,
 			                                  "clean" => $tag2clean[$tag],
-			                                  "url" => url("tag/".$tag2clean[$tag]."/"));
+			                                  "url" => url("tag/".$tag2clean[$tag]));
 
 			$post->tags["unlinked"] = self::unlinked_tags($post->unclean_tags);
 			$post->tags["linked"]   = self::linked_tags($post->unclean_tags, $post->clean_tags);

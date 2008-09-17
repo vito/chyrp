@@ -384,7 +384,7 @@
 		 */
 		public function rss() {
 			header("HTTP/1.1 301 Moved Permanently");
-			redirect(fallback(Config::current()->feed_url, url("feed/"), true));
+			redirect(fallback(Config::current()->feed_url, url("feed"), true));
 		}
 
 		/**
@@ -557,7 +557,7 @@
 
 				if ($sent)
 					Flash::notice(_f("An e-mail has been sent to your e-mail address that contains a new password. Once you have logged in, you can change it at <a href=\"%s\">User Controls</a>.",
-					              array(url("controls/"))));
+					              array(url("controls"))));
 				else {
 					# Set their password back to what it was originally.
 					$user->update($user->login,

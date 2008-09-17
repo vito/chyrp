@@ -25,12 +25,12 @@ ${ trigger.call("head") }
 				<li><a id="add_page" href="{% admin "write_page" %}">${ "Add Page" | translate }</a></li>
 {% endif %}
 {% if visitor.group.can("view_own_draft", "view_draft") %}
-				<li><a id="your_drafts" href="{% url "drafts/" %}">${ "Your Drafts" | translate }</a></li>
+				<li><a id="your_drafts" href="{% url "drafts" %}">${ "Your Drafts" | translate }</a></li>
 {% endif %}
 {% if visitor.group.can("change_settings", "toggle_extensions") %}
 				<li><a id="site_settings" href="$site.chyrp_url/admin/">${ "Admin" | translate }</a></li>
 {% endif %}
-				<li class="close"><a class="toggle_admin" href="{% url "toggle_admin/" %}">${ "Close" | translate }</a></li>
+				<li class="close"><a class="toggle_admin" href="{% url "toggle_admin" %}">${ "Close" | translate }</a></li>
 			</ul>
 		</div>
 {% endif %}
@@ -63,7 +63,7 @@ ${ trigger.call("head") }
 				<div id="footer">
 					<p>Stardust theme &copy; 2008 <a href="http://lofisoami.com">Aaron MacDonald</a></p>
 					<p>${ "Powered by <a class=\"chyrp\" href=\"http://chyrp.net/\">Chyrp</a>" | translate }</p>
-					<a class="atom" href="{% url "feed/" %}">atom</a>
+					<a class="atom" href="{% url "feed" %}">atom</a>
 				</div>
 			</div>
 			<div class="clear"></div>

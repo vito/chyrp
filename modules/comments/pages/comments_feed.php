@@ -29,7 +29,7 @@
 
 		$updated = ($comment->updated) ? $comment->updated_at : $comment->created_at ;
 
-		$tagged = substr(strstr(url("id/".$comment->post()->id."/")."#comment_".$comment->id, "//"), 2);
+		$tagged = substr(strstr(url("id/".$comment->post()->id)."#comment_".$comment->id, "//"), 2);
 		$tagged = str_replace("#", "/", $tagged);
 		$tagged = preg_replace("/(".preg_quote(parse_url($comment->post()->url(), PHP_URL_HOST)).")/", "\\1,".when("Y-m-d", $updated).":", $tagged, 1);
 ?>

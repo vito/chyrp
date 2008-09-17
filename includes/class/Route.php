@@ -131,6 +131,8 @@
 		public function url($url, $use_chyrp_url = false) {
 			$config = Config::current();
 
+			$url = substr($url, -1) == "/" ? $url : $url."/" ;
+
 			if ($url[0] == "/")
 				return (ADMIN or $use_chyrp_url) ?
 				       Config::current()->chyrp_url.$url :

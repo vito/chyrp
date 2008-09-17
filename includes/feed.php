@@ -20,7 +20,7 @@
 	foreach ($posts as $post) {
 		$updated = ($post->updated) ? $post->updated_at : $post->created_at ;
 
-		$tagged = substr(strstr(url("id/".$post->id."/"), "//"), 2);
+		$tagged = substr(strstr(url("id/".$post->id), "//"), 2);
 		$tagged = str_replace("#", "/", $tagged);
 		$tagged = preg_replace("/(".preg_quote(parse_url($post->url(), PHP_URL_HOST)).")/",
 		                       "\\1,".when("Y-m-d", $updated).":",

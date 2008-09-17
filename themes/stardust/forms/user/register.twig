@@ -2,7 +2,7 @@
 
 {% block content %}
 	<h2>${ "Register" | translate }</h2>
-	<form action="{% url "register/" %}" method="post">
+	<form action="{% url "register" %}" method="post">
 		<p>
 			<label for="login">${ "Username" | translate }</label>
 			<input type="text" name="login" value="" id="login" />
