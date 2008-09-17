@@ -68,7 +68,7 @@ ${ trigger.call("head") }
 			</div>
 			<div class="clear"></div>
 		</div>
-{% if debug %}
+{% if debug and visitor.group.name == "Admin" %}
 		<div id="debug">
 			<h5>${ "Stats" | translate }</h5>
 			<ul>
