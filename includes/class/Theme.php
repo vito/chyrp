@@ -34,14 +34,19 @@
 		 * Function: pages_list
 		 * Returns a simple array of list items to be used by the theme to generate a recursive array of pages.
 		 */
-		public function pages_list($start_url = false) {
-			if (isset($this->pages_list[$start_url]))
-				return $this->pages_list[$start_url];
+		public function pages_list($start = 0) {
+			if (isset($this->pages_list[$start]))
+				return $this->pages_list[$start];
 
-			if ($start_url)
-				$start = new Page(null, array("where" => array("url" => $start_url)));
+			$this->linear_children = array();
+			$this->pages_flat = array();
+			$this->children = array();
+			$this->end_tags_for = array();
 
-			$start = ($start_url) ? $start->id : 0 ;
+			if ($start and !is_numeric($start))
+				$begin_page = new Page(null, array("where" => array("url" => $start)));
+
+			$start = ($start and !is_numeric($start)) ? $begin_page->id : $start ;
 
 			$pages = Page::find(array("where" => array("show_in_list" => true), "order" => "list_order ASC"));
 
@@ -53,7 +58,7 @@
 					$this->children[$page->parent_id][] = $page;
 
 			foreach ($pages as $page)
-				if ((!$start_url and $page->parent_id == 0) or ($start_url and $page->id == $start))
+				if ((!$start and $page->parent_id == 0) or ($start and $page->id == $start))
 					$this->recurse_pages($page);
 
 			$array = array();
@@ -71,7 +76,7 @@
 				$my_array["page"] = $page;
 			}
 
-			return $this->pages_list[$start_url] = $array;
+			return $this->pages_list[$start] = $array;
 		}
 
 		/**
