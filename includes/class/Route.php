@@ -4,19 +4,6 @@
 	 * Holds information for URLs, redirecting, etc.
 	 */
 	class Route {
-		# Function: $urls
-		# An array of clean URL => dirty URL translations.
-		public $urls = array('/\/id\/([0-9]+)\//'                => '/?action=view&amp;id=$1',
-		                     '/\/page\/(([^\/]+)\/)+/'           => '/?action=page&amp;url=$2',
-		                     '/\/search\//'                      => '/?action=search',
-		                     '/\/search\/([^\/]+)\//'            => '/?action=search&amp;query=$1',
-		                     '/\/archive\/([0-9]{4})\/([0-9]{2})\//'
-		                                                         => '/?action=archive&amp;year=$1&amp;month=$2',
-		                     '/\/archive\/([0-9]{4})\/([0-9]{2})\/([0-9]{2})\//'
-		                                                         => '/?action=archive&amp;year=$1&amp;month=$2&amp;day=$3',
-		                     '/\/([^\/]+)\/feed\/([^\/]+)\//'    => '/?action=$1&amp;feed&amp;title=$2',
-		                     '/\/([^\/]+)\/feed\//'              => '/?action=$1&amp;feed');
-
 		# String: $action
 		# The current action.
 		public $action = "";
@@ -135,22 +122,22 @@
 
 			if ($url[0] == "/")
 				return (ADMIN or $use_chyrp_url) ?
-				       Config::current()->chyrp_url.$url :
-				       Config::current()->url.$url ;
+				           $config->chyrp_url.$url :
+				           $config->url.$url ;
 
 			if ($config->clean_urls) { # If their post URL doesn't have a trailing slash, remove it from these as well.
 				if (substr($url, 0, 5) == "page/") # Different URL for viewing a page
 					$url = substr($url, 5);
 
 				return (substr($config->post_url, -1) == "/" or $url == "search/") ?
-				       $config->url."/".$url :
-				       $config->url."/".rtrim($url, "/") ;
+				           $config->url."/".$url :
+				           $config->url."/".rtrim($url, "/") ;
 			}
 
-			$urls = $this->urls;
+			$urls = $this->controller->urls;
 			Trigger::current()->filter($urls, "parse_urls");
 
-			foreach (array_diff_assoc($urls, $this->urls) as $key => $value)
+			foreach (array_diff_assoc($urls, $this->controller->urls) as $key => $value)
 				$urls[substr($key, 0, -1)."feed\//"] = "/".$value."&amp;feed";
 
 			$urls["/\/(.*?)\/$/"] = "/?action=$1";
