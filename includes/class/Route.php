@@ -88,19 +88,20 @@
 
 				$this->action = $method;
 
-				if (method_exists($this->controller, $method))
-					$response = call_user_func_array(array($this->controller, $method), $args);
-				else
-					$response = false;
-
 				$name = strtolower(str_replace("Controller", "", get_class($this->controller)));
 				if ($trigger->exists($name."_".$method) or $trigger->exists("route_".$method))
 					$call = $trigger->call(array($name."_".$method, "route_".$method), $this->controller);
 				else
 					$call = false;
 
-				if ($response !== false or $call !== false)
+				if (method_exists($this->controller, $method))
+					$response = call_user_func_array(array($this->controller, $method), $args);
+				else
+					$response = false;
+
+				if ($response !== false or $call !== false) {
 					return $this->success = true;
+				}
 			}
 		}
 

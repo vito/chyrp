@@ -24,9 +24,7 @@
 			Group::remove_permission("delete_aggregate");
 		}
 
-		public function runtime() {
-			if (Route::current()->action != "index" or JAVASCRIPT or ADMIN) return;
-
+		public function main_index($main) {
 			$config = Config::current();
 			if ($config->disable_aggregation or time() - $config->last_aggregation < ($config->aggregate_every * 60))
 				return;

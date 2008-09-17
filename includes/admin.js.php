@@ -1,6 +1,8 @@
 <?php
 	define('JAVASCRIPT', true);
 	require_once "common.php";
+
+	$route = Route::current(MainController::current());
 ?>
 <!-- --><script>
 $(function(){
