@@ -16,6 +16,10 @@
 		# Holds the name of the Feather to be selected when they open the bookmarklet.
 		public $selected_bookmarklet;
 
+		# String: $base
+		# The base path for this controller.
+		public $base = "admin";
+
 		/**
 		 * Function: __construct
 		 * Prepares Twig.
@@ -80,6 +84,9 @@
 			}
 
 			Trigger::current()->filter($route->action, "admin_determine_action");
+
+			if (!isset($route->action))
+				show_403(__("Access Denied"), __("You do not have sufficient privileges to view this area."));
 		}
 
 		/**

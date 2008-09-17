@@ -59,14 +59,19 @@
 			$parse = parse_url($config->url);
 			fallback($parse["path"]);
 
+			if (isset($controller->base))
+				$parse["path"] = rtrim($parse["path"], "/")."/".trim($controller->base, "/")."/";
+
 			$this->safe_path = str_replace("/", "\\/", $parse["path"]);
-			$this->request = preg_replace("/".$this->safe_path."/", "", $_SERVER['REQUEST_URI'], 1);
+			$this->request = preg_replace("/{$this->safe_path}?/", "", $_SERVER['REQUEST_URI'], 1);
 			$this->arg = explode("/", trim($this->request, "/"));
 
 			if (method_exists($controller, "parse"))
 				$controller->parse($this);
 
-			$this->try[] = fallback($this->arg[0], "index", true);
+			$this->try[] = (isset($this->action)) ?
+			                   fallback($this->action, "index", true) :
+			                   fallback($this->arg[0], "index", true) ;
 		}
 
 		/**
