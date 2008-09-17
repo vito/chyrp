@@ -1,6 +1,9 @@
 <?php
-	if (defined('AJAX') and AJAX or isset($_POST['ajax']))
-	     exit($body."HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW");
+	if (defined('AJAX') and AJAX or isset($_POST['ajax'])) {
+		foreach ($backtrace as $trace)
+			$body.= "\n"._f("%s on line %d", array($trace["file"], fallback($trace["line"], 0)));
+		exit($body."HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW");
+	}
 
 	$jquery = is_callable(array("Config", "current")) ?
 	              Config::current()->url."/includes/lib/gz.php?file=jquery.js" :

@@ -5,7 +5,11 @@
 
 	require_once "common.php";
 
+	# Prepare the controller.
 	$main = MainController::current();
+
+	# Parse the route.
+	$route = Route::current($main);
 
 	if (!$visitor->group()->can("view_site"))
 		if ($trigger->exists("can_not_view_site"))
