@@ -44,13 +44,15 @@
 
 			# Parse the current URL and extract information.
 			$parse = parse_url($config->url);
-			fallback($parse["path"]);
+			fallback($parse["path"], "/");
 
 			if (isset($controller->base))
-				$parse["path"] = rtrim($parse["path"], "/")."/".trim($controller->base, "/")."/";
+				$parse["path"] = trim($parse["path"], "/")."/".trim($controller->base, "/")."/";
 
 			$this->safe_path = str_replace("/", "\\/", $parse["path"]);
-			$this->request = preg_replace("/{$this->safe_path}?/", "", $_SERVER['REQUEST_URI'], 1);
+			$this->request = $parse["path"] == "/" ?
+			                     $_SERVER['REQUEST_URI'] :
+			                     preg_replace("/{$this->safe_path}?/", "", $_SERVER['REQUEST_URI'], 1) ;
 			$this->arg = explode("/", trim($this->request, "/"));
 
 			if (method_exists($controller, "parse"))
