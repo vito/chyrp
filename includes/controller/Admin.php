@@ -343,7 +343,7 @@
 
 			$this->display("edit_page",
 			               array("page" => new Page($_GET['id'], array("filter" => false)),
-			                     "pages" => Page::find()));
+			                     "pages" => Page::find(array("where" => array("id not" => $_GET['id'])))));
 		}
 
 		/**
