@@ -147,6 +147,13 @@
 			foreach (array("host", "username", "password", "database", "prefix", "adapter") as $field)
 				$sql->set($field, $_POST[$field], true);
 
+			if ($sql->adapter == "mysql" and class_exists("MySQLi"))
+				$sql->method = "mysqli";
+			elseif ($sql->adapter == "mysql" and function_exists("mysql_connect"))
+				$sql->method = "mysql";
+			elseif ($sql->adapter == "sqlite" and in_array("sqlite", PDO::getAvailableDrivers()))
+				$sql->method = "pdo";
+
 			$sql->connect();
 
 			# Posts table

@@ -573,13 +573,7 @@
 
 			usort($unclean, array($this, "sort_tags_".$order_by."_".$order));
 
-			$count = 0;
-			$return = array();
-			foreach ($unclean as $tag)
-				if ($count++ < $limit)
-					$return[] = $tag;
-
-			return $return;
+			return array_slice($unclean, 0, $limit);
 		}
 
 		static function clean2tag($clean_tag) {
