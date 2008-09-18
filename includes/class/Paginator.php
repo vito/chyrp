@@ -4,20 +4,54 @@
 	 * Paginates over an array.
 	 */
 	class Paginator {
+		# Array: $array
+		# The original, unmodified data.
+		public $array;
+
+		# Integer: $per_page
+		# Number of items per page.
+		public $per_page;
+
+		# String: $name
+		# Name of the $_GET value for the current page.
+		public $name;
+
+		# Boolean: $model
+		# Should the <$array> items be treated as Models?
+		# In this case, <$array> should be in the form of array(<ids>, "ModelName")
+		public $model;
+
+		# Integer: $total
+		# Total number of items to paginate.
+		public $total;
+
+		# Integer: $page
+		# The current page.
+		public $page;
+
+		# Integer: $pages
+		# Total number of pages.
+		public $pages;
+
+		# Array: $result
+		# The result of the pagination.
+		# `paginated`, `paginate`, and `list` are references to this.
+		public $result = array();
+
 		/**
 		 * Function: __construct
 		 * Prepares an array for pagination.
 		 *
 		 * Parameters:
 		 *     $array - The array to paginate.
-		 *     $per_page - Amount of items per page.
+		 *     $per_page - Number of items per page.
 		 *     $name - The name of the $_GET parameter to use for determining the current page.
 		 *     $model - If this is true, each item in $array that gets shown on the page will be
 		 *              initialized as a model of whatever is passed as the second argument to $array.
 		 *              The first argument of $array is expected to be an array of IDs.
 		 *
 		 * Returns:
-		 *     A paginated array $per_page or smaller.
+		 *     A paginated array of length $per_page or smaller.
 		 */
 		public function __construct($array, $per_page = 5, $name = "page", $model = true, $page = null) {
 			$this->array = $array;
@@ -30,14 +64,19 @@
 			$this->model = $model;
 
 			$this->total = count($array);
-			$this->page = fallback($page, (isset($_GET[$name]) ? $_GET[$name] : 1), true);
+			$this->page = fallback($page, fallback($_GET[$name], 1, true), true);
 			$this->pages = ceil($this->total / $this->per_page);
-			$this->offset = ($this->page - 1) * $this->per_page;
+
+			$offset = ($this->page - 1) * $this->per_page;
 
 			$this->result = array();
-			for ($i = $this->offset; $i < ($this->offset + $this->per_page); $i++)
-				if (isset($array[$i]))
-					$this->result[] = ($model) ? new $model_name(null, array("read_from" => $array[$i])) : $array[$i] ;
+
+			if ($model) {
+				for ($i = $offset; $i < ($offset + $this->per_page); $i++)
+					if (isset($array[$i]))
+						$this->result[] = new $model_name(null, array("read_from" => $array[$i]));
+			} else
+				$this->result = array_slice($array, $offset, $this->per_page);
 
 			$shown_dates = array();
 			if ($model)
@@ -76,8 +115,7 @@
 		 * Checks whether or not it makes sense to show the Next Page link.
 		 */
 		public function next_page() {
-			if (!isset($this->page) or !isset($this->pages)) return false;
-			if ($this->page != $this->pages and $this->pages != 1 and $this->pages != 0) return true;
+			return ($this->page < $this->pages and $this->pages != 1 and $this->pages != 0);
 		}
 
 		/**
@@ -85,8 +123,7 @@
 		 * Checks whether or not it makes sense to show the Previous Page link.
 		 */
 		public function prev_page() {
-			if (!isset($this->page)) return false;
-			if ($this->page != 1) return true;
+			return ($this->page != 1 and $this->page <= $this->pages);
 		}
 
 		/**
@@ -99,9 +136,13 @@
 		 *     $clean_urls - Whether to link with dirty or clean URLs.
 		 */
 		public function next_link($text = null, $class = "next_page", $clean_urls = true) {
+			if (!$this->next_page())
+				return;
+
 			fallback($text, __("Next &rarr;"));
-			if ($this->next_page())
-				echo '<a class="'.$class.'" id="next_page_'.$this->name.'" href="'.$this->next_page_url($clean_urls).'">'.$text.'</a>';
+			echo '<a class="'.$class.'" id="next_page_'.$this->name.'" href="'.$this->next_page_url($clean_urls).'">'.
+			         $text.
+			     '</a>';
 		}
 
 		/**
@@ -114,9 +155,13 @@
 		 *     $clean_urls - Whether to link with dirty or clean URLs.
 		 */
 		public function prev_link($text = null, $class = "prev_page", $clean_urls = true) {
+			if (!$this->prev_page())
+				return;
+
 			fallback($text, __("&larr; Previous"));
-			if ($this->prev_page())
-				echo '<a class="'.$class.'" id="prev_page_'.$this->name.'" href="'.$this->prev_page_url($clean_urls).'">'.$text.'</a>';
+			echo '<a class="'.$class.'" id="prev_page_'.$this->name.'" href="'.$this->prev_page_url($clean_urls).'">'.
+			         $text.
+			     '</a>';
 		}
 
 		/**
@@ -141,8 +186,8 @@
 				       $request.$mark.$this->name."=".($this->page + 1) ;
 
 			return ($config->clean_urls and $clean_urls and !ADMIN) ?
-			       preg_replace("/(\/".$this->name."\/([0-9]+)|$)/", "/".$this->name."/".($this->page + 1), $request, 1) :
-			       preg_replace("/((\?|&)".$this->name."=([0-9]+)|$)/", "\\2".$this->name."=".($this->page + 1), $request, 1) ;
+			       preg_replace("/(\/{$this->name}\/([0-9]+)|$)/", "/".$this->name."/".($this->page + 1), $request, 1) :
+			       preg_replace("/((\?|&){$this->name}=([0-9]+)|$)/", "\\2".$this->name."=".($this->page + 1), $request, 1) ;
 		}
 
 		/**

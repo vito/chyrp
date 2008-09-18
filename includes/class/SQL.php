@@ -55,25 +55,28 @@
 		 * Returns the proper method of connecting and interacting with the database.
 		 */
 		public function method() {
+			if (isset($this->method))
+				return $this->method;
+
 			# We really don't need PDO anymore, since we have the two we supported with it hardcoded (kinda).
 			# Keeping this here for when/if we decide to add support for more database engines, like Postgres and MSSQL.
 			# if (class_exists("PDO") and (in_array("mysql", PDO::getAvailableDrivers()) or in_array("sqlite", PDO::getAvailableDrivers())))
-			# 	return "pdo";
+			# 	return $this->method = "pdo";
 
 			if (isset($this->adapter)) {
 				if ($this->adapter == "mysql" and class_exists("MySQLi"))
-					return "mysqli";
+					return $this->method = "mysqli";
 				elseif ($this->adapter == "mysql" and function_exists("mysql_connect"))
-					return "mysql";
+					return $this->method = "mysql";
 				elseif ($this->adapter == "sqlite" and in_array("sqlite", PDO::getAvailableDrivers()))
-					return "pdo";
+					return $this->method = "pdo";
 			} else
 				if (class_exists("MySQLi"))
-					return "mysqli";
+					return $this->method = "mysqli";
 				elseif (function_exists("mysql_connect"))
-					return "mysql";
+					return $this->method = "mysql";
 				elseif (in_array("mysql", PDO::getAvailableDrivers()))
-					return "pdo";
+					return $this->method = "pdo";
 
 			exit(__("Cannot find a way to connect to a database."));
 		}

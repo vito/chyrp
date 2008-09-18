@@ -24,7 +24,7 @@
 	# Constant: DEBUG
 	# Should Chyrp use debugging processes?
 	# This will also toggle Twig template caching. Disable it if you're live-developing your theme.
-	define('DEBUG', true);
+	define('DEBUG', false);
 
 	# Constant: JAVASCRIPT
 	# Is this the JavaScript file?
