@@ -99,6 +99,7 @@
 
 			# TODO: Should we do this here? It boosts up load time in the
 			#       .0XXms range depending on how many posts are grabbed.
+			#
 			# if (!ADMIN and !XML_RPC)
 			# 	if (!isset($options["placeholders"]) or !$options["placeholders"]) {
 			# 		foreach ($posts as $index => $post)

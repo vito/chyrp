@@ -52,7 +52,7 @@
 			else
 				$this->post_limit = $config->posts_per_page;
 
-			if (empty($route->arg[0])) # If they're just at /, don't bother with all this.
+			if (empty($route->arg[0]) and !isset($config->routes["/"])) # If they're just at /, don't bother with all this.
 				return $route->action = "index";
 
 			# Protect non-responder functions.
