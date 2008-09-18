@@ -8,10 +8,6 @@
 		# The title for the current page.
 		public $title = "";
 
-		# Variable: $twig
-		# Contains the Twig_Loader instance.
-		private $twig;
-
 		/**
 		 * Function: __construct
 		 * Loads the Twig parser into <Theme>, and sets up the theme l10n domain.

@@ -30,10 +30,14 @@
 		 * Loads the Twig parser into <Theme>, and sets up the theme l10n domain.
 		 */
 		private function __construct() {
+			$cache = (is_writable(INCLUDES_DIR."/caches") and
+			         !DEBUG and
+			         !PREVIEWING and
+			         !defined('CACHE_TWIG') or CACHE_TWIG);
 			$this->twig = new Twig_Loader(THEME_DIR,
-			                              ((is_writable(INCLUDES_DIR."/caches") and !DEBUG and !PREVIEWING) ?
+			                              $cache ?
 			                                  INCLUDES_DIR."/caches" :
-			                                  null)) ;
+			                                  null) ;
 		}
 
 		/**
