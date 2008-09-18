@@ -690,7 +690,12 @@
 			if (!file_exists($file.".twig"))
 				error(__("Template Missing"), _f("Couldn't load template: <code>%s</code>", array($file.".twig")));
 
-			return $this->twig->getTemplate($file.".twig")->display($this->context);
+			try {
+				return $this->twig->getTemplate($file.".twig")->display($this->context);
+			} catch (Exception $e) {
+				$prettify = preg_replace("/([^:]+): (.+)/", "\\1: <code>\\2</code>", $e->getMessage());
+				error(__("Error"), $prettify, debug_backtrace());
+			}
 		}
 
 		/**

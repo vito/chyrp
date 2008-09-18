@@ -47,12 +47,19 @@
 				margin: .25em 0 .5em;
 				text-align: center;
 			}
+			h2 {
+				font-size: 1.25em;
+				margin: 1em 0 0;
+			}
 			code {
 				color: #06B;
 				font-family: Monaco, monospace;
 			}
 			ul, ol {
 				margin: 1em 3em;
+			}
+			ol.backtrace {
+				margin-top: .5em;
 			}
 			.footer {
 				color: #777;
@@ -101,7 +108,8 @@
 			<div class="message">
 				<?php echo $body; ?>
 <?php if (!empty($backtrace)): ?>
-				<ol>
+				<h2><?php echo __("Backtrace"); ?></h2>
+				<ol class="backtrace">
 <?php foreach ($backtrace as $trace): ?>
 					<li><code><?php echo _f("%s on line %d", array($trace["file"], fallback($trace["line"], 0))); ?></code></li>
 <?php endforeach; ?>

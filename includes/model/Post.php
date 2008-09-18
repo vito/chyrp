@@ -95,26 +95,7 @@
 
 			fallback($options["order"], "pinned DESC, created_at DESC, id DESC");
 
-			$posts = parent::search(get_class(), $options, $options_for_object);
-
-			# TODO: Should we do this here? It boosts up load time in the
-			#       .0XXms range depending on how many posts are grabbed.
-			#
-			# if (!ADMIN and !XML_RPC)
-			# 	if (!isset($options["placeholders"]) or !$options["placeholders"]) {
-			# 		foreach ($posts as $index => $post)
-			# 			if (!$post->theme_exists())
-			# 				unset($posts[$index]);
-			# 	} else {
-			# 		$theme = Theme::current();
-			# 		foreach ($posts[0] as $index => $data)
-			# 			if (!$theme->file_exists("feathers/".$data["feather"]))
-			# 				unset($posts[0][$index]);
-			#
-			# 		$posts[0] = array_values($posts[0]); # Reset the indices
-			# 	}
-
-			return $posts;
+			return parent::search(get_class(), $options, $options_for_object);
 		}
 
 		/**
