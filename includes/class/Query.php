@@ -17,11 +17,11 @@
 		 *     $params - An associative array of parameters used in the query.
 		 */
 		public function __construct($query, $params = array(), $throw_exceptions = false) {
-			$sql = SQL::current();
+			$this->sql = SQL::current();
 
-			++$sql->queries;
+			++$this->sql->queries;
 
-			$this->db =& $sql->db;
+			$this->db =& $this->sql->db;
 
 			$this->params = $params;
 			$this->throw_exceptions = $throw_exceptions;
@@ -40,15 +40,15 @@
 
 				$logQuery = $query;
 				foreach ($params as $name => $val)
-					$logQuery = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", $sql->escape($val)."\\1", $logQuery);
+					$logQuery = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", $this->sql->escape($val)."\\1", $logQuery);
 
-				$sql->debug[] = array("number" => $sql->queries,
-				                      "file" => str_replace(MAIN_DIR."/", "", $target["file"]),
-				                      "line" => $target["line"],
-				                      "query" => $logQuery);
+				$this->sql->debug[] = array("number" => $this->sql->queries,
+				                            "file" => str_replace(MAIN_DIR."/", "", $target["file"]),
+				                            "line" => $target["line"],
+				                            "query" => $logQuery);
 			}
 
-			switch($sql->method()) {
+			switch($this->sql->method) {
 				case "pdo":
 					try {
 						$this->query = $this->db->prepare($query);
@@ -63,7 +63,7 @@
 					break;
 				case "mysqli":
 					foreach ($params as $name => $val)
-						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", $sql->escape($val)."\\1", $query);
+						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", $this->sql->escape($val)."\\1", $query);
 
 					$this->queryString = $query;
 
@@ -76,7 +76,7 @@
 					break;
 				case "mysql":
 					foreach ($params as $name => $val)
-						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", $sql->escape($val)."\\1", $query);
+						$query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", $this->sql->escape($val)."\\1", $query);
 
 					$this->queryString = $query;
 
@@ -99,7 +99,7 @@
 		 *     $column - The offset of the column to grab. Default 0.
 		 */
 		public function fetchColumn($column = 0) {
-			switch(SQL::current()->method()) {
+			switch($this->sql->method) {
 				case "pdo":
 					return $this->query->fetchColumn($column);
 				case "mysqli":
@@ -116,7 +116,7 @@
 		 * Returns the first row as an array.
 		 */
 		public function fetch() {
-			switch(SQL::current()->method()) {
+			switch($this->sql->method) {
 				case "pdo":
 					return $this->query->fetch();
 				case "mysqli":
@@ -131,7 +131,7 @@
 		 * Returns the first row as an object.
 		 */
 		public function fetchObject() {
-			switch(SQL::current()->method()) {
+			switch($this->sql->method) {
 				case "pdo":
 					return $this->query->fetchObject();
 				case "mysqli":
@@ -146,7 +146,7 @@
 		 * Returns an array of every result.
 		 */
 		public function fetchAll($style = null) {
-			switch(SQL::current()->method()) {
+			switch($this->sql->method) {
 				case "pdo":
 					return $this->query->fetchAll($style);
 				case "mysqli":
@@ -171,7 +171,7 @@
 		 * Handles exceptions thrown by failed queries.
 		 */
 		public function handle($error) {
-			SQL::current()->error = $error;
+			$this->sql->error = $error;
 
 			if (UPGRADING) return false;
 

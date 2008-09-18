@@ -549,22 +549,19 @@
 		public function list_tags($limit = 10, $order_by = "popularity", $order = "desc") {
 			$sql = SQL::current();
 
-			$tags = $sql->select("posts",
-			                      "tags.*",
-			                      array(Post::statuses(), Post::feathers()),
-			                      null,
-			                      array(),
-			                      null, null, null,
-			                      array(array("table" => "tags",
-			                                  "where" => "post_id = posts.id")));
+			$tags = $sql->select("tags",
+			                     array("tags", "clean"),
+			                     array(Post::statuses(), Post::feathers()),
+			                     null,
+			                     array(),
+			                     null, null, null,
+			                     array(array("table" => "posts",
+			                                 "where" => "tags.post_id = id")));
 
 			$unclean = array();
 			$clean = array();
-			while ($tag = $tags->fetchObject()) {
-				if (!isset($tag->id)) continue;
-				$unclean[] = $tag->tags;
-				$clean[] = $tag->clean;
-			}
+			while ($tag = $tags->fetchObject())
+				list($unclean[], $clean[]) = array($tag->tags, $tag->clean);
 
 			if (!count($unclean))
 				return array();

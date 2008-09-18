@@ -48,15 +48,6 @@
 					$this->$setting = $value;
 
 			$this->connected = false;
-		}
-
-		/**
-		 * Function: method
-		 * Returns the proper method of connecting and interacting with the database.
-		 */
-		public function method() {
-			if (isset($this->method))
-				return $this->method;
 
 			# We really don't need PDO anymore, since we have the two we supported with it hardcoded (kinda).
 			# Keeping this here for when/if we decide to add support for more database engines, like Postgres and MSSQL.
@@ -65,20 +56,18 @@
 
 			if (isset($this->adapter)) {
 				if ($this->adapter == "mysql" and class_exists("MySQLi"))
-					return $this->method = "mysqli";
+					$this->method = "mysqli";
 				elseif ($this->adapter == "mysql" and function_exists("mysql_connect"))
-					return $this->method = "mysql";
+					$this->method = "mysql";
 				elseif ($this->adapter == "sqlite" and in_array("sqlite", PDO::getAvailableDrivers()))
-					return $this->method = "pdo";
+					$this->method = "pdo";
 			} else
 				if (class_exists("MySQLi"))
-					return $this->method = "mysqli";
+					$this->method = "mysqli";
 				elseif (function_exists("mysql_connect"))
-					return $this->method = "mysql";
+					$this->method = "mysql";
 				elseif (in_array("mysql", PDO::getAvailableDrivers()))
-					return $this->method = "pdo";
-
-			exit(__("Cannot find a way to connect to a database."));
+					$this->method = "pdo";
 		}
 
 		/**
@@ -122,7 +111,7 @@
 			if (UPGRADING)
 				$checking = true;
 
-			switch($this->method()) {
+			switch($this->method) {
 				case "pdo":
 					try {
 						if (empty($this->database))
@@ -298,7 +287,7 @@
 		 * Returns the last inserted ID.
 		 */
 		public function latest() {
-			switch($this->method()) {
+			switch($this->method) {
 				case "pdo":
 					return $this->db->lastInsertId();
 					break;
@@ -317,7 +306,7 @@
 		 * This also handles calling the SQL connection method's "escape_string" functions.
 		 */
 		public function escape($string, $quotes = true) {
-			switch(SQL::current()->method()) {
+			switch(SQL::current()->method) {
 				case "pdo":
 					$string = ltrim(rtrim($this->db->quote($string), "'"), "'");
 					break;

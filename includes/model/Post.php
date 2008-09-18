@@ -97,18 +97,21 @@
 
 			$posts = parent::search(get_class(), $options, $options_for_object);
 
-			if (!ADMIN and !XML_RPC)
-				if (!isset($options["placeholders"]) or !$options["placeholders"]) {
-					foreach ($posts as $index => $post)
-						if (!$post->theme_exists())
-							unset($posts[$index]);
-				} else {
-					foreach ($posts[0] as $index => $data)
-						if (!Theme::current()->file_exists("feathers/".$data["feather"]))
-							unset($posts[0][$index]);
-
-					$posts[0] = array_values($posts[0]);
-				}
+			# TODO: Should we do this here? It boosts up load time in the
+			#       .0XXms range depending on how many posts are grabbed.
+			# if (!ADMIN and !XML_RPC)
+			# 	if (!isset($options["placeholders"]) or !$options["placeholders"]) {
+			# 		foreach ($posts as $index => $post)
+			# 			if (!$post->theme_exists())
+			# 				unset($posts[$index]);
+			# 	} else {
+			# 		$theme = Theme::current();
+			# 		foreach ($posts[0] as $index => $data)
+			# 			if (!$theme->file_exists("feathers/".$data["feather"]))
+			# 				unset($posts[0][$index]);
+			#
+			# 		$posts[0] = array_values($posts[0]); # Reset the indices
+			# 	}
 
 			return $posts;
 		}
@@ -774,7 +777,7 @@
 			if ($visitor->group()->can("view_private"))
 				$statuses[] = "private";
 
-			return "status IN ('".implode("', '", $statuses)."') OR status LIKE '%{".$visitor->group()->id."}%'";
+			return "posts.status IN ('".implode("', '", $statuses)."') OR posts.status LIKE '%{".$visitor->group()->id."}%'";
 		}
 
 		/**
@@ -782,6 +785,6 @@
 		 * Returns a SQL query "chunk" for the "feather" column so that it matches enabled feathers.
 		 */
 		static function feathers() {
-			return "feather IN ('".implode("', '", Config::current()->enabled_feathers)."')";
+			return "posts.feather IN ('".implode("', '", Config::current()->enabled_feathers)."')";
 		}
 	}
