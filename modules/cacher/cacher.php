@@ -57,7 +57,7 @@
 		public function end($route) {
 			if (!($route->controller instanceof MainController) or
 			    $this->cancelled or
-			    !file_exists($this->file) or
+			    file_exists($this->file) or
 			    Flash::exists())
 				return;
 
