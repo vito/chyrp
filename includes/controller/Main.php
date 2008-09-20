@@ -622,10 +622,7 @@
 		 *     $context - The context for the file.
 		 *     $title - The title for the page.
 		 */
-		public function display($file = null, $context = array(), $title = "") {
-			if (!isset($file))
-				return false; # If they viewed /display, this'll get called.
-
+		public function display($file, $context = array(), $title = "") {
 			if (is_array($file))
 				for ($i = 0; $i < count($file); $i++) {
 					$check = ($file[$i][0] == "/" or preg_match("/[a-zA-Z]:\\\/", $file[$i])) ?

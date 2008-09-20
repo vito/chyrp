@@ -13,6 +13,10 @@
 		 *     <Model::grab>
 		 */
 		public function __construct($user_id, $options = array()) {
+			$options["left_join"][] = array("table" => "groups",
+			                                "where" => "id = users.group_id");
+			$options["select"] = array("users.*", "groups.name AS group_name", "groups.permissions AS group_permissions");
+
 			parent::grab($this, $user_id, $options);
 
 			if ($this->no_results)
@@ -136,7 +140,9 @@
 			if ($this->no_results)
 				return false;
 
-			return new Group($this->group_id);
+			return new Group(null, array("read_from" => array("id" => $this->group_id,
+			                                                  "name" => $this->group_name,
+			                                                  "permissions" => $this->group_permissions)));
 		}
 
 		/**

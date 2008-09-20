@@ -4,9 +4,9 @@
 	 * The basis for the Models system.
 	 */
 	class Model {
-		# Array: $loaded_models
-		# Caches every loaded module into an array of results.
-		static $loaded_models = array();
+		# Array: $caches
+		# Caches every loaded module into a clone of the object.
+		static $caches = array();
 
 		/**
 		 * Function: grab
@@ -35,17 +35,9 @@
 				$model_name = "user";
 
 			# Is this model already in the cache?
-			if (isset(self::$loaded_models[$model_name][$id])) {
-				foreach (self::$loaded_models[$model_name][$id] as $key => $val)
-					$model->$key = $val;
-
-				$model->no_results = false;
-
-				if (isset(self::$loaded_models[$model_name][$id]["queryString"]))
-					$model->queryString = self::$loaded_models[$model_name][$id]["queryString"];
-
-				if (isset(self::$loaded_models[$model_name][$id]["updated"]))
-					$model->updated = self::$loaded_models[$model_name][$id]["updated"];
+			if (isset(self::$caches[$model_name][$id])) {
+				foreach (self::$caches[$model_name][$id] as $attr => $val)
+					$model->$attr = $val;
 
 				return;
 			}
@@ -93,13 +85,15 @@
 
 			foreach ($read as $key => $val)
 				if (!is_int($key))
-					$model->$key = self::$loaded_models[$model_name][$read["id"]][$key] = $val;
+					$model->$key = $val;
 
-			if (isset($query) and isset($query->query->queryString))
-				$model->queryString = self::$loaded_models[$model_name][$read["id"]]["queryString"] = $query->query->queryString;
+			if (isset($query) and isset($query->queryString))
+				$model->queryString = $query->queryString;
 
 			if (isset($model->updated_at))
-				$model->updated = self::$loaded_models[$model_name][$read["id"]]["updated"] = $model->updated_at != "0000-00-00 00:00:00";
+				$model->updated = $model->updated_at != "0000-00-00 00:00:00";
+
+			self::$caches[$model_name][$read["id"]] = clone $model;
 		}
 
 		/**

@@ -199,6 +199,8 @@
 		 *     $tables - If specified, conditions will be tablefied with these tables.
 		 */
 		public static function build_conditions($conds, &$params, $tables = null) {
+			$conditions = array();
+
 			foreach ($conds as $key => $val) {
 				if (is_int($key)) # Full expression
 					$cond = $val;
