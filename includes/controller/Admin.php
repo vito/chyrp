@@ -1825,6 +1825,10 @@
 			foreach ($info["notifications"] as $message)
 				Flash::message($message);
 
+			# Clear the caches made by the previous theme.
+			foreach (glob(INCLUDES_DIR."/caches/*.cache") as $cache)
+				@unlink($cache);
+
 			Flash::notice(_f("Theme changed to &#8220;%s&#8221;.", array($info["name"])), "/admin/?action=themes");
 		}
 
