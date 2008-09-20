@@ -117,7 +117,7 @@
 				if (substr($table, 0, 2) != "__")
 					$table = "__".$table;
 
-			return implode(", ", $tables);
+			return implode(",\n     ", $tables);
 		}
 
 		/**
@@ -143,7 +143,7 @@
 			foreach ($fields as &$field)
 				self::tablefy($field, $tables);
 
-			return implode(', ', $fields);
+			return implode(",\n       ", $fields);
 		}
 
 		/**
@@ -156,7 +156,7 @@
 
 			$conditions = self::build_conditions($conds, $params, $tables);
 
-			return (empty($conditions)) ? "" : "(".implode(") AND (", array_filter($conditions)).")";
+			return (empty($conditions)) ? "" : "(".implode(")\n  AND (", array_filter($conditions)).")";
 		}
 
 		/**
@@ -170,7 +170,7 @@
 			foreach ($by as &$column)
 				self::tablefy($column, $tables);
 
-			return implode(", ", array_unique(array_filter($by)));
+			return implode(",\n         ", array_unique(array_filter($by)));
 		}
 
 		/**
@@ -186,7 +186,7 @@
 			foreach ($order as &$by)
 				self::tablefy($by, $tables);
 
-			return implode(", ", $order);
+			return implode(",\n         ", $order);
 		}
 
 		/**

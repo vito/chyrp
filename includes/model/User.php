@@ -15,7 +15,10 @@
 		public function __construct($user_id, $options = array()) {
 			$options["left_join"][] = array("table" => "groups",
 			                                "where" => "id = users.group_id");
-			$options["select"] = array("users.*", "groups.name AS group_name", "groups.permissions AS group_permissions");
+			$options["select"] = array_merge(array("users.*",
+			                                       "groups.name AS group_name",
+			                                       "groups.permissions AS group_permissions"),
+			                                 (array) fallback($options["select"], "*", true));
 
 			parent::grab($this, $user_id, $options);
 

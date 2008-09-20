@@ -127,7 +127,7 @@
 			                      array(),
 			                      ($limit == 0) ? null : $limit,
 			                      null,
-			                      "YEAR(created_at), MONTH(created_at)");
+			                      array("YEAR(created_at)", "MONTH(created_at)"));
 
 			$archives = array();
 			while ($date = $dates->fetchObject())
