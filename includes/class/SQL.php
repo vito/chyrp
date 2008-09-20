@@ -156,7 +156,7 @@
 			}
 
 			if ($this->adapter == "mysql")
-				new Query("SET NAMES 'utf8'");
+				new Query("SET NAMES 'utf8'"); # Note: This doesn't increase the query debug/count.
 
 			return $this->connected = true;
 		}

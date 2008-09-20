@@ -19,7 +19,11 @@
 		public function __construct($query, $params = array(), $throw_exceptions = false) {
 			$this->sql = SQL::current();
 
-			++$this->sql->queries;
+			# Don't count config setting queries.
+			$count = (bool) (!substr_count(strtoupper($query), "SET "));
+
+			if ($count)
+				++$this->sql->queries;
 
 			$this->db =& $this->sql->db;
 
@@ -27,7 +31,7 @@
 			$this->throw_exceptions = $throw_exceptions;
 			$this->queryString = $query;
 
-			if (defined('DEBUG') and DEBUG) {
+			if ($count and defined('DEBUG') and DEBUG) {
 				$trace = debug_backtrace();
 				$target = $trace[$index = 0];
 
