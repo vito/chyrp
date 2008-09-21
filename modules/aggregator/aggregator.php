@@ -248,8 +248,6 @@
 
 			$aggregate = $config->aggregates[$_GET['id']];
 
-			$admin->context["aggregate"] = ;
-
 			if (empty($_POST))
 				return $admin->display("edit_aggregate",
 				                       array("users" => User::find(),
