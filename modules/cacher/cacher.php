@@ -137,12 +137,12 @@
 			return $navs;
 		}
 
-		public function admin_cache_settings() {
+		public function admin_cache_settings($admin) {
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
 			if (empty($_POST))
-				return;
+				return $admin->display("cache_settings");
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				show_403(__("Access Denied"), __("Invalid security key."));

@@ -78,7 +78,7 @@
 			foreach ((array) Config::current()->aggregates as $name => $aggregate)
 				$aggregates[] = array_merge(array("name" => $name), array("user" => new User($aggregate["author"])), $aggregate);
 
-			$admin->context["aggregates"] = new Paginator($aggregates, 25, "page", false);
+			$admin->display("manage_aggregates", array("aggregates" => new Paginator($aggregates, 25, "page", false)));
 		}
 
 		public function manage_nav($navs) {
@@ -184,7 +184,7 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
 			if (empty($_POST))
-				return;
+				return $admin->display("aggregation_settings");
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				show_403(__("Access Denied"), __("Invalid security key."));
@@ -205,7 +205,7 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to add aggregates.", "aggregator"));
 
 			if (empty($_POST))
-				return;
+				return $admin->display("new_aggregate");
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				show_403(__("Access Denied"), __("Invalid security key."));
@@ -248,14 +248,18 @@
 
 			$aggregate = $config->aggregates[$_GET['id']];
 
-			$admin->context["aggregate"] = array("name" => $_GET['id'],
-			                                     "url" => $aggregate["url"],
-			                                     "feather" => $aggregate["feather"],
-			                                     "author" => $aggregate["author"],
-			                                     "data" => preg_replace("/---\n/", "", YAML::dump($aggregate["data"])));
+			$admin->context["aggregate"] = ;
 
 			if (empty($_POST))
-				return;
+				return $admin->display("edit_aggregate",
+				                       array("users" => User::find(),
+				                             "aggregate" => array("name" => $_GET['id'],
+				                                                  "url" => $aggregate["url"],
+				                                                  "feather" => $aggregate["feather"],
+				                                                  "author" => $aggregate["author"],
+				                                                  "data" => preg_replace("/---\n/",
+				                                                                         "",
+				                                                                         YAML::dump($aggregate["data"]))));
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				show_403(__("Access Denied"), __("Invalid security key."));
@@ -289,6 +293,8 @@
 
 			$admin->context["aggregate"] = array("name" => $_GET['id'],
 			                                     "url" => $aggregate["url"]);
+			$admin->display("delete_aggregate", array("aggregate" => array("name" => $_GET['id'],
+			                                                               "url" => $aggregate["url"])));
 		}
 
 		public function admin_destroy_aggregate($admin) {

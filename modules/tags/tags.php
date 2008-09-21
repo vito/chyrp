@@ -176,19 +176,17 @@
 
 			$step = 75 / $spread;
 
-			$context = array();
+			$cloud = array();
 			foreach ($tags as $tag => $count)
-				$context[] = array("size" => (100 + (($count - $min_qty) * $step)),
-				                   "popularity" => $count,
-				                   "name" => $tag,
-				                   "title" => sprintf(_p("%s post tagged with &quot;%s&quot;", "%s posts tagged with &quot;%s&quot;", $count, "tags"), $count, $tag),
-				                   "clean" => $tag2clean[$tag],
-				                   "url" => url("tag/".$tag2clean[$tag]));
-
-			$admin->context["tag_cloud"] = $context;
+				$cloud[] = array("size" => (100 + (($count - $min_qty) * $step)),
+				                 "popularity" => $count,
+				                 "name" => $tag,
+				                 "title" => sprintf(_p("%s post tagged with &quot;%s&quot;", "%s posts tagged with &quot;%s&quot;", $count, "tags"), $count, $tag),
+				                 "clean" => $tag2clean[$tag],
+				                 "url" => url("tag/".$tag2clean[$tag]));
 
 			if (!Post::any_editable() and !Post::any_deletable())
-				return;
+				return $admin->display("manage_tags", array("tag_cloud" => $cloud));
 
 			fallback($_GET['query'], "");
 			list($where, $params) = keywords(urldecode($_GET['query']), "xml LIKE :query OR url LIKE :query");
@@ -197,10 +195,12 @@
 			if (!$visitor->group()->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post"))
 				$where["user_id"] = $visitor->id;
 
-			$admin->context["posts"] = new Paginator(Post::find(array("placeholders" => true,
-			                                                          "drafts" => true,
-			                                                          "where" => $where,
-			                                                          "params" => $params)), 25);
+			$admin->display("manage_tags", array("tag_cloud" => $cloud,
+			                                     "posts" => new Paginator(Post::find(array("placeholders" => true,
+			                                                                               "drafts" => true,
+			                                                                               "where" => $where,
+			                                                                               "params" => $params)),
+			                                                              25)));
 		}
 
 		public function admin_rename_tag($admin) {
@@ -228,22 +228,22 @@
 			list($tags, $clean, $tag2clean,) = self::parseTags($tags, $clean);
 
 			foreach ($tags as $tag => $count)
-				if ($tag2clean[$tag] == $_GET['name'])
-					return $admin->context["tag"] = array("name" => $tag, "clean" => $tag2clean[$tag]);
+				if ($tag2clean[$tag] == $_GET['name']) {
+					$tag = array("name" => $tag, "clean" => $tag2clean[$tag]);
+					continue;
+				}
+
+			$admin->display("rename_tag", array("tag" => $tag));
 		}
 
 		public function admin_edit_tags($admin) {
-			$sql = SQL::current();
-
 			if (!isset($_GET['id']))
 				error(__("No ID Specified"), __("Please specify the ID of the post whose tags you would like to edit.", "tags"));
 
-			$admin->context["post"] = new Post($_GET['id']);
+			$admin->display("edit_tags", array("post" => new Post($_GET['id'])));
 		}
 
 		public function admin_update_tags($admin) {
-			$sql = SQL::current();
-
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				show_403(__("Access Denied"), __("Invalid security key."));
 

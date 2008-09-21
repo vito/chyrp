@@ -63,6 +63,7 @@ ${ trigger.call("sidebar") }
 						<span class="sub">($archive.count)</span>
 					</li>
 {% endfor %}
+					<li><a href="{% url "archive" %}">${ "All &rarr;" | translate }</a></li>
 				</ul>
 {% endif %}
 			</div>

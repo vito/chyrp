@@ -109,13 +109,13 @@
 				              "/admin/?action=manage_comments");
 		}
 
-		static function admin_delete_comment() {
-			$admin = AdminController::current();
+		static function admin_delete_comment($admin) {
+			$comment = new Comment($_GET['id']);
 
-			$admin->context["comment"] = new Comment($_GET['id']);
-
-			if (!$admin->context["comment"]->deletable())
+			if (!$comment->deletable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this comment.", "comments"));
+
+			$admin->display("delete_comment", array("comments" => $comment));
 		}
 
 		static function admin_destroy_comment() {
@@ -145,17 +145,20 @@
 				redirect("/admin/?action=manage_comments");
 		}
 
-		static function admin_manage_spam() {
+		static function admin_manage_spam($admin) {
 			if (!Visitor::current()->group()->can("edit_comment", "delete_comment", true))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage any comments.", "comments"));
 
 			fallback($_GET['query'], "");
 			list($where, $params) = keywords(urldecode($_GET['query']), "body LIKE :query");
 
-			$where[] = "status = 'spam'";
+			$where["status"] = "spam";
 
-			AdminController::current()->context["comments"] = new Paginator(Comment::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
-		}
+			$admin->display("manage_spam",
+			                array("comments" => new Paginator(Comment::find(array("placeholders" => true,
+			                                                                      "where" => $where,
+			                                                                      "params" => $params)),
+			                                                  25)));		}
 
 		static function admin_purge_spam() {
 			if (!Visitor::current()->group()->can("delete_comment"))
@@ -237,7 +240,7 @@
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
 			if (empty($_POST))
-				return;
+				return $admin->display("comment_settings");
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				show_403(__("Access Denied"), __("Invalid security key."));
@@ -288,19 +291,19 @@
 			return $pages;
 		}
 
-		public function admin_edit_comment() {
+		public function admin_edit_comment($admin) {
 			if (empty($_GET['id']))
 				error(__("No ID Specified"), __("An ID is required to edit a comment.", "comments"));
 
-			$admin = AdminController::current();
+			$comment = new Comment($_GET['id'], array("filter" => false));
 
-			$admin->context["comment"] = new Comment($_GET['id'], array("filter" => false));
-
-			if (!$admin->context["comment"]->editable())
+			if (!$comment->editable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this comment.", "comments"));
+
+			$admin->display("edit_comment", array("comment" => $comment));
 		}
 
-		static function admin_manage_comments() {
+		static function admin_manage_comments($admin) {
 			if (!Comment::any_editable() and !Comment::any_deletable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to manage any comments.", "comments"));
 
@@ -313,7 +316,11 @@
 			if (!$visitor->group()->can("edit_comment", "delete_comment", true))
 				$where["user_id"] = $visitor->id;
 
-			AdminController::current()->context["comments"] = new Paginator(Comment::find(array("placeholders" => true, "where" => $where, "params" => $params)), 25);
+			$admin->display("manage_comments",
+			                array("comments" => new Paginator(Comment::find(array("placeholders" => true,
+			                                                                      "where" => $where,
+			                                                                      "params" => $params)),
+			                                                  25)));
 		}
 
 		static function admin_bulk_comments() {
