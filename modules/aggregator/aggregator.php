@@ -257,7 +257,7 @@
 				                                                  "author" => $aggregate["author"],
 				                                                  "data" => preg_replace("/---\n/",
 				                                                                         "",
-				                                                                         YAML::dump($aggregate["data"]))));
+				                                                                         YAML::dump($aggregate["data"])))));
 
 			if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
 				show_403(__("Access Denied"), __("Invalid security key."));
