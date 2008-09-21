@@ -35,7 +35,7 @@
 		}
 
 		public function post_options($fields, $post = null) {
-			$tags = self::list_tags();
+			$tags = self::list_tags(false);
 
 			$selector = '<span class="tags_select">'."\n";
 
@@ -573,7 +573,7 @@
 
 			usort($unclean, array($this, "sort_tags_".$order_by."_".$order));
 
-			return array_slice($unclean, 0, $limit);
+			return ($limit) ? array_slice($unclean, 0, $limit) : $unclean ;
 		}
 
 		static function clean2tag($clean_tag) {
