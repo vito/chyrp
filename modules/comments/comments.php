@@ -235,7 +235,7 @@
 			SQL::current()->update("comments", array("user_id" => $user->id), array("user_id" => 0));
 		}
 
-		static function admin_comment_settings() {
+		static function admin_comment_settings($admin) {
 			if (!Visitor::current()->group()->can("change_settings"))
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
@@ -264,6 +264,8 @@
 
 			if (!in_array(false, $set))
 				Flash::notice(__("Settings updated."), "/admin/?action=comment_settings");
+
+            $admin->display("comment_settings");
 		}
 
 		static function settings_nav($navs) {

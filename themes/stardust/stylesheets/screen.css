@@ -711,4 +711,5 @@ span.waiting {
 	padding: 0 .5em;
 	xoverflow-x: scroll;
 	word-wrap: break-word;
+	font-size: 10px;
 }
