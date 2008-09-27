@@ -21,6 +21,9 @@ body {
 	height: 100%;
 }
 
+pre {
+    font-size: 10px;
+}
 code {
 	font-family: monospace;
 }
@@ -711,5 +714,5 @@ span.waiting {
 	padding: 0 .5em;
 	xoverflow-x: scroll;
 	word-wrap: break-word;
-	font-size: 10px;
 }
+

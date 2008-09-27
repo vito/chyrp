@@ -15,12 +15,16 @@
 	header("Content-Type: application/x-javascript");
 
 	if (strpos($_GET['file'], "/themes/") === 0) {
-		require "../common.php";
+        # Constant: MAIN_DIR
+	    # Absolute path to the Chyrp root
+    	define('MAIN_DIR', dirname(dirname(dirname(__FILE__))));
 
 		header("Last-Modified: ".date("r", filemtime(MAIN_DIR.$_GET['file'])));
 
 		if (file_exists(MAIN_DIR.$_GET['file']))
-			readfile(MAIN_DIR.$_GET['file']);
+            readfile(MAIN_DIR.$_GET['file']);
+        else
+            echo "alert('File not found: ".addslashes($_GET['file'])."')";
 	} elseif (file_exists($_GET['file'])) {
 		header("Last-Modified: ".date("r", filemtime($_GET['file'])));
 		readfile($_GET['file']);
@@ -28,4 +32,4 @@
 		echo "alert('File not found: ".addslashes($_GET['file'])."')";
 
 	ob_end_flush();
-?>
+
