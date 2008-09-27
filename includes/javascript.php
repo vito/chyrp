@@ -6,7 +6,7 @@
 $(function(){
 	// Scan AJAX responses for errors.
 	$(document).ajaxComplete(function(event, request){
-		var response = request.responseText
+		var response = request ? request.responseText : null
 		if (isError(response))
 			alert(response.replace(/(HEY_JAVASCRIPT_THIS_IS_AN_ERROR_JUST_SO_YOU_KNOW|<([^>]+)>\n?)/gm, ""))
 	})<?php echo "\n\n\n\n"; # Balance out the line numbers in this script and in the output to help debugging. ?>
