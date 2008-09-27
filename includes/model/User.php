@@ -34,7 +34,16 @@
 		 *     <Model::search>
 		 */
 		static function find($options = array(), $options_for_object = array()) {
-			fallback($options["order"], "id ASC");
+            fallback($options["order"], "id ASC");
+
+			$options["left_join"][] = array("table" => "groups",
+			                                "where" => "id = users.group_id");
+
+            $options["select"] = array_merge(array("users.*",
+			                                       "groups.name AS group_name",
+			                                       "groups.permissions AS group_permissions"),
+			                                 (array) fallback($options["select"], "*", true));
+
 			return parent::search(get_class(), $options, $options_for_object);
 		}
 
