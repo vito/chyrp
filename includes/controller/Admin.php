@@ -177,7 +177,7 @@
 
 			$post = new Post($_GET['id'], array("drafts" => true, "filter" => false));
 
-			if (!$this->context["post"]->editable())
+			if (!$post->editable())
 				show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this post."));
 
 			Trigger::current()->filter($options, array("edit_post_options", "post_options"), $post);
@@ -186,7 +186,7 @@
 			               array("post" => $post,
 			                     "groups" => Group::find(array("order" => "id ASC")),
 			                     "options" => $options,
-			                     "feather" => Feathers::$instances[$this->context["post"]->feather]));
+			                     "feather" => Feathers::$instances[$post->feather]));
 		}
 
 		/**

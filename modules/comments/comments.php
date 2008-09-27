@@ -263,10 +263,8 @@
 			}
 
 			if (!in_array(false, $set))
-				Flash::notice(__("Settings updated."), "/admin/?action=comment_settings");
-
-            $admin->display("comment_settings");
-		}
+                Flash::notice(__("Settings updated."), "/admin/?action=comment_settings");
+        }
 
 		static function settings_nav($navs) {
 			if (Visitor::current()->group()->can("change_settings"))
