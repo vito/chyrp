@@ -58,8 +58,8 @@ class YAML
      */
     public static function load($yaml)
     {
-		if (is_file($yaml))
-			return self::loadFile($yaml);
+        if (is_file($yaml))
+            return self::loadFile($yaml);
 
         if (!is_string($yaml) || !strlen($yaml)) {
             $msg = 'YAML to parse must be a string and cannot be empty.';

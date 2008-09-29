@@ -26,15 +26,15 @@ class Twig_Exception extends Exception {}
  */
 class Twig_SyntaxError extends Twig_Exception
 {
-	public $lineno;
-	public $filename;
+    public $lineno;
+    public $filename;
 
-	public function __construct($message, $lineno, $filename=null)
-	{
-		parent::__construct($message);
-		$this->lineno = $lineno;
-		$this->filename = $filename;
-	}
+    public function __construct($message, $lineno, $filename=null)
+    {
+        parent::__construct($message);
+        $this->lineno = $lineno;
+        $this->filename = $filename;
+    }
 }
 
 
@@ -44,10 +44,10 @@ class Twig_SyntaxError extends Twig_Exception
  */
 class Twig_RuntimeError extends Twig_Exception
 {
-	public function __construct($message)
-	{
-		parent::__construct($message);
-	}
+    public function __construct($message)
+    {
+        parent::__construct($message);
+    }
 }
 
 
@@ -56,11 +56,11 @@ class Twig_RuntimeError extends Twig_Exception
  */
 class Twig_TemplateNotFound extends Twig_Exception
 {
-	public $name;
+    public $name;
 
-	public function __construct($name)
-	{
-		parent::__construct('Template not found: ' . $name);
-		$this->name = $name;
-	}
+    public function __construct($name)
+    {
+        parent::__construct('Template not found: ' . $name);
+        $this->name = $name;
+    }
 }

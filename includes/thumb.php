@@ -1,152 +1,152 @@
 <?php
-	require_once "common.php";
+    require_once "common.php";
 
-	if (ini_get("memory_limit") < 48)
-		ini_set("memory_limit", "48M");
+    if (ini_get("memory_limit") < 48)
+        ini_set("memory_limit", "48M");
 
-	$gd_info = gd_info();
-	$gd_version = (substr_count(strtolower($gd_info["GD Version"]), "2.")) ? 2 : 1 ;
+    $gd_info = gd_info();
+    $gd_version = (substr_count(strtolower($gd_info["GD Version"]), "2.")) ? 2 : 1 ;
 
-	$quality = fallback($_GET["quality"], 80);
-	$filename = rtrim(fallback($_GET['file']));
-	$extension = pathinfo($filename, PATHINFO_EXTENSION);
+    $quality = fallback($_GET["quality"], 80);
+    $filename = rtrim(fallback($_GET['file']));
+    $extension = pathinfo($filename, PATHINFO_EXTENSION);
 
-	if (!file_exists($filename))
-		display_error("Image Not Found");
+    if (!file_exists($filename))
+        display_error("Image Not Found");
 
-	function display_error($string) {
-		$thumbnail = imagecreatetruecolor(fallback($_GET['max_width'], 100, true), 18);
-		imagestring($thumbnail, 1, 5, 5, $string, imagecolorallocate($thumbnail, 255, 255, 255));
-		header("Content-type: image/png");
-		header("Content-Disposition: inline; filename=error.png");
-		imagepng($thumbnail);
-		exit;
-	}
+    function display_error($string) {
+        $thumbnail = imagecreatetruecolor(fallback($_GET['max_width'], 100, true), 18);
+        imagestring($thumbnail, 1, 5, 5, $string, imagecolorallocate($thumbnail, 255, 255, 255));
+        header("Content-type: image/png");
+        header("Content-Disposition: inline; filename=error.png");
+        imagepng($thumbnail);
+        exit;
+    }
 
-	list($original_width, $original_height, $type, $attr) = getimagesize($filename);
+    list($original_width, $original_height, $type, $attr) = getimagesize($filename);
 
-	$new_width = (int) fallback($_GET["max_width"], 0);
-	$new_height = (int) fallback($_GET["max_height"], 0);
+    $new_width = (int) fallback($_GET["max_width"], 0);
+    $new_height = (int) fallback($_GET["max_height"], 0);
 
-	function resize(&$new_width, &$new_height, $original_width, $original_height) {
-		$xscale = ($new_width / $original_width);
-		$yscale = $new_height / $original_height;
+    function resize(&$new_width, &$new_height, $original_width, $original_height) {
+        $xscale = ($new_width / $original_width);
+        $yscale = $new_height / $original_height;
 
-		if ($new_width <= $original_width and $new_height <= $original_height and $xscale == $yscale)
-			return;
+        if ($new_width <= $original_width and $new_height <= $original_height and $xscale == $yscale)
+            return;
 
-		if ($new_width and !$new_height)
-			return $new_height = ($new_width / $original_width) * $original_height;
-		elseif (!$new_width and $new_height)
-			return $new_width = ($new_height / $original_height) * $original_width;
+        if ($new_width and !$new_height)
+            return $new_height = ($new_width / $original_width) * $original_height;
+        elseif (!$new_width and $new_height)
+            return $new_width = ($new_height / $original_height) * $original_width;
 
-		if ($xscale != $yscale) {
-			if ($original_width * $yscale <= $new_width)
-				$new_width = $original_width * $yscale;
+        if ($xscale != $yscale) {
+            if ($original_width * $yscale <= $new_width)
+                $new_width = $original_width * $yscale;
 
-			if ($original_height * $xscale <= $new_height)
-				$new_height = $original_height * $xscale;
-		}
+            if ($original_height * $xscale <= $new_height)
+                $new_height = $original_height * $xscale;
+        }
 
-		$xscale = ($new_width / $original_width);
-		$yscale = $new_height / $original_height;
+        $xscale = ($new_width / $original_width);
+        $yscale = $new_height / $original_height;
 
-		if (round($xscale, 3) == round($yscale, 3))
-			return;
+        if (round($xscale, 3) == round($yscale, 3))
+            return;
 
-		resize($new_width, $new_height, $original_width, $original_height);
-	}
+        resize($new_width, $new_height, $original_width, $original_height);
+    }
 
-	# Determine the final scale of the thumbnail.
-	resize($new_width, $new_height, $original_width, $original_height);
+    # Determine the final scale of the thumbnail.
+    resize($new_width, $new_height, $original_width, $original_height);
 
-	# If it's already below the maximum, just redirect to it.
-	if ($original_width <= $new_width and $original_height <= $new_height)
-		header("Location: ".$filename);
+    # If it's already below the maximum, just redirect to it.
+    if ($original_width <= $new_width and $original_height <= $new_height)
+        header("Location: ".$filename);
 
-	$cache_filename = md5($filename.$new_width.$new_height.$quality).".".$extension;
-	$cache_file = INCLUDES_DIR."/caches/thumb_".$cache_filename;
+    $cache_filename = md5($filename.$new_width.$new_height.$quality).".".$extension;
+    $cache_file = INCLUDES_DIR."/caches/thumb_".$cache_filename;
 
-	if (isset($_GET['no_cache']) and $_GET['no_cache'] == "true" and file_exists($cache_file))
-		unlink($cache_file);
+    if (isset($_GET['no_cache']) and $_GET['no_cache'] == "true" and file_exists($cache_file))
+        unlink($cache_file);
 
-	# Serve a cache if it exists and the original image has not changed.
-	if (file_exists($cache_file) and filemtime($cache_file) > filemtime($filename)) {
-		header("Last-Modified: ".gmdate('D, d M Y H:i:s', filemtime($cache_file)).' GMT');
-		header("Content-type: image/".($extension == "jpg" ? "jpeg" : $extension));
-		header("Cache-Control: public");
-		header("Expires: ".date("r", strtotime("+30 days")));
-		header("Content-Disposition: inline; filename=".$cache_filename);
-		readfile($cache_file);
-		exit;
-	}
+    # Serve a cache if it exists and the original image has not changed.
+    if (file_exists($cache_file) and filemtime($cache_file) > filemtime($filename)) {
+        header("Last-Modified: ".gmdate('D, d M Y H:i:s', filemtime($cache_file)).' GMT');
+        header("Content-type: image/".($extension == "jpg" ? "jpeg" : $extension));
+        header("Cache-Control: public");
+        header("Expires: ".date("r", strtotime("+30 days")));
+        header("Content-Disposition: inline; filename=".$cache_filename);
+        readfile($cache_file);
+        exit;
+    }
 
-	# Verify that the image is able to be thumbnailed, and prepare variables used later in the script.
-	switch ($type) {
-		case IMAGETYPE_GIF:
-			$image = imagecreatefromgif($filename);
-			$done = (function_exists("imagegif")) ? "imagegif" : "imagejpeg" ;
-			$mime = (function_exists("imagegif")) ? "image/gif" : "image/jpeg" ;
-			break;
+    # Verify that the image is able to be thumbnailed, and prepare variables used later in the script.
+    switch ($type) {
+        case IMAGETYPE_GIF:
+            $image = imagecreatefromgif($filename);
+            $done = (function_exists("imagegif")) ? "imagegif" : "imagejpeg" ;
+            $mime = (function_exists("imagegif")) ? "image/gif" : "image/jpeg" ;
+            break;
 
-		case IMAGETYPE_JPEG:
-			$image = imagecreatefromjpeg($filename);
-			$done = "imagejpeg";
-			$mime = "image/jpeg";
-			break;
+        case IMAGETYPE_JPEG:
+            $image = imagecreatefromjpeg($filename);
+            $done = "imagejpeg";
+            $mime = "image/jpeg";
+            break;
 
-		case IMAGETYPE_PNG:
-			$image = imagecreatefrompng($filename);
-			$done = "imagepng";
-			$mime = "image/png";
-			break;
+        case IMAGETYPE_PNG:
+            $image = imagecreatefrompng($filename);
+            $done = "imagepng";
+            $mime = "image/png";
+            break;
 
-		case IMAGETYPE_BMP:
-			$image = imagecreatefromwbmp($filename);
-			$done = "imagewbmp";
-			$mime = "image/bmp";
-			break;
+        case IMAGETYPE_BMP:
+            $image = imagecreatefromwbmp($filename);
+            $done = "imagewbmp";
+            $mime = "image/bmp";
+            break;
 
-		default:
-			display_error("Unsupported image type.");
-			break;
-	}
+        default:
+            display_error("Unsupported image type.");
+            break;
+    }
 
-	if (!$image)
-		display_error("Image could not be created.");
+    if (!$image)
+        display_error("Image could not be created.");
 
-	# Decide what functions to use.
-	$create = ($gd_version == 2) ? "imagecreatetruecolor" : "imagecreate" ;
-	$copy = ($gd_version == 2 and $original_width < 4096) ? "imagecopyresampled" : "imagecopyresized" ;
+    # Decide what functions to use.
+    $create = ($gd_version == 2) ? "imagecreatetruecolor" : "imagecreate" ;
+    $copy = ($gd_version == 2 and $original_width < 4096) ? "imagecopyresampled" : "imagecopyresized" ;
 
-	# Create the final resized image.
-	$thumbnail = $create($new_width, $new_height);
+    # Create the final resized image.
+    $thumbnail = $create($new_width, $new_height);
 
-	if ($done == "imagepng")
-		imagealphablending($thumbnail, false);
+    if ($done == "imagepng")
+        imagealphablending($thumbnail, false);
 
-	$copy($thumbnail, $image, 0, 0, 0, 0, $new_width, $new_height, $original_width, $original_height);
+    $copy($thumbnail, $image, 0, 0, 0, 0, $new_width, $new_height, $original_width, $original_height);
 
-	header("Last-Modified: ".gmdate("D, d M Y H:i:s", filemtime($filename))." GMT");
-	header("Content-type: ".$mime);
-	header("Content-Disposition: inline; filename=".$cache_filename.".".$extension);
+    header("Last-Modified: ".gmdate("D, d M Y H:i:s", filemtime($filename))." GMT");
+    header("Content-type: ".$mime);
+    header("Content-Disposition: inline; filename=".$cache_filename.".".$extension);
 
-	if ($done == "imagepng")
-		imagesavealpha($thumbnail, true);
+    if ($done == "imagepng")
+        imagesavealpha($thumbnail, true);
 
-	# Generate the cache image.
-	if (!isset($_GET['no_cache']) or $_GET['no_cache'] == "false")
-		if ($done == "imagejpeg")
-			$done($thumbnail, $cache_file, $quality);
-		else
-			$done($thumbnail, $cache_file);
+    # Generate the cache image.
+    if (!isset($_GET['no_cache']) or $_GET['no_cache'] == "false")
+        if ($done == "imagejpeg")
+            $done($thumbnail, $cache_file, $quality);
+        else
+            $done($thumbnail, $cache_file);
 
-	# Serve the image.
-	if ($done == "imagejpeg")
-		$done($thumbnail, "", $quality);
-	else
-		$done($thumbnail);
+    # Serve the image.
+    if ($done == "imagejpeg")
+        $done($thumbnail, "", $quality);
+    else
+        $done($thumbnail);
 
-	# Clear memory.
-	imagedestroy($image);
-	imagedestroy($thumbnail);
+    # Clear memory.
+    imagedestroy($image);
+    imagedestroy($thumbnail);

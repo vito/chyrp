@@ -1,45 +1,45 @@
 <?php
-	class Text extends Feathers implements Feather {
-		public function __init() {
-			$this->setField(array("attr" => "title",
-			                      "type" => "text",
-			                      "label" => __("Title", "text"),
-			                      "optional" => true,
-			                      "bookmarklet" => "title"));
-			$this->setField(array("attr" => "body",
-			                      "type" => "text_block",
-			                      "label" => __("Body", "text"),
-			                      "preview" => true,
-			                      "bookmarklet" => "selection"));
+    class Text extends Feathers implements Feather {
+        public function __init() {
+            $this->setField(array("attr" => "title",
+                                  "type" => "text",
+                                  "label" => __("Title", "text"),
+                                  "optional" => true,
+                                  "bookmarklet" => "title"));
+            $this->setField(array("attr" => "body",
+                                  "type" => "text_block",
+                                  "label" => __("Body", "text"),
+                                  "preview" => true,
+                                  "bookmarklet" => "selection"));
 
-			$this->setFilter("body", "markup_post_text");
-			$this->setFilter("title", "markup_post_title");
-		}
-		public function submit() {
-			if (empty($_POST['body']))
-				error(__("Error"), __("Body can't be blank."));
+            $this->setFilter("body", "markup_post_text");
+            $this->setFilter("title", "markup_post_title");
+        }
+        public function submit() {
+            if (empty($_POST['body']))
+                error(__("Error"), __("Body can't be blank."));
 
-			fallback($_POST['slug'], sanitize($_POST['title']));
+            fallback($_POST['slug'], sanitize($_POST['title']));
 
-			return Post::add(array("title" => $_POST['title'],
-			                        "body" => $_POST['body']),
-			                 $_POST['slug'],
-			                 Post::check_url($_POST['slug']));
-		}
-		public function update($post) {
-			if (empty($_POST['body']))
-				error(__("Error"), __("Body can't be blank."));
+            return Post::add(array("title" => $_POST['title'],
+                                    "body" => $_POST['body']),
+                             $_POST['slug'],
+                             Post::check_url($_POST['slug']));
+        }
+        public function update($post) {
+            if (empty($_POST['body']))
+                error(__("Error"), __("Body can't be blank."));
 
-			$post->update(array("title" => $_POST['title'],
-			                    "body" => $_POST['body']));
-		}
-		public function title($post) {
-			return fallback($post->title, $post->title_from_excerpt(), true);
-		}
-		public function excerpt($post) {
-			return $post->body;
-		}
-		public function feed_content($post) {
-			return $post->body;
-		}
-	}
+            $post->update(array("title" => $_POST['title'],
+                                "body" => $_POST['body']));
+        }
+        public function title($post) {
+            return fallback($post->title, $post->title_from_excerpt(), true);
+        }
+        public function excerpt($post) {
+            return $post->body;
+        }
+        public function feed_content($post) {
+            return $post->body;
+        }
+    }

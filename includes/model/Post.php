@@ -1,772 +1,772 @@
 <?php
-	/**
-	 * Class: Post
-	 * The Post model.
-	 *
-	 * See Also:
-	 *     <Model>
-	 */
-	class Post extends Model {
-		# Array: $url_attrs
-		# The translation array of the post URL setting to regular expressions.
-		# Passed through the route_code filter.
-		static $url_attrs = array('(year)'     => '([0-9]{4})',
-		                               '(month)'    => '([0-9]{1,2})',
-		                               '(day)'      => '([0-9]{1,2})',
-		                               '(hour)'     => '([0-9]{1,2})',
-		                               '(minute)'   => '([0-9]{1,2})',
-		                               '(second)'   => '([0-9]{1,2})',
-		                               '(id)'       => '([0-9]+)',
-		                               '(author)'   => '([^\/]+)',
-		                               '(clean)'    => '([^\/]+)',
-		                               '(url)'      => '([^\/]+)',
-		                               '(feather)'  => '([^\/]+)',
-		                               '(feathers)' => '([^\/]+)');
-
-		/**
-		 * Function: __construct
-		 * See Also:
-		 *     <Model::grab>
-		 */
-		public function __construct($post_id = null, $options = array()) {
-			if (!isset($post_id) and empty($options)) return;
-
-			if (isset($options["where"]) and !is_array($options["where"]))
-				$options["where"] = array($options["where"]);
-			elseif (!isset($options["where"]))
-				$options["where"] = array();
-
-			$has_status = false;
-			foreach ($options["where"] as $key => $val)
-				if (is_int($key) and substr_count($val, "status") or $key == "status")
-					$has_status = true;
-
-			if (!XML_RPC) {
-				$visitor = Visitor::current();
-				$private = (isset($options["drafts"]) and $options["drafts"] and $visitor->group()->can("view_draft")) ?
-				               self::statuses(array("draft")) :
-				               self::statuses();
-
-				$options["where"][] = self::feathers();
-
-				if (!$has_status)
-					$options["where"][] = $private;
-			}
-
-			parent::grab($this, $post_id, $options);
-
-			if ($this->no_results)
-				return false;
-
-			$this->filtered = (!isset($options["filter"]) or $options["filter"]) and !XML_RPC;
-			$this->slug =& $this->url;
-			fallback($this->clean, $this->url);
-
-			$this->parse();
-		}
-
-		/**
-		 * Function: find
-		 * See Also:
-		 *     <Model::search>
-		 */
-		static function find($options = array(), $options_for_object = array(), $debug = false) {
-			if (isset($options["where"]) and !is_array($options["where"]))
-				$options["where"] = array($options["where"]);
-			elseif (!isset($options["where"]))
-				$options["where"] = array();
-
-			$has_status = false;
-			foreach ($options["where"] as $key => $val)
-				if (is_int($key) and substr_count($val, "status") or $key == "status")
-					$has_status = true;
-
-			if (!XML_RPC) {
-				$visitor = Visitor::current();
-				$private = (isset($options["drafts"]) and $options["drafts"] and $visitor->group()->can("view_draft")) ?
-				               self::statuses(array("draft")) :
-				               self::statuses() ;
-
-				$options["where"][] = self::feathers();
-
-				if (!$has_status)
-					$options["where"][] = $private;
-			}
-
-			fallback($options["order"], "pinned DESC, created_at DESC, id DESC");
-
-			return parent::search(get_class(), $options, $options_for_object);
-		}
-
-		/**
-		 * Function: add
-		 * Adds a post to the database with the passed XML, sanitized URL, and unique URL. The rest is read from $_POST.
-		 *
-		 * Trackbacks are automatically sent based on the contents of $_POST['trackbacks'].
-		 * Most of the $_POST variables will fall back gracefully if they don't exist, e.g. if they're posting from the Bookmarklet.
-		 *
-		 * Calls the add_post trigger with the inserted post and extra options.
-		 *
-		 * Parameters:
-		 *     $values - The data to insert.
-		 *     $clean - The sanitized URL (or empty to default to "(feather).(new post's id)").
-		 *     $url - The unique URL (or empty to default to "(feather).(new post's id)").
-		 *     $feather - The feather to post as.
-		 *     $user - <User> to set as the post's author.
-		 *     $pinned - Pin the post?
-		 *     $status - Post status
-		 *     $slug - A new URL for the post.
-		 *     $created_at - New @created_at@ timestamp for the post.
-		 *     $updated_at - New @updated_at@ timestamp for the post, or @false@ to not updated it.
-		 *     $trackbacks - URLs separated by " " to send trackbacks to.
-		 *     $options - Options for the post.
-		 *
-		 * Returns:
-		 *     self - An object containing the new post.
-		 *
-		 * See Also:
-		 *     <update>
-		 */
-		static function add($values, $clean = "", $url = "", $feather = null, $user = null, $pinned = null, $status = null, $created_at = null, $updated_at = null, $trackbacks = "", $pingbacks = true, $options = null) {
-			if ($user instanceof User)
-				$user = $user->id;
-
-			fallback($feather, fallback($_POST['feather'], "", true));
-			fallback($user, fallback($_POST['user_id'], Visitor::current()->id, true));
-			fallback($pinned, (int) !empty($_POST['pinned']));
-			fallback($status, (isset($_POST['draft'])) ? "draft" : fallback($_POST['status'], "public", true));
-			fallback($created_at,
-			         (!empty($_POST['created_at']) and (!isset($_POST['original_time']) or $_POST['created_at'] != $_POST['original_time'])) ?
-			          datetime($_POST['created_at']) :
-			          datetime());
-			fallback($updated_at, fallback($_POST['updated_at'], "0000-00-00 00:00:00", true));
-			fallback($trackbacks, fallback($_POST['trackbacks'], "", true));
-			fallback($options, fallback($_POST['option'], array(), true));
-
-			if (isset($_POST['bookmarklet'])) {
-				Trigger::current()->filter($values, "bookmarklet_submit_values");
-				Trigger::current()->filter($options, "bookmarklet_submit_options");
-			}
-
-			$xml = new SimpleXMLElement("<post></post>");
-			self::arr2xml($xml, $values);
-			self::arr2xml($xml, $options);
-
-			$sql = SQL::current();
-			$visitor = Visitor::current();
-			$sql->insert("posts",
-			             array("xml" => $xml->asXML(),
-			                   "feather" => $feather,
-			                   "user_id" => $user,
-			                   "pinned" => (int) $pinned,
-			                   "status" => $status,
-			                   "clean" => $clean,
-			                   "url" => $url,
-			                   "created_at" => $created_at,
-			                   "updated_at" => $updated_at));
-			$id = $sql->latest();
-
-			if (empty($clean) or empty($url))
-				$sql->update("posts",
-				             array("id" => $id),
-				             array("clean" => $feather.".".$id,
-				                   "url" => $feather.".".$id));
-
-			$post = new self($id, array("drafts" => true));
-
-			if ($trackbacks !== "") {
-				$trackbacks = explode(",", $trackbacks);
-				$trackbacks = array_map("trim", $trackbacks);
-				$trackbacks = array_map("strip_tags", $trackbacks);
-				$trackbacks = array_unique($trackbacks);
-				$trackbacks = array_diff($trackbacks, array(""));
-
-				foreach ($trackbacks as $url)
-					trackback_send($post, $url);
-			}
-
-			if (Config::current()->send_pingbacks and $pingbacks)
-				array_walk_recursive($values, array("Post", "send_pingbacks"), $post);
-
-			$post->redirect = (isset($_POST['bookmarklet'])) ? url("/admin/?action=bookmarklet&done") : $post->url() ;
-
-			Trigger::current()->call("add_post", $post, $options);
-
-			return $post;
-		}
-
-		/**
-		 * Function: update
-		 * Updates a post with the given XML. The rest is read from $_POST.
-		 *
-		 * Most of the $_POST variables will fall back gracefully if they don't exist, e.g. if they're posting from the Bookmarklet.
-		 *
-		 * Parameters:
-		 *     $values - An array of data to set for the post.
-		 *     $user - <User> to set as the post's author.
-		 *     $pinned - Pin the post?
-		 *     $status - Post status
-		 *     $slug - A new URL for the post.
-		 *     $created_at - New @created_at@ timestamp for the post.
-		 *     $updated_at - New @updated_at@ timestamp for the post, or @false@ to not updated it.
-		 *     $options - Options for the post.
-		 *
-		 * See Also:
-		 *     <add>
-		 */
-		public function update($values, $user = null, $pinned = null, $status = null, $slug = null, $created_at = null, $updated_at = null, $options = null) {
-			if ($this->no_results)
-				return false;
-
-			if (isset($user))
-				$user = $user->id;
-
-			fallback($user, fallback($_POST['user_id'], $this->user_id, true));
-			fallback($pinned, (int) !empty($_POST['pinned']));
-			fallback($status, (isset($_POST['draft'])) ? "draft" : fallback($_POST['status'], $this->status, true));
-			fallback($slug, fallback($_POST['slug'], $this->feather.".".$this->id));
-			fallback($created_at, (!empty($_POST['created_at'])) ? datetime($_POST['created_at']) : $this->created_at);
-
-			if ($updated_at === false)
-				$updated_at = $this->updated_at;
-			else
-				fallback($updated_at, fallback($_POST['updated_at'], datetime(), true));
-
-			fallback($options, fallback($_POST['option'], array(), true));
-
-			$xml = new SimpleXMLElement("<post></post>");
-			self::arr2xml($xml, $values);
-			self::arr2xml($xml, $options);
-
-			# Update all values of this post.
-			list($this->user_id,
-			     $this->pinned,
-			     $this->status,
-			     $this->url,
-			     $this->created_at,
-			     $this->updated_at) = array($user, $pinned, $status, $slug, $created_at, $updated_at);
-
-			foreach ($xml->post as $name => $val)
-				$this->$name = $val;
-
-			$sql = SQL::current();
-			$sql->update("posts",
-			             array("id" => $this->id),
-			             array("xml" => $xml->asXML(),
-			                   "pinned" => $pinned,
-			                   "status" => $status,
-			                   "clean" => $slug,
-			                   "url" => $slug,
-			                   "created_at" => $created_at,
-			                   "updated_at" => $updated_at));
-
-			$trigger = Trigger::current();
-			$trigger->call("update_post", $this, $values, $user, $pinned, $status, $slug, $created_at, $updated_at, $options);
-		}
-
-		/**
-		 * Function: delete
-		 * See Also:
-		 *     <Model::destroy>
-		 */
-		static function delete($id) {
-			parent::destroy(get_class(), $id);
-		}
-
-		/**
-		 * Function: deletable
-		 * Checks if the <User> can delete the post.
-		 */
-		public function deletable($user = null) {
-			if ($this->no_results)
-				return false;
-
-			fallback($user, Visitor::current());
-			if ($user->group()->can("delete_post"))
-				return true;
-
-			return ($this->status == "draft" and $user->group()->can("delete_draft")) or
-			       ($user->group()->can("delete_own_post") and $this->user_id == $user->id) or
-			       (($user->group()->can("delete_own_draft") and $this->status == "draft") and $this->user_id == $user->id);
-		}
-
-		/**
-		 * Function: editable
-		 * Checks if the <User> can edit the post.
-		 */
-		public function editable($user = null) {
-			if ($this->no_results)
-				return false;
-
-			fallback($user, Visitor::current());
-			if ($user->group()->can("edit_post"))
-				return true;
-
-			return ($this->status == "draft" and $user->group()->can("edit_draft")) or
-			       ($user->group()->can("edit_own_post") and $this->user_id == $user->id) or
-			       (($user->group()->can("edit_own_draft") and $this->status == "draft") and $this->user_id == $user->id);
-		}
-
-		/**
-		 * Function: any_editable
-		 * Checks if the <Visitor> can edit any posts.
-		 */
-		static function any_editable() {
-			$visitor = Visitor::current();
-
-			# Can they edit posts?
-			if ($visitor->group()->can("edit_post"))
-				return true;
-
-			# Can they edit drafts?
-			if ($visitor->group()->can("edit_draft") and
-			    Post::find(array("where" => "status = 'draft'")))
-				return true;
-
-			# Can they edit their own posts, and do they have any?
-			if ($visitor->group()->can("edit_own_post") and
-			    Post::find(array("where" => array("user_id" => $visitor->id))))
-				return true;
-
-			# Can they edit their own drafts, and do they have any?
-			if ($visitor->group()->can("edit_own_draft") and
-			    Post::find(array("where" => array("status" => "draft", "user_id" => $visitor->id))))
-				return true;
-
-			return false;
-		}
-
-		/**
-		 * Function: any_deletable
-		 * Checks if the <Visitor> can delete any posts.
-		 */
-		static function any_deletable() {
-			$visitor = Visitor::current();
-
-			# Can they delete posts?
-			if ($visitor->group()->can("delete_post"))
-				return true;
-
-			# Can they delete drafts?
-			if ($visitor->group()->can("delete_draft") and
-			    Post::find(array("where" => "status = 'draft'")))
-				return true;
-
-			# Can they delete their own posts, and do they have any?
-			if ($visitor->group()->can("delete_own_post") and
-			    Post::find(array("where" => array("user_id" => $visitor->id))))
-				return true;
-
-			# Can they delete their own drafts, and do they have any?
-			if ($visitor->group()->can("delete_own_draft") and
-			    Post::find(array("where" => array("status" => "draft", "user_id" => $visitor->id))))
-				return true;
-
-			return false;
-		}
-
-		/**
-		 * Function: exists
-		 * Checks if a post exists.
-		 *
-		 * Parameters:
-		 *     $post_id - The post ID to check
-		 *
-		 * Returns:
-		 *     true - if a post with that ID is in the database.
-		 */
-		static function exists($post_id) {
-			return SQL::current()->count("posts", array("id" => $post_id));
-		}
-
-		/**
-		 * Function: check_url
-		 * Checks if a given clean URL is already being used as another post's URL.
-		 *
-		 * Parameters:
-		 *     $clean - The clean URL to check.
-		 *
-		 * Returns:
-		 *     $url - The unique version of the passed clean URL. If it's not used, it's the same as $clean. If it is, a number is appended.
-		 */
-		static function check_url($clean) {
-			$count = SQL::current()->count("posts", array("clean" => $clean));
-			return (!$count or empty($clean)) ? $clean : $clean."-".($count + 1) ;
-		}
-
-		/**
-		 * Function: url
-		 * Returns a post's URL.
-		 */
-		public function url() {
-			if ($this->no_results)
-				return false;
-
-			$config = Config::current();
-			$visitor = Visitor::current();
-
-			if (!$config->clean_urls)
-				return $config->url."/?action=view&amp;url=".urlencode($this->url);
-
-			$login = (strpos($config->post_url, "(author)") !== false) ? $this->user()->login : null ;
-			$vals = array(when("Y", $this->created_at),
-			              when("m", $this->created_at),
-			              when("d", $this->created_at),
-			              when("H", $this->created_at),
-			              when("i", $this->created_at),
-			              when("s", $this->created_at),
-			              $this->id,
-			              urlencode($login),
-			              urlencode($this->clean),
-			              urlencode($this->url),
-			              urlencode($this->feather),
-			              urlencode(pluralize($this->feather)));
-
-			Trigger::current()->filter($vals, "url_vals", $this);
-			return $config->url."/".str_replace(array_keys(self::$url_attrs), $vals, $config->post_url);
-		}
-
-		/**
-		 * Function: user
-		 * Returns a post's user. Example: $post->user()->login
-		 */
-		public function user() {
-			if ($this->no_results)
-				return false;
-
-			return new User($this->user_id);
-		}
-
-		/**
-		 * Function: title_from_excerpt
-		 * Generates an acceptable Title from the post's excerpt.
-		 *
-		 * Returns:
-		 *     The post's excerpt. iltered -> first line -> ftags stripped -> truncated to 75 characters -> normalized.
-		 */
-		public function title_from_excerpt() {
-			if ($this->no_results)
-				return false;
-
-			# Excerpts are likely to have some sort of markup module applied to them;
-			# if the current instantiation is not filtered, make one that is.
-			$post = ($this->filtered) ? $this : new Post($this->id) ;
-
-			$excerpt = $post->excerpt();
-			Trigger::current()->filter($excerpt, "title_from_excerpt");
-
-			$split_lines = explode("\n", $excerpt);
-			$first_line = $split_lines[0];
-
-			$stripped = strip_tags($first_line); # Strip all HTML
-			$truncated = truncate($stripped, 75); # Truncate the excerpt to 75 characters
-			$normalized = normalize($truncated); # Trim and normalize whitespace
-
-			return $normalized;
-		}
-
-		/**
-		 * Function: title
-		 * Returns the given post's title, provided by its Feather.
-		 */
-		public function title() {
-			if ($this->no_results)
-				return false;
-
-			# Excerpts are likely to have some sort of markup module applied to them;
-			# if the current instantiation is not filtered, make one that is.
-			$post = ($this->filtered) ? $this : new Post($this->id) ;
-
-			$title = Feathers::$instances[$this->feather]->title($post);
-			return Trigger::current()->filter($title, "title", $post);
-		}
-
-
-		/**
-		 * Function: excerpt
-		 * Returns the given post's excerpt, provided by its Feather.
-		 */
-		public function excerpt() {
-			if ($this->no_results)
-				return false;
-
-			# Excerpts are likely to have some sort of markup module applied to them;
-			# if the current instantiation is not filtered, make one that is.
-			$post = ($this->filtered) ? $this : new Post($this->id) ;
-
-			$excerpt = Feathers::$instances[$this->feather]->excerpt($post);
-			return Trigger::current()->filter($excerpt, "excerpt", $post);
-		}
-
-
-		/**
-		 * Function: feed_content
-		 * Returns the given post's Feed content, provided by its Feather.
-		 */
-		public function feed_content() {
-			if ($this->no_results)
-				return false;
-
-			# Excerpts are likely to have some sort of markup module applied to them;
-			# if the current instantiation is not filtered, make one that is.
-			$post = ($this->filtered) ? $this : new Post($this->id) ;
-
-			$feed_content = Feathers::$instances[$this->feather]->feed_content($post);
-			return Trigger::current()->filter($feed_content, "feed_content", $post);
-		}
-
-		/**
-		 * Function: next
-		 * Returns:
-		 *     The next post (the post made after this one).
-		 */
-		public function next() {
-			if ($this->no_results)
-				return false;
-
-			if (isset($this->next))
-				return $this->next;
-
-			return $this->next = new self(null, array("where" => array("created_at >" => $this->created_at,
-			                                                           $this->status == "draft" ?
-			                                                               self::statuses(array("draft")) :
-			                                                               self::statuses()),
-			                                          "order" => "created_at ASC, id ASC"));
-		}
-
-		/**
-		 * Function: prev
-		 * Returns:
-		 *     The next post (the post made after this one).
-		 */
-		public function prev() {
-			if ($this->no_results)
-				return false;
-
-			if (isset($this->prev))
-				return $this->prev;
-
-			return $this->prev = new self(null, array("where" => array("created_at <" => $this->created_at,
-			                                                           $this->status == "draft" ?
-			                                                               self::statuses(array("draft")) :
-			                                                               self::statuses()),
-			                                          "order" => "created_at DESC, id DESC"));
-		}
-
-		/**
-		 * Function: theme_exists
-		 * Checks if the current post's feather theme file exists.
-		 */
-		public function theme_exists() {
-			return !$this->no_results and Theme::current()->file_exists("feathers/".$this->feather);
-		}
-
-		/**
-		 * Function: parse
-		 * Parses the passed XML and loads the tags and values into <Post>.
-		 */
-		private function parse() {
-			foreach (self::xml2arr(simplexml_load_string($this->xml)) as $key => $val)
-				$this->$key = $val;
-
-			if (!$this->filtered)
-				return;
-
-			$class = camelize($this->feather);
-
-			$trigger = Trigger::current();
-			$trigger->filter($this, "filter_post");
-
-
-			if (isset(Feathers::$custom_filters[$class])) # Run through feather-specified filters, first.
-				foreach (Feathers::$custom_filters[$class] as $custom_filter) {
-					$varname = $custom_filter["field"]."_unfiltered";
-					if (!isset($this->$varname))
-						$this->$varname = $this->$custom_filter["field"];
-
-					$this->$custom_filter["field"] = call_user_func_array(array(Feathers::$instances[$this->feather], $custom_filter["name"]),
-					                                                      array($this->$custom_filter["field"], $this));
-				}
-
-			if (isset(Feathers::$filters[$class])) # Now actually filter it.
-				foreach (Feathers::$filters[$class] as $filter) {
-					$varname = $filter["field"]."_unfiltered";
-					if (!isset($this->$varname))
-						$this->$varname = $this->$filter["field"];
-
-					if (isset($this->$filter["field"]) and !empty($this->$filter["field"]))
-						$trigger->filter($this->$filter["field"], $filter["name"], $this);
-				}
-		}
-
-		/**
-		 * Function: edit_link
-		 * Outputs an edit link for the post, if the <User.can> edit_post.
-		 *
-		 * Parameters:
-		 *     $text - The text to show for the link.
-		 *     $before - If the link can be shown, show this before it.
-		 *     $after - If the link can be shown, show this after it.
-		 */
-		public function edit_link($text = null, $before = null, $after = null){
-			if (!$this->editable())
-				return false;
-
-			fallback($text, __("Edit"));
-
-			echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=edit_post&amp;id='.$this->id.'" title="Edit" class="post_edit_link edit_link" id="post_edit_'.$this->id.'">'.$text.'</a>'.$after;
-		}
-
-		/**
-		 * Function: delete_link
-		 * Outputs a delete link for the post, if the <User.can> delete_post.
-		 *
-		 * Parameters:
-		 *     $text - The text to show for the link.
-		 *     $before - If the link can be shown, show this before it.
-		 *     $after - If the link can be shown, show this after it.
-		 */
-		public function delete_link($text = null, $before = null, $after = null){
-			if (!$this->deletable())
-				return false;
-
-			fallback($text, __("Delete"));
-
-			echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=delete_post&amp;id='.$this->id.'" title="Delete" class="post_delete_link delete_link" id="post_delete_'.$this->id.'">'.$text.'</a>'.$after;
-		}
-
-		/**
-		 * Function: trackback_url
-		 * Returns the posts trackback URL.
-		 */
-		public function trackback_url() {
-			if ($this->no_results) return
-				false;
-
-			return Config::current()->chyrp_url."/includes/trackback.php?id=".$this->id;
-		}
-
-		/**
-		 * Function: arr2xml
-		 * Recursively adds an array (or object I guess) to a SimpleXML object.
-		 *
-		 * Parameters:
-		 *     $object - The SimpleXML object to add to.
-		 *     $data - The data to add to the SimpleXML object.
-		 */
-		static function arr2xml(&$object, $data) {
-			foreach ($data as $key => $val) {
-				if (is_int($key) and (empty($val) or (is_string($val) and trim($val) == ""))) {
-					unset($data[$key]);
-					continue;
-				}
-
-				if (is_array($val)) {
-					if (in_array(0, array_keys($val))) { # Numeric-indexed things need to be added as duplicates
-						foreach ($val as $dup) {
-							$xml = $object->addChild($key);
-							self::arr2xml($xml, $dup);
-						}
-					} else {
-						$xml = $object->addChild($key);
-						self::arr2xml($xml, $val);
-					}
-				} else
-					$object->addChild($key, fix($val, false, false));
-			}
-		}
-
-		/**
-		 * Function: xml2arr
-		 * Recursively converts a SimpleXML object (and children) to an array.
-		 *
-		 * Parameters:
-		 *     $parse - The SimpleXML object to convert into an array.
-		 */
-		static function xml2arr($parse) {
-			if (empty($parse))
-				return "";
-
-			$parse = (array) $parse;
-
-			foreach ($parse as &$val)
-				if (get_class($val) == "SimpleXMLElement")
-					$val = self::xml2arr($val);
-
-			return $parse;
-		}
-
-		/**
-		 * Function: send_pingbacks
-		 * Sends any callbacks in $value. Used by array_walk_recursive in <Post.add>.
-		 */
-		static function send_pingbacks($value, $key, $post) {
-			send_pingbacks($value, $post);
-		}
-
-		/**
-		 * Function: from_url
-		 * Attempts to grab a post from its clean URL.
-		 */
-		static function from_url($attrs = null, $options = array()) {
-			fallback($attrs, $_GET);
-			$get = array_map("urldecode", $attrs);
-
-			$where = array();
-			$times = array("year", "month", "day", "hour", "minute", "second");
-
-			preg_match_all("/\(([^\)]+)\)/", Config::current()->post_url, $matches);
-			$params = array();
-			foreach ($matches[1] as $attr)
-				if (in_array($attr, $times))
-					$where[strtoupper($attr)."(created_at)"] = $get[$attr];
-				elseif ($attr == "author") {
-					$user = new User(array("where" => array("login" => $get['author'])));
-					$where["user_id"] = $user->id;
-				} elseif ($attr == "feathers")
-					$where["feather"] = depluralize($get['feathers']);
-				else {
-					$tokens = array($where, $params, $attr);
-					Trigger::current()->filter($tokens, "post_url_token");
-					list($where, $params, $attr) = $tokens;
-
-					if ($attr !== null) {
-						if (!isset($get[$attr]))
-							continue;
-
-						$where[$attr] = $get[$attr];
-					}
-				}
-
-			return new self(null, array_merge($options, array("where" => $where, "params" => $params)));
-		}
-
-		/**
-		 * Function: statuses
-		 * Returns a SQL query "chunk" for the "status" column permissions of the current user.
-		 *
-		 * Parameters:
-		 *     $start - An array of additional statuses to allow; "registered_only" and "private" are added deterministically.
-		 */
-		static function statuses($start = array()) {
-			$visitor = Visitor::current();
-
-			$statuses = array_merge(array("public"), $start);
-
-			if (logged_in())
-				$statuses[] = "registered_only";
-
-			if ($visitor->group()->can("view_private"))
-				$statuses[] = "private";
-
-			return "posts.status IN ('".implode("', '", $statuses)."') OR posts.status LIKE '%{".$visitor->group()->id."}%'";
-		}
-
-		/**
-		 * Function: enabled_feathers
-		 * Returns a SQL query "chunk" for the "feather" column so that it matches enabled feathers.
-		 */
-		static function feathers() {
-			return "posts.feather IN ('".implode("', '", Config::current()->enabled_feathers)."')";
-		}
-	}
+    /**
+     * Class: Post
+     * The Post model.
+     *
+     * See Also:
+     *     <Model>
+     */
+    class Post extends Model {
+        # Array: $url_attrs
+        # The translation array of the post URL setting to regular expressions.
+        # Passed through the route_code filter.
+        static $url_attrs = array('(year)'     => '([0-9]{4})',
+                                       '(month)'    => '([0-9]{1,2})',
+                                       '(day)'      => '([0-9]{1,2})',
+                                       '(hour)'     => '([0-9]{1,2})',
+                                       '(minute)'   => '([0-9]{1,2})',
+                                       '(second)'   => '([0-9]{1,2})',
+                                       '(id)'       => '([0-9]+)',
+                                       '(author)'   => '([^\/]+)',
+                                       '(clean)'    => '([^\/]+)',
+                                       '(url)'      => '([^\/]+)',
+                                       '(feather)'  => '([^\/]+)',
+                                       '(feathers)' => '([^\/]+)');
+
+        /**
+         * Function: __construct
+         * See Also:
+         *     <Model::grab>
+         */
+        public function __construct($post_id = null, $options = array()) {
+            if (!isset($post_id) and empty($options)) return;
+
+            if (isset($options["where"]) and !is_array($options["where"]))
+                $options["where"] = array($options["where"]);
+            elseif (!isset($options["where"]))
+                $options["where"] = array();
+
+            $has_status = false;
+            foreach ($options["where"] as $key => $val)
+                if (is_int($key) and substr_count($val, "status") or $key == "status")
+                    $has_status = true;
+
+            if (!XML_RPC) {
+                $visitor = Visitor::current();
+                $private = (isset($options["drafts"]) and $options["drafts"] and $visitor->group()->can("view_draft")) ?
+                               self::statuses(array("draft")) :
+                               self::statuses();
+
+                $options["where"][] = self::feathers();
+
+                if (!$has_status)
+                    $options["where"][] = $private;
+            }
+
+            parent::grab($this, $post_id, $options);
+
+            if ($this->no_results)
+                return false;
+
+            $this->filtered = (!isset($options["filter"]) or $options["filter"]) and !XML_RPC;
+            $this->slug =& $this->url;
+            fallback($this->clean, $this->url);
+
+            $this->parse();
+        }
+
+        /**
+         * Function: find
+         * See Also:
+         *     <Model::search>
+         */
+        static function find($options = array(), $options_for_object = array(), $debug = false) {
+            if (isset($options["where"]) and !is_array($options["where"]))
+                $options["where"] = array($options["where"]);
+            elseif (!isset($options["where"]))
+                $options["where"] = array();
+
+            $has_status = false;
+            foreach ($options["where"] as $key => $val)
+                if (is_int($key) and substr_count($val, "status") or $key == "status")
+                    $has_status = true;
+
+            if (!XML_RPC) {
+                $visitor = Visitor::current();
+                $private = (isset($options["drafts"]) and $options["drafts"] and $visitor->group()->can("view_draft")) ?
+                               self::statuses(array("draft")) :
+                               self::statuses() ;
+
+                $options["where"][] = self::feathers();
+
+                if (!$has_status)
+                    $options["where"][] = $private;
+            }
+
+            fallback($options["order"], "pinned DESC, created_at DESC, id DESC");
+
+            return parent::search(get_class(), $options, $options_for_object);
+        }
+
+        /**
+         * Function: add
+         * Adds a post to the database with the passed XML, sanitized URL, and unique URL. The rest is read from $_POST.
+         *
+         * Trackbacks are automatically sent based on the contents of $_POST['trackbacks'].
+         * Most of the $_POST variables will fall back gracefully if they don't exist, e.g. if they're posting from the Bookmarklet.
+         *
+         * Calls the add_post trigger with the inserted post and extra options.
+         *
+         * Parameters:
+         *     $values - The data to insert.
+         *     $clean - The sanitized URL (or empty to default to "(feather).(new post's id)").
+         *     $url - The unique URL (or empty to default to "(feather).(new post's id)").
+         *     $feather - The feather to post as.
+         *     $user - <User> to set as the post's author.
+         *     $pinned - Pin the post?
+         *     $status - Post status
+         *     $slug - A new URL for the post.
+         *     $created_at - New @created_at@ timestamp for the post.
+         *     $updated_at - New @updated_at@ timestamp for the post, or @false@ to not updated it.
+         *     $trackbacks - URLs separated by " " to send trackbacks to.
+         *     $options - Options for the post.
+         *
+         * Returns:
+         *     self - An object containing the new post.
+         *
+         * See Also:
+         *     <update>
+         */
+        static function add($values, $clean = "", $url = "", $feather = null, $user = null, $pinned = null, $status = null, $created_at = null, $updated_at = null, $trackbacks = "", $pingbacks = true, $options = null) {
+            if ($user instanceof User)
+                $user = $user->id;
+
+            fallback($feather, fallback($_POST['feather'], "", true));
+            fallback($user, fallback($_POST['user_id'], Visitor::current()->id, true));
+            fallback($pinned, (int) !empty($_POST['pinned']));
+            fallback($status, (isset($_POST['draft'])) ? "draft" : fallback($_POST['status'], "public", true));
+            fallback($created_at,
+                     (!empty($_POST['created_at']) and (!isset($_POST['original_time']) or $_POST['created_at'] != $_POST['original_time'])) ?
+                      datetime($_POST['created_at']) :
+                      datetime());
+            fallback($updated_at, fallback($_POST['updated_at'], "0000-00-00 00:00:00", true));
+            fallback($trackbacks, fallback($_POST['trackbacks'], "", true));
+            fallback($options, fallback($_POST['option'], array(), true));
+
+            if (isset($_POST['bookmarklet'])) {
+                Trigger::current()->filter($values, "bookmarklet_submit_values");
+                Trigger::current()->filter($options, "bookmarklet_submit_options");
+            }
+
+            $xml = new SimpleXMLElement("<post></post>");
+            self::arr2xml($xml, $values);
+            self::arr2xml($xml, $options);
+
+            $sql = SQL::current();
+            $visitor = Visitor::current();
+            $sql->insert("posts",
+                         array("xml" => $xml->asXML(),
+                               "feather" => $feather,
+                               "user_id" => $user,
+                               "pinned" => (int) $pinned,
+                               "status" => $status,
+                               "clean" => $clean,
+                               "url" => $url,
+                               "created_at" => $created_at,
+                               "updated_at" => $updated_at));
+            $id = $sql->latest();
+
+            if (empty($clean) or empty($url))
+                $sql->update("posts",
+                             array("id" => $id),
+                             array("clean" => $feather.".".$id,
+                                   "url" => $feather.".".$id));
+
+            $post = new self($id, array("drafts" => true));
+
+            if ($trackbacks !== "") {
+                $trackbacks = explode(",", $trackbacks);
+                $trackbacks = array_map("trim", $trackbacks);
+                $trackbacks = array_map("strip_tags", $trackbacks);
+                $trackbacks = array_unique($trackbacks);
+                $trackbacks = array_diff($trackbacks, array(""));
+
+                foreach ($trackbacks as $url)
+                    trackback_send($post, $url);
+            }
+
+            if (Config::current()->send_pingbacks and $pingbacks)
+                array_walk_recursive($values, array("Post", "send_pingbacks"), $post);
+
+            $post->redirect = (isset($_POST['bookmarklet'])) ? url("/admin/?action=bookmarklet&done") : $post->url() ;
+
+            Trigger::current()->call("add_post", $post, $options);
+
+            return $post;
+        }
+
+        /**
+         * Function: update
+         * Updates a post with the given XML. The rest is read from $_POST.
+         *
+         * Most of the $_POST variables will fall back gracefully if they don't exist, e.g. if they're posting from the Bookmarklet.
+         *
+         * Parameters:
+         *     $values - An array of data to set for the post.
+         *     $user - <User> to set as the post's author.
+         *     $pinned - Pin the post?
+         *     $status - Post status
+         *     $slug - A new URL for the post.
+         *     $created_at - New @created_at@ timestamp for the post.
+         *     $updated_at - New @updated_at@ timestamp for the post, or @false@ to not updated it.
+         *     $options - Options for the post.
+         *
+         * See Also:
+         *     <add>
+         */
+        public function update($values, $user = null, $pinned = null, $status = null, $slug = null, $created_at = null, $updated_at = null, $options = null) {
+            if ($this->no_results)
+                return false;
+
+            if (isset($user))
+                $user = $user->id;
+
+            fallback($user, fallback($_POST['user_id'], $this->user_id, true));
+            fallback($pinned, (int) !empty($_POST['pinned']));
+            fallback($status, (isset($_POST['draft'])) ? "draft" : fallback($_POST['status'], $this->status, true));
+            fallback($slug, fallback($_POST['slug'], $this->feather.".".$this->id));
+            fallback($created_at, (!empty($_POST['created_at'])) ? datetime($_POST['created_at']) : $this->created_at);
+
+            if ($updated_at === false)
+                $updated_at = $this->updated_at;
+            else
+                fallback($updated_at, fallback($_POST['updated_at'], datetime(), true));
+
+            fallback($options, fallback($_POST['option'], array(), true));
+
+            $xml = new SimpleXMLElement("<post></post>");
+            self::arr2xml($xml, $values);
+            self::arr2xml($xml, $options);
+
+            # Update all values of this post.
+            list($this->user_id,
+                 $this->pinned,
+                 $this->status,
+                 $this->url,
+                 $this->created_at,
+                 $this->updated_at) = array($user, $pinned, $status, $slug, $created_at, $updated_at);
+
+            foreach ($xml->post as $name => $val)
+                $this->$name = $val;
+
+            $sql = SQL::current();
+            $sql->update("posts",
+                         array("id" => $this->id),
+                         array("xml" => $xml->asXML(),
+                               "pinned" => $pinned,
+                               "status" => $status,
+                               "clean" => $slug,
+                               "url" => $slug,
+                               "created_at" => $created_at,
+                               "updated_at" => $updated_at));
+
+            $trigger = Trigger::current();
+            $trigger->call("update_post", $this, $values, $user, $pinned, $status, $slug, $created_at, $updated_at, $options);
+        }
+
+        /**
+         * Function: delete
+         * See Also:
+         *     <Model::destroy>
+         */
+        static function delete($id) {
+            parent::destroy(get_class(), $id);
+        }
+
+        /**
+         * Function: deletable
+         * Checks if the <User> can delete the post.
+         */
+        public function deletable($user = null) {
+            if ($this->no_results)
+                return false;
+
+            fallback($user, Visitor::current());
+            if ($user->group()->can("delete_post"))
+                return true;
+
+            return ($this->status == "draft" and $user->group()->can("delete_draft")) or
+                   ($user->group()->can("delete_own_post") and $this->user_id == $user->id) or
+                   (($user->group()->can("delete_own_draft") and $this->status == "draft") and $this->user_id == $user->id);
+        }
+
+        /**
+         * Function: editable
+         * Checks if the <User> can edit the post.
+         */
+        public function editable($user = null) {
+            if ($this->no_results)
+                return false;
+
+            fallback($user, Visitor::current());
+            if ($user->group()->can("edit_post"))
+                return true;
+
+            return ($this->status == "draft" and $user->group()->can("edit_draft")) or
+                   ($user->group()->can("edit_own_post") and $this->user_id == $user->id) or
+                   (($user->group()->can("edit_own_draft") and $this->status == "draft") and $this->user_id == $user->id);
+        }
+
+        /**
+         * Function: any_editable
+         * Checks if the <Visitor> can edit any posts.
+         */
+        static function any_editable() {
+            $visitor = Visitor::current();
+
+            # Can they edit posts?
+            if ($visitor->group()->can("edit_post"))
+                return true;
+
+            # Can they edit drafts?
+            if ($visitor->group()->can("edit_draft") and
+                Post::find(array("where" => "status = 'draft'")))
+                return true;
+
+            # Can they edit their own posts, and do they have any?
+            if ($visitor->group()->can("edit_own_post") and
+                Post::find(array("where" => array("user_id" => $visitor->id))))
+                return true;
+
+            # Can they edit their own drafts, and do they have any?
+            if ($visitor->group()->can("edit_own_draft") and
+                Post::find(array("where" => array("status" => "draft", "user_id" => $visitor->id))))
+                return true;
+
+            return false;
+        }
+
+        /**
+         * Function: any_deletable
+         * Checks if the <Visitor> can delete any posts.
+         */
+        static function any_deletable() {
+            $visitor = Visitor::current();
+
+            # Can they delete posts?
+            if ($visitor->group()->can("delete_post"))
+                return true;
+
+            # Can they delete drafts?
+            if ($visitor->group()->can("delete_draft") and
+                Post::find(array("where" => "status = 'draft'")))
+                return true;
+
+            # Can they delete their own posts, and do they have any?
+            if ($visitor->group()->can("delete_own_post") and
+                Post::find(array("where" => array("user_id" => $visitor->id))))
+                return true;
+
+            # Can they delete their own drafts, and do they have any?
+            if ($visitor->group()->can("delete_own_draft") and
+                Post::find(array("where" => array("status" => "draft", "user_id" => $visitor->id))))
+                return true;
+
+            return false;
+        }
+
+        /**
+         * Function: exists
+         * Checks if a post exists.
+         *
+         * Parameters:
+         *     $post_id - The post ID to check
+         *
+         * Returns:
+         *     true - if a post with that ID is in the database.
+         */
+        static function exists($post_id) {
+            return SQL::current()->count("posts", array("id" => $post_id));
+        }
+
+        /**
+         * Function: check_url
+         * Checks if a given clean URL is already being used as another post's URL.
+         *
+         * Parameters:
+         *     $clean - The clean URL to check.
+         *
+         * Returns:
+         *     $url - The unique version of the passed clean URL. If it's not used, it's the same as $clean. If it is, a number is appended.
+         */
+        static function check_url($clean) {
+            $count = SQL::current()->count("posts", array("clean" => $clean));
+            return (!$count or empty($clean)) ? $clean : $clean."-".($count + 1) ;
+        }
+
+        /**
+         * Function: url
+         * Returns a post's URL.
+         */
+        public function url() {
+            if ($this->no_results)
+                return false;
+
+            $config = Config::current();
+            $visitor = Visitor::current();
+
+            if (!$config->clean_urls)
+                return $config->url."/?action=view&amp;url=".urlencode($this->url);
+
+            $login = (strpos($config->post_url, "(author)") !== false) ? $this->user()->login : null ;
+            $vals = array(when("Y", $this->created_at),
+                          when("m", $this->created_at),
+                          when("d", $this->created_at),
+                          when("H", $this->created_at),
+                          when("i", $this->created_at),
+                          when("s", $this->created_at),
+                          $this->id,
+                          urlencode($login),
+                          urlencode($this->clean),
+                          urlencode($this->url),
+                          urlencode($this->feather),
+                          urlencode(pluralize($this->feather)));
+
+            Trigger::current()->filter($vals, "url_vals", $this);
+            return $config->url."/".str_replace(array_keys(self::$url_attrs), $vals, $config->post_url);
+        }
+
+        /**
+         * Function: user
+         * Returns a post's user. Example: $post->user()->login
+         */
+        public function user() {
+            if ($this->no_results)
+                return false;
+
+            return new User($this->user_id);
+        }
+
+        /**
+         * Function: title_from_excerpt
+         * Generates an acceptable Title from the post's excerpt.
+         *
+         * Returns:
+         *     The post's excerpt. iltered -> first line -> ftags stripped -> truncated to 75 characters -> normalized.
+         */
+        public function title_from_excerpt() {
+            if ($this->no_results)
+                return false;
+
+            # Excerpts are likely to have some sort of markup module applied to them;
+            # if the current instantiation is not filtered, make one that is.
+            $post = ($this->filtered) ? $this : new Post($this->id) ;
+
+            $excerpt = $post->excerpt();
+            Trigger::current()->filter($excerpt, "title_from_excerpt");
+
+            $split_lines = explode("\n", $excerpt);
+            $first_line = $split_lines[0];
+
+            $stripped = strip_tags($first_line); # Strip all HTML
+            $truncated = truncate($stripped, 75); # Truncate the excerpt to 75 characters
+            $normalized = normalize($truncated); # Trim and normalize whitespace
+
+            return $normalized;
+        }
+
+        /**
+         * Function: title
+         * Returns the given post's title, provided by its Feather.
+         */
+        public function title() {
+            if ($this->no_results)
+                return false;
+
+            # Excerpts are likely to have some sort of markup module applied to them;
+            # if the current instantiation is not filtered, make one that is.
+            $post = ($this->filtered) ? $this : new Post($this->id) ;
+
+            $title = Feathers::$instances[$this->feather]->title($post);
+            return Trigger::current()->filter($title, "title", $post);
+        }
+
+
+        /**
+         * Function: excerpt
+         * Returns the given post's excerpt, provided by its Feather.
+         */
+        public function excerpt() {
+            if ($this->no_results)
+                return false;
+
+            # Excerpts are likely to have some sort of markup module applied to them;
+            # if the current instantiation is not filtered, make one that is.
+            $post = ($this->filtered) ? $this : new Post($this->id) ;
+
+            $excerpt = Feathers::$instances[$this->feather]->excerpt($post);
+            return Trigger::current()->filter($excerpt, "excerpt", $post);
+        }
+
+
+        /**
+         * Function: feed_content
+         * Returns the given post's Feed content, provided by its Feather.
+         */
+        public function feed_content() {
+            if ($this->no_results)
+                return false;
+
+            # Excerpts are likely to have some sort of markup module applied to them;
+            # if the current instantiation is not filtered, make one that is.
+            $post = ($this->filtered) ? $this : new Post($this->id) ;
+
+            $feed_content = Feathers::$instances[$this->feather]->feed_content($post);
+            return Trigger::current()->filter($feed_content, "feed_content", $post);
+        }
+
+        /**
+         * Function: next
+         * Returns:
+         *     The next post (the post made after this one).
+         */
+        public function next() {
+            if ($this->no_results)
+                return false;
+
+            if (isset($this->next))
+                return $this->next;
+
+            return $this->next = new self(null, array("where" => array("created_at >" => $this->created_at,
+                                                                       $this->status == "draft" ?
+                                                                           self::statuses(array("draft")) :
+                                                                           self::statuses()),
+                                                      "order" => "created_at ASC, id ASC"));
+        }
+
+        /**
+         * Function: prev
+         * Returns:
+         *     The next post (the post made after this one).
+         */
+        public function prev() {
+            if ($this->no_results)
+                return false;
+
+            if (isset($this->prev))
+                return $this->prev;
+
+            return $this->prev = new self(null, array("where" => array("created_at <" => $this->created_at,
+                                                                       $this->status == "draft" ?
+                                                                           self::statuses(array("draft")) :
+                                                                           self::statuses()),
+                                                      "order" => "created_at DESC, id DESC"));
+        }
+
+        /**
+         * Function: theme_exists
+         * Checks if the current post's feather theme file exists.
+         */
+        public function theme_exists() {
+            return !$this->no_results and Theme::current()->file_exists("feathers/".$this->feather);
+        }
+
+        /**
+         * Function: parse
+         * Parses the passed XML and loads the tags and values into <Post>.
+         */
+        private function parse() {
+            foreach (self::xml2arr(simplexml_load_string($this->xml)) as $key => $val)
+                $this->$key = $val;
+
+            if (!$this->filtered)
+                return;
+
+            $class = camelize($this->feather);
+
+            $trigger = Trigger::current();
+            $trigger->filter($this, "filter_post");
+
+
+            if (isset(Feathers::$custom_filters[$class])) # Run through feather-specified filters, first.
+                foreach (Feathers::$custom_filters[$class] as $custom_filter) {
+                    $varname = $custom_filter["field"]."_unfiltered";
+                    if (!isset($this->$varname))
+                        $this->$varname = $this->$custom_filter["field"];
+
+                    $this->$custom_filter["field"] = call_user_func_array(array(Feathers::$instances[$this->feather], $custom_filter["name"]),
+                                                                          array($this->$custom_filter["field"], $this));
+                }
+
+            if (isset(Feathers::$filters[$class])) # Now actually filter it.
+                foreach (Feathers::$filters[$class] as $filter) {
+                    $varname = $filter["field"]."_unfiltered";
+                    if (!isset($this->$varname))
+                        $this->$varname = $this->$filter["field"];
+
+                    if (isset($this->$filter["field"]) and !empty($this->$filter["field"]))
+                        $trigger->filter($this->$filter["field"], $filter["name"], $this);
+                }
+        }
+
+        /**
+         * Function: edit_link
+         * Outputs an edit link for the post, if the <User.can> edit_post.
+         *
+         * Parameters:
+         *     $text - The text to show for the link.
+         *     $before - If the link can be shown, show this before it.
+         *     $after - If the link can be shown, show this after it.
+         */
+        public function edit_link($text = null, $before = null, $after = null){
+            if (!$this->editable())
+                return false;
+
+            fallback($text, __("Edit"));
+
+            echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=edit_post&amp;id='.$this->id.'" title="Edit" class="post_edit_link edit_link" id="post_edit_'.$this->id.'">'.$text.'</a>'.$after;
+        }
+
+        /**
+         * Function: delete_link
+         * Outputs a delete link for the post, if the <User.can> delete_post.
+         *
+         * Parameters:
+         *     $text - The text to show for the link.
+         *     $before - If the link can be shown, show this before it.
+         *     $after - If the link can be shown, show this after it.
+         */
+        public function delete_link($text = null, $before = null, $after = null){
+            if (!$this->deletable())
+                return false;
+
+            fallback($text, __("Delete"));
+
+            echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=delete_post&amp;id='.$this->id.'" title="Delete" class="post_delete_link delete_link" id="post_delete_'.$this->id.'">'.$text.'</a>'.$after;
+        }
+
+        /**
+         * Function: trackback_url
+         * Returns the posts trackback URL.
+         */
+        public function trackback_url() {
+            if ($this->no_results) return
+                false;
+
+            return Config::current()->chyrp_url."/includes/trackback.php?id=".$this->id;
+        }
+
+        /**
+         * Function: arr2xml
+         * Recursively adds an array (or object I guess) to a SimpleXML object.
+         *
+         * Parameters:
+         *     $object - The SimpleXML object to add to.
+         *     $data - The data to add to the SimpleXML object.
+         */
+        static function arr2xml(&$object, $data) {
+            foreach ($data as $key => $val) {
+                if (is_int($key) and (empty($val) or (is_string($val) and trim($val) == ""))) {
+                    unset($data[$key]);
+                    continue;
+                }
+
+                if (is_array($val)) {
+                    if (in_array(0, array_keys($val))) { # Numeric-indexed things need to be added as duplicates
+                        foreach ($val as $dup) {
+                            $xml = $object->addChild($key);
+                            self::arr2xml($xml, $dup);
+                        }
+                    } else {
+                        $xml = $object->addChild($key);
+                        self::arr2xml($xml, $val);
+                    }
+                } else
+                    $object->addChild($key, fix($val, false, false));
+            }
+        }
+
+        /**
+         * Function: xml2arr
+         * Recursively converts a SimpleXML object (and children) to an array.
+         *
+         * Parameters:
+         *     $parse - The SimpleXML object to convert into an array.
+         */
+        static function xml2arr($parse) {
+            if (empty($parse))
+                return "";
+
+            $parse = (array) $parse;
+
+            foreach ($parse as &$val)
+                if (get_class($val) == "SimpleXMLElement")
+                    $val = self::xml2arr($val);
+
+            return $parse;
+        }
+
+        /**
+         * Function: send_pingbacks
+         * Sends any callbacks in $value. Used by array_walk_recursive in <Post.add>.
+         */
+        static function send_pingbacks($value, $key, $post) {
+            send_pingbacks($value, $post);
+        }
+
+        /**
+         * Function: from_url
+         * Attempts to grab a post from its clean URL.
+         */
+        static function from_url($attrs = null, $options = array()) {
+            fallback($attrs, $_GET);
+            $get = array_map("urldecode", $attrs);
+
+            $where = array();
+            $times = array("year", "month", "day", "hour", "minute", "second");
+
+            preg_match_all("/\(([^\)]+)\)/", Config::current()->post_url, $matches);
+            $params = array();
+            foreach ($matches[1] as $attr)
+                if (in_array($attr, $times))
+                    $where[strtoupper($attr)."(created_at)"] = $get[$attr];
+                elseif ($attr == "author") {
+                    $user = new User(array("where" => array("login" => $get['author'])));
+                    $where["user_id"] = $user->id;
+                } elseif ($attr == "feathers")
+                    $where["feather"] = depluralize($get['feathers']);
+                else {
+                    $tokens = array($where, $params, $attr);
+                    Trigger::current()->filter($tokens, "post_url_token");
+                    list($where, $params, $attr) = $tokens;
+
+                    if ($attr !== null) {
+                        if (!isset($get[$attr]))
+                            continue;
+
+                        $where[$attr] = $get[$attr];
+                    }
+                }
+
+            return new self(null, array_merge($options, array("where" => $where, "params" => $params)));
+        }
+
+        /**
+         * Function: statuses
+         * Returns a SQL query "chunk" for the "status" column permissions of the current user.
+         *
+         * Parameters:
+         *     $start - An array of additional statuses to allow; "registered_only" and "private" are added deterministically.
+         */
+        static function statuses($start = array()) {
+            $visitor = Visitor::current();
+
+            $statuses = array_merge(array("public"), $start);
+
+            if (logged_in())
+                $statuses[] = "registered_only";
+
+            if ($visitor->group()->can("view_private"))
+                $statuses[] = "private";
+
+            return "posts.status IN ('".implode("', '", $statuses)."') OR posts.status LIKE '%{".$visitor->group()->id."}%'";
+        }
+
+        /**
+         * Function: enabled_feathers
+         * Returns a SQL query "chunk" for the "feather" column so that it matches enabled feathers.
+         */
+        static function feathers() {
+            return "posts.feather IN ('".implode("', '", Config::current()->enabled_feathers)."')";
+        }
+    }

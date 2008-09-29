@@ -63,8 +63,8 @@ class gettext_reader {
   function readint() {
       if ($this->BYTEORDER == 0) {
         // low endian
-				$fix = unpack('V', $this->STREAM->read(4));
-				return array_shift($fix);
+                $fix = unpack('V', $this->STREAM->read(4));
+                return array_shift($fix);
       } else {
         // big endian
         return array_shift(unpack('N', $this->STREAM->read(4)));
@@ -107,8 +107,8 @@ class gettext_reader {
     $MAGIC1 = (int) - 1794895138;
     // $MAGIC2 = (int)0xde120495; //bug
     $MAGIC2 = (int) - 569244523;
-	// 64-bit fix, via WP
-	$MAGIC3 = (int) 2500072158;
+    // 64-bit fix, via WP
+    $MAGIC3 = (int) 2500072158;
 
     $this->STREAM = $Reader;
     $magic = $this->readint();
