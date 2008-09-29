@@ -25,15 +25,19 @@
 		# Context for displaying pages.
 		public $context = array();
 
+		# Boolean: $feed
+		# Is the visitor requesting a feed?
+		public $feed = false;
+
 		/**
 		 * Function: __construct
 		 * Loads the Twig parser into <Theme>, and sets up the theme l10n domain.
 		 */
 		private function __construct() {
 			$cache = (is_writable(INCLUDES_DIR."/caches") and
-			         !DEBUG and
-			         !PREVIEWING and
-			         !defined('CACHE_TWIG') or CACHE_TWIG);
+			          !DEBUG and
+			          !PREVIEWING and
+			          !defined('CACHE_TWIG') or CACHE_TWIG);
 			$this->twig = new Twig_Loader(THEME_DIR,
 			                              $cache ?
 			                                  INCLUDES_DIR."/caches" :
@@ -47,7 +51,7 @@
 		public function parse($route) {
 			$config = Config::current();
 
-			if ($route->feed)
+			if ($this->feed)
 				$this->post_limit = $config->feed_items;
 			else
 				$this->post_limit = $config->posts_per_page;
@@ -61,7 +65,7 @@
 
 			# Feed
 			if (preg_match("/\/feed\/?$/", $route->request)) {
-				$route->feed = true;
+				$this->feed = true;
 				$this->post_limit = $config->feed_items;
 
 				if ($route->arg[0] == "feed") # Don't set $route->action to "feed" (bottom of this function).
@@ -70,7 +74,7 @@
 
 			# Feed with a title parameter
 			if (preg_match("/\/feed\/([^\/]+)\/?$/", $route->request, $title)) {
-				$route->feed = true;
+				$this->feed = true;
 				$this->post_limit = $config->feed_items;
 				$_GET['title'] = $title[1];
 
@@ -192,7 +196,13 @@
 					if ($parameter[0] == "(")
 						$post_url_attrs[rtrim(ltrim($parameter, "("), ")")] = urldecode($args[$index]);
 
-				if ($return_post)
+                if ((fallback($post_url_attrs["url"], "", true) == "feed" or     # If the URL val or the clean val is "feed",
+                    fallback($post_url_attrs["clean"], "", true) == "feed") and  # do some checking to see if they're trying
+                    (count(explode("/", trim($post_url, "/"))) > count($args) or # to view the post or the post's feed.
+                     end($args) != "feed"))
+                    $this->feed = false;
+
+                if ($return_post)
 					return Post::from_url($post_url_attrs);
 				else
 					$route->try["view"] = array($post_url_attrs);
@@ -638,8 +648,8 @@
 			$route = Route::current();
 			$trigger = Trigger::current();
 
-			# Serve feeds.
-			if ($route->feed) {
+            # Serve feeds.
+			if ($this->feed) {
 				if ($trigger->exists($route->action."_feed"))
 					return $trigger->call($route->action."_feed", $context);
 

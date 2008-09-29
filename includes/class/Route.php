@@ -20,10 +20,6 @@
 		# Did <Route.init> call a successful route?
 		public $success = false;
 
-		# Boolean: $feed
-		# Is the visitor requesting a feed?
-		public $feed = false;
-
 		# Variable: $controller
 		# The Route's Controller.
 		public $controller;

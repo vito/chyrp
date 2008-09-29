@@ -96,7 +96,8 @@
 		error_reporting(E_ALL | E_STRICT); # Make sure E_STRICT is on so Chyrp remains errorless.
 
 	# Use GZip compression if available.
-	if (!AJAX and extension_loaded("zlib") and
+    if (!AJAX and
+        extension_loaded("zlib") and
 	    !ini_get("zlib.output_compression") and
 	    isset($_SERVER['HTTP_ACCEPT_ENCODING']) and
 	    substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip")) {
