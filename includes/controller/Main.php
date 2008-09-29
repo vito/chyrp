@@ -197,7 +197,7 @@
 						$post_url_attrs[rtrim(ltrim($parameter, "("), ")")] = urldecode($args[$index]);
 
                 if ((fallback($post_url_attrs["url"], "", true) == "feed" or     # If the URL val or the clean val is "feed",
-                    fallback($post_url_attrs["clean"], "", true) == "feed") and  # do some checking to see if they're trying
+                     fallback($post_url_attrs["clean"], "", true) == "feed") and # do some checking to see if they're trying
                     (count(explode("/", trim($post_url, "/"))) > count($args) or # to view the post or the post's feed.
                      end($args) != "feed"))
                     $this->feed = false;
