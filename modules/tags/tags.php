@@ -10,8 +10,8 @@
             $sql = SQL::current();
             $sql->query("CREATE TABLE IF NOT EXISTS __tags (
                           id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                          tags VARCHAR(250) DEFAULT '',
-                          clean VARCHAR(250) DEFAULT '',
+                          tags TEXT DEFAULT '',
+                          clean TEXT DEFAULT '',
                           post_id INTEGER DEFAULT '0'
                          ) DEFAULT CHARSET=utf8");
             Route::current()->add("tag/(name)/", "tag");

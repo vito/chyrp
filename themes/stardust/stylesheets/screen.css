@@ -581,7 +581,8 @@ div.page span.controls {
 .inline_edit .more_options p {
     float: left;
     width: 50%;
-    height: 5.5em;
+    min-height: 5em;
+    padding-bottom: .5em;
     margin: 0;
 }
 .inline_edit .more_options p input[type="text"] {
