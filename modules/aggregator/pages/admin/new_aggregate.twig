@@ -3,51 +3,51 @@
 {% block title %}${ "Add Aggregate" | translate("aggregator") }{% endblock %}
 
 {% block content %}
-			<h1>${ "Add Aggregate" | translate("aggregator") }</h1>
-			<form id="new_aggregate" class="split" action="{% admin "new_aggregate" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
-				<fieldset>
-					<p>
-						<label for="name">${ "Name" | translate("aggregator") }</label>
-						<input class="text" type="text" name="name" value="${ POST.name | escape }" id="name" />
-					</p>
-					<p>
-						<label for="url">${ "Source URL" | translate("aggregator") }</label>
-						<input class="text code" type="text" name="url" value="${ url | escape }" id="url" size="50" />
-					</p>
-					<p>
-						<label for="feather">${ "Feather" | translate("aggregator") }</label>
-						<select name="feather" id="feather">
-						{% for feather in feathers %}
-							<option value="$feather.safename"${ user.id | option_selected(POST.author) }>$feather.name</option>
-						{% endfor %}
-						</select>
-					</p>
-					<p>
-						<label for="author">${ "Author" | translate("aggregator") }</label>
-						<select name="author" id="author">
-						{% for user in users %}
-							<option value="$user.id"${ user.id | option_selected(POST.author) }>${ user.full_name | fallback(user.login) }</option>
-						{% endfor %}
-						</select>
-					</p>
-					<p>
-						<label for="data">
-							${ "Post Attributes" | translate("aggregator") }
-							<span class="sub">
-								<a href="{% admin "help&id=aggregation_syntax" %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
-							</span>
-						</label>
-						<textarea class="code" name="data" rows="9" cols="50" class="wide" id="data">${ POST.data | escape }</textarea>
-					</p>
+            <h1>${ "Add Aggregate" | translate("aggregator") }</h1>
+            <form id="new_aggregate" class="split" action="{% admin "new_aggregate" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+                <fieldset>
+                    <p>
+                        <label for="name">${ "Name" | translate("aggregator") }</label>
+                        <input class="text" type="text" name="name" value="${ POST.name | escape }" id="name" />
+                    </p>
+                    <p>
+                        <label for="url">${ "Source URL" | translate("aggregator") }</label>
+                        <input class="text code" type="text" name="url" value="${ url | escape }" id="url" size="50" />
+                    </p>
+                    <p>
+                        <label for="feather">${ "Feather" | translate("aggregator") }</label>
+                        <select name="feather" id="feather">
+                        {% for feather in feathers %}
+                            <option value="$feather.safename"${ user.id | option_selected(POST.author) }>$feather.name</option>
+                        {% endfor %}
+                        </select>
+                    </p>
+                    <p>
+                        <label for="author">${ "Author" | translate("aggregator") }</label>
+                        <select name="author" id="author">
+                        {% for user in users %}
+                            <option value="$user.id"${ user.id | option_selected(POST.author) }>${ user.full_name | fallback(user.login) }</option>
+                        {% endfor %}
+                        </select>
+                    </p>
+                    <p>
+                        <label for="data">
+                            ${ "Post Attributes" | translate("aggregator") }
+                            <span class="sub">
+                                <a href="{% admin "help&id=aggregation_syntax" %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
+                            </span>
+                        </label>
+                        <textarea class="code" name="data" rows="9" cols="50" class="wide" id="data">${ POST.data | escape }</textarea>
+                    </p>
 
-					<br />
+                    <br />
 
-					<p>
-						<label for="done"></label>
-						<button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Add Aggregate" | translate("aggregator") }</button>
-					</p>
+                    <p>
+                        <label for="done"></label>
+                        <button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Add Aggregate" | translate("aggregator") }</button>
+                    </p>
 
-					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
-				</fieldset>
-			</form>
+                    <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+                </fieldset>
+            </form>
 {% endblock %}

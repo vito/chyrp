@@ -4,7 +4,7 @@
 {% for post in posts.paginated %}
 {% include "feathers/" ~ post.feather ~ ".twig" %}
 {% else %}
-					<h1>${ "No Posts" | translate }</h1>
-					<p>${ "Nothing here yet!" | translate }</p>
+                    <h1>${ "No Posts" | translate }</h1>
+                    <p>${ "Nothing here yet!" | translate }</p>
 {% endfor %}
 {% endblock %}

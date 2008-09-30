@@ -1,24 +1,24 @@
 {% extends "layouts/default.twig" %}
 
 {% block content %}
-				{% if not post.next.no_results %}<a class="right next_post" href="$post.next.url">${ post.next.title | truncate(40) } &rarr;</a>{% endif %}
-				{% if not post.prev.no_results %}<a class="left prev_post" href="$post.prev.url">&larr; ${ post.prev.title | truncate(40) }</a>{% endif %}
-				<div class="clear"></div>
+                {% if not post.next.no_results %}<a class="right next_post" href="$post.next.url">${ post.next.title | truncate(40) } &rarr;</a>{% endif %}
+                {% if not post.prev.no_results %}<a class="left prev_post" href="$post.prev.url">&larr; ${ post.prev.title | truncate(40) }</a>{% endif %}
+                <div class="clear"></div>
 {% include "feathers/" ~ post.feather ~ ".twig" %}
 {% if enabled_modules.comments %}
-				<br />
-				<h2 class="comments">${ "Comments" | translate }</h2>
-				{% if post.comment_count > 0 %}
-				<ol class="comments" id="comments_$post.id">
-					{% for comment in post.comments.paginated %}{% include "content/comment.twig" %}{% endfor %}
-				</ol>
-				{% endif %}
-				<input type="hidden" name="last_comment" value="$post.latest_comment" id="last_comment" />
-				$post.comments.prev_link
-				$post.comments.next_link
-				{% if post.comments.paginated and post.comments.pages > 1 %}
-				<span class="pages">${ "Page %d of %d" | translate | format(post.comments.page, post.comments.pages) }</span>
-				{% endif %}
+                <br />
+                <h2 class="comments">${ "Comments" | translate }</h2>
+                {% if post.comment_count > 0 %}
+                <ol class="comments" id="comments_$post.id">
+                    {% for comment in post.comments.paginated %}{% include "content/comment.twig" %}{% endfor %}
+                </ol>
+                {% endif %}
+                <input type="hidden" name="last_comment" value="$post.latest_comment" id="last_comment" />
+                $post.comments.prev_link
+                $post.comments.next_link
+                {% if post.comments.paginated and post.comments.pages > 1 %}
+                <span class="pages">${ "Page %d of %d" | translate | format(post.comments.page, post.comments.pages) }</span>
+                {% endif %}
 {% if post.commentable %}
 {% include "forms/comment/new.twig" %}
 {% endif %}

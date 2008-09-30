@@ -1,68 +1,68 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${ site.locale | split("_") | first }" lang="${ site.locale | split("_") | first }">
-	<head>
-		<meta http-equiv="Content-type" content="$theme.type; charset=utf-8" />
-		<title>$site.name: {% block title %}$title{% endblock %}</title>
-		<link rel="stylesheet" href="style.css" type="text/css" media="screen" title="no title" charset="utf-8" />
-		<script src="$site.chyrp_url/includes/lib/gz.php?file=jquery.js" type="text/javascript" charset="utf-8"></script>
-		<script src="$site.chyrp_url/includes/lib/gz.php?file=plugins.js" type="text/javascript" charset="utf-8"></script>
-		<script src="$site.chyrp_url/includes/admin.js.php?action=$route.action" type="text/javascript" charset="utf-8"></script>
+    <head>
+        <meta http-equiv="Content-type" content="$theme.type; charset=utf-8" />
+        <title>$site.name: {% block title %}$title{% endblock %}</title>
+        <link rel="stylesheet" href="style.css" type="text/css" media="screen" title="no title" charset="utf-8" />
+        <script src="$site.chyrp_url/includes/lib/gz.php?file=jquery.js" type="text/javascript" charset="utf-8"></script>
+        <script src="$site.chyrp_url/includes/lib/gz.php?file=plugins.js" type="text/javascript" charset="utf-8"></script>
+        <script src="$site.chyrp_url/includes/admin.js.php?action=$route.action" type="text/javascript" charset="utf-8"></script>
 ${ trigger.call("admin_head") }
-	</head>
-	<body>
-		<div id="header">
-			<div class="column">
-				<ul id="navigation">
+    </head>
+    <body>
+        <div id="header">
+            <div class="column">
+                <ul id="navigation">
 {% block navigation %}
 {% for action, nav in navigation | items %}
-					{% if nav.show %}
-					<li class="$action{% if nav.selected %} selected{% endif %}"$nav.attributes><a href="{% admin action %}">$nav.title</a></li>
-					{% endif %}
+                    {% if nav.show %}
+                    <li class="$action{% if nav.selected %} selected{% endif %}"$nav.attributes><a href="{% admin action %}">$nav.title</a></li>
+                    {% endif %}
 {% endfor %}
 {% endblock %}
-				</ul>
-				<h1>$site.name</h1>
-			</div>
-		</div>
-		<div id="welcome">
-			<div class="column">
-				<a href="$site.url" class="right">${ "View Site &rsaquo;" | translate }</a>
-				${ "Hello, %s!" | translate | format(visitor.full_name | split | first | fallback(visitor.login | fallback("Guest" | translate))) }
-				<a href="{% url "logout" %}">${ "Log Out &rsaquo;" | translate }</a>
-			</div>
-		</div>
-		<ul class="column ${ route.action }_nav" id="sub-nav">
+                </ul>
+                <h1>$site.name</h1>
+            </div>
+        </div>
+        <div id="welcome">
+            <div class="column">
+                <a href="$site.url" class="right">${ "View Site &rsaquo;" | translate }</a>
+                ${ "Hello, %s!" | translate | format(visitor.full_name | split | first | fallback(visitor.login | fallback("Guest" | translate))) }
+                <a href="{% url "logout" %}">${ "Log Out &rsaquo;" | translate }</a>
+            </div>
+        </div>
+        <ul class="column ${ route.action }_nav" id="sub-nav">
 {% block subnav %}
 {% if subnav[route.action] %}
 {% for action, nav in subnav[route.action] | items %}
-			{% if nav.show %}
-			<li${ route.action | selected(nav.selected, action) }$nav.attributes><a href="{% admin action %}">$nav.title</a></li>
-			{% endif %}
+            {% if nav.show %}
+            <li${ route.action | selected(nav.selected, action) }$nav.attributes><a href="{% admin action %}">$nav.title</a></li>
+            {% endif %}
 {% endfor %}
 {% endif %}
 {% endblock %}
-		</ul>
-		<div class="clear"></div>
-		<div class="column" id="content">
-			{% for notice in flash.notices %}
-			<p class="message yay">$notice</p>
-			{% endfor %}
-			{% for warning in flash.warnings %}
-			<p class="message boo">$warning</p>
-			{% endfor %}
-			{% for message in flash.messages %}
-			<p class="message">$message</p>
-			{% endfor %}
+        </ul>
+        <div class="clear"></div>
+        <div class="column" id="content">
+            {% for notice in flash.notices %}
+            <p class="message yay">$notice</p>
+            {% endfor %}
+            {% for warning in flash.warnings %}
+            <p class="message boo">$warning</p>
+            {% endfor %}
+            {% for message in flash.messages %}
+            <p class="message">$message</p>
+            {% endfor %}
 {% block content %}{% endblock %}
-			<div class="clear"></div>
-		</div>
-		<div class="column" id="footer">
-			<img src="images/chyrp.gif" alt="Logo" />
-			${ "Chyrp loves you." | translate }<br />
-			<span class="sub">
-				${ "v%s &copy; 2008 Alex Suraci" | translate | format(version) }
-			</span>
-		</div>
-	</body>
+            <div class="clear"></div>
+        </div>
+        <div class="column" id="footer">
+            <img src="images/chyrp.gif" alt="Logo" />
+            ${ "Chyrp loves you." | translate }<br />
+            <span class="sub">
+                ${ "v%s &copy; 2008 Alex Suraci" | translate | format(version) }
+            </span>
+        </div>
+    </body>
 </html>
