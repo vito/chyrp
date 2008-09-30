@@ -20,6 +20,10 @@
         # The base path for this controller.
         public $base = "admin";
 
+        # Boolean: $feed
+        # Is the current page a feed?
+        public $feed = false;
+
         /**
          * Function: __construct
          * Prepares Twig.

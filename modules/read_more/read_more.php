@@ -6,7 +6,8 @@
         static function makesafe($text, $post = null) {
             if (!is_string($text) or !strstr($text, "<!--more-->")) return $text;
 
-            if (Route::current()->controller->feed)
+            $controller = Route::current()->controller;
+            if ($controller instanceof MainController and $controller->feed)
                 return str_replace("<!--more-->", "", $text);
 
             $url = (isset($post) and !$post->no_results) ? fix($post->url()) : "#" ;
