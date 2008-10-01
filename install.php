@@ -37,9 +37,6 @@
     # Prepare the Config interface.
     $config = Config::current();
 
-    # Prepare the SQL interface.
-    $sql = SQL::current();
-
     # Atlantic/Reykjavik is 0 offset. Set it so the timezones() function is
     # always accurate, even if the server has its own timezone settings.
     set_timezone("Atlantic/Reykjavik");
@@ -66,6 +63,7 @@
     $installed = false;
 
     if (file_exists(INCLUDES_DIR."/config.yaml.php") and file_exists(MAIN_DIR."/.htaccess")) {
+        $sql = SQL::current(true);
         if ($sql->connect(true) and !empty($config->url) and $sql->count("users"))
             error(__("Already Installed"), __("Chyrp is already correctly installed and configured."));
     } else {
@@ -83,8 +81,12 @@
         if ($_POST['adapter'] == "sqlite" and !is_writable(dirname($_POST['database'])))
             $errors[] = __("SQLite database file could not be created. Please make sure your server has write permissions to the location for the database.");
         else {
-            foreach (array("host", "username", "password", "database", "prefix", "adapter") as $field)
-                $sql->$field = $_POST[$field];
+            $sql = SQL::current(array("host" => $_POST['host'],
+                                      "username" => $_POST['username'],
+                                      "password" => $_POST['password'],
+                                      "database" => $_POST['database'],
+                                      "prefix" => $_POST['prefix'],
+                                      "adapter" => $_POST['adapter']));
 
             if (!$sql->connect(true))
                 $errors[] = _f("Could not connect to the specified database:\n<pre>%s</pre>", array($sql->error));

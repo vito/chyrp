@@ -31,17 +31,26 @@
         # Holds an error message from the last attempted query.
         public $error = "";
 
+        # Boolean: $silence_errors
+        # Ignore errors?
+        public $silence_errors = false;
+
         /**
          * Function: __construct
          * The class constructor is private so there is only one connection.
          */
-        private function __construct() {
+        private function __construct($settings = array()) {
             if (!UPGRADING and !INSTALLING and !isset(Config::current()->sql))
                 error(__("Error"), __("Database configuration is not set. Please run the upgrader."));
 
             $database = !UPGRADING ?
                             fallback(Config::current()->sql, array(), true) :
                             Config::get("sql") ;
+
+            if (is_array($settings))
+                fallback($database, $settings);
+            elseif ($settings === true)
+                $this->silence_errors = true;
 
             if (!empty($database))
                 foreach ($database as $setting => $value)
@@ -156,7 +165,7 @@
             }
 
             if ($this->adapter == "mysql")
-                new Query("SET NAMES 'utf8'"); # Note: This doesn't increase the query debug/count.
+                new Query($this, "SET NAMES 'utf8'"); # Note: This doesn't increase the query debug/count.
 
             return $this->connected = true;
         }
@@ -186,7 +195,7 @@
             if ($this->adapter == "sqlite")
                 $query = str_ireplace(" DEFAULT CHARSET=utf8", "", str_ireplace("AUTO_INCREMENT", "AUTOINCREMENT", $query));
 
-            $query = new Query($query, $params, $throw_exceptions);
+            $query = new Query($this, $query, $params, $throw_exceptions);
 
             return (!$query->query and UPGRADING) ? false : $query ;
         }
@@ -202,7 +211,8 @@
          *     $throw_exceptions - Should exceptions be thrown on error?
          */
         public function count($tables, $conds = null, $params = array(), $throw_exceptions = false) {
-            return $this->query(QueryBuilder::build_count($tables, $conds, $params), $params, $throw_exceptions)->fetchColumn();
+            $query = $this->query(QueryBuilder::build_count($tables, $conds, $params), $params, $throw_exceptions);
+            return ($query->query) ? $query->fetchColumn() : false ;
         }
 
         /**
@@ -306,7 +316,7 @@
          * This also handles calling the SQL connection method's "escape_string" functions.
          */
         public function escape($string, $quotes = true) {
-            switch(SQL::current()->method) {
+            switch($this->method) {
                 case "pdo":
                     $string = ltrim(rtrim($this->db->quote($string), "'"), "'");
                     break;
@@ -379,8 +389,13 @@
          * Function: current
          * Returns a singleton reference to the current connection.
          */
-        public static function & current() {
-            static $instance = null;
-            return $instance = (empty($instance)) ? new self() : $instance ;
+        public static function & current($settings = false) {
+            if ($settings) {
+                static $loaded_settings = null;#new self($settings);
+                return $loaded_settings = new self($settings);
+            } else {
+                static $instance = null;
+                return $instance = (empty($instance)) ? new self() : $instance ;
+            }
         }
     }

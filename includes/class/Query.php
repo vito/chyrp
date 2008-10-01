@@ -6,7 +6,7 @@
     class Query {
         # Variable: $query
         # Holds the current query.
-        public $query = "";
+        public $query;
 
         /**
          * Function: __construct
@@ -16,8 +16,8 @@
          *     $query - Query to execute.
          *     $params - An associative array of parameters used in the query.
          */
-        public function __construct($query, $params = array(), $throw_exceptions = false) {
-            $this->sql = SQL::current();
+        public function __construct($sql, $query, $params = array(), $throw_exceptions = false) {
+            $this->sql = $sql;
 
             # Don't count config setting queries.
             $count = (bool) (!substr_count(strtoupper($query), "SET "));
@@ -183,7 +183,7 @@
         public function handle($error) {
             $this->sql->error = $error;
 
-            if (UPGRADING) return false;
+            if (UPGRADING or $this->sql->silence_errors) return false;
 
             $message = $error->getMessage();
 
