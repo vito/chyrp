@@ -353,7 +353,7 @@
 
             return array(array(
                 'userid'    => $user->id,
-                'nickname'  => $user->fullname,
+                'nickname'  => $user->full_name,
                 'firstname' => '',
                 'lastname'  => '',
                 'email'     => $user->email,
