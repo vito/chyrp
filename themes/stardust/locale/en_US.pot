@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-09-14 06:45+0000\n"
+"POT-Creation-Date: 2008-10-04 16:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -24,6 +24,10 @@ msgstr ""
 #: themes/stardust/pages/tag.twig:5
 #, php-format
 msgid "Posts tagged with &#8220;%s&#8221;"
+msgstr ""
+
+#: themes/stardust/layouts/default.twig:76
+msgid "Load Time:"
 msgstr ""
 
 #: themes/stardust/forms/user/lost_password.twig:6
@@ -68,12 +72,20 @@ msgstr ""
 msgid "%B"
 msgstr ""
 
-#: themes/stardust/info.yaml:1
-msgid "Stardust"
+#: themes/stardust/layouts/default.twig:79
+msgid "Queries"
 msgstr ""
 
 #: themes/stardust/forms/post/edit.twig:97
 msgid "Save"
+msgstr ""
+
+#: themes/stardust/info.yaml:1
+msgid "Stardust"
+msgstr ""
+
+#: themes/stardust/layouts/default.twig:76
+msgid "seconds"
 msgstr ""
 
 #: themes/stardust/forms/post/edit.twig:26
@@ -195,18 +207,14 @@ msgstr ""
 msgid "Your search did not return any results."
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:72
-msgid "Load time:"
+#: themes/stardust/forms/post/edit.twig:98
+msgid "Cancel"
 msgstr ""
 
 #: themes/stardust/forms/user/register.twig:7
 #: themes/stardust/forms/user/lost_password.twig:8
 #: themes/stardust/forms/user/login.twig:7
 msgid "Username"
-msgstr ""
-
-#: themes/stardust/forms/post/edit.twig:98
-msgid "Cancel"
 msgstr ""
 
 #: themes/stardust/content/post.twig:18
@@ -241,6 +249,7 @@ msgid "No Posts"
 msgstr ""
 
 #: themes/stardust/content/sidebar.twig:53
+#: themes/stardust/content/sidebar.twig:66
 msgid "All &rarr;"
 msgstr ""
 
@@ -310,16 +319,16 @@ msgstr ""
 msgid "Your Name"
 msgstr ""
 
+#: themes/stardust/forms/post/edit.twig:97
+msgid "or"
+msgstr ""
+
 #: themes/stardust/pages/404.twig:4
 msgid "Not Found"
 msgstr ""
 
 #: themes/stardust/layouts/default.twig:25
 msgid "Add Page"
-msgstr ""
-
-#: themes/stardust/forms/post/edit.twig:97
-msgid "or"
 msgstr ""
 
 #: themes/stardust/content/post.twig:26
@@ -348,13 +357,18 @@ msgstr ""
 msgid "Your comment is awaiting moderation."
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:69
-msgid "Stats"
-msgstr ""
-
 #: themes/stardust/content/sidebar.twig:45
 #: themes/stardust/content/post.twig:30
 msgid "Tags"
+msgstr ""
+
+#: themes/stardust/layouts/default.twig:84
+#, php-format
+msgid "Called from <strong>%s</strong> on line <strong>%d</strong>."
+msgstr ""
+
+#: themes/stardust/layouts/default.twig:73
+msgid "Stats"
 msgstr ""
 
 #: themes/stardust/forms/post/edit.twig:34
@@ -374,16 +388,16 @@ msgstr ""
 msgid "<strong>%s</strong> on <a href=\"%s\" class=\"permalink\">%s</a>"
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:71
-msgid "Queries:"
-msgstr ""
-
 #: themes/stardust/forms/comment/new.twig:20
 msgid "Your Website"
 msgstr ""
 
 #: themes/stardust/layouts/default.twig:20
 msgid "Write"
+msgstr ""
+
+#: themes/stardust/layouts/default.twig:75
+msgid "Queries:"
 msgstr ""
 
 #: themes/stardust/forms/user/register.twig:11

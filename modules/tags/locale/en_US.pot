@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-09-14 06:45+0000\n"
+"POT-Creation-Date: 2008-10-04 16:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -25,7 +25,7 @@ msgstr ""
 msgid "Tag renamed."
 msgstr ""
 
-#: modules/tags/tags.php:239
+#: modules/tags/tags.php:241
 #: modules/tags/tags.php:251
 msgid "Please specify the ID of the post whose tags you would like to edit."
 msgstr ""
@@ -77,6 +77,10 @@ msgstr ""
 msgid "Creating new tags table..."
 msgstr ""
 
+#: modules/tags/pages/admin/manage_tags.twig:7
+msgid "(hover for controls)"
+msgstr ""
+
 #: modules/tags/pages/admin/manage_tags.twig:3
 #: modules/tags/pages/admin/manage_tags.twig:6
 msgid "Manage Tags"
@@ -91,7 +95,7 @@ msgid "You don't have any tags."
 msgstr ""
 
 #: modules/tags/tags.php:184
-#: modules/tags/pages/tags.php:40
+#: modules/tags/tags.php:381
 #, php-format
 msgid "%s post tagged with &quot;%s&quot;"
 msgid_plural "%s posts tagged with &quot;%s&quot;"
@@ -105,7 +109,7 @@ msgstr ""
 #: modules/tags/tags.php:52
 #: modules/tags/tags.php:126
 #: modules/tags/tags.php:137
-#: modules/tags/pages/tags.php:2
+#: modules/tags/tags.php:385
 msgid "Tags"
 msgstr ""
 

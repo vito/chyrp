@@ -7,7 +7,7 @@
             <h2>${ "Need more detail?" | translate }</h2>
             <form class="detail" action="index.php" method="get" accept-charset="utf-8">
                 <fieldset>
-                    <a class="button boo right" href="{% admin "purge_spam" %}"><img src="images/icons/deny.png" alt="deny" />${ "Delete All (%d)" | translate | format(comments.total) }</a>
+                    <a class="button boo right" href="{% admin "purge_spam" %}"><img src="images/icons/deny.png" alt="deny" />${ "Delete All (%d)" | translate("comments") | format(comments.total) }</a>
                     <input type="hidden" name="action" value="manage_comments" />
                     <div class="left pad">
                         <h3>
