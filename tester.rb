@@ -16,7 +16,7 @@ SERVER = Net::HTTP.new "localhost"
 CHYRP = "/chyrp"
 
 HEADERS = {
-  "Cookie" => "ChyrpSession=835e560250f81a6790747c40aa405a60", # NOTE: This has to be changed to keep in sync with your browser.
+  "Cookie" => "ChyrpSession=e5f9cd17ab00580649ce618791b5675a", # NOTE: This has to be changed to keep in sync with your browser.
   "User-Agent" => "tester.rb"
 }
 

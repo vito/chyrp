@@ -176,8 +176,6 @@
             if (!file_exists(THEME_DIR."/stylesheets/") and !file_exists(THEME_DIR."/css/"))
                 return $stylesheets;
 
-            $count = 1;
-
             $long  = (array) glob(THEME_DIR."/stylesheets/*");
             $short = (array) glob(THEME_DIR."/css/*");
 
@@ -202,8 +200,6 @@
                     $stylesheets.= "<![endif]-->";
 
                 $stylesheets.= "\n\t\t";
-
-                $count++;
             }
 
             return $stylesheets;

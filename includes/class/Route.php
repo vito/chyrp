@@ -133,7 +133,7 @@
                            $config->url."/".rtrim($url, "/") ;
             }
 
-            $urls = $this->controller->urls;
+            $urls = fallback($this->controller->urls, array());
             Trigger::current()->filter($urls, "parse_urls");
 
             foreach (array_diff_assoc($urls, $this->controller->urls) as $key => $value)
