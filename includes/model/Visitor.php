@@ -28,10 +28,9 @@
         public function group() {
             if (!isset($this->group_id))
                 return new Group(Config::current()->guest_group);
-            elseif (isset($this->group_name) and isset($this->group_permissions))
+            elseif (isset($this->group_name))
                 return new Group(null, array("read_from" => array("id" => $this->group_id,
-                                                                  "name" => $this->group_name,
-                                                                  "permissions" => $this->group_permissions)));
+                                                                  "name" => $this->group_name)));
             else
                 return new Group($this->group_id);
         }

@@ -177,6 +177,20 @@
         }
 
         /**
+         * Function: grab
+         * Grabs all of the given column out of the full result of a query.
+         */
+         public function grab($column) {
+            $all = $this->fetchAll();
+
+            $result = array();
+            foreach ($all as $row)
+                $result[] = $row[$column];
+
+            return $result;
+         }
+
+        /**
          * Function: handle
          * Handles exceptions thrown by failed queries.
          */

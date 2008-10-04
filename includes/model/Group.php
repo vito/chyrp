@@ -7,7 +7,7 @@
      *     <Model>
      */
     class Group extends Model {
-        # Array: $permissionCache
+        # Array: $permissionsCache
         # Caches the permissions of every group so they don't have to be parsed on every grab.
         static $permissionsCache = array();
 
@@ -23,12 +23,16 @@
                 return false;
 
             # Cache group permissions.
-            if (isset(self::$permissionsCache[$group_id]))
-                $this->permissions = self::$permissionsCache[$group_id];
-            else
-                $this->permissions = self::$permissionsCache[$group_id] = !empty($this->permissions) ?
-                                                                              YAML::load($this->permissions) :
-                                                                              array() ;
+            if (isset(self::$permissionsCache[$this->id]))
+                $this->permissions = self::$permissionsCache[$this->id];
+            else {
+                $all = SQL::current()->select("permissions")->fetchAll();
+
+                foreach ($all as $permission)
+                    self::$permissionsCache[$permission["group_id"]][] = $permission["id"];
+
+                $this->permissions = fallback(self::$permissionsCache[$this->id], array());
+            }
         }
 
         /**
@@ -83,9 +87,17 @@
          */
         static function add($name, $permissions) {
             $sql = SQL::current();
-            $sql->insert("groups", array("name" => $name, "permissions" => YAML::dump($permissions)));
+            $sql->insert("groups", array("name" => $name));
 
-            $group = new self($sql->latest());
+            $group_id = $sql->latest();
+
+            foreach ($permissions as $id => $name)
+                $sql->insert("permissions",
+                             array("id" => $id,
+                                   "name" => $name,
+                                   "group_id" => $group_id));
+
+            $group = new self($group_id);
 
             Trigger::current()->call("add_group", $group);
 
@@ -108,8 +120,16 @@
             $sql = SQL::current();
             $sql->update("groups",
                          array("id" => $this->id),
-                         array("name" => $name, "permissions" => YAML::dump($permissions)));
+                         array("name" => $name));
 
+            # Update their permissions
+            $sql->delete("permissions", array("group_id" => $this->id));
+            foreach ($permissions as $id => $name)
+                $sql->insert("permissions",
+                             array("id" => $id,
+                                   "name" => $name,
+                                   "group_id" => $this->id));
+    
             Trigger::current()->call("update_group", $this, $name, $permissions);
         }
 
@@ -135,11 +155,11 @@
         static function add_permission($id, $name = null) {
             $sql = SQL::current();
 
-            if ($sql->count("permissions", array("id" => $id)))
+            if ($sql->count("permissions", array("id" => $id, "group_id" => 0)))
                 return; # Permission already exists.
 
             fallback($name, camelize($id, true));
-            $sql->insert("permissions", array("id" => $id, "name" => $name));
+            $sql->insert("permissions", array("id" => $id, "name" => $name, "group_id" => 0));
         }
 
         /**

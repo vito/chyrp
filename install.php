@@ -165,9 +165,9 @@
                              feather VARCHAR(32) DEFAULT '',
                              clean VARCHAR(128) DEFAULT '',
                              url VARCHAR(128) DEFAULT '',
-                             pinned TINYINT(1) DEFAULT '0',
+                             pinned TINYINT(1) DEFAULT 0,
                              status VARCHAR(32) DEFAULT 'public',
-                             user_id INTEGER DEFAULT '0',
+                             user_id INTEGER DEFAULT 0,
                              created_at DATETIME DEFAULT '0000-00-00 00:00:00',
                              updated_at DATETIME DEFAULT '0000-00-00 00:00:00'
                          ) DEFAULT CHARSET=utf8");
@@ -178,11 +178,11 @@
                              title VARCHAR(250) DEFAULT '',
                              body LONGTEXT,
                              show_in_list TINYINT(1) DEFAULT '1',
-                             list_order INTEGER DEFAULT '0',
+                             list_order INTEGER DEFAULT 0,
                              clean VARCHAR(128) DEFAULT '',
                              url VARCHAR(128) DEFAULT '',
-                             user_id INTEGER DEFAULT '0',
-                             parent_id INTEGER DEFAULT '0',
+                             user_id INTEGER DEFAULT 0,
+                             parent_id INTEGER DEFAULT 0,
                              created_at DATETIME DEFAULT '0000-00-00 00:00:00',
                              updated_at DATETIME DEFAULT '0000-00-00 00:00:00'
                          ) DEFAULT CHARSET=utf8");
@@ -195,7 +195,7 @@
                              full_name VARCHAR(250) DEFAULT '',
                              email VARCHAR(128) DEFAULT '',
                              website VARCHAR(128) DEFAULT '',
-                             group_id INTEGER DEFAULT '0',
+                             group_id INTEGER DEFAULT 0,
                              joined_at DATETIME DEFAULT '0000-00-00 00:00:00',
                              UNIQUE (login)
                          ) DEFAULT CHARSET=utf8");
@@ -203,22 +203,22 @@
             # Groups table
             $sql->query("CREATE TABLE IF NOT EXISTS __groups (
                              id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                             name VARCHAR(100) DEFAULT '',
-                             permissions LONGTEXT,
+                             name VARCHAR(100) DEFAULT ''
                              UNIQUE (name)
                          ) DEFAULT CHARSET=utf8");
 
             # Permissions table
             $sql->query("CREATE TABLE IF NOT EXISTS __permissions (
                              id VARCHAR(100) DEFAULT '' PRIMARY KEY,
-                             name VARCHAR(100) DEFAULT ''
+                             name VARCHAR(100) DEFAULT '',
+                             group_id INTEGER DEFAULT 0
                          ) DEFAULT CHARSET=utf8");
 
             # Sessions table
             $sql->query("CREATE TABLE IF NOT EXISTS __sessions (
                              id VARCHAR(40) DEFAULT '',
                              data LONGTEXT,
-                             user_id INTEGER DEFAULT '0',
+                             user_id INTEGER DEFAULT 0,
                              created_at DATETIME DEFAULT '0000-00-00 00:00:00',
                              updated_at DATETIME DEFAULT '0000-00-00 00:00:00',
                              PRIMARY KEY (id)
@@ -280,20 +280,29 @@
                                  "delete_group" => "Delete Groups");
 
             foreach ($permissions as $permission => $name)
-                $sql->replace("permissions", array("id" => $permission, "name" => $name));
+                $sql->replace("permissions",
+                              array("id" => $permission,
+                                    "name" => $name,
+                                    "group_id" => 0));
 
-            $groups = array("admin" => YAML::dump(array_keys($permissions)),
-                            "member" => YAML::dump(array("view_site")),
-                            "friend" => YAML::dump(array("view_site", "view_private")),
-                            "banned" => YAML::dump(array()),
-                            "guest" => YAML::dump(array("view_site")));
+            $groups = array("admin" => array_keys($permissions),
+                            "member" => array("view_site"),
+                            "friend" => array("view_site", "view_private"),
+                            "banned" => array(),
+                            "guest" => array("view_site"));
 
             # Insert the default groups (see above)
             $group_id = array();
             foreach($groups as $name => $permissions) {
-                $sql->replace("groups", array("name" => ucfirst($name), "permissions" => $permissions));
+                $sql->replace("groups", array("name" => ucfirst($name)));
 
                 $group_id[$name] = $sql->latest();
+
+                foreach ($permissions as $permission)
+                    $sql->replace("permissions",
+                                  array("id" => $permission,
+                                        "name" => $permissions[$permission],
+                                        "group_id" => $group_id[$name]));
             }
 
             $config->set("default_group", $group_id["member"]);

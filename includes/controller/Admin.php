@@ -645,7 +645,7 @@
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to create groups."));
 
             $this->display("new_group",
-                           array("permissions" => SQL::current()->select("permissions")->fetchAll()));
+                           array("permissions" => SQL::current()->select("permissions", "*", array("group_id" => 0))->fetchAll()));
         }
 
         /**
@@ -677,7 +677,7 @@
 
             $this->display("edit_group",
                            array("group" => new Group($_GET['id']),
-                                 "permissions" => SQL::current()->select("permissions")->fetchAll()));
+                                 "permissions" => SQL::current()->select("permissions", "*", array("group_id" => 0))->fetchAll()));
         }
 
         /**
@@ -927,7 +927,7 @@
                 $groups_yaml = array("groups" => array(),
                                      "permissions" => array());
 
-                foreach (SQL::current()->select("permissions")->fetchAll() as $permission)
+                foreach (SQL::current()->select("permissions", "*", array("group_id" => 0))->fetchAll() as $permission)
                     $groups_yaml["permissions"][$permission["id"]] = $permission["name"];
 
                 foreach ($groups as $index => $group)
