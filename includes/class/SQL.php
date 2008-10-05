@@ -61,7 +61,7 @@
             # We really don't need PDO anymore, since we have the two we supported with it hardcoded (kinda).
             # Keeping this here for when/if we decide to add support for more database engines, like Postgres and MSSQL.
             # if (class_exists("PDO") and (in_array("mysql", PDO::getAvailableDrivers()) or in_array("sqlite", PDO::getAvailableDrivers())))
-            #   return $this->method = "pdo";
+            #     return $this->method = "pdo";
 
             if (isset($this->adapter)) {
                 if ($this->adapter == "mysql" and class_exists("MySQLi"))
@@ -328,7 +328,11 @@
                     break;
             }
 
-            $string = str_replace('\\', '\\\\', $string);
+            # I don't think this ever worked how it intended.
+            # I've tested PDO, MySQLi, and MySQL and they all
+            # properly escape with this disabled, but get double
+            # escaped with this uncommented:
+            # $string = str_replace('\\', '\\\\', $string);
             $string = str_replace('$', '\$', $string);
 
             if ($quotes and !is_numeric($string))

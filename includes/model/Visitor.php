@@ -31,8 +31,10 @@
             elseif (isset($this->group_name))
                 return new Group(null, array("read_from" => array("id" => $this->group_id,
                                                                   "name" => $this->group_name)));
-            else
-                return new Group($this->group_id);
+            else {
+                $group = new Group($this->group_id);
+                return ($group->no_results) ? new Group(Config::current()->default_group) : $group ;
+            }
         }
 
         /**

@@ -5,22 +5,33 @@
      */
     class QueryBuilder {
         /**
+         * Function: build_select
+         * Creates a full SELECT query.
+         */
+        public static function build_select($tables, $fields, $conds, $order = null, $limit = null, $offset = null, $group = null, $left_join = array(), &$params = array()) {
+            $query = "SELECT ".self::build_select_header($fields, $tables)."\n".
+                     "FROM ".self::build_from($tables)."\n";
+
+            foreach ($left_join as $join)
+                $query.= "LEFT JOIN __".$join["table"]." ON ".self::build_where($join["where"], $join["table"], $params)."\n";
+
+            $query.= ($conds ? "WHERE ".self::build_where($conds, $tables, $params)."\n" : "").
+                     ($group ? "GROUP BY ".self::build_group($group, $tables)."\n" : "").
+                     ($order ? "ORDER BY ".self::build_order($order, $tables)."\n" : "").
+                     self::build_limits($offset, $limit);
+
+            return $query;
+        }
+
+        /**
          * Function: build_insert
          * Creates a full insert query.
          */
         public static function build_insert($table, $data, &$params = array()) {
-            $conditions = self::build_conditions($data, $params);
-            $data = array();
-
-            foreach ($conditions as $cond) {
-                $split = explode(" = ", $cond);
-                $data[$split[0]] = $split[1];
-            }
-
             return "INSERT INTO __$table\n".
                    self::build_insert_header($data)."\n".
                    "VALUES\n".
-                   self::build_insert_values($data);
+                   self::build_list($data);
         }
 
         /**
@@ -28,18 +39,10 @@
          * Creates a full replace query.
          */
         public static function build_replace($table, $data, &$params = array()) {
-            $conditions = self::build_conditions($data, $params);
-            $data = array();
-
-            foreach ($conditions as $cond) {
-                $split = explode(" = ", $cond);
-                $data[$split[0]] = $split[1];
-            }
-
             return "REPLACE INTO __$table\n".
                    self::build_insert_header($data)."\n".
                    "VALUES\n".
-                   self::build_insert_values($data);
+                   self::build_list($data);
         }
 
         /**
@@ -81,14 +84,6 @@
                 array_push($set, $field);
 
             return "(".implode(", ", $set).")";
-        }
-
-        /**
-         * Function: build_insert_values
-         * Creates an insert data part.
-         */
-        public static function build_insert_values($data) {
-            return "(".implode(', ', array_values($data)).")";
         }
 
         /**
@@ -190,6 +185,19 @@
         }
 
         /**
+         * Function: build_list
+         * Creates ('one', 'two', '', 1, 0) from array("one", "two", null, true, false)
+         */
+        public static function build_list($vals) {
+            $return = array();
+
+            foreach ($vals as $val)
+                $return[] = SQL::current()->escape($val);
+
+            return "(".join(", ", $return).")";
+        }
+
+        /**
          * Function: build_conditions
          * Builds an associative array of SQL values into PDO-esque paramized query strings.
          *
@@ -212,7 +220,7 @@
                             $key = substr($key, 0, -4);
                             $param = str_replace(array("(", ")"), "_", $key);
                             if (is_array($val))
-                                $cond = $key." NOT IN ".self::build_in($val);
+                                $cond = $key." NOT IN ".self::build_list($val);
                             elseif ($val === null)
                                 $cond = $key." IS NOT NULL";
                             else {
@@ -236,7 +244,7 @@
                             $params[":".$param] = $val;
                         } else { # Equation
                             if (is_array($val))
-                                $cond = $key." IN ".self::build_in($val);
+                                $cond = $key." IN ".self::build_list($val);
                             elseif ($val === null)
                                 $cond = $key." IS NULL";
                             else {
@@ -255,38 +263,6 @@
             }
 
             return $conditions;
-        }
-
-        /**
-         * Function: build_in
-         * Creates ('one', 'two') from array("one", "two")
-         */
-        public static function build_in($vals) {
-            $return = array();
-
-            foreach ($vals as $val)
-                $return[] = SQL::current()->escape($val);
-
-            return "(".join(", ", $return).")";
-        }
-
-        /**
-         * Function: build_select
-         * Creates a full SELECT query.
-         */
-        public static function build_select($tables, $fields, $conds, $order = null, $limit = null, $offset = null, $group = null, $left_join = array(), &$params = array()) {
-            $query = "SELECT ".self::build_select_header($fields, $tables)."\n".
-                     "FROM ".self::build_from($tables)."\n";
-
-            foreach ($left_join as $join)
-                $query.= "LEFT JOIN __".$join["table"]." ON ".self::build_where($join["where"], $join["table"], $params)."\n";
-
-            $query.= ($conds ? "WHERE ".self::build_where($conds, $tables, $params)."\n" : "").
-                     ($group ? "GROUP BY ".self::build_group($group, $tables)."\n" : "").
-                     ($order ? "ORDER BY ".self::build_order($order, $tables)."\n" : "").
-                     self::build_limits($offset, $limit);
-
-            return $query;
         }
 
         /**

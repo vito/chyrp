@@ -738,6 +738,6 @@
             if (empty($_SESSION['comments']))
                 return "(0)";
             else
-                return QueryBuilder::build_in($_SESSION['comments']);
+                return QueryBuilder::build_list($_SESSION['comments']);
         }
     }
