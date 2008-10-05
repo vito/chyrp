@@ -194,7 +194,7 @@
 
                 foreach ($parameters[0] as $index => $parameter)
                     if ($parameter[0] == "(")
-                        $post_url_attrs[rtrim(ltrim($parameter, "("), ")")] = urldecode($args[$index]);
+                        $post_url_attrs[rtrim(ltrim($parameter, "("), ")")] = $args[$index];
 
                 if ((fallback($post_url_attrs["url"], "", true) == "feed" or     # If the URL val or the clean val is "feed",
                      fallback($post_url_attrs["clean"], "", true) == "feed") and # do some checking to see if they're trying
@@ -320,8 +320,6 @@
             if ($config->clean_urls and substr_count($_SERVER['REQUEST_URI'], "?"))
                 redirect("search/".urlencode($_GET['query'])."/");
 
-            $_GET['query'] = urldecode($_GET['query']);
-
             if (empty($_GET['query']))
                 return Flash::warning(__("Please enter a search term."));
 
@@ -335,14 +333,17 @@
             foreach ($results[0] as $result)
                 $ids[] = $result["id"];
 
-            $posts = new Paginator(Post::find(array("placeholders" => true,
-                                                    "where" => array("id" => $ids))),
-                                   $this->post_limit);
+            if (!empty($ids))
+                $posts = new Paginator(Post::find(array("placeholders" => true,
+                                                        "where" => array("id" => $ids))),
+                                       $this->post_limit);
+            else
+                $posts = new Paginator(array());
 
             $this->display(array("pages/search", "pages/index"),
                            array("posts" => $posts,
-                                 "search" => urldecode($_GET['query'])),
-                           fix(_f("Search results for \"%s\"", array(urldecode($_GET['query'])))));
+                                 "search" => $_GET['query']),
+                           fix(_f("Search results for \"%s\"", array($_GET['query']))));
         }
 
         /**
@@ -373,7 +374,7 @@
             if (isset($attrs))
                 $post = Post::from_url($attrs, array("drafts" => true));
             else
-                $post = new Post(null, array("where" => array("url" => urldecode(fallback($_GET['url'])))));
+                $post = new Post(null, array("where" => array("url" => fallback($_GET['url'], null, true))));
 
             if ($post->no_results)
                 return false;

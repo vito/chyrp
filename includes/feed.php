@@ -3,7 +3,7 @@
     $trigger = Trigger::current();
     $theme = Theme::current();
 
-    $title = (!empty($_GET['title'])) ? ": ".html_entity_decode(urldecode($_GET['title'])) : "" ;
+    $title = (!empty($_GET['title'])) ? ": ".html_entity_decode($_GET['title']) : "" ;
     echo "<".'?xml version="1.0" encoding="utf-8"?'.">\r";
 ?>
 <feed xmlns="http://www.w3.org/2005/Atom">

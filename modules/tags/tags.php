@@ -189,7 +189,7 @@
                 return $admin->display("manage_tags", array("tag_cloud" => $cloud));
 
             fallback($_GET['query'], "");
-            list($where, $params) = keywords(urldecode($_GET['query']), "post_attributes.value LIKE :query OR url LIKE :query");
+            list($where, $params) = keywords($_GET['query'], "post_attributes.value LIKE :query OR url LIKE :query");
 
             $visitor = Visitor::current();
             if (!$visitor->group()->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post"))
@@ -202,11 +202,16 @@
             foreach ($results[0] as $result)
                 $ids[] = $result["id"];
 
+            if (!empty($ids))
+                new Paginator(Post::find(array("placeholders" => true,
+                                               "drafts" => true,
+                                               "where" => array("id" => $ids))),
+                              25)
+            else
+                $posts = new Paginator(array());
+
             $admin->display("manage_tags", array("tag_cloud" => $cloud,
-                                                 "posts" => new Paginator(Post::find(array("placeholders" => true,
-                                                                                           "drafts" => true,
-                                                                                           "where" => array("id" => $ids))),
-                                                                          25)));
+                                                 "posts" => $posts));
         }
 
         public function admin_rename_tag($admin) {
@@ -288,7 +293,7 @@
 
             foreach($sql->select("tags",
                                  "*",
-                                 array("clean like" => "%{{".urldecode($_GET['clean'])."}}%"))->fetchAll() as $tag)  {
+                                 array("clean like" => "%{{".$_GET['clean']."}}%"))->fetchAll() as $tag)  {
                 $names = array();
                 foreach (explode("}},{{", substr(substr($tag["tags"], 0, -2), 2)) as $name)
                     if ($name != $_GET['name'])

@@ -244,8 +244,6 @@
 
             $config = Config::current();
 
-            $_GET['id'] = urldecode($_GET['id']);
-
             $aggregate = $config->aggregates[$_GET['id']];
 
             if (empty($_POST))
@@ -284,8 +282,6 @@
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this aggregate.", "aggregator"));
 
             $config = Config::current();
-
-            $_GET['id'] = urldecode($_GET['id']);
 
             $aggregate = $config->aggregates[$_GET['id']];
 

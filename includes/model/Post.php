@@ -160,8 +160,8 @@
             fallback($status, (isset($_POST['draft'])) ? "draft" : fallback($_POST['status'], "public", true));
             fallback($created_at,
                      (!empty($_POST['created_at']) and (!isset($_POST['original_time']) or $_POST['created_at'] != $_POST['original_time'])) ?
-                      datetime($_POST['created_at']) :
-                      datetime());
+                         datetime($_POST['created_at']) :
+                         datetime());
             fallback($updated_at, fallback($_POST['updated_at'], "0000-00-00 00:00:00", true));
             fallback($trackbacks, fallback($_POST['trackbacks'], "", true));
             fallback($options, fallback($_POST['option'], array(), true));
@@ -266,7 +266,6 @@
                  $this->url,
                  $this->created_at,
                  $this->updated_at) = array($user, $pinned, $status, $slug, $created_at, $updated_at);
-
 
             $sql = SQL::current();
             $sql->update("posts",
@@ -687,7 +686,6 @@
          */
         static function from_url($attrs = null, $options = array()) {
             fallback($attrs, $_GET);
-            $get = array_map("urldecode", $attrs);
 
             $where = array();
             $times = array("year", "month", "day", "hour", "minute", "second");
@@ -696,22 +694,22 @@
             $params = array();
             foreach ($matches[1] as $attr)
                 if (in_array($attr, $times))
-                    $where[strtoupper($attr)."(created_at)"] = $get[$attr];
+                    $where[strtoupper($attr)."(created_at)"] = $attrs[$attr];
                 elseif ($attr == "author") {
-                    $user = new User(array("where" => array("login" => $get['author'])));
+                    $user = new User(array("where" => array("login" => $attrs['author'])));
                     $where["user_id"] = $user->id;
                 } elseif ($attr == "feathers")
-                    $where["feather"] = depluralize($get['feathers']);
+                    $where["feather"] = depluralize($attrs['feathers']);
                 else {
                     $tokens = array($where, $params, $attr);
                     Trigger::current()->filter($tokens, "post_url_token");
                     list($where, $params, $attr) = $tokens;
 
                     if ($attr !== null) {
-                        if (!isset($get[$attr]))
+                        if (!isset($attrs[$attr]))
                             continue;
 
-                        $where[$attr] = $get[$attr];
+                        $where[$attr] = $attrs[$attr];
                     }
                 }
 

@@ -141,11 +141,11 @@
                            array("done" => isset($_GET['done']),
                                  "feathers" => Feathers::$instances,
                                  "selected_feather" => Feathers::$instances[$feather],
-                                 "args" => array("url" => urldecode(stripslashes($_GET['url'])),
-                                                 "page_url" => urldecode(stripslashes($_GET['url'])),
-                                                 "title" => urldecode(stripslashes($_GET['title'])),
-                                                 "page_title" => urldecode(stripslashes($_GET['title'])),
-                                                 "selection" => urldecode(stripslashes($_GET['selection'])))));
+                                 "args" => array("url" => stripslashes($_GET['url']),
+                                                 "page_url" => stripslashes($_GET['url']),
+                                                 "title" => stripslashes($_GET['title']),
+                                                 "page_title" => stripslashes($_GET['title']),
+                                                 "selection" => stripslashes($_GET['selection']))));
         }
 
         /**
@@ -286,10 +286,13 @@
             foreach ($results[0] as $result)
                 $ids[] = $result["id"];
 
-            $posts = new Paginator(Post::find(array("placeholders" => true,
-                                                    "drafts" => true,
-                                                    "where" => array("id" => $ids))),
-                                   25);
+            if (!empty($ids))
+                $posts = new Paginator(Post::find(array("placeholders" => true,
+                                                        "drafts" => true,
+                                                        "where" => array("id" => $ids))),
+                                       25);
+            else
+                $posts = new Paginator(array());
 
             foreach ($posts->paginated as &$post) {
                 if (preg_match_all("/\{([0-9]+)\}/", $post->status, $matches)) {
@@ -452,7 +455,7 @@
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to manage pages."));
 
             fallback($_GET['query'], "");
-            list($where, $params) = keywords(urldecode($_GET['query']), "(title LIKE :query OR body LIKE :query)");
+            list($where, $params) = keywords($_GET['query'], "(title LIKE :query OR body LIKE :query)");
 
             $this->display("manage_pages",
                            array("pages" => new Paginator(Page::find(array("placeholders" => true,
@@ -637,7 +640,7 @@
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to manage users."));
 
             fallback($_GET['query'], "");
-            list($where, $params) = keywords(urldecode($_GET['query']), "(login LIKE :query OR full_name LIKE :query OR email LIKE :query OR website LIKE :query)");
+            list($where, $params) = keywords($_GET['query'], "login LIKE :query OR full_name LIKE :query OR email LIKE :query OR website LIKE :query");
 
             $this->display("manage_users",
                            array("users" => new Paginator(User::find(array("placeholders" => true,
@@ -819,10 +822,13 @@
                 foreach ($results[0] as $result)
                     $ids[] = $result["id"];
 
-                $posts = Post::find(array("drafts" => true,
-                                          "where" => array("id" => $ids),
-                                          "order" => "id ASC"),
-                                    array("filter" => false));
+                if (!empty($ids))
+                    $posts = Post::find(array("drafts" => true,
+                                              "where" => array("id" => $ids),
+                                              "order" => "id ASC"),
+                                        array("filter" => false));
+                else
+                    $posts = new Paginator(array());
 
                 $latest_timestamp = 0;
                 foreach ($posts as $post)
@@ -888,7 +894,7 @@
             }
 
             if (isset($_POST['pages'])) {
-                list($where, $params) = keywords(urldecode($_POST['filter_pages']), "(title LIKE :query OR body LIKE :query)");
+                list($where, $params) = keywords($_POST['filter_pages'], "(title LIKE :query OR body LIKE :query)");
 
                 $pages = Page::find(array("where" => $where, "params" => $params, "order" => "id ASC"),
                                     array("filter" => false));
@@ -945,7 +951,7 @@
             }
 
             if (isset($_POST['groups'])) {
-                list($where, $params) = keywords(urldecode($_POST['filter_groups']), "name LIKE :query");
+                list($where, $params) = keywords($_POST['filter_groups'], "name LIKE :query");
 
                 $groups = Group::find(array("where" => $where, "params" => $params, "order" => "id ASC"));
 
@@ -962,7 +968,7 @@
             }
 
             if (isset($_POST['users'])) {
-                list($where, $params) = keywords(urldecode($_POST['filter_users']), "(login LIKE :query OR full_name LIKE :query OR email LIKE :query OR website LIKE :query)");
+                list($where, $params) = keywords($_POST['filter_users'], "(login LIKE :query OR full_name LIKE :query OR email LIKE :query OR website LIKE :query)");
 
                 $users = User::find(array("where" => $where, "params" => $params, "order" => "id ASC"));
 

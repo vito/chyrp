@@ -49,7 +49,7 @@
             $this->request = $parse["path"] == "/" ?
                                  $_SERVER['REQUEST_URI'] :
                                  preg_replace("/{$this->safe_path}?/", "", $_SERVER['REQUEST_URI'], 1) ;
-            $this->arg = explode("/", trim($this->request, "/"));
+            $this->arg = array_map("urldecode", explode("/", trim($this->request, "/")));
 
             if (method_exists($controller, "parse"))
                 $controller->parse($this);
