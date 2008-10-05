@@ -325,11 +325,18 @@
             if (empty($_GET['query']))
                 return Flash::warning(__("Please enter a search term."));
 
-            list($where, $params) = keywords($_GET['query'], "xml LIKE :query OR url LIKE :query");
+            list($where, $params) = keywords($_GET['query'], "post_attributes.value LIKE :query OR url LIKE :query");
+
+            $results = Post::find(array("placeholders" => true,
+                                        "where" => $where,
+                                        "params" => $params));
+
+            $ids = array();
+            foreach ($results[0] as $result)
+                $ids[] = $result["id"];
 
             $posts = new Paginator(Post::find(array("placeholders" => true,
-                                                    "where" => $where,
-                                                    "params" => $params)),
+                                                    "where" => array("id" => $ids))),
                                    $this->post_limit);
 
             $this->display(array("pages/search", "pages/index"),

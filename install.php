@@ -161,7 +161,6 @@
             # Posts table
             $sql->query("CREATE TABLE IF NOT EXISTS __posts (
                              id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                             xml LONGTEXT,
                              feather VARCHAR(32) DEFAULT '',
                              clean VARCHAR(128) DEFAULT '',
                              url VARCHAR(128) DEFAULT '',
@@ -171,6 +170,14 @@
                              created_at DATETIME DEFAULT '0000-00-00 00:00:00',
                              updated_at DATETIME DEFAULT '0000-00-00 00:00:00'
                          ) DEFAULT CHARSET=utf8");
+
+            # Post attributes table.
+            $sql->query("CREATE TABLE IF NOT EXISTS __post_attributes (
+                             post_id INTEGER NOT NULL ,
+                             name VARCHAR(100) DEFAULT '',
+                             value LONGTEXT,
+                             PRIMARY KEY (post_id, name)
+                         ) DEFAULT CHARSET=utf8")
 
             # Pages table
             $sql->query("CREATE TABLE IF NOT EXISTS __pages (

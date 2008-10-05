@@ -764,9 +764,9 @@
             if (!empty($_GET['search'])) {
                 $user = new User(null, array("where" => array("login" => $_GET['search'])));
                 if (!$user->no_results)
-                    $groups = new Paginator(array($user->group()), 10, "page", false);
+                    $groups = new Paginator(array($user->group()), 10);
                 else
-                    $groups = new Paginator(array(), 10, "page", false);
+                    $groups = new Paginator(array(), 10);
             } else
                 $groups = new Paginator(Group::find(array("placeholders" => true, "order" => "id ASC")), 10);
 

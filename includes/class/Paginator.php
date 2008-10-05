@@ -53,15 +53,15 @@
          * Returns:
          *     A paginated array of length $per_page or smaller.
          */
-        public function __construct($array, $per_page = 5, $name = "page", $model = true, $page = null) {
+        public function __construct($array, $per_page = 5, $name = "page", $model = null, $page = null) {
             $this->array = $array;
-
-            if ($model)
-                list($array, $model_name) = $array;
 
             $this->per_page = $per_page;
             $this->name = $name;
-            $this->model = $model;
+            $this->model = fallback($model, (count($array) == 2 and is_array($array[0]) and class_exists($array[1])));
+
+            if ($model)
+                list($array, $model_name) = $array;
 
             $this->total = count($array);
             $this->page = fallback($page, fallback($_GET[$name], 1, true), true);

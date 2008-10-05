@@ -51,6 +51,7 @@
             fallback($options["order"], "id DESC");
             fallback($options["offset"], null);
             fallback($options["read_from"], array());
+            fallback($options["ignore_dupes"], array());
 
             $options["where"] = (array) $options["where"];
             $options["from"] = (array) $options["from"];
@@ -67,15 +68,40 @@
                 $read = $options["read_from"];
             else {
                 $query = $sql->select($options["from"],
-                                     $options["select"],
-                                     $options["where"],
-                                     $options["order"],
-                                     $options["params"],
-                                     1,
-                                     $options["offset"],
-                                     $options["group"],
-                                     $options["left_join"]);
-                $read = $query->fetch();
+                                      $options["select"],
+                                      $options["where"],
+                                      $options["order"],
+                                      $options["params"],
+                                      null,
+                                      $options["offset"],
+                                      $options["group"],
+                                      $options["left_join"]);
+                $all = $query->fetchAll();
+
+                if (count($all) == 1)
+                    $read = $all[0];
+                else {
+                    $rows = array();
+                    
+                    foreach ($all as $row)
+                        foreach ($row as $column => $val)
+                            $rows[$row["id"]][$column][] = $val;
+
+                    $read = false;
+                    foreach ($rows as &$row) {
+                        foreach ($row as $name => &$column) {
+                            $column = (!in_array($name, $options["ignore_dupes"]) ?
+                                          array_unique($column) :
+                                          $column);
+                            $column = (count($column) == 1) ?
+                                          $column[0] :
+                                          $column ;
+                        }
+
+                        $read = $row;
+                        continue; # With this function we only want one result.
+                    }
+                }
             }
 
             if (!count($read) or !$read)
@@ -134,6 +160,7 @@
             fallback($options["offset"], null);
             fallback($options["limit"], null);
             fallback($options["placeholders"], false);
+            fallback($options["ignore_dupes"], array());
 
             $options["where"]  = (array) $options["where"];
             $options["from"]   = (array) $options["from"];
@@ -150,11 +177,28 @@
                                            $options["limit"],
                                            $options["offset"],
                                            $options["group"],
-                                           $options["left_join"]);
+                                           $options["left_join"])->fetchAll();
 
             $shown_dates = array();
             $results = array();
-            foreach ($grab->fetchAll() as $result) {
+
+            $rows = array();
+
+            foreach ($grab as $row)
+                foreach ($row as $column => $val)
+                    $rows[$row["id"]][$column][] = $val;
+
+            foreach ($rows as &$row)
+                foreach ($row as $name => &$column) {
+                    $column = (!in_array($name, $options["ignore_dupes"]) ?
+                                  array_unique($column) :
+                                  $column);
+                    $column = (count($column) == 1) ?
+                                  $column[0] :
+                                  $column ;
+                }
+
+            foreach ($rows as $result) {
                 if ($options["placeholders"]) {
                     $results[] = $result;
                     continue;

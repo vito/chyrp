@@ -11,17 +11,17 @@
         # The translation array of the post URL setting to regular expressions.
         # Passed through the route_code filter.
         static $url_attrs = array('(year)'     => '([0-9]{4})',
-                                       '(month)'    => '([0-9]{1,2})',
-                                       '(day)'      => '([0-9]{1,2})',
-                                       '(hour)'     => '([0-9]{1,2})',
-                                       '(minute)'   => '([0-9]{1,2})',
-                                       '(second)'   => '([0-9]{1,2})',
-                                       '(id)'       => '([0-9]+)',
-                                       '(author)'   => '([^\/]+)',
-                                       '(clean)'    => '([^\/]+)',
-                                       '(url)'      => '([^\/]+)',
-                                       '(feather)'  => '([^\/]+)',
-                                       '(feathers)' => '([^\/]+)');
+                                  '(month)'    => '([0-9]{1,2})',
+                                  '(day)'      => '([0-9]{1,2})',
+                                  '(hour)'     => '([0-9]{1,2})',
+                                  '(minute)'   => '([0-9]{1,2})',
+                                  '(second)'   => '([0-9]{1,2})',
+                                  '(id)'       => '([0-9]+)',
+                                  '(author)'   => '([^\/]+)',
+                                  '(clean)'    => '([^\/]+)',
+                                  '(url)'      => '([^\/]+)',
+                                  '(feather)'  => '([^\/]+)',
+                                  '(feathers)' => '([^\/]+)');
 
         /**
          * Function: __construct
@@ -53,10 +53,25 @@
                     $options["where"][] = $private;
             }
 
+            $options["left_join"][] = array("table" => "post_attributes",
+                                            "where" => "post_id = posts.id");
+            $options["select"] = array_merge(array("posts.*",
+                                                   "post_attributes.name AS attribute_names",
+                                                   "post_attributes.value AS attribute_values"),
+                                             fallback($options["select"], array(), true));
+            $options["ignore_dupes"] = array("attribute_names", "attribute_values");
+
             parent::grab($this, $post_id, $options);
 
             if ($this->no_results)
                 return false;
+
+            $this->attribute_values = (array) $this->attribute_values;
+            $this->attribute_names  = (array) $this->attribute_names;
+
+            $this->attributes = ($this->attribute_names) ?
+                                    array_combine($this->attribute_names, $this->attribute_values) :
+                                    array() ;
 
             $this->filtered = (!isset($options["filter"]) or $options["filter"]) and !XML_RPC;
             $this->slug =& $this->url;
@@ -78,7 +93,7 @@
 
             $has_status = false;
             foreach ($options["where"] as $key => $val)
-                if (is_int($key) and substr_count($val, "status") or $key == "status")
+                if ((is_int($key) and substr_count($val, "status")) or $key === "status")
                     $has_status = true;
 
             if (!XML_RPC) {
@@ -92,6 +107,14 @@
                 if (!$has_status)
                     $options["where"][] = $private;
             }
+
+            $options["left_join"][] = array("table" => "post_attributes",
+                                            "where" => "post_id = posts.id");
+            $options["select"] = array_merge(array("posts.*",
+                                                   "post_attributes.name AS attribute_names",
+                                                   "post_attributes.value AS attribute_values"),
+                                             fallback($options["select"], array(), true));
+            $options["ignore_dupes"] = array("attribute_names", "attribute_values");
 
             fallback($options["order"], "pinned DESC, created_at DESC, id DESC");
 
@@ -148,15 +171,10 @@
                 Trigger::current()->filter($options, "bookmarklet_submit_options");
             }
 
-            $xml = new SimpleXMLElement("<post></post>");
-            self::arr2xml($xml, $values);
-            self::arr2xml($xml, $options);
-
             $sql = SQL::current();
             $visitor = Visitor::current();
             $sql->insert("posts",
-                         array("xml" => $xml->asXML(),
-                               "feather" => $feather,
+                         array("feather" => $feather,
                                "user_id" => $user,
                                "pinned" => (int) $pinned,
                                "status" => $status,
@@ -171,6 +189,13 @@
                              array("id" => $id),
                              array("clean" => $feather.".".$id,
                                    "url" => $feather.".".$id));
+
+            # Insert the post attributes.
+            foreach (array_merge($values, $options) as $name => $value)
+                $sql->insert("post_attributes",
+                             array("post_id" => $id,
+                                   "name" => $name,
+                                   "value" => $value));
 
             $post = new self($id, array("drafts" => true));
 
@@ -234,10 +259,6 @@
 
             fallback($options, fallback($_POST['option'], array(), true));
 
-            $xml = new SimpleXMLElement("<post></post>");
-            self::arr2xml($xml, $values);
-            self::arr2xml($xml, $options);
-
             # Update all values of this post.
             list($this->user_id,
                  $this->pinned,
@@ -246,19 +267,25 @@
                  $this->created_at,
                  $this->updated_at) = array($user, $pinned, $status, $slug, $created_at, $updated_at);
 
-            foreach ($xml->post as $name => $val)
-                $this->$name = $val;
 
             $sql = SQL::current();
             $sql->update("posts",
                          array("id" => $this->id),
-                         array("xml" => $xml->asXML(),
-                               "pinned" => $pinned,
+                         array("pinned" => $pinned,
                                "status" => $status,
                                "clean" => $slug,
                                "url" => $slug,
                                "created_at" => $created_at,
                                "updated_at" => $updated_at));
+
+            # Insert the post attributes.
+            foreach (array_merge($values, $options) as $name => $value) {
+                $this->$name = $value;
+                $sql->replace("post_attributes",
+                              array("post_id" => $id,
+                                    "name" => $name,
+                                    "value" => $value));
+            }
 
             $trigger = Trigger::current();
             $trigger->call("update_post", $this, $values, $user, $pinned, $status, $slug, $created_at, $updated_at, $options);
@@ -271,6 +298,7 @@
          */
         static function delete($id) {
             parent::destroy(get_class(), $id);
+            SQL::current()->delete("post_attributes", array("post_id" => $id));
         }
 
         /**
@@ -566,23 +594,22 @@
          * Parses the passed XML and loads the tags and values into <Post>.
          */
         private function parse() {
-            foreach (self::xml2arr(simplexml_load_string($this->xml)) as $key => $val)
+            foreach ($this->attributes as $key => $val)
                 $this->$key = $val;
 
             if (!$this->filtered)
                 return;
 
+            $trigger = Trigger::current();
             $class = camelize($this->feather);
 
-            $trigger = Trigger::current();
             $trigger->filter($this, "filter_post");
-
 
             if (isset(Feathers::$custom_filters[$class])) # Run through feather-specified filters, first.
                 foreach (Feathers::$custom_filters[$class] as $custom_filter) {
                     $varname = $custom_filter["field"]."_unfiltered";
                     if (!isset($this->$varname))
-                        $this->$varname = $this->$custom_filter["field"];
+                        $this->$varname = fallback($this->$custom_filter["field"], null);
 
                     $this->$custom_filter["field"] = call_user_func_array(array(Feathers::$instances[$this->feather], $custom_filter["name"]),
                                                                           array($this->$custom_filter["field"], $this));
@@ -592,7 +619,7 @@
                 foreach (Feathers::$filters[$class] as $filter) {
                     $varname = $filter["field"]."_unfiltered";
                     if (!isset($this->$varname))
-                        $this->$varname = $this->$filter["field"];
+                        $this->$varname = fallback($this->$filter["field"], null);
 
                     if (isset($this->$filter["field"]) and !empty($this->$filter["field"]))
                         $trigger->filter($this->$filter["field"], $filter["name"], $this);
@@ -644,56 +671,6 @@
                 false;
 
             return Config::current()->chyrp_url."/includes/trackback.php?id=".$this->id;
-        }
-
-        /**
-         * Function: arr2xml
-         * Recursively adds an array (or object I guess) to a SimpleXML object.
-         *
-         * Parameters:
-         *     $object - The SimpleXML object to add to.
-         *     $data - The data to add to the SimpleXML object.
-         */
-        static function arr2xml(&$object, $data) {
-            foreach ($data as $key => $val) {
-                if (is_int($key) and (empty($val) or (is_string($val) and trim($val) == ""))) {
-                    unset($data[$key]);
-                    continue;
-                }
-
-                if (is_array($val)) {
-                    if (in_array(0, array_keys($val))) { # Numeric-indexed things need to be added as duplicates
-                        foreach ($val as $dup) {
-                            $xml = $object->addChild($key);
-                            self::arr2xml($xml, $dup);
-                        }
-                    } else {
-                        $xml = $object->addChild($key);
-                        self::arr2xml($xml, $val);
-                    }
-                } else
-                    $object->addChild($key, fix($val, false, false));
-            }
-        }
-
-        /**
-         * Function: xml2arr
-         * Recursively converts a SimpleXML object (and children) to an array.
-         *
-         * Parameters:
-         *     $parse - The SimpleXML object to convert into an array.
-         */
-        static function xml2arr($parse) {
-            if (empty($parse))
-                return "";
-
-            $parse = (array) $parse;
-
-            foreach ($parse as &$val)
-                if (get_class($val) == "SimpleXMLElement")
-                    $val = self::xml2arr($val);
-
-            return $parse;
         }
 
         /**
