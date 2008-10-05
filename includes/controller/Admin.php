@@ -267,7 +267,8 @@
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to manage any posts."));
 
             fallback($_GET['query'], "");
-            list($where, $params) = keywords(urldecode($_GET['query']), "xml LIKE :query OR url LIKE :query");
+
+            list($where, $params) = keywords($_GET['query'], "post_attributes.value LIKE :query OR url LIKE :query");
 
             if (!empty($_GET['month']))
                 $where["created_at like"] = $_GET['month']."-%";
@@ -276,10 +277,19 @@
             if (!$visitor->group()->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post"))
                 $where["user_id"] = $visitor->id;
 
+            $results = Post::find(array("placeholders" => true,
+                                        "drafts" => true,
+                                        "where" => $where,
+                                        "params" => $params));
+
+            $ids = array();
+            foreach ($results[0] as $result)
+                $ids[] = $result["id"];
+
             $posts = new Paginator(Post::find(array("placeholders" => true,
-                                                                     "drafts" => true,
-                                                                     "where" => $where,
-                                                                     "params" => $params)), 25);
+                                                    "drafts" => true,
+                                                    "where" => array("id" => $ids))),
+                                   25);
 
             foreach ($posts->paginated as &$post) {
                 if (preg_match_all("/\{([0-9]+)\}/", $post->status, $matches)) {
@@ -791,9 +801,27 @@
             $exports = array();
 
             if (isset($_POST['posts'])) {
-                list($where, $params) = keywords(urldecode($_POST['filter_posts']), "xml LIKE :query OR url LIKE :query");
+                list($where, $params) = keywords($_POST['filter_posts'], "post_attributes.value LIKE :query OR url LIKE :query");
 
-                $posts = Post::find(array("drafts" => true, "where" => $where, "params" => $params, "order" => "id ASC"),
+                if (!empty($_GET['month']))
+                    $where["created_at like"] = $_GET['month']."-%";
+
+                $visitor = Visitor::current();
+                if (!$visitor->group()->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post"))
+                    $where["user_id"] = $visitor->id;
+
+                $results = Post::find(array("placeholders" => true,
+                                            "drafts" => true,
+                                            "where" => $where,
+                                            "params" => $params));
+
+                $ids = array();
+                foreach ($results[0] as $result)
+                    $ids[] = $result["id"];
+
+                $posts = Post::find(array("drafts" => true,
+                                          "where" => array("id" => $ids),
+                                          "order" => "id ASC"),
                                     array("filter" => false));
 
                 $latest_timestamp = 0;
@@ -824,12 +852,6 @@
                     $tagged = str_replace("#", "/", $tagged);
                     $tagged = preg_replace("/(".preg_quote(parse_url($post->url(), PHP_URL_HOST)).")/", "\\1,".when("Y-m-d", $updated).":", $tagged, 1);
 
-                    $split = explode("\n", $post->xml);
-                    array_shift($split);
-                    $content = implode("\n", $split);
-                    $content = preg_replace("/(^<|<\/)post>/", "", $content);
-                    $content = preg_replace("/><([^\/])/", ">\n\t\t\t<\\1", $content);
-
                     $url = $post->url();
                     $posts_atom.= ' <entry xml:base="'.fix($url).'">'."\r";
                     $posts_atom.= '     <title type="html">'.$title.'</title>'."\r";
@@ -846,7 +868,10 @@
                     $posts_atom.= '         <chyrp:login>'.fix($post->user()->login).'</chyrp:login>'."\r";
                     $posts_atom.= '     </author>'."\r";
                     $posts_atom.= '     <content>'."\r";
-                    $posts_atom.= '         '.$content;
+
+                    foreach ($post->attributes as $key => $val)
+                        $posts_atom.= '         <'.$key.'>'.fix($val).'</'.$key.'>';
+
                     $posts_atom.= '     </content>'."\r";
 
                     foreach (array("feather", "clean", "url", "pinned", "status") as $attr)
@@ -1061,7 +1086,7 @@
                     $login = $entry->author->children("http://chyrp.net/export/1.0/")->login;
                     $user_id = $sql->select("users", "id", array("login" => $login), "id DESC")->fetchColumn();
 
-                    $data = Post::xml2arr($entry->content);
+                    $data = xml2arr($entry->content);
 
                     if (!empty($_POST['media_url']))
                         array_walk_recursive($data, "media_url_scan");

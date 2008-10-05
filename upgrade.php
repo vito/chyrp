@@ -230,56 +230,6 @@
             return " <span class=\"boo\">".__("failed!")."</span>\n".$info;
     }
 
-    /**
-     * Function: xml2arr
-     * Recursively converts a SimpleXML object (and children) to an array.
-     *
-     * Parameters:
-     *     $parse - The SimpleXML object to convert into an array.
-     */
-    function xml2arr($parse) {
-        if (empty($parse))
-            return "";
-
-        $parse = (array) $parse;
-
-        foreach ($parse as &$val)
-            if (get_class($val) == "SimpleXMLElement")
-                $val = self::xml2arr($val);
-
-        return $parse;
-    }
-
-    /**
-     * Function: arr2xml
-     * Recursively adds an array (or object I guess) to a SimpleXML object.
-     *
-     * Parameters:
-     *     $object - The SimpleXML object to add to.
-     *     $data - The data to add to the SimpleXML object.
-     */
-    function arr2xml(&$object, $data) {
-        foreach ($data as $key => $val) {
-            if (is_int($key) and (empty($val) or (is_string($val) and trim($val) == ""))) {
-                unset($data[$key]);
-                continue;
-            }
-
-            if (is_array($val)) {
-                if (in_array(0, array_keys($val))) { # Numeric-indexed things need to be added as duplicates
-                    foreach ($val as $dup) {
-                        $xml = $object->addChild($key);
-                        arr2xml($xml, $dup);
-                    }
-                } else {
-                    $xml = $object->addChild($key);
-                    arr2xml($xml, $val);
-                }
-            } else
-                $object->addChild($key, fix($val, false, false));
-        }
-    }
-
     #---------------------------------------------
     # Upgrading Actions
     #---------------------------------------------

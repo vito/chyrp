@@ -189,17 +189,23 @@
                 return $admin->display("manage_tags", array("tag_cloud" => $cloud));
 
             fallback($_GET['query'], "");
-            list($where, $params) = keywords(urldecode($_GET['query']), "xml LIKE :query OR url LIKE :query");
+            list($where, $params) = keywords(urldecode($_GET['query']), "post_attributes.value LIKE :query OR url LIKE :query");
 
             $visitor = Visitor::current();
             if (!$visitor->group()->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post"))
-                $where["user_id"] = $visitor->id;
+
+            $results = Post::find(array("placeholders" => true,
+                                        "where" => $where,
+                                        "params" => $params));
+
+            $ids = array();
+            foreach ($results[0] as $result)
+                $ids[] = $result["id"];
 
             $admin->display("manage_tags", array("tag_cloud" => $cloud,
                                                  "posts" => new Paginator(Post::find(array("placeholders" => true,
                                                                                            "drafts" => true,
-                                                                                           "where" => $where,
-                                                                                           "params" => $params)),
+                                                                                           "where" => array("id" => $ids))),
                                                                           25)));
         }
 
