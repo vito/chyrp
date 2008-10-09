@@ -678,6 +678,7 @@
             $options["params"][":visitor_id"] = Visitor::current()->id;
 
             $options["group"][] = "id";
+            $options["group"][] = "post_attributes.name";
 
             return $options;
         }

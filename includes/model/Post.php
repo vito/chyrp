@@ -75,6 +75,7 @@
 
             $this->filtered = (!isset($options["filter"]) or $options["filter"]) and !XML_RPC;
             $this->slug =& $this->url;
+
             fallback($this->clean, $this->url);
 
             $this->parse();
