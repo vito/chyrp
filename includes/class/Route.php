@@ -169,7 +169,7 @@
         }
 
         /**
-         * Function: route
+         * Function: remove
          * Removes a route added by <add>.
          *
          * Parameters:
