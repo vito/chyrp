@@ -575,9 +575,9 @@
                 return $this->prev;
 
             return $this->prev = new self(null, array("where" => array("created_at <" => $this->created_at,
-                                                                       $this->status == "draft" ?
+                                                                       ($this->status == "draft" ?
                                                                            self::statuses(array("draft")) :
-                                                                           self::statuses()),
+                                                                           self::statuses())),
                                                       "order" => "created_at DESC, id DESC"));
         }
 

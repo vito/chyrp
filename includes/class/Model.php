@@ -81,15 +81,19 @@
                 if (count($all) == 1)
                     $read = $all[0];
                 else {
-                    $rows = array();
-                    
-                    foreach ($all as $row)
-                        foreach ($row as $column => $val)
-                            $rows[$row["id"]][$column][] = $val;
+                    $merged = array();
 
-                    $read = false;
-                    foreach ($rows as &$row) {
-                        foreach ($row as $name => &$column) {
+                    foreach ($all as $index => $row)
+                        foreach ($row as $column => $val)
+                            $merged[$row["id"]][$column][] = $val;
+
+                    foreach ($all as $index => &$row)
+                        $row = $merged[$row["id"]];
+
+                    if (count($all)) {
+                        $keys = array_keys($all);
+                        $read = $all[$keys[0]];
+                        foreach ($read as $name => &$column) {
                             $column = (!in_array($name, $options["ignore_dupes"]) ?
                                           array_unique($column) :
                                           $column);
@@ -97,10 +101,8 @@
                                           $column[0] :
                                           $column ;
                         }
-
-                        $read = $row;
-                        continue; # With this function we only want one result.
-                    }
+                    } else
+                        $read = false;
                 }
             }
 

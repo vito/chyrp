@@ -206,7 +206,7 @@
                 new Paginator(Post::find(array("placeholders" => true,
                                                "drafts" => true,
                                                "where" => array("id" => $ids))),
-                              25)
+                              25);
             else
                 $posts = new Paginator(array());
 

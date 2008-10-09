@@ -7,32 +7,21 @@
      *     <Model>
      */
     class Group extends Model {
-        # Array: $permissionsCache
-        # Caches the permissions of every group so they don't have to be parsed on every grab.
-        static $permissionsCache = array();
-
         /**
          * Function: __construct
          * See Also:
          *     <Model::grab>
          */
         public function __construct($group_id = null, $options = array()) {
+            $options["left_join"][] = array("table" => "permissions",
+                                            "where" => "group_id = groups.id");
+            $options["select"][] = "groups.*";
+            $options["select"][] = "permissions.id AS permissions";
+
             parent::grab($this, $group_id, $options);
 
             if ($this->no_results)
                 return false;
-
-            # Cache group permissions.
-            if (isset(self::$permissionsCache[$this->id]))
-                $this->permissions = self::$permissionsCache[$this->id];
-            else {
-                $all = SQL::current()->select("permissions")->fetchAll();
-
-                foreach ($all as $permission)
-                    self::$permissionsCache[$permission["group_id"]][] = $permission["id"];
-
-                $this->permissions = fallback(self::$permissionsCache[$this->id], array());
-            }
         }
 
         /**

@@ -13,12 +13,6 @@
          *     <Model::grab>
          */
         public function __construct($user_id, $options = array()) {
-            $options["left_join"][] = array("table" => "groups",
-                                            "where" => "id = users.group_id");
-            $options["select"] = array_merge(array("users.*",
-                                                   "groups.name AS group_name"),
-                                             (array) fallback($options["select"], "*", true));
-
             parent::grab($this, $user_id, $options);
 
             if ($this->no_results)
@@ -34,14 +28,6 @@
          */
         static function find($options = array(), $options_for_object = array()) {
             fallback($options["order"], "id ASC");
-
-            $options["left_join"][] = array("table" => "groups",
-                                            "where" => "id = users.group_id");
-
-            $options["select"] = array_merge(array("users.*",
-                                                   "groups.name AS group_name"),
-                                             (array) fallback($options["select"], "*", true));
-
             return parent::search(get_class(), $options, $options_for_object);
         }
 
@@ -150,8 +136,7 @@
             if ($this->no_results)
                 return false;
 
-            return new Group(null, array("read_from" => array("id" => $this->group_id,
-                                                              "name" => $this->group_name)));
+            return new Group($this->group_id);
         }
 
         /**
