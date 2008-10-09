@@ -124,12 +124,19 @@
 
             # Update their permissions
             $sql->delete("permissions", array("group_id" => $this->id));
-            foreach ($permissions as $id => $name)
+            foreach ($permissions as $id) {
+                $name = $sql->select("permissions",
+                                     "name",
+                                     array("id" => $id, "group_id" => 0),
+                                     null,
+                                     array(),
+                                     1)->fetchColumn();
                 $sql->insert("permissions",
                              array("id" => $id,
                                    "name" => $name,
                                    "group_id" => $this->id));
-    
+            }
+ 
             Trigger::current()->call("update_group", $this, $name, $permissions);
         }
 
