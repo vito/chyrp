@@ -30,6 +30,11 @@
          *     <Model::search>
          */
         static function find($options = array(), $options_for_object = array()) {
+            $options["left_join"][] = array("table" => "permissions",
+                                            "where" => "group_id = groups.id");
+            $options["select"][] = "groups.*";
+            $options["select"][] = "permissions.id AS permissions";
+
             return parent::search(get_class(), $options, $options_for_object);
         }
 
