@@ -137,6 +137,10 @@
             else
                 $feather = $this->selected_bookmarklet;
 
+            fallback($_GET['url']);
+            fallback($_GET['title']);
+            fallback($_GET['selection']);
+
             $this->display("bookmarklet",
                            array("done" => isset($_GET['done']),
                                  "feathers" => Feathers::$instances,
