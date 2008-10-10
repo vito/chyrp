@@ -282,7 +282,7 @@
             foreach (array_merge($values, $options) as $name => $value) {
                 $this->$name = $value;
                 $sql->replace("post_attributes",
-                              array("post_id" => $id,
+                              array("post_id" => $this->id,
                                     "name" => $name,
                                     "value" => $value));
             }
