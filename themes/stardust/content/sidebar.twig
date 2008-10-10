@@ -46,7 +46,7 @@ ${ trigger.call("sidebar") }
                 <ul id="tags_list">
 {% for tag in tags %}
                     <li>
-                        <a href="{% url "tag/" ~ tag.url %}">$tag.name</a>
+                        <a href="{% url "tag/" ~ tag.url %}" title="${ "%d post tagged &quot;%s&quot;" | translate_plural("%d posts tagged &quot;%s&quot;", tag.popularity) | format(tag.popularity, (tag.name | escape)) }">$tag.name</a>
                         <span class="sub">($tag.popularity)</span>
                     </li>
 {% endfor %}
