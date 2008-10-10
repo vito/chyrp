@@ -337,13 +337,13 @@
         public function main_tag($main) {
             if (!isset($_GET['name']))
                 return $main->resort(array("pages/tag", "pages/index"),
-                                     array(),
-                                     __("No tag specified.", "tags"));
+                                     array("reason" => "no_tag_specified"),
+                                     __("No Tag", "tags"));
 
             if (!SQL::current()->count("tags", array("clean like" => "%{{".$_GET['name']."}}%")))
                 return $main->resort(array("pages/tag", "pages/index"),
-                                     array(),
-                                     __("Invalid tag specified.", "tags"));
+                                     array("reason" => "tag_not_found"),
+                                     __("Invalid Tag", "tags"));
 
             $posts = new Paginator(Post::find(array("placeholders" => true,
                                                     "where" => array("tags.clean like" => "%{{".$_GET['name']."}}%"))),

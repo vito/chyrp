@@ -718,8 +718,6 @@
          * Queue a failpage in the event that none of the routes are successful.
          */
         public function resort($file, $context, $title = null) {
-            var_dump("Resorting to:", $file, $context, $title);
-            fallback($title, __("Error"));
             $this->fallback = array($file, $context, $title);
             return false;
         }
