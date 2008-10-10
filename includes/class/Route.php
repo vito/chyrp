@@ -74,8 +74,11 @@
             $trigger->call("route_init", $this);
 
             $try = $this->try;
-            array_unshift($try, $this->action);
 
+            if (isset($this->action))
+                array_unshift($try, $this->action);
+
+            $count = 0;
             foreach ($try as $key => $val) {
                 if (is_numeric($key))
                     list($method, $args) = array($val, array());
@@ -95,9 +98,11 @@
                 else
                     $response = false;
 
-                if ($response !== false or $call !== false) {
+                if ($response !== false or $call !== false)
                     return $this->success = true;
-                }
+
+                if (++$count == count($try) and isset($this->controller->fallback) and method_exists($this->controller, "display"))
+                    call_user_func_array(array($this->controller, "display"), $this->controller->fallback);
             }
         }
 

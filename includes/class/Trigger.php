@@ -44,7 +44,7 @@
                 }
 
             if (!$this->exists($name))
-                return;
+                return false;
 
             $arguments = func_get_args();
             array_shift($arguments);

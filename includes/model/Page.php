@@ -172,11 +172,11 @@
             if (!$config->clean_urls)
                 return $config->url."/?action=page&amp;url=".urlencode($this->url);
 
-            $url = array("", $this->url);
+            $url = array("", urlencode($this->url));
 
             $page = $this;
             while (isset($page->parent_id) and $page->parent_id) {
-                $url[] = $page->parent()->url;
+                $url[] = urlencode($page->parent()->url);
                 $page = $page->parent();
             }
 

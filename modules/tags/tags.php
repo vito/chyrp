@@ -336,10 +336,14 @@
 
         public function main_tag($main) {
             if (!isset($_GET['name']))
-                return false;
+                return $main->resort(array("pages/tag", "pages/index"),
+                                     array(),
+                                     __("No tag specified.", "tags"));
 
             if (!SQL::current()->count("tags", array("clean like" => "%{{".$_GET['name']."}}%")))
-                return false;
+                return $main->resort(array("pages/tag", "pages/index"),
+                                     array(),
+                                     __("Invalid tag specified.", "tags"));
 
             $posts = new Paginator(Post::find(array("placeholders" => true,
                                                     "where" => array("tags.clean like" => "%{{".$_GET['name']."}}%"))),
@@ -511,7 +515,7 @@
 
             $linked = array();
             foreach ($tags as $clean => $tag)
-                $linked[] = '<a href="'.url("tag/".$clean).'" rel="tag">'.$tag.'</a>';
+                $linked[] = '<a href="'.url("tag/".urlencode($clean)).'" rel="tag">'.$tag.'</a>';
 
             return $linked;
         }
@@ -536,7 +540,7 @@
             foreach ($tags as $tag => $count)
                 $post->tags["info"][] = array("name" => $tag,
                                               "clean" => $tag2clean[$tag],
-                                              "url" => url("tag/".$tag2clean[$tag]));
+                                              "url" => url("tag/".urlencode($tag2clean[$tag])));
 
             $post->tags["unlinked"] = self::unlinked_tags($post->unclean_tags);
             $post->tags["linked"]   = self::linked_tags($post->unclean_tags, $post->clean_tags);
@@ -581,7 +585,7 @@
             list($unclean, $clean, $tag2clean,) = self::parseTags($unclean, $clean);
 
             foreach ($unclean as $name => $popularity)
-                $unclean[$name] = array("name" => $name, "popularity" => $popularity, "url" => $tag2clean[$name]);
+                $unclean[$name] = array("name" => $name, "popularity" => $popularity, "url" => urlencode($tag2clean[$name]), "clean" => $tag2clean[$name]);
 
             usort($unclean, array($this, "sort_tags_".$order_by."_".$order));
 

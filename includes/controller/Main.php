@@ -139,7 +139,7 @@
 
                     if (isset($matches[1]))
                         foreach ($matches[1] as $index => $parameter)
-                            $_GET[$parameter] = $url_matches[$index];
+                            $_GET[$parameter] = urldecode($url_matches[$index]);
 
                     $params = explode(";", $action);
                     $action = $params[0];
@@ -711,6 +711,17 @@
                 $prettify = preg_replace("/([^:]+): (.+)/", "\\1: <code>\\2</code>", $e->getMessage());
                 error(__("Error"), $prettify, debug_backtrace());
             }
+        }
+
+        /**
+         * Function: resort
+         * Queue a failpage in the event that none of the routes are successful.
+         */
+        public function resort($file, $context, $title = null) {
+            var_dump("Resorting to:", $file, $context, $title);
+            fallback($title, __("Error"));
+            $this->fallback = array($file, $context, $title);
+            return false;
         }
 
         /**

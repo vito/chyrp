@@ -210,7 +210,7 @@
             # Groups table
             $sql->query("CREATE TABLE IF NOT EXISTS __groups (
                              id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                             name VARCHAR(100) DEFAULT ''
+                             name VARCHAR(100) DEFAULT '',
                              UNIQUE (name)
                          ) DEFAULT CHARSET=utf8");
 
