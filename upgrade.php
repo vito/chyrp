@@ -682,6 +682,7 @@
         echo " - ".__("Creating `posts` table...").
              test($create = $sql->query("CREATE TABLE IF NOT EXISTS __posts (
                                              id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                                             xml LONGTEXT,
                                              feather VARCHAR(32) DEFAULT '',
                                              clean VARCHAR(128) DEFAULT '',
                                              url VARCHAR(128) DEFAULT '',
