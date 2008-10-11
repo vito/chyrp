@@ -1260,7 +1260,7 @@
 
         foreach ($parse as &$val)
             if (get_class($val) == "SimpleXMLElement")
-                $val = self::xml2arr($val);
+                $val = xml2arr($val);
 
         return $parse;
     }

@@ -585,7 +585,10 @@
             return;
 
         function insert_attributes($sql, $row, $xml, &$inserts) {
-            foreach ($xml as $name => $value)
+            foreach ($xml as $name => $value) {
+                if (is_array($value))
+                    $value = YAML::dump($value);
+
                 if (!$sql->insert("post_attributes",
                                   array("post_id" => $row["id"],
                                         "name" => $name,
@@ -601,13 +604,14 @@
                 } else
                     $inserts[] = array("id" => $row["id"],
                                        "name" => $name);
+            }
 
             return true;
         }
 
         $results = array();
         foreach ($rows->fetchAll() as $row) {
-            $xml = new SimpleXMLElement($row["xml"]);
+            $xml = xml2arr(new SimpleXMLElement($row["xml"]));
             $inserts = array();
             echo _f("Migrating attributes of post #%d...", array($row["id"])).
                  test($results[] = insert_attributes($sql, $row, $xml, $inserts));
