@@ -880,7 +880,7 @@
                     $posts_atom.= '     <content>'."\r";
 
                     foreach ($post->attributes as $key => $val)
-                        $posts_atom.= '         <'.$key.'>'.fix($val).'</'.$key.'>';
+                        $posts_atom.= '         <'.$key.'>'.fix($val).'</'.$key.'>'."\r";
 
                     $posts_atom.= '     </content>'."\r";
 

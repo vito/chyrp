@@ -20,6 +20,8 @@
 
             parent::grab($this, $group_id, $options);
 
+            $this->permissions = (array) $this->permissions;
+
             if ($this->no_results)
                 return false;
         }
@@ -74,7 +76,7 @@
          *
          * Parameters:
          *     $name - The group's name
-         *     $permissions - An array of the permissions.
+         *     $permissions - An array of the permissions (IDs).
          *
          * See Also:
          *     <update>
@@ -85,10 +87,10 @@
 
             $group_id = $sql->latest();
 
-            foreach ($permissions as $id => $name)
+            foreach ($permissions as $id)
                 $sql->insert("permissions",
                              array("id" => $id,
-                                   "name" => $name,
+                                   "name" => $sql->select("permissions", "name", array("id" => $id))->fetchColumn(),
                                    "group_id" => $group_id));
 
             $group = new self($group_id);
