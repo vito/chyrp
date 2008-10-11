@@ -985,14 +985,13 @@
         $theme = Theme::current();
         $main = MainController::current();
 
+        Trigger::current()->call("not_found");
+
         if ($theme->file_exists("pages/404"))
             $main->display("pages/404", array(), "404");
-        else {
-?>
-        <h1><?php echo __("Not Found", "theme"); ?></h1>
-        <div class="post body"><?php echo __("Sorry, but you are looking for something that isn't here."); ?></div>
-<?php
-        }
+        else
+            error(__("404 Not Found"), __("The requested page could not be located."));
+
         exit;
     }
 
