@@ -621,6 +621,82 @@
             echo __("Removing `xml` column from `posts` table...")
                  .test($sql->query("ALTER TABLE __posts DROP xml"));
     }
+
+    function add_group_id_to_permissions() {
+        $sql = SQL::current();
+        if ($sql->select("permissions", "group_id"))
+            return;
+
+        echo __("Backing up permissions...").
+             test($permissions = $sql->select("permissions"));
+
+        if (!$permissions)
+            return;
+
+        $backup = $permissions->fetchAll();
+
+        echo __("Dropping `permissions` table...").
+             test($sql->query("DROP TABLE __permissions"));
+
+        echo __("Creating `permissions` table...").
+             test($sql->query("CREATE TABLE __permissions (
+                                   id VARCHAR(100) DEFAULT '',
+                                   name VARCHAR(100) DEFAULT '',
+                                   group_id INTEGER DEFAULT 0,
+                                   PRIMARY KEY (id, group_id)
+                               ) DEFAULT CHARSET=utf8"));
+
+        foreach ($backup as $permission)
+            echo _f("Restoring permission `%s`...", array($permission["name"])).
+                 test($sql->insert("permissions",
+                                   array("id" => $permission["id"],
+                                         "name" => $permission["name"],
+                                         "group_id" => 0)));
+    }
+
+    function group_permissions_to_db() {
+        $sql = SQL::current();
+        if (!$sql->select("groups", "permissions"))
+            return;
+
+        echo __("Backing up groups...").
+             test($groups = $sql->select("groups"));
+
+        if (!$groups)
+            return;
+
+        $backup = $groups->fetchAll();
+            
+        $names = array();
+        foreach($backup as $group) {
+            $names[$group["id"]] = $group["name"];
+            $permissions[$group["id"]] = YAML::load($group["permissions"]);
+        }
+
+        echo __("Dropping `groups` table...").
+             test($sql->query("DROP TABLE __groups"));
+
+        echo __("Creating `groups` table...").
+             test($sql->query("CREATE TABLE __groups (
+                                   id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                                   name VARCHAR(100) DEFAULT '',
+                                   UNIQUE (name)
+                               ) DEFAULT CHARSET=utf8"));
+
+        foreach ($names as $id => $name)
+            echo _f("Restoring group `%s`...", array($name)).
+                 test($sql->insert("groups",
+                                   array("id" => $id,
+                                        "name" => $name)));
+        
+        foreach ($permissions as $id => $permissions)
+            foreach ($permissions as $permission)
+                echo _f("Restoring permission `%s` on group `%s`...", array($permission, $names[$id])).
+                     test($sql->insert("permissions",
+                                       array("id" => $permission,
+                                             "name" => $sql->select("permissions", "name", array("id" => $permission))->fetchColumn(),
+                                             "group_id" => $id)));
+    }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -797,6 +873,10 @@
         add_post_attributes_table();
 
         post_xml_to_db();
+
+        add_group_id_to_permissions();
+
+        group_permissions_to_db();
 
         # Perform Module/Feather upgrades.
 
