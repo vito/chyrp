@@ -5,7 +5,7 @@
      * Chyrp - A Lightweight Blogging Engine
      *
      * Version:
-     *     v2.0
+     *     v2.0 RC2
      *
      * License:
      *     GPL-3
@@ -14,12 +14,9 @@
      *     Copyright (c) 2008 Alex Suraci, <http://toogeneric.com/>
      */
 
-    if (version_compare(PHP_VERSION, "5.1.3", "<"))
-        exit("Chyrp requires PHP 5.1.3 or greater. Installation cannot continue.");
-
     # Constant: CHYRP_VERSION
     # Chyrp's version number.
-    define('CHYRP_VERSION', "2.0");
+    define('CHYRP_VERSION', "2.0 RC2");
 
     # Constant: DEBUG
     # Should Chyrp use debugging processes?

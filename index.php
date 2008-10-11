@@ -1,4 +1,7 @@
 <?php
+    if (version_compare(PHP_VERSION, "5.1.3", "<"))
+        exit("Chyrp requires PHP 5.1.3 or greater. Installation cannot continue.");
+
     require_once "includes/common.php";
 
     # Prepare the controller.

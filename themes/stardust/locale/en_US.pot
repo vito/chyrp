@@ -1,14 +1,14 @@
-# Chyrp v2.0 Translation File.
+# Chyrp v2.0 RC2 Translation File.
 # Copyright (C) YEAR Alex Suraci
-# This file is distributed under the same license as the Chyrp v2.0 package.
+# This file is distributed under the same license as the Chyrp v2.0 RC2 package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Chyrp v2.0\n"
+"Project-Id-Version: Chyrp v2.0 RC2\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-10-04 16:21+0000\n"
+"POT-Creation-Date: 2008-10-11 18:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -22,7 +22,6 @@ msgid "Toggle Admin Bar"
 msgstr ""
 
 #: themes/stardust/pages/tag.twig:5
-#, php-format
 msgid "Posts tagged with &#8220;%s&#8221;"
 msgstr ""
 
@@ -56,11 +55,6 @@ msgstr ""
 
 #: themes/stardust/forms/post/edit.twig:35
 msgid "Registered Only"
-msgstr ""
-
-#: themes/stardust/pages/tag.twig:11
-#, php-format
-msgid "There aren't any posts tagged as &#8220;%s&#8221;."
 msgstr ""
 
 #: themes/stardust/forms/user/register.twig:19
@@ -130,6 +124,10 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+#: themes/stardust/pages/tag.twig:14
+msgid "No tag specified."
+msgstr ""
+
 #: themes/stardust/forms/post/edit.twig:49
 msgid "(shows this post above all others)"
 msgstr ""
@@ -145,6 +143,13 @@ msgstr ""
 #: themes/stardust/content/post.twig:5
 msgid "!"
 msgstr ""
+
+#: themes/stardust/content/sidebar.twig:49
+#, php-format
+msgid "%d post tagged &quot;%s&quot;"
+msgid_plural "%d posts tagged &quot;%s&quot;"
+msgstr[0] ""
+msgstr[1] ""
 
 #: themes/stardust/content/sidebar.twig:39
 msgid "Lost Password?"
@@ -163,6 +168,10 @@ msgstr ""
 
 #: themes/stardust/forms/post/edit.twig:56
 msgid "Timestamp"
+msgstr ""
+
+#: themes/stardust/pages/tag.twig:12
+msgid "There are no posts with the tag you specified."
 msgstr ""
 
 #: themes/stardust/forms/user/controls.twig:19
@@ -423,15 +432,15 @@ msgstr ""
 msgid "Your E-Mail"
 msgstr ""
 
+#: themes/stardust/forms/post/edit.twig:52
+msgid "Slug"
+msgstr ""
+
 #: themes/stardust/layouts/default.twig:22
 msgid "Write Draft"
 msgstr ""
 
 #: themes/stardust/forms/user/controls.twig:7
 msgid "Full Name"
-msgstr ""
-
-#: themes/stardust/forms/post/edit.twig:52
-msgid "Slug"
 msgstr ""
 
