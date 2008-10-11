@@ -396,6 +396,10 @@
         if (!$posts = SQL::current()->query("SELECT * FROM __posts"))
             return;
 
+        function clean_xml(&$input) {
+            $input = trim($input);
+        }
+
         while ($post = $posts->fetchObject()) {
             if (!substr_count($post->xml, "<![CDATA["))
                 continue;
@@ -403,7 +407,8 @@
             $xml = simplexml_load_string($post->xml, "SimpleXMLElement", LIBXML_NOCDATA);
 
             $parse = xml2arr($xml);
-            array_walk_recursive($parse, "fix");
+
+            array_walk_recursive($parse, "clean_xml");
 
             $new_xml = new SimpleXMLElement("<post></post>");
             arr2xml($new_xml, $parse);
@@ -694,7 +699,7 @@
                                          ) DEFAULT CHARSET=utf8"));
 
         if (!$create)
-            return;
+            return file_put_contents("./_posts.bak.txt", var_export($backups, true));
 
         foreach ($backups as $backup)
             echo " - "._f("Restoring post #%d...", array($backup["id"])).
@@ -862,6 +867,28 @@
                                        array("id" => $permission,
                                              "name" => $sql->select("permissions", "name", array("id" => $permission))->fetchColumn(),
                                              "group_id" => $id)));
+    }
+
+    /**
+     * Function: remove_old_files
+     * Removes old/unused files from previous installs.
+     */
+    function remove_old_files() {
+        if (file_exists(INCLUDES_DIR."/config.php"))
+            echo __("Removing `includes/config.php` file...").
+                 test(@unlink(INCLUDES_DIR."/config.php"));
+
+        if (file_exists(INCLUDES_DIR."/database.php"))
+            echo __("Removing `includes/database.php` file...").
+                 test(@unlink(INCLUDES_DIR."/database.php"));
+
+        if (file_exists(INCLUDES_DIR."/rss.php"))
+            echo __("Removing `includes/rss.php` file...").
+                 test(@unlink(INCLUDES_DIR."/rss.php"));
+
+        if (file_exists(INCLUDES_DIR."/bookmarklet.php"))
+            echo __("Removing `includes/bookarklet.php` file...").
+                 test(@unlink(INCLUDES_DIR."/bookmarklet.php"));
     }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -1043,6 +1070,8 @@
         add_group_id_to_permissions();
 
         group_permissions_to_db();
+
+        remove_old_files();
 
         # Perform Module/Feather upgrades.
 
