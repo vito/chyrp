@@ -234,6 +234,10 @@
     # Upgrading Actions
     #---------------------------------------------
 
+    /**
+     * Function: fix_htaccess
+     * Repairs their .htaccess file.
+     */
     function fix_htaccess() {
         $url = "http://".$_SERVER['HTTP_HOST'].str_replace("/upgrade.php", "", $_SERVER['REQUEST_URI']);
         $index = (parse_url($url, PHP_URL_PATH)) ? "/".trim(parse_url($url, PHP_URL_PATH), "/")."/" : "/" ;
@@ -253,6 +257,13 @@
                  test(@file_put_contents(MAIN_DIR."/.htaccess", "\n\n".$htaccess, FILE_APPEND), __("Try creating the file and/or CHMODding it to 777 temporarily."));
     }
 
+    /**
+     * Function: tweets_to_posts
+     * Enacts the "tweet" to "post" rename.
+     *
+     * Versions:
+     *  1.0.2 => 1.0.3
+     */
     function tweets_to_posts() {
         if (SQL::current()->query("SELECT * FROM __tweets"))
             echo __("Renaming tweets table to posts...").
@@ -276,6 +287,13 @@
         }
     }
 
+    /**
+     * Function: pages_parent_id_column
+     * Adds the `parent_id` column to the "pages" table.
+     *
+     * Versions:
+     *  1.0.3 => 1.0.4
+     */
     function pages_parent_id_column() {
         if (SQL::current()->query("SELECT parent_id FROM __pages"))
             return;
@@ -284,6 +302,13 @@
              test(SQL::current()->query("ALTER TABLE __pages ADD parent_id INT(11) NOT NULL DEFAULT '0' AFTER user_id"));
     }
 
+    /**
+     * Function: pages_list_order_column
+     * Adds the `list_order` column to the "pages" table.
+     *
+     * Versions:
+     *  1.0.4 => 1.1.0
+     */
     function pages_list_order_column() {
         if (SQL::current()->query("SELECT list_order FROM __pages"))
             return;
@@ -292,17 +317,32 @@
              test(SQL::current()->query("ALTER TABLE __pages ADD list_order INT(11) NOT NULL DEFAULT '0' AFTER show_in_list"));
     }
 
+    /**
+     * Function: remove_beginning_slash_from_post_url
+     * Removes the slash at the beginning of the post URL setting.
+     */
     function remove_beginning_slash_from_post_url() {
         if (substr(Config::get("post_url"), 0, 1) == "/")
             Config::set("post_url", ltrim(Config::get("post_url"), "/"));
     }
 
+    /**
+     * Function: move_yml_yaml
+     * Renames config.yml.php to config.yaml.php.
+     *
+     * Versions:
+     *  1.1.2 => 1.1.3
+     */
     function move_yml_yaml() {
         if (file_exists(INCLUDES_DIR."/config.yml.php"))
             echo __("Moving /includes/config.yml.php to /includes/config.yaml.php...").
                  test(@rename(INCLUDES_DIR."/config.yml.php", INCLUDES_DIR."/config.yaml.php"), __("Try CHMODding the file to 777."));
     }
 
+    /**
+     * Function: update_protection
+     * Updates the PHP protection code in the config file.
+     */
     function update_protection() {
         if (!file_exists(INCLUDES_DIR."/config.yaml.php") or
             substr_count(file_get_contents(INCLUDES_DIR."/config.yaml.php"),
@@ -318,27 +358,51 @@
              test(@file_put_contents(INCLUDES_DIR."/config.yaml.php", $new_error), __("Try CHMODding the file to 777."));
     }
 
+    /**
+     * Function: theme_default_to_stardust
+     * Changes their theme from "default" to "stardust", or leaves it alone if they're not using "default".
+     *
+     * Versions:
+     *  1.1.3.2 => 2.0
+     */
     function theme_default_to_stardust() {
         if (Config::get("theme") != "default") return;
         Config::set("theme", "stardust");
     }
 
+    /**
+     * Function: default_db_adapter_to_mysql
+     * Adds an "adapter" SQL setting if it doesn't exist, and sets it to "mysql".
+     *
+     * Versions:
+     *  1.1.3.2 => 2.0
+     */
     function default_db_adapter_to_mysql() {
         $sql = SQL::current();
         if (isset($sql->adapter)) return;
         $sql->set("adapter", "mysql");
     }
 
+    /**
+     * Function: move_upload
+     * Renames the "upload" directory to "uploads".
+     */
     function move_upload() {
         if (file_exists(MAIN_DIR."/upload") and !file_exists(MAIN_DIR."/uploads"))
             echo __("Renaming /upload directory to /uploads...").test(@rename(MAIN_DIR."/upload", MAIN_DIR."/uploads"), __("Try CHMODding the directory to 777."));
     }
 
+    /**
+     * Function: make_posts_xml
+     * Updates all of the post XML data to well-formed non-CDATAized XML.
+     *
+     * Versions:
+     *  1.1.3.2 => 2.0
+     */
     function make_posts_safe() {
         if (!$posts = SQL::current()->query("SELECT * FROM __posts"))
             return;
 
-        # Replace all the posts' CDATAized XML with well-formed XML.
         while ($post = $posts->fetchObject()) {
             if (!substr_count($post->xml, "<![CDATA["))
                 continue;
@@ -358,6 +422,13 @@
         }
     }
 
+    /**
+     * Function: update_groups_to_yaml
+     * Updates the groups to use YAML-based permissions instead of table columns.
+     *
+     * Versions:
+     *  1.1.3.2 => 2.0
+     */
     function update_groups_to_yaml() {
         if (!SQL::current()->query("SELECT view_site FROM __groups")) return;
 
@@ -401,6 +472,13 @@
                                                    "permissions" => $values["permissions"])));
     }
 
+    /**
+     * Function: add_permissions_table
+     * Creates the "permissions" table and fills it in with the default set.
+     *
+     * Versions:
+     *  1.1.3.2 => 2.0
+     */
     function add_permissions_table() {
         if (SQL::current()->query("SELECT * FROM __permissions")) return;
 
@@ -444,6 +522,12 @@
                                                    "name" => $name)));
     }
 
+    /**
+     * Function: add_sessions_table
+     * Creates the "sessions" table.
+     *
+     * Versions: 1.1.3.2 => 2.0
+     */
     function add_sessions_table() {
         if (SQL::current()->query("SELECT * FROM __sessions")) return;
 
@@ -458,6 +542,12 @@
                                          ) DEFAULT CHARSET=utf8") or die(mysql_error()));
     }
 
+    /**
+     * Function: update_permissions_table
+     * Updates the "permissions" table from ## (id) => foo_bar (name) to foo_bar (id) => Foo Bar (name).
+     *
+     * Versions: 2.0b => 2.0
+     */
     function update_permissions_table() {
         # If there are any non-numeric IDs in the permissions database, assume this is already done.
         $check = SQL::current()->query("SELECT * FROM __permissions");
@@ -519,6 +609,12 @@
 
     }
 
+    /**
+     * Function: update_custom_routes
+     * Updates the custom routes to be path => action instead of # => path.
+     *
+     * Versions: 2.0rc1 => 2.0rc2
+     */
     function update_custom_routes() {
         $custom_routes = Config::get("routes");
         if (empty($custom_routes)) return;
@@ -540,18 +636,34 @@
         Config::set("routes", $new_routes, "Setting new custom routes configuration...");
     }
 
+    /**
+     * Function: remove_database_config_file
+     * Removes the database.yaml.php file, which is merged into config.yaml.php.
+     *
+     * Versions: 2.0rc1 => 2.0rc2
+     */
     function remove_database_config_file() {
         if (file_exists(INCLUDES_DIR."/database.yaml.php"))
             echo __("Removing database.yaml.php file...").
                  test(@unlink(INCLUDES_DIR."/database.yaml.php"), __("Try deleting it manually."));
     }
 
+    /**
+     * Function: rename_database_setting_to_sql
+     * Renames the "database" config setting to "sql".
+     */
     function rename_database_setting_to_sql() {
         if (Config::check("sql")) return;
         Config::set("sql", Config::get("database"));
         Config::remove("database");
     }
 
+    /**
+     * Function: update_post_status_column
+     * Updates the `status` column on the "posts" table to be a general varchar field instead of enum.
+     *
+     * Versions: 2.0rc1 => 2.0rc2
+     */
     function update_post_status_column() {
         $sql = SQL::current();
         if (!$column = $sql->query("SHOW COLUMNS FROM __posts WHERE Field = 'status'"))
@@ -564,6 +676,12 @@
              .test($sql->query("ALTER TABLE __posts CHANGE status status VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'public'"));
     }
 
+    /**
+     * Function: add_post_attributes_table
+     * Adds the "post_attributes" table.
+     *
+     * Versions: 2.0rc1 => 2.0rc2
+     */
     function add_post_attributes_table() {
         $sql = SQL::current();
         if ($sql->select("post_attributes"))
@@ -578,6 +696,12 @@
                                 ) DEFAULT CHARSET=utf8"));
     }
 
+    /**
+     * Function: post_xml_to_db
+     * Migrates the XML post attributes to the "post_attributes" table.
+     *
+     * Versions: 2.0rc1 => 2.0rc2
+     */
     function post_xml_to_db() {
         $sql = SQL::current();
         $rows = $sql->query("SELECT id, xml FROM __posts");
@@ -622,6 +746,12 @@
                  .test($sql->query("ALTER TABLE __posts DROP xml"));
     }
 
+    /**
+     * Function: add_group_id_to_permissions
+     * Adds the `group_id` column to the "permissions" table.
+     *
+     * Versions: 2.0rc1 => 2.0rc2
+     */
     function add_group_id_to_permissions() {
         $sql = SQL::current();
         if ($sql->select("permissions", "group_id"))
@@ -654,6 +784,12 @@
                                          "group_id" => 0)));
     }
 
+    /**
+     * Function: group_permissions_to_db
+     * Migrates the group permissions from a YAML column to the "permissions" table.
+     *
+     * Versions: 2.0rc1 => 2.0rc2
+     */
     function group_permissions_to_db() {
         $sql = SQL::current();
         if (!$sql->select("groups", "permissions"))
