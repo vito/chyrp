@@ -284,6 +284,16 @@
             Config::fallback("posts_per_page", Config::get("tweets_per_page"));
             Config::remove("tweets_per_page");
         }
+
+        if (Config::check("tweet_url")) {
+            Config::fallback("post_url", Config::get("tweet_url"));
+            Config::remove("tweet_url");
+        }
+
+        if (Config::check("rss_tweets")) {
+            Config::fallback("rss_posts", Config::get("rss_posts"));
+            Config::remove("rss_tweets");
+        }
     }
 
     /**
@@ -418,6 +428,20 @@
                                              array("id" => $post->id),
                                              array("xml" => $new_xml->asXML())));
         }
+    }
+
+    /**
+     * Function: rss_posts_to_feed_items
+     * Rename the feed items setting.
+     * 
+     * Versions: 1.1.3.2 => 2.0
+     */
+    function rss_posts_to_feed_items() {
+        if (!Config::check("rss_posts"))
+            return;
+
+        Config::fallback("feed_items", Config::get("rss_posts"));
+        Config::remove("rss_posts");
     }
 
     /**
@@ -1016,7 +1040,6 @@
         Config::fallback("enable_ajax", true);
         Config::fallback("uploads_path", "/uploads/");
         Config::fallback("chyrp_url", Config::get("url"));
-        Config::fallback("feed_items", Config::get("rss_posts"));
         Config::fallback("sql", Config::$yaml["database"]);
         Config::fallback("timezone", "America/Indiana/Indianapolis");
 
@@ -1052,6 +1075,8 @@
         pages_list_order_column();
 
         make_posts_safe();
+
+        rss_posts_to_feed_items();
 
         update_groups_to_yaml();
 
