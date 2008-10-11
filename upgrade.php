@@ -651,7 +651,7 @@
 
     /**
      * Function: update_post_status_column
-     * Updates the `status` column on the "posts" table to be a general varchar field instead of enum.
+     * Updates the `status` column on the "posts" table to be a generic varchar field instead of enum.
      *
      * Versions: 2.0rc1 => 2.0rc2
      */
@@ -663,8 +663,43 @@
         if ($column->fetchObject()->Type == "varchar(32)")
             return;
 
-        echo __("Updating `status` column on `posts` table...").
-             test($sql->query("ALTER TABLE __posts CHANGE status status VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'public'"));
+        echo __("Updating `status` column on `posts` table...")."\n";
+
+        echo " - ".__("Backing up `posts` table...").
+             test($backup = $sql->select("posts"));
+        
+        if (!$backup)
+            return;
+
+        $backups = $backup->fetchAll();
+
+        echo " - ".__("Dropping `posts` table...").
+             test($drop = $sql->query("DROP TABLE __posts"));
+
+        if (!$drop)
+            return;
+
+        echo " - ".__("Creating `posts` table...").
+             test($create = $sql->query("CREATE TABLE IF NOT EXISTS __posts (
+                                             id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                                             feather VARCHAR(32) DEFAULT '',
+                                             clean VARCHAR(128) DEFAULT '',
+                                             url VARCHAR(128) DEFAULT '',
+                                             pinned TINYINT(1) DEFAULT 0,
+                                             status VARCHAR(32) DEFAULT 'public',
+                                             user_id INTEGER DEFAULT 0,
+                                             created_at DATETIME DEFAULT '0000-00-00 00:00:00',
+                                             updated_at DATETIME DEFAULT '0000-00-00 00:00:00'
+                                         ) DEFAULT CHARSET=utf8"));
+
+        if (!$create)
+            return;
+
+        foreach ($backups as $backup)
+            echo " - "._f("Restoring post #%d...", array($backup["id"])).
+                 test($sql->insert("posts", $backup));
+
+        echo " -".test(true);
     }
 
     /**
