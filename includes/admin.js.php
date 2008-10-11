@@ -164,7 +164,7 @@ var Write = {
         $("input.text").expand()
         $("textarea").each(function(){
             $(this).css({
-                minHeight: $(this).outerHeight() + 2,
+                minHeight: $(this).outerHeight() + 26,
                 lineHeight: "15px"
             }).autogrow()
         })
