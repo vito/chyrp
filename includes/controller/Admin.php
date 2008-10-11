@@ -556,6 +556,14 @@
             if (!$visitor->group()->can("edit_user"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to edit users."));
 
+            $check_name = new User(null, array("where" => array("login" => $_POST['login'],
+                                                                "id not" => $_POST['id'])));
+
+            if (!$check_name->no_results)
+                Flash::notice(_f("Login &#8220;%s&#8221; is already in use.", array($_POST['login'])),
+                              "/admin/?action=edit_user&id=".$_POST['id']);
+
+
             $user = new User($_POST['id']);
 
             if ($user->no_results)
@@ -709,6 +717,13 @@
                 show_403(__("Access Denied"), __("Invalid security key."));
 
             $permissions = array_keys($_POST['permissions']);
+
+            $check_name = new Group(null, array("where" => array("name" => $_POST['name'],
+                                                                 "id not" => $_POST['id'])));
+
+            if (!$check_name->no_results)
+                Flash::notice(_f("Group name &#8220;%s&#8221; is already in use.", array($_POST['name'])),
+                              "/admin/?action=edit_group&id=".$_POST['id']);
 
             $group = new Group($_POST['id']);
 
