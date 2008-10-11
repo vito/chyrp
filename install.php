@@ -177,7 +177,7 @@
                              name VARCHAR(100) DEFAULT '',
                              value LONGTEXT,
                              PRIMARY KEY (post_id, name)
-                         ) DEFAULT CHARSET=utf8")
+                         ) DEFAULT CHARSET=utf8");
 
             # Pages table
             $sql->query("CREATE TABLE IF NOT EXISTS __pages (
