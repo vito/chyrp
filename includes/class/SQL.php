@@ -297,6 +297,9 @@
          * Returns the last inserted ID.
          */
         public function latest() {
+            if (!isset($this->db))
+                $this->connect();
+
             switch($this->method) {
                 case "pdo":
                     return $this->db->lastInsertId();
@@ -316,6 +319,9 @@
          * This also handles calling the SQL connection method's "escape_string" functions.
          */
         public function escape($string, $quotes = true) {
+            if (!isset($this->db))
+                $this->connect();
+
             switch($this->method) {
                 case "pdo":
                     $string = ltrim(rtrim($this->db->quote($string), "'"), "'");
@@ -395,7 +401,7 @@
          */
         public static function & current($settings = false) {
             if ($settings) {
-                static $loaded_settings = null;#new self($settings);
+                static $loaded_settings = null;
                 return $loaded_settings = new self($settings);
             } else {
                 static $instance = null;

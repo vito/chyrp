@@ -260,39 +260,39 @@
                                      __("Edit Groups"),
                                      __("Delete Groups")); */
 
-            $permissions = array("change_settings" => "Change Settings",
-                                 "toggle_extensions" => "Toggle Extensions",
-                                 "view_site" => "View Site",
-                                 "view_private" => "View Private Posts",
-                                 "view_draft" => "View Drafts",
-                                 "view_own_draft" => "View Own Drafts",
-                                 "add_post" => "Add Posts",
-                                 "add_draft" => "Add Drafts",
-                                 "edit_post" => "Edit Posts",
-                                 "edit_draft" => "Edit Drafts",
-                                 "edit_own_post" => "Edit Own Posts",
-                                 "edit_own_draft" => "Edit Own Drafts",
-                                 "delete_post" => "Delete Posts",
-                                 "delete_draft" => "Delete Drafts",
-                                 "delete_own_post" => "Delete Own Posts",
-                                 "delete_own_draft" => "Delete Own Drafts",
-                                 "add_page" => "Add Pages",
-                                 "edit_page" => "Edit Pages",
-                                 "delete_page" => "Delete Pages",
-                                 "add_user" => "Add Users",
-                                 "edit_user" => "Edit Users",
-                                 "delete_user" => "Delete Users",
-                                 "add_group" => "Add Groups",
-                                 "edit_group" => "Edit Groups",
-                                 "delete_group" => "Delete Groups");
+            $names = array("change_settings" => "Change Settings",
+                           "toggle_extensions" => "Toggle Extensions",
+                           "view_site" => "View Site",
+                           "view_private" => "View Private Posts",
+                           "view_draft" => "View Drafts",
+                           "view_own_draft" => "View Own Drafts",
+                           "add_post" => "Add Posts",
+                           "add_draft" => "Add Drafts",
+                           "edit_post" => "Edit Posts",
+                           "edit_draft" => "Edit Drafts",
+                           "edit_own_post" => "Edit Own Posts",
+                           "edit_own_draft" => "Edit Own Drafts",
+                           "delete_post" => "Delete Posts",
+                           "delete_draft" => "Delete Drafts",
+                           "delete_own_post" => "Delete Own Posts",
+                           "delete_own_draft" => "Delete Own Drafts",
+                           "add_page" => "Add Pages",
+                           "edit_page" => "Edit Pages",
+                           "delete_page" => "Delete Pages",
+                           "add_user" => "Add Users",
+                           "edit_user" => "Edit Users",
+                           "delete_user" => "Delete Users",
+                           "add_group" => "Add Groups",
+                           "edit_group" => "Edit Groups",
+                           "delete_group" => "Delete Groups");
 
-            foreach ($permissions as $permission => $name)
+            foreach ($names as $id => $name)
                 $sql->replace("permissions",
-                              array("id" => $permission,
+                              array("id" => $id,
                                     "name" => $name,
                                     "group_id" => 0));
 
-            $groups = array("admin" => array_keys($permissions),
+            $groups = array("admin" => array_keys($names),
                             "member" => array("view_site"),
                             "friend" => array("view_site", "view_private"),
                             "banned" => array(),
@@ -308,7 +308,7 @@
                 foreach ($permissions as $permission)
                     $sql->replace("permissions",
                                   array("id" => $permission,
-                                        "name" => $permissions[$permission],
+                                        "name" => $names[$permission],
                                         "group_id" => $group_id[$name]));
             }
 
