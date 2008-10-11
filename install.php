@@ -216,9 +216,10 @@
 
             # Permissions table
             $sql->query("CREATE TABLE IF NOT EXISTS __permissions (
-                             id VARCHAR(100) DEFAULT '' PRIMARY KEY,
+                             id VARCHAR(100) DEFAULT '',
                              name VARCHAR(100) DEFAULT '',
-                             group_id INTEGER DEFAULT 0
+                             group_id INTEGER DEFAULT 0,
+                             PRIMARY KEY (id, group_id)
                          ) DEFAULT CHARSET=utf8");
 
             # Sessions table
