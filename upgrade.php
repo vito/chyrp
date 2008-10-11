@@ -447,7 +447,7 @@
     function add_sessions_table() {
         if (SQL::current()->query("SELECT * FROM __sessions")) return;
 
-        echo __("Creating sessions table...").
+        echo __("Creating `sessions` table...").
              test(SQL::current()->query("CREATE TABLE __sessions (
                                              id VARCHAR(40) DEFAULT '',
                                              data LONGTEXT,
@@ -554,16 +554,68 @@
 
     function update_post_status_column() {
         $sql = SQL::current();
-        $column = $sql->query("SHOW COLUMNS FROM __posts WHERE Field = 'status'");
-        if (!$column)
+        if (!$column = $sql->query("SHOW COLUMNS FROM __posts WHERE Field = 'status'"))
              return;
 
-        $result = $column->fetchObject();
-        if ($result->Type == "varchar(32)")
+        if ($column->fetchObject()->Type == "varchar(32)")
             return;
 
         echo __("Updating `status` column on `posts` table...")
              .test($sql->query("ALTER TABLE __posts CHANGE status status VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'public'"));
+    }
+
+    function add_post_attributes_table() {
+        $sql = SQL::current();
+        if ($sql->select("post_attributes"))
+            return;
+
+        echo __("Creating `post_attributes` table...")
+             .test($sql->query("CREATE TABLE __post_attributes (
+                                    post_id INTEGER NOT NULL ,
+                                    name VARCHAR(100) DEFAULT '',
+                                    value LONGTEXT,
+                                    PRIMARY KEY (post_id, name)
+                                ) DEFAULT CHARSET=utf8"));
+    }
+
+    function post_xml_to_db() {
+        $sql = SQL::current();
+        $rows = $sql->query("SELECT id, xml FROM __posts");
+        if (!$rows)
+            return;
+
+        function insert_attributes($sql, $row, $xml, &$inserts) {
+            foreach ($xml as $name => $value)
+                if (!$sql->insert("post_attributes",
+                                  array("post_id" => $row["id"],
+                                        "name" => $name,
+                                        "value" => $value))) {
+                    # Clear successful attribute insertions so the 
+                    # user can try again without primary key conflicts.
+                    foreach ($inserts as $insertion)
+                        $sql->delete("post_attributes",
+                                     array("post_id" => $insertion["id"],
+                                           "name" => $insertion["name"]));
+
+                    return false;
+                } else
+                    $inserts[] = array("id" => $row["id"],
+                                       "name" => $name);
+
+            return true;
+        }
+
+        $results = array();
+        foreach ($rows->fetchAll() as $row) {
+            $xml = new SimpleXMLElement($row["xml"]);
+            $inserts = array();
+            echo _f("Migrating attributes of post #%d...", array($row["id"])).
+                 test($results[] = insert_attributes($sql, $row, $xml, $inserts));
+        }
+
+        if (!in_array(false, $results))
+            echo __("Removing `xml` column from `posts` table...")
+                 .test($sql->query("ALTER TABLE __posts DROP xml"));
     }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -737,6 +789,10 @@
         update_permissions_table();
 
         update_post_status_column();
+
+        add_post_attributes_table();
+
+        post_xml_to_db();
 
         # Perform Module/Feather upgrades.
 
