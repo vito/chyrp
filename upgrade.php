@@ -762,6 +762,9 @@
 
         $results = array();
         foreach ($rows->fetchAll() as $row) {
+            if (empty($row["xml"]))
+                continue;
+
             $xml = xml2arr(new SimpleXMLElement($row["xml"]));
             $inserts = array();
             echo _f("Migrating attributes of post #%d...", array($row["id"])).
