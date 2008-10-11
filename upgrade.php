@@ -670,7 +670,7 @@
         $names = array();
         foreach($backup as $group) {
             $names[$group["id"]] = $group["name"];
-            $permissions[$group["id"]] = YAML::load($group["permissions"]);
+            $permissions[$group["id"]] = empty($group["permissions"]) ? array() : YAML::load($group["permissions"]) ;
         }
 
         echo __("Dropping `groups` table...").
