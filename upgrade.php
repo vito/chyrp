@@ -261,8 +261,7 @@
      * Function: tweets_to_posts
      * Enacts the "tweet" to "post" rename.
      *
-     * Versions:
-     *  1.0.2 => 1.0.3
+     * Versions: 1.0.2 => 1.0.3
      */
     function tweets_to_posts() {
         if (SQL::current()->query("SELECT * FROM __tweets"))
@@ -291,8 +290,7 @@
      * Function: pages_parent_id_column
      * Adds the `parent_id` column to the "pages" table.
      *
-     * Versions:
-     *  1.0.3 => 1.0.4
+     * Versions: 1.0.3 => 1.0.4
      */
     function pages_parent_id_column() {
         if (SQL::current()->query("SELECT parent_id FROM __pages"))
@@ -306,8 +304,7 @@
      * Function: pages_list_order_column
      * Adds the `list_order` column to the "pages" table.
      *
-     * Versions:
-     *  1.0.4 => 1.1.0
+     * Versions: 1.0.4 => 1.1.0
      */
     function pages_list_order_column() {
         if (SQL::current()->query("SELECT list_order FROM __pages"))
@@ -330,8 +327,7 @@
      * Function: move_yml_yaml
      * Renames config.yml.php to config.yaml.php.
      *
-     * Versions:
-     *  1.1.2 => 1.1.3
+     * Versions: 1.1.2 => 1.1.3
      */
     function move_yml_yaml() {
         if (file_exists(INCLUDES_DIR."/config.yml.php"))
@@ -362,8 +358,7 @@
      * Function: theme_default_to_stardust
      * Changes their theme from "default" to "stardust", or leaves it alone if they're not using "default".
      *
-     * Versions:
-     *  1.1.3.2 => 2.0
+     * Versions: 1.1.3.2 => 2.0
      */
     function theme_default_to_stardust() {
         if (Config::get("theme") != "default") return;
@@ -374,8 +369,7 @@
      * Function: default_db_adapter_to_mysql
      * Adds an "adapter" SQL setting if it doesn't exist, and sets it to "mysql".
      *
-     * Versions:
-     *  1.1.3.2 => 2.0
+     * Versions: 1.1.3.2 => 2.0
      */
     function default_db_adapter_to_mysql() {
         $sql = SQL::current();
@@ -396,8 +390,7 @@
      * Function: make_posts_xml
      * Updates all of the post XML data to well-formed non-CDATAized XML.
      *
-     * Versions:
-     *  1.1.3.2 => 2.0
+     * Versions: 1.1.3.2 => 2.0
      */
     function make_posts_safe() {
         if (!$posts = SQL::current()->query("SELECT * FROM __posts"))
@@ -426,8 +419,7 @@
      * Function: update_groups_to_yaml
      * Updates the groups to use YAML-based permissions instead of table columns.
      *
-     * Versions:
-     *  1.1.3.2 => 2.0
+     * Versions: 1.1.3.2 => 2.0
      */
     function update_groups_to_yaml() {
         if (!SQL::current()->query("SELECT view_site FROM __groups")) return;
@@ -476,8 +468,7 @@
      * Function: add_permissions_table
      * Creates the "permissions" table and fills it in with the default set.
      *
-     * Versions:
-     *  1.1.3.2 => 2.0
+     * Versions: 1.1.3.2 => 2.0
      */
     function add_permissions_table() {
         if (SQL::current()->query("SELECT * FROM __permissions")) return;
@@ -672,8 +663,8 @@
         if ($column->fetchObject()->Type == "varchar(32)")
             return;
 
-        echo __("Updating `status` column on `posts` table...")
-             .test($sql->query("ALTER TABLE __posts CHANGE status status VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'public'"));
+        echo __("Updating `status` column on `posts` table...").
+             test($sql->query("ALTER TABLE __posts CHANGE status status VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'public'"));
     }
 
     /**
@@ -687,13 +678,13 @@
         if ($sql->select("post_attributes"))
             return;
 
-        echo __("Creating `post_attributes` table...")
-             .test($sql->query("CREATE TABLE __post_attributes (
-                                    post_id INTEGER NOT NULL ,
-                                    name VARCHAR(100) DEFAULT '',
-                                    value LONGTEXT,
-                                    PRIMARY KEY (post_id, name)
-                                ) DEFAULT CHARSET=utf8"));
+        echo __("Creating `post_attributes` table...").
+             test($sql->query("CREATE TABLE __post_attributes (
+                                   post_id INTEGER NOT NULL ,
+                                   name VARCHAR(100) DEFAULT '',
+                                   value LONGTEXT,
+                                   PRIMARY KEY (post_id, name)
+                               ) DEFAULT CHARSET=utf8"));
     }
 
     /**
@@ -742,8 +733,8 @@
         }
 
         if (!in_array(false, $results))
-            echo __("Removing `xml` column from `posts` table...")
-                 .test($sql->query("ALTER TABLE __posts DROP xml"));
+            echo __("Removing `xml` column from `posts` table...").
+                 test($sql->query("ALTER TABLE __posts DROP xml"));
     }
 
     /**
