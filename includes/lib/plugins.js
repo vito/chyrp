@@ -227,7 +227,7 @@ $(this).parent().find("ul:first").append(ui.draggable);self.element.data("sortab
 		},
 		checkExpand: function() {
 			if (this.dummy == null) {
-				this.dummy = jQuery('<div></div>');
+				this.dummy = jQuery('<div />');
 				this.dummy.css({
 					fontSize: this.textarea.css('font-size'),
 					fontFamily: this.textarea.css('font-family'),
@@ -238,10 +238,15 @@ $(this).parent().find("ul:first").append(ui.draggable);self.element.data("sortab
 					display: "none"
 				}).addClass("autogrow-dummy").appendTo('body');
 			}
-			if (this.dummy.hasClass("disabled")) return clearInterval(this.interval)
+
+			if (this.dummy.hasClass("disabled"))
+                return clearInterval(this.interval)
+
 			var html = this.textarea.val().replace(/(<|>|&)/g, '&#160;');
 			html = ($.browser.msie) ? html.replace(/\n/g, '<BR>new') : html.replace(/\n/g, '<br>new');
+
 			var fixed = html.replace(/&#160;/g, '&nbsp;');
+
 			if (this.dummy.html() != fixed) {
 				this.dummy.html(html);
 				if (this.max_height > 0 && (this.dummy.height() + this.line_height > this.max_height)) {
