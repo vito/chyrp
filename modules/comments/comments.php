@@ -65,7 +65,7 @@
         }
 
         static function route_add_comment() {
-            $post = new Post($_POST['post_id']);
+            $post = new Post($_POST['post_id'], array("drafts" => true));
             if (!Comment::user_can($post->id))
                 show_403(__("Access Denied"), __("You cannot comment on this post.", "comments"));
 
