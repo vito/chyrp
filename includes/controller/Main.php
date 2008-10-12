@@ -184,7 +184,7 @@
                     $post_url = preg_replace("/".preg_quote($leftover)."/", "", $post_url, 1);
                 }
 
-            $args = explode("/", trim($request, "/"));
+            $args = array_map("urldecode", explode("/", trim($request, "/")));
 
             $post_url = $this->key_regexp(rtrim($post_url, "/"));
             $post_url_attrs = array();
