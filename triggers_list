@@ -21,7 +21,7 @@ Arguments:
 import_textpattern_post
 -----------------------
 Called from:
-	includes/controller/Admin.php on line 1440
+	includes/controller/Admin.php on line 1455
 Arguments:
 	$post, $new_post
 
@@ -29,7 +29,7 @@ Arguments:
 import_wordpress_post
 ---------------------
 Called from:
-	includes/controller/Admin.php on line 1230
+	includes/controller/Admin.php on line 1245
 Arguments:
 	$item, $post
 
@@ -37,7 +37,7 @@ Arguments:
 import_chyrp_page
 -----------------
 Called from:
-	includes/controller/Admin.php on line 1140
+	includes/controller/Admin.php on line 1155
 Arguments:
 	$entry, $page
 
@@ -114,7 +114,7 @@ Arguments:
 import_tumble
 -------------
 Called from:
-	includes/controller/Admin.php on line 1371
+	includes/controller/Admin.php on line 1386
 Arguments:
 	$post, $new_post
 
@@ -122,7 +122,7 @@ Arguments:
 import_chyrp_group
 ------------------
 Called from:
-	includes/controller/Admin.php on line 1064
+	includes/controller/Admin.php on line 1079
 Arguments:
 	Group::add($name, (array) $permissions)
 
@@ -164,7 +164,7 @@ Called from:
 import_movabletype_page
 -----------------------
 Called from:
-	includes/controller/Admin.php on line 1518
+	includes/controller/Admin.php on line 1533
 Arguments:
 	$post, $new_page, $link
 
@@ -172,7 +172,7 @@ Arguments:
 import_wordpress_page
 ---------------------
 Called from:
-	includes/controller/Admin.php on line 1241
+	includes/controller/Admin.php on line 1256
 Arguments:
 	$item, $page
 
@@ -268,7 +268,7 @@ Called from:
 import_movabletype_post
 -----------------------
 Called from:
-	includes/controller/Admin.php on line 1515
+	includes/controller/Admin.php on line 1530
 Arguments:
 	$post, $new_post, $link
 
@@ -310,7 +310,7 @@ Called from:
 import_chyrp_post
 -----------------
 Called from:
-	includes/controller/Admin.php on line 1118
+	includes/controller/Admin.php on line 1133
 Arguments:
 	$entry, $post
 
@@ -318,7 +318,7 @@ Arguments:
 import_chyrp_user
 -----------------
 Called from:
-	includes/controller/Admin.php on line 1088
+	includes/controller/Admin.php on line 1103
 Arguments:
 	$user
 
@@ -404,7 +404,7 @@ posts_export
 Target:
 	$posts_atom
 Called from:
-	includes/controller/Admin.php on line 890
+	includes/controller/Admin.php on line 905
 Arguments:
 	$post
 
@@ -430,7 +430,7 @@ admin_subnav
 Target:
 	$subnav
 Called from:
-	includes/controller/Admin.php on line 2137
+	includes/controller/Admin.php on line 2152
 
 
 extend_nav
@@ -438,7 +438,7 @@ extend_nav
 Target:
 	$subnav["extend"]
 Called from:
-	includes/controller/Admin.php on line 2126
+	includes/controller/Admin.php on line 2141
 
 
 flash_message
@@ -456,7 +456,7 @@ manage_nav
 Target:
 	$subnav["manage"]
 Called from:
-	includes/controller/Admin.php on line 2089
+	includes/controller/Admin.php on line 2104
 
 
 page_export_url
@@ -464,7 +464,7 @@ page_export_url
 Target:
 	$url
 Called from:
-	includes/controller/Admin.php on line 933
+	includes/controller/Admin.php on line 948
 Arguments:
 	$page)
 
@@ -512,7 +512,7 @@ post_export_url
 Target:
 	$url
 Called from:
-	includes/controller/Admin.php on line 871
+	includes/controller/Admin.php on line 886
 Arguments:
 	$post)
 
@@ -550,7 +550,7 @@ pages_export
 Target:
 	$pages_atom
 Called from:
-	includes/controller/Admin.php on line 948
+	includes/controller/Admin.php on line 963
 Arguments:
 	$page
 
@@ -560,7 +560,7 @@ nav_selected
 Target:
 	$this->context["selected"]
 Called from:
-	includes/controller/Admin.php on line 2239
+	includes/controller/Admin.php on line 2254
 
 
 excerpt
@@ -604,7 +604,7 @@ settings_nav
 Target:
 	$subnav["settings"]
 Called from:
-	includes/controller/Admin.php on line 2116
+	includes/controller/Admin.php on line 2131
 
 
 admin_determine_action
@@ -668,7 +668,7 @@ export
 Target:
 	$exports
 Called from:
-	includes/controller/Admin.php on line 993
+	includes/controller/Admin.php on line 1008
 
 
 markup_page_text
