@@ -33,15 +33,18 @@
          *     $name - The name of the trigger, or an array of triggers to call.
          */
         public function call($name) {
-            if (is_array($name))
+            if (is_array($name)) {
+                $return = null;
+
                 foreach ($name as $index => $call) {
                     $args = func_get_args();
                     $args[0] = $call;
                     if ($index + 1 == count($name))
-                        return call_user_func_array(array($this, "call"), $args);
+                        return $return = $this->exists($call) ? call_user_func_array(array($this, "call"), $args) : $return ;
                     else
-                        call_user_func_array(array($this, "call"), $args);
+                        $return = $this->exists($call) ? call_user_func_array(array($this, "call"), $args) : $return ;
                 }
+            }
 
             if (!$this->exists($name))
                 return false;
