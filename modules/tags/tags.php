@@ -681,10 +681,10 @@
         # to
         # array("foo" => 2, "bar" => 1)
         static function parseTags($tags, $clean) {
-            $tags = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $tags))));
-            $clean = array_count_values(explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $clean))));
-            $tag2clean = array_combine(array_keys($tags), array_keys($clean));
-            $clean2tag = array_combine(array_keys($clean), array_keys($tags));
-            return array($tags, $clean, $tag2clean, $clean2tag);
+            $tags = explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $tags)));
+            $clean = explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $clean)));
+            $tag2clean = array_combine($tags, $clean);
+            $clean2tag = array_combine($clean, $tags);
+            return array(array_count_values($tags), array_count_values($clean), $tag2clean, $clean2tag);
         }
     }
