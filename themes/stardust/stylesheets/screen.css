@@ -664,7 +664,10 @@ span.waiting {
         margin: 0 0 -.3em;
     }
 
-    /* Tags module (ajax editing). */
+    /* Tags module. */
+    .tag {
+        font-family: "palatino linotype", palatino, georgia, "times new roman", times, serif;
+    }
     .tags_select {
         display: inline-block;
         margin-top: .5em;
