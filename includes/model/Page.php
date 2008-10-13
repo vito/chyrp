@@ -43,7 +43,7 @@
          * Function: add
          * Adds a page to the database.
          *
-         * Calls the add_page trigger with the inserted ID.
+         * Calls the add_page trigger with the inserted page.
          *
          * Parameters:
          *     $title - The Title for the new page.
@@ -57,7 +57,7 @@
          *     $user_id - The ID of the user that created the page. Defaults to the visitor's ID.
          *
          * Returns:
-         *     $id - The newly created page's ID.
+         *     $page - The newly created page.
          *
          * See Also:
          *     <update>
@@ -86,11 +86,11 @@
 
         /**
          * Function: update
-         * Updates the given page.
+         * Updates the page.
          *
          * Parameters:
          *     $title - The new Title.
-         *     $body - The new Bod.
+         *     $body - The new Body.
          *     $parent_id - The new parent ID.
          *     $show_in_list - Whether or not to show it in the pages list.
          *     $url - The new page URL.
@@ -119,7 +119,8 @@
          * Deletes the given page. Calls the "delete_page" trigger and passes the <Page> as an argument.
          *
          * Parameters:
-         *     $id - The page to delete. Child pages if this page will be removed as well.
+         *     $id - The page to delete.
+         *     $recursive - Should the sub-pages be deleted? (default: false)
          */
         static function delete($id, $recursive = false) {
             if ($recursive) {
@@ -142,7 +143,7 @@
          *     true - if a page with that ID is in the database.
          */
         static function exists($page_id) {
-            return SQL::current()->count("pages", array("id" => $post_id));
+            return SQL::current()->count("pages", array("id" => $page_id)) == 1;
         }
 
         /**

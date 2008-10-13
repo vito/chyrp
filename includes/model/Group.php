@@ -72,7 +72,7 @@
          * Function: add
          * Adds a group to the database with the passed Name and Permissions array.
          *
-         * Calls the add_group trigger with the ID, name, and permissions or the new group.
+         * Calls the add_group trigger with the inserted group.
          *
          * Parameters:
          *     $name - The group's name

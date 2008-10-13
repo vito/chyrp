@@ -404,7 +404,7 @@
          *     true - if a post with that ID is in the database.
          */
         static function exists($post_id) {
-            return SQL::current()->count("posts", array("id" => $post_id));
+            return SQL::current()->count("posts", array("id" => $post_id)) == 1;
         }
 
         /**
