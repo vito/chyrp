@@ -1,0 +1,15 @@
+<h1>$forum.name</h1>
+<h2>Topics</h2>
+<ul>
+    {% for topic in forum.topics(25).paginated %}
+    <li>
+        <a href="$topic.url">$topic.title</a>
+        <p>$topic.description</p>
+    </li>
+    {% else %}
+    <li>(none)</li>
+    {% endfor %}
+</ul>
+
+${ forum.topics(25).next_link }
+${ forum.topics(25).prev_link }

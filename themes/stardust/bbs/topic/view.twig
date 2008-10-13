@@ -1,0 +1,15 @@
+<h1>$topic.title</h1>
+<h2>Messages</h2>
+<ul>
+    {% for message in topic.messages(25).paginated %}
+    <li>
+        <strong>$message.user.login</strong>:
+        <p>$message.body</p>
+    </li>
+    {% else %}
+    <li>(none)</li>
+    {% endfor %}
+</ul>
+
+${ topic.messages(25).next_link }
+${ topic.messages(25).prev_link }
