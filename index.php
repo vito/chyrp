@@ -25,7 +25,7 @@
     #     1. Module-provided pages.
     #     2. Feather-provided pages.
     #     3. Theme-provided pages.
-    if (!$route->success) {
+    if (!$route->success and !$main->displayed) {
         $displayed = false;
 
         foreach ($config->enabled_modules as $module)
