@@ -2,25 +2,14 @@
     class Tags extends Modules {
         public function __init() {
             $this->addAlias("metaWeblog_newPost_preQuery", "metaWeblog_editPost_preQuery");
-            $this->addAlias("post_grab", "posts_get");
             $this->addAlias("javascript", "cloudSelectorJS");
         }
 
         static function __install() {
-            $sql = SQL::current();
-            $sql->query("CREATE TABLE IF NOT EXISTS __tags (
-                          id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                          tags TEXT DEFAULT '',
-                          clean TEXT DEFAULT '',
-                          post_id INTEGER DEFAULT '0'
-                         ) DEFAULT CHARSET=utf8");
             Route::current()->add("tag/(name)/", "tag");
         }
 
         static function __uninstall($confirm) {
-            if ($confirm)
-                SQL::current()->query("DROP TABLE __tags");
-
             Route::current()->remove("tag/(name)/");
         }
 
@@ -88,14 +77,24 @@
             $tags_cleaned_string = "{{".implode("}},{{", $tags_cleaned)."}}";
 
             $sql = SQL::current();
-            $sql->insert("tags", array("tags" => $tags_string, "clean" => $tags_cleaned_string, "post_id" => $post->id));
+            $sql->insert("post_attributes",
+                         array("name" => "unclean_tags",
+                               "value" => $tags_string,
+                               "post_id" => $post->id));
+
+            $sql->insert("post_attributes",
+                         array("name" => "clean_tags",
+                               "value" => $tags_cleaned_string,
+                               "post_id" => $post->id));
         }
 
         public function update_post($post) {
             if (!isset($_POST['tags'])) return;
 
             $sql = SQL::current();
-            $sql->delete("tags", array("post_id" => $post->id));
+            $sql->delete("post_attributes",
+                         array("name" => array("unclean_tags", "clean_tags"),
+                               "post_id" => $post->id));
 
             $tags = explode(",", $_POST['tags']); # Split at the comma
             $tags = array_map('trim', $tags); # Remove whitespace
@@ -107,14 +106,15 @@
             $tags_string = (!empty($tags)) ? "{{".implode("}},{{", $tags)."}}" : "" ;
             $tags_cleaned_string = (!empty($tags_cleaned)) ? "{{".implode("}},{{", $tags_cleaned)."}}" : "" ;
 
-            if (empty($tags_string) and empty($tags_cleaned_string))
-                $sql->delete("tags", array("post_id" => $post->id));
-            else
-                $sql->insert("tags", array("tags" => $tags_string, "clean" => $tags_cleaned_string, "post_id" => $post->id));
-        }
+            $sql->insert("post_attributes",
+                         array("name" => "unclean_tags",
+                               "value" => $tags_string,
+                               "post_id" => $post->id));
 
-        public function delete_post($post) {
-            SQL::current()->delete("tags", array("post_id" => $post->id));
+            $sql->insert("post_attributes",
+                         array("name" => "clean_tags",
+                               "value" => $tags_cleaned_string,
+                               "post_id" => $post->id));
         }
 
         public function parse_urls($urls) {
@@ -274,9 +274,10 @@
 
             $tags = array();
             $clean = array();
-            foreach($sql->select("tags",
+            foreach($sql->select("post_attributes",
                                  "*",
-                                 array("clean like" => "%{{".$_POST['clean']."}}%"))->fetchAll() as $tag) {
+                                 array("name" => "clean_tags",
+                                       "value like" => "%{{".$_POST['clean']."}}%"))->fetchAll() as $tag) {
                 $names = str_replace("{{".$_POST['clean']."}}", "{{".$_POST['name']."}}", $tag["tags"]);
                 $clean = str_replace("{{".$_POST['clean']."}}", "{{".sanitize($_POST['name'])."}}", $tag["clean"]);
                 $sql->update("tags",
@@ -291,9 +292,10 @@
         public function admin_delete_tag($admin) {
             $sql = SQL::current();
 
-            foreach($sql->select("tags",
+            foreach($sql->select("post_attributes",
                                  "*",
-                                 array("clean like" => "%{{".$_GET['clean']."}}%"))->fetchAll() as $tag)  {
+                                 array("name" => "clean_tags",
+                                       "value like" => "%{{".$_GET['clean']."}}%"))->fetchAll() as $tag)  {
                 $names = array();
                 foreach (explode("}},{{", substr(substr($tag["tags"], 0, -2), 2)) as $name)
                     if ($name != $_GET['name'])
@@ -491,19 +493,6 @@
             return $context;
         }
 
-        public function posts_get($options) {
-            $options["select"][] = "tags.tags AS unclean_tags";
-            $options["select"][] = "tags.clean AS clean_tags";
-
-            $options["left_join"][] = array("table" => "tags",
-                                            "where" => "post_id = posts.id");
-
-            $options["group"][] = "id";
-            $options["group"][] = "post_attributes.name";
-
-            return $options;
-        }
-
         static function linked_tags($tags, $cleaned_tags) {
             if (empty($tags) or empty($cleaned_tags))
                 return array();
@@ -565,19 +554,22 @@
         public function list_tags($limit = 10, $order_by = "popularity", $order = "desc") {
             $sql = SQL::current();
 
-            $tags = $sql->select("tags",
-                                 array("tags", "clean"),
-                                 array(Post::statuses(), Post::feathers()),
-                                 null,
-                                 array(),
-                                 null, null, null,
-                                 array(array("table" => "posts",
-                                             "where" => "tags.post_id = id")));
+            $attrs = $sql->select("post_attributes",
+                                  array("name", "value"),
+                                  array("name" => array("unclean_tags", "clean_tags"), Post::statuses(), Post::feathers()),
+                                  null,
+                                  array(),
+                                  null, null, null,
+                                  array(array("table" => "posts",
+                                              "where" => "post_attributes.post_id = id")));
 
             $unclean = array();
             $clean = array();
-            while ($tag = $tags->fetchObject())
-                list($unclean[], $clean[]) = array($tag->tags, $tag->clean);
+            while ($attr = $attrs->fetchObject())
+                if ($attr->name == "tags")
+                    $unclean[] = $attr->value;
+                else
+                    $clean[] = $attr->value;
 
             if (!count($unclean))
                 return array();
@@ -585,7 +577,10 @@
             list($unclean, $clean, $tag2clean,) = self::parseTags($unclean, $clean);
 
             foreach ($unclean as $name => $popularity)
-                $unclean[$name] = array("name" => $name, "popularity" => $popularity, "url" => urlencode($tag2clean[$name]), "clean" => $tag2clean[$name]);
+                $unclean[$name] = array("name" => $name,
+                                        "popularity" => $popularity,
+                                        "url" => urlencode($tag2clean[$name]),
+                                        "clean" => $tag2clean[$name]);
 
             usort($unclean, array($this, "sort_tags_".$order_by."_".$order));
 
@@ -595,9 +590,14 @@
         static function clean2tag($clean_tag) {
             $tags = array();
             $clean = array();
-            foreach(SQL::current()->select("tags")->fetchAll() as $tag) {
-                $tags[] = $tag["tags"];
-                $clean[] = $tag["clean"];
+            foreach(SQL::current()->select("post_attributes",
+                                           "*",
+                                           array("name" => array("unclean_tags",
+                                                                 "clean_tags")))->fetchAll() as $attr) {
+                if ($attr["name"] == "unclean_tags")
+                    $tags[] = $attr["value"];
+                else
+                    $clean[] = $attr["value"];
             }
 
             list($tags, $clean, $tag2clean, $clean2tag) = self::parseTags($tags, $clean);
@@ -608,9 +608,14 @@
         static function tag2clean($unclean_tag) {
             $tags = array();
             $clean = array();
-            foreach(SQL::current()->select("tags")->fetchAll() as $tag) {
-                $tags[] = $tag["tags"];
-                $clean[] = $tag["clean"];
+            foreach(SQL::current()->select("post_attributes",
+                                           "*",
+                                           array("name" => array("unclean_tags",
+                                                                 "clean_tags")))->fetchAll() as $attr) {
+                if ($attr["name"] == "unclean_tags")
+                    $tags[] = $attr["value"];
+                else
+                    $clean[] = $attr["value"];
             }
 
             list($tags, $clean, $tag2clean) = self::parseTags($tags, $clean);
@@ -619,7 +624,11 @@
         }
 
         public function posts_export($atom, $post) {
-            $tags = SQL::current()->select("tags", "tags", array("post_id" => $post->id), "id DESC")->fetchColumn();
+            $tags = SQL::current()->select("post_attributes",
+                                           "value",
+                                           array("name" => "unclean_tags",
+                                                 "post_id" => $post->id),
+                                           "id DESC")->fetchColumn();
             if (empty($tags)) return;
 
             $atom.= "       <chyrp:tags>".fix(implode(", ", self::unlinked_tags($tags)))."</chyrp:tags>\r";

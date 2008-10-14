@@ -1,10 +1,10 @@
 <?php
     function update_tags_structure() {
-        if (SQL::current()->query("SELECT tags FROM __tags")) return;
+        if (SQL::current()->query("SELECT tags FROM __tags"))
+            return;
 
         $tags = array();
         $get_tags = SQL::current()->query("SELECT * FROM __tags");
-        echo __("Backing up tags...", "tags").test($get_tags);
         if (!$get_tags) return;
 
         while ($tag = $get_tags->fetchObject()) {
@@ -38,4 +38,31 @@
                                                    "post_id" => $post)));
     }
 
+    function move_to_post_attributes() {
+        $sql = SQL::current();
+        if (!$tags = $sql->select("tags"))
+            return;
+
+        foreach ($tags->fetchAll() as $tag) {
+            echo _f("Relocating tags for post #%d...", array($tag["post_id"]), "tags");
+            $dirty = $sql->insert("post_attributes",
+                                  array("name" => "unclean_tags",
+                                        "value" => $tag["tags"],
+                                        "post_id" => $tag["post_id"]));
+            $clean = $sql->insert("post_attributes",
+                                  array("name" => "clean_tags",
+                                        "value" => $tag["clean"],
+                                        "post_id" => $tag["post_id"]));
+            echo test($dirty and $clean);
+
+            if (!$dirty or !$clean)
+                return;
+        }
+
+        echo __("Removing `tags` table...", "tags").
+             test($sql->query("DROP TABLE __tags"));
+    }
+
     update_tags_structure();
+
+    move_to_post_attributes();

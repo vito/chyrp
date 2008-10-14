@@ -20,7 +20,7 @@
 
     # Constant: DEBUG
     # Should Chyrp use debugging processes?
-    define('DEBUG', false);
+    define('DEBUG', true);
 
     # Constant: CACHE_TWIG
     # If defined, this will take priority over DEBUG and toggle Twig template caching.
