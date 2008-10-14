@@ -32,8 +32,8 @@
 
         $trigger->filter($url, "feed_url", $post);
 
-        if (!$post->user()->no_results)
-            $author = fallback($post->user()->full_name, $post->user()->login, true);
+        if (!$post->user->no_results)
+            $author = fallback($post->user->full_name, $post->user->login, true);
         else
             $author = __("Guest");
 ?>
@@ -45,8 +45,8 @@
         <link rel="alternate" type="<?php echo $theme->type; ?>" href="<?php echo fix($url, true); ?>" />
         <author>
             <name><?php echo fix($author); ?></name>
-<?php if (!empty($post->user()->website)): ?>
-            <uri><?php echo fix($post->user()->website); ?></uri>
+<?php if (!empty($post->user->website)): ?>
+            <uri><?php echo fix($post->user->website); ?></uri>
 <?php endif; ?>
         </author>
         <content type="html">

@@ -230,7 +230,7 @@
             $_POST['feather'] = XML_RPC_FEATHER;
             $_POST['created_at'] = fallback($this->convertFromDateCreated($args[3]), datetime(), true);
 
-            if ($user->group()->can('add_post'))
+            if ($user->group->can('add_post'))
                 $_POST['status'] = ($args[4]) ? 'public' : 'draft';
             else
                 $_POST['status'] = 'draft';
@@ -287,7 +287,7 @@
                 return new IXR_Error(500, __("You don't have permission to edit this post."));
 
             # Enforce post status when necessary
-            if (!$user->group()->can('edit_own_post', 'edit_post'))
+            if (!$user->group->can('edit_own_post', 'edit_post'))
                 $status = 'draft';
             else if ($post->status !== 'public' and $post->status !== 'draft')
                 $status = $post->status;
@@ -449,12 +449,12 @@
 
             $where = array('feather' => XML_RPC_FEATHER);
 
-            if ($user->group()->can('view_own_draft', 'view_draft'))
+            if ($user->group->can('view_own_draft', 'view_draft'))
                 $where['status'] = array('public', 'draft');
             else
                 $where['status'] = 'public';
 
-            if (!$user->group()->can('view_draft', 'edit_draft', 'edit_post', 'delete_draft', 'delete_post'))
+            if (!$user->group->can('view_draft', 'edit_draft', 'edit_post', 'delete_draft', 'delete_post'))
                 $where['user_id'] = $user->id;
 
             return Post::find(
@@ -494,7 +494,7 @@
 
             if ($user->no_results)
                 throw new Exception(__("Login incorrect."));
-            else if (!$user->group()->can("{$do}_own_post", "{$do}_post", "{$do}_draft", "{$do}_own_draft"))
+            else if (!$user->group->can("{$do}_own_post", "{$do}_post", "{$do}_draft", "{$do}_own_draft"))
                 throw new Exception(_f("You don't have permission to %s posts/drafts.", array($do)));
         }
 

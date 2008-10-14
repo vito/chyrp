@@ -353,7 +353,7 @@
         public function drafts() {
             $visitor = Visitor::current();
 
-            if (!$visitor->group()->can("view_own_draft", "view_draft"))
+            if (!$visitor->group->can("view_own_draft", "view_draft"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to view drafts."));
 
             $posts = new Paginator(Post::find(array("placeholders" => true,
@@ -556,7 +556,7 @@
                                  $_POST['email'],
                                  $_POST['full_name'],
                                  $_POST['website'],
-                                 $visitor->group()->id);
+                                 $visitor->group->id);
 
                 $_SESSION['password'] = $password;
 

@@ -184,7 +184,7 @@
                 $path = preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file);
                 $file = basename($file);
 
-                if (substr($file, -4) != ".css" and substr($file, -4) != ".php")
+                if (substr($file, -8) == ".inc.css" or (substr($file, -4) != ".css" and substr($file, -4) != ".php"))
                     continue;
 
                 if ($file == "ie.css")
@@ -234,11 +234,11 @@
                 $short = (array) glob(THEME_DIR."/js/*.js");
 
                 foreach(array_merge($long, $short) as $file)
-                    if ($file)
+                    if ($file and substr($file, -7) != ".inc.js")
                         $javascripts.= "\n\t\t".'<script src="'.$config->chyrp_url.'/includes/lib/gz.php?file='.preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file).'" type="text/javascript" charset="utf-8"></script>';
 
-                $long  = (array) glob(THEME_DIR."/javascripts/*.js.php");
-                $short = (array) glob(THEME_DIR."/js/*.js.php");
+                $long  = (array) glob(THEME_DIR."/javascripts/*.php");
+                $short = (array) glob(THEME_DIR."/js/*.php");
                 foreach(array_merge($long, $short) as $file)
                     if ($file)
                         $javascripts.= "\n\t\t".'<script src="'.$config->chyrp_url.preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file).'" type="text/javascript" charset="utf-8"></script>';

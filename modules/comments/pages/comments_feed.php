@@ -29,16 +29,16 @@
 
         $updated = ($comment->updated) ? $comment->updated_at : $comment->created_at ;
 
-        $tagged = substr(strstr(url("id/".$comment->post()->id)."#comment_".$comment->id, "//"), 2);
+        $tagged = substr(strstr(url("id/".$comment->post->id)."#comment_".$comment->id, "//"), 2);
         $tagged = str_replace("#", "/", $tagged);
-        $tagged = preg_replace("/(".preg_quote(parse_url($comment->post()->url(), PHP_URL_HOST)).")/", "\\1,".when("Y-m-d", $updated).":", $tagged, 1);
+        $tagged = preg_replace("/(".preg_quote(parse_url($comment->post->url(), PHP_URL_HOST)).")/", "\\1,".when("Y-m-d", $updated).":", $tagged, 1);
 ?>
-    <entry xml:base="<?php echo $comment->post()->url()."#comment_".$comment->id; ?>">
-        <title type="html"><?php echo fix($comment->post()->title()); ?></title>
+    <entry xml:base="<?php echo $comment->post->url()."#comment_".$comment->id; ?>">
+        <title type="html"><?php echo fix($comment->post->title()); ?></title>
         <id>tag:<?php echo $tagged; ?></id>
         <updated><?php echo when("c", $updated); ?></updated>
         <published><?php echo when("c", $comment->created_at); ?></published>
-        <link href="<?php echo $comment->post()->url()."#comment_".$comment->id; ?>" />
+        <link href="<?php echo $comment->post->url()."#comment_".$comment->id; ?>" />
         <author>
             <name><?php echo fix($comment->author); ?></name>
 <?php if (!empty($comment->author_url)): ?>

@@ -82,7 +82,7 @@
         }
 
         public function manage_nav($navs) {
-            if (!Visitor::current()->group()->can("edit_aggregate", "delete_aggregate"))
+            if (!Visitor::current()->group->can("edit_aggregate", "delete_aggregate"))
                 return $navs;
 
             $navs["manage_aggregates"] = array("title" => __("Aggregates", "aggregator"),
@@ -97,19 +97,19 @@
         }
 
         public function manage_nav_show($possibilities) {
-            $possibilities[] = Visitor::current()->group()->can("edit_aggregate", "delete_aggregate");
+            $possibilities[] = Visitor::current()->group->can("edit_aggregate", "delete_aggregate");
             return $possibilities;
         }
 
         public function determine_action($action) {
             if ($action != "manage") return;
 
-            if (Visitor::current()->group()->can("edit_aggregate", "delete_aggregate"))
+            if (Visitor::current()->group->can("edit_aggregate", "delete_aggregate"))
                 return "manage_aggregates";
         }
 
         public function settings_nav($navs) {
-            if (Visitor::current()->group()->can("change_settings"))
+            if (Visitor::current()->group->can("change_settings"))
                 $navs["aggregation_settings"] = array("title" => __("Aggregation", "aggregator"));
 
             return $navs;
@@ -180,7 +180,7 @@
         }
 
         public function admin_aggregation_settings($admin) {
-            if (!Visitor::current()->group()->can("change_settings"))
+            if (!Visitor::current()->group->can("change_settings"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
             if (empty($_POST))
@@ -201,7 +201,7 @@
         public function admin_new_aggregate($admin) {
             $admin->context["users"] = User::find();
 
-            if (!Visitor::current()->group()->can("add_aggregate"))
+            if (!Visitor::current()->group->can("add_aggregate"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to add aggregates.", "aggregator"));
 
             if (empty($_POST))
@@ -237,7 +237,7 @@
             if (empty($_GET['id']))
                 error(__("No ID Specified"), __("An ID is required to delete an aggregate.", "aggregator"));
 
-            if (!Visitor::current()->group()->can("edit_aggregate"))
+            if (!Visitor::current()->group->can("edit_aggregate"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this aggregate.", "aggregator"));
 
             $admin->context["users"] = User::find();
@@ -278,7 +278,7 @@
             if (empty($_GET['id']))
                 error(__("No ID Specified"), __("An ID is required to delete an aggregate.", "aggregator"));
 
-            if (!Visitor::current()->group()->can("delete_aggregate"))
+            if (!Visitor::current()->group->can("delete_aggregate"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this aggregate.", "aggregator"));
 
             $config = Config::current();
@@ -301,7 +301,7 @@
             if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
                 show_403(__("Access Denied"), __("Invalid security key."));
 
-            if (!Visitor::current()->group()->can("delete_aggregate"))
+            if (!Visitor::current()->group->can("delete_aggregate"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this aggregate.", "aggregator"));
 
             $config = Config::current();

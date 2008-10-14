@@ -88,8 +88,8 @@
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this comment.", "comments"));
 
             $visitor = Visitor::current();
-            $status = ($visitor->group()->can("edit_comment")) ? $_POST['status'] : $comment->status ;
-            $created_at = ($visitor->group()->can("edit_comment")) ? datetime($_POST['created_at']) : $comment->created_at ;
+            $status = ($visitor->group->can("edit_comment")) ? $_POST['status'] : $comment->status ;
+            $created_at = ($visitor->group->can("edit_comment")) ? datetime($_POST['created_at']) : $comment->created_at ;
             $comment->update($_POST['author'],
                              $_POST['author_email'],
                              $_POST['author_url'],
@@ -104,7 +104,7 @@
                 Flash::notice(__("Comment updated."), "/admin/?action=manage_spam");
             else
                 Flash::notice(_f("Comment updated. <a href=\"%s\">View Comment &rarr;</a>",
-                                 array($comment->post()->url()."#comment_".$comment->id),
+                                 array($comment->post->url()."#comment_".$comment->id),
                                  "comments"),
                               "/admin/?action=manage_comments");
         }
@@ -146,7 +146,7 @@
         }
 
         static function admin_manage_spam($admin) {
-            if (!Visitor::current()->group()->can("edit_comment", "delete_comment", true))
+            if (!Visitor::current()->group->can("edit_comment", "delete_comment", true))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to manage any comments.", "comments"));
 
             fallback($_GET['query'], "");
@@ -161,7 +161,7 @@
                                                               25)));        }
 
         static function admin_purge_spam() {
-            if (!Visitor::current()->group()->can("delete_comment"))
+            if (!Visitor::current()->group->can("delete_comment"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to delete comments.", "comments"));
 
             SQL::current()->delete("comments", "status = 'spam'");
@@ -236,7 +236,7 @@
         }
 
         static function admin_comment_settings($admin) {
-            if (!Visitor::current()->group()->can("change_settings"))
+            if (!Visitor::current()->group->can("change_settings"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
             if (empty($_POST))
@@ -267,7 +267,7 @@
         }
 
         static function settings_nav($navs) {
-            if (Visitor::current()->group()->can("change_settings"))
+            if (Visitor::current()->group->can("change_settings"))
                 $navs["comment_settings"] = array("title" => __("Comments", "comments"));
 
             return $navs;
@@ -280,7 +280,7 @@
             $navs["manage_comments"] = array("title" => __("Comments", "comments"),
                                              "selected" => array("edit_comment", "delete_comment"));
 
-            if (Visitor::current()->group()->can("edit_comment", "delete_comment"))
+            if (Visitor::current()->group->can("edit_comment", "delete_comment"))
                 $navs["manage_spam"]     = array("title" => __("Spam", "comments"));
 
             return $navs;
@@ -313,7 +313,7 @@
             $where[] = "status != 'spam'";
 
             $visitor = Visitor::current();
-            if (!$visitor->group()->can("edit_comment", "delete_comment", true))
+            if (!$visitor->group->can("edit_comment", "delete_comment", true))
                 $where["user_id"] = $visitor->id;
 
             $admin->display("manage_comments",
@@ -703,7 +703,7 @@
                 if (!empty($comment->author_url))
                     $atom.= "               <uri>".fix($comment->author_url)."</uri>\r";
                 $atom.= "               <email>".fix($comment->author_email)."</email>\r";
-                $atom.= "               <chyrp:login>".fix(fallback($comment->user()->login))."</chyrp:login>\r";
+                $atom.= "               <chyrp:login>".fix(fallback($comment->user->login))."</chyrp:login>\r";
                 $atom.= "               <chyrp:ip>".long2ip($comment->author_ip)."</chyrp:ip>\r";
                 $atom.= "               <chyrp:agent>".fix($comment->author_agent)."</chyrp:agent>\r";
                 $atom.= "           </author>\r";

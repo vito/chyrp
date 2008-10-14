@@ -131,14 +131,14 @@
         }
 
         public function settings_nav($navs) {
-            if (Visitor::current()->group()->can("change_settings"))
+            if (Visitor::current()->group->can("change_settings"))
                 $navs["cache_settings"] = array("title" => __("Cache", "cacher"));
 
             return $navs;
         }
 
         public function admin_cache_settings($admin) {
-            if (!Visitor::current()->group()->can("change_settings"))
+            if (!Visitor::current()->group->can("change_settings"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
             if (empty($_POST))
@@ -152,7 +152,7 @@
         }
 
         public function admin_clear_cache() {
-            if (!Visitor::current()->group()->can("change_settings"))
+            if (!Visitor::current()->group->can("change_settings"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
             $this->regenerate();

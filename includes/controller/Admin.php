@@ -48,12 +48,12 @@
 
             if (empty($route->action) or $route->action == "write") {
                 # "Write > Post", if they can add posts or drafts.
-                if (($visitor->group()->can("add_post") or $visitor->group()->can("add_draft")) and
+                if (($visitor->group->can("add_post") or $visitor->group->can("add_draft")) and
                     !empty(Config::current()->enabled_feathers))
                     return $route->action = "write_post";
 
                 # "Write > Page", if they can add pages.
-                if ($visitor->group()->can("add_page"))
+                if ($visitor->group->can("add_page"))
                     return $route->action = "write_page";
             }
 
@@ -63,27 +63,27 @@
                     return $route->action = "manage_posts";
 
                 # "Manage > Pages", if they can manage pages.
-                if ($visitor->group()->can("edit_page") or $visitor->group()->can("delete_page"))
+                if ($visitor->group->can("edit_page") or $visitor->group->can("delete_page"))
                     return $route->action = "manage_pages";
 
                 # "Manage > Users", if they can manage users.
-                if ($visitor->group()->can("edit_user") or $visitor->group()->can("delete_user"))
+                if ($visitor->group->can("edit_user") or $visitor->group->can("delete_user"))
                     return $route->action = "manage_users";
 
                 # "Manage > Groups", if they can manage groups.
-                if ($visitor->group()->can("edit_group") or $visitor->group()->can("delete_group"))
+                if ($visitor->group->can("edit_group") or $visitor->group->can("delete_group"))
                     return $route->action = "manage_groups";
             }
 
             if (empty($route->action) or $route->action == "settings") {
                 # "General Settings", if they can configure the installation.
-                if ($visitor->group()->can("change_settings"))
+                if ($visitor->group->can("change_settings"))
                     return $route->action = "general_settings";
             }
 
             if (empty($route->action) or $route->action == "extend") {
                 # "Modules", if they can configure the installation.
-                if ($visitor->group()->can("toggle_extensions"))
+                if ($visitor->group->can("toggle_extensions"))
                     return $route->action = "modules";
             }
 
@@ -99,7 +99,7 @@
          */
         public function write_post() {
             $visitor = Visitor::current();
-            if (!$visitor->group()->can("add_post", "add_draft"))
+            if (!$visitor->group->can("add_post", "add_draft"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
             $config = Config::current();
@@ -124,7 +124,7 @@
          */
         public function bookmarklet() {
             $visitor = Visitor::current();
-            if (!$visitor->group()->can("add_post", "add_draft"))
+            if (!$visitor->group->can("add_post", "add_draft"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
             $config = Config::current();
@@ -158,7 +158,7 @@
          */
         public function add_post() {
             $visitor = Visitor::current();
-            if (!$visitor->group()->can("add_post", "add_draft"))
+            if (!$visitor->group->can("add_post", "add_draft"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
             if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
@@ -278,7 +278,7 @@
                 $where["created_at like"] = $_GET['month']."-%";
 
             $visitor = Visitor::current();
-            if (!$visitor->group()->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post"))
+            if (!$visitor->group->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post"))
                 $where["user_id"] = $visitor->id;
 
             $results = Post::find(array("placeholders" => true,
@@ -325,7 +325,7 @@
          * Page creation.
          */
         public function write_page() {
-            if (!Visitor::current()->group()->can("add_page"))
+            if (!Visitor::current()->group->can("add_page"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to create pages."));
 
             $this->display("write_page", array("pages" => Page::find()));
@@ -336,7 +336,7 @@
          * Adds a page when the form is submitted.
          */
         public function add_page() {
-            if (!Visitor::current()->group()->can("add_page"))
+            if (!Visitor::current()->group->can("add_page"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to create pages."));
 
             if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
@@ -356,7 +356,7 @@
          * Page editing.
          */
         public function edit_page() {
-            if (!Visitor::current()->group()->can("edit_page"))
+            if (!Visitor::current()->group->can("edit_page"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this page."));
 
             if (empty($_GET['id']))
@@ -372,7 +372,7 @@
          * Updates a page when the form is submitted.
          */
         public function update_page() {
-            if (!Visitor::current()->group()->can("edit_page"))
+            if (!Visitor::current()->group->can("edit_page"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to edit pages."));
 
             if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
@@ -409,7 +409,7 @@
          * Page deletion (confirm page).
          */
         public function delete_page() {
-            if (!Visitor::current()->group()->can("delete_page"))
+            if (!Visitor::current()->group->can("delete_page"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to delete pages."));
 
             if (empty($_GET['id']))
@@ -423,7 +423,7 @@
          * Destroys a page.
          */
         public function destroy_page() {
-            if (!Visitor::current()->group()->can("delete_page"))
+            if (!Visitor::current()->group->can("delete_page"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to delete pages."));
 
             if (empty($_POST['id']))
@@ -438,7 +438,7 @@
             $page = new Page($_POST['id']);
 
             if (!$page->no_results)
-                foreach ($page->children() as $child)
+                foreach ($page->children as $child)
                     if (isset($_POST['destroy_children']))
                         Page::delete($child->id, true);
                     else
@@ -455,7 +455,7 @@
          */
         public function manage_pages() {
             $visitor = Visitor::current();
-            if (!$visitor->group()->can("edit_page") and !$visitor->group()->can("delete_page"))
+            if (!$visitor->group->can("edit_page") and !$visitor->group->can("delete_page"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to manage pages."));
 
             fallback($_GET['query'], "");
@@ -472,7 +472,7 @@
          * User creation.
          */
         public function new_user() {
-            if (!Visitor::current()->group()->can("add_user"))
+            if (!Visitor::current()->group->can("add_user"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to add users."));
 
             $config = Config::current();
@@ -489,7 +489,7 @@
          * Add a user when the form is submitted.
          */
         public function add_user() {
-            if (!Visitor::current()->group()->can("add_user"))
+            if (!Visitor::current()->group->can("add_user"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to add users."));
 
             if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
@@ -528,7 +528,7 @@
          * User editing.
          */
         public function edit_user() {
-            if (!Visitor::current()->group()->can("edit_user"))
+            if (!Visitor::current()->group->can("edit_user"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this user."));
 
             if (empty($_GET['id']))
@@ -553,7 +553,7 @@
 
             $visitor = Visitor::current();
 
-            if (!$visitor->group()->can("edit_user"))
+            if (!$visitor->group->can("edit_user"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to edit users."));
 
             $check_name = new User(null, array("where" => array("login" => $_POST['login'],
@@ -586,7 +586,7 @@
          * User deletion.
          */
         public function delete_user() {
-            if (!Visitor::current()->group()->can("delete_user"))
+            if (!Visitor::current()->group->can("delete_user"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to delete users."));
 
             if (empty($_GET['id']))
@@ -602,7 +602,7 @@
          * Destroys a user.
          */
         public function destroy_user() {
-            if (!Visitor::current()->group()->can("delete_user"))
+            if (!Visitor::current()->group->can("delete_user"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to delete users."));
 
             if (empty($_POST['id']))
@@ -619,7 +619,7 @@
 
             if (isset($_POST['posts'])) {
                 if ($_POST['posts'] == "delete")
-                    foreach ($user->posts() as $post)
+                    foreach ($user->post; as $post)
                         Post::delete($post->id);
                 elseif ($_POST['posts'] == "move")
                     $sql->update("posts",
@@ -629,7 +629,7 @@
 
             if (isset($_POST['pages'])) {
                 if ($_POST['pages'] == "delete")
-                    foreach ($user->pages() as $page)
+                    foreach ($user->page; as $page)
                         Page::delete($page->id);
                 elseif ($_POST['pages'] == "move")
                     $sql->update("pages",
@@ -648,7 +648,7 @@
          */
         public function manage_users() {
             $visitor = Visitor::current();
-            if (!$visitor->group()->can("edit_user") and !$visitor->group()->can("delete_user") and !$visitor->group()->can("add_user"))
+            if (!$visitor->group->can("edit_user") and !$visitor->group->can("delete_user") and !$visitor->group->can("add_user"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to manage users."));
 
             fallback($_GET['query'], "");
@@ -666,7 +666,7 @@
          * Group creation.
          */
         public function new_group() {
-            if (!Visitor::current()->group()->can("add_group"))
+            if (!Visitor::current()->group->can("add_group"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to create groups."));
 
             $this->display("new_group",
@@ -678,7 +678,7 @@
          * Adds a group when the form is submitted.
          */
         public function add_group() {
-            if (!Visitor::current()->group()->can("add_group"))
+            if (!Visitor::current()->group->can("add_group"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to create groups."));
 
             if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
@@ -694,7 +694,7 @@
          * Group editing.
          */
         public function edit_group() {
-            if (!Visitor::current()->group()->can("edit_group"))
+            if (!Visitor::current()->group->can("edit_group"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to edit groups."));
 
             if (empty($_GET['id']))
@@ -710,7 +710,7 @@
          * Updates a group when the form is submitted.
          */
         public function update_group() {
-            if (!Visitor::current()->group()->can("edit_group"))
+            if (!Visitor::current()->group->can("edit_group"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to edit groups."));
 
             if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
@@ -740,7 +740,7 @@
          * Group deletion (confirm page).
          */
         public function delete_group() {
-            if (!Visitor::current()->group()->can("delete_group"))
+            if (!Visitor::current()->group->can("delete_group"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to delete groups."));
 
             if (empty($_GET['id']))
@@ -757,7 +757,7 @@
          * Destroys a group.
          */
         public function destroy_group() {
-            if (!Visitor::current()->group()->can("delete_group"))
+            if (!Visitor::current()->group->can("delete_group"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to delete groups."));
 
             if (!isset($_POST['id']))
@@ -770,7 +770,7 @@
                 show_403(__("Access Denied"), __("Invalid security key."));
 
             $group = new Group($_POST['id']);
-            foreach ($group->members() as $user)
+            foreach ($group->users() as $user)
                 $user->update($user->login, $user->password, $user->email, $user->full_name, $user->website, $_POST['move_group']);
 
             $config = Config::current();
@@ -790,13 +790,13 @@
          */
         public function manage_groups() {
             $visitor = Visitor::current();
-            if (!$visitor->group()->can("edit_group") and !$visitor->group()->can("delete_group") and !$visitor->group()->can("add_group"))
+            if (!$visitor->group->can("edit_group") and !$visitor->group->can("delete_group") and !$visitor->group->can("add_group"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to manage groups."));
 
             if (!empty($_GET['search'])) {
                 $user = new User(null, array("where" => array("login" => $_GET['search'])));
                 if (!$user->no_results)
-                    $groups = new Paginator(array($user->group()), 10);
+                    $groups = new Paginator(array($user->group;), 10);
                 else
                     $groups = new Paginator(array(), 10);
             } else
@@ -811,7 +811,7 @@
          * Export posts, pages, etc.
          */
         public function export() {
-            if (!Visitor::current()->group()->can("add_post"))
+            if (!Visitor::current()->group->can("add_post"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to export content."));
 
             if (empty($_POST))
@@ -829,7 +829,7 @@
                     $where["created_at like"] = $_GET['month']."-%";
 
                 $visitor = Visitor::current();
-                if (!$visitor->group()->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post"))
+                if (!$visitor->group->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post"))
                     $where["user_id"] = $visitor->id;
 
                 $results = Post::find(array("placeholders" => true,
@@ -885,12 +885,12 @@
                     $posts_atom.= '     <published>'.when("c", $post->created_at).'</published>'."\r";
                     $posts_atom.= '     <link href="'.fix($trigger->filter($url, "post_export_url", $post)).'" />'."\r";
                     $posts_atom.= '     <author chyrp:user_id="'.$post->user_id.'">'."\r";
-                    $posts_atom.= '         <name>'.fix(fallback($post->user()->full_name, $post->user()->login, true)).'</name>'."\r";
+                    $posts_atom.= '         <name>'.fix(fallback($post->user->full_name, $post->user->login, true)).'</name>'."\r";
 
-                    if (!empty($post->user()->website))
-                        $posts_atom.= '         <uri>'.fix($post->user()->website).'</uri>'."\r";
+                    if (!empty($post->user->website))
+                        $posts_atom.= '         <uri>'.fix($post->user->website).'</uri>'."\r";
 
-                    $posts_atom.= '         <chyrp:login>'.fix($post->user()->login).'</chyrp:login>'."\r";
+                    $posts_atom.= '         <chyrp:login>'.fix($post->user->login).'</chyrp:login>'."\r";
                     $posts_atom.= '     </author>'."\r";
                     $posts_atom.= '     <content>'."\r";
 
@@ -947,12 +947,12 @@
                     $pages_atom.= '     <published>'.when("c", $page->created_at).'</published>'."\r";
                     $pages_atom.= '     <link href="'.fix($trigger->filter($url, "page_export_url", $page)).'" />'."\r";
                     $pages_atom.= '     <author chyrp:user_id="'.fix($page->user_id).'">'."\r";
-                    $pages_atom.= '         <name>'.fix(fallback($page->user()->full_name, $page->user()->login, true)).'</name>'."\r";
+                    $pages_atom.= '         <name>'.fix(fallback($page->user->full_name, $page->user->login, true)).'</name>'."\r";
 
-                    if (!empty($page->user()->website))
-                        $pages_atom.= '         <uri>'.fix($page->user()->website).'</uri>'."\r";
+                    if (!empty($page->user->website))
+                        $pages_atom.= '         <uri>'.fix($page->user->website).'</uri>'."\r";
 
-                    $pages_atom.= '         <chyrp:login>'.fix($page->user()->login).'</chyrp:login>'."\r";
+                    $pages_atom.= '         <chyrp:login>'.fix($page->user->login).'</chyrp:login>'."\r";
                     $pages_atom.= '     </author>'."\r";
                     $pages_atom.= '     <content type="html">'.fix($page->body).'</content>'."\r";
 
@@ -999,7 +999,7 @@
                         if ($name != "no_results" and $name != "group_id" and $name != "id" and $name != "login")
                             $users_yaml[$user->login][$name] = $attr;
                         elseif ($name == "group_id")
-                            $users_yaml[$user->login]["group"] = $user->group()->name;
+                            $users_yaml[$user->login]["group"] = $user->group->name;
                 }
 
                 $exports["users.yaml"] = YAML::dump($users_yaml);
@@ -1028,7 +1028,7 @@
          * Importing content from other systems.
          */
         public function import() {
-            if (!Visitor::current()->group()->can("add_post"))
+            if (!Visitor::current()->group->can("add_post"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
 
             $this->display("import");
@@ -1042,7 +1042,7 @@
             if (empty($_POST))
                 redirect("/admin/?action=import");
 
-            if (!Visitor::current()->group()->can("add_post"))
+            if (!Visitor::current()->group->can("add_post"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
 
             if (isset($_FILES['posts_file']) and $_FILES['posts_file']['error'] == 0)
@@ -1166,7 +1166,7 @@
             if (empty($_POST))
                 redirect("/admin/?action=import");
 
-            if (!Visitor::current()->group()->can("add_post"))
+            if (!Visitor::current()->group->can("add_post"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
 
             $config = Config::current();
@@ -1268,7 +1268,7 @@
             if (empty($_POST))
                 redirect("/admin/?action=import");
 
-            if (!Visitor::current()->group()->can("add_post"))
+            if (!Visitor::current()->group->can("add_post"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
 
             $config = Config::current();
@@ -1397,7 +1397,7 @@
             if (empty($_POST))
                 redirect("/admin/?action=import");
 
-            if (!Visitor::current()->group()->can("add_post"))
+            if (!Visitor::current()->group->can("add_post"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
 
             $config = Config::current();
@@ -1468,7 +1468,7 @@
             if (empty($_POST))
                 redirect("/admin/?action=import");
 
-            if (!Visitor::current()->group()->can("add_post"))
+            if (!Visitor::current()->group->can("add_post"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
 
             $config = Config::current();
@@ -1544,7 +1544,7 @@
          * Module enabling/disabling.
          */
         public function modules() {
-            if (!Visitor::current()->group()->can("toggle_extensions"))
+            if (!Visitor::current()->group->can("toggle_extensions"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to enable/disable modules."));
 
             $config = Config::current();
@@ -1642,7 +1642,7 @@
          * Feather enabling/disabling.
          */
         public function feathers() {
-            if (!Visitor::current()->group()->can("toggle_extensions"))
+            if (!Visitor::current()->group->can("toggle_extensions"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to enable/disable feathers."));
 
             $config = Config::current();
@@ -1749,7 +1749,7 @@
 
             $type = (isset($_GET['module'])) ? "module" : "feather" ;
 
-            if (!$visitor->group()->can("toggle_extensions"))
+            if (!$visitor->group->can("toggle_extensions"))
                 if ($type == "module")
                     show_403(__("Access Denied"), __("You do not have sufficient privileges to enable/disable modules."));
                 else
@@ -1820,7 +1820,7 @@
 
             $type = (isset($_GET['module'])) ? "module" : "feather" ;
 
-            if (!$visitor->group()->can("toggle_extensions"))
+            if (!$visitor->group->can("toggle_extensions"))
                 if ($type == "module")
                     show_403(__("Access Denied"), __("You do not have sufficient privileges to enable/disable modules."));
                 else
@@ -1858,7 +1858,7 @@
          * Changes the theme.
          */
         public function change_theme() {
-            if (!Visitor::current()->group()->can("change_settings"))
+            if (!Visitor::current()->group->can("change_settings"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
             if (empty($_GET['theme']))
                 error(__("No Theme Specified"), __("You did not specify a theme to switch to."));
@@ -1891,7 +1891,7 @@
          * Previews the theme.
          */
         public function preview_theme() {
-            if (!Visitor::current()->group()->can("change_settings"))
+            if (!Visitor::current()->group->can("change_settings"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to preview themes."));
             if (empty($_GET['theme']))
                 error(__("No Theme Specified"), __("You did not specify a theme to preview."));
@@ -1912,7 +1912,7 @@
          * General Settings page.
          */
         public function general_settings() {
-            if (!Visitor::current()->group()->can("change_settings"))
+            if (!Visitor::current()->group->can("change_settings"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
             $locales = array();
@@ -1952,7 +1952,7 @@
          * User Settings page.
          */
         public function user_settings() {
-            if (!Visitor::current()->group()->can("change_settings"))
+            if (!Visitor::current()->group->can("change_settings"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
             if (empty($_POST))
@@ -1975,7 +1975,7 @@
          * Content Settings page.
          */
         public function content_settings() {
-            if (!Visitor::current()->group()->can("change_settings"))
+            if (!Visitor::current()->group->can("change_settings"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
             if (empty($_POST))
@@ -2003,7 +2003,7 @@
          * Route Settings page.
          */
         public function route_settings() {
-            if (!Visitor::current()->group()->can("change_settings"))
+            if (!Visitor::current()->group->can("change_settings"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
             if (empty($_POST))
@@ -2072,7 +2072,7 @@
             foreach (Config::current()->enabled_feathers as $index => $feather) {
                 $info = YAML::load(FEATHERS_DIR."/".$feather."/info.yaml");
                 $subnav["write"]["write_post&feather=".$feather] = array("title" => __($info["name"], $feather),
-                                                                         "show" => $visitor->group()->can("add_draft", "add_post"),
+                                                                         "show" => $visitor->group->can("add_draft", "add_post"),
                                                                          "attributes" => ' id="list_feathers['.$feather.']"',
                                                                          "selected" => (isset($_GET['feather']) and $_GET['feather'] == $feather) or
                                                                                        (!isset($_GET['feather']) and $action == "write_post" and !$index));
@@ -2080,7 +2080,7 @@
 
             # Write navs
             $subnav["write"]["write_page"] = array("title" => __("Page"),
-                                                   "show" => $visitor->group()->can("add_page"));
+                                                   "show" => $visitor->group->can("add_page"));
             $trigger->filter($subnav["write"], array("admin_write_nav", "write_nav"));
             $pages["write"] = array_merge(array("write_post"), array_keys($subnav["write"]));;
 
@@ -2089,24 +2089,24 @@
                                                                "show" => (Post::any_editable() or Post::any_deletable()),
                                                                "selected" => array("edit_post", "delete_post")),
                                       "manage_pages"  => array("title" => __("Pages"),
-                                                               "show" => ($visitor->group()->can("edit_page", "delete_page")),
+                                                               "show" => ($visitor->group->can("edit_page", "delete_page")),
                                                                "selected" => array("edit_page", "delete_page")),
                                       "manage_users"  => array("title" => __("Users"),
-                                                               "show" => ($visitor->group()->can("add_user",
+                                                               "show" => ($visitor->group->can("add_user",
                                                                                                  "edit_user",
                                                                                                  "delete_user")),
                                                                "selected" => array("edit_user", "delete_user", "new_user")),
                                       "manage_groups" => array("title" => __("Groups"),
-                                                               "show" => ($visitor->group()->can("add_group",
+                                                               "show" => ($visitor->group->can("add_group",
                                                                                                  "edit_group",
                                                                                                  "delete_group")),
                                                                "selected" => array("edit_group", "delete_group", "new_group")));
             $trigger->filter($subnav["manage"], "manage_nav");
 
             $subnav["manage"]["import"] = array("title" => __("Import"),
-                                                "show" => ($visitor->group()->can("add_post")));
+                                                "show" => ($visitor->group->can("add_post")));
             $subnav["manage"]["export"] = array("title" => __("Export"),
-                                                "show" => ($visitor->group()->can("add_post")));
+                                                "show" => ($visitor->group->can("add_post")));
 
             $pages["manage"][] = "new_user";
             $pages["manage"][] = "new_group";
@@ -2121,23 +2121,23 @@
 
             # Settings navs
             $subnav["settings"] = array("general_settings" => array("title" => __("General"),
-                                                                    "show" => $visitor->group()->can("change_settings")),
+                                                                    "show" => $visitor->group->can("change_settings")),
                                         "content_settings" => array("title" => __("Content"),
-                                                                    "show" => $visitor->group()->can("change_settings")),
+                                                                    "show" => $visitor->group->can("change_settings")),
                                         "user_settings"    => array("title" => __("Users"),
-                                                                    "show" => $visitor->group()->can("change_settings")),
+                                                                    "show" => $visitor->group->can("change_settings")),
                                         "route_settings"   => array("title" => __("Routes"),
-                                                                    "show" => $visitor->group()->can("change_settings")));
+                                                                    "show" => $visitor->group->can("change_settings")));
             $trigger->filter($subnav["settings"], "settings_nav");
             $pages["settings"] = array_keys($subnav["settings"]);
 
             # Extend navs
             $subnav["extend"] = array("modules"  => array("title" => __("Modules"),
-                                                          "show" => $visitor->group()->can("toggle_extensions")),
+                                                          "show" => $visitor->group->can("toggle_extensions")),
                                       "feathers" => array("title" => __("Feathers"),
-                                                          "show" => $visitor->group()->can("toggle_extensions")),
+                                                          "show" => $visitor->group->can("toggle_extensions")),
                                       "themes"   => array("title" => __("Themes"),
-                                                          "show" => $visitor->group()->can("toggle_extensions")));
+                                                          "show" => $visitor->group->can("toggle_extensions")));
             $trigger->filter($subnav["extend"], "extend_nav");
             $pages["extend"] = array_keys($subnav["extend"]);
 
@@ -2203,8 +2203,8 @@
 
             $this->context["navigation"] = array();
 
-            $show = array("write" => array($visitor->group()->can("add_draft", "add_post", "add_page")),
-                          "manage" => array($visitor->group()->can("view_own_draft",
+            $show = array("write" => array($visitor->group->can("add_draft", "add_post", "add_page")),
+                          "manage" => array($visitor->group->can("view_own_draft",
                                                                    "view_draft",
                                                                    "edit_own_draft",
                                                                    "edit_own_post",
@@ -2221,8 +2221,8 @@
                                                                    "add_group",
                                                                    "edit_group",
                                                                    "delete_group")),
-                          "settings" => array($visitor->group()->can("change_settings")),
-                          "extend" => array($visitor->group()->can("toggle_extensions")));
+                          "settings" => array($visitor->group->can("change_settings")),
+                          "extend" => array($visitor->group->can("toggle_extensions")));
 
             foreach ($show as $name => &$arr)
                 $trigger->filter($arr, $name."_nav_show");

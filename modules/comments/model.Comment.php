@@ -9,6 +9,8 @@
     class Comment extends Model {
         public $no_results = false;
 
+        public $belongs_to = array("post", "user");
+
         /**
          * Function: __construct
          * See Also:
@@ -21,8 +23,8 @@
                 return false;
 
             $this->body_unfiltered = $this->body;
-            $group = ($this->user_id and !$this->user()->no_results) ?
-                         $this->user()->group() :
+            $group = ($this->user_id and !$this->user;->no_results) ?
+                         $this->user;->group; :
                          new Group(Config::current()->guest_group) ;
 
             if (isset($options["filter"]) and !$options["filter"])
@@ -220,12 +222,12 @@
 
         public function editable() {
             $visitor = Visitor::current();
-            return ($visitor->group()->can("edit_comment") or ($visitor->group()->can("edit_own_comment") and $visitor->id == $this->user_id));
+            return ($visitor->group->can("edit_comment") or ($visitor->group->can("edit_own_comment") and $visitor->id == $this->user_id));
         }
 
         public function deletable() {
             $visitor = Visitor::current();
-            return ($visitor->group()->can("delete_comment") or ($visitor->group()->can("delete_own_comment") and $visitor->id == $this->user_id));
+            return ($visitor->group->can("delete_comment") or ($visitor->group->can("delete_own_comment") and $visitor->id == $this->user_id));
         }
 
         /**
@@ -236,11 +238,11 @@
             $visitor = Visitor::current();
 
             # Can they edit comments?
-            if ($visitor->group()->can("edit_comment"))
+            if ($visitor->group->can("edit_comment"))
                 return true;
 
             # Can they edit their own comments, and do they have any?
-            if ($visitor->group()->can("edit_own_comment") and
+            if ($visitor->group->can("edit_own_comment") and
                 self::find(array("where" => array("user_id" => $visitor->id))))
                 return true;
 
@@ -255,11 +257,11 @@
             $visitor = Visitor::current();
 
             # Can they delete comments?
-            if ($visitor->group()->can("delete_comment"))
+            if ($visitor->group->can("delete_comment"))
                 return true;
 
             # Can they delete their own comments, and do they have any?
-            if ($visitor->group()->can("delete_own_comment") and
+            if ($visitor->group->can("delete_own_comment") and
                 self::find(array("where" => array("user_id" => $visitor->id))))
                 return true;
 
@@ -291,13 +293,13 @@
 
         static function user_can($post) {
             $visitor = Visitor::current();
-            if (!$visitor->group()->can("add_comment")) return false;
+            if (!$visitor->group->can("add_comment")) return false;
 
             // assume allowed comments by default
             return empty($post->comment_status) or
                    !($post->comment_status == "closed" or
                     ($post->comment_status == "registered_only" and !logged_in()) or
-                    ($post->comment_status == "private" and !$visitor->group()->can("add_comment_private")));
+                    ($post->comment_status == "private" and !$visitor->group->can("add_comment_private")));
         }
 
         static function user_count($user_id) {
@@ -305,10 +307,12 @@
             return $count;
         }
 
+        # !! DEPRECATED AFTER 2.0 !!
         public function post() {
             return new Post($this->post_id);
         }
 
+        # !! DEPRECATED AFTER 2.0 !!
         public function user() {
             if ($this->user_id)
                 return new User($this->user_id);

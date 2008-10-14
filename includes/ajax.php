@@ -9,7 +9,7 @@
     # Parse the route.
     $route = Route::current($main);
 
-    if (!$visitor->group()->can("view_site"))
+    if (!$visitor->group->can("view_site"))
         if ($trigger->exists("can_not_view_site"))
             $trigger->call("can_not_view_site");
         else
@@ -91,7 +91,7 @@
             break;
 
         case "check_confirm":
-            if (!$visitor->group()->can("toggle_extensions"))
+            if (!$visitor->group->can("toggle_extensions"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to enable/disable extensions."));
 
             $dir = ($_POST['type'] == "module") ? MODULES_DIR : FEATHERS_DIR ;
@@ -115,7 +115,7 @@
         case "enable_module": case "enable_feather":
             $type = ($_POST['action'] == "enable_module") ? "module" : "feather" ;
 
-            if (!$visitor->group()->can("change_settings"))
+            if (!$visitor->group->can("change_settings"))
                 if ($type == "module")
                     exit("{ notifications: ['".__("You do not have sufficient privileges to enable/disable modules.")."'] }");
                 else
@@ -170,7 +170,7 @@
         case "disable_module": case "disable_feather":
             $type = ($_POST['action'] == "disable_module") ? "module" : "feather" ;
 
-            if (!$visitor->group()->can("change_settings"))
+            if (!$visitor->group->can("change_settings"))
                 if ($type == "module")
                     exit("{ notifications: ['".__("You do not have sufficient privileges to enable/disable modules.")."'] }");
                 else

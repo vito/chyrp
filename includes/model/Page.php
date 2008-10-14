@@ -7,6 +7,10 @@
      *     <Model>
      */
     class Page extends Model {
+        public $belongs_to = array("user", "parent" => "page");
+
+        public $has_many = array("children" => array("page", "parent"));
+
         /**
          * Function: __construct
          * See Also:
@@ -19,7 +23,7 @@
             if ($this->no_results)
                 return false;
 
-            $this->slug =& $this->url;
+            $this->slug = $this->url;
 
             $this->filtered = !isset($options["filter"]) or $options["filter"];
 
@@ -125,7 +129,7 @@
         static function delete($id, $recursive = false) {
             if ($recursive) {
                 $page = new self($id);
-                foreach ($page->children() as $child)
+                foreach ($page->children as $child)
                     self::delete($child->id);
             }
 
@@ -177,8 +181,8 @@
 
             $page = $this;
             while (isset($page->parent_id) and $page->parent_id) {
-                $url[] = urlencode($page->parent()->url);
-                $page = $page->parent();
+                $url[] = urlencode($page->parent->url);
+                $page = $page->parent;
             }
 
             return url("page/".implode("/", array_reverse($url)));
@@ -187,6 +191,8 @@
         /**
          * Function: parent
          * Returns a page's parent. Example: $page->parent()->parent()->title
+         * 
+         * !! DEPRECATED AFTER 2.0 !!
          */
         public function parent() {
             if ($this->no_results or !$this->parent_id)
@@ -198,6 +204,8 @@
         /**
          * Function: children
          * Returns a page's children.
+         * 
+         * !! DEPRECATED AFTER 2.0 !!
          */
         public function children() {
             if ($this->no_results)
@@ -208,7 +216,9 @@
 
         /**
          * Function: user
-         * Returns a page's creator. Example: $page->user()->full_name
+         * Returns a page's creator. Example: $page->user->full_name
+         * 
+         * !! DEPRECATED AFTER 2.0 !!
          */
         public function user() {
             if ($this->no_results)
@@ -227,7 +237,7 @@
          *     $after - If the link can be shown, show this after it.
          */
         public function edit_link($text = null, $before = null, $after = null){
-            if ($this->no_results or !Visitor::current()->group()->can("edit_page"))
+            if ($this->no_results or !Visitor::current()->group->can("edit_page"))
                 return false;
 
             fallback($text, __("Edit"));
@@ -245,7 +255,7 @@
          *     $after - If the link can be shown, show this after it.
          */
         public function delete_link($text = null, $before = null, $after = null){
-            if ($this->no_results or !Visitor::current()->group()->can("delete_page"))
+            if ($this->no_results or !Visitor::current()->group->can("delete_page"))
                 return false;
 
             fallback($text, __("Delete"));

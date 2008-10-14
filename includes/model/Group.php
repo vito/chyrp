@@ -7,6 +7,8 @@
      *     <Model>
      */
     class Group extends Model {
+        public $has_many = "users";
+
         /**
          * Function: __construct
          * See Also:
@@ -192,6 +194,8 @@
         /**
          * Function: members
          * Returns all the members of the group.
+         * 
+         * !! DEPRECATED AFTER 2.0 !!
          */
         public function members() {
             if ($this->no_results)
@@ -210,7 +214,7 @@
          *     $after - If the link can be shown, show this after it.
          */
         public function edit_link($text = null, $before = null, $after = null) {
-            if ($this->no_results or !Visitor::current()->group()->can("edit_group"))
+            if ($this->no_results or !Visitor::current()->group->can("edit_group"))
                 return false;
 
             fallback($text, __("Edit"));
@@ -228,7 +232,7 @@
          *     $after - If the link can be shown, show this after it.
          */
         public function delete_link($text = null, $before = null, $after = null){
-            if ($this->no_results or !Visitor::current()->group()->can("delete_group"))
+            if ($this->no_results or !Visitor::current()->group->can("delete_group"))
                 return false;
 
             fallback($text, __("Delete"));

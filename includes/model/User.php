@@ -7,6 +7,9 @@
      *     <Model>
      */
     class User extends Model {
+        public $belongs_to = "group";
+        public $has_many = array("posts", "pages");
+
         /**
          * Function: __construct
          * See Also:
@@ -130,7 +133,9 @@
 
         /**
          * Function: group
-         * Returns a user's group. Example: $user->group()->can("do_something")
+         * Returns a user's group. Example: $user->group->can("do_something")
+         * 
+         * !! DEPRECATED AFTER 2.0 !!
          */
         public function group() {
             if ($this->no_results)
@@ -142,6 +147,8 @@
         /**
          * Function: posts
          * Returns all the posts of the user.
+         * 
+         * !! DEPRECATED AFTER 2.0 !!
          */
         public function posts() {
             if ($this->no_results)
@@ -153,6 +160,8 @@
         /**
          * Function: pages
          * Returns all the pages of the user.
+         * 
+         * !! DEPRECATED AFTER 2.0 !!
          */
         public function pages() {
             if ($this->no_results)
@@ -171,7 +180,7 @@
          *     $after - If the link can be shown, show this after it.
          */
         public function edit_link($text = null, $before = null, $after = null) {
-            if ($this->no_results or !Visitor::current()->group()->can("edit_user"))
+            if ($this->no_results or !Visitor::current()->group->can("edit_user"))
                 return false;
 
             fallback($text, __("Edit"));
@@ -189,7 +198,7 @@
          *     $after - If the link can be shown, show this after it.
          */
         public function delete_link($text = null, $before = null, $after = null) {
-            if ($this->no_results or !Visitor::current()->group()->can("delete_user"))
+            if ($this->no_results or !Visitor::current()->group->can("delete_user"))
                 return false;
 
             fallback($text, __("Delete"));

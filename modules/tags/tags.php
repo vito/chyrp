@@ -192,7 +192,7 @@
             list($where, $params) = keywords($_GET['query'], "post_attributes.value LIKE :query OR url LIKE :query");
 
             $visitor = Visitor::current();
-            if (!$visitor->group()->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post"))
+            if (!$visitor->group->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post"))
 
             $results = Post::find(array("placeholders" => true,
                                         "where" => $where,
