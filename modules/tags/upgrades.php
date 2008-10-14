@@ -45,14 +45,14 @@
 
         foreach ($tags->fetchAll() as $tag) {
             echo _f("Relocating tags for post #%d...", array($tag["post_id"]), "tags");
-            $dirty = $sql->insert("post_attributes",
-                                  array("name" => "unclean_tags",
-                                        "value" => $tag["tags"],
-                                        "post_id" => $tag["post_id"]));
-            $clean = $sql->insert("post_attributes",
-                                  array("name" => "clean_tags",
-                                        "value" => $tag["clean"],
-                                        "post_id" => $tag["post_id"]));
+            $dirty = $sql->replace("post_attributes",
+                                   array("name" => "unclean_tags",
+                                         "value" => $tag["tags"],
+                                         "post_id" => $tag["post_id"]));
+            $clean = $sql->replace("post_attributes",
+                                   array("name" => "clean_tags",
+                                         "value" => $tag["clean"],
+                                         "post_id" => $tag["post_id"]));
             echo test($dirty and $clean);
 
             if (!$dirty or !$clean)
