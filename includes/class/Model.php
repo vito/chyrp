@@ -30,21 +30,26 @@
         public function __get($name) {
             if (isset($this->$name))
                 return $this->$name;
-            elseif (in_array($name, (array) $this->belongs_to) or isset($this->belongs_to[$name])) {
-                $id = $name."_id";
-                $class = (isset($this->belongs_to[$name])) ? $this->belongs_to[$name] : $name ;
-                return $this->$name = new $class($this->$id);
-            } elseif (in_array($name, (array) $this->has_many) or isset($this->has_many[$name])) {
-                if (isset($this->has_many[$name]))
-                    list($class, $by) = $this->has_many[$name];
-                else
-                    list($class, $by) = array(depluralize($name), get_class($this));
+            else {
+                $this->belongs_to = (array) $this->belongs_to;
+                $this->has_many = (array) $this->has_many;
+                $this->has_one = (array) $this->has_one;
+                if (in_array($name, $this->belongs_to) or isset($this->belongs_to[$name])) {
+                    $id = $name."_id";
+                    $class = (isset($this->belongs_to[$name])) ? $this->belongs_to[$name] : $name ;
+                    return $this->$name = new $class($this->$id);
+                } elseif (in_array($name, $this->has_many) or isset($this->has_many[$name])) {
+                    if (isset($this->has_many[$name]))
+                        list($class, $by) = $this->has_many[$name];
+                    else
+                        list($class, $by) = array(depluralize($name), get_class($this));
 
-                return $this->$name = call_user_func(array($class, "find"),
-                                                     array("where" => array($by."_id" => $this->id)));
-            } elseif (in_array($name, (array) $this->has_one)) {
-                $class = depluralize($name);
-                return $this->$name = new $class(null, array("where" => array(get_class($this)."_id" => $this->id)));
+                    return $this->$name = call_user_func(array($class, "find"),
+                                                         array("where" => array($by."_id" => $this->id)));
+                } elseif (in_array($name, $this->has_one)) {
+                    $class = depluralize($name);
+                    return $this->$name = new $class(null, array("where" => array(get_class($this)."_id" => $this->id)));
+                }
             }
         }
 
