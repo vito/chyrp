@@ -619,7 +619,7 @@
 
             if (isset($_POST['posts'])) {
                 if ($_POST['posts'] == "delete")
-                    foreach ($user->post; as $post)
+                    foreach ($user->post as $post)
                         Post::delete($post->id);
                 elseif ($_POST['posts'] == "move")
                     $sql->update("posts",
@@ -629,7 +629,7 @@
 
             if (isset($_POST['pages'])) {
                 if ($_POST['pages'] == "delete")
-                    foreach ($user->page; as $page)
+                    foreach ($user->page as $page)
                         Page::delete($page->id);
                 elseif ($_POST['pages'] == "move")
                     $sql->update("pages",
@@ -796,7 +796,7 @@
             if (!empty($_GET['search'])) {
                 $user = new User(null, array("where" => array("login" => $_GET['search'])));
                 if (!$user->no_results)
-                    $groups = new Paginator(array($user->group;), 10);
+                    $groups = new Paginator(array($user->group), 10);
                 else
                     $groups = new Paginator(array(), 10);
             } else

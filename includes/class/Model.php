@@ -99,6 +99,8 @@
 
             if (is_numeric($id))
                 $options["where"]["id"] = $id;
+            elseif (is_array($id))
+                $options["where"] = array_merge($options["where"], $id);
 
             $trigger = Trigger::current();
             $trigger->filter($options, $model_name."_grab");
