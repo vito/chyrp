@@ -374,7 +374,7 @@
             if (isset($attrs))
                 $post = Post::from_url($attrs, array("drafts" => true));
             else
-                $post = new Post(null, array("where" => array("url" => fallback($_GET['url'], null, true))));
+                $post = new Post(array("url" => fallback($_GET['url'], null, true)));
 
             if ($post->no_results)
                 return false;
@@ -405,7 +405,7 @@
                 } else
                     return false; # A "link in the chain" is broken
             } else
-                $page = new Page(null, array("where" => array("url" => $_GET['url'])));
+                $page = new Page(array("url" => $_GET['url']));
 
             if ($page->no_results)
                 return false; # Page not found; the 404 handling is handled externally.
@@ -572,7 +572,7 @@
          */
         public function lost_password() {
             if (!empty($_POST)) {
-                $user = new User(null, array("where" => array("login" => $_POST['login'])));
+                $user = new User(array("login" => $_POST['login']));
                 if ($user->no_results)
                     return Flash::warning(__("Invalid user specified."));
 

@@ -40,7 +40,7 @@
             $this->end_tags_for = array();
 
             if ($start and !is_numeric($start))
-                $begin_page = new Page(null, array("where" => array("url" => $start)));
+                $begin_page = new Page(array("url" => $start));
 
             $start = ($start and !is_numeric($start)) ? $begin_page->id : $start ;
 

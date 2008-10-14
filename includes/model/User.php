@@ -46,7 +46,7 @@
          *     true - if a match is found.
          */
         static function authenticate($login, $password) {
-            $check = new self(null, array("where" => array("login" => $login, "password" => $password)));
+            $check = new self(array("login" => $login, "password" => $password));
             return !$check->no_results;
         }
 

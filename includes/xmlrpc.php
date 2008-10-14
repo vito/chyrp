@@ -64,7 +64,7 @@
                 return new IXR_Error(0, __("There doesn't seem to be a valid link in your request."));
 
             if (preg_match("/url=([^&#]+)/", $linked_to, $url))
-                $post = new Post(null, array("where" => array("url" => $url[1])));
+                $post = new Post(array("url" => $url[1]));
             else
                 $post = MainController::current()->post_from_url(null,
                                                                  str_replace(rtrim($config->url, "/"), "/", $linked_to),

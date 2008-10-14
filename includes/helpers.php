@@ -1163,10 +1163,10 @@
             if (in_array($test, $times))
                 $where[strtoupper($test)."(created_at)"] = $equals;
             elseif ($test == "author") {
-                $user = new User(null, array("where" => array("login" => $equals)));
+                $user = new User(array("login" => $equals));
                 $where["user_id"] = $user->id;
             } elseif ($test == "group") {
-                $group = new Group(null, array("where" => array("name" => $equals)));
+                $group = new Group(array("name" => $equals));
                 $test = "group_id";
                 $equals = ($group->no_results) ? 0 : $group->id ;
             } else

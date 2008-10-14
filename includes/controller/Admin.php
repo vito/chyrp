@@ -498,7 +498,7 @@
             if (empty($_POST['login']))
                 error(__("Error"), __("Please enter a username for your account."));
 
-            $check = new User(null, array("where" => array("login" => $_POST['login'])));
+            $check = new User(array("login" => $_POST['login']));
             if (!$check->no_results)
                 error(__("Error"), __("That username is already in use."));
 
@@ -794,7 +794,7 @@
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to manage groups."));
 
             if (!empty($_GET['search'])) {
-                $user = new User(null, array("where" => array("login" => $_GET['search'])));
+                $user = new User(array("login" => $_GET['search']));
                 if (!$user->no_results)
                     $groups = new Paginator(array($user->group), 10);
                 else
