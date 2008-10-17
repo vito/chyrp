@@ -44,15 +44,21 @@
                     $has_status = true;
 
             if (!XML_RPC) {
-                $visitor = Visitor::current();
-                $private = (isset($options["drafts"]) and $options["drafts"] and $visitor->group->can("view_draft")) ?
-                               self::statuses(array("draft")) :
-                               self::statuses();
-
                 $options["where"][] = self::feathers();
 
-                if (!$has_status)
+                if (!$has_status) {
+                    $visitor = Visitor::current();
+                    $private = (isset($options["drafts"]) and $options["drafts"] and $visitor->group->can("view_draft")) ?
+                                   self::statuses(array("draft")) :
+                                   self::statuses() ;
+
+                    if (isset($options["drafts"]) and $options["drafts"] and $visitor->group->can("view_own_draft")) {
+                        $private.= " OR (status = 'draft' AND user_id = :visitor_id)";
+                        $options["params"][":visitor_id"] = $visitor->id;
+                    }
+
                     $options["where"][] = $private;
+                }
             }
 
             $options["left_join"][] = array("table" => "post_attributes",
@@ -100,15 +106,21 @@
                     $has_status = true;
 
             if (!XML_RPC) {
-                $visitor = Visitor::current();
-                $private = (isset($options["drafts"]) and $options["drafts"] and $visitor->group->can("view_draft")) ?
-                               self::statuses(array("draft")) :
-                               self::statuses() ;
-
                 $options["where"][] = self::feathers();
 
-                if (!$has_status)
+                if (!$has_status) {
+                    $visitor = Visitor::current();
+                    $private = (isset($options["drafts"]) and $options["drafts"] and $visitor->group->can("view_draft")) ?
+                                   self::statuses(array("draft")) :
+                                   self::statuses() ;
+
+                    if (isset($options["drafts"]) and $options["drafts"] and $visitor->group->can("view_own_draft")) {
+                        $private.= " OR (status = 'draft' AND user_id = :visitor_id)";
+                        $options["params"][":visitor_id"] = $visitor->id;
+                    }
+
                     $options["where"][] = $private;
+                }
             }
 
             $options["left_join"][] = array("table" => "post_attributes",
