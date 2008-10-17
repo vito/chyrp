@@ -343,6 +343,7 @@
          */
         static function any_editable() {
             $visitor = Visitor::current();
+            $sql = SQL::current();
 
             # Can they edit posts?
             if ($visitor->group->can("edit_post"))
@@ -350,17 +351,17 @@
 
             # Can they edit drafts?
             if ($visitor->group->can("edit_draft") and
-                Post::find(array("where" => "status = 'draft'")))
+                $sql->count("posts", array("status" => "draft")))
                 return true;
 
             # Can they edit their own posts, and do they have any?
             if ($visitor->group->can("edit_own_post") and
-                Post::find(array("where" => array("user_id" => $visitor->id))))
+                $sql->count("posts", array("user_id" => $visitor->id)))
                 return true;
 
             # Can they edit their own drafts, and do they have any?
             if ($visitor->group->can("edit_own_draft") and
-                Post::find(array("where" => array("status" => "draft", "user_id" => $visitor->id))))
+                $sql->count("posts", array("status" => "draft", "user_id" => $visitor->id)))
                 return true;
 
             return false;
@@ -372,6 +373,7 @@
          */
         static function any_deletable() {
             $visitor = Visitor::current();
+            $sql = SQL::current();
 
             # Can they delete posts?
             if ($visitor->group->can("delete_post"))
@@ -379,17 +381,17 @@
 
             # Can they delete drafts?
             if ($visitor->group->can("delete_draft") and
-                Post::find(array("where" => "status = 'draft'")))
+                $sql->count("posts", array("status" => "draft")))
                 return true;
 
             # Can they delete their own posts, and do they have any?
             if ($visitor->group->can("delete_own_post") and
-                Post::find(array("where" => array("user_id" => $visitor->id))))
+                $sql->count("posts", array("user_id" => $visitor->id)))
                 return true;
 
             # Can they delete their own drafts, and do they have any?
             if ($visitor->group->can("delete_own_draft") and
-                Post::find(array("where" => array("status" => "draft", "user_id" => $visitor->id))))
+                $sql->count("posts", array("status" => "draft", "user_id" => $visitor->id)))
                 return true;
 
             return false;
