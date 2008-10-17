@@ -12,7 +12,8 @@
                     </p>
                     <p>
                         <label for="description">${ "Description" | translate }</label>
-                        <textarea name="description" rows="2" cols="40">${ site.description | escape }</textarea>
+                        <textarea name="description" rows="2" cols="40">${ site.description | escape(false, false) }</textarea>
+                        ${ site.description | escape(false, false, false) | inspect }
                     </p>
                     <p>
                         <label for="chyrp_url">${ "Chyrp URL" | translate }</label>

@@ -30,7 +30,7 @@
                             ${ "Tags" | translate }: ${ post.tags.linked | join(", ") }
                             {% endif %}
                         </span>
-{% if visitor.group.can("edit_post", "delete_post") %}
+{% if post.editable or post.deletable %}
                         <span class="controls">
                             $post.edit_link
                             ${ post.delete_link("Delete" | translate, " | ") }
