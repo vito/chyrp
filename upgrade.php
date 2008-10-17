@@ -911,7 +911,7 @@
                  test(@unlink(INCLUDES_DIR."/rss.php"));
 
         if (file_exists(INCLUDES_DIR."/bookmarklet.php"))
-            echo __("Removing `includes/bookarklet.php` file...").
+            echo __("Removing `includes/bookmarklet.php` file...").
                  test(@unlink(INCLUDES_DIR."/bookmarklet.php"));
     }
 ?>
