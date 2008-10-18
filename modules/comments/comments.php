@@ -618,13 +618,12 @@
                 $_POST['option']['comment_status'] = ($struct['mt_allow_comments'] == 1) ? 'open' : 'closed';
         }
 
-        public function filter_post($post) {
+        public function post_comments_attr($attr, $post) {
             $sql = SQL::current();
             $config = Config::current();
             $trigger = Trigger::current();
             $visitor = Visitor::current();
             $route = Route::current();
-            $post->commentable = Comment::user_can($post);
 
             if (isset($route->action) and $route->action == "view") {
                 $get_comments = $sql->select("comments", # table
@@ -657,6 +656,12 @@
                     $comment->is_author = ($post->user_id == $comment->user_id);
                 }
             }
+
+            return $post->comments;
+        }
+
+        public function post_commentable_attr($attr, $post) {
+            return Comment::user_can($post);
         }
 
         static function posts_get($options) {

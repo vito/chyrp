@@ -152,6 +152,10 @@ function twig_get_attribute($obj, $item, $function = true)
     $method = 'get' . ucfirst($item);
     if ($function and method_exists($obj, $method))
         return call_user_func(array($obj, $method));
+    if (is_object($obj)) {
+        @$obj->$item; # Funky way of allowing __get to activate before returning the value.
+        return @$obj->$item;
+    }
     return NULL;
 }
 
