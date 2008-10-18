@@ -150,7 +150,7 @@
                         $_GET[$split[0]] = fallback($split[1], "", true);
                     }
 
-                    $route->try[] = $action;
+                    $route->action = $action;
                 }
             }
 
