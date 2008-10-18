@@ -95,10 +95,29 @@
             a.big:active {
                 background: #e0e0e0;
             }
+<?php if (!logged_in()): ?>
+            a.big.back {
+                -webkit-border-top-right-radius: 0 !important;
+                -webkit-border-bottom-right-radius: 0 !important;
+                width: 43.625%;
+                float: left;
+            }
+            a.big.login {
+                float: right;
+                text-align: right;
+                -webkit-border-top-left-radius: 0 !important;
+                -webkit-border-bottom-left-radius: 0 !important;
+                background: #f5f5f5;
+                width: 43.625%;
+            }
+<?php endif; ?>
+            .clear {
+                clear: both;
+            }
         </style>
         <script type="text/javascript" charset="utf-8">
             $(function(){
-                $(".message").append('<a class="big" href="javascript:history.back()">&larr; Back</a>')
+                $('<a class="big back" href="javascript:history.back()">&larr; <?php echo __("Back"); ?></a>').insertBefore(".clear")
             })
         </script>
     </head>
@@ -115,6 +134,10 @@
 <?php endforeach; ?>
                 </ol>
 <?php endif; ?>
+<?php if (!logged_in()): ?>
+                <a href="<?php echo url("login"); ?>" class="big login"><?php echo __("Log In"); ?> &rarr;</a>
+<?php endif; ?>
+                <div class="clear"></div>
             </div>
         </div>
 <?php if (defined("CHYRP_VERSION")): ?>
