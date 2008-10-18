@@ -367,12 +367,8 @@
      * Function: fix
      * Returns a HTML-sanitized version of a string.
      */
-    function fix($string, $quotes = false, $decode_first = true) {
+    function fix($string, $quotes = false) {
         $quotes = ($quotes) ? ENT_QUOTES : ENT_NOQUOTES ;
-
-        if ($decode_first)
-            $string = html_entity_decode($string, ENT_QUOTES, "utf-8");
-
         return htmlspecialchars($string, $quotes, "utf-8");
     }
 
