@@ -20,5 +20,18 @@ $(function(){
 
     if ($("#debug").size())
         $("#wrapper").css("padding-bottom", $("#debug").height())
+
+    $("#debug .toggle").click(function(){
+        if (Cookie.get("hide_debug") == "true") {
+            Cookie.destroy("hide_debug")
+            $("#debug").animate({ height: "33%" })
+        } else {
+            Cookie.set("hide_debug", "true", 30)
+            $("#debug").animate({ height: 15 })
+        }
+    })
+
+    if (Cookie.get("hide_debug") == "true")
+        $("#debug").height(15)
 })
 <!-- --></script>

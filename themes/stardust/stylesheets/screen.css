@@ -719,4 +719,9 @@ span.waiting {
     xoverflow-x: scroll;
     word-wrap: break-word;
 }
+#debug .toggle {
+    font-weight: bold;
+    color: #666;
+    float: right;
+}
 
