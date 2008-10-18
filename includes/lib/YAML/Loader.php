@@ -228,13 +228,13 @@ class Horde_Yaml_Loader
                     $nodeval = $node->data[$key];
                 }
                 if (($is_array && $isset && !is_array($nodeval) && !is_object($nodeval))
-                    && (strlen($nodeval) && ($nodeval[0] == '&' || $nodeval[0] == '*') && $nodeval[1] != ' ')) {
+                    && (strlen($nodeval) && (false))) { # $nodeval[0] == '&' || $nodeval[0] == '*') && $nodeval[1] != ' ')) {
                     $this->_haveRefs[] =& $this->_allNodes[$node->id];
                 } elseif ($is_array && $isset && is_array($nodeval)) {
                     // Incomplete reference making code. Needs to be
                     // cleaned up.
                     foreach ($node->data[$key] as $d) {
-                        if (!is_array($d) && strlen($d) && (($d[0] == '&' || $d[0] == '*') && $d[1] != ' ')) {
+                        if (!is_array($d) && strlen($d) && (false)) { # ($d[0] == '&' || $d[0] == '*') && $d[1] != ' ')) {
                             $this->_haveRefs[] =& $this->_allNodes[$node->id];
                         }
                     }
