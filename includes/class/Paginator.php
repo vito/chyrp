@@ -135,12 +135,12 @@
          *     $class - The CSS class for the link.
          *     $clean_urls - Whether to link with dirty or clean URLs.
          */
-        public function next_link($text = null, $class = "next_page", $clean_urls = true) {
+        public function next_link($text = null, $class = "next_page", $page = null) {
             if (!$this->next_page())
                 return;
 
             fallback($text, __("Next &rarr;"));
-            echo '<a class="'.$class.'" id="next_page_'.$this->name.'" href="'.$this->next_page_url($clean_urls).'">'.
+            echo '<a class="'.$class.'" id="next_page_'.$this->name.'" href="'.$this->next_page_url($page).'">'.
                      $text.
                  '</a>';
         }
@@ -154,12 +154,12 @@
          *     $class - The CSS class for the link.
          *     $clean_urls - Whether to link with dirty or clean URLs.
          */
-        public function prev_link($text = null, $class = "prev_page", $clean_urls = true) {
+        public function prev_link($text = null, $class = "prev_page", $page = null) {
             if (!$this->prev_page())
                 return;
 
             fallback($text, __("&larr; Previous"));
-            echo '<a class="'.$class.'" id="prev_page_'.$this->name.'" href="'.$this->prev_page_url($clean_urls).'">'.
+            echo '<a class="'.$class.'" id="prev_page_'.$this->name.'" href="'.$this->prev_page_url($page).'">'.
                      $text.
                  '</a>';
         }
@@ -167,11 +167,8 @@
         /**
          * Function: next_page_url
          * Returns the URL to the next page.
-         *
-         * Parameters:
-         *     $clean_urls - Whether to link with dirty or clean URLs.
          */
-        public function next_page_url($clean_urls = true) {
+        public function next_page_url($page = null) {
             $config = Config::current();
 
             $request = "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
@@ -179,25 +176,24 @@
             # Only used for adding to the end of the URL and clean URLs is off.
             $mark = (substr_count($request, "?")) ? "&amp;" : "?" ;
 
+            fallback($page, $this->page + 1);
+
             # No page is set, add it to the end.
             if (!isset($_GET[$this->name]))
-                return ($config->clean_urls and $clean_urls and !ADMIN) ?
-                       rtrim($request, "/")."/".$this->name."/".($this->page + 1) :
-                       $request.$mark.$this->name."=".($this->page + 1) ;
+                return ($config->clean_urls and !ADMIN) ?
+                       rtrim($request, "/")."/".$this->name."/".$page :
+                       $request.$mark.$this->name."=".$page ;
 
-            return ($config->clean_urls and $clean_urls and !ADMIN) ?
-                   preg_replace("/(\/{$this->name}\/([0-9]+)|$)/", "/".$this->name."/".($this->page + 1), $request, 1) :
-                   preg_replace("/((\?|&){$this->name}=([0-9]+)|$)/", "\\2".$this->name."=".($this->page + 1), $request, 1) ;
+            return ($config->clean_urls and !ADMIN) ?
+                   preg_replace("/(\/{$this->name}\/([0-9]+)|$)/", "/".$this->name."/".$page, $request, 1) :
+                   preg_replace("/((\?|&){$this->name}=([0-9]+)|$)/", "\\2".$this->name."=".$page, $request, 1) ;
         }
 
         /**
          * Function: prev_page_url
          * Returns the URL to the previous page.
-         *
-         * Parameters:
-         *     $clean_urls - Whether to link with dirty or clean URLs.
          */
-        public function prev_page_url($clean_urls = true) {
+        public function prev_page_url($page = null) {
             $config = Config::current();
 
             $request = "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
@@ -205,14 +201,16 @@
             # Only used for adding to the end of the URL and clean URLs is off.
             $mark = (substr_count($request, "?")) ? "&amp;" : "?" ;
 
+            fallback($page, $this->page - 1);
+
             # No page is set, add it to the end.
             if (!isset($_GET[$this->name]))
-                return ($config->clean_urls and $clean_urls and !ADMIN) ?
-                       rtrim($request, "/")."/".$this->name."/".($this->page - 1) :
-                       $request.$mark.$this->name."=".($this->page - 1) ;
+                return ($config->clean_urls and !ADMIN) ?
+                       rtrim($request, "/")."/".$this->name."/".$page :
+                       $request.$mark.$this->name."=".$page ;
 
-            return ($config->clean_urls and $clean_urls and !ADMIN) ?
-                   preg_replace("/(\/{$this->name}\/([0-9]+)|$)/", "/".$this->name."/".($this->page - 1), $request, 1) :
-                   preg_replace("/((\?|&){$this->name}=([0-9]+)|$)/", "\\2".$this->name."=".($this->page - 1), $request, 1) ;
+            return ($config->clean_urls and !ADMIN) ?
+                   preg_replace("/(\/{$this->name}\/([0-9]+)|$)/", "/".$this->name."/".$page, $request, 1) :
+                   preg_replace("/((\?|&){$this->name}=([0-9]+)|$)/", "\\2".$this->name."=".$page, $request, 1) ;
         }
     }
