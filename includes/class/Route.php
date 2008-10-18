@@ -54,9 +54,11 @@
             if (method_exists($controller, "parse"))
                 $controller->parse($this);
 
-            $this->try[] = (isset($this->action)) ?
+            $this->try[] = isset($this->action) ?
                                fallback($this->action, "index", true) :
-                               fallback($this->arg[0], "index", true) ;
+                               (!substr_count($this->arg[0], "?") ?
+                                   fallback($this->arg[0], "index", true) :
+                                   "index") ;
         }
 
         /**
