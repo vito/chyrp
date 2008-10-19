@@ -22,7 +22,7 @@
 
             parent::grab($this, $group_id, $options);
 
-            $this->permissions = (array) fallback($this->permissions, array());
+            $this->permissions = (array) fallback($this->permissions, array(), true);
 
             if ($this->no_results)
                 return false;
