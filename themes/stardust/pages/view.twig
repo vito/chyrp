@@ -10,7 +10,7 @@
                 <h2 class="comments">${ "Comments" | translate }</h2>
                 {% if post.comment_count > 0 %}
                 <ol class="comments" id="comments_$post.id">
-                    {% paginate comment in 1 post.comments as comments %}{% include "content/comment.twig" %}{% endpaginate %}
+                    {% paginate comment in site.comments_per_page post.comments as comments %}{% include "content/comment.twig" %}{% endpaginate %}
                 </ol>
                 <input type="hidden" name="last_comment" value="$post.latest_comment" id="last_comment" />
                 $comments.prev_link

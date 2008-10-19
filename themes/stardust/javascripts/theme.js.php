@@ -28,13 +28,16 @@ $(function(){
         } else {
             Cookie.set("hide_debug", "true", 30);
             $("#debug").animate({ height: 15 });
+            $("#debug ul li").each(function(){
+                $("<span class=\"sub\"> | "+ $(this).html() +"</span>").appendTo("#debug h5:first");
+            })
         }
     })
 
     if (Cookie.get("hide_debug") == "true") {
         $("#debug").height(15);
         $("#debug ul li").each(function(){
-            $("<span class=\"sub\"> | "+ $(this).html() +"</span>").appendTo("#debug h5");
+            $("<span class=\"sub\"> | "+ $(this).html() +"</span>").appendTo("#debug h5:first");
         })
     }
 })
