@@ -342,6 +342,9 @@
             if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
                 show_403(__("Access Denied"), __("Invalid security key."));
 
+            if (empty($_POST['title']) and empty($_POST['slug']))
+                error(__("Error"), __("Title and slug cannot be blank."));
+
             $show_in_list = !empty($_POST['show_in_list']);
             $clean = (!empty($_POST['slug'])) ? $_POST['slug'] : sanitize($_POST['title']) ;
             $url = Page::check_url($clean);
@@ -377,6 +380,9 @@
 
             if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
                 show_403(__("Access Denied"), __("Invalid security key."));
+
+            if (empty($_POST['title']) and empty($_POST['slug']))
+                error(__("Error"), __("Title and slug cannot be blank."));
 
             $page = new Page($_POST['id']);
 
