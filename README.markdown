@@ -31,11 +31,19 @@ Upgrading
 Keeping Chyrp up to date is important to make sure that your blog is as safe and as awesome as possible.
 
 1. Download the latest version of Chyrp from [http://chyrp.net/](http://chyrp.net/).
-2. Copy your config files[^1] to somewhere safe.
+2. Copy your config files<sup>1</sup> to somewhere safe.
 3. Disable any Modules/Feathers that you downloaded for the release you're upgrading from.
 4. Overwrite your current Chyrp installation files with the new ones.
-5. Restore your config files[^1] back to /includes/.
+5. Restore your config files<sup>1</sup> back to /includes/.
 6. Upgrade by navigating to [upgrade.php](), and restore any backups.
+
+<sup>1</sup>: The config files variy depending on what you're upgrading from. Any of these in are considered "config files":
+    * `/includes/config.yaml.php`
+    * `/includes/database.yaml.php`
+    * `/includes/config.yml.php`
+    * `/includes/database.yml.php`
+    * `/includes/config.php`
+    * `/includes/database.php`
 
 Extensions
 ==========
@@ -84,11 +92,3 @@ Chyrp is multilingual! If your first language isn't English, you can apply a new
 1. Upload the `.mo` file to the `includes/locale/` folder. You don't need anything else for the translation to work.
 1. Open your web browser and navigate to your Chyrp administration panel.
 1. Click on the *Settings* tab, and change the *Language* option to the language you just uploaded.
-
-[^1]: The config files variy depending on what you're upgrading from. Any of these in are considered "config files":
-      * `/includes/config.yaml.php`
-      * `/includes/database.yaml.php`
-      * `/includes/config.yml.php`
-      * `/includes/database.yml.php`
-      * `/includes/config.php`
-      * `/includes/database.php`
