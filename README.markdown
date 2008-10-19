@@ -37,7 +37,7 @@ Keeping Chyrp up to date is important to make sure that your blog is as safe and
 5. Restore your config files<sup>1</sup> back to /includes/.
 6. Upgrade by navigating to [upgrade.php](), and restore any backups.
 
-<sup>1</sup>: The config files variy depending on what you're upgrading from. Any of these in are considered "config files":
+<sup>1</sup> The config files vary depending on what you're upgrading from. Any of these in are considered "config files":
 
 * `/includes/config.yaml.php`
 * `/includes/database.yaml.php`
