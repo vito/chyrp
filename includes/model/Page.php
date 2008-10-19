@@ -148,7 +148,7 @@
                                "clean" =>        $clean,
                                "url" =>          $url,
                                "created_at" =>   $created_at,
-                               "updated_at" =>   $updated_at,
+                               "updated_at" =>   $updated_at));
 
             $trigger->call("update_page", $this, $old);
         }
