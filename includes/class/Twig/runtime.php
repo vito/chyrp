@@ -164,9 +164,9 @@ function twig_paginate(&$context, $as, $over, $per_page)
     $name = (in_array("page", Paginator::$names)) ? $as."_page" : "page" ;
 
     if (count($over) == 2 and $over[0] instanceof Model and is_string($over[1]))
-        $context[$as] = new Paginator($over[0]->__getPlaceholders($over[1]), $per_page, $name);
+        $context[$as] = $context["::parent"][$as] = new Paginator($over[0]->__getPlaceholders($over[1]), $per_page, $name);
     else
-        $context[$as] = new Paginator($over, $per_page, $name);
+        $context[$as] = $context["::parent"][$as] = new Paginator($over, $per_page, $name);
 }
 
 function twig_iterate(&$context, $seq)

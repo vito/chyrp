@@ -214,7 +214,7 @@ class Twig_PaginateLoop extends Twig_Node
     {
         $compiler->addDebugInfo($this);
         $compiler->pushContext();
-        $compiler->raw('twig_paginate($context["::parent"],');
+        $compiler->raw('twig_paginate($context,');
         $compiler->raw('"'.$this->as->name.'", ');
         if (isset($this->seq->node) and isset($this->seq->attr)) {
             $compiler->raw('array($context["::parent"]["');
