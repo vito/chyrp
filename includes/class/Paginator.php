@@ -38,6 +38,10 @@
         # `paginated`, `paginate`, and `list` are references to this.
         public $result = array();
 
+        # Array: $names
+        # An array of the currently-used pagination URL parameters.
+        static $names = array();
+
         /**
          * Function: __construct
          * Prepares an array for pagination.
@@ -54,6 +58,8 @@
          *     A paginated array of length $per_page or smaller.
          */
         public function __construct($array, $per_page = 5, $name = "page", $model = null, $page = null) {
+            self::$names[] = $name;
+
             $this->array = (array) $array;
 
             $this->per_page = $per_page;

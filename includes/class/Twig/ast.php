@@ -214,15 +214,20 @@ class Twig_PaginateLoop extends Twig_Node
     {
         $compiler->addDebugInfo($this);
         $compiler->pushContext();
-        $compiler->raw('twig_paginate($context["::parent"]["'.$this->as->name.'"], ');
-        if (isset($this->seq->node) and isset($this->seq->attr))
-            $compiler->raw('array($context["::parent"]["'.$this->seq->node->name.'"], "'.$this->seq->attr->value.'")');
-        else
+        $compiler->raw('twig_paginate($context["::parent"],');
+        $compiler->raw('"'.$this->as->name.'", ');
+        if (isset($this->seq->node) and isset($this->seq->attr)) {
+            $compiler->raw('array($context["::parent"]["');
+            $compiler->raw($this->seq->node->name.'"],');
+            $compiler->raw('"'.$this->seq->attr->value.'")');
+        } else
             $this->seq->compile($compiler);
         $compiler->raw(', ');
         $this->per_page->compile($compiler);
         $compiler->raw(");\n");
-        $compiler->raw('foreach (twig_iterate($context, $context["::parent"]["'.$this->as->name."\"]->paginated) as \$iterator) {\n");
+        $compiler->raw('foreach (twig_iterate($context,');
+        $compiler->raw(' $context["::parent"]["'.$this->as->name);
+        $compiler->raw("\"]->paginated) as \$iterator) {\n");
         if ($this->is_multitarget) {
             $compiler->raw('twig_set_loop_context_multitarget($context, ' .
                        '$iterator, array(');
