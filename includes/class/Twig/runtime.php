@@ -161,7 +161,10 @@ function twig_get_attribute($obj, $item, $function = true)
 
 function twig_paginate(&$as, $over, $per_page)
 {
-    $as = new Paginator($over, $per_page); # TODO: Automate relational model stuff to use placeholders
+    if (count($over) == 2 and $over[0] instanceof Model)
+        $as = new Paginator($over[0]->__getPlaceholders($over[1]), $per_page);
+    else
+        $as = new Paginator($over, $per_page);
 }
 
 function twig_iterate(&$context, $seq)

@@ -32,8 +32,11 @@
                 return $this->$name;
             else {
                 $model_name = get_class($this);
+                $placeholders = (isset($this->__placeholders) and $this->__placeholders);
 
-                Trigger::current()->filter($this->$name, $model_name."_".$name."_attr", $this);
+                Trigger::current()->filter($filtered, $model_name."_".$name."_attr", $this);
+                if (!empty($filtered))
+                    $this->$name = $filtered;
 
                 $this->belongs_to = (array) $this->belongs_to;
                 $this->has_many = (array) $this->has_many;
@@ -49,12 +52,20 @@
                         list($class, $by) = array(depluralize($name), $model_name);
 
                     return $this->$name = call_user_func(array($class, "find"),
-                                                         array("where" => array($by."_id" => $this->id)));
+                                                         array("where" => array($by."_id" => $this->id),
+                                                               "placeholders" => $placeholders));
                 } elseif (in_array($name, $this->has_one)) {
                     $class = depluralize($name);
                     return $this->$name = new $class(null, array("where" => array($model_name."_id" => $this->id)));
                 }
             }
+        }
+
+        public function __getPlaceholders($name) {
+            $this->__placeholders = true;
+            $return = $this->__get($name);
+            $this->__placeholders = false;
+            return $return;
         }
 
         /**
