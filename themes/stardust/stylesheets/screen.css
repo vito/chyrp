@@ -707,7 +707,10 @@ span.waiting {
 #debug h5 {
     margin: 0;
     font-size: 1.1em;
-    opacity: .75;
+    color: #a3a39a;
+}
+#debug h5 .sub {
+    color: #b3b3aa;
 }
 #debug ol.queries li {
     margin: 0 0 1em;

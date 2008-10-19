@@ -193,6 +193,7 @@
 
             $visitor = Visitor::current();
             if (!$visitor->group->can("view_draft", "edit_draft", "edit_post", "delete_draft", "delete_post"))
+                $where["user_id"] = $visitor->id;
 
             $results = Post::find(array("placeholders" => true,
                                         "where" => $where,
@@ -280,10 +281,16 @@
                                        "value like" => "%{{".$_POST['clean']."}}%"))->fetchAll() as $tag) {
                 $names = str_replace("{{".$_POST['clean']."}}", "{{".$_POST['name']."}}", $tag["tags"]);
                 $clean = str_replace("{{".$_POST['clean']."}}", "{{".sanitize($_POST['name'])."}}", $tag["clean"]);
-                $sql->update("tags",
-                             array("id" => $tag["id"]),
-                             array("id" => $tag["id"],
-                                   "tags" => $names));
+
+                $sql->update("post_attributes",
+                             array("name" => "unclean_tags",
+                                   "post_id" => $tag["post_id"]),
+                             array("value" => $names));
+
+                $sql->update("post_attributes",
+                             array("name" => "clean_tags",
+                                   "post_id" => $tag["post_id"]),
+                             array("value" => $clean));
             }
 
             Flash::notice(__("Tag renamed.", "tags"), "/admin/?action=manage_tags");
@@ -307,7 +314,7 @@
                         $cleans[] = "{{".$clean."}}";
 
                 if (empty($names) or empty($cleans))
-                    $sql->delete("tags", array("id" => $tag["id"]));
+                    $sql->delete("post_attributes", array("name" => $tag["name"], "post_id" => $tag["post-id"]));
                 else
                     $sql->update("tags",
                                  array("id" => $tag["id"]),
