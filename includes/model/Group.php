@@ -85,6 +85,8 @@
          */
         static function add($name, $permissions) {
             $sql = SQL::current();
+            $trigger = Trigger::current();
+
             $sql->insert("groups", array("name" => $name));
 
             $group_id = $sql->latest();
@@ -97,7 +99,7 @@
 
             $group = new self($group_id);
 
-            Trigger::current()->call("add_group", $group);
+            $trigger->call("add_group", $group);
 
             return $group;
         }
@@ -114,6 +116,13 @@
         public function update($name, $permissions) {
             if ($this->no_results)
                 return false;
+
+            $trigger = Trigger::current();
+
+            $old = clone $this;
+
+            $this->name = $name;
+            $this->permissions = $permissions;
 
             $sql = SQL::current();
             $sql->update("groups",
@@ -135,7 +144,7 @@
                                    "group_id" => $this->id));
             }
  
-            Trigger::current()->call("update_group", $this, $name, $permissions);
+            $trigger->call("update_group", $this, $old);
         }
 
         /**

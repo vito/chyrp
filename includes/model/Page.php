@@ -66,20 +66,33 @@
          * See Also:
          *     <update>
          */
-        static function add($title, $body, $parent_id, $show_in_list, $list_order = 0, $clean, $url, $created_at = null, $updated_at = null, $user_id = null) {
+        static function add($title,
+                            $body,
+                            $user         = null,
+                            $parent_id    = 0,
+                            $show_in_list = true,
+                            $list_order   = 0,
+                            $clean        = "",
+                            $url          = "",
+                            $created_at   = null,
+                            $updated_at   = "0000-00-00 00:00:00") {
+            if ($user instanceof User)
+                $user = $user->id;
+
+            fallback($clean, sanitize($title));
             $sql = SQL::current();
             $visitor = Visitor::current();
             $sql->insert("pages",
-                         array("title" => $title,
-                               "body" => $body,
-                               "user_id" => fallback($user_id, $visitor->id),
-                               "parent_id" => $parent_id,
-                               "show_in_list" => (int) $show_in_list,
-                               "list_order" => $list_order,
-                               "clean" => $clean,
-                               "url" => $url,
-                               "created_at" => fallback($created_at, datetime()),
-                               "updated_at" => fallback($updated_at, "0000-00-00 00:00:00")));
+                         array("title" =>        $title,
+                               "body" =>         $body,
+                               "user_id" =>      fallback($user,         $visitor->id),
+                               "parent_id" =>    fallback($parent_id,    0),
+                               "show_in_list" => fallback($show_in_list, true),
+                               "list_order" =>   fallback($list_order,   0),
+                               "clean" =>        $clean,
+                               "url" =>          fallback($url,          self::check_url($clean)),
+                               "created_at" =>   fallback($created_at,   datetime()),
+                               "updated_at" =>   fallback($updated_at,   "0000-00-00 00:00:00")));
 
             $page = new self($sql->latest());
 
@@ -99,23 +112,44 @@
          *     $show_in_list - Whether or not to show it in the pages list.
          *     $url - The new page URL.
          */
-        public function update($title, $body, $parent_id, $show_in_list, $list_order, $url, $update_timestamp = true) {
+        public function update($title        = null,
+                               $body         = null,
+                               $user         = null,
+                               $parent_id    = null,
+                               $show_in_list = null,
+                               $list_order   = null,
+                               $clean        = null,
+                               $url          = null,
+                               $created_at   = null,
+                               $updated_at   = null) {
             if ($this->no_results)
                 return false;
 
+            if ($user instanceof User)
+                $user = $user->id;
+
+            $old = clone $this;
+
+            foreach (array("title", "body", "user", "parent_id", "show_in_list",
+                           "list_order", "clean", "url", "created_at", "updated_at") as $attr)
+                # This sets the $$attr and $this->$attr at the same time.
+                $this->$attr = fallback($$attr, ($attr == "updated_at" and $updated_at === false) ? $this->$attr : datetime());
+
             $sql = SQL::current();
             $sql->update("pages",
-                         array("id" => $this->id),
-                         array("title" => $title,
-                               "body" => $body,
-                               "parent_id" => $parent_id,
+                         array("id" =>           $this->id),
+                         array("title" =>        $title,
+                               "body" =>         $body,
+                               "user_id" =>      $user,
+                               "parent_id" =>    $parent_id,
                                "show_in_list" => $show_in_list,
-                               "list_order" => $list_order,
-                               "updated_at" => ($update_timestamp) ? datetime() : $this->updated_at,
-                               "url" => $url));
+                               "list_order" =>   $list_order,
+                               "clean" =>        $clean,
+                               "url" =>          $url,
+                               "created_at" =>   $created_at,
+                               "updated_at" =>   $updated_at,
 
-            $trigger = Trigger::current();
-            $trigger->call("update_page", $this, $title, $body, $parent_id, $show_in_list, $list_order, $url, $update_timestamp);
+            Trigger::current()->call("update_page", $this, $old);
         }
 
         /**

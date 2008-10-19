@@ -67,21 +67,29 @@
          * See Also:
          *     <update>
          */
-        static function add($login, $password, $email, $full_name = "", $website = "", $joined_at = null, $group_id = null) {
+        static function add($login,
+                            $password,
+                            $email,
+                            $full_name = "",
+                            $website = "",
+                            $group_id = null,
+                            $joined_at = null) {
             $config = Config::current();
             $sql = SQL::current();
+            $trigger = Trigger::current();
+
             $sql->insert("users",
-                         array("login" => strip_tags($login),
-                               "password" => md5($password),
-                               "email" => strip_tags($email),
+                         array("login"     => strip_tags($login),
+                               "password"  => md5($password),
+                               "email"     => strip_tags($email),
                                "full_name" => strip_tags($full_name),
-                               "website" => strip_tags($website),
-                               "group_id" => ($group_id) ? intval($group_id) : $config->default_group,
+                               "website"   => strip_tags($website),
+                               "group_id"  => fallback($group_id, $config->default_group),
                                "joined_at" => fallback($joined_at, datetime())));
 
             $user = new self($sql->latest());
 
-            Trigger::current()->call("add_user", $user);
+            $trigger->call("add_user", $user);
 
             return $user;
         }
@@ -94,7 +102,7 @@
          *
          * Parameters:
          *     $login - The new Login to set.
-         *     $password - The new Password to set.
+         *     $password - The new Password to set, already MD5 encoded.
          *     $full_name - The new Full Name to set.
          *     $email - The new E-Mail to set.
          *     $website - The new Website to set.
@@ -103,21 +111,35 @@
          * See Also:
          *     <add>
          */
-        public function update($login, $password, $email, $full_name, $website, $group_id) {
+        public function update($login     = null,
+                               $password  = null,
+                               $email     = null,
+                               $full_name = null,
+                               $website   = null,
+                               $group_id  = null,
+                               $joined_at = null) {
             if ($this->no_results)
                 return false;
 
             $sql = SQL::current();
-            $sql->update("users",
-                         array("id" => $this->id),
-                         array("login" => strip_tags($login),
-                               "password" => $password,
-                               "email" => strip_tags($email),
-                               "full_name" => strip_tags($full_name),
-                               "website" => strip_tags($website),
-                               "group_id" => $group_id));
+            $trigger = Trigger::current();
 
-            Trigger::current()->call("update_user", $this, $login, $password, $full_name, $email, $website, $group_id);
+            $old = clone $this;
+
+            foreach (array("login", "password", "email", "full_name", "website", "group_id", "joined_at") as $attr)
+                $this->$attr = fallback($$attr, $this->$attr); # This sets the $$attr and $this->$attr at the same time.
+
+            $sql->update("users",
+                         array("id"        => $this->id),
+                         array("login"     => strip_tags($login),
+                               "password"  => $password,
+                               "email"     => strip_tags($email),
+                               "full_name" => strip_tags($full_name),
+                               "website"   => strip_tags($website),
+                               "group_id"  => $group_id,
+                               "joined_at" => $joined_at));
+
+            $trigger->call("update_user", $this, $old);
         }
 
         /**

@@ -345,11 +345,13 @@
             if (empty($_POST['title']) and empty($_POST['slug']))
                 error(__("Error"), __("Title and slug cannot be blank."));
 
-            $show_in_list = !empty($_POST['show_in_list']);
-            $clean = (!empty($_POST['slug'])) ? $_POST['slug'] : sanitize($_POST['title']) ;
-            $url = Page::check_url($clean);
-
-            $page = Page::add($_POST['title'], $_POST['body'], $_POST['parent_id'], $show_in_list, 0, $clean, $url);
+            $page = Page::add($_POST['title'],
+                              $_POST['body'],
+                              null,
+                              $_POST['parent_id'],
+                              !empty($_POST['show_in_list']),
+                              0,
+                              (!empty($_POST['slug']) ? $_POST['slug'] : sanitize($_POST['title'])));
 
             Flash::notice(__("Page created!"), $page->url());
         }
@@ -389,7 +391,7 @@
             if ($page->no_results)
                 Flash::warning(__("Page not found."), "/admin/?action=manage_pages");
 
-            $page->update($_POST['title'], $_POST['body'], $_POST['parent_id'], !empty($_POST['show_in_list']), $page->list_order, $_POST['slug']);
+            $page->update($_POST['title'], $_POST['body'], null, $_POST['parent_id'], !empty($_POST['show_in_list']), $page->list_order, null, $_POST['slug']);
 
             if (!isset($_POST['ajax']))
                 Flash::notice(_f("Page updated. <a href=\"%s\">View Page &rarr;</a>",
@@ -404,7 +406,7 @@
         public function reorder_pages() {
             foreach ($_POST['list_order'] as $id => $order) {
                 $page = new Page($id);
-                $page->update($page->title, $page->body, $page->parent_id, $page->show_in_list, $order, $page->url);
+                $page->update($page->title, $page->body, null, $page->parent_id, $page->show_in_list, $order, null, $page->url);
             }
 
             Flash::notice(__("Pages reordered."), "/admin/?action=manage_pages");
@@ -523,7 +525,6 @@
                       $_POST['email'],
                       $_POST['full_name'],
                       $_POST['website'],
-                      null,
                       $_POST['group']);
 
             Flash::notice(__("User added."), "/admin/?action=manage_users");
@@ -1103,8 +1104,8 @@
                                           $user["email"],
                                           $user["full_name"],
                                           $user["website"],
-                                          $user["joined_at"],
-                                          $group);
+                                          $group,
+                                          $user["joined_at"]);
 
                     $trigger->call("import_chyrp_user", $user);
                 }
@@ -1149,14 +1150,14 @@
 
                     $page = Page::add($entry->title,
                                       $entry->content,
+                                      ($user_id ? $user_id : $visitor->id),
                                       $attr->parent_id,
                                       (bool) (int) $chyrp->show_in_list,
                                       $chyrp->list_order,
                                       $chyrp->clean,
                                       Page::check_url($chyrp->url),
                                       datetime($entry->published),
-                                      ($entry->updated == $entry->published) ? "0000-00-00 00:00:00" : datetime($entry->updated),
-                                      ($user_id ? $user_id : $visitor->id));
+                                      ($entry->updated == $entry->published) ? "0000-00-00 00:00:00" : datetime($entry->updated));
 
                     $trigger->call("import_chyrp_page", $entry, $page);
                 }
@@ -1252,6 +1253,7 @@
                 } elseif ($wordpress->post_type == "page") {
                     $page = Page::add(trim($item->title),
                                       trim($content->encoded),
+                                      null,
                                       0,
                                       true,
                                       0,
@@ -1535,7 +1537,7 @@
                                           false);
                     $trigger->call("import_movabletype_post", $post, $new_post, $link);
                 } elseif ($post["entry_class"] == "page") {
-                    $new_page = Page::add($post["entry_title"], $body, 0, true, 0, $clean, Page::check_url($clean));
+                    $new_page = Page::add($post["entry_title"], $body, null, 0, true, 0, $clean, Page::check_url($clean));
                     $trigger->call("import_movabletype_page", $post, $new_page, $link);
                 }
             }

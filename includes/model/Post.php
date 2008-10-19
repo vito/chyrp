@@ -153,10 +153,10 @@
          *     $user - <User> to set as the post's author.
          *     $pinned - Pin the post?
          *     $status - Post status
-         *     $slug - A new URL for the post.
          *     $created_at - New @created_at@ timestamp for the post.
          *     $updated_at - New @updated_at@ timestamp for the post, or @false@ to not updated it.
          *     $trackbacks - URLs separated by " " to send trackbacks to.
+         *     $pingbacks - Send pingbacks?
          *     $options - Options for the post.
          *
          * Returns:
@@ -165,29 +165,42 @@
          * See Also:
          *     <update>
          */
-        static function add($values, $clean = "", $url = "", $feather = null, $user = null, $pinned = null, $status = null, $created_at = null, $updated_at = null, $trackbacks = "", $pingbacks = true, $options = null) {
+        static function add($values     = array(),
+                            $clean      = "",
+                            $url        = "",
+                            $feather    = null,
+                            $user       = null,
+                            $pinned     = false,
+                            $status     = "public",
+                            $created_at = null,
+                            $updated_at = "0000-00-00 00:00:00",
+                            $trackbacks = "",
+                            $pingbacks  = true,
+                            $options    = array()) {
             if ($user instanceof User)
                 $user = $user->id;
 
-            fallback($feather, fallback($_POST['feather'], "", true));
-            fallback($user, fallback($_POST['user_id'], Visitor::current()->id, true));
-            fallback($pinned, (int) !empty($_POST['pinned']));
-            fallback($status, (isset($_POST['draft'])) ? "draft" : fallback($_POST['status'], "public", true));
-            fallback($created_at,
-                     (!empty($_POST['created_at']) and (!isset($_POST['original_time']) or $_POST['created_at'] != $_POST['original_time'])) ?
-                         datetime($_POST['created_at']) :
-                         datetime());
-            fallback($updated_at, fallback($_POST['updated_at'], "0000-00-00 00:00:00", true));
-            fallback($trackbacks, fallback($_POST['trackbacks'], "", true));
-            fallback($options, fallback($_POST['option'], array(), true));
-
-            if (isset($_POST['bookmarklet'])) {
-                Trigger::current()->filter($values, "bookmarklet_submit_values");
-                Trigger::current()->filter($options, "bookmarklet_submit_options");
-            }
-
             $sql = SQL::current();
             $visitor = Visitor::current();
+            $trigger = Trigger::current();
+
+            fallback($feather,    fallback($_POST['feather'], "", true));
+            fallback($user,       fallback($_POST['user_id'], Visitor::current()->id, true));
+            fallback($pinned,     !empty($_POST['pinned']));
+            fallback($status,     (isset($_POST['draft'])) ? "draft" : fallback($_POST['status'], "public", true));
+            fallback($created_at, (!empty($_POST['created_at']) and
+                                   (!isset($_POST['original_time']) or $_POST['created_at'] != $_POST['original_time'])) ?
+                                      datetime($_POST['created_at']) :
+                                      datetime());
+            fallback($updated_at, fallback($_POST['updated_at'], "0000-00-00 00:00:00", true));
+            fallback($trackbacks, fallback($_POST['trackbacks'], "", true));
+            fallback($options,    fallback($_POST['option'], array(), true));
+
+            if (isset($_POST['bookmarklet'])) {
+                $trigger->filter($values, "bookmarklet_submit_values");
+                $trigger->filter($options, "bookmarklet_submit_options");
+            }
+
             $sql->insert("posts",
                          array("feather" => $feather,
                                "user_id" => $user,
@@ -197,6 +210,7 @@
                                "url" => $url,
                                "created_at" => $created_at,
                                "updated_at" => $updated_at));
+
             $id = $sql->latest();
 
             if (empty($clean) or empty($url))
@@ -228,9 +242,9 @@
             if (Config::current()->send_pingbacks and $pingbacks)
                 array_walk_recursive($values, array("Post", "send_pingbacks"), $post);
 
-            $post->redirect = (isset($_POST['bookmarklet'])) ? url("/admin/?action=bookmarklet&done") : $post->url() ;
+            $post->redirect = isset($_POST['bookmarklet']) ? url("/admin/?action=bookmarklet&done") : $post->url() ;
 
-            Trigger::current()->call("add_post", $post, $options);
+            $trigger->call("add_post", $post, $options);
 
             return $post;
         }
@@ -254,25 +268,36 @@
          * See Also:
          *     <add>
          */
-        public function update($values, $user = null, $pinned = null, $status = null, $slug = null, $created_at = null, $updated_at = null, $options = null) {
+        public function update($values     = null,
+                               $user       = null,
+                               $pinned     = null,
+                               $status     = null,
+                               $clean      = null,
+                               $url        = null,
+                               $created_at = null,
+                               $updated_at = null,
+                               $options    = null) {
             if ($this->no_results)
                 return false;
 
-            if (isset($user))
+            $trigger = Trigger::current();
+
+            if ($user instanceof User)
                 $user = $user->id;
 
-            fallback($user, fallback($_POST['user_id'], $this->user_id, true));
-            fallback($pinned, (int) !empty($_POST['pinned']));
-            fallback($status, (isset($_POST['draft'])) ? "draft" : fallback($_POST['status'], $this->status, true));
-            fallback($slug, fallback($_POST['slug'], $this->feather.".".$this->id));
+            fallback($values,     array_combine($this->attribute_names, $this->attribute_values));
+            fallback($user,       fallback($_POST['user_id'], $this->user_id, true));
+            fallback($pinned,     (int) !empty($_POST['pinned']));
+            fallback($status,     (isset($_POST['draft'])) ? "draft" : fallback($_POST['status'], $this->status, true));
+            fallback($clean,      $this->clean);
+            fallback($url,        fallback($_POST['slug'], $this->feather.".".$this->id));
             fallback($created_at, (!empty($_POST['created_at'])) ? datetime($_POST['created_at']) : $this->created_at);
+            fallback($updated_at, ($updated_at === false ?
+                                      $this->updated_at :
+                                      fallback($updated_at, fallback($_POST['updated_at'], datetime(), true))));
+            fallback($options,    fallback($_POST['option'], array(), true));
 
-            if ($updated_at === false)
-                $updated_at = $this->updated_at;
-            else
-                fallback($updated_at, fallback($_POST['updated_at'], datetime(), true));
-
-            fallback($options, fallback($_POST['option'], array(), true));
+            $old = clone $this;
 
             # Update all values of this post.
             list($this->user_id,
@@ -280,29 +305,26 @@
                  $this->status,
                  $this->url,
                  $this->created_at,
-                 $this->updated_at) = array($user, $pinned, $status, $slug, $created_at, $updated_at);
+                 $this->updated_at) = array($user, $pinned, $status, $url, $created_at, $updated_at);
 
             $sql = SQL::current();
             $sql->update("posts",
-                         array("id" => $this->id),
-                         array("pinned" => $pinned,
-                               "status" => $status,
-                               "clean" => $slug,
-                               "url" => $slug,
+                         array("id"         => $this->id),
+                         array("pinned"     => $pinned,
+                               "status"     => $status,
+                               "clean"      => $clean,
+                               "url"        => $url,
                                "created_at" => $created_at,
                                "updated_at" => $updated_at));
 
             # Insert the post attributes.
-            foreach (array_merge($values, $options) as $name => $value) {
-                $this->$name = $value;
+            foreach (array_merge($values, $options) as $name => $value)
                 $sql->replace("post_attributes",
                               array("post_id" => $this->id,
                                     "name" => $name,
-                                    "value" => $value));
-            }
+                                    "value" => $this->$name = $value));
 
-            $trigger = Trigger::current();
-            $trigger->call("update_post", $this, $values, $user, $pinned, $status, $slug, $created_at, $updated_at, $options);
+            $trigger->call("update_post", $this, $old, $options);
         }
 
         /**

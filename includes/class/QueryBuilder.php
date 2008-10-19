@@ -216,6 +216,9 @@
                     if (is_string($val) and strlen($val) and $val[0] == ":")
                         $cond = $key." = ".$val;
                     else {
+                        if (is_bool($val))
+                            $val = (int) $val;
+
                         if (substr($key, -4) == " not") { # Negation
                             $key = substr($key, 0, -4);
                             $param = str_replace(array("(", ")"), "_", $key);
