@@ -25,7 +25,7 @@
     # Constant: CACHE_TWIG
     # If defined, this will take priority over DEBUG and toggle Twig template caching.
     # Do not enable this during theme development.
-    define('CACHE_TWIG', false);
+    define('CACHE_TWIG', true);
 
     # Constant: JAVASCRIPT
     # Is this the JavaScript file?
