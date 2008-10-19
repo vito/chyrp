@@ -207,11 +207,11 @@
      * Parameters:
      *     $string - The string to pluralize.
      */
-    function pluralize($string) {
+    function pluralize($string, $number = null) {
         $uncountable = array("moose", "sheep", "fish", "series", "species",
                              "rice", "money", "information", "equipment", "piss");
 
-        if (in_array($string, $uncountable))
+        if (in_array($string, $uncountable) or $number == 1)
             return $string;
 
         $replacements = array("/person/i" => "people",
@@ -251,7 +251,10 @@
      * Parameters:
      *     $string - The string to depluralize.
      */
-    function depluralize($string) {
+    function depluralize($string, $number = null) {
+        if (isset($number) and $number != 1)
+            return $string;
+
         $replacements = array("/people/i" => "person",
                               "/^men/i" => "man",
                               "/children/i" => "child",
@@ -1288,4 +1291,49 @@
             } else
                 $object->addChild($key, fix($val, false, false));
         }
+    }
+
+    /**
+     * Function: relative_time
+     * Returns the difference between the given timestamps or now.
+     *
+     * Parameters:
+     *     $time - Timestamp to compare to.
+     *     $from - Timestamp to compare from. If not specified, defaults to now.
+     *
+     * Returns:
+     *     A string formatted like "3 days ago" or "3 days from now".
+     */
+    function relative_time($time, $from = null) {
+        $difference = time() - $time;
+
+        if ($difference < 0) {
+            $word = "from now";
+            $difference = -$difference;
+        } elseif ($difference > 0)
+            $word = "ago";
+        else
+            return "just now";
+
+        $units = array("second"     => 1,
+                       "minute"     => 60,
+                       "hour"       => 60 * 60,
+                       "day"        => 60 * 60 * 24,
+                       "week"       => 60 * 60 * 24 * 7,
+                       "month"      => 60 * 60 * 24 * 30,
+                       "year"       => 60 * 60 * 24 * 365,
+                       "decade"     => 60 * 60 * 24 * 365 * 10,
+                       "century"    => 60 * 60 * 24 * 365 * 100,
+                       "millennium" => 60 * 60 * 24 * 365 * 1000);
+
+        $possible_units = array();
+        foreach ($units as $name => $val)
+            if (($name == "week" and $difference >= ($val * 2)) or # Only say "weeks" after two have passed.
+                ($name != "week" and $difference >= $val))
+                $unit = $possible_units[] = $name;
+        
+        $precision = (int) in_array("year", $possible_units);
+        $amount = round($difference / $units[$unit], $precision);
+
+        return $amount." ".pluralize($unit, $amount)." ".$word;
     }

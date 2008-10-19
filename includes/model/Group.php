@@ -74,7 +74,7 @@
          * Function: add
          * Adds a group to the database with the passed Name and Permissions array.
          *
-         * Calls the add_group trigger with the inserted group.
+         * Calls the `add_group` trigger with the inserted group.
          *
          * Parameters:
          *     $name - The group's name
@@ -149,7 +149,7 @@
 
         /**
          * Function: delete
-         * Deletes a given group. Calls the "delete_group" trigger and passes the <Group> as an argument.
+         * Deletes a given group. Calls the `delete_group` trigger and passes the <Group> as an argument.
          *
          * Parameters:
          *     $id - The group to delete.

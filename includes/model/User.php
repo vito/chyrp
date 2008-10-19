@@ -54,7 +54,7 @@
          * Function: add
          * Adds a user to the database with the passed username, password, and e-mail.
          *
-         * Calls the add_user trigger with the inserted user.
+         * Calls the `add_user` trigger with the inserted user.
          *
          * Parameters:
          *     $login - The Login for the new user.
@@ -144,7 +144,7 @@
 
         /**
          * Function: delete
-         * Deletes a given user. Calls the "delete_user" trigger and passes the <User> as an argument.
+         * Deletes a given user. Calls the `delete_user` trigger and passes the <User> as an argument.
          *
          * Parameters:
          *     $id - The user to delete.

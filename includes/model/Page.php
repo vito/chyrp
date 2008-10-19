@@ -47,7 +47,7 @@
          * Function: add
          * Adds a page to the database.
          *
-         * Calls the add_page trigger with the inserted page.
+         * Calls the `add_page` trigger with the new <Page>.
          *
          * Parameters:
          *     $title - The Title for the new page.
@@ -105,6 +105,8 @@
         /**
          * Function: update
          * Updates the page.
+         * 
+         * Calls the `update_page` trigger with the updated <Page> and the original <Page>.
          *
          * Parameters:
          *     $title - The new Title.
@@ -160,11 +162,13 @@
 
         /**
          * Function: delete
-         * Deletes the given page. Calls the "delete_page" trigger and passes the <Page> as an argument.
+         * Deletes the given page.
+         * 
+         * Calls the `delete_page` trigger with the <Page> to delete.
          *
          * Parameters:
          *     $id - The page to delete.
-         *     $recursive - Should the sub-pages be deleted? (default: false)
+         *     $recursive - Should the page's children be deleted? (default: false)
          */
         static function delete($id, $recursive = false) {
             if ($recursive) {
@@ -182,9 +186,6 @@
          *
          * Parameters:
          *     $page_id - The page ID to check
-         *
-         * Returns:
-         *     true - if a page with that ID is in the database.
          */
         static function exists($page_id) {
             return SQL::current()->count("pages", array("id" => $page_id)) == 1;
@@ -198,7 +199,7 @@
          *     $clean - The clean URL to check.
          *
          * Returns:
-         *     $url - The unique version of the passed clean URL. If it's not used, it's the same as $clean. If it is, a number is appended.
+         *     The unique version of the passed clean URL. If it's not used, it's the same as $clean. If it is, a number is appended.
          */
         static function check_url($clean) {
             $count = SQL::current()->count("pages", array("clean" => $clean));
