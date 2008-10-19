@@ -177,8 +177,7 @@
                             $trackbacks = "",
                             $pingbacks  = true,
                             $options    = array()) {
-            if ($user instanceof User)
-                $user = $user->id;
+            $user_id = ($user instanceof User) ? $user->id : $user ;
 
             $sql = SQL::current();
             $visitor = Visitor::current();
@@ -202,12 +201,12 @@
             }
 
             $sql->insert("posts",
-                         array("feather" => $feather,
-                               "user_id" => $user,
-                               "pinned" => (int) $pinned,
-                               "status" => $status,
-                               "clean" => $clean,
-                               "url" => $url,
+                         array("feather"    => $feather,
+                               "user_id"    => $user_id,
+                               "pinned"     => $pinned,
+                               "status"     => $status,
+                               "clean"      => $clean,
+                               "url"        => $url,
                                "created_at" => $created_at,
                                "updated_at" => $updated_at));
 
@@ -215,16 +214,16 @@
 
             if (empty($clean) or empty($url))
                 $sql->update("posts",
-                             array("id" => $id),
+                             array("id"    => $id),
                              array("clean" => $feather.".".$id,
-                                   "url" => $feather.".".$id));
+                                   "url"   => $feather.".".$id));
 
             # Insert the post attributes.
             foreach (array_merge($values, $options) as $name => $value)
                 $sql->insert("post_attributes",
                              array("post_id" => $id,
-                                   "name" => $name,
-                                   "value" => $value));
+                                   "name"    => $name,
+                                   "value"   => $value));
 
             $post = new self($id, array("drafts" => true));
 
@@ -282,11 +281,12 @@
 
             $trigger = Trigger::current();
 
-            if ($user instanceof User)
-                $user = $user->id;
+            $user_id = ($user instanceof User) ? $user->id : $user ;
+
+            $old = clone $this;
 
             fallback($values,     array_combine($this->attribute_names, $this->attribute_values));
-            fallback($user,       fallback($_POST['user_id'], $this->user_id, true));
+            fallback($user_id,    fallback($_POST['user_id'], $this->user_id, true));
             fallback($pinned,     (int) !empty($_POST['pinned']));
             fallback($status,     (isset($_POST['draft'])) ? "draft" : fallback($_POST['status'], $this->status, true));
             fallback($clean,      $this->clean);
@@ -297,15 +297,13 @@
                                       fallback($updated_at, fallback($_POST['updated_at'], datetime(), true))));
             fallback($options,    fallback($_POST['option'], array(), true));
 
-            $old = clone $this;
-
             # Update all values of this post.
             list($this->user_id,
                  $this->pinned,
                  $this->status,
                  $this->url,
                  $this->created_at,
-                 $this->updated_at) = array($user, $pinned, $status, $url, $created_at, $updated_at);
+                 $this->updated_at) = array($user_id, $pinned, $status, $url, $created_at, $updated_at);
 
             $sql = SQL::current();
             $sql->update("posts",

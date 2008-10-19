@@ -76,27 +76,27 @@
                             $url          = "",
                             $created_at   = null,
                             $updated_at   = "0000-00-00 00:00:00") {
-            if ($user instanceof User)
-                $user = $user->id;
+            $user_id = ($user instanceof User) ? $user->id : $user ;
 
-            fallback($clean, sanitize($title));
             $sql = SQL::current();
             $visitor = Visitor::current();
+            $trigger = Trigger::current();
+
             $sql->insert("pages",
                          array("title" =>        $title,
                                "body" =>         $body,
-                               "user_id" =>      fallback($user,         $visitor->id),
+                               "user_id" =>      fallback($user_id,      $visitor->id),
                                "parent_id" =>    fallback($parent_id,    0),
                                "show_in_list" => fallback($show_in_list, true),
                                "list_order" =>   fallback($list_order,   0),
-                               "clean" =>        $clean,
+                               "clean" =>        fallback($clean, sanitize($title)),
                                "url" =>          fallback($url,          self::check_url($clean)),
                                "created_at" =>   fallback($created_at,   datetime()),
                                "updated_at" =>   fallback($updated_at,   "0000-00-00 00:00:00")));
 
             $page = new self($sql->latest());
 
-            Trigger::current()->call("add_page", $page);
+            $trigger->call("add_page", $page);
 
             return $page;
         }
@@ -125,17 +125,18 @@
             if ($this->no_results)
                 return false;
 
-            if ($user instanceof User)
-                $user = $user->id;
+            $user_id = ($user instanceof User) ? $user->id : $user ;
+
+            $sql = SQL::current();
+            $trigger = Trigger::current();
 
             $old = clone $this;
 
-            foreach (array("title", "body", "user", "parent_id", "show_in_list",
+            foreach (array("title", "body", "user_id", "parent_id", "show_in_list",
                            "list_order", "clean", "url", "created_at", "updated_at") as $attr)
                 # This sets the $$attr and $this->$attr at the same time.
                 $this->$attr = fallback($$attr, ($attr == "updated_at" and $updated_at === false) ? $this->$attr : datetime());
 
-            $sql = SQL::current();
             $sql->update("pages",
                          array("id" =>           $this->id),
                          array("title" =>        $title,
@@ -149,7 +150,7 @@
                                "created_at" =>   $created_at,
                                "updated_at" =>   $updated_at,
 
-            Trigger::current()->call("update_page", $this, $old);
+            $trigger->call("update_page", $this, $old);
         }
 
         /**

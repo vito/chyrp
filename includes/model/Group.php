@@ -117,6 +117,7 @@
             if ($this->no_results)
                 return false;
 
+            $sql = SQL::current();
             $trigger = Trigger::current();
 
             $old = clone $this;
@@ -124,7 +125,6 @@
             $this->name = $name;
             $this->permissions = $permissions;
 
-            $sql = SQL::current();
             $sql->update("groups",
                          array("id" => $this->id),
                          array("name" => $name));
