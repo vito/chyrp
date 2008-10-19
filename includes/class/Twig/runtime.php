@@ -161,7 +161,7 @@ function twig_get_attribute($obj, $item, $function = true)
 
 function twig_paginate(&$as, $over, $per_page)
 {
-    if (count($over) == 2 and $over[0] instanceof Model)
+    if (count($over) == 2 and $over[0] instanceof Model and is_string($over[1]))
         $as = new Paginator($over[0]->__getPlaceholders($over[1]), $per_page);
     else
         $as = new Paginator($over, $per_page);

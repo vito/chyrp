@@ -70,7 +70,7 @@
          */
         public static function build_update_values($data, &$params = array()) {
             $set = self::build_conditions($data, $params);
-            return implode(", ", $set);
+            return implode(",\n    ", $set);
         }
 
         /**

@@ -20,7 +20,7 @@
             $this->sql = $sql;
 
             # Don't count config setting queries.
-            $count = (bool) (!substr_count(strtoupper($query), "SET "));
+            $count = !preg_match("/^SET /", strtoupper($query));
 
             if ($count)
                 ++$this->sql->queries;
@@ -44,7 +44,7 @@
 
                 $logQuery = $query;
                 foreach ($params as $name => $val)
-                    $logQuery = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", $this->sql->escape($val)."\\1", $logQuery);
+                    $logQuery = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", str_replace("\\", "\\\\", $this->sql->escape($val))."\\1", $logQuery);
 
                 $this->sql->debug[] = array("number" => $this->sql->queries,
                                             "file" => str_replace(MAIN_DIR."/", "", $target["file"]),
@@ -73,7 +73,7 @@
                     break;
                 case "mysqli":
                     foreach ($params as $name => $val)
-                        $query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", $this->sql->escape($val)."\\1", $query);
+                        $query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", str_replace("\\", "\\\\", $this->sql->escape($val))."\\1", $query);
 
                     $this->queryString = $query;
 
@@ -86,7 +86,7 @@
                     break;
                 case "mysql":
                     foreach ($params as $name => $val)
-                        $query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", $this->sql->escape($val)."\\1", $query);
+                        $query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", str_replace("\\", "\\\\", $this->sql->escape($val))."\\1", $query);
 
                     $this->queryString = $query;
 
