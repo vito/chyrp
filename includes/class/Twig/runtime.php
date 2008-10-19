@@ -450,6 +450,9 @@ function twig_length_filter($thing) {
         return count($thing);
 }
 
-function twig_escape_filter($string, $quotes = true) {
+function twig_escape_filter($string, $quotes = true, $decode = true) {
+    if ($decode)
+        $string = html_entity_decode($string, ENT_QUOTES, "utf-8");
+
     return fix($string, $quotes);
 }
