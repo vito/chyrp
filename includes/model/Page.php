@@ -52,16 +52,17 @@
          * Parameters:
          *     $title - The Title for the new page.
          *     $body - The Body for the new page.
+         *     $body - The <User> or <User.id> of the page's author.
          *     $parent_id - The ID of the new page's parent page (0 for none).
          *     $show_in_list - Whether or not to show it in the pages list.
-         *     $clean - The sanitized URL (or empty to default to "(feather).(new page's id)").
-         *     $url - The unique URL (or empty to default to "(feather).(new page's id)").
+         *     $list_order - The order of the page in the list.
+         *     $clean - The clean URL.
+         *     $url - The unique URL.
          *     $created_at - The new page's "created" timestamp.
          *     $updated_at - The new page's "last updated" timestamp.
-         *     $user_id - The ID of the user that created the page. Defaults to the visitor's ID.
          *
          * Returns:
-         *     $page - The newly created page.
+         *     The newly created <Page>.
          *
          * See Also:
          *     <update>
@@ -108,9 +109,13 @@
          * Parameters:
          *     $title - The new Title.
          *     $body - The new Body.
+         *     $body - The <User> or <User.id> of the page's author.
          *     $parent_id - The new parent ID.
          *     $show_in_list - Whether or not to show it in the pages list.
-         *     $url - The new page URL.
+         *     $clean - The page's clean URL.
+         *     $url - The page's unique URL.
+         *     $created_at - The page's "created" timestamp.
+         *     $updated_at - The page's "last updated" timestamp.
          */
         public function update($title        = null,
                                $body         = null,

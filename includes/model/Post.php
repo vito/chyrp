@@ -86,7 +86,10 @@
 
             fallback($this->clean, $this->url);
 
-            $this->parse();
+            foreach ($this->attributes as $key => $val)
+                $this->$key = $val;
+
+            $this->filter();
         }
 
         /**
@@ -138,10 +141,9 @@
 
         /**
          * Function: add
-         * Adds a post to the database with the passed XML, sanitized URL, and unique URL. The rest is read from $_POST.
+         * Adds a post to the database.
          *
-         * Trackbacks are automatically sent based on the contents of $_POST['trackbacks'].
-         * Most of the $_POST variables will fall back gracefully if they don't exist, e.g. if they're posting from the Bookmarklet.
+         * Most of the function arguments will fall back to various POST values.
          *
          * Calls the add_post trigger with the inserted post and extra options.
          *
@@ -239,7 +241,8 @@
             }
 
             if (Config::current()->send_pingbacks and $pingbacks)
-                array_walk_recursive($values, array("Post", "send_pingbacks"), $post);
+                foreach ($values as $key => $value)
+                    send_pingbacks($value, $post);
 
             $post->redirect = isset($_POST['bookmarklet']) ? url("/admin/?action=bookmarklet&done") : $post->url() ;
 
@@ -250,16 +253,17 @@
 
         /**
          * Function: update
-         * Updates a post with the given XML. The rest is read from $_POST.
+         * Updates a post with the given attributes.
          *
-         * Most of the $_POST variables will fall back gracefully if they don't exist, e.g. if they're posting from the Bookmarklet.
+         * Most of the function arguments will fall back to various POST values.
          *
          * Parameters:
          *     $values - An array of data to set for the post.
          *     $user - <User> to set as the post's author.
          *     $pinned - Pin the post?
          *     $status - Post status
-         *     $slug - A new URL for the post.
+         *     $clean - A new clean URL for the post.
+         *     $url - A new URL for the post.
          *     $created_at - New @created_at@ timestamp for the post.
          *     $updated_at - New @updated_at@ timestamp for the post, or @false@ to not updated it.
          *     $options - Options for the post.
@@ -451,7 +455,7 @@
          *     $clean - The clean URL to check.
          *
          * Returns:
-         *     $url - The unique version of the passed clean URL. If it's not used, it's the same as $clean. If it is, a number is appended.
+         *     The unique version of the passed clean URL. If it's not used, it's the same as $clean. If it is, a number is appended.
          */
         static function check_url($clean) {
             $count = SQL::current()->count("posts", array("clean" => $clean));
@@ -628,13 +632,10 @@
         }
 
         /**
-         * Function: parse
-         * Parses the passed XML and loads the tags and values into <Post>.
+         * Function: filter
+         * Filters the post attributes through filter_post and any Feather filters.
          */
-        private function parse() {
-            foreach ($this->attributes as $key => $val)
-                $this->$key = $val;
-
+        private function filter() {
             if (!$this->filtered)
                 return;
 
@@ -709,14 +710,6 @@
                 false;
 
             return Config::current()->chyrp_url."/includes/trackback.php?id=".$this->id;
-        }
-
-        /**
-         * Function: send_pingbacks
-         * Sends any callbacks in $value. Used by array_walk_recursive in <Post.add>.
-         */
-        static function send_pingbacks($value, $key, $post) {
-            send_pingbacks($value, $post);
         }
 
         /**
