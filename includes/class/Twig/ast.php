@@ -188,6 +188,65 @@ class Twig_ForLoop extends Twig_Node
     }
 }
 
+class Twig_PaginateLoop extends Twig_Node
+{
+    public $is_multitarget;
+    public $item;
+    public $seq;
+    public $body;
+    public $else;
+
+    public function __construct($is_multitarget, $item, $per_page, $target,
+                    $as, $body, $else, $lineno)
+    {
+        parent::__construct($lineno);
+        $this->is_multitarget = $is_multitarget;
+        $this->item = $item;
+        $this->per_page = $per_page;
+        $this->seq = $target;
+        $this->as = $as;
+        $this->body = $body;
+        $this->else = $else;
+        $this->lineno = $lineno;
+    }
+
+    public function compile($compiler)
+    {
+        $compiler->addDebugInfo($this);
+        $compiler->pushContext();
+        $compiler->raw('twig_paginate($context["::parent"]["'.$this->as->name.'"], ');
+        $this->seq->compile($compiler);
+        $compiler->raw(', ');
+        $this->per_page->compile($compiler);
+        $compiler->raw(");\n");
+        $compiler->raw('foreach (twig_iterate($context, $context["::parent"]["'.$this->as->name."\"]->paginated) as \$iterator) {\n");
+        if ($this->is_multitarget) {
+            $compiler->raw('twig_set_loop_context_multitarget($context, ' .
+                       '$iterator, array(');
+            $idx = 0;
+            foreach ($this->item as $node) {
+                if ($idx++)
+                    $compiler->raw(', ');
+                $compiler->repr($node->name);
+            }
+            $compiler->raw("));\n");
+        }
+        else {
+            $compiler->raw('twig_set_loop_context($context, $iterator, ');
+            $compiler->repr($this->item->name);
+            $compiler->raw(");\n");
+        }
+        $this->body->compile($compiler);
+        $compiler->raw("}\n");
+        if (!is_null($this->else)) {
+            $compiler->raw("if (!\$context['loop']['iterated']) {\n");
+            $this->else->compile($compiler);
+            $compiler->raw('}');
+        }
+        $compiler->popContext();
+    }
+}
+
 
 class Twig_IfCondition extends Twig_Node
 {

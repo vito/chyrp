@@ -156,7 +156,7 @@ class Twig_BaseLoader
     private function evalTemplate($name, $fn=NULL)
     {
         $code = $this->compileTemplate($name, NULL, $fn);
-        #echo "ORIGINAL: <textarea rows=15 style=\"width: 100%\">".fix(print_r($code, true))."</textarea>";
+        # echo "ORIGINAL: <textarea rows=15 style=\"width: 100%\">".fix(print_r($code, true))."</textarea>";
         $code = preg_replace('/(?!echo twig_get_attribute.+)echo "[\\\\tn]+";/', "", $code); # Remove blank lines
         #echo "STRIPPED: <textarea rows=15 style=\"width: 100%\">".fix(print_r($code, true))."</textarea>";
         eval('?>' . $code);

@@ -159,6 +159,11 @@ function twig_get_attribute($obj, $item, $function = true)
     return NULL;
 }
 
+function twig_paginate(&$as, $over, $per_page)
+{
+    $as = new Paginator($over, $per_page); # TODO: Automate relational model stuff to use placeholders
+}
+
 function twig_iterate(&$context, $seq)
 {
     $parent = isset($context['loop']) ? $context['loop'] : null;

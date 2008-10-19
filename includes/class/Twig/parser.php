@@ -42,7 +42,8 @@ class Twig_Parser
 
             # Chyrp specific extensions
             'url' =>    array($this, 'parseURL'),
-            'admin' =>  array($this, 'parseAdminURL')
+            'admin' =>  array($this, 'parseAdminURL'),
+            'paginate' =>   array($this, 'parsePaginate')
         );
     }
 
@@ -65,6 +66,28 @@ class Twig_Parser
                     $lineno);
     }
 
+    public function parsePaginate($token)
+    {
+        $lineno = $token->lineno;
+        list($is_multitarget, $item) = $this->parseAssignmentExpression();
+        $this->stream->expect('in');
+        $per_page = $this->parseExpression();
+        $loop = $this->parseExpression();
+        $this->stream->expect('as');
+        $as = $this->parseExpression();
+        $this->stream->expect(Twig_Token::BLOCK_END_TYPE);
+        $body = $this->subparse(array($this, 'decidePaginateFork'));
+        if ($this->stream->next()->value == 'else') {
+            $this->stream->expect(Twig_Token::BLOCK_END_TYPE);
+            $else = $this->subparse(array($this, 'decidePaginateEnd'), true);
+        }
+        else
+            $else = NULL;
+        $this->stream->expect(Twig_Token::BLOCK_END_TYPE);
+        return new Twig_PaginateLoop($is_multitarget, $item, $per_page, 
+                    $loop, $as, $body, $else, $lineno);
+    }
+
     public function decideForFork($token)
     {
         return $token->test(array('else', 'endfor'));
@@ -73,6 +96,16 @@ class Twig_Parser
     public function decideForEnd($token)
     {
         return $token->test('endfor');
+    }
+
+    public function decidePaginateFork($token)
+    {
+        return $token->test(array('else', 'endpaginate'));
+    }
+
+    public function decidePaginateEnd($token)
+    {
+        return $token->test('endpaginate');
     }
 
     public function parseIfCondition($token)

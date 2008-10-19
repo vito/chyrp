@@ -8,7 +8,7 @@
                 <fieldset>
                     <blockquote>
                         <h2>${ "Excerpt" | translate }</h2>
-                        ${ page.body | markup_page_text | truncate(500) }
+                        ${ page.body | markup_page_text(page) | truncate(500) }
                         {% if page.children %}
                         <br />
                         <h2><input type="checkbox" name="destroy_children{# OH, THE HORROR! #}" value="" id="destroy_children" /> ${ "Delete children?" | translate }</h2>

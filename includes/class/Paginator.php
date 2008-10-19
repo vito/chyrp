@@ -54,16 +54,16 @@
          *     A paginated array of length $per_page or smaller.
          */
         public function __construct($array, $per_page = 5, $name = "page", $model = null, $page = null) {
-            $this->array = $array;
+            $this->array = (array) $array;
 
             $this->per_page = $per_page;
             $this->name = $name;
-            $this->model = fallback($model, (count($array) == 2 and is_array($array[0]) and class_exists($array[1])));
+            $this->model = fallback($model, (count($this->array) == 2 and is_array($this->array[0]) and class_exists($this->array[1])));
 
             if ($model)
-                list($array, $model_name) = $array;
+                list($this->array, $model_name) = $this->array;
 
-            $this->total = count($array);
+            $this->total = count($this->array);
             $this->page = fallback($page, fallback($_GET[$name], 1, true), true);
             $this->pages = ceil($this->total / $this->per_page);
 
@@ -73,10 +73,10 @@
 
             if ($model) {
                 for ($i = $offset; $i < ($offset + $this->per_page); $i++)
-                    if (isset($array[$i]))
-                        $this->result[] = new $model_name(null, array("read_from" => $array[$i]));
+                    if (isset($this->array[$i]))
+                        $this->result[] = new $model_name(null, array("read_from" => $this->array[$i]));
             } else
-                $this->result = array_slice($array, $offset, $this->per_page);
+                $this->result = array_slice($this->array, $offset, $this->per_page);
 
             $shown_dates = array();
             if ($model)

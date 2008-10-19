@@ -6,6 +6,7 @@
         public function __init() {
             $this->addAlias("metaWeblog_newPost_preQuery", "metaWeblog_editPost_preQuery");
             $this->addAlias("post_grab", "posts_get");
+            $this->addAlias("comment_grab", "comments_get");
         }
 
         static function __install() {
@@ -618,46 +619,25 @@
                 $_POST['option']['comment_status'] = ($struct['mt_allow_comments'] == 1) ? 'open' : 'closed';
         }
 
-        public function post_comments_attr($attr, $post) {
-            $sql = SQL::current();
-            $config = Config::current();
-            $trigger = Trigger::current();
-            $visitor = Visitor::current();
-            $route = Route::current();
+        public function filter_post($post) {
+            $post->has_many[] = "comments";
+        }
 
-            if (isset($route->action) and $route->action == "view") {
-                $get_comments = $sql->select("comments", # table
-                                             "*", # fields
-                                             array("post_id" => $post->id,
-                                                   "status != 'spam'",
-                                                   "status != 'denied' OR (
-                                                        (
-                                                            user_id != 0 AND
-                                                            user_id = :visitor_id
-                                                        ) OR (
-                                                            id IN ".self::visitor_comments()."
-                                                        )
-                                                    )"),
-                                             "created_at ASC", # order
-                                             array(":visitor_id" => $visitor->id));
+        public function comments_get($options) {
+            if (ADMIN)
+                return;
 
-                $post->comments = array();
-                foreach ($get_comments->fetchAll() as $comment)
-                    $post->comments[] = $comment;
-
-                $post->comments = new Paginator(array($post->comments, "Comment"), $config->comments_per_page, "comments_page");
-
-                $shown_dates = array();
-                foreach ($post->comments->paginated as &$comment) {
-                    $comment->date_shown = in_array(when("m-d-Y", $comment->created_at), $shown_dates);
-                    if (!in_array(when("m-d-Y", $comment->created_at), $shown_dates))
-                        $shown_dates[] = when("m-d-Y", $comment->created_at);
-
-                    $comment->is_author = ($post->user_id == $comment->user_id);
-                }
-            }
-
-            return $post->comments;
+            $options["where"]["status not"] = "spam";
+            $options["where"][] = "status != 'denied' OR (
+                                                             (
+                                                                 user_id != 0 AND
+                                                                 user_id = :visitor_id
+                                                             ) OR (
+                                                                 id IN ".self::visitor_comments()."
+                                                             )
+                                                         )";
+            $options["order"] = "created_at ASC";
+            $options["params"][":visitor_id"] = Visitor::current()->id;
         }
 
         public function post_commentable_attr($attr, $post) {

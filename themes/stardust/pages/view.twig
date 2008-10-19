@@ -10,14 +10,14 @@
                 <h2 class="comments">${ "Comments" | translate }</h2>
                 {% if post.comment_count > 0 %}
                 <ol class="comments" id="comments_$post.id">
-                    {% for comment in post.comments.paginated %}{% include "content/comment.twig" %}{% endfor %}
+                    {% paginate comment in site.comments_per_page post.comments as comments %}{% include "content/comment.twig" %}{% endpaginate %}
                 </ol>
-                {% endif %}
                 <input type="hidden" name="last_comment" value="$post.latest_comment" id="last_comment" />
-                $post.comments.prev_link
-                $post.comments.next_link
-                {% if post.comments.paginated and post.comments.pages > 1 %}
-                <span class="pages">${ "Page %d of %d" | translate | format(post.comments.page, post.comments.pages) }</span>
+                $comments.prev_link
+                $comments.next_link
+                {% if comments.pages > 1 %}
+                <span class="pages">${ "Page %d of %d" | translate | format(comments.page, comments.pages) }</span>
+                {% endif %}
                 {% endif %}
                 {% if post.commentable %}
                 {% include "forms/comment/new.twig" %}

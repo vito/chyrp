@@ -29,8 +29,8 @@
 
             if ($this->filtered) {
                 $trigger = Trigger::current();
-                $trigger->filter($this->body, "markup_page_text");
-                $trigger->filter($this->title, "markup_page_title");
+                $trigger->filter($this->body, "markup_page_text", $this);
+                $trigger->filter($this->title, "markup_page_title", $this);
             }
         }
 
