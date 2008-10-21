@@ -860,7 +860,7 @@
      *     <upload>
      */
     function upload_from_url($url, $extension = null, $path = "") {
-        $file = tempnam(sys_get_temp_dir(), "chyrp");
+        $file = tempnam(null, "chyrp");
         file_put_contents($file, get_remote($url));
 
         $fake_file = array("name" => basename(parse_url($url, PHP_URL_PATH)),
