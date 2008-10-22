@@ -29,7 +29,7 @@
             $selector = '<span class="tags_select">'."\n";
 
             foreach (array_reverse($tags) as $tag) {
-                $selected = ($post and substr_count($post->unclean_tags, "{{".$tag["name"]."}}")) ?
+                $selected = ($post and substr_count($post->tags, "{{".$tag["name"]."}}")) ?
                                 ' tag_added' :
                                 "" ;
                 $selector.= "\t\t\t\t\t\t\t\t".'<a href="javascript:add_tag(\''.addslashes($tag["name"]).'\', \'.tag_'.addslashes($tag["url"]).'\')" class="tag_'.$tag["url"].$selected.'">'.$tag["name"].'</a>'."\n";
@@ -37,11 +37,16 @@
 
             $selector.= "\t\t\t\t\t\t\t</span>";
 
+            if (isset($post->tags))
+                $tags = array_keys(YAML::load($post->tags));
+            else
+                $tags = array();
+
             $fields[] = array("attr" => "tags",
                               "label" => __("Tags", "tags"),
                               "note" => __("(comma separated)", "tags"),
                               "type" => "text",
-                              "value" => ($post ? implode(", ", self::unlinked_tags($post->unclean_tags)) : ""),
+                              "value" => implode(", ", $tags),
                               "extra" => $selector);
 
             return $fields;
@@ -73,28 +78,16 @@
             $tags = array_diff($tags, array("")); # Remove empties
             $tags_cleaned = array_map("sanitize", $tags);
 
-            $tags_string = "{{".implode("}},{{", $tags)."}}";
-            $tags_cleaned_string = "{{".implode("}},{{", $tags_cleaned)."}}";
+            $tags = array_combine($tags, $tags_cleaned);
 
-            $sql = SQL::current();
-            $sql->insert("post_attributes",
-                         array("name" => "unclean_tags",
-                               "value" => $tags_string,
-                               "post_id" => $post->id));
-
-            $sql->insert("post_attributes",
-                         array("name" => "clean_tags",
-                               "value" => $tags_cleaned_string,
-                               "post_id" => $post->id));
+            SQL::current()->insert("post_attributes",
+                                   array("name" => "tags",
+                                         "value" => YAML::dump($tags),
+                                         "post_id" => $post->id));
         }
 
         public function update_post($post) {
             if (!isset($_POST['tags'])) return;
-
-            $sql = SQL::current();
-            $sql->delete("post_attributes",
-                         array("name" => array("unclean_tags", "clean_tags"),
-                               "post_id" => $post->id));
 
             $tags = explode(",", $_POST['tags']); # Split at the comma
             $tags = array_map('trim', $tags); # Remove whitespace
@@ -103,18 +96,12 @@
             $tags = array_diff($tags, array("")); # Remove empties
             $tags_cleaned = array_map("sanitize", $tags);
 
-            $tags_string = (!empty($tags)) ? "{{".implode("}},{{", $tags)."}}" : "" ;
-            $tags_cleaned_string = (!empty($tags_cleaned)) ? "{{".implode("}},{{", $tags_cleaned)."}}" : "" ;
+            $tags = array_combine($tags, $tags_cleaned);
 
-            $sql->insert("post_attributes",
-                         array("name" => "unclean_tags",
-                               "value" => $tags_string,
-                               "post_id" => $post->id));
-
-            $sql->insert("post_attributes",
-                         array("name" => "clean_tags",
-                               "value" => $tags_cleaned_string,
-                               "post_id" => $post->id));
+            SQL::current()->replace("post_attributes",
+                                    array("name" => "tags",
+                                          "value" => YAML::dump($tags),
+                                          "post_id" => $post->id));
         }
 
         public function parse_urls($urls) {
@@ -127,7 +114,7 @@
         }
 
         public function manage_posts_column($post) {
-            echo "<td>".implode(", ", $post->tags["linked"])."</td>";
+            echo "<td>".implode(", ", $post->linked_tags)."</td>";
         }
 
         static function manage_nav($navs) {
@@ -149,26 +136,22 @@
             $sql = SQL::current();
 
             $tags = array();
-            $clean = array();
-            foreach($sql->select("posts",
-                                 "tags.*",
-                                 array(Post::statuses(), Post::feathers()),
-                                 null,
-                                 array(),
-                                 null, null, null,
-                                 array(array("table" => "tags",
-                                             "where" => "tags.post_id = posts.id")))->fetchAll() as $tag) {
-                if ($tag["id"] == null)
-                    continue;
+            $names = array();
+            foreach($sql->select("post_attributes",
+                                 "*",
+                                 array("name" => "tags"))->fetchAll() as $tag) {
+                $post_tags = YAML::load($tag["value"]);
 
-                $tags[] = $tag["tags"];
-                $clean[] = $tag["clean"];
+                $tags = array_merge($tags, $post_tags);
+
+                foreach ($post_tags as $name => $clean)
+                    $names[] = $name;
             }
 
-            list($tags, $clean, $tag2clean,) = self::parseTags($tags, $clean);
+            $popularity = array_count_values($names);
 
-            $max_qty = max(array_values($tags));
-            $min_qty = min(array_values($tags));
+            $max_qty = max($popularity);
+            $min_qty = min($popularity);
 
             $spread = $max_qty - $min_qty;
             if ($spread == 0)
@@ -177,13 +160,13 @@
             $step = 75 / $spread;
 
             $cloud = array();
-            foreach ($tags as $tag => $count)
+            foreach ($popularity as $tag => $count)
                 $cloud[] = array("size" => (100 + (($count - $min_qty) * $step)),
                                  "popularity" => $count,
                                  "name" => $tag,
                                  "title" => sprintf(_p("%s post tagged with &quot;%s&quot;", "%s posts tagged with &quot;%s&quot;", $count, "tags"), $count, $tag),
-                                 "clean" => $tag2clean[$tag],
-                                 "url" => url("tag/".$tag2clean[$tag]));
+                                 "clean" => $tags[$tag],
+                                 "url" => url("tag/".$tags[$tag]));
 
             if (!Post::any_editable() and !Post::any_deletable())
                 return $admin->display("manage_tags", array("tag_cloud" => $cloud));
@@ -204,10 +187,10 @@
                 $ids[] = $result["id"];
 
             if (!empty($ids))
-                new Paginator(Post::find(array("placeholders" => true,
-                                               "drafts" => true,
-                                               "where" => array("id" => $ids))),
-                              25);
+                $posts = new Paginator(Post::find(array("placeholders" => true,
+                                                        "drafts" => true,
+                                                        "where" => array("id" => $ids))),
+                                       25);
             else
                 $posts = new Paginator(array());
 
@@ -219,29 +202,24 @@
             $sql = SQL::current();
 
             $tags = array();
-            $clean = array();
-            foreach($sql->select("posts",
-                                 "tags.*",
-                                 array(Post::statuses(), Post::feathers()),
-                                 null,
-                                 array(),
-                                 null,
-                                 null,
-                                 null,
-                                 array(array("table" => "tags",
-                                             "where" => array("post_id = posts.id", "clean like" => "%{{".$_GET['name']."}}%"))))->fetchAll() as $tag) {
-                if ($tag["id"] == null)
-                    continue;
+            $names = array();
+            foreach($sql->select("post_attributes",
+                                 "*",
+                                 array("name" => "tags",
+                                       "value like" => "%: ".$_GET['name']."\n%"))->fetchAll() as $tag) { # TODO: Is this the correct search method?
+                $post_tags = YAML::load($tag["value"]);
 
-                $tags[] = $tag["tags"];
-                $clean[] = $tag["clean"];
+                $tags = array_merge($tags, $post_tags);
+
+                foreach ($post_tags as $name => $clean)
+                    $names[] = $name;
             }
 
-            list($tags, $clean, $tag2clean,) = self::parseTags($tags, $clean);
+            $popularity = array_count_values($names);
 
-            foreach ($tags as $tag => $count)
-                if ($tag2clean[$tag] == $_GET['name']) {
-                    $tag = array("name" => $tag, "clean" => $tag2clean[$tag]);
+            foreach ($popularity as $tag => $count)
+                if ($tags[$tag] == $_GET['name']) {
+                    $tag = array("name" => $tag, "clean" => $tags[$tag]);
                     continue;
                 }
 
@@ -277,20 +255,17 @@
             $clean = array();
             foreach($sql->select("post_attributes",
                                  "*",
-                                 array("name" => "clean_tags",
-                                       "value like" => "%{{".$_POST['clean']."}}%"))->fetchAll() as $tag) {
-                $names = str_replace("{{".$_POST['clean']."}}", "{{".$_POST['name']."}}", $tag["tags"]);
-                $clean = str_replace("{{".$_POST['clean']."}}", "{{".sanitize($_POST['name'])."}}", $tag["clean"]);
+                                 array("name" => "tags",
+                                       "value like" => "%: ".$_POST['original']."\n%"))->fetchAll() as $tag) { # TODO: Is this the correct search method?
+                $tags = YAML::load($tag["value"]);
+                unset($tags[$_POST['original']]);
+
+                $tags[$_POST['name']] = sanitize($_POST['name']);
 
                 $sql->update("post_attributes",
-                             array("name" => "unclean_tags",
+                             array("name" => "tags",
                                    "post_id" => $tag["post_id"]),
-                             array("value" => $names));
-
-                $sql->update("post_attributes",
-                             array("name" => "clean_tags",
-                                   "post_id" => $tag["post_id"]),
-                             array("value" => $clean));
+                             array("value" => YAML::dump($tags)));
             }
 
             Flash::notice(__("Tag renamed.", "tags"), "/admin/?action=manage_tags");
@@ -301,25 +276,17 @@
 
             foreach($sql->select("post_attributes",
                                  "*",
-                                 array("name" => "clean_tags",
-                                       "value like" => "%{{".$_GET['clean']."}}%"))->fetchAll() as $tag)  {
-                $names = array();
-                foreach (explode("}},{{", substr(substr($tag["tags"], 0, -2), 2)) as $name)
-                    if ($name != $_GET['name'])
-                        $names[] = "{{".$name."}}";
+                                 array("name" => "tags",
+                                       "value like" => "%: ".$_GET['clean']."\n%"))->fetchAll() as $tag)  { # TODO: Is this the correct search method?
+                $tags = YAML::load($tag["value"]);
+                unset($tags[$_GET['name']]);
 
-                $cleans = array();
-                foreach (explode("}},{{", substr(substr($tag["clean"], 0, -2), 2)) as $clean)
-                    if ($clean != $_GET['clean'])
-                        $cleans[] = "{{".$clean."}}";
-
-                if (empty($names) or empty($cleans))
-                    $sql->delete("post_attributes", array("name" => $tag["name"], "post_id" => $tag["post-id"]));
+                if (empty($tags))
+                    $sql->delete("post_attributes", array("name" => "tags", "post_id" => $tag["post_id"]));
                 else
-                    $sql->update("tags",
-                                 array("id" => $tag["id"]),
-                                 array("tags" => join(",", $names),
-                                       "clean" => join(",", $cleans)));
+                    $sql->update("post_attributes",
+                                 array("post_id" => $tag["post_id"]),
+                                 array("value" => YAML::dump($tags)));
             }
 
             Flash::notice(__("Tag deleted.", "tags"), "/admin/?action=manage_tags");
@@ -335,9 +302,21 @@
             $sql = SQL::current();
 
             foreach ($_POST['post'] as $post_id) {
-                $post = new Post($post_id);
-                $_POST['tags'] = join(", ", $post->tags["unlinked"]).", ".$_POST['name'];
-                $this->update_post($post);
+                $tags = $sql->select("post_attributes",
+                                     "value",
+                                     array("name" => "tags",
+                                           "post_id" => $post_id));
+                if ($tags and $value = $tags->fetchColumn())
+                    $tags = YAML::load($value);
+                else
+                    $tags = array();
+
+                $tags[$_POST['name']] = sanitize($_POST['name']);
+
+                $sql->replace("post_attributes",
+                              array("name" => "tags",
+                                    "value" => YAML::dump($tags),
+                                    "post_id" => $post_id));
             }
 
             Flash::notice(__("Posts tagged.", "tags"), "/admin/?action=manage_tags");
@@ -349,19 +328,29 @@
                                      array("reason" => "no_tag_specified"),
                                      __("No Tag", "tags"));
 
-            if (!SQL::current()->count("tags", array("clean like" => "%{{".$_GET['name']."}}%")))
+            $sql = SQL::current();
+
+            if (!$attributes = $sql->select("post_attributes", array("value", "post_id"), array("name" => "tags", "value like" => "%: ".$_GET['name']."\n%")))
                 return $main->resort(array("pages/tag", "pages/index"),
                                      array("reason" => "tag_not_found"),
                                      __("Invalid Tag", "tags"));
 
+            $tag = $_GET['name'];
+            $ids = array();
+
+            foreach ($attributes->fetchAll() as $index => $row) {
+                if (!$index)
+                    $tag = array_search($_GET['name'], YAML::load($row["value"]));
+
+                $ids[] = $row["post_id"];
+            }
+
             $posts = new Paginator(Post::find(array("placeholders" => true,
-                                                    "where" => array("tags.clean like" => "%{{".$_GET['name']."}}%"))),
+                                                    "where" => array("id" => $ids))),
                                    Config::current()->posts_per_page);
 
             if (empty($posts))
                 return false;
-
-            $tag = Tags::clean2tag($_GET['name']);
 
             $main->display(array("pages/tag", "pages/index"),
                            array("posts" => $posts, "tag" => $tag),
@@ -371,25 +360,29 @@
         public function main_tags($main) {
             $sql = SQL::current();
 
-            if ($sql->count("tags") > 0) {
+            if ($sql->count("post_attributes", array("name" => "tags")) > 0) {
                 $tags = array();
-                $clean = array();
+                $names = array();
                 foreach($sql->select("posts",
-                                     "tags.*",
-                                     array(Post::statuses(), Post::feathers()),
+                                     "post_attributes.*",
+                                     array("post_attributes.name" => "tags", Post::statuses(), Post::feathers()),
                                      null,
                                      array(),
                                      null, null, null,
-                                     array(array("table" => "tags",
-                                                 "where" => "tags.post_id = posts.id")))->fetchAll() as $tag) {
-                    $tags[] = $tag["tags"];
-                    $clean[] = $tag["clean"];
+                                     array(array("table" => "post_attributes",
+                                                 "where" => "post_id = posts.id")))->fetchAll() as $tag) {
+                    $post_tags = YAML::load($tag["value"]);
+
+                    $tags = array_merge($tags, $post_tags);
+
+                    foreach ($post_tags as $name => $clean)
+                        $names[] = $name;
                 }
 
-                list($tags, $clean, $tag2clean,) = self::parseTags($tags, $clean);
+                $popularity = array_count_values($names);
 
-                $max_qty = max(array_values($tags));
-                $min_qty = min(array_values($tags));
+                $max_qty = max($popularity);
+                $min_qty = min($popularity);
 
                 $spread = $max_qty - $min_qty;
                 if ($spread == 0)
@@ -398,13 +391,13 @@
                 $step = 250 / $spread; # Increase for bigger difference.
 
                 $context = array();
-                foreach ($tags as $tag => $count)
+                foreach ($popularity as $tag => $count)
                     $context[] = array("size" => (100 + (($count - $min_qty) * $step)),
                                        "popularity" => $count,
                                        "name" => $tag,
                                        "title" => sprintf(_p("%s post tagged with &quot;%s&quot;", "%s posts tagged with &quot;%s&quot;", $count, "tags"), $count, $tag),
-                                       "clean" => $tag2clean[$tag],
-                                       "url" => url("tag/".$tag2clean[$tag]));
+                                       "clean" => $tags[$tag],
+                                       "url" => url("tag/".$tags[$tag]));
 
                 $main->display("pages/tags", array("tag_cloud" => $context), __("Tags", "tags"));
             }
@@ -414,34 +407,30 @@
             $chyrp = $entry->children("http://chyrp.net/export/1.0/");
             if (!isset($chyrp->tags)) return;
 
-            $tags = $cleaned = "";
+            $tags = array();
             foreach (explode(", ", $chyrp->tags) as $tag)
-                if (!empty($tag)) {
-                    $tags.=    "{{".strip_tags(trim($tag))."}},";
-                    $cleaned.= "{{".sanitize(strip_tags(trim($tag)))."}},";
-                }
+                if (!empty($tag))
+                    $tags[strip_tags(trim($tag))] = sanitize(strip_tags(trim($tag)));
 
             if (!empty($tags) and !empty($cleaned))
-                SQL::current()->insert("tags",
-                                       array("tags" => rtrim($tags, ","),
-                                             "clean" => rtrim($cleaned, ","),
+                SQL::current()->insert("post_attributes",
+                                       array("name" => "tags",
+                                             "value" => YAML::dump($tags),
                                              "post_id" => $post->id));
         }
 
         public function import_wordpress_post($item, $post) {
             if (!isset($item->category)) return;
 
-            $tags = $cleaned = "";
+            $tags = array();
             foreach ($item->category as $tag)
-                if (isset($tag->attributes()->domain) and $tag->attributes()->domain == "tag" and !empty($tag) and isset($tag->attributes()->nicename)) {
-                    $tags.=    "{{".strip_tags(trim($tag))."}},";
-                    $cleaned.= "{{".sanitize(strip_tags(trim($tag)))."}},";
-                }
+                if (isset($tag->attributes()->domain) and $tag->attributes()->domain == "tag" and !empty($tag) and isset($tag->attributes()->nicename))
+                    $tags[strip_tags(trim($tag))] = sanitize(strip_tags(trim($tag)));
 
-            if (!empty($tags) and !empty($cleaned))
-                SQL::current()->insert("tags",
-                                       array("tags" => rtrim($tags, ","),
-                                             "clean" => rtrim($cleaned, ","),
+            if (!empty($tags))
+                SQL::current()->insert("post_attributes",
+                                       array("name" => "tags",
+                                             "value" => YAML::dump($tags),
                                              "post_id" => $post->id));
         }
 
@@ -470,18 +459,14 @@
             if (empty($tags))
                 return;
 
-            $dirty_string = "{{".implode("}},{{", array_keys($tags))."}}";
-            $clean_string = "{{".implode("}},{{", array_values($tags))."}}";
-
-            $sql = SQL::current();
-            $sql->insert("tags", array("tags" => $dirty_string, "clean" => $clean_string, "post_id" => $post->id));
+            SQL::current()->insert("post_attributes", array("name" => "tags", "value" => YAML::dump($tags), "post_id" => $post->id));
         }
 
         public function metaWeblog_getPost($struct, $post) {
-            if (!isset($post->unclean_tags))
+            if (!isset($post->tags))
                 $struct['mt_tags'] = "";
             else
-                $struct['mt_tags'] = implode(", ", self::unlinked_tags($post->unclean_tags));
+                $struct['mt_tags'] = implode(", ", array_keys($post->tags));
 
             return $struct;
         }
@@ -500,46 +485,20 @@
             return $context;
         }
 
-        static function linked_tags($tags, $cleaned_tags) {
-            if (empty($tags) or empty($cleaned_tags))
+        static function linked_tags($tags) {
+            if (empty($tags))
                 return array();
 
-            $tags = explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", $tags));
-            $cleaned_tags = explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", $cleaned_tags));
-
-            $tags = array_combine($cleaned_tags, $tags);
-
             $linked = array();
-            foreach ($tags as $clean => $tag)
+            foreach ($tags as $tag => $clean)
                 $linked[] = '<a href="'.url("tag/".urlencode($clean)).'" rel="tag">'.$tag.'</a>';
 
             return $linked;
         }
 
-        static function unlinked_tags($tags) {
-            if (empty($tags))
-                return array();
-
-            return explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", $tags));
-        }
-
         public function filter_post($post) {
-            if (empty($post->unclean_tags)) {
-                $post->tags = array("info" => array(), "unlinked" => array(), "linked" => array());
-                return;
-            }
-
-            list($tags, $clean, $tag2clean,) = self::parseTags(array($post->unclean_tags), array($post->clean_tags));
-
-            $post->tags = array();
-
-            foreach ($tags as $tag => $count)
-                $post->tags["info"][] = array("name" => $tag,
-                                              "clean" => $tag2clean[$tag],
-                                              "url" => url("tag/".urlencode($tag2clean[$tag])));
-
-            $post->tags["unlinked"] = self::unlinked_tags($post->unclean_tags);
-            $post->tags["linked"]   = self::linked_tags($post->unclean_tags, $post->clean_tags);
+            $post->tags = !empty($post->tags) ? YAML::load($post->tags) : array() ;
+            $post->linked_tags = self::linked_tags($post->tags);
         }
 
         public function sort_tags_name_asc($a, $b) {
@@ -561,84 +520,52 @@
         public function list_tags($limit = 10, $order_by = "popularity", $order = "desc") {
             $sql = SQL::current();
 
-            $attrs = $sql->select("post_attributes",
-                                  array("name", "value"),
-                                  array("name" => array("unclean_tags", "clean_tags"), Post::statuses(), Post::feathers()),
+            $attrs = $sql->select("posts",
+                                  "post_attributes.value",
+                                  array("post_attributes.name" => "tags", Post::statuses(), Post::feathers()),
                                   null,
                                   array(),
                                   null, null, null,
-                                  array(array("table" => "posts",
-                                              "where" => "post_attributes.post_id = id")));
+                                  array(array("table" => "post_attributes",
+                                              "where" => "post_id = posts.id")));
 
-            $unclean = array();
-            $clean = array();
-            while ($attr = $attrs->fetchObject())
-                if ($attr->name == "tags")
-                    $unclean[] = $attr->value;
-                else
-                    $clean[] = $attr->value;
+            $tags = array();
+            $names = array();
+            while ($attr = $attrs->fetchObject()) {
+                $post_tags = YAML::load($attr->value);
 
-            if (!count($unclean))
+                $tags = array_merge($tags, $post_tags);
+
+                foreach ($post_tags as $name => $clean)
+                    $names[] = $name;
+            }
+
+            if (empty($tags))
                 return array();
 
-            list($unclean, $clean, $tag2clean,) = self::parseTags($unclean, $clean);
+            $popularity = array_count_values($names);
 
-            foreach ($unclean as $name => $popularity)
-                $unclean[$name] = array("name" => $name,
-                                        "popularity" => $popularity,
-                                        "url" => urlencode($tag2clean[$name]),
-                                        "clean" => $tag2clean[$name]);
+            $list = array();
+            foreach ($popularity as $name => $popularity)
+                $list[$name] = array("name" => $name,
+                                     "popularity" => $popularity,
+                                     "url" => urlencode($tags[$name]),
+                                     "clean" => $tags[$name]);
 
-            usort($unclean, array($this, "sort_tags_".$order_by."_".$order));
+            usort($list, array($this, "sort_tags_".$order_by."_".$order));
 
-            return ($limit) ? array_slice($unclean, 0, $limit) : $unclean ;
-        }
-
-        static function clean2tag($clean_tag) {
-            $tags = array();
-            $clean = array();
-            foreach(SQL::current()->select("post_attributes",
-                                           "*",
-                                           array("name" => array("unclean_tags",
-                                                                 "clean_tags")))->fetchAll() as $attr) {
-                if ($attr["name"] == "unclean_tags")
-                    $tags[] = $attr["value"];
-                else
-                    $clean[] = $attr["value"];
-            }
-
-            list($tags, $clean, $tag2clean, $clean2tag) = self::parseTags($tags, $clean);
-
-            return $clean2tag[$clean_tag];
-        }
-
-        static function tag2clean($unclean_tag) {
-            $tags = array();
-            $clean = array();
-            foreach(SQL::current()->select("post_attributes",
-                                           "*",
-                                           array("name" => array("unclean_tags",
-                                                                 "clean_tags")))->fetchAll() as $attr) {
-                if ($attr["name"] == "unclean_tags")
-                    $tags[] = $attr["value"];
-                else
-                    $clean[] = $attr["value"];
-            }
-
-            list($tags, $clean, $tag2clean) = self::parseTags($tags, $clean);
-
-            return $tag2clean[$unclean_tag];
+            return ($limit) ? array_slice($list, 0, $limit) : $list ;
         }
 
         public function posts_export($atom, $post) {
             $tags = SQL::current()->select("post_attributes",
                                            "value",
-                                           array("name" => "unclean_tags",
+                                           array("name" => "tags",
                                                  "post_id" => $post->id),
                                            "id DESC")->fetchColumn();
             if (empty($tags)) return;
 
-            $atom.= "       <chyrp:tags>".fix(implode(", ", self::unlinked_tags($tags)))."</chyrp:tags>\r";
+            $atom.= "       <chyrp:tags>".fix(implode(", ", array_keys(YAML::load($tags))))."</chyrp:tags>\r";
             return $atom;
         }
 
@@ -687,20 +614,5 @@
                 }
             }
 <?php
-        }
-
-        # array("{{foo}},{{bar}}", "{{foo}}")
-        # to
-        # "{{foo}},{{bar}},{{foo}}"
-        # to
-        # array("foo", "bar", "foo")
-        # to
-        # array("foo" => 2, "bar" => 1)
-        static function parseTags($tags, $clean) {
-            $tags = explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $tags)));
-            $clean = explode(",", preg_replace("/\{\{([^\}]+)\}\}/", "\\1", implode(",", $clean)));
-            $tag2clean = array_combine($tags, $clean);
-            $clean2tag = array_combine($clean, $tags);
-            return array(array_count_values($tags), array_count_values($clean), $tag2clean, $clean2tag);
         }
     }

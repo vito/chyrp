@@ -25,9 +25,9 @@
                             |
                             <a href="$post.url#comments">${ "%s Comment" | translate_plural("%s Comments", post.comment_count) | format(post.comment_count) }</a>
                             {% endif %}
-                            {% if post.tags.linked | length > 0 %}
+                            {% if post.linked_tags | length > 0 %}
                             |
-                            ${ "Tags" | translate }: ${ post.tags.linked | join(", ") }
+                            ${ "Tags" | translate }: ${ post.linked_tags | join(", ") }
                             {% endif %}
                         </span>
 {% if post.editable or post.deletable %}

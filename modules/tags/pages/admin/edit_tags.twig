@@ -8,7 +8,7 @@
                 <form action="{% admin "update_tags" %}" method="post" accept-charset="utf-8">
                     <fieldset>
                         <p>
-                            <input type="text" name="tags" value="${ post.tags.unlinked | join(", ") | escape }" id="tags" class="big expand" />
+                            <input type="text" name="tags" value="${ post.tags | keys | join(", ") | escape }" id="tags" class="big expand" />
                         </p>
                         <p class="buttons">
                             <button class="yay" name="delete">

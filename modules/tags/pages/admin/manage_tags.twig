@@ -45,8 +45,8 @@
                         <li class="{% if loop.index | odd %}even{% else %}odd{% endif %}">
                             <input type="checkbox" name="post[$loop.index0]" value="$post.id" id="post_checkbox_$post.id" />
                             <h3 class="inline"><a href="$post.url">${ post.title | truncate | fallback((post.feather | capitalize) ~ " #" ~ post.id) }</a></h3>
-                            {% for tag in post.tags.info %}
-                            <a class="tag" href="$tag.url">$tag.name</a>
+                            {% for name, clean in post.tags | items %}
+                            <a class="tag" href="{% url "tag/"~ (clean | escape) %}">$name</a>
                             {% endfor %}
                             <a class="edit_tag" href="{% admin "edit_tags&id="~ post.id %}"><img src="images/icons/edit.png" alt="edit" /></a>
                         </li>

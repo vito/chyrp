@@ -87,7 +87,8 @@
             fallback($this->clean, $this->url);
 
             foreach ($this->attributes as $key => $val)
-                $this->$key = $val;
+                if (!empty($key))
+                    $this->$key = $val;
 
             $this->filter();
         }
