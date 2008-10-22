@@ -90,6 +90,8 @@
                 if (!empty($key))
                     $this->$key = $val;
 
+            Trigger::current()->filter($this, "post");
+
             $this->filter();
         }
 
@@ -649,7 +651,7 @@
                 foreach (Feathers::$custom_filters[$class] as $custom_filter) {
                     $varname = $custom_filter["field"]."_unfiltered";
                     if (!isset($this->$varname))
-                        $this->$varname = fallback($this->$custom_filter["field"], null);
+                        $this->$varname = fallback($this->$custom_filter["field"], null, true);
 
                     $this->$custom_filter["field"] = call_user_func_array(array(Feathers::$instances[$this->feather], $custom_filter["name"]),
                                                                           array($this->$custom_filter["field"], $this));
@@ -659,7 +661,7 @@
                 foreach (Feathers::$filters[$class] as $filter) {
                     $varname = $filter["field"]."_unfiltered";
                     if (!isset($this->$varname))
-                        $this->$varname = fallback($this->$filter["field"], null);
+                        $this->$varname = fallback($this->$filter["field"], null, true);
 
                     if (isset($this->$filter["field"]) and !empty($this->$filter["field"]))
                         $trigger->filter($this->$filter["field"], $filter["name"], $this);

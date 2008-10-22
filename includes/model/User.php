@@ -21,7 +21,7 @@
             if ($this->no_results)
                 return false;
 
-            Trigger::current()->call("filter_user", $this);
+            Trigger::current()->filter($this, "user");
         }
 
         /**

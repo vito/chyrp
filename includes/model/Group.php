@@ -26,6 +26,8 @@
 
             if ($this->no_results)
                 return false;
+
+            Trigger::current()->filter($this, "group");
         }
 
         /**

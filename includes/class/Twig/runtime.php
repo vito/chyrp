@@ -451,6 +451,10 @@ function twig_length_filter($thing) {
 }
 
 function twig_escape_filter($string, $quotes = true, $decode = true) {
+    if (!is_string($string)) # Certain post attributes may be parsed from YAML to an array,
+        return $string;      # in which case the module provides a value. However, the attr
+                             # is still passed to the "fallback" -> "fix" filters.
+
     if ($decode)
         $string = html_entity_decode($string, ENT_QUOTES, "utf-8");
 

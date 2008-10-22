@@ -29,7 +29,7 @@
             $selector = '<span class="tags_select">'."\n";
 
             foreach (array_reverse($tags) as $tag) {
-                $selected = ($post and substr_count($post->tags, "{{".$tag["name"]."}}")) ?
+                $selected = ($post and isset($post->tags[$tag["name"]])) ?
                                 ' tag_added' :
                                 "" ;
                 $selector.= "\t\t\t\t\t\t\t\t".'<a href="javascript:add_tag(\''.addslashes($tag["name"]).'\', \'.tag_'.addslashes($tag["url"]).'\')" class="tag_'.$tag["url"].$selected.'">'.$tag["name"].'</a>'."\n";
@@ -38,7 +38,7 @@
             $selector.= "\t\t\t\t\t\t\t</span>";
 
             if (isset($post->tags))
-                $tags = array_keys(YAML::load($post->tags));
+                $tags = array_keys($post->tags);
             else
                 $tags = array();
 
@@ -496,7 +496,7 @@
             return $linked;
         }
 
-        public function filter_post($post) {
+        public function post($post) {
             $post->tags = !empty($post->tags) ? YAML::load($post->tags) : array() ;
             $post->linked_tags = self::linked_tags($post->tags);
         }
