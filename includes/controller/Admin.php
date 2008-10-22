@@ -1906,6 +1906,10 @@
 
             $info = YAML::load(THEMES_DIR."/".$_GET['theme']."/info.yaml");
 
+            # Clear the caches made by the previous theme.
+            foreach (glob(INCLUDES_DIR."/caches/*.cache") as $cache)
+                @unlink($cache);
+
             if (!empty($_SESSION['theme'])) {
                 unset($_SESSION['theme']);
                 Flash::notice(_f("Stopped previewing &#8220;%s&#8221;.", array($info["name"])), "/admin/?action=themes");
