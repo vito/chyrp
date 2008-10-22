@@ -116,7 +116,7 @@
             if (!$comment->deletable())
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this comment.", "comments"));
 
-            $admin->display("delete_comment", array("comments" => $comment));
+            $admin->display("delete_comment", array("comment" => $comment));
         }
 
         static function admin_destroy_comment() {
