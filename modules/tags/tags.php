@@ -330,10 +330,7 @@
 
             $sql = SQL::current();
 
-            if (!$attributes = $sql->select("post_attributes", array("value", "post_id"), array("name" => "tags", "value like" => "%: ".$_GET['name']."\n%")))
-                return $main->resort(array("pages/tag", "pages/index"),
-                                     array("reason" => "tag_not_found"),
-                                     __("Invalid Tag", "tags"));
+            $attributes = $sql->select("post_attributes", array("value", "post_id"), array("name" => "tags", "value like" => "%: ".$_GET['name']."\n%"));
 
             $tag = $_GET['name'];
             $ids = array();
@@ -344,6 +341,11 @@
 
                 $ids[] = $row["post_id"];
             }
+
+            if (empty($ids))
+                return $main->resort(array("pages/tag", "pages/index"),
+                                     array("reason" => "tag_not_found"),
+                                     __("Invalid Tag", "tags"));
 
             $posts = new Paginator(Post::find(array("placeholders" => true,
                                                     "where" => array("id" => $ids))),
