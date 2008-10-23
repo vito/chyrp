@@ -725,9 +725,13 @@
         if (!$create)
             return file_put_contents("./_posts.bak.txt", var_export($backups, true));
 
-        foreach ($backups as $backup)
+        foreach ($backups as $backup) {
             echo " - "._f("Restoring post #%d...", array($backup["id"])).
-                 test($sql->insert("posts", $backup));
+                 test($insert = $sql->insert("posts", $backup));
+
+            if (!$insert)
+                return file_put_contents("./_posts.bak.txt", var_export($backups, true));
+        }
 
         echo " -".test(true);
     }
@@ -832,18 +836,14 @@
             if (!$create)
                 return file_put_contents("./_posts.bak.txt", var_export($backups, true));
 
-            $inserts = array();
             foreach ($backups as $backup) {
                 unset($backup["xml"]);
                 echo " - "._f("Restoring post #%d...", array($backup["id"])).
-                     test($insert = $inserts[] = $sql->insert("posts", $backup));
+                     test($insert = $sql->insert("posts", $backup));
 
                 if (!$insert)
                     return file_put_contents("./_posts.bak.txt", var_export($backups, true));
             }
-
-            if (in_array(false, $inserts))
-                return file_put_contents("./_posts.bak.txt", var_export($backups, true));
 
             echo " -".test(true);
         }
