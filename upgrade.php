@@ -243,7 +243,7 @@
         $index = (parse_url($url, PHP_URL_PATH)) ? "/".trim(parse_url($url, PHP_URL_PATH), "/")."/" : "/" ;
 
         $path = preg_quote($index, "/");
-        $htaccess_has_chyrp = (file_exists(MAIN_DIR."/.htaccess") and preg_match("/<IfModule mod_rewrite\.c>\n([\s]*)RewriteEngine On\n([\s]*)RewriteBase {$path}\n([\s]*)RewriteCond %\{REQUEST_FILENAME\} !-f\n([\s]*)RewriteCond %\{REQUEST_FILENAME\} !-d\n([\s]*)RewriteRule (\^\.\+\\$|\!\\.\(gif\|jpg\|png\|css\)) index\.php \[L\]\n([\s]*)RewriteRule \^\.\+\\.twig\\$ index\.php \[L\]\n([\s]*)<\/IfModule>/", file_get_contents(MAIN_DIR."/.htaccess")));
+        $htaccess_has_chyrp = (file_exists(MAIN_DIR."/.htaccess") and preg_match("/<IfModule mod_rewrite\.c>\n([\s]*)RewriteEngine On\n([\s]*)RewriteBase {$path}\n([\s]*)RewriteCond %\{REQUEST_FILENAME\} !-f\n([\s]*)RewriteCond %\{REQUEST_FILENAME\} !-d\n([\s]*)RewriteRule (\^\.\+\\$|\!\\.\(gif\|jpg\|png\|css\)) index\.php \[L\]\n([\s]*)RewriteRule \^\.\+\\\.twig\\$ index\.php \[L\]\n([\s]*)<\/IfModule>/", file_get_contents(MAIN_DIR."/.htaccess")));
         if ($htaccess_has_chyrp)
             return;
 
@@ -760,8 +760,7 @@
      */
     function post_xml_to_db() {
         $sql = SQL::current();
-        $rows = $sql->query("SELECT id, xml FROM __posts");
-        if (!$rows)
+        if (!$rows = $sql->query("SELECT id, xml FROM __posts"))
             return;
 
         function insert_attributes($sql, $row, $xml, &$inserts) {
@@ -800,9 +799,54 @@
                  test($results[] = insert_attributes($sql, $row, $xml, $inserts));
         }
 
-        if (!in_array(false, $results))
-            echo __("Removing `xml` column from `posts` table...").
-                 test($sql->query("ALTER TABLE __posts DROP xml"));
+        if (!in_array(false, $results)) {
+            echo __("Removing `xml` column from `posts` table...")."\n";
+
+            echo " - ".__("Backing up `posts` table...").
+                 test($backup = $sql->select("posts"));
+        
+            if (!$backup)
+                return;
+
+            $backups = $backup->fetchAll();
+
+            echo " - ".__("Dropping `posts` table...").
+                 test($drop = $sql->query("DROP TABLE __posts"));
+
+            if (!$drop)
+                return;
+
+            echo " - ".__("Creating `posts` table...").
+                 test($create = $sql->query("CREATE TABLE IF NOT EXISTS __posts (
+                                                 id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                                                 feather VARCHAR(32) DEFAULT '',
+                                                 clean VARCHAR(128) DEFAULT '',
+                                                 url VARCHAR(128) DEFAULT '',
+                                                 pinned TINYINT(1) DEFAULT 0,
+                                                 status VARCHAR(32) DEFAULT 'public',
+                                                 user_id INTEGER DEFAULT 0,
+                                                 created_at DATETIME DEFAULT '0000-00-00 00:00:00',
+                                                 updated_at DATETIME DEFAULT '0000-00-00 00:00:00'
+                                             ) DEFAULT CHARSET=utf8"));
+
+            if (!$create)
+                return file_put_contents("./_posts.bak.txt", var_export($backups, true));
+
+            $inserts = array();
+            foreach ($backups as $backup) {
+                unset($backup["xml"]);
+                echo " - "._f("Restoring post #%d...", array($backup["id"])).
+                     test($insert = $inserts[] = $sql->insert("posts", $backup));
+
+                if (!$insert)
+                    return file_put_contents("./_posts.bak.txt", var_export($backups, true));
+            }
+
+            if (in_array(false, $inserts))
+                return file_put_contents("./_posts.bak.txt", var_export($backups, true));
+
+            echo " -".test(true);
+        }
     }
 
     /**
