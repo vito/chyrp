@@ -747,7 +747,7 @@
         $last = null;
         $args = func_get_args();
         foreach ($args as $index => $arg) {
-            if (!isset($arg) or (is_string($arg) and trim($arg) === ""))
+            if (!isset($arg) or (is_string($arg) and trim($arg) === "") or $arg === array())
                 $last = $arg;
             else
                 return $arg;
