@@ -719,7 +719,7 @@
         if (is_bool($variable))
             return $variable;
 
-        $set = (!isset($variable) or (is_string($variable) and trim($variable) === "") or $variable === array());
+        $set = (!isset($variable) or (is_string($variable) and trim($variable) === ""));
 
         $args = func_get_args();
         array_shift($args);
@@ -727,7 +727,7 @@
             foreach ($args as $arg) {
                 $fallback = $arg;
 
-                if (isset($arg) and ((is_string($arg) and trim($arg) !== "") or $arg !== array()))
+                if (isset($arg) and (!is_string($arg) or (is_string($arg) and trim($arg) !== "")))
                     continue;
             }
         } else
@@ -745,11 +745,17 @@
      */
     function oneof() {
         $last = null;
-        foreach (func_get_args() as $arg)
-            if (!isset($arg) or (is_string($arg) and trim($arg) === "") or $arg === array())
+        $args = func_get_args();
+        foreach ($args as $index => $arg) {
+            if (!isset($arg) or (is_string($arg) and trim($arg) === ""))
                 $last = $arg;
             else
                 return $arg;
+
+            $next = $args[$index + 1];
+            if ($index + 1 <= count($args) and $arg !== null and $next !== null and gettype($arg) !== gettype($next))
+                return $arg;
+        }
 
         return $last;
     }

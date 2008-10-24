@@ -341,7 +341,7 @@
             $attributes = $sql->select("post_attributes",
                                        array("value", "post_id"),
                                        array("name" => "tags", 
-                                             "value like" => $likes));
+                                             "value like all" => $likes));
 
             $ids = array();
             foreach ($attributes->fetchAll() as $index => $row) {
