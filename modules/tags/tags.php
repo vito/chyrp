@@ -584,7 +584,7 @@
         }
 
         public function cloudSelectorJS() {
-?>
+?><!-- --><script>
             $(function(){
                 function scanTags(){
                     $(".tags_select a").each(function(){
@@ -622,11 +622,11 @@
                     if ($("#tags").val() == "")
                         $("#tags").val(name)
                     else
-                        $("#tags").val($("#tags").val() + ", "+ name)
+                        $("#tags").val($("#tags").val().replace(/(, ?)?$/, ", "+ name))
 
                     $(link).addClass("tag_added")
                 }
             }
-<?php
+<!-- --></script><?php
         }
     }
