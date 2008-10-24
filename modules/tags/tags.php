@@ -332,17 +332,27 @@
 
             $sql = SQL::current();
 
-            $attributes = $sql->select("post_attributes", array("value", "post_id"), array("name" => "tags", "value like" => "%: ".$_GET['name']."\n%"));
+            $tags = explode(" ", $_GET['name']);
 
-            $tag = $_GET['name'];
+            $likes = array();
+            foreach ($tags as $name)
+                $likes[] = "%: ".$name."\n%";
+
+            $attributes = $sql->select("post_attributes",
+                                       array("value", "post_id"),
+                                       array("name" => "tags", 
+                                             "value like" => $likes));
+
             $ids = array();
-
             foreach ($attributes->fetchAll() as $index => $row) {
                 if (!$index)
-                    $tag = array_search($_GET['name'], YAML::load($row["value"]));
+                    foreach ($tags as &$tag)
+                        $tag = array_search($tag, YAML::load($row["value"]));
 
                 $ids[] = $row["post_id"];
             }
+
+            $tag = list_notate($tags, true);
 
             if (empty($ids))
                 return $main->resort(array("pages/tag", "pages/index"),
@@ -358,7 +368,7 @@
 
             $main->display(array("pages/tag", "pages/index"),
                            array("posts" => $posts, "tag" => $tag),
-                           _f("Posts tagged with \"%s\"", array($tag), "tags"));
+                           _f("Posts tagged with %s", array($tag), "tags"));
         }
 
         public function main_tags($main) {

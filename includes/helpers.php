@@ -1363,3 +1363,21 @@
 
         return $amount." ".pluralize($unit, $amount)." ".$word;
     }
+
+    /**
+     * Function: list_notate
+     * Notates an array as a list of things, e.g. "foo, bar, and baz."
+     */
+    function list_notate($array, $quotes = false) {
+        $count = 0;
+        $items = array();
+        foreach ($array as $item) {
+            $string = (is_string($item) and $quotes) ? "&#8220;".$item."&#8221;" : $item ;
+            if (count($array) == ++$count)
+                $items[] = __("and ").$string;
+            else
+                $items[] = $string;
+        }
+
+        return (count($array) == 2) ? implode(" ", $items) : implode(", ", $items) ;
+    }

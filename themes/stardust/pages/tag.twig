@@ -2,7 +2,7 @@
 
 {% block content %}
 {% if posts.paginated %}
-        <h1>${ "Posts tagged with &#8220;%s&#8221;" | translate("tags") | format(tag | escape) }</h1>
+        <h1>${ "Posts tagged with %s" | translate("tags") | format(tag | escape) }</h1>
 {% endif %}
 {% for post in posts.paginated %}
 {% include "feathers/" ~ post.feather ~ ".twig" %}
