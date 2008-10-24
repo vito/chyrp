@@ -150,26 +150,28 @@
 
             $popularity = array_count_values($names);
 
-            $max_qty = max($popularity);
-            $min_qty = min($popularity);
-
-            $spread = $max_qty - $min_qty;
-            if ($spread == 0)
-                $spread = 1;
-
-            $step = 75 / $spread;
-
             $cloud = array();
-            foreach ($popularity as $tag => $count)
-                $cloud[] = array("size" => (100 + (($count - $min_qty) * $step)),
-                                 "popularity" => $count,
-                                 "name" => $tag,
-                                 "title" => sprintf(_p("%s post tagged with &quot;%s&quot;", "%s posts tagged with &quot;%s&quot;", $count, "tags"), $count, $tag),
-                                 "clean" => $tags[$tag],
-                                 "url" => url("tag/".$tags[$tag]));
+            if (!empty($popularity)) {
+                $max_qty = max($popularity);
+                $min_qty = min($popularity);
 
-            if (!Post::any_editable() and !Post::any_deletable())
-                return $admin->display("manage_tags", array("tag_cloud" => $cloud));
+                $spread = $max_qty - $min_qty;
+                if ($spread == 0)
+                    $spread = 1;
+
+                $step = 75 / $spread;
+
+                foreach ($popularity as $tag => $count)
+                    $cloud[] = array("size" => (100 + (($count - $min_qty) * $step)),
+                                     "popularity" => $count,
+                                     "name" => $tag,
+                                     "title" => sprintf(_p("%s post tagged with &quot;%s&quot;", "%s posts tagged with &quot;%s&quot;", $count, "tags"), $count, $tag),
+                                     "clean" => $tags[$tag],
+                                     "url" => url("tag/".$tags[$tag]));
+
+                if (!Post::any_editable() and !Post::any_deletable())
+                    return $admin->display("manage_tags", array("tag_cloud" => $cloud));
+            }
 
             fallback($_GET['query'], "");
             list($where, $params) = keywords($_GET['query'], "post_attributes.value LIKE :query OR url LIKE :query");

@@ -171,7 +171,8 @@
         }
 
         public function post_options($fields, $post = null) {
-            fallback($post->comment_status, "open");
+            if ($post)
+                $post->comment_status = oneof(@$post->comment_status, "open");
 
             $fields[] = array("attr" => "option[comment_status]",
                               "label" => __("Comment Status", "comments"),

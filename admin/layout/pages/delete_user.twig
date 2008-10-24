@@ -27,6 +27,7 @@
                             {% endfor %}
                         </ul>
                         <br />
+                        {% if users %}
                         <h2 class="inline">
                             <input type="radio" name="posts" value="move" id="posts_move" />
                             ${ "Attribute posts to:" | translate }
@@ -37,6 +38,7 @@
                             {% endfor %}
                         </select>
                         <br />
+                        {% endif %}
                         <h2 class="inline">
                             <input type="radio" name="posts" value="delete" id="posts_delete" checked="checked" />
                             ${ "Delete posts." | translate }
@@ -52,6 +54,7 @@
                             {% endfor %}
                         </ul>
                         <br />
+                        {% if users %}
                         <h2 class="inline">
                             <input type="radio" name="pages" value="move" id="pages_move" />
                             ${ "Attribute pages to:" | translate }
@@ -62,6 +65,7 @@
                             {% endfor %}
                         </select>
                         <br />
+                        {% endif %}
                         <h2 class="inline">
                             <input type="radio" name="pages" value="delete" id="pages_delete" checked="checked" />
                             ${ "Delete pages." | translate }

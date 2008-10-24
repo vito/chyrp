@@ -15,6 +15,7 @@
                             {% endfor %}
                         </ul>
                         <br />
+                        {% if groups %}
                         <h2 class="inline">${ "Move members to:" | translate }</h2>
                         <select name="move_group" id="move_group" class="big2">
                             {% for group in groups %}
@@ -22,9 +23,10 @@
                             {% endfor %}
                         </select>
                         <br />
+                        {% endif %}
                         <br />
 {% endif %}
-{% if group.id == site.default_group %}
+{% if group.id == site.default_group and groups %}
                         <h2 class="inline">${ "New default group:" | translate }</h2>
                         <select name="default_group" id="default_group" class="big2">
                             {% for group in groups %}
@@ -34,7 +36,7 @@
                         <br />
                         <br />
 {% endif %}
-{% if group.id == site.guest_group %}
+{% if group.id == site.guest_group and groups %}
                         <h2 class="inline">${ "New &#8220;guest&#8221; group:" | translate }</h2>
                         <select name="guest_group" id="guest_group" class="big2">
                             {% for group in groups %}

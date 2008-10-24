@@ -59,7 +59,7 @@
 
             $array = array();
 
-            foreach (fallback($this->pages_flat, array(), true) as $page) {
+            foreach (oneof($this->pages_flat, array()) as $page) {
                 $array[$page->id] = array();
                 $my_array =& $array[$page->id];
 
@@ -264,7 +264,7 @@
                           "&amp;title=".urlencode($this->title) ;
 
             $route = Route::current();
-            $feeds = '<link rel="alternate" type="application/atom+xml" title="'.$config->name.' Feed" href="'.fallback($config->feed_url, url("feed"), true).'" />'."\n";
+            $feeds = '<link rel="alternate" type="application/atom+xml" title="'.$config->name.' Feed" href="'.oneof(@$config->feed_url, url("feed")).'" />'."\n";
 
             $feeds.= "\t\t".'<link rel="alternate" type="application/atom+xml" title="Current Page (if applicable)" href="'.$config->url.$request.$append.'" />';
 

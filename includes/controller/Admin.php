@@ -755,8 +755,8 @@
 
             $this->display("delete_group",
                            array("group" => new Group($_GET['id']),
-                                 "permissions" => Group::find(array("where" => array("id not" => $_GET['id']),
-                                                                    "order" => "id ASC"))));
+                                 "groups" => Group::find(array("where" => array("id not" => $_GET['id']),
+                                                               "order" => "id ASC"))));
         }
 
         /**
@@ -892,7 +892,7 @@
                     $posts_atom.= '     <published>'.when("c", $post->created_at).'</published>'."\r";
                     $posts_atom.= '     <link href="'.fix($trigger->filter($url, "post_export_url", $post)).'" />'."\r";
                     $posts_atom.= '     <author chyrp:user_id="'.$post->user_id.'">'."\r";
-                    $posts_atom.= '         <name>'.fix(fallback($post->user->full_name, $post->user->login, true)).'</name>'."\r";
+                    $posts_atom.= '         <name>'.fix(oneof($post->user->full_name, $post->user->login)).'</name>'."\r";
 
                     if (!empty($post->user->website))
                         $posts_atom.= '         <uri>'.fix($post->user->website).'</uri>'."\r";
@@ -954,7 +954,7 @@
                     $pages_atom.= '     <published>'.when("c", $page->created_at).'</published>'."\r";
                     $pages_atom.= '     <link href="'.fix($trigger->filter($url, "page_export_url", $page)).'" />'."\r";
                     $pages_atom.= '     <author chyrp:user_id="'.fix($page->user_id).'">'."\r";
-                    $pages_atom.= '         <name>'.fix(fallback($page->user->full_name, $page->user->login, true)).'</name>'."\r";
+                    $pages_atom.= '         <name>'.fix(oneof($page->user->full_name, $page->user->login)).'</name>'."\r";
 
                     if (!empty($page->user->website))
                         $pages_atom.= '         <uri>'.fix($page->user->website).'</uri>'."\r";
@@ -1949,8 +1949,8 @@
             $config = Config::current();
             $set = array($config->set("name", $_POST['name']),
                          $config->set("description", $_POST['description']),
-                         $config->set("chyrp_url", rtrim($_POST['chyrp_url'], '/')),
-                         $config->set("url", rtrim(fallback($_POST['url'], $_POST['chyrp_url'], true), '/')),
+                         $config->set("chyrp_url", rtrim($_POST['chyrp_url'], "/")),
+                         $config->set("url", rtrim(oneof($_POST['url'], $_POST['chyrp_url']), "/")),
                          $config->set("email", $_POST['email']),
                          $config->set("timezone", $_POST['timezone']),
                          $config->set("locale", $_POST['locale']));

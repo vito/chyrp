@@ -223,12 +223,12 @@
             if (trim($body) === '')
                 return new IXR_Error(500, __("Body can't be blank."));
 
-            $clean = sanitize(fallback($args[3]['mt_basename'], $args[3]['title'], true));
+            $clean = sanitize(oneof(@$args[3]['mt_basename'], $args[3]['title']));
             $url = Post::check_url($clean);
 
             $_POST['user_id'] = $user->id;
             $_POST['feather'] = XML_RPC_FEATHER;
-            $_POST['created_at'] = fallback($this->convertFromDateCreated($args[3]), datetime(), true);
+            $_POST['created_at'] = oneof($this->convertFromDateCreated($args[3]), datetime());
 
             if ($user->group->can('add_post'))
                 $_POST['status'] = ($args[4]) ? 'public' : 'draft';
@@ -302,8 +302,8 @@
                 null,
                 null,
                 $status,
-                sanitize(fallback($args[3]['mt_basename'], $args[3]['title'], true)),
-                fallback($this->convertFromDateCreated($args[3]), $post->created_at, true));
+                sanitize(oneof(@$args[3]['mt_basename'], $args[3]['title'])),
+                oneof($this->convertFromDateCreated($args[3]), $post->created_at));
 
             $trigger->call('metaWeblog_editPost', $args[3], $post);
 

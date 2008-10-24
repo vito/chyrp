@@ -34,7 +34,7 @@
                                 "body" => $_POST['body']));
         }
         public function title($post) {
-            return fallback($post->title, $post->title_from_excerpt(), true);
+            return oneof($post->title, $post->title_from_excerpt());
         }
         public function excerpt($post) {
             return $post->body;

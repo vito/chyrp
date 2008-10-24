@@ -705,27 +705,53 @@
 
     /**
      * Function: fallback
-     * Gracefully falls back a given variable if it's empty or not set.
+     * Sets a given variable if it is not set.
+     *
+     * The last of the arguments or the first non-empty value will be used.
      *
      * Parameters:
-     *     &$variable - The variable to check for.
-     *     $fallback - What to set if the variable is empty or not set.
-     *     $return - Whether to set it or to return.
+     *     &$variable - The variable to return or set.
      *
      * Returns:
-     *     $variable = $fallback - If $return is false and $variable is empty or not set.
-     *     $fallback - If $return is true and $variable is empty or not set.
+     *     The value of whatever was chosen.
      */
-    function fallback(&$variable, $fallback = null, $return = false) {
+    function fallback(&$variable) {
         if (is_bool($variable))
             return $variable;
 
-        $set = (!isset($variable) or empty($variable) or (is_string($variable) and trim($variable) == ""));
+        $set = (!isset($variable) or (is_string($variable) and trim($variable) === "") or $variable === array());
 
-        if (!$return and $set)
+        $args = func_get_args();
+        array_shift($args);
+        if (count($args) > 1) {
+            foreach ($args as $arg) {
+                $fallback = $arg;
+
+                if (isset($arg) and ((is_string($arg) and trim($arg) !== "") or $arg !== array()))
+                    continue;
+            }
+        } else
+            $fallback = isset($args[0]) ? $args[0] : null ;
+
+        if ($set)
             $variable = $fallback;
 
         return $set ? $fallback : $variable ;
+    }
+
+    /**
+     * Function: oneof
+     * Returns the first argument that is set and non-empty.
+     */
+    function oneof() {
+        $last = null;
+        foreach (func_get_args() as $arg)
+            if (!isset($arg) or (is_string($arg) and trim($arg) === "") or $arg === array())
+                $last = $arg;
+            else
+                return $arg;
+
+        return $last;
     }
 
     /**

@@ -125,6 +125,7 @@
             $config->set("description", $_POST['description']);
             $config->set("url", $url);
             $config->set("chyrp_url", $url);
+            $config->set("feed_url", "");
             $config->set("email", $_POST['email']);
             $config->set("locale", "en_US");
             $config->set("theme", "stardust");
@@ -570,7 +571,7 @@
                     <label for="timezone"><?php echo __("What time is it?"); ?></label>
                     <select name="timezone" id="timezone">
 <?php foreach (timezones() as $zone): ?>
-                        <option value="<?php echo $zone["name"]; ?>"<?php selected($zone["name"], fallback($_POST['timezone'], "Africa/Abidjan", true)); ?>>
+                        <option value="<?php echo $zone["name"]; ?>"<?php selected($zone["name"], oneof(@$_POST['timezone'], "Africa/Abidjan")); ?>>
                             <?php echo gmstrftime(__("%I:%M %p on %B %e, %Y"), $zone["now"]); ?>
                             (GMT<?php if ($zone["offset"] >= 0) echo "+"; ?><?php echo $zone["offset"]; ?>)
                         </option>

@@ -92,8 +92,7 @@
                                 "caption" => $_POST['caption']));
         }
         public function title($post) {
-            $caption = $post->title_from_excerpt();
-            return fallback($caption, $post->filename, true);
+            return oneof($post->title_from_excerpt(), $post->filename);
         }
         public function excerpt($post) {
             return $post->caption;
@@ -124,7 +123,7 @@
             $options[] = array("attr" => "option[alt_text]",
                                "label" => __("Alt-Text", "photo"),
                                "type" => "text",
-                               "value" => ($post ? fallback($post->alt_text, "", true) : ""));
+                               "value" => oneof(@$post->alt_text, ""));
 
             $options[] = array("attr" => "from_url",
                                "label" => __("From URL?", "photo"),

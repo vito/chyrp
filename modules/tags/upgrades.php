@@ -63,6 +63,34 @@
              test($sql->query("DROP TABLE __tags"));
     }
 
+    function move_to_yaml() {
+        $sql = SQL::current();
+        if (!$tags = $sql->select("post_attributes", array("name" => array("unclean_tags", "clean_tags"))))
+            return;
+
+        $dirty = array();
+        $clean = array();
+        foreach ($tags->fetchAll() as $tag) {
+            echo _f("Relocating tags for post #%d...", array($tag["post_id"]), "tags");
+            
+            $dirty = $sql->replace("post_attributes",
+                                   array("name" => "unclean_tags",
+                                         "value" => $tag["tags"],
+                                         "post_id" => $tag["post_id"]));
+            $clean = $sql->replace("post_attributes",
+                                   array("name" => "clean_tags",
+                                         "value" => $tag["clean"],
+                                         "post_id" => $tag["post_id"]));
+            echo test($dirty and $clean);
+
+            if (!$dirty or !$clean)
+                return;
+        }
+
+        echo __("Removing `tags` table...", "tags").
+             test($sql->query("DROP TABLE __tags"));
+    }
+
     update_tags_structure();
 
     move_to_post_attributes();

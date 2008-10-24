@@ -39,13 +39,13 @@
                                 "dialogue" => $_POST['dialogue']));
         }
         public function title($post) {
-            $dialogue = fallback($post->dialogue_unformatted, $post->dialogue);
+            $dialogue = oneof($post->dialogue_unformatted, $post->dialogue);
 
             $dialogue = explode("\n", $dialogue);
             $line = preg_replace("/[ ]?[\[|\(]?[0-9]{1,2}:[0-9]{2}(:[0-9]{2})?[ ]?(pm|am)?[\]|\)]?[ ]?/i", "", $dialogue[0]);
             $first_line = preg_replace("/([<]?)([^:|>]+)( \(me\)?)(:|>) (.+)/i", "\\1\\2\\4 \\5", $dialogue[0]);
 
-            return fallback($post->title, $first_line, true);
+            return oneof($post->title, $first_line);
         }
         public function excerpt($post) {
             return $post->dialogue;

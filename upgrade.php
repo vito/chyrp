@@ -193,7 +193,7 @@
                                                                         "",
                                                                         file_get_contents(database_file())));
         else
-            Config::$yaml["database"] = fallback(Config::$yaml["config"]["sql"], array(), true);
+            Config::$yaml["database"] = oneof(@Config::$yaml["config"]["sql"], array());
     } else {
         # $config and $sql here are loaded from the eval()'s above.
 

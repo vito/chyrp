@@ -55,9 +55,9 @@
                 $controller->parse($this);
 
             $this->try[] = isset($this->action) ?
-                               fallback($this->action, "index", true) :
+                               oneof($this->action, "index") :
                                (!substr_count($this->arg[0], "?") ?
-                                   fallback($this->arg[0], "index", true) :
+                                   oneof(@$this->arg[0], "index") :
                                    "index") ;
         }
 

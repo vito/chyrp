@@ -392,7 +392,7 @@ function twig_offset_filter($array, $offset = 0) {
 }
 
 function twig_fallback_filter($try, $fallback) {
-    return fallback($try, $fallback, true);
+    return oneof($try, $fallback);
 }
 
 function twig_selected_filter($foo) {

@@ -55,7 +55,7 @@
                         array_unshift($items, $item);
 
                 foreach ($items as $item) {
-                    $date = fallback($item->pubDate, fallback($item->date, fallback($item->published, 0, true), true), true);
+                    $date = oneof(@$item->pubDate, @$item->date, @$item->published, 0);
 
                     if (strtotime($date) > $feed["last_updated"]) {
                         $data = array("aggregate" => $name);

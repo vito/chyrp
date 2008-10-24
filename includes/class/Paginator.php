@@ -70,7 +70,7 @@
                 list($this->array, $model_name) = $this->array;
 
             $this->total = count($this->array);
-            $this->page = fallback($page, fallback($_GET[$name], 1, true), true);
+            $this->page = oneof($page, @$_GET[$name], 1);
             $this->pages = ceil($this->total / $this->per_page);
 
             $offset = ($this->page - 1) * $this->per_page;

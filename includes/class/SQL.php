@@ -44,7 +44,7 @@
                 error(__("Error"), __("Database configuration is not set. Please run the upgrader."));
 
             $database = !UPGRADING ?
-                            fallback(Config::current()->sql, array(), true) :
+                            oneof(Config::current()->sql, array()) :
                             Config::get("sql") ;
 
             if (is_array($settings))
