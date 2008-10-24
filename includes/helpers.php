@@ -752,8 +752,11 @@
             else
                 return $arg;
 
+            if ($index + 1 == count($args))
+                break;
+
             $next = $args[$index + 1];
-            if ($index + 1 <= count($args) and $arg !== null and $next !== null and gettype($arg) !== gettype($next))
+            if ($arg !== null and $next !== null and gettype($arg) !== gettype($next))
                 return $arg;
         }
 
