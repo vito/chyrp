@@ -722,12 +722,14 @@
                                              updated_at DATETIME DEFAULT '0000-00-00 00:00:00'
                                          ) DEFAULT CHARSET=utf8"));
 
-        if (!$create)
+        if (!$create) {
+            echo " -".test(false, _f("Backup written to %s.", array("./_posts.bak.txt")));
             return file_put_contents("./_posts.bak.txt", var_export($backups, true));
+        }
 
         foreach ($backups as $backup) {
             echo " - "._f("Restoring post #%d...", array($backup["id"])).
-                 test($insert = $sql->insert("posts", $backup));
+                 test($insert = $sql->insert("posts", $backup), _f("Backup written to %s.", array("./_posts.bak.txt")));
 
             if (!$insert)
                 return file_put_contents("./_posts.bak.txt", var_export($backups, true));
