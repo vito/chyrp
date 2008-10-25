@@ -517,7 +517,7 @@
 
             if (empty($_POST['email']))
                 error(__("Error"), __("E-mail address cannot be blank."));
-            elseif (!preg_match("/^[[:alnum:]][a-z0-9_.-\+]*@[a-z0-9.-]+\.[a-z]{2,6}$/i", $_POST['email']))
+            elseif (!preg_match("/^[_A-z0-9-]+((\.|\+)[_A-z0-9-]+)*@[A-z0-9-]+(\.[A-z0-9-]+)*(\.[A-z]{2,4})$/", $_POST['email']))
                 error(__("Error"), __("Unsupported e-mail address."));
 
             User::add($_POST['login'],

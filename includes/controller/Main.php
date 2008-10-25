@@ -470,7 +470,7 @@
 
                 if (empty($_POST['email']))
                     Flash::warning(__("E-mail address cannot be blank."));
-                elseif (!preg_match("/^[[:alnum:]][a-z0-9_.\-\+]*@[a-z0-9.-]+\.[a-z]{2,6}$/i", $_POST['email']))
+                elseif (!preg_match("/^[_A-z0-9-]+((\.|\+)[_A-z0-9-]+)*@[A-z0-9-]+(\.[A-z0-9-]+)*(\.[A-z]{2,4})$/", $_POST['email']))
                     Flash::warning(__("Unsupported e-mail address."));
 
                 if (!Flash::exists("warning")) {
