@@ -341,11 +341,11 @@
 
             $sql = SQL::current();
 
-            $tags = explode(" ", $_GET['name']);
+            $tags = explode(",", $_GET['name']);
 
             $likes = array();
             foreach ($tags as $name)
-                $likes[] = "%: ".$name."\n%";
+                $likes[] = "%\n".$name.": %";
 
             $attributes = $sql->select("post_attributes",
                                        array("value", "post_id"),
@@ -354,9 +354,10 @@
 
             $ids = array();
             foreach ($attributes->fetchAll() as $index => $row) {
-                if (!$index)
-                    foreach ($tags as &$tag)
-                        $tag = array_search($tag, YAML::load($row["value"]));
+                foreach ($tags as &$tag) {
+                    $search = array_search($tag, YAML::load($row["value"]));
+                    $tag = ($search) ? $search : $tag;
+                }
 
                 $ids[] = $row["post_id"];
             }
