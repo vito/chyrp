@@ -792,7 +792,7 @@
         $last = null;
         $args = func_get_args();
         foreach ($args as $index => $arg) {
-            if (!isset($arg) or (is_string($arg) and trim($arg) === "") or $arg === array())
+            if (!isset($arg) or (is_string($arg) and trim($arg) === "") or $arg === array() or (is_object($arg) and empty($arg)))
                 $last = $arg;
             else
                 return $arg;
@@ -809,7 +809,7 @@
                              (is_resource($arg) and !is_resource($next)) or
                              (!is_resource($arg) and is_resource($next)));
 
-            if ($arg !== null and $next !== null and $incomparable)
+            if (isset($arg) and isset($next) and $incomparable)
                 return $arg;
         }
 

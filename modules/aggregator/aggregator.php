@@ -30,6 +30,10 @@
                 return;
 
             $aggregates = $config->aggregates;
+
+            if (empty($aggregates))
+                return;
+
             foreach ((array) $config->aggregates as $name => $feed) {
                 $xml_contents = preg_replace(array("/<(\/?)dc:date>/", "/xmlns=/"),
                                              array("<\\1date>", "a="),
@@ -68,6 +72,7 @@
                     }
                 }
             }
+
             $config->set("aggregates", $aggregates);
             $config->set("last_aggregation", time());
         }

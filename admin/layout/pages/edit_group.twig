@@ -3,6 +3,7 @@
 {% block title %}${ "Edit Group &#8220;%s&#8221;" | translate | format(group.name | escape) }{% endblock %}
 
 {% block content %}
+            ${ group.delete_link('<img src="images/icons/delete.png" alt="delete" />'~ ("Delete" | translate), null, null, "button boo right") }
             <h1>${ "Editing Group &#8220;%s&#8221;" | translate | format(group.name | escape) }</h1>
             <form id="group_edit" class="split{% if group.id == visitor.group.id %} confirm{% endif %}" action="{% admin "update_group" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
                 <fieldset>
@@ -25,7 +26,6 @@
                     <br />
 
                     <p>
-                        <label for="done"></label>
                         <button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Update" | translate }</button>
                     </p>
 

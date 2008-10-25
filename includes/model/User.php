@@ -191,40 +191,4 @@
 
             return Page::find(array("where" => array("user_id" => $this->id)));
         }
-
-        /**
-         * Function: edit_link
-         * Outputs an edit link for the user, if they can edit_user.
-         *
-         * Parameters:
-         *     $text - The text to show for the link.
-         *     $before - If the link can be shown, show this before it.
-         *     $after - If the link can be shown, show this after it.
-         */
-        public function edit_link($text = null, $before = null, $after = null) {
-            if ($this->no_results or !Visitor::current()->group->can("edit_user"))
-                return false;
-
-            fallback($text, __("Edit"));
-
-            echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=edit_user&amp;id='.$this->id.'" title="Edit" class="user_edit_link edit_link" id="user_edit_'.$this->id.'">'.$text.'</a>'.$after;
-        }
-
-        /**
-         * Function: delete_link
-         * Outputs an delete link for the user, if they can delete_user.
-         *
-         * Parameters:
-         *     $text - The text to show for the link.
-         *     $before - If the link can be shown, show this before it.
-         *     $after - If the link can be shown, show this after it.
-         */
-        public function delete_link($text = null, $before = null, $after = null) {
-            if ($this->no_results or !Visitor::current()->group->can("delete_user"))
-                return false;
-
-            fallback($text, __("Delete"));
-
-            echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=delete_user&amp;id='.$this->id.'" title="Delete" class="user_delete_link delete_link" id="user_delete_'.$this->id.'">'.$text.'</a>'.$after;
-        }
     }

@@ -3,6 +3,7 @@
 {% block title %}${ "Edit User &#8220;%s&#8221;" | translate | format(user.login | escape) }{% endblock %}
 
 {% block content %}
+            ${ user.delete_link('<img src="images/icons/delete.png" alt="delete" />'~ ("Delete" | translate), null, null, "button boo right") }
             <h1>${ "Editing User &#8220;%s&#8221;" | translate | format(user.login | escape) }</h1>
             <form id="user_edit" class="split" action="{% admin "update_user" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
                 <fieldset>
@@ -46,7 +47,6 @@
                     <br />
 
                     <p>
-                        <label for="done"></label>
                         <button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Update" | translate }</button>
                     </p>
 

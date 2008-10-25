@@ -220,14 +220,14 @@
             SQL::current()->delete("comments", array("id" => $comment_id));
         }
 
-        public function editable() {
-            $visitor = Visitor::current();
-            return ($visitor->group->can("edit_comment") or ($visitor->group->can("edit_own_comment") and $visitor->id == $this->user_id));
+        public function editable($user = null) {
+            fallback($user, Visitor::current());
+            return ($user->group->can("edit_comment") or ($user->group->can("edit_own_comment") and $user->id == $this->user_id));
         }
 
-        public function deletable() {
-            $visitor = Visitor::current();
-            return ($visitor->group->can("delete_comment") or ($visitor->group->can("delete_own_comment") and $visitor->id == $this->user_id));
+        public function deletable($user = null) {
+            fallback($user, Visitor::current());
+            return ($user->group->can("delete_comment") or ($user->group->can("delete_own_comment") and $user->id == $this->user_id));
         }
 
         /**
@@ -266,22 +266,6 @@
                 return true;
 
             return false;
-        }
-
-        public function edit_link($text = null, $before = null, $after = null) {
-            $visitor = Visitor::current();
-            if (!$this->editable()) return;
-            fallback($text, __("Edit"));
-            $config = Config::current();
-            echo $before.'<a href="'.$config->chyrp_url.'/admin/?action=edit_comment&amp;id='.$this->id.'" title="Edit" class="comment_edit_link edit_link" id="comment_edit_'.$this->id.'">'.$text.'</a>'.$after;
-        }
-
-        public function delete_link($text = null, $before = null, $after = null) {
-            $visitor = Visitor::current();
-            if (!$this->deletable()) return;
-            fallback($text, __("Delete"));
-            $config = Config::current();
-            echo $before.'<a href="'.$config->chyrp_url.'/admin/?action=delete_comment&amp;id='.$this->id.'" title="Delete" class="comment_delete_link delete_link" id="comment_delete_'.$this->id.'">'.$text.'</a>'.$after;
         }
 
         public function author_link() {

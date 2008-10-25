@@ -302,4 +302,70 @@
 
             SQL::current()->delete(pluralize($model), array("id" => $id));
         }
+
+        /**
+         * Function: deletable
+         * Checks if the <User> can delete the post.
+         */
+        public function deletable($user = null) {
+            if ($this->no_results)
+                return false;
+
+            $name = strtolower(get_class($this));
+
+            fallback($user, Visitor::current());
+            return $user->group->can("delete_".$name);
+        }
+
+        /**
+         * Function: editable
+         * Checks if the <User> can edit the post.
+         */
+        public function editable($user = null) {
+            if ($this->no_results)
+                return false;
+
+            $name = strtolower(get_class($this));
+
+            fallback($user, Visitor::current());
+            return $user->group->can("edit_".$name);
+        }
+
+        /**
+         * Function: edit_link
+         * Outputs an edit link for the model, if the visitor's <Group.can> edit_[model].
+         *
+         * Parameters:
+         *     $text - The text to show for the link.
+         *     $before - If the link can be shown, show this before it.
+         *     $after - If the link can be shown, show this after it.
+         */
+        public function edit_link($text = null, $before = null, $after = null, $classes = "") {
+            if (!$this->editable())
+                return false;
+
+            fallback($text, __("Edit"));
+
+            $name = strtolower(get_class($this));
+            echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=edit_'.$name.'&amp;id='.$this->id.'" title="Edit" class="'.($classes ? $classes." " : '').$name.'_edit_link edit_link" id="'.$name.'_edit_'.$this->id.'">'.$text.'</a>'.$after;
+        }
+
+        /**
+         * Function: delete_link
+         * Outputs a delete link for the post, if the <User.can> delete_[model].
+         *
+         * Parameters:
+         *     $text - The text to show for the link.
+         *     $before - If the link can be shown, show this before it.
+         *     $after - If the link can be shown, show this after it.
+         */
+        public function delete_link($text = null, $before = null, $after = null, $classes = "") {
+            if (!$this->deletable())
+                return false;
+
+            fallback($text, __("Delete"));
+
+            $name = strtolower(get_class($this));
+            echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=delete_'.$name.'&amp;id='.$this->id.'" title="Delete" class="'.($classes ? $classes." " : '').$name.'_delete_link delete_link" id="'.$name.'_delete_'.$this->id.'">'.$text.'</a>'.$after;
+        }
     }

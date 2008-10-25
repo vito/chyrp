@@ -3,8 +3,9 @@
 {% block title %}${ "Edit Aggregate" | translate("aggregator") }{% endblock %}
 
 {% block content %}
+            <a href="{% admin "delete_aggregate&id=" ~ (aggregate.name | urlencode) %}" class="button boo right"><img src="images/icons/delete.png" alt="delete" />${ "Delete" | translate }</a>
             <h1>${ "Edit Aggregate" | translate("aggregator") }</h1>
-            <form id="edit_aggregate" class="split" action="{% admin "edit_aggregate&id=" ~ (GET.id | urlencode) %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+            <form id="edit_aggregate" class="split" action="{% admin "edit_aggregate&id=" ~ (aggregate.name | urlencode) %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
                 <fieldset>
                     <p>
                         <label for="full_name">${ "Name" | translate("aggregator") }</label>
@@ -43,7 +44,6 @@
                     <br />
 
                     <p>
-                        <label for="done"></label>
                         <button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Update" | translate }</button>
                     </p>
 
