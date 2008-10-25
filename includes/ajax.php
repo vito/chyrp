@@ -105,10 +105,10 @@
 
         case "organize_pages":
             foreach ($_POST['parent'] as $id => $parent)
-                $sql->update("pages", array("id" => $parent), array("parent_id" => $parent));
+                $sql->update("pages", array("id" => $id), array("parent_id" => $parent));
 
             foreach ($_POST['page_list'] as $index => $page)
-                $sql->update("pages", array("id" => str_replace("page_list_", "", $page)), array("list_order" => $index));
+                $sql->update("pages", array("id" => $page), array("list_order" => $index));
 
             break;
 
