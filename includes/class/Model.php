@@ -39,12 +39,11 @@
                     $this->$name = $filtered;
 
                 $this->belongs_to = (array) $this->belongs_to;
-                $this->has_many = (array) $this->has_many;
-                $this->has_one = (array) $this->has_one;
+                $this->has_many   = (array) $this->has_many;
+                $this->has_one    = (array) $this->has_one;
                 if (in_array($name, $this->belongs_to) or isset($this->belongs_to[$name])) {
-                    $id = $name."_id";
                     $class = (isset($this->belongs_to[$name])) ? $this->belongs_to[$name] : $name ;
-                    return $this->$name = new $class($this->$id);
+                    return $this->$name = new $class($this->{$name."_id"});
                 } elseif (in_array($name, $this->has_many) or isset($this->has_many[$name])) {
                     if (isset($this->has_many[$name]))
                         list($class, $by) = $this->has_many[$name];
@@ -64,7 +63,7 @@
         public function __getPlaceholders($name) {
             $this->__placeholders = true;
             $return = $this->__get($name);
-            $this->__placeholders = false;
+            unset($this->__placeholders);
             return $return;
         }
 

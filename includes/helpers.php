@@ -756,7 +756,15 @@
                 break;
 
             $next = $args[$index + 1];
-            if ($arg !== null and $next !== null and gettype($arg) !== gettype($next))
+
+            $incomparable = ((is_array($arg) and !is_array($next)) or        # This is a big check but it should cover most "incomparable" cases.
+                             (!is_array($arg) and is_array($next)) or        # Using simple type comparison wouldn't work too well, for example
+                             (is_object($arg) and !is_object($next)) or      # when "" would take priority over 1 in oneof("", 1) because they're
+                             (!is_object($arg) and is_object($next)) or      # different types.
+                             (is_resource($arg) and !is_resource($next)) or
+                             (!is_resource($arg) and is_resource($next)));
+
+            if ($arg !== null and $next !== null and $incomparable)
                 return $arg;
         }
 
@@ -776,12 +784,12 @@
         if ($specialchars)
             $pattern.= "!@#$%^&*()?~";
 
-        $len = ($specialchars) ? 47 : 35 ;
+        $len = strlen($pattern) - 1;
 
-        $key = $pattern{rand(0, $len)};
-        for($i = 1; $i < $length; $i++) {
-            $key.= $pattern{rand(0, $len)};
-        }
+        $key = "";
+        for($i = 0; $i < $length; $i++)
+            $key.= $pattern[rand(0, $len)];
+
         return $key;
     }
 
