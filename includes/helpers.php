@@ -1455,3 +1455,15 @@
 
         return (count($array) == 2) ? implode(" ", $items) : implode(", ", $items) ;
     }
+
+    /**
+     * Function: email
+     * Send an email. Function arguments are exactly the same as the PHP mail() function.
+     *
+     * This is intended so that modules can provide an email method if the server cannot use mail().
+     */
+    function email() {
+        $function = "mail";
+        Trigger::current()->filter($function, "send_mail");
+        return call_user_func_array($function, func_get_args());
+    }

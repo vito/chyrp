@@ -584,7 +584,7 @@
                               $user->website,
                               $user->group_id);
 
-                $sent = @mail($user->email,
+                $sent = email($user->email,
                               __("Lost Password Request"),
                               _f("%s,\n\nWe have received a request for a new password for your account at %s.\n\nPlease log in with the following password, and feel free to change it once you've successfully logged in:\n\t%s",
                                  array($user->login, $config->name, $new_password)));
