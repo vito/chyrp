@@ -30,9 +30,9 @@
 
             foreach (array_reverse($tags) as $tag) {
                 $selected = ($post and isset($post->tags[$tag["name"]])) ?
-                                ' tag_added' :
+                                ' class="tag_added"' :
                                 "" ;
-                $selector.= "\t\t\t\t\t\t\t\t".'<a href="javascript:add_tag(\''.addslashes($tag["name"]).'\', \'.tag_'.addslashes($tag["url"]).'\')" class="tag_'.$tag["url"].$selected.'">'.$tag["name"].'</a>'."\n";
+                $selector.= "\t\t\t\t\t\t\t\t".'<a href="javascript:add_tag(\''.addslashes($tag["name"]).'\')"'.$selected.'>'.$tag["name"].'</a>'."\n";
             }
 
             $selector.= "\t\t\t\t\t\t\t</span>";
@@ -296,7 +296,8 @@
                     $sql->delete("post_attributes", array("name" => "tags", "post_id" => $tag["post_id"]));
                 else
                     $sql->update("post_attributes",
-                                 array("post_id" => $tag["post_id"]),
+                                 array("name" => "tags",
+                                       "post_id" => $tag["post_id"]),
                                  array("value" => YAML::dump($tags)));
             }
 
@@ -594,7 +595,7 @@
         }
 
         public function cloudSelectorJS() {
-?><!-- --><script>
+?>//<script>
             $(function(){
                 function scanTags(){
                     $(".tags_select a").each(function(){
@@ -617,7 +618,7 @@
                 })
             })
 
-            function add_tag(name, link) {
+            function add_tag(name) {
                 if ($("#tags").val().match("(, |^)"+ name +"(, |$)")) {
                     regexp = new RegExp("(, |^)"+ name +"(, |$)", "g")
                     $("#tags").val($("#tags").val().replace(regexp, function(match, before, after){
@@ -627,16 +628,22 @@
                             return ""
                     }))
 
-                    $(link).removeClass("tag_added")
+                    $(".tags_select a").each(function(){
+                        if ($(this).text() == name)
+                            $(this).removeClass("tag_added")
+                    })
                 } else {
                     if ($("#tags").val() == "")
                         $("#tags").val(name)
                     else
                         $("#tags").val($("#tags").val().replace(/(, ?)?$/, ", "+ name))
 
-                    $(link).addClass("tag_added")
+                    $(".tags_select a").each(function(){
+                        if ($(this).text() == name)
+                            $(this).addClass("tag_added")
+                    })
                 }
             }
-<!-- --></script><?php
+<?php
         }
     }
