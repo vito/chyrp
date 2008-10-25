@@ -571,9 +571,10 @@
             $popularity = array_count_values($names);
 
             $list = array();
-            foreach ($popularity as $name => $popularity)
+            foreach ($popularity as $name => $number)
                 $list[$name] = array("name" => $name,
-                                     "popularity" => $popularity,
+                                     "popularity" => $number,
+                                     "percentage" => $number / array_sum($popularity),
                                      "url" => urlencode($tags[$name]),
                                      "clean" => $tags[$name]);
 

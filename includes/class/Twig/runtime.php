@@ -44,6 +44,7 @@ $twig_filters = array(
     'truncate' =>         'twig_truncate_filter',
     'replace' =>          'twig_replace_filter',
     'match' =>            'twig_match_filter',
+    'contains' =>         'substr_count',
     'linebreaks' =>       'nl2br',
     'camelize' =>         'camelize',
     'strip_tags' =>       'strip_tags',
