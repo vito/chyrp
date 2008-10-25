@@ -111,7 +111,7 @@
         public function image_tag_for($post, $max_width = 500, $max_height = null, $more_args = "quality=100") {
             $filename = $post->filename;
             $config = Config::current();
-            $source = !empty($post->source) ? $post->source : $config->chyrp_url.$config->uploads_path.$filename ;
+            $source = !empty($post->source) ? $post->source : uploaded($filename) ;
             $alt = !empty($post->alt_text) ? $post->alt_text : $filename ;
             return '<a href="'.$source.'"><img src="'.$config->chyrp_url.'/includes/thumb.php?file=..'.$config->uploads_path.urlencode($filename).'&amp;max_width='.$max_width.'&amp;max_height='.$max_height.'&amp;'.$more_args.'" alt="'.$alt.'" /></a>';
         }

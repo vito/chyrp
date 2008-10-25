@@ -958,6 +958,18 @@
     }
 
     /**
+     * Function: uploaded
+     * Returns a URL to an uploaded file.
+     *
+     * Parameters:
+     *     $file - Filename relative to the uploads directory.
+     */
+    function uploaded($file) {
+        $config = Config::current();
+        return $config->chyrp_url.$config->uploads_path.$file;
+    }
+
+    /**
      * Function: timer_start
      * Starts the timer.
      */

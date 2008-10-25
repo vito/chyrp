@@ -51,11 +51,11 @@
                         list($class, $by) = array(depluralize($name), $model_name);
 
                     return $this->$name = call_user_func(array($class, "find"),
-                                                         array("where" => array($by."_id" => $this->id),
+                                                         array("where" => array(strtolower($by)."_id" => $this->id),
                                                                "placeholders" => $placeholders));
                 } elseif (in_array($name, $this->has_one)) {
                     $class = depluralize($name);
-                    return $this->$name = new $class(null, array("where" => array($model_name."_id" => $this->id)));
+                    return $this->$name = new $class(null, array("where" => array(strtolower($model_name)."_id" => $this->id)));
                 }
             }
         }
