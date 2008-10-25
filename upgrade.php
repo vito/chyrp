@@ -414,6 +414,8 @@
             if (!substr_count($post->xml, "<![CDATA["))
                 continue;
 
+            $post->xml = str_replace("<![CDATA[]]>", "", $post->xml);
+
             $xml = simplexml_load_string($post->xml, "SimpleXMLElement", LIBXML_NOCDATA);
 
             $parse = xml2arr($xml);
