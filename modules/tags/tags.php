@@ -66,9 +66,9 @@
                         }
 
                         break;
-                    } elseif (preg_match_all("/(\s|^)#([^ ]+)(?!#)/", $paragraph, $single)) {
+                    } elseif (preg_match_all("/(\s|^)#([^ .,]+)(?!#)/", $paragraph, $single)) {
                         $tags = array_merge($single[2], $tags);
-                        $paragraph = preg_replace("/(\s|^)#([^ ]+)(?!#)/", "\\1\\2", $paragraph);
+                        $paragraph = preg_replace("/(\s|^)#([^ .,]+)(?!#)/", "\\1\\2", $paragraph);
                     }
 
                 $value = str_replace("\\#", "#", implode("\r\n", $paragraphs));
@@ -267,7 +267,7 @@
             foreach($sql->select("post_attributes",
                                  "*",
                                  array("name" => "tags",
-                                       "value like" => "%: ".$_POST['original']."\n%"))->fetchAll() as $tag) { # TODO: Is this the correct search method?
+                                       "value like" => "%\n".$_POST['original'].": %"))->fetchAll() as $tag) { # TODO: Is this the correct search method?
                 $tags = YAML::load($tag["value"]);
                 unset($tags[$_POST['original']]);
 
