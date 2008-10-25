@@ -49,7 +49,7 @@
             <uri><?php echo fix($post->user->website); ?></uri>
 <?php endif; ?>
         </author>
-        <content type="html"><?php echo fix($post->feed_content(), false); ?></content>
+        <content type="html"><?php echo fix($post->feed_content()); ?></content>
 <?php $trigger->call("feed_item", $post); ?>
     </entry>
 <?php

@@ -66,7 +66,10 @@
                         foreach ($feed["data"] as $attr => $field)
                             $data[$attr] = (!empty($field)) ? $this->parse_field($field, $item) : "" ;
 
-                        Post::add($data, null, null, $feed["feather"], $feed["author"]);
+                        if (isset($data["title"]) or isset($data["name"]))
+                            $clean = sanitize(oneof(@$data["title"], @$data["name"]));
+
+                        Post::add($data, $clean, null, $feed["feather"], $feed["author"]);
 
                         $aggregates[$name]["last_updated"] = strtotime($date);
                     }

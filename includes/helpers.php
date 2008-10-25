@@ -417,7 +417,7 @@
      */
     function fix($string, $quotes = false) {
         $quotes = ($quotes) ? ENT_QUOTES : ENT_NOQUOTES ;
-        return htmlentities($string, $quotes, "utf-8");
+        return htmlspecialchars($string, $quotes, "utf-8");
     }
 
     /**

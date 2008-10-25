@@ -200,6 +200,9 @@
             fallback($trackbacks, oneof(@$_POST['trackbacks'], ""));
             fallback($options,    oneof(@$_POST['option'], array()));
 
+            if (isset($clean) and !isset($url))
+                $url = self::check_url($clean);
+
             if (isset($_POST['bookmarklet'])) {
                 $trigger->filter($values, "bookmarklet_submit_values");
                 $trigger->filter($options, "bookmarklet_submit_options");
