@@ -106,7 +106,7 @@
                 }
             }
 
-            $context[1] = truncate($context[1], 100, false);
+            $context[1] = truncate($context[1], 100, "...", true);
 
             $excerpt = strip_tags(str_replace($context[0], $context[1], $content));
 

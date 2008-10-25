@@ -41,7 +41,7 @@ $twig_filters = array(
     'translate' =>        'twig_translate_string_filter',
     'translate_plural' => 'twig_translate_plural_string_filter',
     'normalize' =>        'normalize',
-    'truncate' =>         'truncate',
+    'truncate' =>         'twig_truncate_filter',
     'replace' =>          'twig_replace_filter',
     'match' =>            'twig_match_filter',
     'linebreaks' =>       'nl2br',
@@ -459,4 +459,8 @@ function twig_escape_filter($string, $quotes = true, $decode = true) {
         $string = html_entity_decode($string, ENT_QUOTES, "utf-8");
 
     return fix($string, $quotes);
+}
+
+function twig_truncate_filter($text, $length = 100, $ending = "...", $exact = false, $html = true) {
+    return truncate($text, $length, $ending, $exact, $html);
 }

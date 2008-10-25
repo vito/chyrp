@@ -75,7 +75,7 @@
 {% endif %}
                         </tr>
                         <tr class="excerpt">
-                            <td colspan="6">${ comment.body_unfiltered | truncate(100) | markup_comment_text }</td>
+                            <td colspan="6">${ comment.body | truncate(100) }</td>
                         </tr>
                     {% else %}
                         <tr class="last">
