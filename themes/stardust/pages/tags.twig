@@ -4,11 +4,18 @@
         {% for tag in tag_cloud %}
         {% if loop.first %}
         <h1>${ "Tag Maelstrom" | translate }</h1>
-        ${ "To view posts that have tag combinations, separate the tags with \"+\" in the URL, or view one and click the plus signs next to the tags in the sidebar." | translate }
-        <br />
         <br />
         {% endif %}
         <a class="tag" href="$tag.url" style="font-size: $tag.size%" title="$tag.title">$tag.name</a>
+        {% if loop.last %}
+        <br />
+        <br />
+        <br />
+        ${ "To view posts that have tag combinations, separate the tags with \"+\" in the URL (see example below), or view one and click the plus signs next to the tags in the sidebar." | translate }
+        <br />
+        <br />
+        <pre><code>{% url "tag/tag-1+tag-2" %}</code></pre>
+        {% endif %}
         {% else %}
         <h1>${ "No Tags" | translate }</h1>
         ${ "There aren't any tags yet. Such a shame." | translate }

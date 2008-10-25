@@ -27,6 +27,14 @@ pre {
 code {
     font-family: monospace;
 }
+pre code {
+    display: block;
+    background: #111;
+    color: #fff;
+    padding: .5em .75em .35em;
+    margin-bottom: 1em;
+}
+
 em {
     font-style: italic;
 }
