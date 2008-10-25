@@ -54,18 +54,27 @@
 
         public function bookmarklet_submit_values(&$values) {
             $tags = array();
-            foreach ($values as &$value) {
-                if (preg_match_all("/(\s|^)#([a-zA-Z0-9 ]+)(?!\\\\)#/", $value, $double)) {
-                    $tags = array_merge($double[2], $tags);
-                    $value = preg_replace("/(\s|^)#([a-zA-Z0-9 ]+)(?!\\\\)#/", "\\1", $value);
-                }
-                if (preg_match_all("/(\s|^)#([a-zA-Z0-9]+)(?!#)/", $value, $single)) {
-                    $tags = array_merge($single[2], $tags);
-                    $value = preg_replace("/(\s|^)#([a-zA-Z0-9]+)(?!#)/", "\\1\\2", $value);
-                }
-                $_POST['tags'] = implode(", ", $tags);
-                $value = str_replace("\\#", "#", $value);
+            foreach ($values as $key =>&$value) {
+                $paragraphs = preg_split("/([\r\n]{2,4})/", $value);
+
+                foreach ($paragraphs as $index => &$paragraph)
+                    # Look for #spaced tags# that get removed only in the last paragraph.
+                    if ($index + 1 == count($paragraphs) and trim(preg_replace("/(\s|^)#([^#]+)(?!\\\\)#/", "\\1", $paragraph)) == "") {
+                        if (preg_match_all("/(\s|^)#([^#]+)(?!\\\\)#/", $paragraph, $double)) { # Look for normal tags.
+                            $tags = array_merge($double[2], $tags);
+                            $paragraph = preg_replace("/(\s|^)#([^#]+)(?!\\\\)#/", "\\1", $paragraph);
+                        }
+
+                        break;
+                    } elseif (preg_match_all("/(\s|^)#([^ ]+)(?!#)/", $paragraph, $single)) {
+                        $tags = array_merge($single[2], $tags);
+                        $paragraph = preg_replace("/(\s|^)#([^ ]+)(?!#)/", "\\1\\2", $paragraph);
+                    }
+
+                $value = str_replace("\\#", "#", implode("\r\n", $paragraphs));
             }
+
+            $_POST['tags'] = implode(", ", $tags);
         }
 
         public function add_post($post) {
