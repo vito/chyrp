@@ -341,11 +341,11 @@
 
             $sql = SQL::current();
 
-            $tags = explode(",", $_GET['name']);
+            $tags = explode(" ", $_GET['name']);
 
             $likes = array();
             foreach ($tags as $name)
-                $likes[] = "%\n".$name.": %";
+                $likes[] = "%: ".$name."\n%";
 
             $attributes = $sql->select("post_attributes",
                                        array("value", "post_id"),
