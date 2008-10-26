@@ -27,16 +27,21 @@
                          $this->user->group :
                          new Group(Config::current()->guest_group) ;
 
-            if (isset($options["filter"]) and !$options["filter"])
-                return;
+            $this->filtered = !isset($options["filter"]) or $options["filter"];
 
-            if (($this->status != "pingback" and !$this->status != "trackback") and !$group->can("code_in_comments"))
-                $this->body = strip_tags($this->body, "<".join("><", Config::current()->allowed_comment_html).">");
+            $trigger = Trigger::current();
 
-            $this->body_unfiltered = $this->body;
-            Trigger::current()->filter($this->body, "markup_comment_text");
+            if ($this->filtered) {
+                if (($this->status != "pingback" and !$this->status != "trackback") and !$group->can("code_in_comments"))
+                    $this->body = strip_tags($this->body, "<".join("><", Config::current()->allowed_comment_html).">");
 
-            Trigger::current()->filter($this, "filter_comment");
+                $this->body_unfiltered = $this->body;
+
+                $trigger->filter($this->body, array("markup_text", "markup_comment_text"));
+                $trigger->filter($this, "filter_comment");
+            }
+
+            $trigger->filter($this, "comment");
         }
 
         /**

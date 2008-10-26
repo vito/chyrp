@@ -19,7 +19,7 @@
                                   "preview" => true,
                                   "bookmarklet" => "selection"));
 
-            $this->setFilter("description", "markup_post_text");
+            $this->setFilter("description", array("markup_text", "markup_post_text"));
 
             $this->respondTo("delete_post", "delete_file");
             $this->respondTo("javascript", "player_js");

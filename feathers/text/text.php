@@ -12,8 +12,8 @@
                                   "preview" => true,
                                   "bookmarklet" => "selection"));
 
-            $this->setFilter("body", "markup_post_text");
-            $this->setFilter("title", "markup_post_title");
+            $this->setFilter("title", array("markup_title", "markup_post_title"));
+            $this->setFilter("body", array("markup_text", "markup_post_text"));
         }
 
         public function submit() {

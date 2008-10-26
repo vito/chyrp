@@ -15,8 +15,8 @@
                                   "preview" => true,
                                   "bookmarklet" => "page_title"));
 
-            $this->setFilter("quote", "markup_post_text");
-            $this->setFilter("source", "markup_post_text");
+            $this->setFilter("quote", array("markup_text", "markup_post_text"));
+            $this->setFilter("source", array("markup_text", "markup_post_text"));
         }
 
         public function submit() {

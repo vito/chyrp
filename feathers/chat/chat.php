@@ -14,8 +14,8 @@
 
             $this->customFilter("dialogue", "format_dialogue");
 
-            $this->setFilter("dialogue", "markup_post_text");
-            $this->setFilter("title", "markup_post_title");
+            $this->setFilter("title", array("markup_title", "markup_post_title"));
+            $this->setFilter("dialogue", array("markup_text", "markup_post_text"));
 
             $this->respondTo("preview_chat", "format_dialogue");
             $this->respondTo("help_chat_dialogue", "help");

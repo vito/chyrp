@@ -19,7 +19,8 @@
                                   "preview" => true,
                                   "bookmarklet" => "selection"));
 
-            $this->setFilter("caption", "markup_post_text");
+            $this->setFilter("caption", array("markup_text", "markup_post_text"));
+
             $this->respondTo("delete_post", "delete_file");
             $this->respondTo("filter_post", "filter_post");
             $this->respondTo("post_options", "add_option");

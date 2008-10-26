@@ -20,8 +20,9 @@
             if ($this->isVideo())
                 $this->bookmarkletSelected();
 
+            $this->setFilter("caption", array("markup_text", "markup_post_text"));
+
             $this->respondTo("preview_video", "embed_tag");
-            $this->setFilter("caption", "markup_post_text");
         }
 
         public function submit() {

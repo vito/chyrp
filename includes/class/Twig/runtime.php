@@ -457,7 +457,7 @@ function twig_escape_filter($string, $quotes = true, $decode = true) {
         return $string;      # in which case the module provides a value. However, the attr
                              # is still passed to the "fallback" and "fix" filters when editing.
 
-    $safe = fix($string);
+    $safe = fix($string, $quotes);
     return $decode ? preg_replace("/&amp;(#?[A-Za-z0-9]+);/", "&\\1;", $safe) : $safe ;
 }
 
