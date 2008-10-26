@@ -36,7 +36,6 @@
                         <button type="submit" class="yay right" accesskey="s" id="save">
                             <img src="images/icons/success.png" alt="success" />${ "Save" | translate }
                         </button>
-                        ${ post.delete_link('<img src="images/icons/delete.png" alt="delete" />'~ ("Delete" | translate), null, null, "button boo right") }
 {% else %}
                         {% if visitor.group.can("add_post") %}
                         <button type="submit" class="yay right" accesskey="s" id="publish">

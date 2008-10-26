@@ -620,7 +620,7 @@
                 $_POST['option']['comment_status'] = ($struct['mt_allow_comments'] == 1) ? 'open' : 'closed';
         }
 
-        public function filter_post($post) {
+        public function post($post) {
             $post->has_many[] = "comments";
         }
 
