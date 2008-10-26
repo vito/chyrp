@@ -189,7 +189,7 @@
             $trigger = Trigger::current();
 
             fallback($feather,    oneof(@$_POST['feather'], ""));
-            fallback($user,       oneof(@$_POST['user_id'], Visitor::current()->id));
+            fallback($user_id,    oneof(@$_POST['user_id'], Visitor::current()->id));
             fallback($pinned,     !empty($_POST['pinned']));
             fallback($status,     (isset($_POST['draft'])) ? "draft" : oneof(@$_POST['status'], "public"));
             fallback($created_at, (!empty($_POST['created_at']) and
