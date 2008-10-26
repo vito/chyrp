@@ -119,7 +119,7 @@
          *     &$params - An associative array of parameters used in the query.
          */
         public static function build_update_values($data, &$params = array()) {
-            $set = self::build_conditions($data, $params);
+            $set = self::build_conditions($data, $params, null, true);
             return implode(",\n    ", $set);
         }
 
@@ -282,8 +282,9 @@
          *     $conds - Conditions.
          *     &$params - Parameters array to fill.
          *     $tables - If specified, conditions will be tablefied with these tables.
+         *     $insert - Is this an insert/update query?
          */
-        public static function build_conditions($conds, &$params, $tables = null) {
+        public static function build_conditions($conds, &$params, $tables = null, $insert = false) {
             $conditions = array();
 
             foreach ($conds as $key => $val) {
@@ -358,6 +359,8 @@
                         } else { # Equation
                             if (is_array($val))
                                 $cond = $key." IN ".self::build_list($val);
+                            elseif ($val === null and $insert)
+                                $cond = $key." = ''";
                             elseif ($val === null)
                                 $cond = $key." IS NULL";
                             else {
