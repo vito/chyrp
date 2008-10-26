@@ -681,7 +681,7 @@
                 if (in_array($attr, $times))
                     $where[strtoupper($attr)."(created_at)"] = $attrs[$attr];
                 elseif ($attr == "author") {
-                    $user = new User(array("where" => array("login" => $attrs['author'])));
+                    $user = new User(array("login" => $attrs['author']));
                     $where["user_id"] = $user->id;
                 } elseif ($attr == "feathers")
                     $where["feather"] = depluralize($attrs['feathers']);
