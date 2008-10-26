@@ -158,7 +158,7 @@
          */
         public function serve($type) {
             if (!empty($_SESSION[$type]))
-                self::$exists = true;
+                self::$exists[depluralize($type)] = self::$exists[null] = true;
 
             if (isset($_SESSION[$type])) {
                 $this->$type = $_SESSION[$type];
@@ -184,7 +184,7 @@
             else
                 foreach (array("messages", "notices", "warnings") as $type)
                     if (!empty($_SESSION[$type]))
-                        return self::$exists = true;
+                        return self::$exists[depluralize($type)] = self::$exists[null] = true;
 
             return false;
         }
