@@ -51,6 +51,7 @@ $twig_filters = array(
     'pluralize' =>        'twig_pluralize_string_filter',
     'depluralize' =>      'twig_depluralize_string_filter',
     'sanitize' =>         'sanitize',
+    'repeat' =>           'str_repeat',
 
     // array helpers
     'join' =>             'twig_join_filter',
