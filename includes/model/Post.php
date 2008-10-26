@@ -148,7 +148,7 @@
          *
          * Most of the function arguments will fall back to various POST values.
          *
-         * Calls the `add_post` trigger with the inserted post and extra options.
+         * Calls the @add_post@ trigger with the inserted post and extra options.
          *
          * Parameters:
          *     $values - The data to insert.

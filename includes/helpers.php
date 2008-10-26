@@ -398,7 +398,7 @@
      * Parameters:
      *     $formatting - The formatting for date().
      *     $when - Time to base on. If it is not numeric it will be run through strtotime.
-     *     $strftime - Use `strftime` instead of `date`?
+     *     $strftime - Use @strftime@ instead of @date@?
      */
     function when($formatting, $when, $strftime = false) {
         $time = (is_numeric($when)) ? $when : strtotime($when) ;

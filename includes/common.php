@@ -284,7 +284,7 @@
     # Example usage scenario: custom auth systems (e.g. OpenID)
     $trigger->filter($visitor, "visitor");
 
-    # First general-purpose trigger. There are many cases you may want to use `route_init` instead of this, however.
+    # First general-purpose trigger. There are many cases you may want to use @route_init@ instead of this, however.
     $trigger->call("runtime");
 
     # Set the content-type to the theme's "type" setting, or "text/html".

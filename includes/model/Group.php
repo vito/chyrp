@@ -161,7 +161,7 @@
 
         /**
          * Function: delete
-         * Deletes a given group. Calls the `delete_group` trigger and passes the <Group> as an argument.
+         * Deletes a given group. Calls the @delete_group@ trigger and passes the <Group> as an argument.
          *
          * Parameters:
          *     $id - The group to delete.

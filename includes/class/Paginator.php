@@ -35,7 +35,7 @@
 
         # Array: $result
         # The result of the pagination.
-        # `paginated`, `paginate`, and `list` are references to this.
+        # @paginated@, @paginate@, and @list@ are references to this.
         public $result = array();
 
         # Array: $names

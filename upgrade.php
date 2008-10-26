@@ -298,7 +298,7 @@
 
     /**
      * Function: pages_parent_id_column
-     * Adds the `parent_id` column to the "pages" table.
+     * Adds the @parent_id@ column to the "pages" table.
      *
      * Versions: 1.0.3 => 1.0.4
      */
@@ -312,7 +312,7 @@
 
     /**
      * Function: pages_list_order_column
-     * Adds the `list_order` column to the "pages" table.
+     * Adds the @list_order@ column to the "pages" table.
      *
      * Versions: 1.0.4 => 1.1.0
      */
@@ -682,7 +682,7 @@
 
     /**
      * Function: update_post_status_column
-     * Updates the `status` column on the "posts" table to be a generic varchar field instead of enum.
+     * Updates the @status@ column on the "posts" table to be a generic varchar field instead of enum.
      *
      * Versions: 2.0rc1 => 2.0rc2
      */
@@ -855,7 +855,7 @@
 
     /**
      * Function: add_group_id_to_permissions
-     * Adds the `group_id` column to the "permissions" table.
+     * Adds the @group_id@ column to the "permissions" table.
      *
      * Versions: 2.0rc1 => 2.0rc2
      */

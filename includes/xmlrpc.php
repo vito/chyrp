@@ -47,7 +47,7 @@
 
         #
         # Function: pingback_ping
-        # Receive and register pingbacks. Calls the `pingback` trigger.
+        # Receive and register pingbacks. Calls the @pingback@ trigger.
         #
         public function pingback_ping($args) {
             $config = Config::current();
