@@ -52,7 +52,7 @@
             $pages = Page::find(array("where" => $where, "order" => "list_order ASC"));
 
             if (empty($pages))
-                return $this->pages_list[$start] = $array;
+                return $this->pages_list[$start] = array();
 
             foreach ($pages as $page)
                 $this->end_tags_for[$page->id] = $this->children[$page->id] = array();

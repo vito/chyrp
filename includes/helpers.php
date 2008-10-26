@@ -112,7 +112,7 @@
      * Returns whether or not they are logged in by returning the <Visitor.$id> (which defaults to 0).
      */
     function logged_in() {
-        return Visitor::current()->id != 0;
+        return (isset(Visitor::current()->id) and Visitor::current()->id != 0);
     }
 
     /**
@@ -801,7 +801,7 @@
         if (is_bool($variable))
             return $variable;
 
-        $set = (!isset($variable) or (is_string($variable) and trim($variable) === ""));
+        $set = (!isset($variable) or (is_string($variable) and trim($variable) === "") or $variable === array());
 
         $args = func_get_args();
         array_shift($args);
@@ -809,8 +809,8 @@
             foreach ($args as $arg) {
                 $fallback = $arg;
 
-                if (isset($arg) and (!is_string($arg) or (is_string($arg) and trim($arg) !== "")))
-                    continue;
+                if (isset($arg) and (!is_string($arg) or (is_string($arg) and trim($arg) !== "")) and $arg !== array())
+                    break;
             }
         } else
             $fallback = isset($args[0]) ? $args[0] : null ;
