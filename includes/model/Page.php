@@ -147,8 +147,10 @@
 
             foreach (array("title", "body", "user_id", "parent_id", "show_in_list",
                            "list_order", "clean", "url", "created_at", "updated_at") as $attr)
-                # This sets the $$attr and $this->$attr at the same time.
-                $this->$attr = fallback($$attr, ($attr == "updated_at" and $updated_at === false) ? $this->$attr : datetime());
+                if ($attr == "updated_at" and $updated_at !== false)
+                    $this->$attr = fallback($$attr, datetime());
+                else
+                    $this->$attr = fallback($$attr, $this->$attr);
 
             $sql->update("pages",
                          array("id" =>           $this->id),

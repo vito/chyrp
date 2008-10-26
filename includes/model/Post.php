@@ -293,8 +293,6 @@
 
             $user_id = ($user instanceof User) ? $user->id : $user ;
 
-            $old = clone $this;
-
             fallback($values,     array_combine($this->attribute_names, $this->attribute_values));
             fallback($user_id,    oneof(@$_POST['user_id'], $this->user_id));
             fallback($pinned,     (int) !empty($_POST['pinned']));
@@ -307,13 +305,11 @@
                                       oneof($updated_at, @$_POST['updated_at'], datetime())));
             fallback($options,    oneof(@$_POST['option'], array()));
 
+            $old = clone $this;
+
             # Update all values of this post.
-            list($this->user_id,
-                 $this->pinned,
-                 $this->status,
-                 $this->url,
-                 $this->created_at,
-                 $this->updated_at) = array($user_id, $pinned, $status, $url, $created_at, $updated_at);
+            foreach (array("user_id", "pinned", "status", "url" "created_at", "updated_at") as $attr)
+                $this->$attr = $$attr;
 
             $sql = SQL::current();
             $sql->update("posts",

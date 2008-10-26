@@ -134,7 +134,7 @@
 
             $old = clone $this;
 
-            $this->name = $name;
+            $this->name        = $name;
             $this->permissions = $permissions;
 
             $sql->update("groups",
