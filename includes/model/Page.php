@@ -92,14 +92,14 @@
             $sql->insert("pages",
                          array("title" =>        $title,
                                "body" =>         $body,
-                               "user_id" =>      fallback($user_id,      $visitor->id),
-                               "parent_id" =>    fallback($parent_id,    0),
-                               "show_in_list" => fallback($show_in_list, true),
-                               "list_order" =>   fallback($list_order,   0),
-                               "clean" =>        fallback($clean, sanitize($title)),
-                               "url" =>          fallback($url,          self::check_url($clean)),
-                               "created_at" =>   fallback($created_at,   datetime()),
-                               "updated_at" =>   fallback($updated_at,   "0000-00-00 00:00:00")));
+                               "user_id" =>      oneof($user_id,      $visitor->id),
+                               "parent_id" =>    oneof($parent_id,    0),
+                               "show_in_list" => oneof($show_in_list, true),
+                               "list_order" =>   oneof($list_order,   0),
+                               "clean" =>        oneof($clean,        sanitize($title)),
+                               "url" =>          oneof($url,          self::check_url($clean)),
+                               "created_at" =>   oneof($created_at,   datetime()),
+                               "updated_at" =>   oneof($updated_at,   "0000-00-00 00:00:00")));
 
             $page = new self($sql->latest());
 

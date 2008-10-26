@@ -16,10 +16,10 @@
                 echo "          $(function(){\n";
                 foreach ($this->insert_swfupload as $id => $options) {
                     $upload_url                   = $config->chyrp_url."/modules/swfupload/upload_handler.php";
-                    $flash_url                    = $config->chyrp_url."/modules/swfupload/lib/swfupload_f9.swf";
+                    $flash_url                    = $config->chyrp_url."/modules/swfupload/lib/swfupload.swf";
                     $file_types                   = "*";
                     $file_types_description       = "All Files";
-                    $debug                        = false;
+                    $debug                        = true;
                     $file_queue_error_handler     = "fileQueueError";
                     $file_dialog_complete_handler = "fileDialogComplete";
                     $upload_start_handler         = "uploadStart";
@@ -34,7 +34,7 @@
                         foreach ($options as $key => $val)
                             $$key = $val;
 
-                    echo '              $("#'.$id.'").replaceWith("<input type=\"button\" value=\"Upload\" class=\"swfupload_button\" id=\"'.$id.'\" />")'."\n";
+                    echo '              $("#'.$id.'").clone().attr("id", "'.$id.'_fake").addClass("swfupload_button").insertBefore("#'.$id.'")'."\n";
                     echo "              ".$id." = new SWFUpload({\n";
                     echo '                  upload_url : "'.$upload_url.'",'."\n";
                     echo '                  flash_url : "'.$flash_url.'",'."\n";
@@ -51,12 +51,15 @@
                     echo '                  upload_progress_handler : '.$upload_progress_handler.','."\n";
                     echo '                  upload_error_handler : '.$upload_error_handler.','."\n";
                     echo '                  upload_success_handler : '.$upload_success_handler.','."\n";
+                    echo '                  button_placeholder_id : "'.$id.'",'."\n";
+                    echo '                  button_width : $("#'.$id.'_fake").width(),'."\n";
+                    echo '                  button_height : $("#'.$id.'_fake").height(),'."\n";
+                    echo '                  button_action : SWFUpload.BUTTON_ACTION.SELECT_FILES,'."\n";
                     echo '                  upload_complete_handler : '.$upload_complete_handler.''."\n";
                     echo '              })'."\n";
-
-                    echo '              $("#'.$id.'").click(function(){'."\n";
-                    echo '                  '.$id.'.selectFiles();'."\n";
-                    echo '              }).before(\'<div id="progress"><div class="back"><div class="fill"></div><div class="clear"></div></div></div>\')'."\n";
+                    echo '              $("#SWFUpload_0")'."\n";
+                    echo '                  .css({ position: "absolute", top: $("#'.$id.'_fake").offset().top, left: $("#'.$id.'_fake").offset().left })'."\n";
+                    echo '                  .before(\'<div id="progress"><div class="back"><div class="fill"></div><div class="clear"></div></div></div>\')'."\n";
                 }
                 echo "          })\n";
                 echo "      </script>\n";
