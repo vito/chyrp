@@ -109,9 +109,17 @@
             if ($model_name == "visitor")
                 $model_name = "user";
 
+            $cache = (is_numeric($id) and isset(self::$caches[$model_name][$id])) ? 
+                         self::$caches[$model_name][$id] :
+                         ((isset($options["read_from"]["id"]) and isset(self::$caches[$model_name][$options["read_from"]["id"]])) ?
+                             self::$caches[$model_name][$options["read_from"]["id"]] :
+                             (isset(self::$caches[$model_name][serialize($id)]) ?
+                                 self::$caches[$model_name][serialize($id)] :
+                                 array())) ;
+
             # Is this model already in the cache?
-            if (isset(self::$caches[$model_name][serialize($id)])) {
-                foreach (self::$caches[$model_name][serialize($id)] as $attr => $val)
+            if (!empty($cache)) {
+                foreach ($cache as $attr => $val)
                     $model->$attr = $val;
 
                 return;
@@ -198,7 +206,12 @@
             if (isset($model->updated_at))
                 $model->updated = $model->updated_at != "0000-00-00 00:00:00";
 
-            self::$caches[$model_name][serialize($id)] = clone $model;
+            $clone = clone $model;
+
+            self::$caches[$model_name][$read["id"]] = $clone;
+
+            if (!is_numeric($id) and !isset($options["read_from"]["id"]) and $id !== null)
+                self::$caches[$model_name][serialize($id)] = $clone;
         }
 
         /**

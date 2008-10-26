@@ -117,7 +117,7 @@
         </style>
         <script type="text/javascript" charset="utf-8">
             $(function(){
-                $('<a class="big back" href="javascript:history.back()">&larr; <?php echo __("Back"); ?></a>').insertBefore(".clear")
+                $('<a class="big back" href="javascript:history.back()">&larr; <?php echo __("Back"); ?></a>').insertBefore(".clear.last")
             })
         </script>
     </head>
@@ -134,10 +134,11 @@
 <?php endforeach; ?>
                 </ol>
 <?php endif; ?>
+                <div class="clear"></div>
 <?php if (!logged_in()): ?>
                 <a href="<?php echo url("login"); ?>" class="big login"><?php echo __("Log In"); ?> &rarr;</a>
 <?php endif; ?>
-                <div class="clear"></div>
+                <div class="clear last"></div>
             </div>
         </div>
 <?php if (defined("CHYRP_VERSION")): ?>
