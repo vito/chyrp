@@ -4,4 +4,4 @@ version: 1.0
 description: Split entries into multiple pages at <code><!--page--></code> tags. Use $post.paginated.prev_link and $post.paginated.next_link in your theme.
 author:
   name: Alex Suraci
-  url: http://i.am.toogeneric.com/
+  url: http://ecks.tc/

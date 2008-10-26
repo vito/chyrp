@@ -79,7 +79,7 @@
          * Any additional arguments passed to this function are passed to the function being called.
          *
          * Parameters:
-         *     $target - The variable to filter.
+         *     &$target - The variable to filter.
          *     $name - The name of the trigger.
          *
          * Returns:
@@ -149,7 +149,7 @@
          *     $trigger - The trigger name.
          *
          * Returns:
-         *     true - if there are actions for the trigger.
+         *     @true@ or @false@
          */
         public function exists($name) {
             if (isset($this->exists[$name]))

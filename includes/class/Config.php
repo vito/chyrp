@@ -80,7 +80,7 @@
          * Removes a configuration setting.
          *
          * Parameters:
-         *     $setting - The name of the variable to remove.
+         *     $setting - The name of the setting to remove.
          */
         public function remove($setting) {
             if (isset($this->file) and file_exists($this->file)) {

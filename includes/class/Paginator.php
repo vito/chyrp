@@ -53,6 +53,7 @@
          *     $model - If this is true, each item in $array that gets shown on the page will be
          *              initialized as a model of whatever is passed as the second argument to $array.
          *              The first argument of $array is expected to be an array of IDs.
+         *     $page - Page number to start at.
          *
          * Returns:
          *     A paginated array of length $per_page or smaller.
@@ -139,7 +140,7 @@
          * Parameters:
          *     $text - The text for the link.
          *     $class - The CSS class for the link.
-         *     $clean_urls - Whether to link with dirty or clean URLs.
+         *     $page - Page number to link to.
          */
         public function next_link($text = null, $class = "next_page", $page = null) {
             if (!$this->next_page())
@@ -158,7 +159,7 @@
          * Parameters:
          *     $text - The text for the link.
          *     $class - The CSS class for the link.
-         *     $clean_urls - Whether to link with dirty or clean URLs.
+         *     $page - Page number to link to.
          */
         public function prev_link($text = null, $class = "prev_page", $page = null) {
             if (!$this->prev_page())
@@ -173,6 +174,9 @@
         /**
          * Function: next_page_url
          * Returns the URL to the next page.
+         *
+         * Parameters:
+         *     $page - Page number to link to.
          */
         public function next_page_url($page = null) {
             $config = Config::current();
@@ -198,6 +202,9 @@
         /**
          * Function: prev_page_url
          * Returns the URL to the previous page.
+         *
+         * Parameters:
+         *     $page - Page number to link to.
          */
         public function prev_page_url($page = null) {
             $config = Config::current();

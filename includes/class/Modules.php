@@ -11,6 +11,10 @@
         /**
          * Function: setPriority
          * Sets the priority of an action for the module this function is called from.
+         *
+         * Parameters:
+         *     $name - Name of the trigger to respond to.
+         *     $priority - Priority of the response.
          */
         protected function setPriority($name, $priority) {
             Trigger::current()->priorities[$name][] = array("priority" => $priority, "function" => array($this, $name));
@@ -19,6 +23,11 @@
         /**
          * Function: addAlias
          * Allows a module to respond to a trigger with multiple functions and custom priorities.
+         *
+         * Parameters:
+         *     $name - Name of the trigger to respond to.
+         *     $function - Name of the class function to respond with.
+         *     $priority - Priority of the response.
          */
         protected function addAlias($name, $function, $priority = 10) {
             Trigger::current()->priorities[$name][] = array("priority" => $priority, "function" => array($this, $function));

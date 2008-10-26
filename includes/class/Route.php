@@ -26,7 +26,10 @@
 
         /**
          * Function: __construct
-         * Parse the URL to determine what to do.
+         * Parse the URL and to determine what to do.
+         *
+         * Parameters:
+         *     $controller - The controller to use.
          */
         private function __construct($controller) {
             $this->controller = $controller;
@@ -63,12 +66,9 @@
 
         /**
          * Function: init
-         * Begin running Controller actions until one of them doesn't return false.
+         * Attempt Controller actions until one of them doesn't return false.
          *
-         * This will also call the route_xxxxx Triggers.
-         *
-         * Parameters:
-         *     $controller - The Controller to run methods on.
+         * This will also call the @[controllername]_xxxxx@ and @route_xxxxx@ triggers.
          */
         public function init() {
             $trigger = Trigger::current();
@@ -116,10 +116,10 @@
          *
          * Parameters:
          *     $url - The clean URL.
+         *     $use_chyrp_url - Use @Config.chyrp_url@ instead of @Config.url@, when the @$url@ begins with "/"?
          *
          * Returns:
-         *     Clean URL - if $config->clean_urls is set to *true*.
-         *     Dirty URL - if $config->clean_urls is set to *false*.
+         *     A clean or dirty URL, depending on @Config.clean_urls@.
          */
         public function url($url, $use_chyrp_url = false) {
             $config = Config::current();
@@ -180,7 +180,7 @@
          * Removes a route added by <add>.
          *
          * Parameters:
-         *     $path - The path to remove. Same as <add>.
+         *     $path - The path to remove.
          *
          * See Also:
          *     <add>

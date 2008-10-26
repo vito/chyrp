@@ -50,6 +50,7 @@
                                       "value" => $_GET['url']));
             }
         }
+
         public function swfupload($admin, $post = null) {
             if (isset($post) and $post->feather != "photo" or
                 isset($_GET['feather']) and $_GET['feather'] != "photo")
@@ -57,6 +58,7 @@
 
             Trigger::current()->call("prepare_swfupload", "photo", "*.jpg;*.jpeg;*.png;*.gif;*.bmp");
         }
+
         public function submit() {
             if (!isset($_POST['filename'])) {
                 if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0)
@@ -73,6 +75,7 @@
                              $_POST['slug'],
                              Post::check_url($_POST['slug']));
         }
+
         public function update($post) {
             if (!isset($_POST['filename']))
                 if (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0) {
@@ -91,23 +94,28 @@
             $post->update(array("filename" => $filename,
                                 "caption" => $_POST['caption']));
         }
+
         public function title($post) {
             return oneof($post->title_from_excerpt(), $post->filename);
         }
         public function excerpt($post) {
             return $post->caption;
         }
+
         public function feed_content($post) {
             return self::image_tag_for($post, 500, 500)."<br /><br />".$post->caption;
         }
+
         public function delete_file($post) {
             if ($post->feather != "photo") return;
             unlink(MAIN_DIR.Config::current()->uploads_path.$post->filename);
         }
+
         public function filter_post($post) {
             if ($post->feather != "photo") return;
             $post->image = $this->image_tag_for($post);
         }
+
         public function image_tag_for($post, $max_width = 500, $max_height = null, $more_args = "quality=100") {
             $filename = $post->filename;
             $config = Config::current();
@@ -115,6 +123,7 @@
             $alt = !empty($post->alt_text) ? $post->alt_text : $filename ;
             return '<a href="'.$source.'"><img src="'.$config->chyrp_url.'/includes/thumb.php?file=..'.$config->uploads_path.urlencode($filename).'&amp;max_width='.$max_width.'&amp;max_height='.$max_height.'&amp;'.$more_args.'" alt="'.$alt.'" /></a>';
         }
+
         public function add_option($options, $post = null) {
             if (isset($post) and $post->feather != "photo") return;
             if (!isset($_GET['feather']) and Config::current()->enabled_feathers[0] != "photo" or

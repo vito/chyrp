@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC2\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-10-26 02:20+0000\n"
+"POT-Creation-Date: 2008-10-26 03:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -30,7 +30,7 @@ msgid "An audio feather, including a flash player."
 msgstr ""
 
 #: feathers/audio/audio.php:11
-#: feathers/audio/audio.php:151
+#: feathers/audio/audio.php:163
 msgid "From URL?"
 msgstr ""
 

@@ -108,10 +108,7 @@
 
         /**
          * Function: messages
-         * Sets <Flash.$messages> to $_SESSION['messages'] and destroys the session value.
-         *
-         * Returns:
-         *     <Flash.$messages>
+         * Calls <Flash.serve> "messages".
          */
         public function messages() {
             return $this->serve("messages");
@@ -119,10 +116,7 @@
 
         /**
          * Function: notices
-         * Sets <Flash.$notices> to $_SESSION['notices'] and destroys the session value.
-         *
-         * Returns:
-         *     <Flash.$notices>
+         * Calls <Flash.serve> "notices".
          */
         public function notices() {
             return $this->serve("notices");
@@ -130,10 +124,7 @@
 
         /**
          * Function: warnings
-         * Sets <Flash.$warnings> to $_SESSION['warnings'] and destroys the session value.
-         *
-         * Returns:
-         *     <Flash.$warnings>
+         * Calls <Flash.serve> "warnings".
          */
         public function warnings() {
             return $this->serve("warnings");
@@ -144,7 +135,7 @@
          * Returns an associative array of all messages and destroys their session values.
          *
          * Returns:
-         *     <Flash.$all>
+         *     An array of every message available, in the form of [type => [messages]].
          */
         public function all() {
             return array("messages" => $this->messages(),
@@ -155,6 +146,12 @@
         /**
          * Function: serve
          * Serves a message of type $type and destroys it from the session.
+         *
+         * Parameters:
+         *     $type - Type of messages to serve.
+         *
+         * Returns:
+         *     An array of messages of the requested type.
          */
         public function serve($type) {
             if (!empty($_SESSION[$type]))
@@ -173,7 +170,7 @@
          * Checks for flash messages.
          *
          * Parameters:
-         *     $type - message, notice, or warning.
+         *     $type - The type of message to check for.
          */
         static function exists($type = null) {
             if (self::$exists[$type])

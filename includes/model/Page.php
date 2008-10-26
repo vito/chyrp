@@ -170,17 +170,17 @@
          * Calls the `delete_page` trigger with the <Page> to delete.
          *
          * Parameters:
-         *     $id - The page to delete.
+         *     $page_id - The page to delete.
          *     $recursive - Should the page's children be deleted? (default: false)
          */
-        static function delete($id, $recursive = false) {
+        static function delete($page_id, $recursive = false) {
             if ($recursive) {
-                $page = new self($id);
+                $page = new self($page_id);
                 foreach ($page->children as $child)
                     self::delete($child->id);
             }
 
-            parent::destroy(get_class(), $id);
+            parent::destroy(get_class(), $page_id);
         }
 
         /**

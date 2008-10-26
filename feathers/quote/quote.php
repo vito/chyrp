@@ -18,6 +18,7 @@
             $this->setFilter("quote", "markup_post_text");
             $this->setFilter("source", "markup_post_text");
         }
+
         public function submit() {
             if (empty($_POST['quote']))
                 error(__("Error"), __("Quote can't be empty.", "quote"));
@@ -27,6 +28,7 @@
                              $_POST['slug'],
                              Post::check_url($_POST['slug']));
         }
+
         public function update($post) {
             if (empty($_POST['quote']))
                 error(__("Error"), __("Quote can't be empty."));
@@ -34,15 +36,19 @@
             $post->update(array("quote" => $_POST['quote'],
                                 "source" => $_POST['source']));
         }
+
         public function title($post) {
             return $post->title_from_excerpt();
         }
+
         public function excerpt($post) {
             return $post->quote;
         }
+
         public function add_dash($text) {
             return preg_replace("/(<p(\s+[^>]+)?>|^)/si", "\\1&mdash; ", $text, 1);
         }
+
         public function feed_content($post) {
             $body = "<blockquote>\n\t";
             $body.= $post->quote;

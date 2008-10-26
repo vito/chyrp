@@ -29,6 +29,7 @@
             $this->respondTo("admin_edit_post", "swfupload");
             $this->respondTo("post_options", "add_option");
         }
+
         public function swfupload($admin, $post = null) {
             if (isset($post) and $post->feather != "audio" or
                 isset($_GET['feather']) and $_GET['feather'] != "audio")
@@ -36,6 +37,7 @@
 
             Trigger::current()->call("prepare_swfupload", "audio", "*.mp3");
         }
+
         public function submit() {
             if (!isset($_POST['filename'])) {
                 if (isset($_FILES['audio']) and $_FILES['audio']['error'] == 0)
@@ -52,6 +54,7 @@
                              $_POST['slug'],
                              Post::check_url($_POST['slug']));
         }
+
         public function update($post) {
             if (!isset($_POST['filename']))
                 if (isset($_FILES['audio']) and $_FILES['audio']['error'] == 0) {
@@ -70,25 +73,31 @@
             $post->update(array("filename" => $filename,
                                 "description" => $_POST['description']));
         }
+
         public function title($post) {
             return oneof($post->title, $post->title_from_excerpt());
         }
+
         public function excerpt($post) {
             return $post->description;
         }
+
         public function feed_content($post) {
             return $post->description;
         }
+
         public function delete_file($post) {
             if ($post->feather != "audio") return;
             unlink(MAIN_DIR.Config::current()->uploads_path.$post->filename);
         }
+
         public function filter_post($post) {
             if ($post->feather != "audio") return;
             $post->audio_player = $this->flash_player_for($post->filename, array(), $post);
         }
+
         public function player_js() {
-?>
+?>//<script>
 var ap_instances = new Array();
 
 function ap_stopAll(playerID) {
@@ -116,6 +125,7 @@ function ap_registerPlayers() {
 var ap_clearID = setInterval( ap_registerPlayers, 100 );
 <?php
         }
+
         public function enclose_mp3($post) {
             $config = Config::current();
             if ($post->feather != "audio" or !file_exists(MAIN_DIR.$config->uploads_path.$post->filename))
@@ -125,6 +135,7 @@ var ap_clearID = setInterval( ap_registerPlayers, 100 );
 
             echo '          <link rel="enclosure" href="'.$config->chyrp_url.$config->uploads_path.$post->filename.'" type="audio/mpeg" title="MP3" length="'.$length.'" />'."\n";
         }
+
         public function flash_player_for($filename, $params = array(), $post) {
             $vars = "";
             foreach ($params as $name => $val)
@@ -142,6 +153,7 @@ var ap_clearID = setInterval( ap_registerPlayers, 100 );
 
             return $player;
         }
+
         public function add_option($options, $post = null) {
             if (isset($post) and $post->feather != "audio") return;
             if (!isset($_GET['feather']) and Config::current()->enabled_feathers[0] != "audio" or

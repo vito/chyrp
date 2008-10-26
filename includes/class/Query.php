@@ -13,8 +13,10 @@
          * Creates a query based on the <SQL.interface>.
          *
          * Parameters:
+         *     $sql - <SQL> instance.
          *     $query - Query to execute.
          *     $params - An associative array of parameters used in the query.
+         *     $throw_exceptions - Throw exceptions on error?
          */
         public function __construct($sql, $query, $params = array(), $throw_exceptions = false) {
             $this->sql = $sql;
@@ -103,7 +105,7 @@
 
         /**
          * Function: fetchColumn
-         * Fetches a column of the first row.
+         * Fetches a column of the current row.
          *
          * Parameters:
          *     $column - The offset of the column to grab. Default 0.
@@ -123,7 +125,7 @@
 
         /**
          * Function: fetch
-         * Returns the first row as an array.
+         * Returns the current row as an array.
          */
         public function fetch() {
             switch($this->sql->method) {
@@ -138,7 +140,7 @@
 
         /**
          * Function: fetchObject
-         * Returns the first row as an object.
+         * Returns the current row as an object.
          */
         public function fetchObject() {
             switch($this->sql->method) {
@@ -179,6 +181,12 @@
         /**
          * Function: grab
          * Grabs all of the given column out of the full result of a query.
+         *
+         * Parameters:
+         *     $column - Name of the column to grab.
+         *
+         * Returns:
+         *     An array of all of the values of that column in the result.
          */
          public function grab($column) {
             $all = $this->fetchAll();

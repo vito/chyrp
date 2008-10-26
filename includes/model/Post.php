@@ -165,7 +165,7 @@
          *     $options - Options for the post.
          *
          * Returns:
-         *     self - An object containing the new post.
+         *     The newly created <Post>.
          *
          * See Also:
          *     <update>
@@ -501,19 +501,6 @@
         }
 
         /**
-         * Function: user
-         * Returns a post's user. Example: $post->user->login
-         * 
-         * !! DEPRECATED AFTER 2.0 !!
-         */
-        public function user() {
-            if ($this->no_results)
-                return false;
-
-            return new User($this->user_id);
-        }
-
-        /**
          * Function: title_from_excerpt
          * Generates an acceptable Title from the post's excerpt.
          *
@@ -745,5 +732,18 @@
          */
         static function feathers() {
             return "posts.feather IN ('".implode("', '", Config::current()->enabled_feathers)."')";
+        }
+
+        /**
+         * Function: user
+         * Returns a post's user. Example: $post->user->login
+         * 
+         * !! DEPRECATED AFTER 2.0 !!
+         */
+        public function user() {
+            if ($this->no_results)
+                return false;
+
+            return new User($this->user_id);
         }
     }

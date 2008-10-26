@@ -46,27 +46,33 @@
 
         /**
          * Function: can
-         * Checks if the group can perform the specified functions.
+         * Checks if the group can perform the specified actions.
+         *
+         * Parameters:
+         *     *$permissions - However many permissions to check for.
+         *                     If the last argument is <true>, it will act as "and", otherwise it will act as "or".
+         *
+         * Returns:
+         *     @true@ or @false@
          */
         public function can() {
             if ($this->no_results)
                 return false;
 
-            $functions = func_get_args();
+            $actions = func_get_args();
 
-            # OR comparison
-            if (end($functions) !== true) {
-                foreach ($functions as $function)
-                    if (in_array($function, $this->permissions)) return true;
+            if (end($actions) !== true) {# OR comparison
+                foreach ($actions as $action)
+                    if (in_array($action, $this->permissions))
+                        return true;
 
                 return false;
-            }
-            # AND comparison
-            else {
-                array_pop($functions);
+            } else { # AND comparison
+                array_pop($actions);
 
-                foreach ($functions as $function)
-                    if (!in_array($function, $this->permissions)) return false;
+                foreach ($actions as $actions)
+                    if (!in_array($action, $this->permissions))
+                        return false;
 
                 return true;
             }
@@ -76,11 +82,14 @@
          * Function: add
          * Adds a group to the database with the passed Name and Permissions array.
          *
-         * Calls the `add_group` trigger with the inserted group.
+         * Calls the @add_group@ trigger with the inserted group.
          *
          * Parameters:
          *     $name - The group's name
          *     $permissions - An array of the permissions (IDs).
+         *
+         * Returns:
+         *     The newly created <Group>.
          *
          * See Also:
          *     <update>
@@ -108,10 +117,11 @@
 
         /**
          * Function: update
-         * Updates a group with the given name and permissions, and passes arguments to the update_group trigger..
+         * Updates a group with the given name and permissions.
+         *
+         * Calls the @update_group@ trigger with the updated object and the old object.
          *
          * Parameters:
-         *     $group_id - The group to update.
          *     $name - The new Name to set.
          *     $permissions - An array of the new permissions to set.
          */

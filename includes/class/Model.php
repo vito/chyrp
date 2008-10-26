@@ -26,6 +26,9 @@
         /**
          * Function: __get
          * Automatically handle model relationships when grabbing attributes of an object.
+         *
+         * Returns:
+         *     @mixed@
          */
         public function __get($name) {
             if (isset($this->$name))
@@ -60,6 +63,19 @@
             }
         }
 
+        /**
+         * Function: __getPlaceholders
+         * Calls __get with the requested $name, but grabs everything as placeholders.
+         *
+         * Parameters:
+         *     $name - Name to call <Model.__get> with.
+         *
+         * Returns:
+         *     @mixed@
+         *
+         * See Also:
+         *     <Model.__get>
+         */
         public function __getPlaceholders($name) {
             $this->__placeholders = true;
             $return = $this->__get($name);
@@ -210,9 +226,6 @@
         protected static function search($model, $options = array(), $options_for_object = array()) {
             $model_name = strtolower($model);
 
-            if ($model_name == "visitor")
-                $model_name = "user";
-
             fallback($options["select"], "*");
             fallback($options["from"], pluralize(strtolower($model)));
             fallback($options["left_join"], array());
@@ -230,7 +243,7 @@
             $options["select"] = (array) $options["select"];
 
             $trigger = Trigger::current();
-            $trigger->filter($options, pluralize($model_name)."_get");
+            $trigger->filter($options, pluralize(strtolower($model_name))."_get");
 
             $grab = SQL::current()->select($options["from"],
                                            $options["select"],
@@ -295,10 +308,9 @@
          *     $id - The ID of the object to delete.
          */
         protected static function destroy($model, $id) {
-            $class = $model;
             $model = strtolower($model);
             if (Trigger::current()->exists("delete_".$model))
-                Trigger::current()->call("delete_".$model, new $class($id));
+                Trigger::current()->call("delete_".$model, new $model($id));
 
             SQL::current()->delete(pluralize($model), array("id" => $id));
         }

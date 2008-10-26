@@ -20,6 +20,7 @@
             $this->respondTo("preview_chat", "format_dialogue");
             $this->respondTo("help_chat_dialogue", "help");
         }
+
         public function submit() {
             if (empty($_POST['dialogue']))
                 error(__("Error"), __("Dialogue can't be blank."));
@@ -31,6 +32,7 @@
                              $_POST['slug'],
                              Post::check_url($_POST['slug']));
         }
+
         public function update($post) {
             if (empty($_POST['dialogue']))
                 error(__("Error"), __("Dialogue can't be blank."));
@@ -38,6 +40,7 @@
             $post->update(array("title" => $_POST['title'],
                                 "dialogue" => $_POST['dialogue']));
         }
+
         public function title($post) {
             $dialogue = oneof($post->dialogue_unformatted, $post->dialogue);
 
@@ -47,16 +50,19 @@
 
             return oneof($post->title, $first_line);
         }
+
         public function excerpt($post) {
             return $post->dialogue;
         }
+
         public function feed_content($post) {
             return $post->dialogue;
         }
+
         public function format_dialogue($text, $post = null) {
             if (isset($post))
                 $post->dialogue_unformatted = $text;
-
+                    
             $split = explode("\n", $text);
             $return = '<ul class="dialogue">';
             $count = 0;
@@ -89,6 +95,7 @@
 
             return $return;
         }
+
         public function help() {
             $title = __("Dialogue Formatting", "chat");
 

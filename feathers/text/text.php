@@ -15,6 +15,7 @@
             $this->setFilter("body", "markup_post_text");
             $this->setFilter("title", "markup_post_title");
         }
+
         public function submit() {
             if (empty($_POST['body']))
                 error(__("Error"), __("Body can't be blank."));
@@ -26,6 +27,7 @@
                              $_POST['slug'],
                              Post::check_url($_POST['slug']));
         }
+
         public function update($post) {
             if (empty($_POST['body']))
                 error(__("Error"), __("Body can't be blank."));
@@ -33,12 +35,15 @@
             $post->update(array("title" => $_POST['title'],
                                 "body" => $_POST['body']));
         }
+
         public function title($post) {
             return oneof($post->title, $post->title_from_excerpt());
         }
+
         public function excerpt($post) {
             return $post->body;
         }
+
         public function feed_content($post) {
             return $post->body;
         }

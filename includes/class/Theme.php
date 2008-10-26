@@ -29,6 +29,10 @@
         /**
          * Function: pages_list
          * Returns a simple array of list items to be used by the theme to generate a recursive array of pages.
+         *
+         * Parameters:
+         *     $start - Page ID or slug to start at.
+         *     $exclude - Page ID to exclude from the list. Used in the admin area.
          */
         public function pages_list($start = 0, $exclude = null) {
             if (isset($this->pages_list[$start]))
@@ -78,7 +82,11 @@
 
         /**
          * Function: get_last_linear_child
-         * Helper function to <Theme.pages_list>
+         * Gets the last linear child of a page.
+         *
+         * Parameters:
+         *     $page - Page to get the last linear child of.
+         *     $origin - Where to start.
          */
         public function get_last_linear_child($page, $origin = null) {
             fallback($origin, $page);
@@ -92,7 +100,10 @@
 
         /**
          * Function: recurse_pages
-         * Helper function to <Theme.pages_list>
+         * Prepares the pages into <Theme.$pages_flat>.
+         *
+         * Parameters:
+         *     $page - Page to start recursion at.
          */
         public function recurse_pages($page) {
             $page->depth = oneof(@$page->depth, 1);
@@ -115,7 +126,7 @@
          *     $order - "asc" or "desc"
          *
          * Returns:
-         *     $archives - The array. Each entry as "month", "year", and "url" values, stored as an array.
+         *     The array. Each entry as "month", "year", and "url" values, stored as an array.
          */
         public function archives_list($limit = 0, $order_by = "created_at", $order = "desc") {
             if (isset($this->archives_list["$limit,$order_by,$order"]))

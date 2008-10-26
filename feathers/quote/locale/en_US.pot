@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC2\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-10-26 02:20+0000\n"
+"POT-Creation-Date: 2008-10-26 03:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -26,7 +26,7 @@ msgstr ""
 msgid "Post quotes and cite sources."
 msgstr ""
 
-#: feathers/quote/quote.php:23
+#: feathers/quote/quote.php:24
 msgid "Quote can't be empty."
 msgstr ""
 

@@ -38,6 +38,9 @@
         /**
          * Function: __construct
          * The class constructor is private so there is only one connection.
+         *
+         * Parameters:
+         *     $settings - Settings to load instead of the config.
          */
         private function __construct($settings = array()) {
             if (!UPGRADING and !INSTALLING and !isset(Config::current()->sql))
@@ -316,7 +319,12 @@
         /**
          * Function: escape
          * Escapes a string, escaping things like $1 and C:\foo\bar so that they don't get borked by the preg_replace.
+         *
          * This also handles calling the SQL connection method's "escape_string" functions.
+         *
+         * Parameters:
+         *     $string - String to escape.
+         *     $quotes - Auto-wrap the string in quotes (@'@)?
          */
         public function escape($string, $quotes = true) {
             if (!isset($this->db))
@@ -350,6 +358,9 @@
         /**
          * Function: year_from_datetime
          * Returns the year of a datetime.
+         *
+         * Parameters:
+         *     $datetime - DATETIME value.
          */
         public function year_from_datetime($datetime) {
             return when("Y", $datetime);
@@ -358,6 +369,9 @@
         /**
          * Function: month_from_datetime
          * Returns the month of a datetime.
+         *
+         * Parameters:
+         *     $datetime - DATETIME value.
          */
         public function month_from_datetime($datetime) {
             return when("m", $datetime);
@@ -366,6 +380,9 @@
         /**
          * Function: day_from_datetime
          * Returns the day of a datetime.
+         *
+         * Parameters:
+         *     $datetime - DATETIME value.
          */
         public function day_from_datetime($datetime) {
             return when("d", $datetime);
@@ -374,6 +391,9 @@
         /**
          * Function: hour_from_datetime
          * Returns the hour of a datetime.
+         *
+         * Parameters:
+         *     $datetime - DATETIME value.
          */
         public function hour_from_datetime($datetime) {
             return when("g", $datetime);
@@ -382,6 +402,9 @@
         /**
          * Function: minute_from_datetime
          * Returns the minute of a datetime.
+         *
+         * Parameters:
+         *     $datetime - DATETIME value.
          */
         public function minute_from_datetime($datetime) {
             return when("i", $datetime);
@@ -390,6 +413,9 @@
         /**
          * Function: second_from_datetime
          * Returns the second of a datetime.
+         *
+         * Parameters:
+         *     $datetime - DATETIME value.
          */
         public function second_from_datetime($datetime) {
             return when("s", $datetime);

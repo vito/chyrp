@@ -10,8 +10,7 @@
 
         /**
          * Function: open
-         * Returns:
-         *     true
+         * Returns: @true@
          */
         static function open() {
             return true;
@@ -19,7 +18,7 @@
 
         /**
          * Function: close
-         * This is the very last action performed by Chyrp.
+         * Returns: @true@
          */
         static function close() {
             return true;
@@ -28,6 +27,9 @@
         /**
          * Function: read
          * Reads their session from the database.
+         *
+         * Parameters:
+         *     $id - Session ID.
          */
         static function read($id) {
             self::$data = SQL::current()->select("sessions",
@@ -41,6 +43,10 @@
         /**
          * Function: write
          * Writes their session to the database, or updates it if it already exists.
+         *
+         * Parameters:
+         *     $id - Session ID.
+         *     $data - Data to write.
          */
         static function write($id, $data) {
             if (empty($data) or $data == self::$data)
@@ -65,6 +71,9 @@
         /**
          * Function: destroy
          * Destroys their session.
+         *
+         * Parameters:
+         *     $id - Session ID.
          */
         static function destroy($id) {
             if (SQL::current()->delete("sessions", array("id" => $id)))

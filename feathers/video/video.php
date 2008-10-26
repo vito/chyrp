@@ -17,11 +17,13 @@
                                   "preview" => true,
                                   "bookmarklet" => "selection"));
 
-            $this->bookmarkletSelected($this->isVideo());
+            if ($this->isVideo())
+                $this->bookmarkletSelected();
 
             $this->respondTo("preview_video", "embed_tag");
             $this->setFilter("caption", "markup_post_text");
         }
+
         public function submit() {
             if (empty($_POST['video']))
                 error(__("Error"), __("Video can't be blank."));
@@ -32,6 +34,7 @@
                              $_POST['slug'],
                              Post::check_url($_POST['slug']));
         }
+
         public function update($post) {
             if (empty($_POST['video']))
                 error(__("Error"), __("Video can't be blank."));
@@ -40,15 +43,19 @@
                                 "video" => $_POST['video'],
                                 "caption" => $_POST['caption']));
         }
+
         public function title($post) {
             return $post->title_from_excerpt();
         }
+
         public function excerpt($post) {
             return $post->caption;
         }
+
         public function feed_content($post) {
             return $post->embed."<br /><br />".$post->caption;
         }
+
         public function embed_tag($video, $field = null) { # We use this for previewing too
             if (isset($field) and $field != "embed")
                 return $video; # If they're previewing and the field argument isn't the embed, return the original.
@@ -79,6 +86,7 @@
 
             return $video;
         }
+
         public function embed_tag_for($post, $max_width = 500) {
             $post->embed = preg_replace("/&([[:alnum:]_]+)=/", "&amp;\\1=", $post->embed);
 
@@ -99,6 +107,7 @@
 
             return $post->embed;
         }
+
         public function isVideo() {
             if (!isset($_GET['url']))
                 return false;

@@ -43,7 +43,7 @@
          *     $password - The matching Password to check.
          *
          * Returns:
-         *     true - if a match is found.
+         *     @true@ or @false@
          */
         static function authenticate($login, $password) {
             $check = new self(array("login" => $login, "password" => $password));
@@ -62,7 +62,7 @@
          *     $email - The E-Mail for the new user.
          *
          * Returns:
-         *     $user - The newly created user.
+         *     The newly created <User>.
          *
          * See Also:
          *     <update>

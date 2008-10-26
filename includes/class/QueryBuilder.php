@@ -7,6 +7,19 @@
         /**
          * Function: build_select
          * Creates a full SELECT query.
+         *
+         * Parameters:
+         *     $tables - Tables to select from.
+         *     $fields - Columns to select.
+         *     $order - What to order by.
+         *     $limit - Limit of the result.
+         *     $offset - Starting point for the result.
+         *     $group - What to group by.
+         *     $left_join - Any @LEFT JOIN@s to add.
+         *     &$params - An associative array of parameters used in the query.
+         *
+         * Returns:
+         *     A @SELECT@ query string.
          */
         public static function build_select($tables, $fields, $conds, $order = null, $limit = null, $offset = null, $group = null, $left_join = array(), &$params = array()) {
             $query = "SELECT ".self::build_select_header($fields, $tables)."\n".
@@ -26,6 +39,14 @@
         /**
          * Function: build_insert
          * Creates a full insert query.
+         *
+         * Parameters:
+         *     $table - Table to insert into.
+         *     $data - Data to insert.
+         *     &$params - An associative array of parameters used in the query.
+         *
+         * Returns:
+         *     An @INSERT@ query string.
          */
         public static function build_insert($table, $data, &$params = array()) {
             return "INSERT INTO __$table\n".
@@ -37,6 +58,14 @@
         /**
          * Function: build_replace
          * Creates a full replace query.
+         *
+         * Parameters:
+         *     $table - Table to insert/replace into.
+         *     $data - Data to insert/replace.
+         *     &$params - An associative array of parameters used in the query.
+         *
+         * Returns:
+         *     A @REPLACE@ query string.
          */
         public static function build_replace($table, $data, &$params = array()) {
             return "REPLACE INTO __$table\n".
@@ -48,6 +77,15 @@
         /**
          * Function: build_update
          * Creates a full update query.
+         *
+         * Parameters:
+         *     $table - Table to update.
+         *     $conds - Conditions to update rows by.
+         *     $data - Data to update.
+         *     &$params - An associative array of parameters used in the query.
+         *
+         * Returns:
+         *     An @UPDATE@ query string.
          */
         public static function build_update($table, $conds, $data, &$params = array()) {
             return "UPDATE __$table\n".
@@ -58,6 +96,14 @@
         /**
          * Function: build_delete
          * Creates a full delete query.
+         *
+         * Parameters:
+         *     $table - Table to delete from.
+         *     $conds - Conditions to delete by.
+         *     &$params - An associative array of parameters used in the query.
+         *
+         * Returns:
+         *     A @DELETE@ query string.
          */
         public static function build_delete($table, $conds, &$params = array()) {
             return "DELETE FROM __$table\n".
@@ -67,6 +113,10 @@
         /**
          * Function: build_update_values
          * Creates an update data part.
+         *
+         * Parameters:
+         *     $data - Data to update.
+         *     &$params - An associative array of parameters used in the query.
          */
         public static function build_update_values($data, &$params = array()) {
             $set = self::build_conditions($data, $params);
@@ -75,7 +125,10 @@
 
         /**
          * Function: build_insert_header
-         * Creates an insert header part.
+         * Creates an insert header.
+         *
+         * Parameters:
+         *     $data - Data to insert.
          */
         public static function build_insert_header($data) {
             $set = array();
@@ -88,7 +141,11 @@
 
         /**
          * Function: build_limits
-         * Creates a LIMIT part for a query.
+         * Creates the LIMIT part of a query.
+         *
+         * Parameters:
+         *     $offset - Offset of the result.
+         *     $limit - Limit of the result.
          */
         public static function build_limits($offset, $limit) {
             if ($limit === null)
@@ -103,6 +160,9 @@
         /**
          * Function: build_from
          * Creates a FROM header for select queries.
+         *
+         * Parameters:
+         *     $tables - Tables to select from.
          */
         public static function build_from($tables) {
             if (!is_array($tables))
@@ -118,6 +178,11 @@
         /**
          * Function: build_count
          * Creates a SELECT COUNT(1) query.
+         *
+         * Parameters:
+         *     $tables - Tables to tablefy with.
+         *     $conds - Conditions to select by.
+         *     &$params - An associative array of parameters used in the query.
          */
         public static function build_count($tables, $conds, &$params = array()) {
             return "SELECT COUNT(1) AS count\n".
@@ -128,6 +193,10 @@
         /**
          * Function: build_select_header
          * Creates a SELECT fields header.
+         *
+         * Parameters:
+         *     $order - Columns to select.
+         *     $tables - Tables to tablefy with.
          */
         public static function build_select_header($fields, $tables = null) {
             if (!is_array($fields))
@@ -157,6 +226,10 @@
         /**
          * Function: build_group
          * Creates a GROUP BY argument.
+         *
+         * Parameters:
+         *     $order - Columns to group by.
+         *     $tables - Tables to tablefy with.
          */
         public static function build_group($by, $tables = null) {
             $by = (array) $by;
@@ -170,7 +243,11 @@
 
         /**
          * Function: build_order
-         * Creates a ORDER BY argument.
+         * Creates an ORDER BY argument.
+         *
+         * Parameters:
+         *     $order - Columns to order by.
+         *     $tables - Tables to tablefy with.
          */
         public static function build_order($order, $tables = null) {
             $tables = (array) $tables;
@@ -186,7 +263,7 @@
 
         /**
          * Function: build_list
-         * Creates ('one', 'two', '', 1, 0) from array("one", "two", null, true, false)
+         * Returns ('one', 'two', '', 1, 0) from array("one", "two", null, true, false)
          */
         public static function build_list($vals) {
             $return = array();
@@ -203,7 +280,7 @@
          *
          * Parameters:
          *     $conds - Conditions.
-         *     $params - Parameters array to fill.
+         *     &$params - Parameters array to fill.
          *     $tables - If specified, conditions will be tablefied with these tables.
          */
         public static function build_conditions($conds, &$params, $tables = null) {
@@ -306,7 +383,7 @@
          * Automatically prepends tables and table prefixes to a field if it doesn't already have them.
          *
          * Parameters:
-         *     $field - The field to "tablefy".
+         *     &$field - The field to "tablefy".
          *     $tables - An array of tables. The first one will be used for prepending.
          */
         public static function tablefy(&$field, $tables) {

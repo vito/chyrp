@@ -42,6 +42,16 @@
         }
 
         /**
+         * Function: find
+         * See Also:
+         *     <Model::search>
+         */
+        static function find($options = array(), $options_for_object = array()) {
+            fallback($options["order"], "id ASC");
+            return parent::search("user", $options, $options_for_object);
+        }
+
+        /**
          * Function: group
          * Returns the user's <Group> or the "Guest Group".
          * 

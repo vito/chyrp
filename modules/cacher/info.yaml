@@ -4,6 +4,6 @@ version: 1.0
 description: Caches pages, drastically reducing server load.
 author:
   name: Alex Suraci
-  url: http://i.am.toogeneric.com/
+  url: http://ecks.tc/
 notifications:
   - Please make sure that /includes/caches is writable by the server. If you are not certain whether it is or not, CHMOD it to 777.
