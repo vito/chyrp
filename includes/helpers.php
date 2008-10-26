@@ -36,6 +36,7 @@
      * Parameters:
      *     $title - The title for the error dialog.
      *     $body - The message for the error dialog.
+     *     $backtrace - The trace of the error.
      */
     function error($title, $body, $backtrace = array()) {
         if (defined('MAIN_DIR') and !empty($backtrace))
@@ -95,7 +96,7 @@
 
     /**
      * Function: show_403
-     * Shows an error message with a 403 status.
+     * Shows an error message with a 403 HTTP header.
      *
      * Parameters:
      *     $title - The title for the error dialog.
@@ -169,8 +170,14 @@
     /**
      * Function: _f
      * Returns a formatted translated string.
+     *
+     * Parameters:
+     *     $string - String to translate and format.
+     *     $args - One arg or an array of arguments to format with.
+     *     $domain - The translation domain to read from.
      */
     function _f($string, $args = array(), $domain = "chyrp") {
+        $args = (array) $args;
         array_unshift($args, __($string, $domain));
         return call_user_func_array("sprintf", $args);
     }
@@ -178,6 +185,10 @@
     /**
      * Function: redirect
      * Redirects to the given URL and exits immediately.
+     *
+     * Parameters:
+     *     $url - The URL to redirect to. If it begins with @/@ it will be relative to the @Config.chyrp_url@.
+     *     $use_chyrp_url - Use the @Config.chyrp_url@ instead of @Config.url@ for $urls beginning with @/@?
      */
     function redirect($url, $use_chyrp_url = false) {
         # Handle URIs without domain
@@ -206,6 +217,7 @@
      *
      * Parameters:
      *     $string - The string to pluralize.
+     *     $number - If passed, and this number is 1, it will not pluralize.
      */
     function pluralize($string, $number = null) {
         $uncountable = array("moose", "sheep", "fish", "series", "species",
@@ -250,6 +262,7 @@
      *
      * Parameters:
      *     $string - The string to depluralize.
+     *     $number - If passed, and this number is not 1, it will not depluralize.
      */
     function depluralize($string, $number = null) {
         if (isset($number) and $number != 1)
@@ -384,7 +397,7 @@
      *
      * Parameters:
      *     $formatting - The formatting for date().
-     *     $time - The string to convert to time (typically a datetime).
+     *     $when - Time to base on. If it is not numeric it will be run through strtotime.
      *     $strftime - Use `strftime` instead of `date`?
      */
     function when($formatting, $when, $strftime = false) {
@@ -414,6 +427,10 @@
     /**
      * Function: fix
      * Returns a HTML-sanitized version of a string.
+     *
+     * Parameters:
+     *     $string - String to fix.
+     *     $quotes - Encode quotes?
      */
     function fix($string, $quotes = false) {
         $quotes = ($quotes) ? ENT_QUOTES : ENT_NOQUOTES ;
@@ -423,9 +440,12 @@
     /**
      * Function: unfix
      * Returns the reverse of fix().
+     *
+     * Parameters:
+     *     $string - String to unfix.
      */
     function unfix($string) {
-        return html_entity_decode($string, ENT_QUOTES, "utf-8");
+        return htmlspecialchars_decode($string, ENT_QUOTES, "utf-8");
     }
 
     /**
@@ -435,8 +455,8 @@
      * Parameters:
      *     $code - The language code to convert
      *
-     * Credits:
-     *     This is from TextPattern, modified to match Chyrp's language code formatting.
+     * Author:
+     *     TextPattern devs, modified to fit with Chyrp.
      */
     function lang_code($code) {
         $langs = array("ar_DZ" => "جزائري عربي",
@@ -482,6 +502,7 @@
      *
      * Parameters:
      *     $string - The string to sanitize.
+     *     $force_lowercase - Force the string to lowercase?
      *     $anal - If set to *true*, will remove all non-alphanumeric characters.
      */
     function sanitize($string, $force_lowercase = true, $anal = false) {
@@ -508,6 +529,7 @@
      */
     function trackback_respond($error = false, $message = "") {
         header("Content-Type: text/xml; charset=utf-8");
+
         if ($error) {
             echo '<?xml version="1.0" encoding="utf-8"?'.">\n";
             echo "<response>\n";
@@ -521,6 +543,7 @@
             echo "<error>0</error>\n";
             echo "</response>";
         }
+
         exit;
     }
 
@@ -593,7 +616,7 @@
      *     $string - The string to crawl.
      *
      * Returns:
-     *     $matches[] - An array of all URLs found in the string.
+     *     An array of all URLs found in the string.
      */
     function grab_urls($string) {
         $regexp = "/<a[^>]+href=[\"|']([^\"]+)[\"|']>[^<]+<\/a>/";
@@ -610,7 +633,7 @@
      *     $url - The URL to check.
      *
      * Returns:
-     *     $url - The pingback target, if the URL is pingback-capable.
+     *     The pingback target, if the URL is pingback-capable.
      */
     function pingback_url($url) {
         extract(parse_url($url), EXTR_SKIP);
@@ -706,7 +729,12 @@
 
     /**
      * Function: selected
-     * If $val1 == $val2, outputs ' selected="selected"'
+     * If $val1 == $val2, outputs or returns @ selected="selected"@
+     *
+     * Parameters:
+     *     $val1 - First value.
+     *     $val2 - Second value.
+     *     $return - Return @ selected="selected"@ instead of outputting it
      */
     function selected($val1, $val2, $return = false) {
         if ($val1 == $val2)
@@ -719,6 +747,9 @@
     /**
      * Function: checked
      * If $val == 1 (true), outputs ' checked="checked"'
+     *
+     * Parameters:
+     *     $val - Value to check.
      */
     function checked($val) {
         if ($val == 1) echo ' checked="checked"';
@@ -730,6 +761,9 @@
      *
      * Parameters:
      *     $name - The folder name of the module.
+     *
+     * Returns:
+     *     Whether or not the requested module is enabled.
      */
     function module_enabled($name) {
         $config = Config::current();
@@ -742,6 +776,9 @@
      *
      * Parameters:
      *     $name - The folder name of the feather.
+     *
+     * Returns:
+     *     Whether or not the requested feather is enabled.
      */
     function feather_enabled($name) {
         $config = Config::current();
@@ -787,6 +824,8 @@
     /**
      * Function: oneof
      * Returns the first argument that is set and non-empty.
+     *
+     * It will guess where to stop based on the types of the arguments, e.g. "" has priority over array() but not 1.
      */
     function oneof() {
         $last = null;
@@ -822,6 +861,7 @@
      *
      * Parameters:
      *     $length - How long the string should be.
+     *     $specialchars - Use special characters in the resulting string?
      */
     function random($length, $specialchars = false) {
         $pattern = "1234567890abcdefghijklmnopqrstuvwxyz";
@@ -844,6 +884,8 @@
      *
      * Parameters:
      *     $name - The name to check.
+     *     $path - Path to check in.
+     *     $num - Number suffix from which to start increasing if the filename exists.
      *
      * Returns:
      *     $name - A unique version of the given $name.
@@ -884,7 +926,7 @@
      *     $put - Use copy() instead of move_uploaded_file()?
      *
      * Returns:
-     *     $filename - The resulting filename from the upload.
+     *     The resulting filename from the upload.
      */
     function upload($file, $extension = null, $path = "", $put = false) {
         $file_split = explode(".", $file['name']);
@@ -1003,6 +1045,9 @@
     /**
      * Function: normalize
      * Attempts to normalize all newlines and whitespace into single spaces.
+     *
+     * Returns:
+     *     The normalized string.
      */
     function normalize($string) {
         $trimmed = trim($string);
@@ -1015,6 +1060,12 @@
     /**
      * Function: get_remote
      * Grabs the contents of a website/location.
+     *
+     * Parameters:
+     *     $url - The URL of the location to grab.
+     *
+     * Returns:
+     *     The response from the remote URL.
      */
     function get_remote($url) {
         extract(parse_url($url), EXTR_SKIP);
@@ -1070,7 +1121,7 @@
 
     /**
      * Function: show_404
-     * Shows a 404 error message, extracting the passed array into the scope.
+     * Shows a 404 error message and immediately exits.
      *
      * Parameters:
      *     $scope - An array of values to extract into the scope.
@@ -1099,7 +1150,7 @@
      * Set locale in a platform-independent way
      *
      * Parameters:
-     *     $locale - the locale name ('en_US', 'uk_UA', 'fr_FR' etc.)
+     *     $locale - the locale name (@en_US@, @uk_UA@, @fr_FR@ etc.)
      *
      * Returns:
      *     The encoding name used by locale-aware functions.
@@ -1121,7 +1172,7 @@
      * Makes sure no inherently broken ideas such as magic_quotes break our application
      *
      * Parameters:
-     *     $data - The array to be sanitized, usually one of ($_GET, $_POST, $_COOKIE, $_REQUEST)
+     *     $data - The array to be sanitized, usually one of @$_GET@, @$_POST@, @$_COOKIE@, or @$_REQUEST@
      */
     function sanitize_input(&$data) {
         foreach ($data as &$value)
@@ -1133,15 +1184,18 @@
 
     /**
      * Function: match
-     * Try and match a string against an array of regular expressions.
+     * Try to match a string against an array of regular expressions.
      *
      * Parameters:
      *     $try - An array of regular expressions, or a single regular expression.
      *     $haystack - The string to test.
+     *
+     * Returns:
+     *     Whether or not the match succeeded.
      */
     function match($try, $haystack) {
         if (is_string($try))
-            return preg_match($try, $haystack);
+            return (bool) preg_match($try, $haystack);
 
         foreach ($try as $needle)
             if (preg_match($needle, $haystack))
@@ -1153,6 +1207,9 @@
     /**
      * Function: cancel_module
      * Temporarily removes a module from $config->enabled_modules.
+     *
+     * Parameters:
+     *     $target - Module name to disable.
      */
      function cancel_module($target) {
         $this_disabled = array();
@@ -1223,7 +1280,11 @@
      * Function: error_panicker
      * Exits and states where the error occurred.
      */
-    function error_panicker($number, $message, $file, $line) {
+    function error_panicker($errno, $message, $file, $line) {
+        if ($errno === 0)
+            return; # Suppressed error. A bug in 5.2.6 ignores this, however.
+                    # See http://bugs.php.net/bug.php?id=46374
+
         exit("ERROR: ".$message." (".$file." on line ".$line.")");
     }
 
@@ -1282,7 +1343,7 @@
 
     /**
      * Function: init_extensions
-     * Initialize all Modules and Feathers and return them as two arrays.
+     * Initialize all Modules and Feathers.
      */
     function init_extensions() {
         $config = Config::current();
@@ -1368,7 +1429,7 @@
      * Recursively adds an array (or object I guess) to a SimpleXML object.
      *
      * Parameters:
-     *     $object - The SimpleXML object to add to.
+     *     &$object - The SimpleXML object to modify.
      *     $data - The data to add to the SimpleXML object.
      */
     function arr2xml(&$object, $data) {
@@ -1440,7 +1501,14 @@
 
     /**
      * Function: list_notate
-     * Notates an array as a list of things, e.g. "foo, bar, and baz."
+     * Notates an array as a list of things.
+     *
+     * Parameters:
+     *     $array - An array of things to notate.
+     *     $quotes - Wrap quotes around strings?
+     *
+     * Returns:
+     *     A string like "foo, bar, and baz".
      */
     function list_notate($array, $quotes = false) {
         $count = 0;

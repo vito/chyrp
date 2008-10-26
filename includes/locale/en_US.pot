@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC2\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-10-26 00:48+0000\n"
+"POT-Creation-Date: 2008-10-26 02:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -29,8 +29,8 @@ msgstr ""
 msgid "As of v2.0, Chyrp uses time zones to determine timestamps. Please set your installation to the correct timezone at <a href=\"admin/index.php?action=general_settings\">General Settings</a>."
 msgstr ""
 
-#: admin/layout/partials/post_fields.twig:82
-#: admin/layout/partials/page_fields.twig:33
+#: admin/layout/partials/post_fields.twig:81
+#: admin/layout/partials/page_fields.twig:30
 msgid "Slug"
 msgstr ""
 
@@ -38,7 +38,7 @@ msgstr ""
 msgid "Usage"
 msgstr ""
 
-#: admin/layout/partials/post_fields.twig:66
+#: admin/layout/partials/post_fields.twig:65
 #: admin/layout/pages/new_user.twig:29
 #: admin/layout/pages/manage_users.twig:31
 #: admin/layout/pages/edit_user.twig:30
@@ -237,7 +237,7 @@ msgid "An ID is required to edit a user."
 msgstr ""
 
 #: includes/controller/Admin.php:2054
-#: admin/layout/partials/post_fields.twig:94
+#: admin/layout/partials/post_fields.twig:93
 msgid "Trackbacks"
 msgstr ""
 
@@ -381,11 +381,11 @@ msgstr ""
 msgid "Website"
 msgstr ""
 
-#: includes/helpers.php:1092
+#: includes/helpers.php:1143
 msgid "404 Not Found"
 msgstr ""
 
-#: admin/layout/partials/post_fields.twig:43
+#: admin/layout/partials/post_fields.twig:42
 #: admin/layout/partials/page_fields.twig:15
 #: admin/layout/pages/bookmarklet.twig:214
 msgid "Publish"
@@ -638,7 +638,7 @@ msgstr ""
 msgid "Pingback from %s to %s registered!"
 msgstr ""
 
-#: includes/helpers.php:1451
+#: includes/helpers.php:1519
 msgid "and "
 msgstr ""
 
@@ -646,7 +646,7 @@ msgstr ""
 msgid "Create an <code>index.php</code> file in your destination directory with the following in it:"
 msgstr ""
 
-#: admin/layout/partials/post_fields.twig:64
+#: admin/layout/partials/post_fields.twig:63
 msgid "Registered Only"
 msgstr ""
 
@@ -664,9 +664,9 @@ msgid "An ID is required to delete a page."
 msgstr ""
 
 #: includes/class/Model.php:366
-#: admin/layout/partials/post_fields.twig:39
-#: admin/layout/partials/page_fields.twig:21
 #: admin/layout/pages/edit_user.twig:6
+#: admin/layout/pages/edit_post.twig:6
+#: admin/layout/pages/edit_page.twig:6
 #: admin/layout/pages/edit_group.twig:6
 msgid "Delete"
 msgstr ""
@@ -675,7 +675,7 @@ msgstr ""
 msgid "Edit Posts"
 msgstr ""
 
-#: admin/layout/partials/page_fields.twig:37
+#: admin/layout/partials/page_fields.twig:34
 msgid "Parent"
 msgstr ""
 
@@ -691,7 +691,7 @@ msgstr ""
 msgid "or wait 2 seconds."
 msgstr ""
 
-#: admin/layout/partials/post_fields.twig:78
+#: admin/layout/partials/post_fields.twig:77
 msgid "(shows this post above all others)"
 msgstr ""
 
@@ -765,7 +765,7 @@ msgstr ""
 msgid "&#171; Fewer Options"
 msgstr ""
 
-#: includes/helpers.php:73
+#: includes/helpers.php:74
 #: includes/error.php:4
 #: includes/error.php:133
 #, php-format
@@ -789,7 +789,7 @@ msgstr ""
 msgid "Module already disabled."
 msgstr ""
 
-#: admin/layout/partials/page_fields.twig:29
+#: admin/layout/partials/page_fields.twig:26
 msgid "Show in pages list?"
 msgstr ""
 
@@ -864,7 +864,7 @@ msgstr ""
 msgid "Use this to search for specific items. You can either enter plain text to match the item with, or use keywords:"
 msgstr ""
 
-#: admin/layout/partials/post_fields.twig:76
+#: admin/layout/partials/post_fields.twig:75
 msgid "Pinned?"
 msgstr ""
 
@@ -885,8 +885,8 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
-#: includes/helpers.php:915
-#: includes/helpers.php:920
+#: includes/helpers.php:957
+#: includes/helpers.php:962
 #, php-format
 msgid "Only %s files are supported."
 msgstr ""
@@ -1164,7 +1164,7 @@ msgstr ""
 msgid "Updating `status` column on `posts` table..."
 msgstr ""
 
-#: admin/layout/partials/post_fields.twig:57
+#: admin/layout/partials/post_fields.twig:56
 #: admin/layout/pages/manage_posts.twig:38
 msgid "Status"
 msgstr ""
@@ -1195,7 +1195,7 @@ msgstr ""
 msgid "Last 25 Posts"
 msgstr ""
 
-#: admin/layout/partials/post_fields.twig:60
+#: admin/layout/partials/post_fields.twig:59
 msgid "Draft"
 msgstr ""
 
@@ -1264,7 +1264,7 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
-#: admin/layout/partials/post_fields.twig:62
+#: admin/layout/partials/post_fields.twig:61
 msgid "Public"
 msgstr ""
 
@@ -1303,7 +1303,7 @@ msgstr ""
 msgid "Page not found."
 msgstr ""
 
-#: admin/layout/partials/post_fields.twig:88
+#: admin/layout/partials/post_fields.twig:87
 msgid "Timestamp"
 msgstr ""
 
@@ -1449,8 +1449,8 @@ msgstr ""
 msgid "Take me to my site! &rarr;"
 msgstr ""
 
-#: admin/layout/pages/edit_post.twig:6
-#: admin/layout/pages/edit_page.twig:6
+#: admin/layout/pages/edit_post.twig:7
+#: admin/layout/pages/edit_page.twig:7
 #, php-format
 msgid "Editing &#8220;%s&#8221;"
 msgstr ""
@@ -1533,8 +1533,8 @@ msgstr ""
 msgid "Trackbacks are special urls to posts from other blogs that your post is related to or references. The other blog will be notified of your post, and in some cases a comment will automatically be added to the post in question linking back to your post. It's basically a way to network between blogs via posts."
 msgstr ""
 
-#: includes/helpers.php:915
-#: includes/helpers.php:920
+#: includes/helpers.php:957
+#: includes/helpers.php:962
 msgid "Invalid Extension"
 msgstr ""
 
@@ -1578,7 +1578,7 @@ msgstr ""
 msgid "Groups .yaml File"
 msgstr ""
 
-#: admin/layout/partials/post_fields.twig:63
+#: admin/layout/partials/post_fields.twig:62
 msgid "Private"
 msgstr ""
 
@@ -1836,7 +1836,7 @@ msgid "Failed to write file."
 msgstr ""
 
 #: admin/layout/partials/post_fields.twig:37
-#: admin/layout/partials/post_fields.twig:47
+#: admin/layout/partials/post_fields.twig:46
 #: admin/layout/partials/page_fields.twig:17
 msgid "Save"
 msgstr ""
@@ -1891,8 +1891,8 @@ msgstr ""
 msgid "(ex. 59)"
 msgstr ""
 
-#: includes/helpers.php:931
-#: includes/helpers.php:933
+#: includes/helpers.php:973
+#: includes/helpers.php:975
 #: includes/controller/Main.php:295
 #: includes/controller/Main.php:382
 #: includes/controller/Main.php:456
@@ -2238,7 +2238,7 @@ msgstr ""
 msgid "If any of the upgrade processes fail, you can safely keep refreshing &ndash; it will only attempt to do tasks that are not already successfully completed. If you cannot figure something out, please make a topic (with details!) at the <a href=\"http://chyrp.net/community/\">Chyrp Community</a>."
 msgstr ""
 
-#: includes/helpers.php:1092
+#: includes/helpers.php:1143
 msgid "The requested page could not be located."
 msgstr ""
 

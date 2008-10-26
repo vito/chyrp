@@ -45,7 +45,7 @@ Arguments:
 not_found
 ---------
 Called from:
-	includes/helpers.php on line 1087
+	includes/helpers.php on line 1138
 	includes/ajax.php on line 27
 	includes/ajax.php on line 52
 	includes/ajax.php on line 73
@@ -92,7 +92,7 @@ Arguments:
 new_page_options
 ----------------
 Called from:
-	admin/layout/partials/page_fields.twig on line 46
+	admin/layout/partials/page_fields.twig on line 43
 
 
 before_post_fields
@@ -288,7 +288,7 @@ Called from:
 edit_page_options
 -----------------
 Called from:
-	admin/layout/partials/page_fields.twig on line 48
+	admin/layout/partials/page_fields.twig on line 45
 Arguments:
 	page
 
@@ -534,7 +534,7 @@ send_mail
 Target:
 	$function
 Called from:
-	includes/helpers.php on line 1467
+	includes/helpers.php on line 1535
 
 
 post_url_token
@@ -638,7 +638,7 @@ link_regexp
 Target:
 	$regexp
 Called from:
-	includes/helpers.php on line 600
+	includes/helpers.php on line 623
 
 
 scripts
