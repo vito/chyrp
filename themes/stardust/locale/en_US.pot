@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC2\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-10-12 17:44+0000\n"
+"POT-Creation-Date: 2008-10-26 00:48+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -21,11 +21,7 @@ msgstr ""
 msgid "Toggle Admin Bar"
 msgstr ""
 
-#: themes/stardust/pages/tag.twig:5
-msgid "Posts tagged with &#8220;%s&#8221;"
-msgstr ""
-
-#: themes/stardust/layouts/default.twig:76
+#: themes/stardust/layouts/default.twig:79
 msgid "Load Time:"
 msgstr ""
 
@@ -41,7 +37,7 @@ msgstr ""
 msgid "%B %e"
 msgstr ""
 
-#: themes/stardust/forms/comment/new.twig:4
+#: themes/stardust/forms/comment/new.twig:5
 msgid "Log Out &rarr;"
 msgstr ""
 
@@ -66,7 +62,11 @@ msgstr ""
 msgid "%B"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:79
+#: themes/stardust/pages/tag.twig:5
+msgid "Posts tagged with %s"
+msgstr ""
+
+#: themes/stardust/layouts/default.twig:82
 msgid "Queries"
 msgstr ""
 
@@ -78,7 +78,7 @@ msgstr ""
 msgid "Stardust"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:76
+#: themes/stardust/layouts/default.twig:79
 msgid "seconds"
 msgstr ""
 
@@ -86,7 +86,7 @@ msgstr ""
 msgid "More Options &#187;"
 msgstr ""
 
-#: themes/stardust/pages/tags.twig:11
+#: themes/stardust/pages/tags.twig:20
 msgid "No Tags"
 msgstr ""
 
@@ -104,6 +104,10 @@ msgstr ""
 
 #: themes/stardust/forms/post/edit.twig:61
 msgid "Trackbacks"
+msgstr ""
+
+#: themes/stardust/forms/post/edit.twig:49
+msgid "(shows this post above all others)"
 msgstr ""
 
 #: themes/stardust/layouts/default.twig:65
@@ -126,10 +130,6 @@ msgstr ""
 
 #: themes/stardust/pages/tag.twig:14
 msgid "No tag specified."
-msgstr ""
-
-#: themes/stardust/forms/post/edit.twig:49
-msgid "(shows this post above all others)"
 msgstr ""
 
 #: themes/stardust/content/comment.twig:10
@@ -155,7 +155,7 @@ msgstr[1] ""
 msgid "Lost Password?"
 msgstr ""
 
-#: themes/stardust/pages/view.twig:20
+#: themes/stardust/pages/view.twig:19
 #: themes/stardust/layouts/default.twig:61
 #: themes/stardust/content/post.twig:11
 #, php-format
@@ -202,13 +202,13 @@ msgstr ""
 msgid "Controls"
 msgstr ""
 
-#: themes/stardust/pages/tags.twig:12
+#: themes/stardust/pages/tags.twig:21
 msgid "There aren't any tags yet. Such a shame."
 msgstr ""
 
 #: themes/stardust/pages/archive.twig:16
 #: themes/stardust/pages/archive.twig:32
-#: themes/stardust/content/sidebar.twig:62
+#: themes/stardust/content/sidebar.twig:65
 msgid "%B %Y"
 msgstr ""
 
@@ -257,9 +257,13 @@ msgstr ""
 msgid "No Posts"
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:53
-#: themes/stardust/content/sidebar.twig:66
+#: themes/stardust/content/sidebar.twig:56
+#: themes/stardust/content/sidebar.twig:69
 msgid "All &rarr;"
+msgstr ""
+
+#: themes/stardust/forms/post/edit.twig:47
+msgid "Pinned?"
 msgstr ""
 
 #: themes/stardust/forms/user/login.twig:4
@@ -270,10 +274,6 @@ msgstr ""
 
 #: themes/stardust/forms/post/edit.twig:9
 msgid "(optional)"
-msgstr ""
-
-#: themes/stardust/forms/post/edit.twig:47
-msgid "Pinned?"
 msgstr ""
 
 #: themes/stardust/forms/post/edit.twig:33
@@ -291,7 +291,7 @@ msgstr ""
 msgid "Permanent Link to"
 msgstr ""
 
-#: themes/stardust/forms/comment/new.twig:5
+#: themes/stardust/forms/comment/new.twig:6
 #, php-format
 msgid "Logged in as %s"
 msgstr ""
@@ -320,11 +320,11 @@ msgstr ""
 msgid "No Results"
 msgstr ""
 
-#: themes/stardust/forms/comment/new.twig:29
+#: themes/stardust/forms/comment/new.twig:34
 msgid "Speak"
 msgstr ""
 
-#: themes/stardust/forms/comment/new.twig:12
+#: themes/stardust/forms/comment/new.twig:11
 msgid "Your Name"
 msgstr ""
 
@@ -346,6 +346,14 @@ msgid "%s Comment"
 msgid_plural "%s Comments"
 msgstr[0] ""
 msgstr[1] ""
+
+#: themes/stardust/pages/view.twig:26
+msgid "Comments are not accepted on this entry."
+msgstr ""
+
+#: themes/stardust/pages/tags.twig:14
+msgid "To view posts that have tag combinations, separate the tags with \"+\" in the URL (see example below), or view one and click the plus signs next to the tags in the sidebar."
+msgstr ""
 
 #: themes/stardust/pages/archive.twig:29
 msgid "%B %e, %Y"
@@ -371,21 +379,25 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:84
+#: themes/stardust/forms/post/edit.twig:37
+msgid "Group"
+msgstr ""
+
+#: themes/stardust/layouts/default.twig:87
 #, php-format
 msgid "Called from <strong>%s</strong> on line <strong>%d</strong>."
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:73
+#: themes/stardust/layouts/default.twig:74
+msgid "Toggle"
+msgstr ""
+
+#: themes/stardust/layouts/default.twig:75
 msgid "Stats"
 msgstr ""
 
 #: themes/stardust/forms/post/edit.twig:34
 msgid "Private"
-msgstr ""
-
-#: themes/stardust/forms/post/edit.twig:37
-msgid "Group"
 msgstr ""
 
 #: themes/stardust/pages/drafts.twig:11
@@ -397,7 +409,7 @@ msgstr ""
 msgid "<strong>%s</strong> on <a href=\"%s\" class=\"permalink\">%s</a>"
 msgstr ""
 
-#: themes/stardust/forms/comment/new.twig:20
+#: themes/stardust/forms/comment/new.twig:19
 msgid "Your Website"
 msgstr ""
 
@@ -405,7 +417,7 @@ msgstr ""
 msgid "Write"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:75
+#: themes/stardust/layouts/default.twig:78
 msgid "Queries:"
 msgstr ""
 
@@ -420,7 +432,7 @@ msgid "Search results for &#8220;%s&#8221;"
 msgstr ""
 
 #: themes/stardust/pages/archive.twig:10
-#: themes/stardust/content/sidebar.twig:58
+#: themes/stardust/content/sidebar.twig:61
 msgid "Archives"
 msgstr ""
 
@@ -428,7 +440,7 @@ msgstr ""
 msgid "Comments"
 msgstr ""
 
-#: themes/stardust/forms/comment/new.twig:16
+#: themes/stardust/forms/comment/new.twig:15
 msgid "Your E-Mail"
 msgstr ""
 

@@ -51,11 +51,8 @@
                 $this->end_tags_for[$page->id] = $this->children[$page->id] = array();
 
             foreach ($pages as $page)
-                if ($page->parent_id != 0) {
+                if ($page->parent_id != 0)
                     $this->children[$page->parent_id][] = $page;
-                    $page->depth = 1;
-                } else
-                    $page->depth = 1;
 
             foreach ($pages as $page)
                 if ((!$start and $page->parent_id == 0) or ($start and $page->id == $start))
@@ -63,7 +60,6 @@
 
             $array = array();
 
-            $depth = 1;
             foreach (oneof($this->pages_flat, array()) as $page) {
                 $array[$page->id] = array();
                 $my_array =& $array[$page->id];
