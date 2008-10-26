@@ -110,8 +110,8 @@
                 $model_name = "user";
 
             # Is this model already in the cache?
-            if (isset(self::$caches[$model_name][$id])) {
-                foreach (self::$caches[$model_name][$id] as $attr => $val)
+            if (isset(self::$caches[$model_name][serialize($id)])) {
+                foreach (self::$caches[$model_name][serialize($id)] as $attr => $val)
                     $model->$attr = $val;
 
                 return;
@@ -198,7 +198,7 @@
             if (isset($model->updated_at))
                 $model->updated = $model->updated_at != "0000-00-00 00:00:00";
 
-            self::$caches[$model_name][$read["id"]] = clone $model;
+            self::$caches[$model_name][serialize($id)] = clone $model;
         }
 
         /**

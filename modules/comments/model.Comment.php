@@ -50,7 +50,7 @@
          *     <Model::search>
          */
         static function find($options = array(), $options_for_object = array()) {
-            return parent::search($options, $options_for_object);
+            return parent::search(get_class(), $options, $options_for_object);
         }
 
         /**
