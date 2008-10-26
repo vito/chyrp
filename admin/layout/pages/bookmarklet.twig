@@ -89,7 +89,7 @@
                 padding: 1em;
                 position: absolute;
                 z-index: 100;
-{% if site.enabled_feathers | length == 1 %}
+                {% if site.enabled_feathers | length == 1 %}
                 position: absolute;
                 border: 0;
                 top: 1em;
@@ -97,7 +97,7 @@
                 bottom: 1em;
                 right: 1em;
                 height: auto;
-{% endif %}
+                {% endif %}
             }
             .clear {
                 clear: both;
@@ -167,7 +167,7 @@
         </script>
     </head>
     <body>
-{% if site.enabled_feathers | length > 1 %}
+        {% if site.enabled_feathers | length > 1 %}
         <ul class="navigation">
             {% for feather in feathers %}
             <li id="list_feathers[$feather.safename]" class="nav_$feather.safename${ feather.safename | selected(selected_feather.safename, true) }">
@@ -176,7 +176,7 @@
             {% endfor %}
         </ul>
         <div class="clear"></div>
-{% endif %}
+        {% endif %}
         <div class="content">
             {% for feather in feathers %}
             <form action="$site.chyrp_url/admin/?action=add_post" id="${ feather.safename }_form"{% if feather.safename != selected_feather.safename %} style="display: none"{% endif %} method="post" accept-charset="utf-8" enctype="multipart/form-data">

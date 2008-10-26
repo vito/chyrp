@@ -49,13 +49,13 @@
                         <td>$post.status_name</td>
                         <td>$post.user.login</td>
                         ${ trigger.call("manage_posts_column", post) }
-{% if post.editable and post.deletable %}
+                        {% if post.editable and post.deletable %}
                         <td class="controls">${ post.edit_link('<img src="images/icons/edit.png" alt="edit" /> '~("edit" | translate)) }</td>
                         <td class="controls">${ post.delete_link('<img src="images/icons/delete.png" alt="delete" /> '~("delete" | translate)) }</td>
-{% elseif post.editable or post.deletable %}
+                        {% elseif post.editable or post.deletable %}
                         ${ post.edit_link('<img src="images/icons/edit.png" alt="edit" /> '~("edit" | translate), '<td class="controls" colspan="2">', '</td>') }
                         ${ post.delete_link('<img src="images/icons/delete.png" alt="delete" /> '~("delete" | translate), '<td class="controls" colspan="2">', '</td>') }
-{% endif %}
+                        {% endif %}
                     </tr>
                 {% else %}
                     <tr class="last">

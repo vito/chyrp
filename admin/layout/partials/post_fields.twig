@@ -32,11 +32,11 @@
                     ${ trigger.call("after_post_fields", feather) }
 
                     <div class="buttons">
-{% if route.action == "edit_post" %}
+                        {% if route.action == "edit_post" %}
                         <button type="submit" class="yay right" accesskey="s" id="save">
                             <img src="images/icons/success.png" alt="success" />${ "Save" | translate }
                         </button>
-{% else %}
+                        {% else %}
                         {% if visitor.group.can("add_post") %}
                         <button type="submit" class="yay right" accesskey="s" id="publish">
                             <img src="images/icons/success.png" alt="success" />${ "Publish" | translate }
@@ -45,7 +45,7 @@
                         <button type="submit" class="right" accesskey="s" id="save" name="draft" value="true">
                             <img src="images/icons/save.png" alt="success" />${ "Save" | translate }
                         </button>
-{% endif %}
+                        {% endif %}
                     </div>
 
                     <div class="clear"></div>
@@ -55,9 +55,9 @@
                         <p>
                             <label for="status">${ "Status" | translate }</label>
                             <select name="status" id="status">
-{% if route.action == "edit_post" %}
+                                {% if route.action == "edit_post" %}
                                 <option value="draft"${ post.status | option_selected("draft") }>${ "Draft" | translate }</option>
-{% endif %}
+                                {% endif %}
                                 <option value="public"${ post.status | option_selected("public") }>${ "Public" | translate }</option>
                                 <option value="private"${ post.status | option_selected("private") }>${ "Private" | translate }</option>
                                 <option value="registered_only"${ post.status | option_selected("registered_only") }>${ "Registered Only" | translate }</option>

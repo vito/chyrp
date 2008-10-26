@@ -7,7 +7,7 @@
             <h1>${ "Editing User &#8220;%s&#8221;" | translate | format(user.login | escape) }</h1>
             <form id="user_edit" class="split" action="{% admin "update_user" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
                 <fieldset>
-                    <h2>Information</h2>
+                    <h2>${ "Information" | translate }</h2>
                     <p>
                         <label for="full_name">${ "Full Name" | translate }</label>
                         <input class="text" type="text" name="full_name" value="${ user.full_name | escape }" id="full_name" />
@@ -21,7 +21,7 @@
                         <input class="text" type="text" name="website" value="${ user.website | escape }" id="website" />
                     </p>
 
-                    <h2>Settings</h2>
+                    <h2>${ "Settings" | translate }</h2>
                     <p>
                         <label for="login">${ "Login" | translate }</label>
                         <input class="text" type="text" name="login" value="${ user.login | escape }" id="full_name" />

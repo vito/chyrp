@@ -19,7 +19,7 @@
                             <li><strong>${ "Group:" | translate }</strong> $user.group.name</li>
                         </ul>
                         <br />
-{% if user.posts %}
+                        {% if user.posts %}
                         <h2>${ "Posts:" | translate }</h2>
                         <ul>
                             {% for post in user.posts %}
@@ -45,8 +45,8 @@
                         </h2>
                         <br />
                         <br />
-{% endif %}
-{% if user.pages %}
+                        {% endif %}
+                        {% if user.pages %}
                         <h2>${ "Pages:" | translate }</h2>
                         <ul>
                             {% for page in user.pages %}
@@ -72,7 +72,7 @@
                         </h2>
                         <br />
                         <br />
-{% endif %}
+                        {% endif %}
 ${ trigger.call("delete_user_form") }
                     </blockquote>
                     <br />

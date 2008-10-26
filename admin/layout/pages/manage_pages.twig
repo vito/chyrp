@@ -38,13 +38,13 @@
                         <td>{% if page.updated %}${ page.updated_at | strftime }{% else %}<span class="sub">${ "never" | translate }</span>{% endif %}</td>
                         <td>$page.user.login</td>
                         ${ trigger.call("manage_pages_column", page) }
-{% if visitor.group.can("edit_page", "delete_page", true) %}
+                        {% if page.editable and page.deletable %}
                         <td class="controls">${ page.edit_link('<img src="images/icons/edit.png" alt="edit" /> '~("edit" | translate)) }</td>
                         <td class="controls">${ page.delete_link('<img src="images/icons/delete.png" alt="delete" /> '~("delete" | translate)) }</td>
-{% else %}
+                        {% else %}
                         ${ page.edit_link('<img src="images/icons/edit.png" alt="edit" /> '~("edit" | translate), '<td class="controls" colspan="2">', '</td>') }
                         ${ page.delete_link('<img src="images/icons/delete.png" alt="delete" /> '~("delete" | translate), '<td class="controls" colspan="2">', '</td>') }
-{% endif %}
+                        {% endif %}
                     </tr>
                 {% else %}
                     <tr class="last">

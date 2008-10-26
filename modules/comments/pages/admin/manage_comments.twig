@@ -21,7 +21,7 @@
             </form>
             <br />
             <form action="{% admin "bulk_comments" %}" method="post">
-{% if visitor.group.can("edit_comment", "delete_comment") %}
+                {% if visitor.group.can("edit_comment", "delete_comment") %}
                 <div class="controls right">
                     <h4>${ "With selected:" | translate("comments") }</h4>
                     <button class="lite" name="deny">
@@ -37,7 +37,7 @@
                         <img src="images/icons/delete.png" alt="delete" /> ${ "delete" | translate("comments") }
                     </button>
                 </div>
-{% endif %}
+                {% endif %}
                 <h2>{% if GET.query %}${ "Search Results" | translate }{% else %}${ "Last 25 Comments" | translate("comments") }{% endif %}</h2>
                 <table border="0" cellspacing="0" cellpadding="0" class="wide">
                     <thead>
@@ -52,7 +52,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                    {% for comment in comments.paginated %}
+                        {% for comment in comments.paginated %}
                         <tr id="comment_$comment.id" class="comment $comment.status{% if loop.last %} last{% endif %}">
                             <td rowspan="2" class="checkbox center">
                                 <input type="checkbox" name="comment[$comment.id]" value="" id="comment_checkbox_$comment.id" />
@@ -66,25 +66,25 @@
                             <td>${ comment.created_at | strftime }</td>
                             <td>${ comment.status | capitalize | translate("comments") }</td>
                             ${ trigger.call("manage_comments_column", comment) }
-{% if comment.editable and comment.deletable %}
+                            {% if comment.editable and comment.deletable %}
                             <td class="controls">${ comment.edit_link('<img src="images/icons/edit.png" alt="edit" /> '~("edit" | translate)) }</td>
                             <td class="controls">${ comment.delete_link('<img src="images/icons/delete.png" alt="delete" /> '~("delete" | translate)) }</td>
-{% elseif comment.editable or comment.deletable %}
+                            {% elseif comment.editable or comment.deletable %}
                             ${ comment.edit_link('<img src="images/icons/edit.png" alt="edit" /> '~("edit" | translate), '<td class="controls" colspan="2">', '</td>') }
                             ${ comment.delete_link('<img src="images/icons/delete.png" alt="delete" /> '~("delete" | translate), '<td class="controls" colspan="2">', '</td>') }
-{% endif %}
+                            {% endif %}
                         </tr>
                         <tr class="excerpt">
                             <td colspan="6">${ comment.body | truncate(100) }</td>
                         </tr>
-                    {% else %}
+                        {% else %}
                         <tr class="last">
                             <td colspan="6" class="center"><span class="sub">${ "(none)" | translate }</span></td>
                         </tr>
-                    {% endfor %}
+                        {% endfor %}
                     </tbody>
                 </table>
-{% if visitor.group.can("edit_comment", "delete_comment") %}
+                {% if visitor.group.can("edit_comment", "delete_comment") %}
                 <br />
                 <div class="controls">
                     <h4>${ "With selected:" | translate("comments") }</h4>
@@ -101,7 +101,7 @@
                         <img src="images/icons/delete.png" alt="delete" /> ${ "delete" | translate("comments") }
                     </button>
                 </div>
-{% endif %}
+                {% endif %}
             </form>
             <br />
             <div class="pagination">

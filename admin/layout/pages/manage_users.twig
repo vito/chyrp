@@ -49,13 +49,13 @@
                         <td>${ user.joined_at | strftime }</td>
                         <td>{% if user.website != "" %}<a href="$user.website">$user.website</a>{% endif %}</td>
                         ${ trigger.call("manage_users_column", user) }
-{% if visitor.group.can("edit_user", "delete_user", true) %}
+                        {% if user.editable and user.deletable %}
                         <td class="controls">${ user.edit_link('<img src="images/icons/edit.png" alt="edit" /> '~("edit" | translate)) }</td>
                         <td class="controls">${ user.delete_link('<img src="images/icons/delete.png" alt="delete" /> '~("delete" | translate)) }</td>
-{% else %}
+                        {% else %}
                         ${ user.edit_link('<img src="images/icons/edit.png" alt="edit" /> '~("edit" | translate), '<td class="controls" colspan="2">', '</td>') }
                         ${ user.delete_link('<img src="images/icons/delete.png" alt="delete" /> '~("delete" | translate), '<td class="controls" colspan="2">', '</td>') }
-{% endif %}
+                        {% endif %}
                     </tr>
                 {% else %}
                     <tr class="last">

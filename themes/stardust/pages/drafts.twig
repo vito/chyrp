@@ -4,10 +4,10 @@
 {% if posts.paginated %}
                     <h1>${ "Drafts" | translate }</h1>
 {% endif %}
-{% for post in posts.paginated %}
+                    {% for post in posts.paginated %}
 {% include "feathers/" ~ post.feather ~ ".twig" %}
-{% else %}
+                    {% else %}
                     <h1>${ "No Drafts" | translate }</h1>
                     <p>${ "You don't have any drafts." | translate }</p>
-{% endfor %}
+                    {% endfor %}
 {% endblock %}

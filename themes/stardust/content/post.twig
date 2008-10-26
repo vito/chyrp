@@ -30,11 +30,11 @@
                             ${ "Tags" | translate }: ${ post.linked_tags | join(", ") }
                             {% endif %}
                         </span>
-{% if post.editable or post.deletable %}
+                        {% if post.editable or post.deletable %}
                         <span class="controls">
                             $post.edit_link
                             ${ post.delete_link("Delete" | translate, " | ") }
                         </span>
-{% endif %}
+                        {% endif %}
                         <div class="clear"></div>
                     </div>

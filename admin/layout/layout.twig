@@ -15,11 +15,11 @@ ${ trigger.call("admin_head") }
             <div class="column">
                 <ul id="navigation">
 {% block navigation %}
-{% for action, nav in navigation | items %}
+                    {% for action, nav in navigation | items %}
                     {% if nav.show %}
                     <li class="$action{% if nav.selected %} selected{% endif %}"$nav.attributes><a href="{% admin action %}">$nav.title</a></li>
                     {% endif %}
-{% endfor %}
+                    {% endfor %}
 {% endblock %}
                 </ul>
                 <h1>$site.name</h1>
@@ -34,13 +34,13 @@ ${ trigger.call("admin_head") }
         </div>
         <ul class="column ${ route.action }_nav" id="sub-nav">
 {% block subnav %}
-{% if subnav[route.action] %}
-{% for action, nav in subnav[route.action] | items %}
+            {% if subnav[route.action] %}
+            {% for action, nav in subnav[route.action] | items %}
             {% if nav.show %}
             <li${ route.action | selected(nav.selected, action) }$nav.attributes><a href="{% admin action %}">$nav.title</a></li>
             {% endif %}
-{% endfor %}
-{% endif %}
+            {% endfor %}
+            {% endif %}
 {% endblock %}
         </ul>
         <div class="clear"></div>

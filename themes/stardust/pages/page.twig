@@ -2,10 +2,16 @@
 
 {% block content %}
                 <div class="page">
-                    {% if visitor.group.can("edit_page", "delete_page") %}
+                    {% if page.editable and page.deletable %}
                     <span class="controls right">
                         $page.edit_link
-                        ${ page.delete_link("Delete" | translate, " | ") }
+                        |
+                        $page.delete_link
+                    </span>
+                    {% elseif page.editable or page.deletable %}
+                    <span class="controls right">
+                        $page.edit_link
+                        $page.delete_link
                     </span>
                     {% endif %}
                     <h1>$page.title</h1>

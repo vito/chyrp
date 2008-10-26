@@ -39,10 +39,10 @@
                                 {% endfor %}
                             </select>
                         </p>
-{% if route.action == "write_page" %}
+                        {% if route.action == "write_page" %}
                         ${ trigger.call("new_page_options") }
-{% else %}
+                        {% else %}
                         ${ trigger.call("edit_page_options", page) }
-{% endif %}
+                        {% endif %}
                         <div class="clear"></div>
                     </div>

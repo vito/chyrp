@@ -406,6 +406,9 @@
 
                 $popularity = array_count_values($names);
 
+                if (empty($popularity))
+                    return $main->resort("pages/tags", array("tag_cloud" => array()), __("No Tags", "tags"));
+
                 $max_qty = max($popularity);
                 $min_qty = min($popularity);
 

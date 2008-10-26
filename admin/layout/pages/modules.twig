@@ -7,7 +7,7 @@
             <div class="enable module left">
                 <h2>${ "Enabled" | translate }</h2>
                 <ul class="extend">
-{% for safename, module in enabled_modules | items %}
+                    {% for safename, module in enabled_modules | items %}
                     <li class="${ module.classes | join(" ") }" id="module_$safename">
                         <a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
                         {% if module.help %}
@@ -32,13 +32,13 @@
                             {% endif %}
                         </div>
                     </li>
-{% endfor %}
+                    {% endfor %}
                 </ul>
             </div>
             <div class="disable module right">
                 <h2>${ "Disabled" | translate }</h2>
                 <ul class="extend">
-{% for safename, module in disabled_modules | items %}
+                    {% for safename, module in disabled_modules | items %}
                     <li class="${ module.classes | join(" ") }" id="module_$safename">
                         <a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
                         {% if module.help %}
@@ -63,7 +63,7 @@
                             {% endif %}
                         </div>
                     </li>
-{% endfor %}
+                    {% endfor %}
                 </ul>
             </div>
             <div class="clear"></div>

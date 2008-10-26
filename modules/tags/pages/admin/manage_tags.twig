@@ -41,7 +41,7 @@
                         <li class="odd js_enabled toggler">
                             <h3 class="inline sub">${ "Toggle All" | translate }</h3>
                         </li>
-                    {% for post in posts.paginated %}
+                        {% for post in posts.paginated %}
                         <li class="{% if loop.index | odd %}even{% else %}odd{% endif %}">
                             <input type="checkbox" name="post[$loop.index0]" value="$post.id" id="post_checkbox_$post.id" />
                             <h3 class="inline"><a href="$post.url">${ post.title | truncate | fallback((post.feather | capitalize) ~ " #" ~ post.id) }</a></h3>
@@ -50,11 +50,11 @@
                             {% endfor %}
                             <a class="edit_tag" href="{% admin "edit_tags&id="~ post.id %}"><img src="images/icons/edit.png" alt="edit" /></a>
                         </li>
-                    {% else %}
+                        {% else %}
                         <li>
                             <span class="sub">${ "(none)" | translate }</span>
                         </li>
-                    {% endfor %}
+                        {% endfor %}
                     </ul>
                     <div class="left pad">
                         <h3>${ "Tag Selected:" | translate("tags") }</h3>

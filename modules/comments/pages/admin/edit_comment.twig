@@ -33,7 +33,7 @@
                             <label for="author_url">${ "Author Website" | translate }</label>
                             <input class="text" type="text" name="author_url" value="${ comment.author_url | escape }" id="author_url" />
                         </p>
-{% if visitor.group.can("edit_comment") %}
+                        {% if visitor.group.can("edit_comment") %} {# If they can edit all comments, not just this one. #}
                         <p>
                             <label for="status">${ "Status" | translate }</label>
                             <select name="status" id="status">
@@ -48,7 +48,7 @@
                             <label for="created_at">${ "Timestamp" | translate }</label>
                             <input class="text" type="text" name="created_at" value="${ comment.created_at | strftime }" id="created_at" />
                         </p>
-{% endif %}
+                        {% endif %}
                         ${ trigger.call("edit_comment_options", comment) }
                         <div class="clear"></div>
                     </div>

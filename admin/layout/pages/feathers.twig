@@ -7,7 +7,7 @@
             <div class="enable feather left">
                 <h2>${ "Enabled" | translate }</h2>
                 <ul class="extend">
-{% for safename, feather in enabled_feathers | items %}
+                    {% for safename, feather in enabled_feathers | items %}
                     <li class="$safename">
                         <a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
                         {% if feather.help %}
@@ -21,13 +21,13 @@
                             <noscript><a class="enable_button" href="{% admin "disable&feather="~safename %}">${ "Disable" | translate }</a></noscript>
                         </div>
                     </li>
-{% endfor %}
+                    {% endfor %}
                 </ul>
             </div>
             <div class="disable feather right">
                 <h2>${ "Disabled" | translate }</h2>
                 <ul class="extend">
-{% for safename, feather in disabled_feathers | items %}
+                    {% for safename, feather in disabled_feathers | items %}
                     <li class="$safename">
                         <a class="$safename info_link" href="javascript:void(0)"><img src="images/icons/info.png" class="info right" /></a>
                         {% if feather.help %}
@@ -41,7 +41,7 @@
                             <noscript><a class="disable_button" href="{% admin "enable&feather="~safename %}">${ "Enable" | translate }</a></noscript>
                         </div>
                     </li>
-{% endfor %}
+                    {% endfor %}
                 </ul>
             </div>
             <div class="clear tip_here"></div>

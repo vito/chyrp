@@ -7,7 +7,7 @@
             <form class="delete{% if group.id == visitor.group.id %} confirm{% endif %}" action="{% admin "destroy_group" %}" method="post" accept-charset="utf-8">
                 <fieldset>
                     <blockquote class="noitalic">
-{% if group.members %}
+                        {% if group.members %}
                         <h2>${ "Members:" | translate }</h2>
                         <ul>
                             {% for member in group.members %}
@@ -25,8 +25,8 @@
                         <br />
                         {% endif %}
                         <br />
-{% endif %}
-{% if group.id == site.default_group and groups %}
+                        {% endif %}
+                        {% if group.id == site.default_group and groups %}
                         <h2 class="inline">${ "New default group:" | translate }</h2>
                         <select name="default_group" id="default_group" class="big2">
                             {% for group in groups %}
@@ -35,8 +35,8 @@
                         </select>
                         <br />
                         <br />
-{% endif %}
-{% if group.id == site.guest_group and groups %}
+                        {% endif %}
+                        {% if group.id == site.guest_group and groups %}
                         <h2 class="inline">${ "New &#8220;guest&#8221; group:" | translate }</h2>
                         <select name="guest_group" id="guest_group" class="big2">
                             {% for group in groups %}
@@ -45,7 +45,7 @@
                         </select>
                         <br />
                         <br />
-{% endif %}
+                        {% endif %}
                     </blockquote>
 
                     <div class="center">
