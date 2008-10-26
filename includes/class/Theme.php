@@ -51,6 +51,9 @@
             $where = ADMIN ? array("id not" => $exclude) : array("show_in_list" => true) ;
             $pages = Page::find(array("where" => $where, "order" => "list_order ASC"));
 
+            if (empty($pages))
+                return $this->pages_list[$start] = $array;
+
             foreach ($pages as $page)
                 $this->end_tags_for[$page->id] = $this->children[$page->id] = array();
 
@@ -63,18 +66,14 @@
                     $this->recurse_pages($page);
 
             $array = array();
-
-            foreach (oneof($this->pages_flat, array()) as $page) {
-                $array[$page->id] = array();
-                $my_array =& $array[$page->id];
-
-                $my_array["has_children"] = !empty($this->children[$page->id]);
+            foreach ($this->pages_flat as $page) {
+                $array[$page->id]["has_children"] = !empty($this->children[$page->id]);
 
                 if ($my_array["has_children"])
                     $this->end_tags_for[$this->get_last_linear_child($page->id)][] = array("</ul>", "</li>");
 
-                $my_array["end_tags"] =& $this->end_tags_for[$page->id];
-                $my_array["page"] = $page;
+                $array[$page->id]["end_tags"] =& $this->end_tags_for[$page->id];
+                $array[$page->id]["page"] = $page;
             }
 
             return $this->pages_list[$start] = $array;
