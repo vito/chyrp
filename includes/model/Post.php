@@ -308,7 +308,7 @@
             $old = clone $this;
 
             # Update all values of this post.
-            foreach (array("user_id", "pinned", "status", "url" "created_at", "updated_at") as $attr)
+            foreach (array("user_id", "pinned", "status", "url", "created_at", "updated_at") as $attr)
                 $this->$attr = $$attr;
 
             $sql = SQL::current();
