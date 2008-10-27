@@ -19,7 +19,7 @@
                     $flash_url                    = $config->chyrp_url."/modules/swfupload/lib/swfupload.swf";
                     $file_types                   = "*";
                     $file_types_description       = "All Files";
-                    $debug                        = true;
+                    $debug                        = false;
                     $file_queue_error_handler     = "fileQueueError";
                     $file_dialog_complete_handler = "fileDialogComplete";
                     $upload_start_handler         = "uploadStart";

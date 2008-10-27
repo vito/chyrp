@@ -577,6 +577,9 @@ table tbody tr td {
     border-bottom: 1px solid #eee;
     vertical-align: middle;
 }
+table tbody tr td p {
+    margin: .5em 0;
+}
 table tbody tr td.main {
     background: #f9f9f9;
     font-weight: bold;

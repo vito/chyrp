@@ -62,6 +62,7 @@ $twig_filters = array(
     'reverse' =>          'array_reverse',
     'length' =>           'twig_length_filter',
     'count' =>            'count',
+    'sort' =>             'twig_sort_filter',
 
     // iteration and runtime
     'default' =>          'twig_default_filter',
@@ -463,4 +464,9 @@ function twig_escape_filter($string, $quotes = true, $decode = true) {
 
 function twig_truncate_filter($text, $length = 100, $ending = "...", $exact = false, $html = true) {
     return truncate($text, $length, $ending, $exact, $html);
+}
+
+function twig_sort_filter($array) {
+    asort($array);
+    return $array;
 }
