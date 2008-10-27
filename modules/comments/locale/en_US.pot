@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC2\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-10-26 03:54+0000\n"
+"POT-Creation-Date: 2008-10-27 20:18+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -261,7 +261,7 @@ msgstr ""
 msgid "Comment Status"
 msgstr ""
 
-#: modules/comments/model.Comment.php:105
+#: modules/comments/model.Comment.php:110
 msgid "Your comment has been marked as spam. It will have to be approved before it will show up."
 msgstr ""
 

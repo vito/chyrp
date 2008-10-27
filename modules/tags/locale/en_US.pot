@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC2\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-10-26 03:54+0000\n"
+"POT-Creation-Date: 2008-10-27 20:18+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -33,6 +33,10 @@ msgstr ""
 #: modules/tags/pages/admin/rename_tag.twig:6
 #, php-format
 msgid "Edit Tag &#8220;%s&#8221;"
+msgstr ""
+
+#: modules/tags/tags.php:410
+msgid "No Tags"
 msgstr ""
 
 #: modules/tags/tags.php:371
@@ -99,7 +103,7 @@ msgid "You don't have any tags."
 msgstr ""
 
 #: modules/tags/tags.php:177
-#: modules/tags/tags.php:423
+#: modules/tags/tags.php:426
 #, php-format
 msgid "%s post tagged with &quot;%s&quot;"
 msgid_plural "%s posts tagged with &quot;%s&quot;"
@@ -119,7 +123,7 @@ msgstr ""
 #: modules/tags/tags.php:46
 #: modules/tags/tags.php:122
 #: modules/tags/tags.php:133
-#: modules/tags/tags.php:427
+#: modules/tags/tags.php:430
 msgid "Tags"
 msgstr ""
 

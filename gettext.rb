@@ -50,7 +50,7 @@ class Gettext
   def initialize(start)
     @start, @files, @translations = start, [], {}
 
-    @domain = (OPTIONS[:domain].nil? or OPTIONS[:domain] == "theme") ? "" : ', "'+OPTIONS[:domain]+'"'
+    @domain = (OPTIONS[:domain].nil?) ? "" : ', "'+OPTIONS[:domain]+'"'
     @twig_domain = (OPTIONS[:domain].nil? or OPTIONS[:domain] == "theme") ? "" : '\("'+OPTIONS[:domain]+'"\)'
 
     prepare_files

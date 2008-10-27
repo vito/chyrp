@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC2\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-10-26 03:54+0000\n"
+"POT-Creation-Date: 2008-10-27 20:18+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -45,12 +45,12 @@ msgstr ""
 msgid "Pages"
 msgstr ""
 
-#: themes/stardust/forms/user/register.twig:15
-msgid "Password "
-msgstr ""
-
 #: themes/stardust/forms/post/edit.twig:35
 msgid "Registered Only"
+msgstr ""
+
+#: themes/stardust/forms/user/register.twig:15
+msgid "Password "
 msgstr ""
 
 #: themes/stardust/forms/user/register.twig:19
@@ -86,7 +86,7 @@ msgstr ""
 msgid "More Options &#187;"
 msgstr ""
 
-#: themes/stardust/pages/tags.twig:20
+#: themes/stardust/pages/tags.twig:11
 msgid "No Tags"
 msgstr ""
 
@@ -96,6 +96,11 @@ msgstr ""
 
 #: themes/stardust/content/comment.twig:11
 msgid "%B %e, %Y, at %I:%M %p"
+msgstr ""
+
+#: themes/stardust/content/post.twig:36
+#: themes/stardust/content/comment.twig:9
+msgid "Delete"
 msgstr ""
 
 #: themes/stardust/content/sidebar.twig:29
@@ -114,18 +119,12 @@ msgstr ""
 msgid "Powered by <a class=\"chyrp\" href=\"http://chyrp.net/\">Chyrp</a>"
 msgstr ""
 
-#: themes/stardust/pages/tags.twig:6
+#: themes/stardust/pages/tags.twig:5
 msgid "Tag Maelstrom"
 msgstr ""
 
 #: themes/stardust/forms/user/controls.twig:23
 msgid "Confirm"
-msgstr ""
-
-#: themes/stardust/pages/page.twig:8
-#: themes/stardust/content/post.twig:36
-#: themes/stardust/content/comment.twig:9
-msgid "Delete"
 msgstr ""
 
 #: themes/stardust/pages/tag.twig:14
@@ -143,13 +142,6 @@ msgstr ""
 #: themes/stardust/content/post.twig:5
 msgid "!"
 msgstr ""
-
-#: themes/stardust/content/sidebar.twig:49
-#, php-format
-msgid "%d post tagged &quot;%s&quot;"
-msgid_plural "%d posts tagged &quot;%s&quot;"
-msgstr[0] ""
-msgstr[1] ""
 
 #: themes/stardust/content/sidebar.twig:39
 msgid "Lost Password?"
@@ -202,7 +194,7 @@ msgstr ""
 msgid "Controls"
 msgstr ""
 
-#: themes/stardust/pages/tags.twig:21
+#: themes/stardust/pages/tags.twig:12
 msgid "There aren't any tags yet. Such a shame."
 msgstr ""
 
@@ -340,18 +332,19 @@ msgstr ""
 msgid "Add Page"
 msgstr ""
 
-#: themes/stardust/content/post.twig:26
-#, php-format
-msgid "%s Comment"
-msgid_plural "%s Comments"
-msgstr[0] ""
-msgstr[1] ""
-
 #: themes/stardust/pages/view.twig:26
 msgid "Comments are not accepted on this entry."
 msgstr ""
 
-#: themes/stardust/pages/tags.twig:14
+#: themes/stardust/javascripts/theme.js.php:18
+msgid "Search..."
+msgstr ""
+
+#: themes/stardust/javascripts/theme.js.php:10
+msgid "(click to hide)"
+msgstr ""
+
+#: themes/stardust/pages/tags.twig:18
 msgid "To view posts that have tag combinations, separate the tags with \"+\" in the URL (see example below), or view one and click the plus signs next to the tags in the sidebar."
 msgstr ""
 

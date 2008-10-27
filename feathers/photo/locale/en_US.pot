@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC2\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-10-26 03:54+0000\n"
+"POT-Creation-Date: 2008-10-27 20:18+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -30,14 +30,14 @@ msgstr ""
 msgid "Photo"
 msgstr ""
 
-#: feathers/photo/photo.php:133
+#: feathers/photo/photo.php:134
 msgid "Alt-Text"
 msgstr ""
 
 #: feathers/photo/photo.php:11
-#: feathers/photo/photo.php:38
-#: feathers/photo/photo.php:48
-#: feathers/photo/photo.php:138
+#: feathers/photo/photo.php:39
+#: feathers/photo/photo.php:49
+#: feathers/photo/photo.php:139
 msgid "From URL?"
 msgstr ""
 

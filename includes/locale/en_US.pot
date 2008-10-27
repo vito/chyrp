@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC2\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-10-26 03:54+0000\n"
+"POT-Creation-Date: 2008-10-27 20:18+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -352,6 +352,12 @@ msgstr ""
 msgid "Author"
 msgstr ""
 
+#: admin/layout/pages/new_user.twig:19
+#: admin/layout/pages/manage_users.twig:33
+#: admin/layout/pages/edit_user.twig:20
+msgid "Website"
+msgstr ""
+
 #: upgrade.php:878
 msgid "Creating `permissions` table..."
 msgstr ""
@@ -373,12 +379,6 @@ msgstr ""
 #: includes/controller/Admin.php:248
 #: includes/controller/Admin.php:438
 msgid "An ID is required to delete a post."
-msgstr ""
-
-#: admin/layout/pages/new_user.twig:19
-#: admin/layout/pages/manage_users.twig:33
-#: admin/layout/pages/edit_user.twig:20
-msgid "Website"
 msgstr ""
 
 #: includes/helpers.php:1143
@@ -469,6 +469,8 @@ msgid "Back"
 msgstr ""
 
 #: includes/controller/Admin.php:2255
+#: admin/layout/pages/new_user.twig:23
+#: admin/layout/pages/edit_user.twig:24
 msgid "Settings"
 msgstr ""
 
@@ -663,7 +665,7 @@ msgstr ""
 msgid "An ID is required to delete a page."
 msgstr ""
 
-#: includes/class/Model.php:378
+#: includes/class/Model.php:391
 #: admin/layout/pages/edit_user.twig:6
 #: admin/layout/pages/edit_post.twig:6
 #: admin/layout/pages/edit_page.twig:6
@@ -1406,7 +1408,7 @@ msgstr ""
 msgid "New Group"
 msgstr ""
 
-#: includes/class/Model.php:359
+#: includes/class/Model.php:372
 msgid "Edit"
 msgstr ""
 
@@ -1714,16 +1716,18 @@ msgstr ""
 msgid "or wait 3 seconds."
 msgstr ""
 
-#: admin/layout/pages/delete_user.twig:10
-msgid "Information"
-msgstr ""
-
 #: includes/controller/Admin.php:801
 msgid "You do not have sufficient privileges to manage groups."
 msgstr ""
 
 #: upgrade.php:268
 msgid "Renaming tweets table to posts..."
+msgstr ""
+
+#: admin/layout/pages/new_user.twig:9
+#: admin/layout/pages/edit_user.twig:10
+#: admin/layout/pages/delete_user.twig:10
+msgid "Information"
 msgstr ""
 
 #: admin/layout/pages/route_settings.twig:21
@@ -1739,7 +1743,7 @@ msgstr ""
 msgid "No Theme Specified"
 msgstr ""
 
-#: includes/error.php:138
+#: includes/error.php:139
 #: includes/controller/Main.php:520
 msgid "Log In"
 msgstr ""
