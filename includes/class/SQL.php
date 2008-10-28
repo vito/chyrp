@@ -193,7 +193,7 @@
                 if (!strpos($query, $name))
                     unset($params[$name]);
 
-            $query = str_replace("`", "", str_replace("__", $this->prefix, $query));
+            $query = str_replace("__", $this->prefix, $query);
 
             if ($this->adapter == "sqlite")
                 $query = str_ireplace(" DEFAULT CHARSET=utf8", "", str_ireplace("AUTO_INCREMENT", "AUTOINCREMENT", $query));
