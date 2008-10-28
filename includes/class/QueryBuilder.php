@@ -21,7 +21,15 @@
          * Returns:
          *     A @SELECT@ query string.
          */
-        public static function build_select($tables, $fields, $conds, $order = null, $limit = null, $offset = null, $group = null, $left_join = array(), &$params = array()) {
+        public static function build_select($tables,
+                                            $fields,
+                                            $conds,
+                                            $order = null,
+                                            $limit = null,
+                                            $offset = null,
+                                            $group = null,
+                                            $left_join = array(),
+                                            &$params = array()) {
             $query = "SELECT ".self::build_select_header($fields, $tables)."\n".
                      "FROM ".self::build_from($tables)."\n";
 
@@ -134,7 +142,7 @@
             $set = array();
 
             foreach (array_keys($data) as $field)
-                array_push($set, $field);
+                array_push($set, self::safecol($field));
 
             return "(".implode(", ", $set).")";
         }
@@ -195,7 +203,7 @@
          * Creates a SELECT fields header.
          *
          * Parameters:
-         *     $order - Columns to select.
+         *     $fields - Columns to select.
          *     $tables - Tables to tablefy with.
          */
         public static function build_select_header($fields, $tables = null) {
@@ -204,8 +212,10 @@
 
             $tables = (array) $tables;
 
-            foreach ($fields as &$field)
+            foreach ($fields as &$field) {
                 self::tablefy($field, $tables);
+                $field = self::safecol($field);
+            }
 
             return implode(",\n       ", $fields);
         }
@@ -235,8 +245,10 @@
             $by = (array) $by;
             $tables = (array) $tables;
 
-            foreach ($by as &$column)
+            foreach ($by as &$column) {
                 self::tablefy($column, $tables);
+                $column = self::safecol($column);
+            }
 
             return implode(",\n         ", array_unique(array_filter($by)));
         }
@@ -255,8 +267,10 @@
             if (!is_array($order))
                 $order = explode(", ", $order);
 
-            foreach ($order as &$by)
+            foreach ($order as &$by) {
                 self::tablefy($by, $tables);
+                $by = self::safecol($by);
+            }
 
             return implode(",\n         ", $order);
         }
@@ -272,6 +286,25 @@
                 $return[] = SQL::current()->escape($val);
 
             return "(".join(", ", $return).")";
+        }
+
+        /**
+         * Function: safecol
+         * Wraps a column in proper escaping if it is a SQL keyword.
+         *
+         * Doesn't check every keyword, just the common/sensible ones.
+         *
+         * ...Okay, it only does two. "order" and "group".
+         *
+         * Parameters:
+         *     $name - Name of the column.
+         */
+        public static function safecol($name) {
+            $lower = strtolower($name);
+            if ($lower === "order" or $lower === "group")
+                return (SQL::current()->adapter == "mysql") ? "`".$name."`" : '"'.$name.'"' ;
+            else
+                return $name;
         }
 
         /**
@@ -292,13 +325,13 @@
                     $cond = $val;
                 else { # Key => Val expression
                     if (is_string($val) and strlen($val) and $val[0] == ":")
-                        $cond = $key." = ".$val;
+                        $cond = self::safecol($key)." = ".$val;
                     else {
                         if (is_bool($val))
                             $val = (int) $val;
 
                         if (substr($key, -4) == " not") { # Negation
-                            $key = substr($key, 0, -4);
+                            $key = self::safecol(substr($key, 0, -4));
                             $param = str_replace(array("(", ")"), "_", $key);
                             if (is_array($val))
                                 $cond = $key." NOT IN ".self::build_list($val);
@@ -309,7 +342,7 @@
                                 $params[":".$param] = $val;
                             }
                         } elseif (substr($key, -5) == " like" and is_array($val)) { # multiple LIKE
-                            $key = substr($key, 0, -5);
+                            $key = self::safecol(substr($key, 0, -5));
                             
                             $likes = array();
                             foreach ($val as $index => $match) {
@@ -320,7 +353,7 @@
 
                             $cond = "(".implode(" OR ", $likes).")";
                         } elseif (substr($key, -9) == " like all" and is_array($val)) { # multiple LIKE
-                            $key = substr($key, 0, -9);
+                            $key = self::safecol(substr($key, 0, -9));
                             
                             $likes = array();
                             foreach ($val as $index => $match) {
@@ -331,7 +364,7 @@
 
                             $cond = "(".implode(" AND ", $likes).")";
                         } elseif (substr($key, -9) == " not like" and is_array($val)) { # multiple NOT LIKE
-                            $key = substr($key, 0, -9);
+                            $key = self::safecol(substr($key, 0, -9));
                             
                             $likes = array();
                             foreach ($val as $index => $match) {
@@ -342,30 +375,30 @@
 
                             $cond = "(".implode(" AND ", $likes).")";
                         } elseif (substr($key, -5) == " like") { # LIKE
-                            $key = substr($key, 0, -5);
+                            $key = self::safecol(substr($key, 0, -5));
                             $param = str_replace(array("(", ")"), "_", $key);
                             $cond = $key." LIKE :".$param;
                             $params[":".$param] = $val;
                         } elseif (substr($key, -9) == " not like") { # NOT LIKE
-                            $key = substr($key, 0, -9);
+                            $key = self::safecol(substr($key, 0, -9));
                             $param = str_replace(array("(", ")"), "_", $key);
                             $cond = $key." NOT LIKE :".$param;
                             $params[":".$param] = $val;
                         } elseif (substr_count($key, " ")) { # Custom operation, e.g. array("foo >" => $bar)
                             list($param,) = explode(" ", $key);
                             $param = str_replace(array("(", ")"), "_", $param);
-                            $cond = $key." :".$param;
+                            $cond = self::safecol($key)." :".$param;
                             $params[":".$param] = $val;
                         } else { # Equation
                             if (is_array($val))
-                                $cond = $key." IN ".self::build_list($val);
+                                $cond = self::safecol($key)." IN ".self::build_list($val);
                             elseif ($val === null and $insert)
-                                $cond = $key." = ''";
+                                $cond = self::safecol($key)." = ''";
                             elseif ($val === null)
-                                $cond = $key." IS NULL";
+                                $cond = self::safecol($key)." IS NULL";
                             else {
                                 $param = str_replace(array("(", ")"), "_", $key);
-                                $cond = $key." = :".$param;
+                                $cond = self::safecol($key)." = :".$param;
                                 $params[":".$param] = $val;
                             }
                         }
