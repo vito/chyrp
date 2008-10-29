@@ -202,3 +202,6 @@
     }
 
     $trigger->call("ajax");
+
+    if (!empty($_POST['action']))
+        $trigger->call("ajax_".$_POST['action']);
