@@ -1338,7 +1338,11 @@
             $params[":query"] = "%".join(" ", $search)."%";
         }
 
-        return array($where, $params);
+        $keywords = array($where, $params);
+
+        Trigger::current()->filter($keywords, "keyword_search", $query, $plain);
+
+        return $keywords;
     }
 
     /**
