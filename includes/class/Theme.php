@@ -69,7 +69,7 @@
             foreach ($this->pages_flat as $page) {
                 $array[$page->id]["has_children"] = !empty($this->children[$page->id]);
 
-                if ($my_array["has_children"])
+                if ($array[$page->id]["has_children"])
                     $this->end_tags_for[$this->get_last_linear_child($page->id)][] = array("</ul>", "</li>");
 
                 $array[$page->id]["end_tags"] =& $this->end_tags_for[$page->id];
