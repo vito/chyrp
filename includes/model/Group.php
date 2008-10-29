@@ -70,7 +70,7 @@
             } else { # AND comparison
                 array_pop($actions);
 
-                foreach ($actions as $actions)
+                foreach ($actions as $action)
                     if (!in_array($action, $this->permissions))
                         return false;
 
