@@ -53,14 +53,14 @@
                 {% endfor %}
                 </tbody>
             </table>
+            {% if pages.paginated and pages.pages > 1 %}
             <br />
             <div class="pagination">
                 $pages.next_link
                 $pages.prev_link
-                {% if pages.paginated and pages.pages > 1 %}
                 <span class="pages">${ "Page %d of %d" | translate | format(pages.page, pages.pages) }</span>
-                {% endif %}
             </div>
+            {% endif %}
             {% if pages.total %}
             <br />
             <h2>${ "Reorder Pages" | translate }</h2>

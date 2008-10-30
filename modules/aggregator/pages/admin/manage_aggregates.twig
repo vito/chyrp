@@ -22,12 +22,12 @@
                 </thead>
                 <tbody>
                 {% for aggregate in aggregates.paginated %}
-                    <tr id="comment_$comment.id" class="comment $comment.status{% if loop.last %} last{% endif %}">
+                    <tr class="aggregate {% if loop.last %} last{% endif %}">
                         <td class="main">$aggregate.name <span class="sub">(<a href="$aggregate.url">${ "source" | translate("aggregator") }</a>)</a></td>
                         <td>${ aggregate.feather | capitalize }</td>
                         <td>${ aggregate.user.full_name | fallback(aggregate.user.login) }</td>
                         <td>{% if aggregate.last_updated %}${ aggregate.last_updated | strftime }{% else %}<span class="sub">${ "never" | translate }</span>{% endif %}</td>
-                        ${ trigger.call("manage_aggregates_column", comment) }
+                        ${ trigger.call("manage_aggregates_column", aggregate) }
                         {% if visitor.group.can("edit_aggregate", "delete_aggregate", true) %}
                         <td class="controls"><a href="{% admin "edit_aggregate&id=" ~ (aggregate.name | urlencode) %}" class="edit_link"><img src="images/icons/edit.png" alt="edit" /> ${ "edit" | translate }</a></td>
                         <td class="controls"><a href="{% admin "delete_aggregate&id=" ~ (aggregate.name | urlencode) %}" class="delete_link"><img src="images/icons/delete.png" alt="delete" /> ${ "delete" | translate }</a></td>
@@ -47,12 +47,12 @@
                 {% endfor %}
                 </tbody>
             </table>
+            {% if aggregates.paginated and aggregates.pages > 1 %}
             <br />
             <div class="pagination">
                 $aggregates.next_link
                 $aggregates.prev_link
-                {% if aggregates.paginated and aggregates.pages > 1 %}
                 <span class="pages">${ "Page %d of %d" | translate | format(aggregates.page, aggregates.pages) }</span>
-                {% endif %}
             </div>
+            {% endif %}
 {% endblock %}
