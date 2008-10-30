@@ -60,7 +60,7 @@
             return "INSERT INTO __$table\n".
                    self::build_insert_header($data)."\n".
                    "VALUES\n".
-                   self::build_list($data);
+                   self::build_list($data, $params);
         }
 
         /**
@@ -79,7 +79,7 @@
             return "REPLACE INTO __$table\n".
                    self::build_insert_header($data)."\n".
                    "VALUES\n".
-                   self::build_list($data);
+                   self::build_list($data, $params);
         }
 
         /**
@@ -279,11 +279,11 @@
          * Function: build_list
          * Returns ('one', 'two', '', 1, 0) from array("one", "two", null, true, false)
          */
-        public static function build_list($vals) {
+        public static function build_list($vals, $params = array()) {
             $return = array();
 
             foreach ($vals as $val)
-                $return[] = SQL::current()->escape($val);
+                $return[] = (isset($params[$val])) ? $val : SQL::current()->escape($val) ;
 
             return "(".join(", ", $return).")";
         }
@@ -334,7 +334,7 @@
                             $key = self::safecol(substr($key, 0, -4));
                             $param = str_replace(array("(", ")"), "_", $key);
                             if (is_array($val))
-                                $cond = $key." NOT IN ".self::build_list($val);
+                                $cond = $key." NOT IN ".self::build_list($val, $params);
                             elseif ($val === null)
                                 $cond = $key." IS NOT NULL";
                             else {
@@ -391,7 +391,7 @@
                             $params[":".$param] = $val;
                         } else { # Equation
                             if (is_array($val))
-                                $cond = self::safecol($key)." IN ".self::build_list($val);
+                                $cond = self::safecol($key)." IN ".self::build_list($val, $params);
                             elseif ($val === null and $insert)
                                 $cond = self::safecol($key)." = ''";
                             elseif ($val === null)

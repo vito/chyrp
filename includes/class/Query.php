@@ -64,7 +64,9 @@
                         $this->queryString = $query;
                         foreach ($params as $name => $val)
                             $this->queryString = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/",
-                                                              $this->sql->escape($val)."\\1",
+                                                              str_replace(array("\\", "\$"),
+                                                                          array("\\\\", "\\\$"),
+                                                                          $this->sql->escape($val))."\\1",
                                                               $this->queryString);
 
                         if (!$result)
@@ -75,7 +77,11 @@
                     break;
                 case "mysqli":
                     foreach ($params as $name => $val)
-                        $query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", str_replace("\\", "\\\\", $this->sql->escape($val))."\\1", $query);
+                        $query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/",
+                                              str_replace(array("\\", "\$"),
+                                                          array("\\\\", "\\\$"),
+                                                          $this->sql->escape($val))."\\1",
+                                              $query);
 
                     $this->queryString = $query;
 
@@ -88,7 +94,11 @@
                     break;
                 case "mysql":
                     foreach ($params as $name => $val)
-                        $query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/", str_replace("\\", "\\\\", $this->sql->escape($val))."\\1", $query);
+                        $query = preg_replace("/{$name}([^a-zA-Z0-9_]|$)/",
+                                              str_replace(array("\\", "\$"),
+                                                          array("\\\\", "\\\$"),
+                                                          $this->sql->escape($val))."\\1",
+                                              $query);
 
                     $this->queryString = $query;
 
