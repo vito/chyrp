@@ -66,16 +66,14 @@
         $sql = SQL::current(true);
         if ($sql->connect(true) and !empty($config->url) and $sql->count("users"))
             error(__("Already Installed"), __("Chyrp is already correctly installed and configured."));
-    } else {
-        if (# Directory is NOT writable, .htaccess file does NOT already exist.
-            (!is_writable(MAIN_DIR) and !file_exists(MAIN_DIR."/.htaccess")) or
-            # .htaccess file DOES exist, IS writable, and it does NOT contain the Chyrp htaccess whatnot.
-            (file_exists(MAIN_DIR."/.htaccess") and !is_writable(MAIN_DIR."/.htaccess") and !$htaccess_has_chyrp))
-            $errors[] = _f("STOP! Before you go any further, you must create a .htaccess file in Chyrp's install directory and put this in it:\n<pre>%s</pre>", array(fix($htaccess)));
-
-        if (!is_writable(INCLUDES_DIR))
-            $errors[] = __("Chyrp's includes directory is not writable by the server. In order for the installer to generate your configuration files, please CHMOD or CHOWN it so that Chyrp can write to it.");
     }
+
+    if ((!is_writable(MAIN_DIR) and !file_exists(MAIN_DIR."/.htaccess")) or
+        (file_exists(MAIN_DIR."/.htaccess") and !is_writable(MAIN_DIR."/.htaccess") and !$htaccess_has_chyrp))
+        $errors[] = _f("STOP! Before you go any further, you must create a .htaccess file in Chyrp's install directory and put this in it:\n<pre>%s</pre>", array(fix($htaccess)));
+
+    if (!is_writable(INCLUDES_DIR))
+        $errors[] = __("Chyrp's includes directory is not writable by the server. In order for the installer to generate your configuration files, please CHMOD or CHOWN it so that Chyrp can write to it.");
 
     if (!empty($_POST)) {
         if ($_POST['adapter'] == "sqlite" and !is_writable(dirname($_POST['database'])))

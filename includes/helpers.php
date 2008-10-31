@@ -1320,6 +1320,19 @@
         foreach ($matches as $match) {
             list($test, $equals,) = explode(":", $match);
 
+            if ($equals[0] == '"') {
+                foreach ($search as $index => $part) {
+                    $equals.= " ".$part;
+
+                    unset($search[$index]);
+
+                    if (substr($part, -1) == '"')
+                        break;
+                }
+
+                $equals = ltrim(trim($equals, '"'), '"');
+            }
+
             if (in_array($test, $times))
                 $where[strtoupper($test)."(created_at)"] = $equals;
             elseif ($test == "author") {
