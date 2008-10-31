@@ -1333,11 +1333,21 @@
                 $equals = ltrim(trim($equals, '"'), '"');
             }
 
-            if (in_array($test, $times))
-                $where[strtoupper($test)."(created_at)"] = $equals;
-            elseif ($test == "author") {
+            if (in_array($test, $times)) {
+                if ($equals == "today")
+                    $where["created_at like"] = date("%Y-m-d %");
+                elseif ($equals == "yesterday")
+                    $where["created_at like"] = date("%Y-m-d %", now("-1 day"));
+                elseif ($equals == "tomorrow")
+                    error(__("Error"), "Unfortunately our flux capacitor is currently having issues. Try again yesterday.");
+                else
+                    $where[strtoupper($test)."(created_at)"] = $equals;
+            } elseif ($test == "author") {
                 $user = new User(array("login" => $equals));
-                $where["user_id"] = $user->id;
+                if ($user->no_results and $equals == "me")
+                    $where["user_id"] = Visitor::current()->id;
+                else
+                    $where["user_id"] = $user->id;
             } elseif ($test == "group") {
                 $group = new Group(array("name" => $equals));
                 $test = "group_id";
@@ -1551,4 +1561,12 @@
         $function = "mail";
         Trigger::current()->filter($function, "send_mail");
         return call_user_func_array($function, func_get_args());
+    }
+
+    /**
+     * Function: now
+     * Alias to strtotime, for prettiness like now("+1 day").
+     */
+    function now($when) {
+        return strtotime($when);
     }
