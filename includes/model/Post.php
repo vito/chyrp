@@ -150,6 +150,8 @@
          *
          * Calls the @add_post@ trigger with the inserted post and extra options.
          *
+         * Note: The default parameter values are empty here so that the fallbacks work properly.
+         *
          * Parameters:
          *     $values - The data to insert.
          *     $clean - The sanitized URL (or empty to default to "(feather).(new post's id)").
@@ -175,10 +177,10 @@
                             $url        = "",
                             $feather    = null,
                             $user       = null,
-                            $pinned     = false,
-                            $status     = "public",
-                            $created_at = null,
-                            $updated_at = "0000-00-00 00:00:00",
+                            $pinned     = null,
+                            $status     = "",
+                            $created_at = "",
+                            $updated_at = "",
                             $trackbacks = "",
                             $pingbacks  = true,
                             $options    = array()) {

@@ -15,6 +15,8 @@ SERVER = Net::HTTP.new "localhost"
 
 CHYRP = "/chyrp"
 
+URL = "http://localhost/chyrp"
+
 HEADERS = {
   "Cookie" => "ChyrpSession=e5f9cd17ab00580649ce618791b5675a", # NOTE: This has to be changed to keep in sync with your browser.
   "User-Agent" => "tester.rb"
@@ -78,9 +80,9 @@ class Chyrp < Test::Unit::TestCase
   def test_view_post
     resp, page = test_index
     page = Hpricot(page)
-    return unless page =~ /class="post /
+    return unless page.to_s =~ /class="post /
 
-    post_url = (page/".post:first/h2/a").attr("href")
+    post_url = (page/".post:first/h2/a").attr("href").sub(URL, "")
 
     get post_url
   end
@@ -100,7 +102,7 @@ class Chyrp < Test::Unit::TestCase
     first_page = (page/"#sidebar/ul:nth(0)/li:nth(0)/a")
     return unless first_page
 
-    page_url = first_page.attr("href")
+    page_url = first_page.attr("href").sub(URL, "")
 
     get page_url
   end
