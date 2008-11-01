@@ -1,14 +1,14 @@
-# Chyrp v2.0 RC2 Translation File.
+# Chyrp v2.0 RC3 Translation File.
 # Copyright (C) YEAR Alex Suraci
-# This file is distributed under the same license as the Chyrp v2.0 RC2 package.
+# This file is distributed under the same license as the Chyrp v2.0 RC3 package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Chyrp v2.0 RC2\n"
+"Project-Id-Version: Chyrp v2.0 RC3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-10-27 20:18+0000\n"
+"POT-Creation-Date: 2008-11-01 01:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -45,7 +45,7 @@ msgstr ""
 msgid "Group"
 msgstr ""
 
-#: install.php:530
+#: install.php:528
 msgid "(usually ok as \"localhost\")"
 msgstr ""
 
@@ -71,7 +71,7 @@ msgstr ""
 msgid "Try creating the file and/or CHMODding it to 777 temporarily."
 msgstr ""
 
-#: install.php:82
+#: install.php:80
 msgid "SQLite database file could not be created. Please make sure your server has write permissions to the location for the database."
 msgstr ""
 
@@ -108,7 +108,7 @@ msgstr ""
 msgid "Post Slugs"
 msgstr ""
 
-#: install.php:607
+#: install.php:605
 msgid "Chyrp has been successfully installed."
 msgstr ""
 
@@ -116,7 +116,7 @@ msgstr ""
 msgid "<strong>Make a backup of your installation.</strong> You never know."
 msgstr ""
 
-#: install.php:111
+#: install.php:109
 msgid "E-Mail address cannot be blank."
 msgstr ""
 
@@ -194,9 +194,9 @@ msgstr ""
 msgid "Guest"
 msgstr ""
 
-#: install.php:542
-#: install.php:590
-#: install.php:594
+#: install.php:540
+#: install.php:588
+#: install.php:592
 #: admin/layout/pages/import.twig:108
 #: admin/layout/pages/import.twig:152
 msgid "Password"
@@ -241,7 +241,7 @@ msgstr ""
 msgid "Trackbacks"
 msgstr ""
 
-#: install.php:617
+#: install.php:615
 msgid "Find some Feathers you want."
 msgstr ""
 
@@ -339,7 +339,7 @@ msgstr ""
 msgid "Inserting permission \"%s\"..."
 msgstr ""
 
-#: install.php:616
+#: install.php:614
 msgid "Install some Modules."
 msgstr ""
 
@@ -370,7 +370,7 @@ msgstr ""
 msgid "Post author (username)"
 msgstr ""
 
-#: install.php:554
+#: install.php:552
 #: admin/layout/pages/import.twig:116
 msgid "Table Prefix"
 msgstr ""
@@ -391,7 +391,7 @@ msgstr ""
 msgid "Publish"
 msgstr ""
 
-#: install.php:262
+#: install.php:260
 msgid "Edit Groups"
 msgstr ""
 
@@ -407,7 +407,7 @@ msgstr ""
 msgid "The URL you specified does not seem to be a valid Tumblr site."
 msgstr ""
 
-#: install.php:251
+#: install.php:249
 msgid "Delete Posts"
 msgstr ""
 
@@ -424,7 +424,7 @@ msgstr ""
 msgid "Backing up groups..."
 msgstr ""
 
-#: install.php:242
+#: install.php:240
 msgid "View Private Posts"
 msgstr ""
 
@@ -440,11 +440,11 @@ msgstr ""
 msgid "Month submitted"
 msgstr ""
 
-#: install.php:258
+#: install.php:256
 msgid "Add Users"
 msgstr ""
 
-#: install.php:515
+#: install.php:513
 msgid "Database Setup"
 msgstr ""
 
@@ -554,7 +554,7 @@ msgstr ""
 msgid "Could not read feathers directory."
 msgstr ""
 
-#: install.php:92
+#: install.php:90
 #, php-format
 msgid "Could not connect to the specified database:\n<pre>%s</pre>"
 msgstr ""
@@ -578,7 +578,7 @@ msgstr ""
 msgid "No Feathers"
 msgstr ""
 
-#: install.php:254
+#: install.php:252
 msgid "Delete Own Drafts"
 msgstr ""
 
@@ -640,7 +640,7 @@ msgstr ""
 msgid "Pingback from %s to %s registered!"
 msgstr ""
 
-#: includes/helpers.php:1519
+#: includes/helpers.php:1561
 msgid "and "
 msgstr ""
 
@@ -673,7 +673,7 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: install.php:247
+#: install.php:245
 msgid "Edit Posts"
 msgstr ""
 
@@ -723,8 +723,8 @@ msgstr ""
 msgid "Trackbacking allows sites to notify you when they write a new entry, usually because they link to or reference yours."
 msgstr ""
 
-#: install.php:489
-#: install.php:549
+#: install.php:487
+#: install.php:547
 msgid "(full path)"
 msgstr ""
 
@@ -749,7 +749,7 @@ msgstr ""
 msgid "Creating `groups` table..."
 msgstr ""
 
-#: install.php:257
+#: install.php:255
 msgid "Delete Pages"
 msgstr ""
 
@@ -805,7 +805,7 @@ msgstr ""
 msgid "Editing Group &#8220;%s&#8221;"
 msgstr ""
 
-#: install.php:99
+#: install.php:97
 msgid "Time zone cannot be blank."
 msgstr ""
 
@@ -827,7 +827,7 @@ msgstr ""
 msgid "edit"
 msgstr ""
 
-#: install.php:611
+#: install.php:609
 msgid "<strong>Delete install.php</strong>, you won't need it anymore."
 msgstr ""
 
@@ -853,7 +853,7 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
-#: install.php:567
+#: install.php:565
 #: admin/layout/pages/general_settings.twig:14
 msgid "Description"
 msgstr ""
@@ -880,8 +880,8 @@ msgstr ""
 msgid "Search Results"
 msgstr ""
 
-#: install.php:536
-#: install.php:586
+#: install.php:534
+#: install.php:584
 #: admin/layout/pages/import.twig:104
 #: admin/layout/pages/import.twig:148
 msgid "Username"
@@ -939,7 +939,7 @@ msgstr ""
 msgid "Select"
 msgstr ""
 
-#: install.php:239
+#: install.php:237
 msgid "Change Settings"
 msgstr ""
 
@@ -952,7 +952,7 @@ msgstr ""
 msgid "Full Name:"
 msgstr ""
 
-#: install.php:249
+#: install.php:247
 msgid "Edit Own Posts"
 msgstr ""
 
@@ -970,7 +970,7 @@ msgstr ""
 msgid "Registration successful."
 msgstr ""
 
-#: install.php:105
+#: install.php:103
 #: includes/controller/Main.php:467
 #: includes/controller/Admin.php:514
 msgid "Password cannot be blank."
@@ -980,7 +980,7 @@ msgstr ""
 msgid "Next &rarr;"
 msgstr ""
 
-#: install.php:554
+#: install.php:552
 #: admin/layout/partials/post_fields.twig:7
 #: admin/layout/pages/import.twig:29
 #: admin/layout/pages/import.twig:59
@@ -995,7 +995,7 @@ msgstr ""
 msgid "(optional)"
 msgstr ""
 
-#: install.php:256
+#: install.php:254
 msgid "Edit Pages"
 msgstr ""
 
@@ -1020,8 +1020,8 @@ msgstr ""
 msgid "Extend"
 msgstr ""
 
+#: install.php:116
 #: install.php:118
-#: install.php:120
 #, php-format
 msgid "Could not generate .htaccess file. Clean URLs will not be available unless you create it and put this in it:\n<pre>%s</pre>"
 msgstr ""
@@ -1031,7 +1031,7 @@ msgstr ""
 msgid "Group name &#8220;%s&#8221; is already in use."
 msgstr ""
 
-#: install.php:248
+#: install.php:246
 msgid "Edit Drafts"
 msgstr ""
 
@@ -1047,7 +1047,7 @@ msgstr ""
 msgid "Filtering Results"
 msgstr ""
 
-#: install.php:263
+#: install.php:261
 msgid "Delete Groups"
 msgstr ""
 
@@ -1068,7 +1068,7 @@ msgstr ""
 msgid "Generating .htaccess file..."
 msgstr ""
 
-#: install.php:563
+#: install.php:561
 #: admin/layout/pages/general_settings.twig:10
 msgid "Site Name"
 msgstr ""
@@ -1121,7 +1121,7 @@ msgstr ""
 msgid "Your Tumblr URL"
 msgstr ""
 
-#: install.php:564
+#: install.php:562
 msgid "My Awesome Site"
 msgstr ""
 
@@ -1142,7 +1142,7 @@ msgstr ""
 msgid "User deleted."
 msgstr ""
 
-#: install.php:250
+#: install.php:248
 msgid "Edit Own Drafts"
 msgstr ""
 
@@ -1434,11 +1434,11 @@ msgstr ""
 msgid "Halt!"
 msgstr ""
 
-#: install.php:517
+#: install.php:515
 msgid "Adapter"
 msgstr ""
 
-#: install.php:602
+#: install.php:600
 msgid "Install! &rarr;"
 msgstr ""
 
@@ -1447,7 +1447,7 @@ msgstr ""
 msgid "Disable"
 msgstr ""
 
-#: install.php:620
+#: install.php:618
 msgid "Take me to my site! &rarr;"
 msgstr ""
 
@@ -1493,7 +1493,7 @@ msgstr ""
 msgid "You do not have sufficient privileges to add users."
 msgstr ""
 
-#: install.php:245
+#: install.php:243
 msgid "Add Posts"
 msgstr ""
 
@@ -1516,7 +1516,7 @@ msgid "You do not have sufficient privileges to edit users."
 msgstr ""
 
 #: upgrade.php:1176
-#: install.php:605
+#: install.php:603
 #: admin/layout/pages/bookmarklet.twig:273
 msgid "Done!"
 msgstr ""
@@ -1527,7 +1527,7 @@ msgstr ""
 msgid "You do not have sufficient privileges to delete this post."
 msgstr ""
 
-#: install.php:96
+#: install.php:94
 msgid "Please enter a name for your website."
 msgstr ""
 
@@ -1584,11 +1584,11 @@ msgstr ""
 msgid "Private"
 msgstr ""
 
-#: install.php:260
+#: install.php:258
 msgid "Delete Users"
 msgstr ""
 
-#: install.php:252
+#: install.php:250
 msgid "Delete Drafts"
 msgstr ""
 
@@ -1649,7 +1649,7 @@ msgstr ""
 msgid "Chyrp!"
 msgstr ""
 
-#: install.php:243
+#: install.php:241
 msgid "View Drafts"
 msgstr ""
 
@@ -1668,7 +1668,7 @@ msgstr ""
 msgid "User updated."
 msgstr ""
 
-#: install.php:108
+#: install.php:106
 #: includes/controller/Main.php:469
 #: includes/controller/Admin.php:516
 msgid "Passwords do not match."
@@ -1686,7 +1686,7 @@ msgstr ""
 msgid "Renaming edit_tweet permission to edit_post..."
 msgstr ""
 
-#: install.php:261
+#: install.php:259
 msgid "Add Groups"
 msgstr ""
 
@@ -1708,7 +1708,7 @@ msgstr ""
 msgid "Chyrp is already correctly installed and configured."
 msgstr ""
 
-#: install.php:584
+#: install.php:582
 msgid "Admin Account"
 msgstr ""
 
@@ -1771,7 +1771,7 @@ msgstr ""
 msgid "Restoring post #%d..."
 msgstr ""
 
-#: install.php:255
+#: install.php:253
 msgid "Add Pages"
 msgstr ""
 
@@ -1857,7 +1857,7 @@ msgstr ""
 msgid "Please specify an ID of the post you would like to edit."
 msgstr ""
 
-#: install.php:259
+#: install.php:257
 msgid "Edit Users"
 msgstr ""
 
@@ -1870,7 +1870,7 @@ msgstr ""
 msgid "Renaming add_tweet permission to add_post..."
 msgstr ""
 
-#: install.php:609
+#: install.php:607
 msgid "So, what now?"
 msgstr ""
 
@@ -1897,6 +1897,7 @@ msgstr ""
 
 #: includes/helpers.php:973
 #: includes/helpers.php:975
+#: includes/helpers.php:1346
 #: includes/controller/Main.php:295
 #: includes/controller/Main.php:382
 #: includes/controller/Main.php:456
@@ -1921,7 +1922,7 @@ msgstr ""
 msgid "Syntax:"
 msgstr ""
 
-#: install.php:561
+#: install.php:559
 msgid "Website Setup"
 msgstr ""
 
@@ -1970,11 +1971,11 @@ msgstr ""
 msgid "Clean URLs?"
 msgstr ""
 
-#: install.php:618
+#: install.php:616
 msgid "Read &#8220;Getting Started&#8221;"
 msgstr ""
 
-#: install.php:548
+#: install.php:546
 #: admin/layout/pages/import.twig:112
 #: admin/layout/pages/import.twig:156
 msgid "Database"
@@ -1993,7 +1994,7 @@ msgstr ""
 msgid "(warning: this also exports the hashed passwords, so keep the export file safe)"
 msgstr ""
 
-#: install.php:74
+#: install.php:73
 #, php-format
 msgid "STOP! Before you go any further, you must create a .htaccess file in Chyrp's install directory and put this in it:\n<pre>%s</pre>"
 msgstr ""
@@ -2006,7 +2007,7 @@ msgstr ""
 msgid "Removing `includes/bookmarklet.php` file..."
 msgstr ""
 
-#: install.php:530
+#: install.php:528
 #: admin/layout/pages/import.twig:100
 #: admin/layout/pages/import.twig:144
 msgid "Host"
@@ -2025,7 +2026,7 @@ msgstr ""
 msgid "Add Page"
 msgstr ""
 
-#: install.php:571
+#: install.php:569
 #: admin/layout/pages/general_settings.twig:37
 msgid "What time is it?"
 msgstr ""
@@ -2054,7 +2055,7 @@ msgstr ""
 msgid "Route was initiated without a Controller."
 msgstr ""
 
-#: install.php:102
+#: install.php:100
 #: includes/controller/Main.php:462
 #: includes/controller/Admin.php:507
 msgid "Please enter a username for your account."
@@ -2064,7 +2065,7 @@ msgstr ""
 msgid "There is no user with that login name."
 msgstr ""
 
-#: install.php:615
+#: install.php:613
 msgid "Look for a translation for your language."
 msgstr ""
 
@@ -2076,7 +2077,7 @@ msgstr ""
 msgid "Attribute pages to:"
 msgstr ""
 
-#: install.php:575
+#: install.php:573
 #: admin/layout/pages/general_settings.twig:40
 msgid "%I:%M %p on %B %e, %Y"
 msgstr ""
@@ -2180,7 +2181,7 @@ msgstr ""
 msgid "You do not have sufficient privileges to edit posts."
 msgstr ""
 
-#: install.php:244
+#: install.php:242
 msgid "View Own Drafts"
 msgstr ""
 
@@ -2198,7 +2199,7 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-#: install.php:240
+#: install.php:238
 msgid "Toggle Extensions"
 msgstr ""
 
@@ -2307,7 +2308,7 @@ msgstr ""
 msgid "Groups"
 msgstr ""
 
-#: install.php:241
+#: install.php:239
 msgid "View Site"
 msgstr ""
 
@@ -2319,7 +2320,7 @@ msgstr ""
 msgid "I'm sorry, but this site is not allowing registration."
 msgstr ""
 
-#: install.php:598
+#: install.php:596
 msgid "E-Mail Address"
 msgstr ""
 
@@ -2344,7 +2345,7 @@ msgstr ""
 msgid "Item is not a feather."
 msgstr ""
 
-#: install.php:77
+#: install.php:76
 msgid "Chyrp's includes directory is not writable by the server. In order for the installer to generate your configuration files, please CHMOD or CHOWN it so that Chyrp can write to it."
 msgstr ""
 
@@ -2388,7 +2389,7 @@ msgstr ""
 msgid "You do not have sufficient privileges to manage users."
 msgstr ""
 
-#: install.php:594
+#: install.php:592
 msgid "(again)"
 msgstr ""
 
@@ -2397,7 +2398,7 @@ msgstr ""
 #: includes/class/SQL.php:149
 #: includes/class/SQL.php:157
 #: includes/class/SQL.php:165
-#: includes/class/Query.php:217
+#: includes/class/Query.php:227
 msgid "Database Error"
 msgstr ""
 
@@ -2416,7 +2417,7 @@ msgstr ""
 msgid "Adding list_order column to pages table..."
 msgstr ""
 
-#: install.php:253
+#: install.php:251
 msgid "Delete Own Posts"
 msgstr ""
 
@@ -2432,7 +2433,7 @@ msgstr ""
 msgid "Posts .atom File"
 msgstr ""
 
-#: install.php:246
+#: install.php:244
 msgid "Add Drafts"
 msgstr ""
 
@@ -2475,7 +2476,7 @@ msgstr ""
 msgid "User not found."
 msgstr ""
 
-#: install.php:613
+#: install.php:611
 msgid "CHMOD <code>/includes/caches</code> to 777."
 msgstr ""
 

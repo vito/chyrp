@@ -54,7 +54,7 @@ Called from:
 update_post
 -----------
 Called from:
-	includes/model/Post.php on line 335
+	includes/model/Post.php on line 331
 Arguments:
 	$this, $old, $options
 
@@ -202,7 +202,7 @@ Arguments:
 update_page
 -----------
 Called from:
-	includes/model/Page.php on line 163
+	includes/model/Page.php on line 168
 Arguments:
 	$this, $old
 
@@ -210,7 +210,7 @@ Arguments:
 end
 ---
 Called from:
-	index.php on line 46
+	index.php on line 70
 	admin/index.php on line 25
 Arguments:
 	$route
@@ -274,7 +274,7 @@ Called from:
 add_page
 --------
 Called from:
-	includes/model/Page.php on line 103
+	includes/model/Page.php on line 106
 Arguments:
 	$page
 
@@ -414,7 +414,7 @@ filter_post
 Target:
 	$this
 Called from:
-	includes/model/Post.php on line 638
+	includes/model/Post.php on line 634
 
 
 user
@@ -469,22 +469,12 @@ Arguments:
 	$page)
 
 
-markup_page_title
------------------
-Target:
-	$this->title
-Called from:
-	includes/model/Page.php on line 34
-Arguments:
-	$this
-
-
 title
 -----
 Target:
 	$title
 Called from:
-	includes/model/Post.php on line 544
+	includes/model/Post.php on line 540
 Arguments:
 	$post
 
@@ -494,7 +484,7 @@ url_vals
 Target:
 	$vals
 Called from:
-	includes/model/Post.php on line 499
+	includes/model/Post.php on line 495
 Arguments:
 	$this
 
@@ -534,7 +524,7 @@ send_mail
 Target:
 	$function
 Called from:
-	includes/helpers.php on line 1535
+	includes/helpers.php on line 1577
 
 
 post_url_token
@@ -542,7 +532,7 @@ post_url_token
 Target:
 	$tokens
 Called from:
-	includes/model/Post.php on line 694
+	includes/model/Post.php on line 690
 
 
 flash_notice_message
@@ -586,7 +576,7 @@ excerpt
 Target:
 	$excerpt
 Called from:
-	includes/model/Post.php on line 561
+	includes/model/Post.php on line 557
 Arguments:
 	$post
 
@@ -604,7 +594,7 @@ feed_content
 Target:
 	$feed_content
 Called from:
-	includes/model/Post.php on line 578
+	includes/model/Post.php on line 574
 Arguments:
 	$post
 
@@ -646,7 +636,17 @@ scripts
 Target:
 	$javascripts
 Called from:
-	includes/class/Theme.php on line 242
+	includes/class/Theme.php on line 241
+
+
+keyword_search
+--------------
+Target:
+	$keywords
+Called from:
+	includes/helpers.php on line 1381
+Arguments:
+	$query, $plain
 
 
 page
@@ -654,7 +654,7 @@ page
 Target:
 	$this
 Called from:
-	includes/model/Page.php on line 37
+	includes/model/Page.php on line 40
 
 
 title_from_excerpt
@@ -662,7 +662,7 @@ title_from_excerpt
 Target:
 	$excerpt
 Called from:
-	includes/model/Post.php on line 519
+	includes/model/Post.php on line 515
 
 
 bookmarklet_submit_values
@@ -686,7 +686,7 @@ stylesheets
 Target:
 	$stylesheets
 Called from:
-	includes/class/Theme.php on line 180
+	includes/class/Theme.php on line 179
 
 
 export
@@ -703,16 +703,6 @@ Target:
 	$this
 Called from:
 	includes/model/Group.php on line 30
-
-
-markup_page_text
-----------------
-Target:
-	$this->body
-Called from:
-	includes/model/Page.php on line 33
-Arguments:
-	$this
 
 
 bookmarklet_submit_options

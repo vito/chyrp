@@ -1,14 +1,14 @@
-# Chyrp v2.0 RC2 Translation File.
+# Chyrp v2.0 RC3 Translation File.
 # Copyright (C) YEAR Alex Suraci
-# This file is distributed under the same license as the Chyrp v2.0 RC2 package.
+# This file is distributed under the same license as the Chyrp v2.0 RC3 package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Chyrp v2.0 RC2\n"
+"Project-Id-Version: Chyrp v2.0 RC3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-10-27 20:18+0000\n"
+"POT-Creation-Date: 2008-11-01 01:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
