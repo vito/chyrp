@@ -121,7 +121,7 @@
             $filename = $post->filename;
             $config = Config::current();
             $source = !empty($post->source) ? $post->source : uploaded($filename) ;
-            $alt = !empty($post->alt_text) ? $post->alt_text : $filename ;
+            $alt = !empty($post->alt_text) ? fix($post->alt_text, true) : $filename ;
             return '<a href="'.$source.'"><img src="'.$config->chyrp_url.'/includes/thumb.php?file=..'.$config->uploads_path.urlencode($filename).'&amp;max_width='.$max_width.'&amp;max_height='.$max_height.'&amp;'.$more_args.'" alt="'.$alt.'" /></a>';
         }
 
@@ -134,6 +134,11 @@
                                "label" => __("Alt-Text", "photo"),
                                "type" => "text",
                                "value" => oneof(@$post->alt_text, ""));
+
+            $options[] = array("attr" => "option[source]",
+                               "label" => __("Source", "photo"),
+                               "type" => "text",
+                               "value" => oneof(@$post->source, ""));
 
             $options[] = array("attr" => "from_url",
                                "label" => __("From URL?", "photo"),
