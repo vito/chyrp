@@ -316,7 +316,9 @@
             fallback($_GET['query'], "");
             $config = Config::current();
 
-            if ($config->clean_urls and substr_count($_SERVER['REQUEST_URI'], "?"))
+            if ($config->clean_urls and
+                substr_count($_SERVER['REQUEST_URI'], "?") and
+                !substr_count($_SERVER['REQUEST_URI'], "%2F")) # Searches with / and clean URLs = server 404
                 redirect("search/".urlencode($_GET['query'])."/");
 
             if (empty($_GET['query']))
