@@ -1281,9 +1281,8 @@
      * Exits and states where the error occurred.
      */
     function error_panicker($errno, $message, $file, $line) {
-        if ($errno === 0)
-            return; # Suppressed error. A bug in 5.2.6 ignores this, however.
-                    # See http://bugs.php.net/bug.php?id=46374
+        if (error_reporting() === 0)
+            return; # Suppressed error.
 
         exit("ERROR: ".$message." (".$file." on line ".$line.")");
     }
@@ -1295,18 +1294,22 @@
      * Parameters:
      *     $query - The query to parse.
      *     $plain - WHERE syntax to search for non-keyword queries.
+     *     $table - If specified, the keywords will be checked against this table's columns for validity.
      *
      * Returns:
      *     An array containing the "WHERE" queries and the corresponding parameters.
      */
-    function keywords($query, $plain) {
+    function keywords($query, $plain, $table = null) {
         if (!trim($query))
             return array(array(), array());
 
-        $search = array();
+        $search  = array();
         $matches = array();
-        $where = array();
-        $params = array();
+        $where   = array();
+        $params  = array();
+
+        if ($table)
+            $columns = SQL::current()->select($table)->fetch();
 
         $queries = explode(" ", $query);
         foreach ($queries as $query)
@@ -1355,6 +1358,11 @@
             } else
                 $where[$test] = $equals;
         }
+
+        if ($table)
+            foreach ($where as $col => $val)
+                if (!isset($columns[$col]))
+                    unset($where[$col]);
 
         if (!empty($search)) {
             $where[] = $plain;

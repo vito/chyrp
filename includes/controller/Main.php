@@ -322,7 +322,7 @@
             if (empty($_GET['query']))
                 return Flash::warning(__("Please enter a search term."));
 
-            list($where, $params) = keywords($_GET['query'], "post_attributes.value LIKE :query OR url LIKE :query");
+            list($where, $params) = keywords($_GET['query'], "post_attributes.value LIKE :query OR url LIKE :query", "posts");
 
             $results = Post::find(array("placeholders" => true,
                                         "where" => $where,

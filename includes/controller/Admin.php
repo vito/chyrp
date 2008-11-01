@@ -272,7 +272,7 @@
 
             fallback($_GET['query'], "");
 
-            list($where, $params) = keywords($_GET['query'], "post_attributes.value LIKE :query OR url LIKE :query");
+            list($where, $params) = keywords($_GET['query'], "post_attributes.value LIKE :query OR url LIKE :query", "post_attributes");
 
             if (!empty($_GET['month']))
                 $where["created_at like"] = $_GET['month']."-%";
@@ -467,7 +467,7 @@
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to manage pages."));
 
             fallback($_GET['query'], "");
-            list($where, $params) = keywords($_GET['query'], "(title LIKE :query OR body LIKE :query)");
+            list($where, $params) = keywords($_GET['query'], "title LIKE :query OR body LIKE :query", "pages");
 
             $this->display("manage_pages",
                            array("pages" => new Paginator(Page::find(array("placeholders" => true,
@@ -659,7 +659,7 @@
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to manage users."));
 
             fallback($_GET['query'], "");
-            list($where, $params) = keywords($_GET['query'], "login LIKE :query OR full_name LIKE :query OR email LIKE :query OR website LIKE :query");
+            list($where, $params) = keywords($_GET['query'], "login LIKE :query OR full_name LIKE :query OR email LIKE :query OR website LIKE :query", "users");
 
             $this->display("manage_users",
                            array("users" => new Paginator(User::find(array("placeholders" => true,
@@ -830,7 +830,7 @@
             $exports = array();
 
             if (isset($_POST['posts'])) {
-                list($where, $params) = keywords($_POST['filter_posts'], "post_attributes.value LIKE :query OR url LIKE :query");
+                list($where, $params) = keywords($_POST['filter_posts'], "post_attributes.value LIKE :query OR url LIKE :query", "post_attributes");
 
                 if (!empty($_GET['month']))
                     $where["created_at like"] = $_GET['month']."-%";
@@ -920,7 +920,7 @@
             }
 
             if (isset($_POST['pages'])) {
-                list($where, $params) = keywords($_POST['filter_pages'], "(title LIKE :query OR body LIKE :query)");
+                list($where, $params) = keywords($_POST['filter_pages'], "title LIKE :query OR body LIKE :query", "pages");
 
                 $pages = Page::find(array("where" => $where, "params" => $params, "order" => "id ASC"),
                                     array("filter" => false));
@@ -977,7 +977,7 @@
             }
 
             if (isset($_POST['groups'])) {
-                list($where, $params) = keywords($_POST['filter_groups'], "name LIKE :query");
+                list($where, $params) = keywords($_POST['filter_groups'], "name LIKE :query", "groups");
 
                 $groups = Group::find(array("where" => $where, "params" => $params, "order" => "id ASC"));
 
@@ -994,7 +994,7 @@
             }
 
             if (isset($_POST['users'])) {
-                list($where, $params) = keywords($_POST['filter_users'], "(login LIKE :query OR full_name LIKE :query OR email LIKE :query OR website LIKE :query)");
+                list($where, $params) = keywords($_POST['filter_users'], "login LIKE :query OR full_name LIKE :query OR email LIKE :query OR website LIKE :query", "users");
 
                 $users = User::find(array("where" => $where, "params" => $params, "order" => "id ASC"));
 
