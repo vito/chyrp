@@ -1324,14 +1324,15 @@
             list($test, $equals,) = explode(":", $match);
 
             if ($equals[0] == '"') {
-                foreach ($search as $index => $part) {
-                    $equals.= " ".$part;
+                if (substr($equals, -1) != '"')
+                    foreach ($search as $index => $part) {
+                        $equals.= " ".$part;
 
-                    unset($search[$index]);
+                        unset($search[$index]);
 
-                    if (substr($part, -1) == '"')
-                        break;
-                }
+                        if (substr($part, -1) == '"')
+                            break;
+                    }
 
                 $equals = ltrim(trim($equals, '"'), '"');
             }
@@ -1361,8 +1362,14 @@
 
         if ($table)
             foreach ($where as $col => $val)
-                if (!isset($columns[$col]))
+                if (!isset($columns[$col])) {
+                    if ($table == "posts") {
+                        $where["post_attributes.name"] = $col;
+                        $where["post_attributes.value like"] = "%".$val."%";
+                    }
+
                     unset($where[$col]);
+                }
 
         if (!empty($search)) {
             $where[] = $plain;
