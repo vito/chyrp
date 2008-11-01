@@ -196,15 +196,17 @@
                     if ($parameter[0] == "(")
                         $post_url_attrs[rtrim(ltrim($parameter, "("), ")")] = $args[$index];
 
+                $original_feed = $this->feed;
+
                 if ((oneof(@$post_url_attrs["url"], @$post_url_attrs["clean"]) == "feed") and # do some checking to see if they're trying
-                    (count(explode("/", trim($post_url, "/"))) > count($args) or # to view the post or the post's feed.
+                    (count(explode("/", trim($post_url, "/"))) > count($args) or              # to view the post or the post's feed.
                      end($args) != "feed"))
                     $this->feed = false;
 
                 if ($return_post)
                     return Post::from_url($post_url_attrs);
                 else
-                    $route->try["view"] = array($post_url_attrs);
+                    $route->try["view"] = array($post_url_attrs, $original_feed);
             }
         }
 
@@ -371,14 +373,16 @@
          * Function: view
          * Views a post.
          */
-        public function view($attrs = null) {
+        public function view($attrs = null, $original_feed = false) {
             if (isset($attrs))
                 $post = Post::from_url($attrs, array("drafts" => true));
             else
                 $post = new Post(array("url" => @$_GET['url']));
 
-            if ($post->no_results)
+            if ($post->no_results) {
+                Route::current()->feed = $original_feed;
                 return false;
+            }
 
             if (!$post->theme_exists())
                 error(__("Error"), __("The feather theme file for this post does not exist. The post cannot be displayed."));
