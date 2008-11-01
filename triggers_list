@@ -54,7 +54,7 @@ Called from:
 update_post
 -----------
 Called from:
-	includes/model/Post.php on line 331
+	includes/model/Post.php on line 333
 Arguments:
 	$this, $old, $options
 
@@ -68,7 +68,7 @@ Called from:
 add_post
 --------
 Called from:
-	includes/model/Post.php on line 255
+	includes/model/Post.php on line 257
 Arguments:
 	$post, $options
 
@@ -414,7 +414,7 @@ filter_post
 Target:
 	$this
 Called from:
-	includes/model/Post.php on line 634
+	includes/model/Post.php on line 636
 
 
 user
@@ -474,7 +474,7 @@ title
 Target:
 	$title
 Called from:
-	includes/model/Post.php on line 540
+	includes/model/Post.php on line 542
 Arguments:
 	$post
 
@@ -484,7 +484,7 @@ url_vals
 Target:
 	$vals
 Called from:
-	includes/model/Post.php on line 495
+	includes/model/Post.php on line 497
 Arguments:
 	$this
 
@@ -532,7 +532,7 @@ post_url_token
 Target:
 	$tokens
 Called from:
-	includes/model/Post.php on line 690
+	includes/model/Post.php on line 692
 
 
 flash_notice_message
@@ -576,7 +576,7 @@ excerpt
 Target:
 	$excerpt
 Called from:
-	includes/model/Post.php on line 557
+	includes/model/Post.php on line 559
 Arguments:
 	$post
 
@@ -594,7 +594,7 @@ feed_content
 Target:
 	$feed_content
 Called from:
-	includes/model/Post.php on line 574
+	includes/model/Post.php on line 576
 Arguments:
 	$post
 
@@ -662,7 +662,7 @@ title_from_excerpt
 Target:
 	$excerpt
 Called from:
-	includes/model/Post.php on line 515
+	includes/model/Post.php on line 517
 
 
 bookmarklet_submit_values
@@ -670,7 +670,7 @@ bookmarklet_submit_values
 Target:
 	$values
 Called from:
-	includes/model/Post.php on line 207
+	includes/model/Post.php on line 209
 
 
 parse_urls
@@ -710,4 +710,4 @@ bookmarklet_submit_options
 Target:
 	$options
 Called from:
-	includes/model/Post.php on line 208
+	includes/model/Post.php on line 210
