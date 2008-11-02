@@ -104,7 +104,7 @@
         }
 
         public function feed_content($post) {
-            return self::image_tag_for($post, 500, 500)."<br /><br />".$post->caption;
+            return self::image_tag($post, 500, 500)."<br /><br />".$post->caption;
         }
 
         public function delete_file($post) {
@@ -114,15 +114,19 @@
 
         public function filter_post($post) {
             if ($post->feather != "photo") return;
-            $post->image = $this->image_tag_for($post);
+            $post->image = $this->image_tag($post);
         }
 
-        public function image_tag_for($post, $max_width = 500, $max_height = null, $more_args = "quality=100") {
+        public function image_tag($post, $max_width = 500, $max_height = null, $more_args = "quality=100") {
             $filename = $post->filename;
             $config = Config::current();
-            $source = !empty($post->source) ? $post->source : uploaded($filename) ;
             $alt = !empty($post->alt_text) ? fix($post->alt_text, true) : $filename ;
-            return '<a href="'.$source.'"><img src="'.$config->chyrp_url.'/includes/thumb.php?file=..'.$config->uploads_path.urlencode($filename).'&amp;max_width='.$max_width.'&amp;max_height='.$max_height.'&amp;'.$more_args.'" alt="'.$alt.'" /></a>';
+            return '<img src="'.$config->chyrp_url.'/includes/thumb.php?file=..'.$config->uploads_path.urlencode($filename).'&amp;max_width='.$max_width.'&amp;max_height='.$max_height.'&amp;'.$more_args.'" alt="'.$alt.'" />';
+        }
+
+        public function image_link($post, $max_width = 500, $max_height = null, $more_args="quality=100") {
+            $source = !empty($post->source) ? $post->source : uploaded($post->filename) ;
+            return '<a href="'.$source.'">'.$this->image_tag($post, $max_width, $max_height, $more_args).'</a>';
         }
 
         public function add_option($options, $post = null) {
@@ -147,3 +151,4 @@
             return $options;
         }
     }
+
