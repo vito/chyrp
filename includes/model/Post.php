@@ -721,7 +721,7 @@
             if ($visitor->group->can("view_private"))
                 $statuses[] = "private";
 
-            return "posts.status IN ('".implode("', '", $statuses)."') OR posts.status LIKE '%{".$visitor->group->id."}%'";
+            return "posts.status IN ('".implode("', '", $statuses)."') XOR (posts.status LIKE '%{".$visitor->group->id."}%' OR posts.user_id = ".$visitor->id.")";
         }
 
         /**
@@ -743,5 +743,26 @@
                 return false;
 
             return new User($this->user_id);
+        }
+
+        /**
+         * Function: groups
+         * Lists the groups who can view the post if the post's status is specific to certain groups.
+         */
+        public function groups() {
+            if ($this->no_results)
+                return false;
+
+            preg_match_all("/\{([0-9]+)\}/", $this->status, $groups, PREG_PATTERN_ORDER);
+            if (empty($groups[1]))
+                return false;
+
+            $names = array();
+            foreach ($groups[1] as $group_id) {
+                $group = new Group($group_id);
+                $names[] = $group->name;
+            }
+
+            return list_notate($names);
         }
     }

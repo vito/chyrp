@@ -386,6 +386,9 @@
             if ($post->status == "draft")
                 Flash::message(__("This post is a draft."));
 
+            if ($post->groups() and !substr_count($post->status, "{".Visitor::current()->group->id."}"))
+                Flash::message(_f("This post is only visible by the following groups: %s.", $post->groups()));
+
             $this->display(array("pages/view", "pages/index"),
                            array("post" => $post, "posts" => array($post)),
                            $post->title());
