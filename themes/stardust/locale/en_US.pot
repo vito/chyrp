@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-11-01 14:50+0000\n"
+"POT-Creation-Date: 2008-11-02 15:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Toggle Admin Bar"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:79
+#: themes/stardust/layouts/default.twig:80
 msgid "Load Time:"
 msgstr ""
 
@@ -29,7 +29,7 @@ msgstr ""
 msgid "Please enter your username below and we will e-mail you a new password for your account."
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:33
+#: themes/stardust/layouts/default.twig:34
 msgid "Close"
 msgstr ""
 
@@ -66,7 +66,7 @@ msgstr ""
 msgid "Posts tagged with %s"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:82
+#: themes/stardust/layouts/default.twig:83
 msgid "Queries"
 msgstr ""
 
@@ -78,7 +78,7 @@ msgstr ""
 msgid "Stardust"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:79
+#: themes/stardust/layouts/default.twig:80
 msgid "seconds"
 msgstr ""
 
@@ -115,7 +115,7 @@ msgstr ""
 msgid "(shows this post above all others)"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:65
+#: themes/stardust/layouts/default.twig:66
 msgid "Powered by <a class=\"chyrp\" href=\"http://chyrp.net/\">Chyrp</a>"
 msgstr ""
 
@@ -148,7 +148,7 @@ msgid "Lost Password?"
 msgstr ""
 
 #: themes/stardust/pages/view.twig:19
-#: themes/stardust/layouts/default.twig:61
+#: themes/stardust/layouts/default.twig:62
 #: themes/stardust/content/post.twig:11
 #, php-format
 msgid "Page %d of %d"
@@ -174,7 +174,7 @@ msgstr ""
 msgid "Nothing here yet!"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:31
+#: themes/stardust/layouts/default.twig:32
 msgid "Admin"
 msgstr ""
 
@@ -235,7 +235,7 @@ msgstr ""
 msgid "Draft"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:28
+#: themes/stardust/layouts/default.twig:29
 msgid "Your Drafts"
 msgstr ""
 
@@ -328,7 +328,7 @@ msgstr ""
 msgid "Not Found"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:25
+#: themes/stardust/layouts/default.twig:26
 msgid "Add Page"
 msgstr ""
 
@@ -376,16 +376,16 @@ msgstr ""
 msgid "Group"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:87
+#: themes/stardust/layouts/default.twig:88
 #, php-format
 msgid "Called from <strong>%s</strong> on line <strong>%d</strong>."
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:74
+#: themes/stardust/layouts/default.twig:75
 msgid "Toggle"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:75
+#: themes/stardust/layouts/default.twig:76
 msgid "Stats"
 msgstr ""
 
@@ -406,11 +406,11 @@ msgstr ""
 msgid "Your Website"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:20
+#: themes/stardust/layouts/default.twig:21
 msgid "Write"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:78
+#: themes/stardust/layouts/default.twig:79
 msgid "Queries:"
 msgstr ""
 
@@ -441,7 +441,7 @@ msgstr ""
 msgid "Slug"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:22
+#: themes/stardust/layouts/default.twig:23
 msgid "Write Draft"
 msgstr ""
 
