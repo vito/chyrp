@@ -590,8 +590,7 @@
             $tags = SQL::current()->select("post_attributes",
                                            "value",
                                            array("name" => "tags",
-                                                 "post_id" => $post->id),
-                                           "id DESC")->fetchColumn();
+                                                 "post_id" => $post->id))->fetchColumn();
             if (empty($tags)) return;
 
             $atom.= "       <chyrp:tags>".fix(implode(", ", array_keys(YAML::load($tags))))."</chyrp:tags>\r";
