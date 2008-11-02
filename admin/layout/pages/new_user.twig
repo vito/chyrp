@@ -6,20 +6,6 @@
             <h1>${ "Add User" | translate }</h1>
             <form id="new_user" class="split" action="{% admin "add_user" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
                 <fieldset>
-                    <h2>${ "Information" | translate }</h2>
-                    <p>
-                        <label for="full_name">${ "Full Name" | translate }</label>
-                        <input class="text" type="text" name="full_name" value="" id="full_name" />
-                    </p>
-                    <p>
-                        <label for="email">${ "E-Mail" | translate }</label>
-                        <input class="text" type="text" name="email" value="" id="email" />
-                    </p>
-                    <p>
-                        <label for="website">${ "Website" | translate }</label>
-                        <input class="text" type="text" name="website" value="" id="website" />
-                    </p>
-
                     <h2>${ "Settings" | translate }</h2>
                     <p>
                         <label for="login">${ "Login" | translate }</label>
@@ -35,13 +21,29 @@
                         </select>
                     </p>
                     <p>
-                        <label for="password1">${ "Password?" | translate }</label>
+                        <label for="password1">${ "Password" | translate }</label>
                         <input class="text" type="password" name="password1" value="" id="password1" />
                     </p>
                     <p>
                         <label for="password2">${ "Confirm" | translate }</label>
                         <input class="text" type="password" name="password2" value="" id="password2" />
                     </p>
+
+                    <h2>${ "Information" | translate }</h2>
+                    <p>
+                        <label for="full_name">${ "Full Name" | translate }</label>
+                        <input class="text" type="text" name="full_name" value="" id="full_name" />
+                    </p>
+                    <p>
+                        <label for="email">${ "E-Mail" | translate }</label>
+                        <input class="text" type="text" name="email" value="" id="email" />
+                    </p>
+                    <p>
+                        <label for="website">${ "Website" | translate }</label>
+                        <input class="text" type="text" name="website" value="" id="website" />
+                    </p>
+
+
                     ${ trigger.call("new_user_fields") }
 
                     <br />

@@ -364,6 +364,7 @@
          *     $text - The text to show for the link.
          *     $before - If the link can be shown, show this before it.
          *     $after - If the link can be shown, show this after it.
+         *     $classes - Extra CSS classes for the link, space-delimited.
          */
         public function edit_link($text = null, $before = null, $after = null, $classes = "") {
             if (!$this->editable())
@@ -383,6 +384,7 @@
          *     $text - The text to show for the link.
          *     $before - If the link can be shown, show this before it.
          *     $after - If the link can be shown, show this after it.
+         *     $classes - Extra CSS classes for the link, space-delimited.
          */
         public function delete_link($text = null, $before = null, $after = null, $classes = "") {
             if (!$this->deletable())
