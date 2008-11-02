@@ -721,7 +721,7 @@
             if ($visitor->group->can("view_private"))
                 $statuses[] = "private";
 
-            return "posts.status IN ('".implode("', '", $statuses)."') XOR (posts.status LIKE '%{".$visitor->group->id."}%' OR posts.user_id = ".$visitor->id.")";
+            return "(posts.status IN ('".implode("', '", $statuses)."') OR posts.status LIKE '%{".$visitor->group->id."}%') OR (posts.status LIKE '%{%' AND posts.user_id = ".$visitor->id.")";
         }
 
         /**
