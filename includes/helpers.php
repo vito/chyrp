@@ -1230,10 +1230,7 @@
      * Converts a DateTime to an integer time.
      */
     function datetimetotime($datetime) {
-        #$old = get_timezone();
-        #set_timezone($datetime->getTimezone()->getName());
         $time = strtotime(strftime($datetime->format("F jS, Y, g:i A")));
-        #set_timezone($old);
         return $time;
     }
 

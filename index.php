@@ -21,30 +21,6 @@
     # Execute the appropriate Controller responder.
     $route->init();
 
-#     error("Database Error", "Unknown column 'users.where' in 'where clause'
-# 
-# <pre>SELECT users.*
-# FROM users
-# WHERE (users.where IN ('alex'))
-# ORDER BY users.id DESC
-# 
-# 
-# <pre>Array
-# (
-# )
-# </pre>
-# 
-# <pre>#0 /var/www/rosiba/includes/class/SQL.php(201): Query->__construct(Object(SQL), 'SELECT users.*?...', Array, false)
-# #1 /var/www/rosiba/includes/class/SQL.php(238): SQL->query('SELECT __users....', Array, false)
-# #2 /var/www/rosiba/includes/class/Model.php(155): SQL->select(Array, Array, Array, 'id DESC', Array, NULL, NULL, Array, Array)
-# #3 /var/www/rosiba/includes/model/User.php(19): Model::grab(Object(User), Array, Array)
-# #4 /var/www/rosiba/includes/model/Post.php(684): User->__construct(Array)
-# #5 /var/www/rosiba/includes/controller/Main.php(374): Post::from_url(Array, Array)
-# #6 [internal function]: MainController->view(Array)
-# #7 /var/www/rosiba/includes/class/Route.php(99): call_user_func_array(Array, Array)
-# #8 /var/www/rosiba/index.php(22): Route->init()
-# #9 {main}</pre>");
-
     # If the route failed or nothing was displayed, check for:
     #     1. Module-provided pages.
     #     2. Feather-provided pages.
