@@ -100,12 +100,18 @@
                 else
                     $response = false;
 
-                if ($response !== false or $call !== false)
-                    return $this->success = true;
+                if ($response !== false or $call !== false) {
+                    $this->success = true;
+                    break;
+                }
 
                 if (++$count == count($try) and isset($this->controller->fallback) and method_exists($this->controller, "display"))
                     call_user_func_array(array($this->controller, "display"), $this->controller->fallback);
             }
+
+            $trigger->call("route_done", $this);
+
+            return true;
         }
 
         /**

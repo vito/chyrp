@@ -10,6 +10,10 @@
                         <label for="cache_expire">${ "Expire Cache After&hellip;" | translate("cacher") }</label>
                         <input class="text" type="text" name="cache_expire" value="${ site.cache_expire | escape }" id="cache_expire" /> <span class="sub">${ "(seconds)" | translate("cacher") }</span>
                     </p>
+                    <p>
+                        <label for="cache_exclude">${ "Exclude URLs" | translate("cacher") }</label>
+                        <input class="text" type="text" name="cache_exclude" value="${ site.cache_exclude | join(", ") | escape }" id="cache_exclude" /> <span class="sub">${ "(comma separated)" | translate("cacher") }</span>
+                    </p>
 
                     <p class="buttons">
                         <p>

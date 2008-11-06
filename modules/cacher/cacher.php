@@ -1,7 +1,5 @@
 <?php
     class Cacher extends Modules {
-        public $cancelled = false;
-
         public function __init() {
             $this->user = (logged_in()) ? Visitor::current()->login : "guest" ;
             $this->path = INCLUDES_DIR."/caches/".sanitize($this->user);
@@ -19,28 +17,30 @@
 
             # Remove all expired files.
             $this->remove_expired();
+
+            $config = Config::current();
+            $config->cache_exclude = (array) $config->cache_exclude;
         }
 
         static function __install() {
             $config = Config::current();
             $config->set("cache_expire", 1800);
+            $config->set("cache_exclude", array());
         }
 
         static function __uninstall() {
             $config = Config::current();
             $config->remove("cache_expire");
+            $config->remove("cache_exclude");
         }
 
         public function route_init($route) {
-            if (!($route->controller instanceof MainController) or
+            if (!empty($_POST) or
+                !($route->controller instanceof MainController) or
+                in_array($this->url, Config::current()->cache_exclude) or
                 $this->cancelled or
                 !file_exists($this->file) or
                 Flash::exists())
-                return;
-
-            $action = $route->action;
-
-            if (!empty($_POST))
                 return;
 
             if (DEBUG)
@@ -56,6 +56,7 @@
 
         public function end($route) {
             if (!($route->controller instanceof MainController) or
+                in_array($this->url, Config::current()->cache_exclude) or
                 $this->cancelled or
                 file_exists($this->file) or
                 Flash::exists())
@@ -147,7 +148,8 @@
             if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
                 show_403(__("Access Denied"), __("Invalid security key."));
 
-            if (Config::current()->set("cache_expire", $_POST['cache_expire']))
+            $config = Config::current();
+            if ($config->set("cache_expire", $_POST['cache_expire']) and $config->set("cache_exclude", explode(", ", $_POST['cache_exclude'])))
                 Flash::notice(__("Settings updated."), "/admin/?action=cache_settings");
         }
 

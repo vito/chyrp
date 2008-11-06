@@ -8,6 +8,10 @@
         # Holds all Module instantiations.
         static $instances = array();
 
+        # Boolean: $cancelled
+        # Is the module's execution cancelled?
+        public $cancelled = false;
+
         /**
          * Function: setPriority
          * Sets the priority of an action for the module this function is called from.
