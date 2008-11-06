@@ -56,6 +56,7 @@
             $tags = array();
             foreach ($values as $key =>&$value) {
                 $paragraphs = preg_split("/([\r\n]{2,4})/", $value);
+                $rejoin = ((strlen($value) - strlen(implode("", $paragraphs)) / count($paragraphs)) == 4) ? "\r\n\r\n" : "\n\n" ;
 
                 foreach ($paragraphs as $index => &$paragraph)
                     # Look for #spaced tags# that get removed only in the last paragraph.
@@ -71,7 +72,7 @@
                         $paragraph = preg_replace("/(\s|^)#([^ .,]+)(?!#)/", "\\1\\2", $paragraph);
                     }
 
-                $value = str_replace("\\#", "#", implode("\r\n", $paragraphs));
+                $value = str_replace("\\#", "#", implode($mode, $paragraphs));
             }
 
             $_POST['tags'] = implode(", ", $tags);
