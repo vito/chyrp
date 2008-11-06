@@ -20,6 +20,10 @@
 
             $config = Config::current();
             $config->cache_exclude = (array) $config->cache_exclude;
+
+            foreach ($config->cache_exclude as &$exclude)
+                if (substr($exclude, 7) != "http://")
+                    $exclude = $config->url."/".ltrim($exclude, "/");
         }
 
         static function __install() {
