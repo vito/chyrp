@@ -630,7 +630,7 @@
                 if (strtotime($post->created_at) > $latest_timestamp)
                     $latest_timestamp = strtotime($post->created_at);
 
-            require "includes/feed.php";
+            require INCLUDES_DIR."/feed.php";
         }
 
         /**

@@ -598,8 +598,7 @@
     function send_pingbacks($string, $post) {
         foreach (grab_urls($string) as $url)
             if ($ping_url = pingback_url($url)) {
-                if (!class_exists("IXR_Client"))
-                    require INCLUDES_DIR."/lib/ixr.php";
+                require_once INCLUDES_DIR."/lib/ixr.php";
 
                 $client = new IXR_Client($ping_url);
                 $client->timeout = 3;
