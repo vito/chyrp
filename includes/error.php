@@ -135,7 +135,7 @@
                 </ol>
 <?php endif; ?>
                 <div class="clear"></div>
-<?php if (!logged_in()): ?>
+<?php if (!logged_in() and $body != __("Route was initiated without a Controller.")): ?>
                 <a href="<?php echo url("login"); ?>" class="big login"><?php echo __("Log In"); ?> &rarr;</a>
 <?php endif; ?>
                 <div class="clear last"></div>

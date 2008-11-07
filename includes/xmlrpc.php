@@ -9,6 +9,9 @@
     require_once INCLUDES_DIR.'/lib/ixr.php';
     if (!defined('XML_RPC_FEATHER')) define('XML_RPC_FEATHER', 'text');
 
+    # Use the Main controller for any Route calls.
+    Route::current(MainController::current());
+
     #
     # Class: XMLRPC
     # Provides functionality for using external clients, services, etc. for accessing and adding to Chyrp.

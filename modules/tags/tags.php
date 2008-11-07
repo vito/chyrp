@@ -97,7 +97,7 @@
         }
 
         public function update_post($post) {
-            if (!isset($_POST['tags'])) return;
+            if (empty($_POST['tags'])) return;
 
             $tags = explode(",", $_POST['tags']); # Split at the comma
             $tags = array_map('trim', $tags); # Remove whitespace
@@ -504,7 +504,7 @@
             if (isset($struct['mt_tags']))
                 $_POST['tags'] = $struct['mt_tags'];
             else if (isset($post->tags))
-                $_POST['tags'] = $post->tags["unlinked"];
+                $_POST['tags'] = $post->unlinked_tags;
             else
                 $_POST['tags'] = '';
         }
