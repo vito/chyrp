@@ -72,7 +72,7 @@ $twig_filters = array(
     // debugging
     'inspect' =>          'twig_inspect_filter',
 
-    'fallback' =>         'twig_fallback_filter',
+    'fallback' =>         'oneof',
     'selected' =>         'twig_selected_filter',
     'checked' =>          'twig_checked_filter',
     'option_selected' =>  'twig_option_selected_filter'
@@ -392,10 +392,6 @@ function twig_last_filter($array) {
 
 function twig_offset_filter($array, $offset = 0) {
     return $array[$offset];
-}
-
-function twig_fallback_filter($try, $fallback) {
-    return oneof($try, $fallback);
 }
 
 function twig_selected_filter($foo) {
