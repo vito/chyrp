@@ -72,7 +72,7 @@
                         $paragraph = preg_replace("/(\s|^)#([^ .,]+)(?!#)/", "\\1\\2", $paragraph);
                     }
 
-                $value = str_replace("\\#", "#", implode($mode, $paragraphs));
+                $value = str_replace("\\#", "#", implode($rejoin, $paragraphs));
             }
 
             $_POST['tags'] = implode(", ", $tags);

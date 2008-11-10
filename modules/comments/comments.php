@@ -596,12 +596,7 @@
 
             $title = _f("Comments on &#8220;%s&#8221;", array(fix($title)), "comments");
 
-            $ids = array_reverse($post->comments->array[0]);
-
-            $comments = array();
-            for ($i = 0; $i < 20; $i++)
-                if (isset($ids[$i]))
-                    $comments[] = new Comment(null, array("read_from" => $ids[$i]));
+            $comments = $post->comments;
 
             require "pages/comments_feed.php";
         }
