@@ -1572,7 +1572,8 @@
     function email() {
         $function = "mail";
         Trigger::current()->filter($function, "send_mail");
-        return call_user_func_array($function, func_get_args());
+        $args = func_get_args(); # Looks redundant, but it must be so in order to meet PHP's retardation requirements.
+        return call_user_func_array($function, $args);
     }
 
     /**
