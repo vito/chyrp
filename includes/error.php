@@ -8,6 +8,8 @@
     $jquery = is_callable(array("Config", "current")) ?
                   Config::current()->url."/includes/lib/gz.php?file=jquery.js" :
                   "http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" ;
+
+    Route::current(MainController::current());
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
