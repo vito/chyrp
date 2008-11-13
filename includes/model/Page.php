@@ -29,15 +29,17 @@
 
             $trigger = Trigger::current();
 
+            $trigger->filter($this, "page");
+
             if ($this->filtered) {
                 $this->title_unfiltered = $this->title;
                 $this->body_unfiltered = $this->body;
 
                 $trigger->filter($this->title, array("markup_title", "markup_page_title"), $this);
                 $trigger->filter($this->body, array("markup_text", "markup_page_text"), $this);
-            }
 
-            $trigger->filter($this, "page");
+                $trigger->filter($this, "filter_page");
+            }
         }
 
         /**

@@ -80,6 +80,9 @@
                 $tags[$attr["post_id"]]["unclean"] = $attr["value"];
             else
                 $tags[$attr["post_id"]]["clean"] = $attr["value"];
+
+        if (empty($tags))
+            return;
         
         foreach ($tags as $post_id => $tags) {
             $yaml = YAML::dump(parseTags($tags["unclean"], $tags["clean"]));

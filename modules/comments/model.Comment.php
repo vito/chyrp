@@ -31,6 +31,8 @@
 
             $trigger = Trigger::current();
 
+            $trigger->filter($this, "comment");
+
             if ($this->filtered) {
                 if (($this->status != "pingback" and !$this->status != "trackback") and !$group->can("code_in_comments"))
                     $this->body = strip_tags($this->body, "<".join("><", Config::current()->allowed_comment_html).">");
@@ -38,10 +40,9 @@
                 $this->body_unfiltered = $this->body;
 
                 $trigger->filter($this->body, array("markup_text", "markup_comment_text"));
+
                 $trigger->filter($this, "filter_comment");
             }
-
-            $trigger->filter($this, "comment");
         }
 
         /**

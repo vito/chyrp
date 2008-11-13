@@ -92,7 +92,8 @@
 
             Trigger::current()->filter($this, "post");
 
-            $this->filter();
+            if ($this->filtered)
+                $this->filter();
         }
 
         /**
@@ -627,9 +628,6 @@
          * Filters the post attributes through filter_post and any Feather filters.
          */
         private function filter() {
-            if (!$this->filtered)
-                return;
-
             $trigger = Trigger::current();
             $class = camelize($this->feather);
 
