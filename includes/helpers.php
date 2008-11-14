@@ -1504,7 +1504,9 @@
      * Returns:
      *     A string formatted like "3 days ago" or "3 days from now".
      */
-    function relative_time($time, $from = null) {
+    function relative_time($when, $from = null) {
+        $time = (is_numeric($when)) ? $when : strtotime($when) ;
+
         $difference = time() - $time;
 
         if ($difference < 0) {

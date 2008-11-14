@@ -18,6 +18,7 @@ $twig_filters = array(
     'moneyformat' =>       'money_format',
     'filesizeformat' =>    'twig_filesize_format_filter',
     'format' =>            'sprintf',
+    'relative' =>          'relative_time',
 
     // numbers
     'even' =>              'twig_is_even_filter',
