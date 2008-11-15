@@ -127,7 +127,7 @@
             $old = clone $this;
 
             foreach (array("login", "password", "email", "full_name", "website", "group_id", "joined_at") as $attr)
-                $this->$attr = fallback($$attr, $this->$attr); # This sets the $$attr and $this->$attr at the same time.
+                $this->$attr = $$attr = ($$attr !== null ? $$attr : $this->$attr);
 
             $sql->update("users",
                          array("id"        => $this->id),

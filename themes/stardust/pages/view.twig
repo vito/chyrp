@@ -8,16 +8,18 @@
 {% if enabled_modules.comments %}
                 <br />
                 <h2 class="comments">${ "Comments" | translate }</h2>
-                {% if post.comment_count > 0 %}
                 <ol class="comments" id="comments_$post.id">
-                    {% paginate comment in site.comments_per_page post.comments as comments %}{% include "content/comment.twig" %}{% endpaginate %}
+                    {% paginate comment in site.comments_per_page post.comments as comments %}
+                    {% include "content/comment.twig" %}
+                    {% else %}
+                    <li class="no_comments"></li> {# Needed for AJAX commenting and XHTML Strict validation. #}
+                    {% endpaginate %}
                 </ol>
                 <input type="hidden" name="last_comment" value="$post.latest_comment" id="last_comment" />
                 $comments.prev_link
                 $comments.next_link
                 {% if comments.pages > 1 %}
                 <span class="pages">${ "Page %d of %d" | translate | format(comments.page, comments.pages) }</span>
-                {% endif %}
                 {% endif %}
                 {% if post.commentable %}
                 {% include "forms/comment/new.twig" %}

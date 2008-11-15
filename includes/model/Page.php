@@ -149,10 +149,10 @@
 
             foreach (array("title", "body", "user_id", "parent_id", "show_in_list",
                            "list_order", "clean", "url", "created_at", "updated_at") as $attr)
-                if ($attr == "updated_at" and $updated_at !== false)
-                    $this->$attr = fallback($$attr, datetime());
+                if ($attr == "updated_at" and $$attr === null)
+                    $this->$attr = $$attr = datetime();
                 else
-                    $this->$attr = fallback($$attr, $this->$attr);
+                    $this->$attr = $$attr = ($$attr !== null ? $$attr : $this->$attr);
 
             $sql->update("pages",
                          array("id" =>           $this->id),

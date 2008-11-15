@@ -929,6 +929,10 @@
      */
     function upload($file, $extension = null, $path = "", $put = false) {
         $file_split = explode(".", $file['name']);
+        $dir = MAIN_DIR.Config::current()->uploads_path.$path;
+
+        if (!file_exists($dir))
+            mkdir($dir);
 
         $original_ext = end($file_split);
 
@@ -968,9 +972,9 @@
         $message = __("Couldn't upload file. CHMOD <code>".MAIN_DIR.Config::current()->uploads_path."</code> to 777 and try again. If this problem persists, it's probably timing out; in which case, you must contact your system administrator to increase the maximum POST and upload sizes.");
 
         if ($put) {
-            if (!@copy($file['tmp_name'], MAIN_DIR.Config::current()->uploads_path.$path.$filename))
+            if (!@copy($file['tmp_name'], $dir.$filename))
                 error(__("Error"), $message);
-        } elseif (!@move_uploaded_file($file['tmp_name'], MAIN_DIR.Config::current()->uploads_path.$path.$filename))
+        } elseif (!@move_uploaded_file($file['tmp_name'], $dir.$filename))
             error(__("Error"), $message);
 
         return $filename;

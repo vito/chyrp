@@ -424,7 +424,7 @@
          */
         public static function tablefy(&$field, $tables) {
             if (!preg_match_all("/(\(|[\s]+|^)(?!__)([a-z0-9_\.\*]+)(\)|[\s]+|$)/", $field, $matches))
-                return;
+                return $field = str_replace("`", "", $field); # Method for bypassing the prefixer.
 
             foreach ($matches[0] as $index => $full) {
                 $before = $matches[1][$index];
@@ -456,3 +456,4 @@
             $field = preg_replace("/AS ([^ ]+)\./i", "AS ", $field);
         }
     }
+
