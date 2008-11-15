@@ -1225,25 +1225,29 @@
     }
 
     /**
-     * Function: datetimetotime
-     * Converts a DateTime to an integer time.
+     * Function: time_in_timezone
+     * Returns the appropriate time() for representing a timezone.
      */
-    function datetimetotime($datetime) {
-        $time = strtotime(strftime($datetime->format("F jS, Y, g:i A")));
-        return $time;
+    function time_in_timezone($timezone) {
+        $orig = get_timezone();
+        set_timezone($timezone);
+        $time = date("F jS, Y, g:i A");
+        set_timezone($orig);
+        return strtotime($time);
     }
-
+    
     /**
      * Function: timezones
      * Returns an array of timezones that have unique offsets. Doesn't count deprecated timezones.
      */
     function timezones() {
+        require INCLUDES_DIR."/lib/timezones.php"; # $timezones is here
+
         $zones = array();
 
-        foreach (DateTimeZone::listIdentifiers() as $zone)
-            if (substr($zone, 0, 4) != "Etc/" and !in_array($zone, array("GMT+0", "GMT-0", "Greenwich", "GMT0")))
-                $zones[] = array("name" => $zone,
-                                 "now" => datetimetotime(new DateTime("now", new DateTimeZone($zone))));
+        foreach ($timezones as $zone)
+            $zones[] = array("name" => $zone,
+                             "now" => time_in_timezone($zone));
 
         function by_time($a, $b) {
             return (int) ($a["now"] > $b["now"]);
@@ -1262,7 +1266,10 @@
      *     $timezone - The timezone to set.
      */
     function set_timezone($timezone) {
-        date_default_timezone_set($timezone);
+        if (function_exists("date_default_timezone_set"))
+            date_default_timezone_set($timezone);
+        else
+            ini_set("date.timezone", $timezone);
     }
 
     /**
@@ -1270,7 +1277,10 @@
      * Returns the current timezone.
      */
     function get_timezone() {
-        return date_default_timezone_get();
+        if (function_exists("date_default_timezone_set"))
+            return date_default_timezone_get();
+        else
+            return ini_get("date.timezone");
     }
 
     /**
