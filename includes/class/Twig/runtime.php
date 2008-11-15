@@ -73,6 +73,7 @@ $twig_filters = array(
     // debugging
     'inspect' =>          'twig_inspect_filter',
 
+    'uploaded' =>         'uploaded',
     'fallback' =>         'oneof',
     'selected' =>         'twig_selected_filter',
     'checked' =>          'twig_checked_filter',
