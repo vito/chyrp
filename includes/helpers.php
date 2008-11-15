@@ -977,7 +977,7 @@
         } elseif (!@move_uploaded_file($file['tmp_name'], $dir."/".$filename))
             error(__("Error"), $message);
 
-        return $filename;
+        return ($path ? $path."/".$filename : $filename);
     }
 
     /**
