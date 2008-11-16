@@ -1009,9 +1009,9 @@
      * Parameters:
      *     $file - Filename relative to the uploads directory.
      */
-    function uploaded($file) {
+    function uploaded($file, $url = true) {
         $config = Config::current();
-        return $config->chyrp_url.$config->uploads_path.$file;
+        return ($url ? $config->chyrp_url.$config->uploads_path.$file : MAIN_DIR.$config->uploads_path.$file);
     }
 
     /**
