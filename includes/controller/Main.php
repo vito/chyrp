@@ -479,7 +479,9 @@
                     Flash::warning(__("Invalid e-mail address."));
 
                 if (!Flash::exists("warning")) {
-                    User::add($_POST['login'], $_POST['password1'], $_POST['email']);
+                    $user = User::add($_POST['login'], $_POST['password1'], $_POST['email']);
+
+                    Trigger::current()->call("user_registered", $user);
 
                     $_SESSION['login'] = $_POST['login'];
                     $_SESSION['password'] = md5($_POST['password1']);

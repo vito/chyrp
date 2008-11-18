@@ -95,7 +95,7 @@
                 else
                     $call = false;
 
-                if (method_exists($this->controller, $method))
+                if ($call === false and method_exists($this->controller, $method))
                     $response = call_user_func_array(array($this->controller, $method), $args);
                 else
                     $response = false;
