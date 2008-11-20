@@ -282,8 +282,12 @@
         public static function build_list($vals, $params = array()) {
             $return = array();
 
-            foreach ($vals as $val)
+            foreach ($vals as $val) {
+                if (is_object($val)) # Useful catch, e.g. empty SimpleXML objects.
+                    $val = "";
+
                 $return[] = (isset($params[$val])) ? $val : SQL::current()->escape($val) ;
+            }
 
             return "(".join(", ", $return).")";
         }

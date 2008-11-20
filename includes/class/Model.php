@@ -38,7 +38,7 @@
                 $placeholders = (isset($this->__placeholders) and $this->__placeholders);
 
                 Trigger::current()->filter($filtered, $model_name."_".$name."_attr", $this);
-                if (!empty($filtered))
+                if ($filtered !== false)
                     $this->$name = $filtered;
 
                 $this->belongs_to = (array) $this->belongs_to;

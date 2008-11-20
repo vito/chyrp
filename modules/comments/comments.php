@@ -5,7 +5,6 @@
     class Comments extends Modules {
         public function __init() {
             $this->addAlias("metaWeblog_newPost_preQuery", "metaWeblog_editPost_preQuery");
-            $this->addAlias("post_grab", "posts_get");
             $this->addAlias("comment_grab", "comments_get");
         }
 
@@ -619,6 +618,44 @@
             $post->has_many[] = "comments";
         }
 
+        public function post_comment_count_attr($attr, $post) {
+            if (isset($this->comment_counts))
+                return fallback($this->comment_counts[$post->id], 0);
+
+            $counts = SQL::current()->select("comments",
+                                             array("COUNT(post_id) AS total", "post_id"),
+                                             null,
+                                             null,
+                                             null,
+                                             null,
+                                             null,
+                                             "post_id");
+
+            foreach ($counts->fetchAll() as $count)
+                $this->comment_counts[$count["post_id"]] = (int) $count["total"];
+
+            return fallback($this->comment_counts[$post->id], 0);
+        }
+
+        public function post_latest_comment_attr($attr, $post) {
+            if (isset($this->latest_comments))
+                return fallback($this->latest_comments[$post->id], "0000-00-00 00:00:00");
+
+            $times = SQL::current()->select("comments",
+                                            array("MAX(created_at) AS latest", "post_id"),
+                                            null,
+                                            null,
+                                            null,
+                                            null,
+                                            null,
+                                            "post_id");
+
+            foreach ($times->fetchAll() as $row)
+                $this->latest_comments[$row["post_id"]] = $row["latest"];
+
+            return fallback($this->latest_comments[$post->id], "0000-00-00 00:00:00");
+        }
+
         public function comments_get($options) {
             if (ADMIN)
                 return;
@@ -638,30 +675,6 @@
 
         public function post_commentable_attr($attr, $post) {
             return Comment::user_can($post);
-        }
-
-        static function posts_get($options) {
-            $options["select"][]  = "COUNT(comments.id) AS comment_count";
-            $options["select"][]  = "MAX(comments.created_at) AS latest_comment";
-
-            $options["left_join"][] = array("table" => "comments",
-                                            "where" => array("post_id = posts.id",
-                                                             "status != 'spam'",
-                                                             "status != 'denied' OR (
-                                                                  (
-                                                                      user_id != 0 AND
-                                                                      user_id = :visitor_id
-                                                                  ) OR (
-                                                                      id IN ".self::visitor_comments()."
-                                                                  )
-                                                              )"));
-
-            $options["params"][":visitor_id"] = Visitor::current()->id;
-
-            $options["group"][] = "id";
-            $options["group"][] = "post_attributes.name";
-
-            return $options;
         }
 
         public function cacher_regenerate_posts_triggers($array) {

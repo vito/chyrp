@@ -197,7 +197,7 @@
                                "user_id"=> $user_id,
                                "created_at" => fallback($created_at, datetime()),
                                "updated_at" => fallback($updated_at, "0000-00-00 00:00:00")));
-            $new = new self($sql->latest());;
+            $new = new self($sql->latest());
 
             Trigger::current()->call("add_comment", $new);
             return $new;

@@ -7,7 +7,7 @@
      *     <Model>
      */
     class Page extends Model {
-        public $belongs_to = array("user", "parent" => "page");
+        public $belongs_to = array("user", "parent" => array("model" => "page"));
 
         public $has_many = array("children" => array("page", "parent"));
 
