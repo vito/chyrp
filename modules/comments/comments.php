@@ -626,7 +626,7 @@
                                              array("COUNT(post_id) AS total", "post_id"),
                                              null,
                                              null,
-                                             null,
+                                             array(),
                                              null,
                                              null,
                                              "post_id");
@@ -645,7 +645,7 @@
                                             array("MAX(created_at) AS latest", "post_id"),
                                             null,
                                             null,
-                                            null,
+                                            array(),
                                             null,
                                             null,
                                             "post_id");

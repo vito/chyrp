@@ -31,35 +31,49 @@
          *     @mixed@
          */
         public function __get($name) {
-            if (isset($this->$name))
-                return $this->$name;
-            else {
-                $model_name = get_class($this);
-                $placeholders = (isset($this->__placeholders) and $this->__placeholders);
+            $model_name = get_class($this);
+            $placeholders = (isset($this->__placeholders) and $this->__placeholders);
 
-                Trigger::current()->filter($filtered, $model_name."_".$name."_attr", $this);
-                if ($filtered !== false)
-                    $this->$name = $filtered;
+            Trigger::current()->filter($filtered, $model_name."_".$name."_attr", $this);
+            if ($filtered !== false)
+                $this->$name = $filtered;
 
-                $this->belongs_to = (array) $this->belongs_to;
-                $this->has_many   = (array) $this->has_many;
-                $this->has_one    = (array) $this->has_one;
-                if (in_array($name, $this->belongs_to) or isset($this->belongs_to[$name])) {
-                    $class = (isset($this->belongs_to[$name])) ? $this->belongs_to[$name] : $name ;
-                    return $this->$name = new $class($this->{$name."_id"});
-                } elseif (in_array($name, $this->has_many) or isset($this->has_many[$name])) {
-                    if (isset($this->has_many[$name]))
-                        list($class, $by) = $this->has_many[$name];
-                    else
-                        list($class, $by) = array(depluralize($name), $model_name);
-
-                    return $this->$name = call_user_func(array($class, "find"),
-                                                         array("where" => array(strtolower($by)."_id" => $this->id),
-                                                               "placeholders" => $placeholders));
-                } elseif (in_array($name, $this->has_one)) {
-                    $class = depluralize($name);
-                    return $this->$name = new $class(null, array("where" => array(strtolower($model_name)."_id" => $this->id)));
+            $this->belongs_to = (array) $this->belongs_to;
+            $this->has_many   = (array) $this->has_many;
+            $this->has_one    = (array) $this->has_one;
+            if (in_array($name, $this->belongs_to) or isset($this->belongs_to[$name])) {
+                $class = (isset($this->belongs_to[$name])) ? $this->belongs_to[$name] : $name ;
+                if (isset($this->belongs_to[$name])) {
+                    $opts =& $this->belongs_to[$name];
+                    $model = oneof(@$opts["model"], $name);
+                    $match = oneof(@$opts["by"], strtolower($name));
+                    $where = array_merge(array("id" => $this->{$match."_id"}),
+                                         (array) @$opts["where"]);
+                } else {
+                    $model = $name;
+                    $where = array("id" => $this->{$name."_id"});
                 }
+
+                return $this->$name = new $model(null, array("where" => $where));
+            } elseif (in_array($name, $this->has_many) or isset($this->has_many[$name])) {
+                if (isset($this->has_many[$name])) {
+                    $opts =& $this->has_many[$name];
+                    $model = oneof($opts["model"], $name);
+                    $match = oneof(@$opts["by"], strtolower($name));
+                    $where = array_merge(array($match."_id" => $this->id),
+                                         (array) @$opts["where"]);
+                } else {
+                    $model = depluralize($name);
+                    $match = $model_name;
+                    $where = array(strtolower($match)."_id" => $this->id);
+                }
+
+                return $this->$name = call_user_func(array($model, "find"),
+                                                     array("where" => $where,
+                                                           "placeholders" => $placeholders));
+            } elseif (in_array($name, $this->has_one)) {
+                $class = depluralize($name);
+                return $this->$name = new $class(null, array("where" => array(strtolower($model_name)."_id" => $this->id)));
             }
         }
 
@@ -108,6 +122,9 @@
 
             if ($model_name == "visitor")
                 $model_name = "user";
+
+            if (!isset($id) and isset($options["where"]["id"]))
+                $id = $options["where"]["id"];
 
             $cache = (is_numeric($id) and isset(self::$caches[$model_name][$id])) ? 
                          self::$caches[$model_name][$id] :

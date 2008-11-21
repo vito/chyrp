@@ -9,7 +9,7 @@
     class Page extends Model {
         public $belongs_to = array("user", "parent" => array("model" => "page"));
 
-        public $has_many = array("children" => array("page", "parent"));
+        public $has_many = array("children" => array("model" => "page", "by" => "parent"));
 
         /**
          * Function: __construct

@@ -40,7 +40,7 @@
                     $args = func_get_args();
                     $args[0] = $call;
                     if ($index + 1 == count($name))
-                        return $return == $this->exists($call) ? call_user_func_array(array($this, "call"), $args) : $return ;
+                        return $this->exists($call) ? call_user_func_array(array($this, "call"), $args) : $return ;
                     else
                         $return = $this->exists($call) ? call_user_func_array(array($this, "call"), $args) : $return ;
                 }
@@ -52,7 +52,7 @@
             $arguments = func_get_args();
             array_shift($arguments);
 
-            $return = false;
+            $return = null;
 
             $this->called[$name] = array();
             if (isset($this->priorities[$name])) { # Predefined priorities?
