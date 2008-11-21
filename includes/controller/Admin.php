@@ -29,7 +29,7 @@
          * Prepares Twig.
          */
         private function __construct() {
-            $this->twig = new Twig_Loader(MAIN_DIR."/admin/layout",
+            $this->twig = new Twig_Loader((file_exists(THEME_DIR."/admin") ? THEME_DIR."/admin" : MAIN_DIR."/admin/layout"),
                                           (is_writable(INCLUDES_DIR."/caches") and !DEBUG) ?
                                               INCLUDES_DIR."/caches" :
                                               null);
