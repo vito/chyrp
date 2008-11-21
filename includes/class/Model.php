@@ -41,39 +41,82 @@
             $this->belongs_to = (array) $this->belongs_to;
             $this->has_many   = (array) $this->has_many;
             $this->has_one    = (array) $this->has_one;
+
             if (in_array($name, $this->belongs_to) or isset($this->belongs_to[$name])) {
                 $class = (isset($this->belongs_to[$name])) ? $this->belongs_to[$name] : $name ;
                 if (isset($this->belongs_to[$name])) {
                     $opts =& $this->belongs_to[$name];
                     $model = oneof(@$opts["model"], $name);
+
+                    if (preg_match("/^\(([a-z0-9_]+)\)$/", $model, $match))
+                        $model = $this->$match[1];
+
                     $match = oneof(@$opts["by"], strtolower($name));
-                    $where = array_merge(array("id" => $this->{$match."_id"}),
-                                         (array) @$opts["where"]);
+
+                    fallback($opts["where"], array("id" => $this->{$match."_id"}));
+
+                    $opts["where"] = (array) $opts["where"];
+                    foreach ($opts["where"] as &$val)
+                        if (preg_match("/^\(([a-z0-9_]+)\)$/", $val, $match))
+                            $val = $this->$match[1];
+
+                    fallback($opts["placeholders"], $placeholders);
                 } else {
                     $model = $name;
-                    $where = array("id" => $this->{$name."_id"});
+                    $opts = array("where" => array("id" => $this->{$name."_id"}));
                 }
 
-                return $this->$name = new $model(null, array("where" => $where));
+                return $this->$name = new $model(null, $opts);
             } elseif (in_array($name, $this->has_many) or isset($this->has_many[$name])) {
                 if (isset($this->has_many[$name])) {
                     $opts =& $this->has_many[$name];
-                    $model = oneof($opts["model"], $name);
+                    $model = oneof(@$opts["model"], depluralize($name));
+
+                    if (preg_match("/^\(([a-z0-9_]+)\)$/", $model, $match))
+                        $model = $this->$match[1];
+
                     $match = oneof(@$opts["by"], strtolower($name));
-                    $where = array_merge(array($match."_id" => $this->id),
-                                         (array) @$opts["where"]);
+
+                    fallback($opts["where"], array($match."_id" => $this->id));
+
+                    $opts["where"] = (array) $opts["where"];
+                    foreach ($opts["where"] as &$val)
+                        if (preg_match("/^\(([a-z0-9_]+)\)$/", $val, $match))
+                            $val = $this->$match[1];
+
+                    fallback($opts["placeholders"], $placeholders);
                 } else {
                     $model = depluralize($name);
                     $match = $model_name;
-                    $where = array(strtolower($match)."_id" => $this->id);
+                    $opts = array("where" => array(strtolower($match)."_id" => $this->id),
+                                  "placeholders" => $placeholders);
                 }
 
                 return $this->$name = call_user_func(array($model, "find"),
-                                                     array("where" => $where,
-                                                           "placeholders" => $placeholders));
+                                                     $opts);
             } elseif (in_array($name, $this->has_one)) {
-                $class = depluralize($name);
-                return $this->$name = new $class(null, array("where" => array(strtolower($model_name)."_id" => $this->id)));
+                if (isset($this->has_one[$name])) {
+                    $opts =& $this->has_one[$name];
+                    $model = oneof(@$opts["model"], depluralize($name));
+
+                    if (preg_match("/^\(([a-z0-9_]+)\)$/", $model, $match))
+                        $model = $this->$match[1];
+
+                    $match = oneof(@$opts["by"], strtolower($name));
+
+                    fallback($opts["where"], array($match."_id" => $this->id));
+
+                    $opts["where"] = (array) $opts["where"];
+                    foreach ($opts["where"] as &$val)
+                        if (preg_match("/^\(([a-z0-9_]+)\)$/", $val, $match))
+                            $val = $this->$match[1];
+                } else {
+                    $model = depluralize($name);
+                    $match = $model_name;
+                    $opts = array("where" => array(strtolower($match)."_id" => $this->id));
+                }
+
+                return $this->$name = new $model(null, $opts);
             }
         }
 
@@ -413,3 +456,4 @@
             echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=delete_'.$name.'&amp;id='.$this->id.'" title="Delete" class="'.($classes ? $classes." " : '').$name.'_delete_link delete_link" id="'.$name.'_delete_'.$this->id.'">'.$text.'</a>'.$after;
         }
     }
+
