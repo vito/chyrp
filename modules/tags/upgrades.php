@@ -103,6 +103,21 @@
              test($sql->delete("post_attributes", array("name" => array("unclean_tags", "clean_tags"))));
     }
 
+    # This task just updates all of the attributes in the database
+    # so they are in sync with the current YAML lib's quoting convention.
+    function fix_quotes() {
+        $sql = SQL::current();
+        if (!$tags = $sql->select("post_attributes", array("post_id", "value"), array("name" => "tags")))
+            return;
+
+        foreach ($tags->fetchAll() as $attr)
+            $sql->update("post_attributes",
+                         array("post_id" => $attr["post_id"],
+                               "name" => "tags"),
+                         array("value" => YAML::dump(YAML::load($attr["value"]))));
+    }
+
     update_tags_structure();
     move_to_post_attributes();
     move_to_yaml();
+    fix_quotes();
