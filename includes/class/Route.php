@@ -154,10 +154,8 @@
 
             $urls["/\/(.*?)\/$/"] = "/?action=$1";
 
-            return $config->url.preg_replace(
-                   array_keys($urls),
-                   array_values($urls),
-                   "/".$url, 1);
+            $base = !empty($this->controller->base) ? $config->url."/".$this->controller->base : $config->url ;
+            return $base.preg_replace(array_keys($urls), array_values($urls), "/".$url, 1);
         }
 
         /**
