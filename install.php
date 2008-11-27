@@ -570,8 +570,8 @@
                     <select name="timezone" id="timezone">
 <?php foreach (timezones() as $zone): ?>
                         <option value="<?php echo $zone["name"]; ?>"<?php selected($zone["name"], oneof(@$_POST['timezone'], "Africa/Abidjan")); ?>>
-                            <?php echo gmstrftime(__("%I:%M %p on %B %e, %Y"), $zone["now"]); ?>
-                            (GMT<?php if ($zone["offset"] >= 0) echo "+"; ?><?php echo $zone["offset"]; ?>)
+                            <?php echo strftime(__("%I:%M %p on %B %e, %Y"), $zone["now"]); ?> &mdash;
+                            <?php echo str_replace(array("_", "St "), array(" ", "St. "), $zone["name"]); ?>
                         </option>
 <?php endforeach; ?>
                     </select>
