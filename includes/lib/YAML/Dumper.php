@@ -63,8 +63,8 @@ class Horde_Yaml_Dumper
         $dump = "---\n";
 
         // iterate through array and yamlize it
-        foreach ($value as $key => $value) {
-            $dump .= $this->_yamlize($key, $value, 0);
+        foreach ($value as $key => $val) {
+            $dump .= $this->_yamlize($key, $val, 0, ($value === array_values($value)));
         }
         return $dump;
     }
@@ -75,9 +75,10 @@ class Horde_Yaml_Dumper
      * @param  string        $key     The name of the key
      * @param  string|array  $value   The value of the item
      * @param  integer       $indent  The indent of the current node
+     * @param  boolean       $seq     Is the item part of a sequence?
      * @return string
      */
-    protected function _yamlize($key, $value, $indent)
+    protected function _yamlize($key, $value, $indent, $seq = false)
     {
         if ($value instanceof Serializable) {
             // Dump serializable objects as !php/object::classname serialize_data
@@ -94,7 +95,7 @@ class Horde_Yaml_Dumper
             $string .= $this->_yamlizeArray($value, $indent);
         } elseif (!is_array($value)) {
             // No children.
-            $string = $this->_dumpNode($key, $value, $indent);
+            $string = $this->_dumpNode($key, $value, $indent, $seq);
         }
 
         return $string;
@@ -113,9 +114,11 @@ class Horde_Yaml_Dumper
             return false;
         }
 
+        $seq = ($array === array_values($array));
+
         $string = '';
         foreach ($array as $key => $value) {
-            $string .= $this->_yamlize($key, $value, $indent);
+            $string .= $this->_yamlize($key, $value, $indent, $seq);
         }
         return $string;
     }
@@ -126,9 +129,10 @@ class Horde_Yaml_Dumper
      * @param  string   $key     The name of the key
      * @param  string   $value   The value of the item
      * @param  integer  $indent  The indent of the current node
+     * @param  boolean  $seq     Is the item part of a sequence?
      * @return string
      */
-    protected function _dumpNode($key, $value, $indent)
+    protected function _dumpNode($key, $value, $indent, $seq = false)
     {
         // Do some folding here, for blocks.
         if (strpos($value, "\n") !== false
@@ -153,7 +157,7 @@ class Horde_Yaml_Dumper
 
         $spaces = str_repeat(' ', $indent);
 
-        if (is_int($key)) {
+        if ($seq) {
             // It's a sequence.
             $string = $spaces . '- ' . $value . "\n";
         } else {

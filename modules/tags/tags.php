@@ -215,10 +215,11 @@
 
             $tags = array();
             $names = array();
+            
             foreach($sql->select("post_attributes",
                                  "*",
                                  array("name" => "tags",
-                                       "value like" => "%: \"".$_GET['name']."\"\n%"))->fetchAll() as $tag) {
+                                       "value like" => self::yaml_match($_GET['name'])))->fetchAll() as $tag) {
                 $post_tags = YAML::load($tag["value"]);
 
                 $tags = array_merge($tags, $post_tags);
@@ -289,7 +290,7 @@
             foreach($sql->select("post_attributes",
                                  "*",
                                  array("name" => "tags",
-                                       "value like" => "%: \"".$_GET['clean']."\"\n%"))->fetchAll() as $tag)  {
+                                       "value like" => self::yaml_match($_GET['clean'])))->fetchAll() as $tag)  {
                 $tags = YAML::load($tag["value"]);
                 unset($tags[$_GET['name']]);
 
@@ -347,7 +348,7 @@
 
             $likes = array();
             foreach ($tags as $name)
-                $likes[] = "%: \"".$name."\"\n%";
+                $likes[] = self::yaml_match($name);
 
             $attributes = $sql->select("post_attributes",
                                        array("value", "post_id"),
@@ -596,6 +597,13 @@
 
             $atom.= "       <chyrp:tags>".fix(implode(", ", array_keys(YAML::load($tags))))."</chyrp:tags>\r";
             return $atom;
+        }
+        
+        public function yaml_match($name) {
+            $dumped = YAML::dump(array($name));
+            $quotes = preg_match("/- \"".preg_quote($name, "/")."\"/", $dumped);
+
+            return ($quotes ? "%: \"".$name."\"\n%" : "%: ".$name."\n%");
         }
 
         public function cloudSelectorJS() {
