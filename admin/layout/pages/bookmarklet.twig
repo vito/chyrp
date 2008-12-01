@@ -218,6 +218,7 @@
                         <input type="hidden" name="bookmarklet" value="true" id="bookmarklet" />
                         <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
                     </div>
+${ trigger.call("bookmarklet_fields") }
                 </fieldset>
             </form>
             {% endfor %}
