@@ -21,9 +21,10 @@
             $config = Config::current();
             $config->cache_exclude = (array) $config->cache_exclude;
 
-            foreach ($config->cache_exclude as &$exclude)
-                if (substr($exclude, 7) != "http://")
-                    $exclude = $config->url."/".ltrim($exclude, "/");
+            if (!empty($config->cache_exclude))
+                foreach ($config->cache_exclude as &$exclude)
+                    if (substr($exclude, 7) != "http://")
+                        $exclude = $config->url."/".ltrim($exclude, "/");
         }
 
         static function __install() {
@@ -152,8 +153,10 @@
             if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
                 show_403(__("Access Denied"), __("Invalid security key."));
 
+            $exclude = (empty($_POST['cache_exclude']) ? array() : explode(", ", $_POST['cache_exclude']));
+
             $config = Config::current();
-            if ($config->set("cache_expire", $_POST['cache_expire']) and $config->set("cache_exclude", explode(", ", $_POST['cache_exclude'])))
+            if ($config->set("cache_expire", $_POST['cache_expire']) and $config->set("cache_exclude", $exclude))
                 Flash::notice(__("Settings updated."), "/admin/?action=cache_settings");
         }
 
