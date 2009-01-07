@@ -1195,7 +1195,7 @@
                                     array("<![CDATA[", "]]>"),
                                     $sane_xml);
 
-            if (!substr_count($sane_xml, "xmlns:export"))
+            if (!substr_count($sane_xml, "xmlns:excerpt"))
                 $sane_xml = preg_replace("/xmlns:content=\"([^\"]+)\"(\s+)/m",
                                          "xmlns:content=\"\\1\"\\2xmlns:excerpt=\"http://wordpress.org/excerpt/1.0/\"\\2",
                                          $sane_xml);
@@ -1206,10 +1206,13 @@
                                          "<wp:meta_value>\\1&amp;\\2</wp:meta_value>",
                                          $sane_xml, -1, $fix_amps_count);
 
+            # Remove null (x00) characyers
+            $sane_xml = str_replace("", "", $sane_xml);
+
             $xml = simplexml_load_string($sane_xml, "SimpleXMLElement", LIBXML_NOCDATA);
 
             if (!$xml or !substr_count($xml->channel->generator, "wordpress.org"))
-                Flash::warning(__("File does not seem to be a valid WordPress export file."),
+                Flash::warning(__("File does not seem to be a valid WordPress export file, or could not be parsed. Please check your PHP error log."),
                                "/admin/?action=import");
 
             foreach ($xml->channel->item as $item) {
