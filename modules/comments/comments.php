@@ -623,7 +623,7 @@
                 return fallback($this->comment_counts[$post->id], 0);
 
             $counts = SQL::current()->select("comments",
-                                             array("COUNT(post_id) AS total", "post_id"),
+                                             array("COUNT(post_id) AS total", "post_id as post_id"),
                                              null,
                                              null,
                                              array(),
