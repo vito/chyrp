@@ -59,9 +59,16 @@
                         array_unshift($items, $item);
 
                 foreach ($items as $item) {
-                    $date = oneof(@$item->pubDate, @$item->date, @$item->published, 0);
+                    $date = oneof(@$item->pubDate, @$item->date, @$item->updated, 0);
+                    $updated = strtotime($date);
 
-                    if (strtotime($date) > $feed["last_updated"]) {
+                    if ($updated > $feed["last_updated"]) {
+                        // Get creation date ('created' in Atom)
+                        $created =  @$item->created ?strtotime($item->created) :0;
+                        if ($created <= 0)
+                            $created = $updated;
+                        
+                        // Construct the post data from the user-defined XPath mapping:
                         $data = array("aggregate" => $name);
                         foreach ($feed["data"] as $attr => $field)
                             $data[$attr] = (!empty($field)) ? $this->parse_field($field, $item) : "" ;
@@ -69,9 +76,14 @@
                         if (isset($data["title"]) or isset($data["name"]))
                             $clean = sanitize(oneof(@$data["title"], @$data["name"]));
 
-                        Post::add($data, $clean, null, $feed["feather"], $feed["author"]);
+                        Post::add($data, $clean, null, $feed["feather"], $feed["author"],
+                                  null, //pinned
+                                  "",   //status
+                                  datetime($created),
+                                  datetime($updated)
+                                  );
 
-                        $aggregates[$name]["last_updated"] = strtotime($date);
+                        $aggregates[$name]["last_updated"] = $updated;
                     }
                 }
             }
@@ -237,6 +249,7 @@
 
             $config->aggregates[$_POST['name']] = $aggregate;
             $config->set("aggregates", $config->aggregates);
+            $config->set("last_aggregation", 0);    // to force a refresh
 
             Flash::notice(__("Aggregate created.", "aggregator"), "/admin/?action=manage_aggregates");
         }
@@ -278,6 +291,7 @@
             $config->aggregates[$_POST['name']] = $aggregate;
 
             $config->set("aggregates", $config->aggregates);
+            $config->set("last_aggregation", 0);    // to force a refresh
 
             Flash::notice(__("Aggregate updated.", "aggregator"), "/admin/?action=manage_aggregates");
         }
@@ -311,11 +325,30 @@
 
             if (!Visitor::current()->group->can("delete_aggregate"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this aggregate.", "aggregator"));
+            
+            $name = $_POST['id'];
+            if ($_POST["delete_posts"]) {
+                $this->delete_posts($name);
+                $notice = __("Aggregate and its posts deleted.", "aggregator");
+            } else {
+                $notice = __("Aggregate deleted.", "aggregator");
+            }
 
             $config = Config::current();
-            unset($config->aggregates[$_POST['id']]);
+            unset($config->aggregates[$name]);
             $config->set("aggregates", $config->aggregates);
-            Flash::notice(__("Aggregate deleted.", "aggregator"), "/admin/?action=manage_aggregates");
+            Flash::notice($notice, "/admin/?action=manage_aggregates");
+        }
+        
+        function delete_posts($aggregate_name) {
+            $sql = SQL::current();
+            $attrs = $sql->select("post_attributes",
+                                  "post_id",
+                                  array("name" => "aggregate", "value" => $aggregate_name))->fetchAll();
+            foreach( $attrs as $attr) {
+                Post::delete($attr["post_id"]);
+            }
+            
         }
 
         public function help_aggregation_syntax() {

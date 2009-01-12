@@ -159,6 +159,10 @@ msgid "Aggregation Settings"
 msgstr ""
 
 #: modules/aggregator/aggregator.php:318
+msgid ""Aggregate and its posts deleted."."
+msgstr ""
+
+#: modules/aggregator/aggregator.php:318
 msgid "Aggregate deleted."
 msgstr ""
 

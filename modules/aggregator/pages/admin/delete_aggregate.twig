@@ -11,6 +11,8 @@
                             <li><strong>${ "Source URL:" | translate }</strong> $aggregate.url</li>
                         </ul>
                         <br />
+                        <label><input type="checkbox" name="delete_posts" checked> Delete posts, too</label>
+                        <br />
 ${ trigger.call("delete_aggregate_form") }
                     </blockquote>
                     <br />
