@@ -5,7 +5,7 @@
                 {% if not post.prev.no_results %}<a class="left prev_post" href="$post.prev.url">&larr; ${ post.prev.title | truncate(40) }</a>{% endif %}
                 <div class="clear"></div>
 {% include "feathers/" ~ post.feather ~ ".twig" %}
-{% if enabled_modules.comments and (post.comment_count > 0 or post.comment_status != "closed") %}
+{% if enabled_modules.comments and (post.comment_count > 0 or post.commentable) %}
                 <br />
                 <h2 class="comments">${ "Comments" | translate }</h2>
                 <ol class="comments" id="comments_$post.id">
