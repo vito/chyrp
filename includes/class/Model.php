@@ -92,8 +92,7 @@
                                   "placeholders" => $placeholders);
                 }
 
-                return $this->$name = call_user_func(array($model, "find"),
-                                                     $opts);
+                return $this->$name = call_user_func(array($model, "find"), $opts);
             } elseif (in_array($name, $this->has_one)) {
                 if (isset($this->has_one[$name])) {
                     $opts =& $this->has_one[$name];
@@ -118,6 +117,8 @@
 
                 return $this->$name = new $model(null, $opts);
             }
+
+			return @$this->$name;
         }
 
         /**
