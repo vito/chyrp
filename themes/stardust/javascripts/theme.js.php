@@ -24,6 +24,7 @@ $(function(){
     $("#debug .toggle").click(function(){
         if (Cookie.get("hide_debug") == "true") {
             Cookie.destroy("hide_debug");
+            $("#debug h5:first span").remove();
             $("#debug").animate({ height: "33%" });
         } else {
             Cookie.set("hide_debug", "true", 30);
