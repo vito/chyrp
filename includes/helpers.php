@@ -890,7 +890,7 @@
      *     A unique version of the given $name.
      */
     function unique_filename($name, $path = "", $num = 2) {
-        if (!file_exists(MAIN_DIR.Config::current()->uploads_path.$name))
+        if (!file_exists(MAIN_DIR.Config::current()->uploads_path.$path.$name))
             return $name;
 
         $name = explode(".", $name);
