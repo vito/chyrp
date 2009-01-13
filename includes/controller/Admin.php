@@ -777,7 +777,7 @@
                 show_403(__("Access Denied"), __("Invalid security key."));
 
             $group = new Group($_POST['id']);
-            foreach ($group->users() as $user)
+            foreach ($group->users as $user)
                 $user->update($user->login, $user->password, $user->email, $user->full_name, $user->website, $_POST['move_group']);
 
             $config = Config::current();
