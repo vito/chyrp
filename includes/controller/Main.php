@@ -594,7 +594,7 @@
                 $sent = email($user->email,
                               __("Lost Password Request"),
                               _f("%s,\n\nWe have received a request for a new password for your account at %s.\n\nPlease log in with the following password, and feel free to change it once you've successfully logged in:\n\t%s",
-                                 array($user->login, $config->name, $new_password)));
+                                 array($user->login, Config::current()->name, $new_password)));
 
                 if ($sent)
                     Flash::notice(_f("An e-mail has been sent to your e-mail address that contains a new password. Once you have logged in, you can change it at <a href=\"%s\">User Controls</a>.",
