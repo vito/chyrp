@@ -158,7 +158,7 @@
                          array("id" =>           $this->id),
                          array("title" =>        $title,
                                "body" =>         $body,
-                               "user_id" =>      $user,
+                               "user_id" =>      $user_id,
                                "parent_id" =>    $parent_id,
                                "show_in_list" => $show_in_list,
                                "list_order" =>   $list_order,
