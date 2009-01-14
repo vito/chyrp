@@ -124,13 +124,13 @@ var Post = {
         })
     },
     prepare_links: function(id) {
-        $(".post_edit_link").livequery("click", function(){
+        $(".post_edit_link").live("click", function(){
             var id = $(this).attr("id").replace(/post_edit_/, "")
             Post.edit(id)
             return false
         })
 
-        $(".post_delete_link").livequery("click", function(){
+        $(".post_delete_link").live("click", function(){
             if (!confirm("<?php echo __("Are you sure you want to delete this post?\\n\\nIt cannot be restored if you do this. If you wish to hide it, save it as a draft."); ?>")) return false
             var id = $(this).attr("id").replace(/post_delete_/, "")
             Post.destroy(id)

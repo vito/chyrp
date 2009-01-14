@@ -21,10 +21,10 @@ $(function(){
 
     // Automated PNG fixing.
     $.ifixpng("<?php echo $config->chyrp_url; ?>/admin/images/icons/pixel.gif")
-    $("img[@src$=.png]").ifixpng()
+    $("img[src$=.png]").ifixpng()
 
     // "Help" links should open in popup windows.
-    $(".help").livequery("click", function(){
+    $(".help").live("click", function(){
         window.open($(this).attr("href"), "help", "status=0, scrollbars=1, location=0, menubar=0, "+
                                                   "toolbar=0, resizable=1, height=450, width=400")
         return false
