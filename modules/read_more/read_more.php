@@ -12,7 +12,7 @@
             if ($controller instanceof MainController and $controller->feed)
                 return str_replace("<!--more-->", "", $text);
 
-            $url = (isset($post) and !$post->no_results) ? fix($post->url()) : "#" ;
+            $url = (isset($post) and !$post->no_results) ? $post->url() : "#" ;
 
             # For the curious: e51b2b9a58824dd068d8777ec6e97e4d is a md5 of "replace me!"
             return preg_replace("/<!--more(\((.+)\))?-->/", '<a class="read_more" href="'.$url.'">e51b2b9a58824dd068d8777ec6e97e4d</a>(((more\\1)))', $text);
