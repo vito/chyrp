@@ -30,12 +30,12 @@ $(function(){
         } })
     }
 <?php echo "\n"; if (!isset($config->enable_ajax) or $config->enable_ajax): ?>
-    $(".comment_edit_link").livequery("click", function(){
+    $(".comment_edit_link").live("click", function(){
         var id = $(this).attr("id").replace(/comment_edit_/, "")
         Comment.edit(id)
         return false
     })
-    $(".comment_delete_link").livequery("click", function(){
+    $(".comment_delete_link").live("click", function(){
         var id = $(this).attr("id").replace(/comment_delete_/, "")
 
         notice++
