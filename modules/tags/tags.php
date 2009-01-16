@@ -621,11 +621,11 @@
 
                 scanTags()
 
-                $("#tags").livequery("keyup", scanTags)
+                $("#tags").live("keyup", scanTags)
 
-                $(".tag_cloud > span").livequery("mouseover", function(){
+                $(".tag_cloud > span").live("mouseover", function(){
                     $(this).find(".controls").css("opacity", 1)
-                }).livequery("mouseout", function(){
+                }).live("mouseout", function(){
                     $(this).find(".controls").css("opacity", 0)
                 })
             })
