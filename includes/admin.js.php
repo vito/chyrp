@@ -292,6 +292,8 @@ var Manage = {
                 cursor: "move"
             })
 
+			console.log("Hello?");
+			
             $("ul.sort_pages").tree({
                 sortOn: "li",
                 dropOn: "li:not(.dragging) div",
@@ -373,7 +375,6 @@ var Extend = {
             }).appendTo(".tip_here")
     },
     handle_drop: function(ev, ui) {
-        var errored = false
         var classes = $(this).parent().attr("class").split(" ")
 
         Extend.Drop.pane = $(this)
