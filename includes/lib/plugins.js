@@ -347,7 +347,10 @@ window.console.log('[jquery.form] '+Array.prototype.join.call(arguments,''));};}
 	});
 })(jQuery);
 
-$.fn.tree = function(options) {
+// I didn't write most of this. Unfortunately I can't find the original author.
+// I've updated it to work with jQuery 1.3.
+// If anyone knows the original author I'll gladly add attribution.
+$.fn.tree = function(options){
 	var self = this;
 	
 	$(this).sortable({

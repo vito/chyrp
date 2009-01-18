@@ -14,7 +14,7 @@
             $text = preg_replace("/(<p>)?(\(\(\(page\)\)\))(<\/p>|<br \/>)?/", "\\2", $text);
             $split_pages = explode("(((page)))", $text);
 
-            $post->paginated = new Paginator($split_pages, 1);
+            $post->paginated = new Paginator($split_pages, 1, (Route::current()->action == "view" ? "page" : "post_page"));
 
             return $post->paginated->result[0];
         }
