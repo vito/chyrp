@@ -15,7 +15,7 @@ ${ trigger.call("head") }
     </head>
     <body>
         {% if visitor.group.can("add_post", "add_draft", "add_page", "view_own_draft", "view_draft", "change_settings", "toggle_extensions") %}
-        <div id="controls" {% if hide_admin %} style="display: none"{% endif %}>
+        <div id="controls"{% if hide_admin %} style="display: none"{% endif %}>
             <ul>
                 {% if visitor.group.can("add_post") %}
                 <li><a id="add_post" href="{% admin "write_post" %}">${ "Write" | translate }</a></li>
