@@ -67,23 +67,37 @@
             $return = '<ul class="dialogue">';
             $count = 0;
             $my_name = "";
+            $links = array();
             foreach ($split as $line) {
                 # Remove the timstamps
                 $line = preg_replace("/[ ]?[\[|\(]?[0-9]{1,2}:[0-9]{2}(:[0-9]{2})?[ ]?(pm|am)?[\]|\)]?[ ]?/i", "", $line);
 
-                preg_match("/([<]?)([^:|>]+)(:|>) (.+)/i", $line, $matches);
-                if (empty($matches)) continue;
+                preg_match("/(<?)(.+)(:|>) (.+)/i", $line, $matches);
 
-                if (strpos($matches[2], " (me)") or $my_name == $matches[2]) {
-                    $me = " me";
-                    $my_name = str_replace(" (me)", "", $matches[2]);
-                } else
-                    $me = "";
+                if (empty($matches))
+                    continue;
 
-                $username = str_replace(" (me)", "", $matches[1].$matches[2].$matches[3]);
-                $class = ($count % 2) ? "even" : "odd" ;
+                if (preg_match("/ \(([^\)]+)\)$/", $matches[2], $attribution))
+                    if ($attribution[1] == "me") {
+                        $my_name = $matches[2] = str_replace($attribution[0], "", $matches[2]);
+                    } else {
+                        $matches[2] = str_replace($attribution[0], "", $matches[2]);
+                        $links[$matches[2]] = $attribution[1];
+                    }
+
+                $link = oneof(@$links[$matches[2]], "");
+
+                $me = ($my_name == $matches[2] ? " me" : "");
+
+                $username = $matches[1].$matches[2].$matches[3];
+                $class = ($count % 2 ? "even" : "odd");
                 $return.= '<li class="'.$class.$me.'">';
-                $return.= '<span class="label">'.fix($username, false).'</span> '.$matches[4]."\n";
+
+                if (!empty($link))
+                    $return.= '<span class="label">'.$matches[1].'<a href="'.$link.'">'.fix($matches[2], false).'</a>'.$matches[3].'</span> '.$matches[4]."\n";
+                else
+                    $return.= '<span class="label">'.fix($username, false).'</span> '.$matches[4]."\n";
+
                 $return.= '</li>';
                 $count++;
             }
