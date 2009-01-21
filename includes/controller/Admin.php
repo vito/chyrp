@@ -1215,9 +1215,6 @@
                 Flash::warning(__("File does not seem to be a valid WordPress export file, or could not be parsed. Please check your PHP error log."),
                                "/admin/?action=import");
 
-            SQL::current()->query("TRUNCATE TABLE posts");
-            SQL::current()->query("TRUNCATE TABLE post_attributes");
-
             foreach ($xml->channel->item as $item) {
                 $wordpress = $item->children("http://wordpress.org/export/1.0/");
                 $content   = $item->children("http://purl.org/rss/1.0/modules/content/");
