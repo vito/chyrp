@@ -1,5 +1,5 @@
                     {% if post.first_of_day %}
-                    <div class="date">${ post.created_at | strftime("%B %e" | translate) }</div>
+                    <div class="date">${ post.created_at | strftime("%B %d" | translate) }</div>
                     {% endif %}
                     <div class="post $post.feather{% if post.pinned %} pinned{% endif %}" id="post_$post.id">
                         {% if post.pinned %}<span class="pinned_text">${ "!" | translate }</span>{% endif %}
