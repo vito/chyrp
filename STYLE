@@ -39,16 +39,14 @@ below. Thank you!
 
       other_stuff();
 
-* Arrays should be formatted like this:
+* Multi-line arrays should be formatted like this:
   
       array($foo,
             "bar",
             $bazz);
 
 * Keep function names simple, preferrably one word. Use snake_case for most
-  names, but halfCamelCase where appropriate (e.g. method names).
-
-* No excessive spaces.
+  names, but halfCamelCase where appropriate (e.g. class methods).
 
 * Use NaturalDocs for docstrings. Use hashmarks for docstrings on
   variables and constants, but use C-style block comments for functions
@@ -67,16 +65,19 @@ below. Thank you!
   
       $foo = ($bar and $baz) ? $fizz : $buzz ;
 
-* Comments should describe WHY, not HOW, and only used when it is not
-  explicitly clear in the code itself.
+* Comments should describe WHY, not HOW, and only be used when it is not
+  clear in the code itself.
 
 * Avoid global variables. Only use them when a cleaner location for them is
   not available.
 
-* Use snake_case for variable names, but usually try to keep them to one
-  word.
+* Don't use too many variables. If it is only used once, just use its
+  value unless you are preparing many variables for a later operation.
 
-* Take advantage of PHP's key => val arrays whenever possible.
+* Use snake_case for variable names, but try to keep them to one word.
+
+* Take advantage of PHP's key => val arrays whenever possible, they make
+  for very clear and concise code structures.
 
 * If you're only going to use FooClass::current() once, don't bother
   declaring a variable for it. Conversely, if you use it a lot, declare a
