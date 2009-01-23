@@ -713,7 +713,7 @@
                 if (!empty($comment->author_url))
                     $atom.= "               <uri>".fix($comment->author_url)."</uri>\r";
                 $atom.= "               <email>".fix($comment->author_email)."</email>\r";
-                $atom.= "               <chyrp:login>".fix(fallback($comment->user->login))."</chyrp:login>\r";
+                $atom.= "               <chyrp:login>".fix(@$comment->user->login)."</chyrp:login>\r";
                 $atom.= "               <chyrp:ip>".long2ip($comment->author_ip)."</chyrp:ip>\r";
                 $atom.= "               <chyrp:agent>".fix($comment->author_agent)."</chyrp:agent>\r";
                 $atom.= "           </author>\r";

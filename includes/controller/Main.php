@@ -296,7 +296,7 @@
                                array("posts" => $posts,
                                      "archive" => array("year" => $_GET['year'],
                                                         "month" => strftime("%B", $timestamp),
-                                                        "day" => strftime("%e", $timestamp),
+                                                        "day" => strftime("%d", $timestamp),
                                                         "timestamp" => $timestamp,
                                                         "depth" => $depth)),
                                _f("Archive of %s", array(strftime("%B %Y", $timestamp))));

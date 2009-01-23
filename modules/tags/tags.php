@@ -433,22 +433,6 @@
             }
         }
 
-        public function import_chyrp_post($entry, $post) {
-            $chyrp = $entry->children("http://chyrp.net/export/1.0/");
-            if (!isset($chyrp->tags)) return;
-
-            $tags = array();
-            foreach (explode(", ", $chyrp->tags) as $tag)
-                if (!empty($tag))
-                    $tags[strip_tags(trim($tag))] = sanitize(strip_tags(trim($tag)));
-
-            if (!empty($tags) and !empty($cleaned))
-                SQL::current()->insert("post_attributes",
-                                       array("name" => "tags",
-                                             "value" => YAML::dump($tags),
-                                             "post_id" => $post->id));
-        }
-
         public function import_wordpress_post($item, $post) {
             if (!isset($item->category)) return;
 
@@ -588,17 +572,6 @@
             return ($limit) ? array_slice($list, 0, $limit) : $list ;
         }
 
-        public function posts_export($atom, $post) {
-            $tags = SQL::current()->select("post_attributes",
-                                           "value",
-                                           array("name" => "tags",
-                                                 "post_id" => $post->id))->fetchColumn();
-            if (empty($tags)) return;
-
-            $atom.= "       <chyrp:tags>".fix(implode(", ", array_keys(YAML::load($tags))))."</chyrp:tags>\r";
-            return $atom;
-        }
-        
         public function yaml_match($name) {
             $dumped = YAML::dump(array($name));
             $quotes = preg_match("/- \"".preg_quote($name, "/")."\"/", $dumped);

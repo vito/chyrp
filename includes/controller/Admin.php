@@ -867,12 +867,12 @@
 
                 $posts_atom = '<?xml version="1.0" encoding="utf-8"?>'."\r";
                 $posts_atom.= '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:chyrp="http://chyrp.net/export/1.0/">'."\r";
-                $posts_atom.= ' <title>'.fix($config->name).' Posts</title>'."\r";
-                $posts_atom.= ' <subtitle>'.fix($config->description).'</subtitle>'."\r";
-                $posts_atom.= ' <id>tag:'.parse_url($config->url, PHP_URL_HOST).','.date("Y", $latest_timestamp).':Chyrp</id>'."\r";
-                $posts_atom.= ' <updated>'.date("c", $latest_timestamp).'</updated>'."\r";
-                $posts_atom.= ' <link href="'.$config->url.'" rel="self" type="application/atom+xml" />'."\r";
-                $posts_atom.= ' <generator uri="http://chyrp.net/" version="'.CHYRP_VERSION.'">Chyrp</generator>'."\r";
+                $posts_atom.= '    <title>'.fix($config->name).' Posts</title>'."\r";
+                $posts_atom.= '    <subtitle>'.fix($config->description).'</subtitle>'."\r";
+                $posts_atom.= '    <id>tag:'.parse_url($config->url, PHP_URL_HOST).','.date("Y", $latest_timestamp).':Chyrp</id>'."\r";
+                $posts_atom.= '    <updated>'.date("c", $latest_timestamp).'</updated>'."\r";
+                $posts_atom.= '    <link href="'.$config->url.'" rel="self" type="application/atom+xml" />'."\r";
+                $posts_atom.= '    <generator uri="http://chyrp.net/" version="'.CHYRP_VERSION.'">Chyrp</generator>'."\r";
 
                 foreach ($posts as $post) {
                     $title = fix($post->title(), false);
@@ -885,33 +885,33 @@
                     $tagged = preg_replace("/(".preg_quote(parse_url($post->url(), PHP_URL_HOST)).")/", "\\1,".when("Y-m-d", $updated).":", $tagged, 1);
 
                     $url = $post->url();
-                    $posts_atom.= ' <entry xml:base="'.fix($url).'">'."\r";
-                    $posts_atom.= '     <title type="html">'.$title.'</title>'."\r";
-                    $posts_atom.= '     <id>tag:'.$tagged.'</id>'."\r";
-                    $posts_atom.= '     <updated>'.when("c", $updated).'</updated>'."\r";
-                    $posts_atom.= '     <published>'.when("c", $post->created_at).'</published>'."\r";
-                    $posts_atom.= '     <link href="'.fix($trigger->filter($url, "post_export_url", $post)).'" />'."\r";
-                    $posts_atom.= '     <author chyrp:user_id="'.$post->user_id.'">'."\r";
-                    $posts_atom.= '         <name>'.fix(oneof($post->user->full_name, $post->user->login)).'</name>'."\r";
+                    $posts_atom.= '    <entry xml:base="'.fix($url).'">'."\r";
+                    $posts_atom.= '        <title type="html">'.$title.'</title>'."\r";
+                    $posts_atom.= '        <id>tag:'.$tagged.'</id>'."\r";
+                    $posts_atom.= '        <updated>'.when("c", $updated).'</updated>'."\r";
+                    $posts_atom.= '        <published>'.when("c", $post->created_at).'</published>'."\r";
+                    $posts_atom.= '        <link href="'.fix($trigger->filter($url, "post_export_url", $post)).'" />'."\r";
+                    $posts_atom.= '        <author chyrp:user_id="'.$post->user_id.'">'."\r";
+                    $posts_atom.= '            <name>'.fix(oneof($post->user->full_name, $post->user->login)).'</name>'."\r";
 
                     if (!empty($post->user->website))
-                        $posts_atom.= '         <uri>'.fix($post->user->website).'</uri>'."\r";
+                        $posts_atom.= '            <uri>'.fix($post->user->website).'</uri>'."\r";
 
-                    $posts_atom.= '         <chyrp:login>'.fix($post->user->login).'</chyrp:login>'."\r";
-                    $posts_atom.= '     </author>'."\r";
-                    $posts_atom.= '     <content>'."\r";
+                    $posts_atom.= '            <chyrp:login>'.fix($post->user->login).'</chyrp:login>'."\r";
+                    $posts_atom.= '        </author>'."\r";
+                    $posts_atom.= '        <content>'."\r";
 
                     foreach ($post->attributes as $key => $val)
-                        $posts_atom.= '         <'.$key.'>'.fix($val).'</'.$key.'>'."\r";
+                        $posts_atom.= '            <'.$key.'>'.fix($val).'</'.$key.'>'."\r";
 
-                    $posts_atom.= '     </content>'."\r";
+                    $posts_atom.= '        </content>'."\r";
 
                     foreach (array("feather", "clean", "url", "pinned", "status") as $attr)
-                        $posts_atom.= '     <chyrp:'.$attr.'>'.fix($post->$attr).'</chyrp:'.$attr.'>'."\r";
+                        $posts_atom.= '        <chyrp:'.$attr.'>'.fix($post->$attr).'</chyrp:'.$attr.'>'."\r";
 
                     $trigger->filter($posts_atom, "posts_export", $post);
 
-                    $posts_atom.= ' </entry>'."\r";
+                    $posts_atom.= '    </entry>'."\r";
 
                 }
                 $posts_atom.= '</feed>'."\r";
@@ -932,12 +932,12 @@
 
                 $pages_atom = '<?xml version="1.0" encoding="utf-8"?>'."\r";
                 $pages_atom.= '<feed xmlns="http://www.w3.org/2005/Atom" xmlns:chyrp="http://chyrp.net/export/1.0/">'."\r";
-                $pages_atom.= ' <title>'.fix($config->name).' Pages</title>'."\r";
-                $pages_atom.= ' <subtitle>'.fix($config->description).'</subtitle>'."\r";
-                $pages_atom.= ' <id>tag:'.parse_url($config->url, PHP_URL_HOST).','.date("Y", $latest_timestamp).':Chyrp</id>'."\r";
-                $pages_atom.= ' <updated>'.date("c", $latest_timestamp).'</updated>'."\r";
-                $pages_atom.= ' <link href="'.$config->url.'" rel="self" type="application/atom+xml" />'."\r";
-                $pages_atom.= ' <generator uri="http://chyrp.net/" version="'.CHYRP_VERSION.'">Chyrp</generator>'."\r";
+                $pages_atom.= '    <title>'.fix($config->name).' Pages</title>'."\r";
+                $pages_atom.= '    <subtitle>'.fix($config->description).'</subtitle>'."\r";
+                $pages_atom.= '    <id>tag:'.parse_url($config->url, PHP_URL_HOST).','.date("Y", $latest_timestamp).':Chyrp</id>'."\r";
+                $pages_atom.= '    <updated>'.date("c", $latest_timestamp).'</updated>'."\r";
+                $pages_atom.= '    <link href="'.$config->url.'" rel="self" type="application/atom+xml" />'."\r";
+                $pages_atom.= '    <generator uri="http://chyrp.net/" version="'.CHYRP_VERSION.'">Chyrp</generator>'."\r";
 
                 foreach ($pages as $page) {
                     $updated = ($page->updated) ? $page->updated_at : $page->created_at ;
@@ -947,29 +947,29 @@
                     $tagged = preg_replace("/(".preg_quote(parse_url($page->url(), PHP_URL_HOST)).")/", "\\1,".when("Y-m-d", $updated).":", $tagged, 1);
 
                     $url = $page->url();
-                    $pages_atom.= ' <entry xml:base="'.fix($url).'" chyrp:parent_id="'.$page->parent_id.'">'."\r";
-                    $pages_atom.= '     <title type="html">'.fix($page->title).'</title>'."\r";
-                    $pages_atom.= '     <id>tag:'.$tagged.'</id>'."\r";
-                    $pages_atom.= '     <updated>'.when("c", $updated).'</updated>'."\r";
-                    $pages_atom.= '     <published>'.when("c", $page->created_at).'</published>'."\r";
-                    $pages_atom.= '     <link href="'.fix($trigger->filter($url, "page_export_url", $page)).'" />'."\r";
-                    $pages_atom.= '     <author chyrp:user_id="'.fix($page->user_id).'">'."\r";
-                    $pages_atom.= '         <name>'.fix(oneof($page->user->full_name, $page->user->login)).'</name>'."\r";
+                    $pages_atom.= '    <entry xml:base="'.fix($url).'" chyrp:parent_id="'.$page->parent_id.'">'."\r";
+                    $pages_atom.= '        <title type="html">'.fix($page->title).'</title>'."\r";
+                    $pages_atom.= '        <id>tag:'.$tagged.'</id>'."\r";
+                    $pages_atom.= '        <updated>'.when("c", $updated).'</updated>'."\r";
+                    $pages_atom.= '        <published>'.when("c", $page->created_at).'</published>'."\r";
+                    $pages_atom.= '        <link href="'.fix($trigger->filter($url, "page_export_url", $page)).'" />'."\r";
+                    $pages_atom.= '        <author chyrp:user_id="'.fix($page->user_id).'">'."\r";
+                    $pages_atom.= '            <name>'.fix(oneof($page->user->full_name, $page->user->login)).'</name>'."\r";
 
                     if (!empty($page->user->website))
-                        $pages_atom.= '         <uri>'.fix($page->user->website).'</uri>'."\r";
+                        $pages_atom.= '            <uri>'.fix($page->user->website).'</uri>'."\r";
 
-                    $pages_atom.= '         <chyrp:login>'.fix($page->user->login).'</chyrp:login>'."\r";
-                    $pages_atom.= '     </author>'."\r";
-                    $pages_atom.= '     <content type="html">'.fix($page->body).'</content>'."\r";
+                    $pages_atom.= '            <chyrp:login>'.fix($page->user->login).'</chyrp:login>'."\r";
+                    $pages_atom.= '        </author>'."\r";
+                    $pages_atom.= '        <content type="html">'.fix($page->body).'</content>'."\r";
 
                     foreach (array("show_in_list", "list_order", "clean", "url") as $attr)
-                        $pages_atom.= '     <chyrp:'.$attr.'>'.fix($page->$attr).'</chyrp:'.$attr.'>'."\r";
+                        $pages_atom.= '        <chyrp:'.$attr.'>'.fix($page->$attr).'</chyrp:'.$attr.'>'."\r";
 
 
                     $trigger->filter($pages_atom, "pages_export", $page);
 
-                    $pages_atom.= ' </entry>'."\r";
+                    $pages_atom.= '    </entry>'."\r";
                 }
                 $pages_atom.= '</feed>'."\r";
 
@@ -1003,7 +1003,7 @@
                     $users_yaml[$user->login] = array();
 
                     foreach ($user as $name => $attr)
-                        if ($name != "no_results" and $name != "group_id" and $name != "id" and $name != "login")
+                        if (!in_array($name, array("no_results", "group_id", "group", "id", "login", "belongs_to", "has_many", "has_one", "queryString")))
                             $users_yaml[$user->login][$name] = $attr;
                         elseif ($name == "group_id")
                             $users_yaml[$user->login]["group"] = $user->group->name;
