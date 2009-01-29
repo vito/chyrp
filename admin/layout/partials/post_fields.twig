@@ -19,6 +19,8 @@
                         <input class="$field.type{% if field.classes %} ${ field.classes | join(" ") }{% endif %}" type="$field.type" name="$field.attr" value="{% if not field.no_value %}${ field.value | fallback(post[field.attr] | escape(true, false)) }{% endif %}" id="$field.attr" />
                         {% elseif field.type == "text_block" %}
                         <textarea class="wide{% if field.classes %} ${ field.classes | join(" ") }{% endif %}" rows="${ field.rows | fallback(12) }" name="$field.attr" id="$field.attr" cols="50">{% if not field.no_value %}${ field.value | fallback(post[field.attr] | escape(false, false)) }{% endif %}</textarea>
+                        {% elseif field.type == "checkbox" %}
+                        <input class="$field.type{% if field.classes %} ${ field.classes | join(" ") }{% endif %}" type="$field.type" name="$field.attr"{% if field.checked %}checked="checked"{% endif %} id="$field.attr">
                         {% elseif field.type == "select" %}
                         <select name="$field.attr" id="$field.attr"{% if field.classes %} class="${ field.classes | join(" ") }"{% endif %}>
                             {% for value, name in field.options | items %}
