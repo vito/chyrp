@@ -1519,9 +1519,11 @@
      *     A string formatted like "3 days ago" or "3 days from now".
      */
     function relative_time($when, $from = null) {
+        fallback($from, time());
+
         $time = (is_numeric($when)) ? $when : strtotime($when) ;
 
-        $difference = time() - $time;
+        $difference = $from - $time;
 
         if ($difference < 0) {
             $word = "from now";
