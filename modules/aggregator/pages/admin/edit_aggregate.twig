@@ -3,7 +3,7 @@
 {% block title %}${ "Edit Aggregate" | translate("aggregator") }{% endblock %}
 
 {% block content %}
-            <a href="{% admin "delete_aggregate&id=" ~ (aggregate.name | urlencode) %}" class="button boo right"><img src="images/icons/delete.png" alt="delete" />${ "Delete" | translate }</a>
+            <a href="{% admin "delete_aggregate&id=" ~ (aggregate.name | urlencode) %}" class="button boo right"><img src="theme/images/icons/delete.png" alt="delete" />${ "Delete" | translate }</a>
             <h1>${ "Edit Aggregate" | translate("aggregator") }</h1>
             <form id="edit_aggregate" class="split" action="{% admin "edit_aggregate&id=" ~ (aggregate.name | urlencode) %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
                 <fieldset>
@@ -35,7 +35,7 @@
                         <label for="data">
                             ${ "Post Attributes" | translate("aggregator") }
                             <span class="sub">
-                                <a href="{% admin "help&id=aggregation_syntax" %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
+                                <a href="{% admin "help&id=aggregation_syntax" %}" class="help emblem"><img src="theme/images/icons/help.png" alt="help" /></a>
                             </span>
                         </label>
                         <textarea class="code" name="data" rows="9" cols="50" id="data">${ aggregate.data | escape }</textarea>
@@ -44,7 +44,7 @@
                     <br />
 
                     <p>
-                        <button type="submit" class="yay"><img src="images/icons/success.png" alt="success" />${ "Update" | translate }</button>
+                        <button type="submit" class="yay"><img src="theme/images/icons/success.png" alt="success" />${ "Update" | translate }</button>
                     </p>
 
                     <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />

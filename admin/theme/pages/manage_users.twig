@@ -10,13 +10,13 @@
                     <input type="hidden" name="action" value="manage_users" />
                     {% if visitor.group.can("add_user") %}
                     <a href="{% admin "new_user" %}" class="button yay right">
-                        <img src="images/icons/add.png" alt="add" /> ${ "New User" | translate }
+                        <img src="theme/images/icons/add.png" alt="add" /> ${ "New User" | translate }
                     </a>
                     {% endif %}
                     <div class="pad">
                         <h3>
                             ${ "Search&hellip;" | translate }
-                            <a href="{% admin "help&id=filtering_results" %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
+                            <a href="{% admin "help&id=filtering_results" %}" class="help emblem"><img src="theme/images/icons/help.png" alt="help" /></a>
                         </h3>
                         <input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" /> <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
                     </div>
@@ -50,11 +50,11 @@
                         <td>{% if user.website != "" %}<a href="$user.website">$user.website</a>{% endif %}</td>
                         ${ trigger.call("manage_users_column", user) }
                         {% if user.editable and user.deletable %}
-                        <td class="controls">${ user.edit_link('<img src="images/icons/edit.png" alt="edit" /> '~("edit" | translate)) }</td>
-                        <td class="controls">${ user.delete_link('<img src="images/icons/delete.png" alt="delete" /> '~("delete" | translate)) }</td>
+                        <td class="controls">${ user.edit_link('<img src="theme/images/icons/edit.png" alt="edit" /> '~("edit" | translate)) }</td>
+                        <td class="controls">${ user.delete_link('<img src="theme/images/icons/delete.png" alt="delete" /> '~("delete" | translate)) }</td>
                         {% else %}
-                        ${ user.edit_link('<img src="images/icons/edit.png" alt="edit" /> '~("edit" | translate), '<td class="controls" colspan="2">', '</td>') }
-                        ${ user.delete_link('<img src="images/icons/delete.png" alt="delete" /> '~("delete" | translate), '<td class="controls" colspan="2">', '</td>') }
+                        ${ user.edit_link('<img src="theme/images/icons/edit.png" alt="edit" /> '~("edit" | translate), '<td class="controls" colspan="2">', '</td>') }
+                        ${ user.delete_link('<img src="theme/images/icons/delete.png" alt="delete" /> '~("delete" | translate), '<td class="controls" colspan="2">', '</td>') }
                         {% endif %}
                     </tr>
                 {% else %}

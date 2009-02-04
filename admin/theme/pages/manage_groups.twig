@@ -10,7 +10,7 @@
                     <input type="hidden" name="action" value="manage_groups" />
                     {% if visitor.group.can("add_group") %}
                     <a href="{% admin "new_group" %}" class="button yay right">
-                        <img src="images/icons/add.png" alt="add" /> ${ "New Group" | translate }
+                        <img src="theme/images/icons/add.png" alt="add" /> ${ "New Group" | translate }
                     </a>
                     {% endif %}
                     <div class="pad">
@@ -25,8 +25,8 @@
             <div class="box">
                 <h1>
                     <span class="right">
-                        ${ group.edit_link('<img src="images/icons/edit.png" alt="edit" /> '~("edit" | translate)) }
-                        ${ group.delete_link('<img src="images/icons/delete.png" alt="delete" /> '~("delete" | translate)) }
+                        ${ group.edit_link('<img src="theme/images/icons/edit.png" alt="edit" /> '~("edit" | translate)) }
+                        ${ group.delete_link('<img src="theme/images/icons/delete.png" alt="delete" /> '~("delete" | translate)) }
                     </span>
                     {% if group.id == site.guest_group %}
                     ${ "&#8220;%s&#8221; is the group for guests." | translate | format(group.name) }

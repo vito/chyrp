@@ -12,9 +12,9 @@
                     <div class="buttons">
                         <button type="submit" class="yay right" accesskey="s">
                             {% if route.action == "write_page" %}
-                            <img src="images/icons/success.png" alt="success" />${ "Publish" | translate }
+                            <img src="theme/images/icons/success.png" alt="success" />${ "Publish" | translate }
                             {% else %}
-                            <img src="images/icons/success.png" alt="success" />${ "Save" | translate }
+                            <img src="theme/images/icons/success.png" alt="success" />${ "Save" | translate }
                             {% endif %}
                         </button>
                     </div>
@@ -45,4 +45,5 @@
                         ${ trigger.call("edit_page_options", page) }
                         {% endif %}
                         <div class="clear"></div>
+                    </div>
                     </div>

@@ -8,7 +8,7 @@
                             {% endif %}
                             {% if field.help %}
                             <span class="sub">
-                                <a href="{% admin "help&id="~field.help %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
+                                <a href="{% admin "help&id="~field.help %}" class="help emblem"><img src="theme/images/icons/help.png" alt="help" /></a>
                             </span>
                             {% endif %}
                             {% if field.note %}
@@ -36,16 +36,16 @@
                     <div class="buttons">
                         {% if route.action == "edit_post" %}
                         <button type="submit" class="yay right" accesskey="s" id="save">
-                            <img src="images/icons/success.png" alt="success" />${ "Save" | translate }
+                            <img src="theme/images/icons/success.png" alt="success" />${ "Save" | translate }
                         </button>
                         {% else %}
                         {% if visitor.group.can("add_post") %}
                         <button type="submit" class="yay right" accesskey="s" id="publish">
-                            <img src="images/icons/success.png" alt="success" />${ "Publish" | translate }
+                            <img src="theme/images/icons/success.png" alt="success" />${ "Publish" | translate }
                         </button>
                         {% endif %}
                         <button type="submit" class="right" accesskey="s" id="save" name="draft" value="true">
-                            <img src="images/icons/save.png" alt="success" />${ "Save" | translate }
+                            <img src="theme/images/icons/save.png" alt="success" />${ "Save" | translate }
                         </button>
                         {% endif %}
                     </div>
@@ -81,7 +81,7 @@
                         <p>
                             <label for="slug">
                                 ${ "Slug" | translate }
-                                <a href="{% admin "help&id=slugs" %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
+                                <a href="{% admin "help&id=slugs" %}" class="help emblem"><img src="theme/images/icons/help.png" alt="help" /></a>
                             </label>
                             <input class="text" type="text" name="slug" value="${ post.slug | escape }" id="slug" />
                         </p>
@@ -93,7 +93,7 @@
                         <p>
                             <label for="trackbacks">
                                 ${ "Trackbacks" | translate }
-                                <a href="{% admin "help&id=trackbacks" %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
+                                <a href="{% admin "help&id=trackbacks" %}" class="help emblem"><img src="theme/images/icons/help.png" alt="help" /></a>
                             </label>
 
                             <input class="text" type="text" name="trackbacks" value="" id="trackbacks" />
@@ -104,7 +104,7 @@
                                 $field.label
                                 {% if field.help %}
                                 <span class="sub">
-                                    <a href="{% admin "help&id="~field.help %}" class="help emblem"><img src="images/icons/help.png" alt="help" /></a>
+                                    <a href="{% admin "help&id="~field.help %}" class="help emblem"><img src="theme/images/icons/help.png" alt="help" /></a>
                                 </span>
                                 {% endif %}
                                 {% if field.note %}
@@ -126,4 +126,5 @@
                         </p>
                         {% endfor %}
                         <div class="clear"></div>
+                    </div>
                     </div>
