@@ -3,7 +3,7 @@
 {% block title %}${ "Add User" | translate }{% endblock %}
 
 {% block content %}
-            <h1>${ "Add User" | translate }</h1>
+            <h1>${ "New User" | translare }</h1>
             <form id="new_user" class="split" action="{% admin "add_user" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
                 <fieldset>
                     <h2>${ "Settings" | translate }</h2>
@@ -55,5 +55,4 @@
                     <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
                 </fieldset>
             </form>
-{% endblock %}
 {% endblock %}

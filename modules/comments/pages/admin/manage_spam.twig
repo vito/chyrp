@@ -3,7 +3,6 @@
 {% block title %}${ "Manage Spam" | translate("comments") }{% endblock %}
 
 {% block content %}
-            <h1>${ "Manage Spam" | translate("comments") }</h1>
             <h2>${ "Need more detail?" | translate }</h2>
             <form class="detail" action="index.php" method="get" accept-charset="utf-8">
                 <fieldset>
@@ -22,18 +21,6 @@
             </form>
             <br />
             <form action="{% admin "bulk_comments&from=spam" %}" method="post">
-                <div class="controls right">
-                    <h4>${ "With selected:" | translate("comments") }</h4>
-                    <button class="lite" name="deny">
-                        <img src="theme/images/icons/deny.png" alt="deny" /> ${ "deny" | translate("comments") }
-                    </button>
-                    <button class="lite yay" name="approve">
-                        <img src="theme/images/icons/success.png" alt="approve" /> ${ "approve" | translate("comments") }
-                    </button>
-                    <button class="lite boo" name="delete">
-                        <img src="theme/images/icons/delete.png" alt="delete" /> ${ "delete" | translate("comments") }
-                    </button>
-                </div>
                 <h2>{% if GET.query %}${ "Search Results" | translate }{% else %}${ "Last 25 Spam" | translate("comments") }{% endif %}</h2>
                 <table border="0" cellspacing="0" cellpadding="0" class="wide">
                     <thead>

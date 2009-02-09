@@ -3,7 +3,6 @@
 {% block title %}${ "Write" | translate }{% endblock %}
 
 {% block content %}
-            <h1>${ "Add %s" | translate | format(feather.name | translate(feather.safename) | capitalize) }</h1>
             <form id="write_form" class="${ feather.safename | escape(true) }" action="{% admin "add_post" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
                 <fieldset>
 {% include "partials/post_fields.twig" %}

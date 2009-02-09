@@ -3,12 +3,6 @@
 {% block title %}${ "Manage Aggregates" | translate("aggregator") }{% endblock %}
 
 {% block content %}
-            {% if visitor.group.can("add_aggregate") %}
-            <a href="{% admin "new_aggregate" %}" class="button yay right">
-                <img src="theme/images/icons/add.png" alt="add" /> ${ "Add Aggregate" | translate("aggregator") }
-            </a>
-            {% endif %}
-            <h1>${ "Manage Aggregates" | translate("aggregator") }</h1>
             <table border="0" cellspacing="0" cellpadding="0" class="wide">
                 <thead>
                     <tr class="head">
@@ -54,5 +48,12 @@
                 $aggregates.prev_link
                 <span class="pages">${ "Page %d of %d" | translate | format(aggregates.page, aggregates.pages) }</span>
             </div>
+            {% endif %}
+            {% if visitor.group.can("add_aggregate") %}
+            <br />
+            <a href="{% admin "new_aggregate" %}" class="button yay right">
+                <img src="theme/images/icons/add.png" alt="add" /> ${ "Add Aggregate" | translate("aggregator") }
+            </a>
+            <div class="clear"></div>
             {% endif %}
 {% endblock %}

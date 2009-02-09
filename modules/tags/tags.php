@@ -35,7 +35,7 @@
                 $selector.= "\t\t\t\t\t\t\t\t".'<a href="javascript:add_tag(\''.addslashes($tag["name"]).'\')"'.$selected.'>'.$tag["name"].'</a>'."\n";
             }
 
-            $selector.= "\t\t\t\t\t\t\t</span>";
+            $selector.= "\t\t\t\t\t\t\t</span><br /><br />";
 
             if (isset($post->tags))
                 $tags = array_keys($post->tags);

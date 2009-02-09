@@ -3,7 +3,6 @@
 {% block title %}${ "Export" | translate }{% endblock %}
 
 {% block content %}
-            <h1>${ "Export" | translate }</h1>
             <h2>${ "What would you like to export?" | translate }</h2>
             <form id="export_form" class="split" action="{% admin "export" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
                 <fieldset>
@@ -41,7 +40,7 @@
                         <label for="users">${ "Users" | translate }</label>
                         <input class="checkbox" type="checkbox" name="users" value="" id="users" checked="checked" />
                         <span class="sub">
-                            ${ "(warning: this also exports the hashed passwords, so keep the export file safe)" | translate }
+                            ${ "(warning: this also exports the hashed passwords, keep it safe)" | translate }
                         </span>
                         <small>
                             ${ "filter:" | translate }
