@@ -589,8 +589,10 @@
         public function lost_password() {
             if (!empty($_POST)) {
                 $user = new User(array("login" => $_POST['login']));
-                if ($user->no_results)
-                    return Flash::warning(__("Invalid user specified."));
+                if ($user->no_results) {
+                    Flash::warning(__("Invalid user specified."));
+                    return $this->display("forms/user/lost_password", array(), __("Lost Password"));
+                }
 
                 $new_password = random(16);
 
