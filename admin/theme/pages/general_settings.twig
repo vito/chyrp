@@ -36,7 +36,7 @@
                         <label for="timezone">${ "What time is it?" | translate }</label>
                         <select name="timezone" id="timezone">
                         {% for zone in timezones %}
-                        <option value="$zone.name"${ zone.name | option_selected(site.timezone) }>${ zone.now | strftime("%I:%M %p on %B %e, %Y" | translate) } &mdash; ${ zone.name | replace("_", " ") | replace("St ", "St. ") }</option>
+                        <option value="$zone.name"${ zone.name | option_selected(site.timezone) }>${ zone.now | strftime("%m/%d/%y %H:%M" | translate) } &mdash; ${ zone.name | replace("_", " ") | replace("St ", "St. ") }</option>
                         {% endfor %}
                         </select>
                     </p>
