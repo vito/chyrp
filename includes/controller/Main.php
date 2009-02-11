@@ -275,16 +275,26 @@
                                                array("YEAR(created_at)", "MONTH(created_at)"));
 
                 $archives = array();
+                $archive_hierarchy = array();
                 while ($time = $timestamps->fetchObject()) {
-                    $timestamp = mktime(0, 0, 0, $time->month + 1, 0, $time->year);
-                    $archives[$timestamp] = array("posts" => Post::find(array("where" => array("created_at like" => when("Y-m", $time->created_at)."%"))),
-                                                  "year" => $time->year,
-                                                  "month" => strftime("%B", $timestamp),
-                                                  "timestamp" => $timestamp,
-                                                  "url" => url("archive/".when("Y/m/", $time->created_at)));
+                    $year = mktime(0, 0, 0, 1, 0, $time->year);
+                    $month = mktime(0, 0, 0, $time->month + 1, 0, $time->year);
+
+                    $posts = Post::find(array("where" => array("created_at like" => when("Y-m", $time->created_at)."%")));
+
+                    $archives[$month] = array("posts" => $posts,
+                                              "year" => $time->year,
+                                              "month" => strftime("%B", $month),
+                                              "timestamp" => $month,
+                                              "url" => url("archive/".when("Y/m/", $time->created_at)));
+
+                   $archive_hierarchy[$year][$month] = $posts; 
                 }
 
-                $this->display("pages/archive", array("archives" => $archives), __("Archive"));
+                $this->display("pages/archive",
+                               array("archives" => $archives,
+                                     "archive_hierarchy" => $archive_hierarchy),
+                               __("Archive"));
             } else {
                 if (!is_numeric($_GET['year']) or !is_numeric($_GET['month']))
                     error(__("Error"), __("Please enter a valid year and month."));
