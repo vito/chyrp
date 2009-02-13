@@ -120,6 +120,13 @@
             $body.= "</ul>\n";
             $body.= "<p>".__("This only has to be done to the first occurrence of the username.", "chat")."</p>";
 
+            $body.= "<p>".__("To attribute a name to a URL, append the URL in parentheses, preceded by a space, to the username:", "chat")."</p>\n";
+            $body.= "<ul class=\"list\">\n";
+            $body.= "\t<li>&quot;&lt;John&gt;&quot; &rarr; &quot;&lt;John (http://example.com/)&gt;&quot;</li>\n";
+            $body.= "\t<li>&quot;John:&quot; &rarr; &quot;John (http://example.com/):&quot;</li>\n";
+            $body.= "</ul>\n";
+            $body.= "<p>".__("This also only has to be done to the first occurrence of the username. It cannot be combined with attributing someone as yourself (because they're already at your site anyway).", "chat")."</p>";
+
             return array($title, $body);
         }
     }
