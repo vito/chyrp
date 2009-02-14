@@ -137,13 +137,15 @@
             else
                 $url = substr($url, -1) == "/" ? $url : $url."/" ;
 
+            $base = !empty($this->controller->base) ? $config->url."/".$this->controller->base : $config->url ;
+
             if ($config->clean_urls) { # If their post URL doesn't have a trailing slash, remove it from these as well.
                 if (substr($url, 0, 5) == "page/") # Different URL for viewing a page
                     $url = substr($url, 5);
 
                 return (substr($config->post_url, -1) == "/" or $url == "search/") ?
-                           $config->url."/".$url :
-                           $config->url."/".rtrim($url, "/") ;
+                           $base."/".$url :
+                           $base."/".rtrim($url, "/") ;
             }
 
             $urls = fallback($this->controller->urls, array());
@@ -154,7 +156,6 @@
 
             $urls["/\/(.*?)\/$/"] = "/?action=$1";
 
-            $base = !empty($this->controller->base) ? $config->url."/".$this->controller->base : $config->url ;
             return $base.preg_replace(array_keys($urls), array_values($urls), "/".$url, 1);
         }
 
