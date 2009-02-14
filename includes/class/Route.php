@@ -210,3 +210,4 @@
             return $instance = (empty($instance)) ? new self($controller) : $instance ;
         }
     }
+
