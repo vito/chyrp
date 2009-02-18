@@ -336,7 +336,7 @@
 
                         if (substr($key, -4) == " not") { # Negation
                             $key = self::safecol(substr($key, 0, -4));
-                            $param = str_replace(array("(", ")"), "_", $key);
+                            $param = str_replace(array("(", ")", "."), "_", $key);
                             if (is_array($val))
                                 $cond = $key." NOT IN ".self::build_list($val, $params);
                             elseif ($val === null)
@@ -350,7 +350,7 @@
                             
                             $likes = array();
                             foreach ($val as $index => $match) {
-                                $param = str_replace(array("(", ")"), "_", $key)."_".$index;
+                                $param = str_replace(array("(", ")", "."), "_", $key)."_".$index;
                                 $likes[] = $key." LIKE :".$param;
                                 $params[":".$param] = $match;
                             }
@@ -361,7 +361,7 @@
                             
                             $likes = array();
                             foreach ($val as $index => $match) {
-                                $param = str_replace(array("(", ")"), "_", $key)."_".$index;
+                                $param = str_replace(array("(", ")", "."), "_", $key)."_".$index;
                                 $likes[] = $key." LIKE :".$param;
                                 $params[":".$param] = $match;
                             }
@@ -372,7 +372,7 @@
                             
                             $likes = array();
                             foreach ($val as $index => $match) {
-                                $param = str_replace(array("(", ")"), "_", $key)."_".$index;
+                                $param = str_replace(array("(", ")", "."), "_", $key)."_".$index;
                                 $likes[] = $key." NOT LIKE :".$param;
                                 $params[":".$param] = $match;
                             }
@@ -380,17 +380,17 @@
                             $cond = "(".implode(" AND ", $likes).")";
                         } elseif (substr($key, -5) == " like") { # LIKE
                             $key = self::safecol(substr($key, 0, -5));
-                            $param = str_replace(array("(", ")"), "_", $key);
+                            $param = str_replace(array("(", ")", "."), "_", $key);
                             $cond = $key." LIKE :".$param;
                             $params[":".$param] = $val;
                         } elseif (substr($key, -9) == " not like") { # NOT LIKE
                             $key = self::safecol(substr($key, 0, -9));
-                            $param = str_replace(array("(", ")"), "_", $key);
+                            $param = str_replace(array("(", ")", "."), "_", $key);
                             $cond = $key." NOT LIKE :".$param;
                             $params[":".$param] = $val;
                         } elseif (substr_count($key, " ")) { # Custom operation, e.g. array("foo >" => $bar)
                             list($param,) = explode(" ", $key);
-                            $param = str_replace(array("(", ")"), "_", $param);
+                            $param = str_replace(array("(", ")", "."), "_", $param);
                             $cond = self::safecol($key)." :".$param;
                             $params[":".$param] = $val;
                         } else { # Equation
@@ -401,7 +401,7 @@
                             elseif ($val === null)
                                 $cond = self::safecol($key)." IS NULL";
                             else {
-                                $param = str_replace(array("(", ")"), "_", $key);
+                                $param = str_replace(array("(", ")", "."), "_", $key);
                                 $cond = self::safecol($key)." = :".$param;
                                 $params[":".$param] = $val;
                             }
