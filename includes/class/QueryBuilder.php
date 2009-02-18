@@ -57,10 +57,14 @@
          *     An @INSERT@ query string.
          */
         public static function build_insert($table, $data, &$params = array()) {
+            if (empty($params))
+                foreach ($data as $key => $val)
+                    $params[":".str_replace(array("(", ")", "."), "_", $key)] = $val;
+
             return "INSERT INTO __$table\n".
                    self::build_insert_header($data)."\n".
                    "VALUES\n".
-                   self::build_list($data, $params);
+                   "(".implode(", ", array_keys($params)).")\n";
         }
 
         /**
