@@ -80,10 +80,14 @@
          *     A @REPLACE@ query string.
          */
         public static function build_replace($table, $data, &$params = array()) {
+            if (empty($params))
+                foreach ($data as $key => $val)
+                    $params[":".str_replace(array("(", ")", "."), "_", $key)] = $val;
+
             return "REPLACE INTO __$table\n".
                    self::build_insert_header($data)."\n".
                    "VALUES\n".
-                   self::build_list($data, $params);
+                   "(".implode(", ", array_keys($params)).")\n";
         }
 
         /**
@@ -464,4 +468,5 @@
             $field = preg_replace("/AS ([^ ]+)\./i", "AS ", $field);
         }
     }
+
 
