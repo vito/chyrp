@@ -34,10 +34,14 @@
          * Loads the Twig parser into <Theme>, and sets up the theme l10n domain.
          */
         private function __construct() {
+            $this->feed = (isset($_GET['feed']) or (isset($_GET['action']) and $_GET['action'] == "feed"));
+            $this->post_limit = Config::current()->posts_per_page;
+
             $cache = (is_writable(INCLUDES_DIR."/caches") and
                       !DEBUG and
                       !PREVIEWING and
                       !defined('CACHE_TWIG') or CACHE_TWIG);
+
             $this->twig = new Twig_Loader(THEME_DIR,
                                           $cache ?
                                               INCLUDES_DIR."/caches" :
@@ -50,11 +54,6 @@
          */
         public function parse($route) {
             $config = Config::current();
-
-            if ($this->feed)
-                $this->post_limit = $config->feed_items;
-            else
-                $this->post_limit = $config->posts_per_page;
 
             if (empty($route->arg[0]) and !isset($config->routes["/"])) # If they're just at /, don't bother with all this.
                 return $route->action = "index";
@@ -193,8 +192,13 @@
                 array_shift($matches);
 
                 foreach ($parameters[0] as $index => $parameter)
-                    if ($parameter[0] == "(")
-                        $post_url_attrs[rtrim(ltrim($parameter, "("), ")")] = $args[$index];
+                    if ($parameter[0] == "(") {
+                        if ($parameter == "(id)") {
+                            $post_url_attrs = array("id" => $args[$index]);
+                            break;
+                        } else
+                            $post_url_attrs[rtrim(ltrim($parameter, "("), ")")] = $args[$index];
+                    }
 
                 if ($return_post)
                     return Post::from_url($post_url_attrs);
