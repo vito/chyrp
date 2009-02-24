@@ -279,32 +279,36 @@
                           "/".urlencode($this->title) :
                           "&amp;title=".urlencode($this->title) ;
 
-            // Create basic list of links (site and page Atom feeds):
+            # Create basic list of links (site and page Atom feeds):
             $feedurl = oneof(@$config->feed_url, url("feed"));
             $pagefeedurl = $config->url.$request.$append;
-            $links = array( array('href' => $feedurl, 'type' => 'application/atom+xml', 'title' => $config->name) );
+            $links = array(array("href" => $feedurl, "type" => "application/atom+xml", "title" => $config->name));
             if ($pagefeedurl != $feedurl)
-                $links[] = array('href' => $pagefeedurl, 'type' => 'application/atom+xml', 'title' => "Current Page (if applicable)");
+                $links[] = array("href" => $pagefeedurl, "type" => "application/atom+xml", "title" => "Current Page (if applicable)");
 
-            // Ask modules to pitch in by adding their own <link> tag items to $links.
-            // Each item must be an array with 'href' and 'rel' properties (and optionally 'title' and 'type'):
+            # Ask modules to pitch in by adding their own <link> tag items to $links.
+            # Each item must be an array with "href" and "rel" properties (and optionally "title" and "type"):
             Trigger::current()->filter($links, "links");
             
-            // Generate <link> tags:
+            # Generate <link> tags:
             $tags = array();
             foreach ($links as $link) {
-                $rel = oneof(@$link['rel'],'alternate');
-                $href = $link['href'];
-                $type = @$link['type'];
-                $title = @$link['title'];
-                $tag = '<link rel="'.$rel.'" href="'.($link['href']).'"';
+                $rel = oneof(@$link["rel"], "alternate");
+                $href = $link["href"];
+                $type = @$link["type"];
+                $title = @$link["title"];
+                $tag = '<link rel="'.$rel.'" href="'.$link["href"].'"';
+
                 if ($type)
-                    $tag .= ' type="'.$type.'"';
+                    $tag.= ' type="'.$type.'"';
+
                 if ($title)
-                    $tag .= ' title="'.$title.'"';
-                $tags[] = $tag . ' />';
+                    $tag.= ' title="'.$title.'"';
+
+                $tags[] = $tag.' />';
             }
-            return implode("\n\t",$tags);
+
+            return implode("\n\t", $tags);
         }
 
         public function load_time() {

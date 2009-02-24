@@ -691,8 +691,11 @@
 
             $visitor = Visitor::current();
             $config = Config::current();
+            $theme = Theme::current();
 
-            $this->context["theme"]        = Theme::current();
+            $theme->title = $title;
+
+            $this->context["theme"]        = $theme;
             $this->context["flash"]        = Flash::current();
             $this->context["trigger"]      = $trigger;
             $this->context["modules"]      = Modules::$instances;
