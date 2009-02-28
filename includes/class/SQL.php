@@ -193,6 +193,9 @@
                 if (!strpos($query, $name))
                     unset($params[$name]);
 
+            if (substr($query, 0, 24) == "UPDATE __post_attributes")
+                error("", $query);
+
             $query = str_replace("__", $this->prefix, $query);
 
             if ($this->adapter == "sqlite")
