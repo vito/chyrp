@@ -62,6 +62,12 @@
                                (!substr_count($this->arg[0], "?") ?
                                    oneof(@$this->arg[0], "index") :
                                    "index") ;
+
+            # Guess the action initially.
+            # This is only required because of the view_site permission;
+            # it has to know if they're viewing /login, in which case
+            # it should allow the page to display.
+            fallback($this->action, end($this->try));
         }
 
         /**
