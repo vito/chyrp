@@ -79,6 +79,9 @@
         if (TESTER)
             exit("ERROR: ".$body);
 
+        if ($title == __("Access Denied"))
+            $_SESSION['redirect_to'] = self_url();
+
         # Display the error.
         if (defined('THEME_DIR') and class_exists("Theme") and Theme::current()->file_exists("pages/error"))
             MainController::current()->display("pages/error",

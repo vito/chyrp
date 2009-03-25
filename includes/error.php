@@ -30,7 +30,7 @@
                 font-size: 62.5%;
             }
             body {
-                font: 1.25em/1.5em normal "Verdana", Helvetica, Arial, sans-serif;
+                font: 1.25em/1.5em normal Verdana, Helvetica, Arial, sans-serif;
                 color: #626262;
                 background: #e8e8e8;
                 padding: 0 0 5em;
@@ -101,7 +101,7 @@
             a.big.back {
                 -webkit-border-top-right-radius: 0 !important;
                 -webkit-border-bottom-right-radius: 0 !important;
-                width: 43.625%;
+                width: 42%;
                 float: left;
             }
             a.big.login {
@@ -110,7 +110,7 @@
                 -webkit-border-top-left-radius: 0 !important;
                 -webkit-border-bottom-left-radius: 0 !important;
                 background: #f5f5f5;
-                width: 43.625%;
+                width: 42%;
             }
 <?php endif; ?>
             .clear {

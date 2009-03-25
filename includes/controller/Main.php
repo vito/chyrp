@@ -534,7 +534,10 @@
                     $_SESSION['login'] = $_POST['login'];
                     $_SESSION['password'] = md5($_POST['password']);
 
-                    Flash::notice(__("Logged in."), "/");
+                    $redirect = @$_SESSION['redirect_to'];
+                    unset($_SESSION['redirect_to']);
+
+                    Flash::notice(__("Logged in."), oneof($redirect, "/"));
                 }
             }
 
