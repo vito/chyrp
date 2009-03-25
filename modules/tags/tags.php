@@ -97,7 +97,10 @@
         }
 
         public function update_post($post) {
-            if (empty($_POST['tags'])) return;
+            if (empty($_POST['tags']))
+                SQL::current()->delete("post_attributes",
+                                       array("name" => "tags",
+                                             "post_id" => $post->id));
 
             $tags = explode(",", $_POST['tags']); # Split at the comma
             $tags = array_map('trim', $tags); # Remove whitespace
