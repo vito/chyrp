@@ -409,6 +409,11 @@ var Extend = {
                 beforeSend: function(){ Extend.Drop.pane.loader() },
                 success: Extend.finish_drop,
                 error: function() {
+                    if (Extend.Drop.action == "enable")
+                        alert("<?php echo __("There was an error enabling the module."); ?>");
+                    else
+                        alert("<?php echo __("There was an error disabling the module."); ?>");
+
                     Extend.Drop.pane.loader(true)
 
                     $(ui.draggable).css({ left: 0, right: 0, top: 0, bottom: 0 }).appendTo($(".disable ul"))
