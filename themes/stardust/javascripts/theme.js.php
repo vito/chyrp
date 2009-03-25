@@ -35,6 +35,13 @@ $(function(){
         }
     })
 
+    $("input#slug").live("keyup", function(e){
+        if (/^([a-zA-Z0-9\-\._:]*)$/.test($(this).val()))
+            $(this).css("background", "")
+        else
+            $(this).css("background", "#ff2222")
+    })
+
     if (Cookie.get("hide_debug") == "true") {
         $("#debug").height(15);
         $("#debug ul li").each(function(){
