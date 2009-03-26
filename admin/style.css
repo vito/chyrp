@@ -966,6 +966,10 @@ a.emblem img {
 .detail .button.right {
     margin-top: 2.25em;
 }
+.detail.inline {
+    position: relative;
+    bottom: -.75em;
+}
 .wide {
     width: 100%;
 }
