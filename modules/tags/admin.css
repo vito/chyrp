@@ -45,6 +45,8 @@
     background: #f9f9f9;
     -webkit-border-bottom-right-radius: .5em;
     -webkit-border-bottom-left-radius: .5em;
+    -moz-border-radius-bottomright: .5em;
+    -moz-border-radius-bottomleft: .5em;
 }
 
 .post_tags {
@@ -54,6 +56,9 @@
     display: block;
     margin-bottom: .5em;
     padding: .75em;
+}
+.post_tags li.hover {
+    background: #eee !important;
 }
 .post_tags input,
 .post_tags h3 {
@@ -66,11 +71,15 @@
 .post_tags li a.edit_tag {
     margin: -.85em 0;
 }
+.post_tags li a.tag.dropped {
+    margin-right: .3625em;
+}
 .post_tags li a.tag {
     display: inline-block;
     padding: 0 .75em;
     background: #e5e5e5;
     -webkit-border-radius: .5em;
+    -moz-border-radius: .5em;
 }
 .post_tags li a.edit_tag {
     display: inline-block;
@@ -79,6 +88,7 @@
     padding: .5em .75em .4em;
     background: #f0f0f0;
     -webkit-border-radius: .5em;
+    -moz-border-radius: .5em;
 }
 .post_tags li a.edit_tag:hover {
     background: #f5f5f5;
