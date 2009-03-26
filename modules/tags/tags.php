@@ -97,7 +97,10 @@
         }
 
         public function update_post($post) {
-            if (empty($_POST['tags'])) return;
+            if (empty($_POST['tags']))
+                SQL::current()->delete("post_attributes",
+                                       array("name" => "tags",
+                                             "post_id" => $post->id));
 
             $tags = explode(",", $_POST['tags']); # Split at the comma
             $tags = array_map('trim', $tags); # Remove whitespace
@@ -315,23 +318,24 @@
 
             $sql = SQL::current();
 
-            foreach ($_POST['post'] as $post_id) {
-                $tags = $sql->select("post_attributes",
-                                     "value",
-                                     array("name" => "tags",
-                                           "post_id" => $post_id));
-                if ($tags and $value = $tags->fetchColumn())
-                    $tags = YAML::load($value);
-                else
-                    $tags = array();
+            foreach (array_map("trim", explode(",", $_POST['name'])) as $tag)
+                foreach ($_POST['post'] as $post_id) {
+                    $tags = $sql->select("post_attributes",
+                                         "value",
+                                         array("name" => "tags",
+                                               "post_id" => $post_id));
+                    if ($tags and $value = $tags->fetchColumn())
+                        $tags = YAML::load($value);
+                    else
+                        $tags = array();
 
-                $tags[$_POST['name']] = sanitize($_POST['name']);
+                    $tags[$tag] = sanitize($tag);
 
-                $sql->replace("post_attributes",
-                              array("name" => "tags",
-                                    "value" => YAML::dump($tags),
-                                    "post_id" => $post_id));
-            }
+                    $sql->replace("post_attributes",
+                                  array("name" => "tags",
+                                        "value" => YAML::dump($tags),
+                                        "post_id" => $post_id));
+                }
 
             Flash::notice(__("Posts tagged.", "tags"), "/admin/?action=manage_tags");
         }

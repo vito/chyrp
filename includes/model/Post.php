@@ -308,6 +308,9 @@
                                       oneof($updated_at, @$_POST['updated_at'], datetime())));
             fallback($options,    oneof(@$_POST['option'], array()));
 
+            if ($url != $this->url) # If they edited the slug, the clean URL should change too.
+                $clean = $url;
+
             $old = clone $this;
 
             # Update all values of this post.

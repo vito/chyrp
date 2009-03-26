@@ -339,6 +339,22 @@
         <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
         <title>Chyrp Installer</title>
         <style type="text/css" media="screen">
+            html, body, ul, ol, li,
+            h1, h2, h3, h4, h5, h6,
+            form, fieldset, a, p {
+                margin: 0;
+                padding: 0;
+                border: 0;
+            }
+            html {
+                font-size: 62.5%;
+            }
+            body {
+                font: 1.25em/1.5em normal Verdana, Helvetica, Arial, sans-serif;
+                color: #626262;
+                background: #e8e8e8;
+                padding: 0 0 5em;
+            }
             h2 {
                 font-size: 1.25em;
                 font-weight: bold;
@@ -381,22 +397,6 @@
             }
             .error.last {
                 margin: 0 0 1em 0;
-            }
-            html, body, ul, ol, li,
-            h1, h2, h3, h4, h5, h6,
-            form, fieldset, a, p {
-                margin: 0;
-                padding: 0;
-                border: 0;
-            }
-            html {
-                font-size: 62.5%;
-            }
-            body {
-                font: 1.25em/1.5em normal "Verdana", Helvetica, Arial, sans-serif;
-                color: #626262;
-                background: #e8e8e8;
-                padding: 0 0 5em;
             }
             .window {
                 width: 30em;

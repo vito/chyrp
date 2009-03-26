@@ -62,6 +62,12 @@
                                (!substr_count($this->arg[0], "?") ?
                                    oneof(@$this->arg[0], "index") :
                                    "index") ;
+
+            # Guess the action initially.
+            # This is only required because of the view_site permission;
+            # it has to know if they're viewing /login, in which case
+            # it should allow the page to display.
+            fallback($this->action, end($this->try));
         }
 
         /**
@@ -108,6 +114,9 @@
                 if (++$count == count($try) and isset($this->controller->fallback) and method_exists($this->controller, "display"))
                     call_user_func_array(array($this->controller, "display"), $this->controller->fallback);
             }
+
+            if ($this->action != "login")
+                $_SESSION['redirect_to'] = self_url();
 
             $trigger->call("route_done", $this);
 

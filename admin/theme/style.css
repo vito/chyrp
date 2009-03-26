@@ -888,6 +888,10 @@ a.emblem img {
 .detail h3 {
     margin-bottom: .5em !important;
 }
+.detail.inline {
+    position: relative;
+    bottom: -.75em;
+}
 .wide {
     width: 100%;
 }

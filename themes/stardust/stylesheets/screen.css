@@ -167,7 +167,6 @@ textarea {
     border-bottom: 1px solid #eee;
     border-right: 1px solid #eee;
     font-family: 'Monaco', Courier, monospace;
-    font-size: .9em;
     margin-bottom: 1.5em;
     padding: .3em .4em;
 }
@@ -257,10 +256,9 @@ div#sidebar h1 {
 div#sidebar input#search {
     background-color: #fff;
     border: 0;
-    font-size: .9em;
-    margin: -4px auto 0;
-    width: 152px;
-    padding: .5em .75em;
+    margin: -5px auto 0;
+    width: 150px;
+    padding: .4em .7em;
     display: block;
 }
 div#sidebar ul li {
@@ -574,7 +572,7 @@ div.page span.controls {
     border: none;
     color: #eee;
     padding: .4em;
-    width: 412px;
+    width: 410px;
 }
 .inline_edit .more_options_link:link {
     color: #5B7C99;

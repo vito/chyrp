@@ -58,7 +58,7 @@ class YAML
      */
     public static function load($yaml)
     {
-        if (is_file($yaml))
+        if (file_exists($yaml))
             return self::loadFile($yaml);
 
         if (!is_string($yaml) || !strlen($yaml)) {
