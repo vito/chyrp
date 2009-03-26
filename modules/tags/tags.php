@@ -2,7 +2,7 @@
     class Tags extends Modules {
         public function __init() {
             $this->addAlias("metaWeblog_newPost_preQuery", "metaWeblog_editPost_preQuery");
-            $this->addAlias("javascript", "cloudSelectorJS");
+            $this->addAlias("javascript", "tagsJS");
         }
 
         static function __install() {
@@ -17,7 +17,7 @@
             $config = Config::current();
 ?>
         <script type="text/javascript">
-<?php $this->cloudSelectorJS(); ?>
+<?php $this->tagsJS(); ?>
         </script>
         <link rel="stylesheet" href="<?php echo $config->chyrp_url; ?>/modules/tags/admin.css" type="text/css" media="screen" title="no title" charset="utf-8" />
 <?php
@@ -320,6 +320,10 @@
 
             foreach (array_map("trim", explode(",", $_POST['name'])) as $tag)
                 foreach ($_POST['post'] as $post_id) {
+                    $post = new Post($post_id);
+                    if (!$post->editable())
+                        continue;
+
                     $tags = $sql->select("post_attributes",
                                          "value",
                                          array("name" => "tags",
@@ -583,7 +587,8 @@
             return ($quotes ? "%: \"".$name."\"\n%" : "%: ".$name."\n%");
         }
 
-        public function cloudSelectorJS() {
+        public function tagsJS() {
+            $config = Config::current();
 ?>//<script>
             $(function(){
                 function scanTags(){
@@ -605,6 +610,40 @@
                 }).live("mouseout", function(){
                     $(this).find(".controls").css("opacity", 0)
                 })
+
+                $(".tag_cloud span a").draggable({
+                    zIndex: 100,
+                    revert: true
+                });
+
+                $(".post_tags li:not(.toggler)").droppable({
+                    accept: ".tag_cloud span a",
+                    tolerance: "pointer",
+                    activeClass: "active",
+                    hoverClass: "hover",
+                    drop: function(ev, ui) {
+                        var post_id = $(this).attr("id").replace(/post-/, "");
+                        var self = this;
+
+                        $.ajax({
+                            type: "post",
+                            dataType: "json",
+                            url: "<?php echo $config->chyrp_url; ?>/includes/ajax.php",
+                            data: {
+                                action: "tag_post",
+                                post: post_id,
+                                name: $(ui.draggable).text()
+                            },
+                            beforeSend: function(){
+                                $(self).loader();
+                            },
+                            success: function(json){
+                                $(self).loader(true);
+                                $(document.createElement("a")).attr("href", json.url).addClass("tag").addClass("dropped").text(json.tag).insertBefore($(self).find(".edit_tag"));
+                            }
+                        });
+                    }
+                });
             })
 
             function add_tag(name) {
@@ -634,5 +673,36 @@
                 }
             }
 <?php
+        }
+
+        public function ajax_tag_post() {
+            if (empty($_POST['name']) or empty($_POST['post']))
+                exit("{}");
+
+            $sql = SQL::current();
+
+            $post = new Post($_POST['post']);
+            $tag = $_POST['name'];
+
+            if (!$post->editable())
+                continue;
+
+            $tags = $sql->select("post_attributes",
+                                 "value",
+                                 array("name" => "tags",
+                                       "post_id" => $post->id));
+            if ($tags and $value = $tags->fetchColumn())
+                $tags = YAML::load($value);
+            else
+                $tags = array();
+
+            $tags[$tag] = sanitize($tag);
+
+            $sql->replace("post_attributes",
+                          array("name" => "tags",
+                                "value" => YAML::dump($tags),
+                                "post_id" => $post->id));
+
+            exit("{ url: \"".url("/tag/".$tags[$tag])."\", tag: \"".$_POST['name']."\" }");
         }
     }
