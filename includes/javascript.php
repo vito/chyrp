@@ -124,7 +124,7 @@ var Post = {
         })
     },
     prepare_links: function(id) {
-        $(".post_edit_link").live("click", function(){
+        $(".post_edit_link:not(.no_ajax)").live("click", function(){
             var id = $(this).attr("id").replace(/post_edit_/, "")
             Post.edit(id)
             return false
