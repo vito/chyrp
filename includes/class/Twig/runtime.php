@@ -14,6 +14,7 @@ $twig_filters = array(
     // formatting filters
     'date' =>              'twig_date_format_filter',
     'strftime' =>          'twig_strftime_format_filter',
+    'strtotime' =>         'strtotime',
     'numberformat' =>      'number_format',
     'moneyformat' =>       'money_format',
     'filesizeformat' =>    'twig_filesize_format_filter',
