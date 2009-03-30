@@ -785,7 +785,7 @@
 
             $name = strtolower(get_class($this));
 
-            if (Feathers::$instances[$this->feather]->disable_ajax_edit)
+            if (@Feathers::$instances[$this->feather]->disable_ajax_edit)
                 $classes = empty($classes) ? "no_ajax" : $classes." no_ajax" ;
 
             echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=edit_'.$name.'&amp;id='.$this->id.'" title="Edit" class="'.($classes ? $classes." " : '').$name.'_edit_link edit_link" id="'.$name.'_edit_'.$this->id.'">'.$text.'</a>'.$after;

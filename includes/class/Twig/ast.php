@@ -190,17 +190,15 @@ class Twig_ForLoop extends Twig_Node
 
 class Twig_PaginateLoop extends Twig_Node
 {
-    public $is_multitarget;
     public $item;
     public $seq;
     public $body;
     public $else;
 
-    public function __construct($is_multitarget, $item, $per_page, $target,
+    public function __construct($item, $per_page, $target,
                     $as, $body, $else, $lineno)
     {
         parent::__construct($lineno);
-        $this->is_multitarget = $is_multitarget;
         $this->item = $item;
         $this->per_page = $per_page;
         $this->seq = $target;
@@ -228,22 +226,9 @@ class Twig_PaginateLoop extends Twig_Node
         $compiler->raw('foreach (twig_iterate($context,');
         $compiler->raw(' $context["::parent"]["'.$this->as->name);
         $compiler->raw("\"]->paginated) as \$iterator) {\n");
-        if ($this->is_multitarget) {
-            $compiler->raw('twig_set_loop_context_multitarget($context, ' .
-                       '$iterator, array(');
-            $idx = 0;
-            foreach ($this->item as $node) {
-                if ($idx++)
-                    $compiler->raw(', ');
-                $compiler->repr($node->name);
-            }
-            $compiler->raw("));\n");
-        }
-        else {
-            $compiler->raw('twig_set_loop_context($context, $iterator, ');
-            $compiler->repr($this->item->name);
-            $compiler->raw(");\n");
-        }
+        $compiler->raw('twig_set_loop_context($context, $iterator, ');
+        $compiler->repr($this->item->name);
+        $compiler->raw(");\n");
         $this->body->compile($compiler);
         $compiler->raw("}\n");
         if (!is_null($this->else)) {
