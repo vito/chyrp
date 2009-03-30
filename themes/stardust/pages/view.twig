@@ -9,7 +9,7 @@
                 <br />
                 <h2 class="comments">${ "Comments" | translate }</h2>
                 <ol class="comments" id="comments_$post.id">
-                    {% paginate comment in site.comments_per_page post.comments as comments %}
+                    {% paginate site.comments_per_page comments in post.comments as comment %}
                     {% include "content/comment.twig" %}
                     {% else %}
                     <li class="no_comments"></li> {# Needed for AJAX commenting and XHTML Strict validation. #}

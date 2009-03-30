@@ -69,12 +69,13 @@ class Twig_Parser
     public function parsePaginate($token)
     {
         $lineno = $token->lineno;
-        list($is_multitarget, $item) = $this->parseAssignmentExpression();
-        $this->stream->expect('in');
+
         $per_page = $this->parseExpression();
+        $as = $this->parseExpression();
+        $this->stream->expect('in');
         $loop = $this->parseExpression();
         $this->stream->expect('as');
-        $as = $this->parseExpression();
+        $item = $this->parseExpression();
         $this->stream->expect(Twig_Token::BLOCK_END_TYPE);
         $body = $this->subparse(array($this, 'decidePaginateFork'));
         if ($this->stream->next()->value == 'else') {
@@ -84,7 +85,7 @@ class Twig_Parser
         else
             $else = NULL;
         $this->stream->expect(Twig_Token::BLOCK_END_TYPE);
-        return new Twig_PaginateLoop($is_multitarget, $item, $per_page, 
+        return new Twig_PaginateLoop($item, $per_page, 
                     $loop, $as, $body, $else, $lineno);
     }
 
