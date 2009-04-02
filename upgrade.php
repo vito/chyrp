@@ -11,10 +11,31 @@
     header("Content-type: text/html; charset=UTF-8");
 
     define('DEBUG',        true);
-    define('UPGRADING',    true);
+    define('CACHE_TWIG',   false);
+    define('JAVASCRIPT',   false);
+    define('ADMIN',        false);
+    define('AJAX',         false);
     define('XML_RPC',      false);
+    define('TRACKBACK',    false);
+    define('UPGRADING',    true);
+    define('INSTALLING',   false);
+    define('TESTER',       true);
+    define('INDEX',        false);
     define('MAIN_DIR',     dirname(__FILE__));
     define('INCLUDES_DIR', dirname(__FILE__)."/includes");
+    define('MODULES_DIR', MAIN_DIR."/modules");
+    define('FEATHERS_DIR', MAIN_DIR."/feathers");
+    define('THEMES_DIR', MAIN_DIR."/themes");
+
+    if (!AJAX and
+        extension_loaded("zlib") and
+        !ini_get("zlib.output_compression") and
+        isset($_SERVER['HTTP_ACCEPT_ENCODING']) and
+        substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip")) {
+        ob_start("ob_gzhandler");
+        header("Content-Encoding: gzip");
+    } else
+        ob_start();
 
     /**
      * Function: config_file
@@ -404,6 +425,9 @@
      */
     function make_posts_safe() {
         if (!$posts = SQL::current()->query("SELECT * FROM __posts"))
+            return;
+
+        if (!SQL::current()->query("SELECT xml FROM __posts"))
             return;
 
         function clean_xml(&$input) {
@@ -981,7 +1005,7 @@
                 font-size: 62.5%;
             }
             body {
-                font: 1.25em/1.5em normal "Verdana", Helvetica, Arial, sans-serif;
+                font: 1.25em/1.5em normal Verdana, Helvetica, Arial, sans-serif;
                 color: #626262;
                 background: #e8e8e8;
                 padding: 0 0 5em;
@@ -1016,12 +1040,14 @@
             pre.pane {
                 height: 15em;
                 overflow-y: auto;
-                margin: -2.5em -2.5em 4em;
+                margin: -2.68em -2.68em 4em;
                 padding: 2.5em;
                 background: #333;
                 color: #fff;
                 -webkit-border-top-left-radius: 2.5em;
                 -webkit-border-top-right-radius: 2.5em;
+                -moz-border-radius-topleft: 2.5em;
+                -moz-border-radius-topright: 2.5em;
             }
             span.yay { color: #0f0; }
             span.boo { color: #f00; }

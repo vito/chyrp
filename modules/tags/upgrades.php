@@ -111,10 +111,10 @@
             return;
 
         foreach ($tags->fetchAll() as $attr)
-            $sql->update("post_attributes",
+            $sql->replace("post_attributes",
                          array("post_id" => $attr["post_id"],
-                               "name" => "tags"),
-                         array("value" => YAML::dump(YAML::load($attr["value"]))));
+                               "name" => "tags",
+                               "value" => YAML::dump(YAML::load($attr["value"]))));
     }
 
     update_tags_structure();
