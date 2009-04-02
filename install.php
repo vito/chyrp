@@ -443,7 +443,7 @@
                 padding: .75em 1em;
                 color: #777;
                 text-shadow: #fff .1em .1em 0;
-                font: 1em normal "Lucida Grande", "Verdana", Helvetica, Arial, sans-serif;
+                font: 1em normal "Lucida Grande", Verdana, Helvetica, Arial, sans-serif;
                 text-decoration: none;
                 border: 0;
                 cursor: pointer;

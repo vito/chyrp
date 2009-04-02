@@ -86,7 +86,7 @@
                 padding: .75em 1em;
                 color: #777;
                 text-shadow: #fff 1px 1px 0;
-                font: 1em normal "Lucida Grande", "Verdana", Helvetica, Arial, sans-serif;
+                font: 1em normal "Lucida Grande", Verdana, Helvetica, Arial, sans-serif;
                 text-decoration: none;
                 -webkit-border-radius: .5em;
                 -moz-border-radius: .5em;

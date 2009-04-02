@@ -16,7 +16,7 @@
                 font-size: 62.5%;
             }
             body {
-                font: 1.25em/1.5em normal "Verdana", Helvetica, Arial, sans-serif;
+                font: 1.25em/1.5em normal Verdana, Helvetica, Arial, sans-serif;
                 color: #626262;
                 background: #fff;
                 padding: 1em 0 1em;
