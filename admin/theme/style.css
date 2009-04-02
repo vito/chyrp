@@ -620,7 +620,8 @@ button,
 .button,
 a.next_page,
 a.prev_page {
-    font-family: "Verdana", Helvetica, Arial, sans-serif;
+    display: inline-block;
+    font-family: Verdana, Helvetica, Arial, sans-serif;
     font-weight: bold;
     font-size: 1.125em;
     margin: 0 .5em 0 0;
