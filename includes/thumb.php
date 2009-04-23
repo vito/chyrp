@@ -31,37 +31,60 @@
     $new_width = (int) fallback($_GET["max_width"], 0);
     $new_height = (int) fallback($_GET["max_height"], 0);
 
-    function resize(&$new_width, &$new_height, $original_width, $original_height) {
+    $crop_x = 0;
+    $crop_y = 0;
+
+    function resize(&$crop_x, &$crop_y, &$new_width, &$new_height, $original_width, $original_height) {
         $xscale = ($new_width / $original_width);
         $yscale = $new_height / $original_height;
 
         if ($new_width <= $original_width and $new_height <= $original_height and $xscale == $yscale)
             return;
 
-        if ($new_width and !$new_height)
-            return $new_height = ($new_width / $original_width) * $original_height;
-        elseif (!$new_width and $new_height)
-            return $new_width = ($new_height / $original_height) * $original_width;
+        if ( isset($_GET['square']) ) {
+            if ( $new_width === 0 )
+                $new_width = $new_height;
 
-        if ($xscale != $yscale) {
-            if ($original_width * $yscale <= $new_width)
-                $new_width = $original_width * $yscale;
+            if ( $new_height === 0 )
+                $new_height = $new_width;
 
-            if ($original_height * $xscale <= $new_height)
-                $new_height = $original_height * $xscale;
-        }
+            if($original_width > $original_height) {
+                # portrait
+                $crop_x = ceil( ($original_width - $original_height) / 2 );
+            } else if ($original_height > $original_width) {
+                # landscape
+                $crop_y = ceil( ($original_height - $original_width) / 2 );
+            }
 
-        $xscale = ($new_width / $original_width);
-        $yscale = $new_height / $original_height;
-
-        if (round($xscale, 3) == round($yscale, 3))
             return;
 
-        resize($new_width, $new_height, $original_width, $original_height);
+        } else {
+    
+            if ($new_width and !$new_height)
+                return $new_height = ($new_width / $original_width) * $original_height;
+            elseif (!$new_width and $new_height)
+                return $new_width = ($new_height / $original_height) * $original_width;
+    
+            if ($xscale != $yscale) {
+                if ($original_width * $yscale <= $new_width)
+                    $new_width = $original_width * $yscale;
+    
+                if ($original_height * $xscale <= $new_height)
+                    $new_height = $original_height * $xscale;
+            }
+    
+            $xscale = ($new_width / $original_width);
+            $yscale = $new_height / $original_height;
+    
+            if (round($xscale, 3) == round($yscale, 3))
+                return;
+    
+            resize($crop_x, $crop_y, $new_width, $new_height, $original_width, $original_height);
+        }
     }
 
     # Determine the final scale of the thumbnail.
-    resize($new_width, $new_height, $original_width, $original_height);
+    resize($crop_x, $crop_y, $new_width, $new_height, $original_width, $original_height);
 
     # If it's already below the maximum, just redirect to it.
     if ($original_width <= $new_width and $original_height <= $new_height)
@@ -128,7 +151,16 @@
     if ($done == "imagepng")
         imagealphablending($thumbnail, false);
 
-    $copy($thumbnail, $image, 0, 0, 0, 0, $new_width, $new_height, $original_width, $original_height);
+    # if square crop is desired, original dimensions need to be set to square ratio
+    if ( isset($_GET['square']) ) {
+        if ($original_width > $original_height) {
+            $original_width = $original_height;
+        } else if ($original_height > $original_width) {
+            $original_height = $original_width;
+        }
+    }
+
+    $copy($thumbnail, $image, 0, 0, $crop_x, $crop_y, $new_width, $new_height, $original_width, $original_height);
 
     header("Last-Modified: ".gmdate("D, d M Y H:i:s", filemtime($filename))." GMT");
     header("Content-type: ".$mime);
