@@ -78,14 +78,17 @@
             $sql = SQL::current();
             $trigger = Trigger::current();
 
-            $sql->insert("users",
-                         array("login"     => strip_tags($login),
-                               "password"  => md5($password),
-                               "email"     => strip_tags($email),
-                               "full_name" => strip_tags($full_name),
-                               "website"   => strip_tags($website),
-                               "group_id"  => fallback($group_id, $config->default_group),
-                               "joined_at" => fallback($joined_at, datetime())));
+            $new_values = array("login"     => strip_tags($login),
+                                "password"  => md5($password),
+                                "email"     => strip_tags($email),
+                                "full_name" => strip_tags($full_name),
+                                "website"   => strip_tags($website),
+                                "group_id"  => fallback($group_id, $config->default_group),
+                                "joined_at" => fallback($joined_at, datetime()));
+
+            $trigger->filter($new_values, "before_add_user");
+
+            $sql->insert("users", $new_values);
 
             $user = new self($sql->latest());
 
@@ -129,15 +132,19 @@
             foreach (array("login", "password", "email", "full_name", "website", "group_id", "joined_at") as $attr)
                 $this->$attr = $$attr = ($$attr !== null ? $$attr : $this->$attr);
 
+            $new_values = array("login"     => strip_tags($login),
+                                "password"  => $password,
+                                "email"     => strip_tags($email),
+                                "full_name" => strip_tags($full_name),
+                                "website"   => strip_tags($website),
+                                "group_id"  => $group_id,
+                                "joined_at" => $joined_at);
+
+            $trigger->filter($new_values, "before_update_user");
+
             $sql->update("users",
-                         array("id"        => $this->id),
-                         array("login"     => strip_tags($login),
-                               "password"  => $password,
-                               "email"     => strip_tags($email),
-                               "full_name" => strip_tags($full_name),
-                               "website"   => strip_tags($website),
-                               "group_id"  => $group_id,
-                               "joined_at" => $joined_at));
+                         array("id" => $this->id),
+                         $new_values);
 
             $trigger->call("update_user", $this, $old);
         }

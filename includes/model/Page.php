@@ -91,17 +91,20 @@
             $visitor = Visitor::current();
             $trigger = Trigger::current();
 
-            $sql->insert("pages",
-                         array("title" =>        $title,
-                               "body" =>         $body,
-                               "user_id" =>      oneof($user_id,      $visitor->id),
-                               "parent_id" =>    oneof($parent_id,    0),
-                               "show_in_list" => oneof($show_in_list, true),
-                               "list_order" =>   oneof($list_order,   0),
-                               "clean" =>        oneof($clean,        sanitize($title)),
-                               "url" =>          oneof($url,          self::check_url($clean)),
-                               "created_at" =>   oneof($created_at,   datetime()),
-                               "updated_at" =>   oneof($updated_at,   "0000-00-00 00:00:00")));
+            $new_values = array("title" =>        $title,
+                                "body" =>         $body,
+                                "user_id" =>      oneof($user_id,      $visitor->id),
+                                "parent_id" =>    oneof($parent_id,    0),
+                                "show_in_list" => oneof($show_in_list, true),
+                                "list_order" =>   oneof($list_order,   0),
+                                "clean" =>        oneof($clean,        sanitize($title)),
+                                "url" =>          oneof($url,          self::check_url($clean)),
+                                "created_at" =>   oneof($created_at,   datetime()),
+                                "updated_at" =>   oneof($updated_at,   "0000-00-00 00:00:00"));
+
+            $trigger->filter($new_values, "before_add_page");
+
+            $sql->insert("pages", $new_values);
 
             $page = new self($sql->latest());
 
@@ -154,18 +157,22 @@
                 else
                     $this->$attr = $$attr = ($$attr !== null ? $$attr : $this->$attr);
 
+            $new_values = array("title" =>        $title,
+                                "body" =>         $body,
+                                "user_id" =>      $user_id,
+                                "parent_id" =>    $parent_id,
+                                "show_in_list" => $show_in_list,
+                                "list_order" =>   $list_order,
+                                "clean" =>        $clean,
+                                "url" =>          $url,
+                                "created_at" =>   $created_at,
+                                "updated_at" =>   $updated_at);
+
+            $trigger->filter($new_values, "before_update_page");
+
             $sql->update("pages",
-                         array("id" =>           $this->id),
-                         array("title" =>        $title,
-                               "body" =>         $body,
-                               "user_id" =>      $user_id,
-                               "parent_id" =>    $parent_id,
-                               "show_in_list" => $show_in_list,
-                               "list_order" =>   $list_order,
-                               "clean" =>        $clean,
-                               "url" =>          $url,
-                               "created_at" =>   $created_at,
-                               "updated_at" =>   $updated_at));
+                         array("id" => $this->id),
+                         $new_values);
 
             $trigger->call("update_page", $this, $old);
         }
