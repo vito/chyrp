@@ -328,7 +328,7 @@
                                 "created_at" => $created_at,
                                 "updated_at" => $updated_at);
 
-            $trigger->filter($new_values, "before_update_post")
+            $trigger->filter($new_values, "before_update_post");
 
             $sql = SQL::current();
             $sql->update("posts",

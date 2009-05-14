@@ -197,7 +197,7 @@
             $sql->query("CREATE TABLE IF NOT EXISTS __users (
                              id INTEGER PRIMARY KEY AUTO_INCREMENT,
                              login VARCHAR(64) DEFAULT '',
-                             password VARCHAR(32) DEFAULT '',
+                             password VARCHAR(34) DEFAULT '',
                              full_name VARCHAR(250) DEFAULT '',
                              email VARCHAR(128) DEFAULT '',
                              website VARCHAR(128) DEFAULT '',
@@ -318,7 +318,7 @@
             if (!$sql->select("users", "id", array("login" => $_POST['login']))->fetchColumn())
                 $sql->insert("users",
                              array("login" => $_POST['login'],
-                                   "password" => md5($_POST['password_1']),
+                                   "password" => User::hashPassword($_POST['password_1']),
                                    "email" => $_POST['email'],
                                    "website" => $config->url,
                                    "group_id" => $group_id["admin"],

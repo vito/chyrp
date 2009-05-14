@@ -497,8 +497,7 @@
 
                     Trigger::current()->call("user_registered", $user);
 
-                    $_SESSION['login'] = $_POST['login'];
-                    $_SESSION['password'] = md5($_POST['password1']);
+                    $_SESSION['user_id'] = $user->id;
 
                     Flash::notice(__("Registration successful."), "/");
                 }
@@ -524,15 +523,15 @@
                 if ($trigger->exists("authenticate"))
                     return $trigger->call("authenticate");
 
-                if (!User::authenticate($_POST['login'], md5($_POST['password'])))
+                if (!User::authenticate($_POST['login'], $_POST['password']))
                     if (!count(User::find(array("where" => array("login" => $_POST['login'])))))
                         Flash::warning(__("There is no user with that login name."));
                     else
                         Flash::warning(__("Password incorrect."));
 
                 if (!Flash::exists("warning")) {
-                    $_SESSION['login'] = $_POST['login'];
-                    $_SESSION['password'] = md5($_POST['password']);
+                    $user = new User(array("login" => $_POST['login']));
+                    $_SESSION['user_id'] = $user->id;
 
                     $redirect = @$_SESSION['redirect_to'];
                     unset($_SESSION['redirect_to']);
@@ -571,7 +570,7 @@
                 $visitor = Visitor::current();
 
                 $password = (!empty($_POST['new_password1']) and $_POST['new_password1'] == $_POST['new_password2']) ?
-                                md5($_POST['new_password1']) :
+                                User::hashPassword($_POST['new_password1']) :
                                 $visitor->password ;
 
                 $visitor->update($visitor->login,
@@ -580,8 +579,6 @@
                                  $_POST['full_name'],
                                  $_POST['website'],
                                  $visitor->group->id);
-
-                $_SESSION['password'] = $password;
 
                 Flash::notice(__("Your profile has been updated."), "/");
             }
@@ -604,7 +601,7 @@
                 $new_password = random(16);
 
                 $user->update($user->login,
-                              md5($new_password),
+                              User::hashPassword($new_password),
                               $user->email,
                               $user->full_name,
                               $user->website,

@@ -203,6 +203,10 @@
     #     <Route>
     require_once INCLUDES_DIR."/class/Route.php";
 
+	# File: PasswordHash
+	# Secure hashing of user passwords
+	require_once INCLUDES_DIR."/class/PasswordHash.php";
+
     # File: Main
     # See Also:
     #     <Main Controller>
