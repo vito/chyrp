@@ -119,6 +119,10 @@
     # Horde YAML parsing library.
     require_once INCLUDES_DIR."/lib/YAML.php";
 
+	# File: PasswordHash
+	# Secure hashing of user passwords
+	require_once INCLUDES_DIR."/lib/PasswordHash.php";
+
     # File: Config
     # See Also:
     #     <Config>
@@ -202,10 +206,6 @@
     # See Also:
     #     <Route>
     require_once INCLUDES_DIR."/class/Route.php";
-
-	# File: PasswordHash
-	# Secure hashing of user passwords
-	require_once INCLUDES_DIR."/class/PasswordHash.php";
 
     # File: Main
     # See Also:

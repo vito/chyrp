@@ -27,6 +27,7 @@
     require_once INCLUDES_DIR."/lib/gettext/gettext.php";
     require_once INCLUDES_DIR."/lib/gettext/streams.php";
     require_once INCLUDES_DIR."/lib/YAML.php";
+    require_once INCLUDES_DIR."/lib/PasswordHash.php";
 
     require_once INCLUDES_DIR."/class/Config.php";
     require_once INCLUDES_DIR."/class/SQL.php";
