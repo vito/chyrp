@@ -705,4 +705,11 @@
 
             exit("{ url: \"".url("/tag/".$tags[$tag])."\", tag: \"".$_POST['name']."\" }");
         }
+
+        function feed_item($post) {
+            $config = Config::current();
+
+            foreach ($post->tags as $tag => $clean)
+                echo "        <category scheme=\"".$config->url."/tag/\" term=\"".$clean."\" label=\"".fix($tag)."\" />\n";
+        }
     }
