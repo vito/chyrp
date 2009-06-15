@@ -77,7 +77,7 @@
         $errors[] = __("Chyrp's includes directory is not writable by the server. In order for the installer to generate your configuration files, please CHMOD or CHOWN it so that Chyrp can write to it.");
 
     if (!empty($_POST)) {
-        if ($_POST['adapter'] == "sqlite" and !is_writable(dirname($_POST['database'])))
+        if ($_POST['adapter'] == "sqlite" and !@is_writable(dirname($_POST['database'])))
             $errors[] = __("SQLite database file could not be created. Please make sure your server has write permissions to the location for the database.");
         else {
             $sql = SQL::current(array("host" => $_POST['host'],

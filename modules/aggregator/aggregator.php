@@ -77,11 +77,10 @@
                             $clean = sanitize(oneof(@$data["title"], @$data["name"]));
 
                         Post::add($data, $clean, null, $feed["feather"], $feed["author"],
-                                  null, //pinned
-                                  "",   //status
+                                  false,
+                                  "public",
                                   datetime($created),
-                                  datetime($updated)
-                                  );
+                                  datetime($updated));
 
                         $aggregates[$name]["last_updated"] = $updated;
                     }

@@ -42,10 +42,11 @@
                       !PREVIEWING and
                       !defined('CACHE_TWIG') or CACHE_TWIG);
 
-            $this->twig = new Twig_Loader(THEME_DIR,
-                                          $cache ?
-                                              INCLUDES_DIR."/caches" :
-                                              null) ;
+            if (defined('THEME_DIR'))
+                $this->twig = new Twig_Loader(THEME_DIR,
+                                              $cache ?
+                                                  INCLUDES_DIR."/caches" :
+                                                  null) ;
         }
 
         /**
