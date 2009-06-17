@@ -198,7 +198,7 @@
             $sql->query("CREATE TABLE IF NOT EXISTS __users (
                              id INTEGER PRIMARY KEY AUTO_INCREMENT,
                              login VARCHAR(64) DEFAULT '',
-                             password VARCHAR(34) DEFAULT '',
+                             password VARCHAR(60) DEFAULT '',
                              full_name VARCHAR(250) DEFAULT '',
                              email VARCHAR(128) DEFAULT '',
                              website VARCHAR(128) DEFAULT '',

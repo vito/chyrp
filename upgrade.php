@@ -989,7 +989,7 @@
 
     /**
      * Function: update_user_password_column
-     * Updates the @password@ column on the "users" table to have a length of 34.
+     * Updates the @password@ column on the "users" table to have a length of 60.
      *
      * Versions: 2.0rc3 => 2.0
      */
@@ -998,7 +998,7 @@
         if (!$column = $sql->query("SHOW COLUMNS FROM __users WHERE Field = 'password'"))
              return;
 
-        if ($column->fetchObject()->Type == "varchar(34)")
+        if ($column->fetchObject()->Type == "varchar(60)")
             return;
 
         echo __("Updating `password` column on `users` table...")."\n";
@@ -1021,7 +1021,7 @@
              test($create = $sql->query("CREATE TABLE IF NOT EXISTS `users` (
                                             `id` int(11) NOT NULL AUTO_INCREMENT,
                                             `login` varchar(64) DEFAULT '',
-                                            `password` varchar(34) DEFAULT NULL,
+                                            `password` varchar(60) DEFAULT NULL,
                                             `full_name` varchar(250) DEFAULT '',
                                             `email` varchar(128) DEFAULT '',
                                             `website` varchar(128) DEFAULT '',
