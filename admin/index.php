@@ -19,7 +19,7 @@
     # Execute the appropriate Controller responder.
     $route->init();
 
-    if (!$route->success and !$main->displayed)
+    if (!$route->success and !$admin->displayed)
         $admin->display($route->action); # Attempt to display it; it'll go through Modules and Feathers.
 
     $trigger->call("end", $route);

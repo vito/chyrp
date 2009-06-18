@@ -63,12 +63,12 @@
                     $updated = strtotime($date);
 
                     if ($updated > $feed["last_updated"]) {
-                        // Get creation date ('created' in Atom)
-                        $created =  @$item->created ?strtotime($item->created) :0;
+                        # Get creation date ('created' in Atom)
+                        $created = @$item->created ? strtotime($item->created) : 0;
                         if ($created <= 0)
                             $created = $updated;
                         
-                        // Construct the post data from the user-defined XPath mapping:
+                        # Construct the post data from the user-defined XPath mapping:
                         $data = array("aggregate" => $name);
                         foreach ($feed["data"] as $attr => $field)
                             $data[$attr] = (!empty($field)) ? $this->parse_field($field, $item) : "" ;
@@ -77,11 +77,10 @@
                             $clean = sanitize(oneof(@$data["title"], @$data["name"]));
 
                         Post::add($data, $clean, null, $feed["feather"], $feed["author"],
-                                  null, //pinned
-                                  "",   //status
+                                  false,
+                                  "public",
                                   datetime($created),
-                                  datetime($updated)
-                                  );
+                                  datetime($updated));
 
                         $aggregates[$name]["last_updated"] = $updated;
                     }

@@ -935,7 +935,7 @@
         $dir = rtrim(MAIN_DIR.Config::current()->uploads_path.$path, "/");
 
         if (!file_exists($dir))
-            mkdir($dir);
+            mkdir($dir, 0777, true);
 
         $original_ext = end($file_split);
 
@@ -960,7 +960,7 @@
                     if (($i + 2) == count($extension)) $comma = ", and ";
                     $list.= "<code>*.".$extension[$i]."</code>".$comma;
                 }
-                error(__("Invalid Extension"), _f("Only %s files are supported.", array($list)));
+                error(__("Invalid Extension"), _f("Only %s files are accepted.", array($list)));
             }
         } elseif (isset($extension) and
                   strtolower($file_ext) != strtolower($extension) and
@@ -1603,4 +1603,15 @@
      */
     function now($when) {
         return strtotime($when);
+    }
+
+    /**
+     * Function: comma_sep
+     * Convert a comma-seperated string into an array of the listed values.
+     */
+    function comma_sep($string) {
+        $commas = explode(",", $string);
+        $trimmed = array_map("trim", $commas);
+        $cleaned = array_diff(array_unique($trimmed), array(""));
+        return $cleaned;
     }

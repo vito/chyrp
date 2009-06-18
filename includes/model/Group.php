@@ -98,6 +98,9 @@
             $sql = SQL::current();
             $trigger = Trigger::current();
 
+            $trigger->filter($name, "before_group_add_name");
+            $trigger->filter($permissions, "before_group_add_permissions");
+
             $sql->insert("groups", array("name" => $name));
 
             $group_id = $sql->latest();
@@ -131,6 +134,9 @@
 
             $sql = SQL::current();
             $trigger = Trigger::current();
+
+            $trigger->filter($name, "before_group_update_name");
+            $trigger->filter($permissions, "before_group_update_permissions");
 
             $old = clone $this;
 

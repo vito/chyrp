@@ -986,6 +986,66 @@
             echo __("Removing `includes/bookmarklet.php` file...").
                  test(@unlink(INCLUDES_DIR."/bookmarklet.php"));
     }
+
+    /**
+     * Function: update_user_password_column
+     * Updates the @password@ column on the "users" table to have a length of 60.
+     *
+     * Versions: 2.0rc3 => 2.0
+     */
+    function update_user_password_column() {
+        $sql = SQL::current();
+        if (!$column = $sql->query("SHOW COLUMNS FROM __users WHERE Field = 'password'"))
+             return;
+
+        if ($column->fetchObject()->Type == "varchar(60)")
+            return;
+
+        echo __("Updating `password` column on `users` table...")."\n";
+
+        echo " - ".__("Backing up `users` table...").
+             test($backup = $sql->select("users"));
+        
+        if (!$backup)
+            return;
+
+        $backups = $backup->fetchAll();
+
+        echo " - ".__("Dropping `users` table...").
+             test($drop = $sql->query("DROP TABLE __users"));
+
+        if (!$drop)
+            return;
+
+        echo " - ".__("Creating `users` table...").
+             test($create = $sql->query("CREATE TABLE IF NOT EXISTS `users` (
+                                            `id` int(11) NOT NULL AUTO_INCREMENT,
+                                            `login` varchar(64) DEFAULT '',
+                                            `password` varchar(60) DEFAULT NULL,
+                                            `full_name` varchar(250) DEFAULT '',
+                                            `email` varchar(128) DEFAULT '',
+                                            `website` varchar(128) DEFAULT '',
+                                            `group_id` int(11) DEFAULT '0',
+                                            `joined_at` datetime DEFAULT '0000-00-00 00:00:00',
+                                            PRIMARY KEY (`id`),
+                                            UNIQUE KEY `login` (`login`)
+                                        ) DEFAULT CHARSET=utf8"));
+
+        if (!$create) {
+            echo " -".test(false, _f("Backup written to %s.", array("./_users.bak.txt")));
+            return file_put_contents("./_users.bak.txt", var_export($backups, true));
+        }
+
+        foreach ($backups as $backup) {
+            echo " - "._f("Restoring user #%d...", array($backup["id"])).
+                 test($insert = $sql->insert("users", $backup), _f("Backup written to %s.", array("./_users.bak.txt")));
+
+            if (!$insert)
+                return file_put_contents("./_users.bak.txt", var_export($backups, true));
+        }
+
+        echo " -".test(true);
+    }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -1171,6 +1231,8 @@
         group_permissions_to_db();
 
         remove_old_files();
+
+        update_user_password_column();
 
         # Perform Module/Feather upgrades.
 

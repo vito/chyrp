@@ -488,16 +488,20 @@
                 throw new Exception(__("XML-RPC support is disabled for this site."));
 
             global $user;
-            $user = new User(
-                null,
-                array(
-                    'where' => array(
-                        'login' => $login,
-                        'password' => md5($password))));
-
-            if ($user->no_results)
+            if (!User::authenticate($login, $password))
                 throw new Exception(__("Login incorrect."));
-            else if (!$user->group->can("{$do}_own_post", "{$do}_post", "{$do}_draft", "{$do}_own_draft"))
+            else
+                $user = new User(
+                    null,
+                    array(
+                        'where' => array(
+                            'login' => $login
+                        )
+                    )
+                );
+                            
+
+            if (!$user->group->can("{$do}_own_post", "{$do}_post", "{$do}_draft", "{$do}_own_draft"))
                 throw new Exception(_f("You don't have permission to %s posts/drafts.", array($do)));
         }
 

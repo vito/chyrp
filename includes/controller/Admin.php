@@ -577,7 +577,7 @@
                 Flash::warning(__("User not found."), "/admin/?action=manage_user");
 
             $password = (!empty($_POST['new_password1']) and $_POST['new_password1'] == $_POST['new_password2']) ?
-                            md5($_POST['new_password1']) :
+                            User::hashPassword($_POST['new_password1']) :
                             $user->password ;
 
             $user->update($_POST['login'], $password, $_POST['email'], $_POST['full_name'], $_POST['website'], $_POST['group']);

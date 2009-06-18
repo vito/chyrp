@@ -46,8 +46,21 @@
          *     @true@ or @false@
          */
         static function authenticate($login, $password) {
-            $check = new self(array("login" => $login, "password" => $password));
-            return !$check->no_results;
+            $check = new self(array("login" => $login));
+
+            if ($check->no_results)
+                return false;
+            else {
+                if (self::checkPassword($password, $check->password))
+                    return true;
+                elseif (md5($password) == $check->password) {
+                    # Backwards-compatibility:
+                    # if their old password is stored as MD5, update
+                    # it on authentication to the new hashing scheme.
+                    $check->update(null, self::hashPassword($password));
+                    return true;
+                }
+            }
         }
 
         /**
@@ -58,7 +71,7 @@
          *
          * Parameters:
          *     $login - The Login for the new user.
-         *     $password - The Password for the new user. Don't MD5 this, it's done in the function.
+         *     $password - The Password for the new user. Don't hash this, it's done in the function.
          *     $email - The E-Mail for the new user.
          *
          * Returns:
@@ -78,14 +91,17 @@
             $sql = SQL::current();
             $trigger = Trigger::current();
 
-            $sql->insert("users",
-                         array("login"     => strip_tags($login),
-                               "password"  => md5($password),
-                               "email"     => strip_tags($email),
-                               "full_name" => strip_tags($full_name),
-                               "website"   => strip_tags($website),
-                               "group_id"  => fallback($group_id, $config->default_group),
-                               "joined_at" => fallback($joined_at, datetime())));
+            $new_values = array("login"     => strip_tags($login),
+                                "password"  => self::hashPassword($password),
+                                "email"     => strip_tags($email),
+                                "full_name" => strip_tags($full_name),
+                                "website"   => strip_tags($website),
+                                "group_id"  => fallback($group_id, $config->default_group),
+                                "joined_at" => fallback($joined_at, datetime()));
+
+            $trigger->filter($new_values, "before_add_user");
+
+            $sql->insert("users", $new_values);
 
             $user = new self($sql->latest());
 
@@ -102,7 +118,7 @@
          *
          * Parameters:
          *     $login - The new Login to set.
-         *     $password - The new Password to set, already MD5 encoded.
+         *     $password - The new Password to set, already encoded.
          *     $full_name - The new Full Name to set.
          *     $email - The new E-Mail to set.
          *     $website - The new Website to set.
@@ -129,15 +145,19 @@
             foreach (array("login", "password", "email", "full_name", "website", "group_id", "joined_at") as $attr)
                 $this->$attr = $$attr = ($$attr !== null ? $$attr : $this->$attr);
 
+            $new_values = array("login"     => strip_tags($login),
+                                "password"  => $password,
+                                "email"     => strip_tags($email),
+                                "full_name" => strip_tags($full_name),
+                                "website"   => strip_tags($website),
+                                "group_id"  => $group_id,
+                                "joined_at" => $joined_at);
+
+            $trigger->filter($new_values, "before_update_user");
+
             $sql->update("users",
-                         array("id"        => $this->id),
-                         array("login"     => strip_tags($login),
-                               "password"  => $password,
-                               "email"     => strip_tags($email),
-                               "full_name" => strip_tags($full_name),
-                               "website"   => strip_tags($website),
-                               "group_id"  => $group_id,
-                               "joined_at" => $joined_at));
+                         array("id" => $this->id),
+                         $new_values);
 
             $trigger->call("update_user", $this, $old);
         }
@@ -152,6 +172,38 @@
         static function delete($id) {
             parent::destroy(get_class(), $id);
         }
+
+        /**
+         * Function: hashPassword
+         * Creates a secure hash of a user's password.
+         *
+         * Parameters:
+         *     $password - The unhashed password.
+         * 
+         * Returns:
+         *     The securely hashed password to be stored in the database.
+         */
+		static function hashPassword($password) {
+			$hasher = new PasswordHash(8, false);
+			$hashedPassword = $hasher->HashPassword($password);
+			return $hashedPassword;	
+		}
+		
+		/**
+         * Function: checkPassword
+         * Checks a given password against the stored hash.
+         *
+         * Parameters:
+         *     $password - The unhashed password given during a login attempt.
+         *     $storedHash - The stored hash for the user.
+         * 
+         * Returns:
+         *     @true@ or @false@
+         */
+		static function checkPassword($password, $storedHash) {
+			$hasher = new PasswordHash(8, false);
+			return $hasher->CheckPassword($password, $storedHash);
+		}
 
         /**
          * Function: group

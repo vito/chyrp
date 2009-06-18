@@ -395,7 +395,8 @@ $.fn.tree = function(options){
 // Our custom field expander
 $.fn.expand = function(){
 	$(this).each(function(){
-		if ($(this).parent().parent().attr("class") == "more_options" || $.browser.msie) return
+		if ($(this).parent().parent().attr("class") == "more_options" || $.browser.msie)
+            return
 
 		var id = $(this).attr("id")
 		var dummy = ".dummy_"+ id

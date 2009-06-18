@@ -211,15 +211,19 @@
                 $trigger->filter($options, "bookmarklet_submit_options");
             }
 
-            $sql->insert("posts",
-                         array("feather"    => $feather,
-                               "user_id"    => $user_id,
-                               "pinned"     => $pinned,
-                               "status"     => $status,
-                               "clean"      => $clean,
-                               "url"        => $url,
-                               "created_at" => $created_at,
-                               "updated_at" => $updated_at));
+
+            $new_values = array("feather"    => $feather,
+                                "user_id"    => $user_id,
+                                "pinned"     => $pinned,
+                                "status"     => $status,
+                                "clean"      => $clean,
+                                "url"        => $url,
+                                "created_at" => $created_at,
+                                "updated_at" => $updated_at);
+
+            $trigger->filter($new_values, "before_add_post");
+
+            $sql->insert("posts", $new_values);
 
             $id = $sql->latest();
 
@@ -317,15 +321,19 @@
             foreach (array("user_id", "pinned", "status", "url", "created_at", "updated_at") as $attr)
                 $this->$attr = $$attr;
 
+            $new_values = array("pinned"     => $pinned,
+                                "status"     => $status,
+                                "clean"      => $clean,
+                                "url"        => $url,
+                                "created_at" => $created_at,
+                                "updated_at" => $updated_at);
+
+            $trigger->filter($new_values, "before_update_post");
+
             $sql = SQL::current();
             $sql->update("posts",
-                         array("id"         => $this->id),
-                         array("pinned"     => $pinned,
-                               "status"     => $status,
-                               "clean"      => $clean,
-                               "url"        => $url,
-                               "created_at" => $created_at,
-                               "updated_at" => $updated_at));
+                         array("id" => $this->id),
+                         $new_values);
 
             # Insert the post attributes.
             foreach (array_merge($values, $options) as $name => $value)

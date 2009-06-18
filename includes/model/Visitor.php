@@ -16,9 +16,8 @@
          * Checks if a valid user is logged in.
          */
         public function __construct() {
-            if (isset($_SESSION['login']) and isset($_SESSION['password']))
-                parent::__construct(null, array("where" => array("login"    => $_SESSION['login'],
-                                                                 "password" => $_SESSION['password'])));
+            if (!empty($_SESSION['user_id']))
+                parent::__construct($_SESSION['user_id']);
         }
 
         /**

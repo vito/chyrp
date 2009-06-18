@@ -468,6 +468,9 @@ select,
 textarea {
     margin-bottom: .25em;
 }
+input.text {
+    width: 15em;
+}
 input.checkbox {
     margin: .6em .5em .75em 0;
 }

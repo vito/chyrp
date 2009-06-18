@@ -93,7 +93,7 @@
                 }
 
                 return $this->$name = call_user_func(array($model, "find"), $opts);
-            } elseif (in_array($name, $this->has_one)) {
+            } elseif (in_array($name, $this->has_one) or isset($this->has_one[$name])) {
                 if (isset($this->has_one[$name])) {
                     $opts =& $this->has_one[$name];
                     $model = oneof(@$opts["model"], depluralize($name));
