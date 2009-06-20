@@ -278,11 +278,14 @@
             if (!Comment::any_editable() and !Comment::any_deletable())
                 return $navs;
 
-            $navs["manage_comments"] = array("title" => __("Comments", "comments"),
+            $sql = SQL::current();
+            $comment_count = $sql->count("comments", array("status not" => "spam"));
+            $spam_count = $sql->count("comments", array("status" => "spam"));
+            $navs["manage_comments"] = array("title" => _f("Comments (%d)", $comment_count, "comments"),
                                              "selected" => array("edit_comment", "delete_comment"));
 
             if (Visitor::current()->group->can("edit_comment", "delete_comment"))
-                $navs["manage_spam"]     = array("title" => __("Spam", "comments"));
+                $navs["manage_spam"]     = array("title" => _f("Spam (%d)", $spam_count, "comments"));
 
             return $navs;
         }
