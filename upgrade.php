@@ -1018,7 +1018,7 @@
             return;
 
         echo " - ".__("Creating `users` table...").
-             test($create = $sql->query("CREATE TABLE IF NOT EXISTS `users` (
+             test($create = $sql->query("CREATE TABLE IF NOT EXISTS `__users` (
                                             `id` int(11) NOT NULL AUTO_INCREMENT,
                                             `login` varchar(64) DEFAULT '',
                                             `password` varchar(60) DEFAULT NULL,

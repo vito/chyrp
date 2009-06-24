@@ -833,7 +833,7 @@
         $last = null;
         $args = func_get_args();
         foreach ($args as $index => $arg) {
-            if (!isset($arg) or (is_string($arg) and trim($arg) === "") or $arg === array() or (is_object($arg) and empty($arg)))
+            if (!isset($arg) or (is_string($arg) and trim($arg) === "") or $arg === array() or (is_object($arg) and empty($arg)) or ($arg === "0000-00-00 00:00:00"))
                 $last = $arg;
             else
                 return $arg;

@@ -72,12 +72,12 @@
                 # Remove the timstamps
                 $line = preg_replace("/[ ]?[\[|\(]?[0-9]{1,2}:[0-9]{2}(:[0-9]{2})?[ ]?(pm|am)?[\]|\)]?[ ]?/i", "", $line);
 
-                preg_match("/(<?)(.+)(:|>) (.+)/i", $line, $matches);
+                preg_match("/(<?)(.+)(:|>)\s*(.+)/i", $line, $matches);
 
                 if (empty($matches))
                     continue;
 
-                if (preg_match("/ \(([^\)]+)\)$/", $matches[2], $attribution))
+                if (preg_match("/\s*\(([^\)]+)\)$/", $matches[2], $attribution))
                     if ($attribution[1] == "me") {
                         $my_name = $matches[2] = str_replace($attribution[0], "", $matches[2]);
                     } else {
