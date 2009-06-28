@@ -20,7 +20,7 @@
          * Function: cmp
          * Sorts actions by priority when used with usort.
          */
-        function cmp($a, $b) {
+        private function cmp($a, $b) {
             if (empty($a) or empty($b)) return 0;
             return ($a["priority"] < $b["priority"]) ? -1 : 1 ;
         }
@@ -174,5 +174,3 @@
             return $instance = (empty($instance)) ? new self() : $instance ;
         }
     }
-
-    $trigger = Trigger::current();

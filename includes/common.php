@@ -284,6 +284,9 @@
     # Initiate the extensions.
     init_extensions();
 
+    # Prepare the trigger class
+    $trigger = Trigger::current();
+
     # Filter the visitor immediately after the Modules are initialized.
     # Example usage scenario: custom auth systems (e.g. OpenID)
     $trigger->filter($visitor, "visitor");

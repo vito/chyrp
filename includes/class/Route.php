@@ -57,6 +57,8 @@
             if (method_exists($controller, "parse"))
                 $controller->parse($this);
 
+            Trigger::current()->call("parse_url", $this);
+
             $this->try[] = isset($this->action) ?
                                oneof($this->action, "index") :
                                (!substr_count($this->arg[0], "?") ?
