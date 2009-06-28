@@ -210,8 +210,8 @@
      * Function: url
      * Mask for Route->url().
      */
-    function url($url) {
-        return Route::current()->url($url);
+    function url($url, $controller = null) {
+        return Route::current()->url($url, $controller);
     }
 
     /**
