@@ -136,17 +136,19 @@
          * Returns:
          *     A clean or dirty URL, depending on @Config.clean_urls@.
          */
-        public function url($url, $use_chyrp_url = false) {
+        public function url($url, $controller = null) {
             $config = Config::current();
 
             if ($url[0] == "/")
-                return (ADMIN or $use_chyrp_url) ?
+                return (ADMIN ?
                            $config->chyrp_url.$url :
-                           $config->url.$url ;
+                           $config->url.$url);
             else
                 $url = substr($url, -1) == "/" ? $url : $url."/" ;
 
-            $base = !empty($this->controller->base) ? $config->url."/".$this->controller->base : $config->url ;
+            fallback($controller, $this->controller);
+
+            $base = !empty($controller->base) ? $config->url."/".$controller->base : $config->url ;
 
             if ($config->clean_urls) { # If their post URL doesn't have a trailing slash, remove it from these as well.
                 if (substr($url, 0, 5) == "page/") # Different URL for viewing a page
@@ -157,13 +159,13 @@
                            $base."/".rtrim($url, "/") ;
             }
 
-            $urls = fallback($this->controller->urls, array());
+            $urls = fallback($controller->urls, array());
             Trigger::current()->filter($urls, "parse_urls");
 
-            foreach (array_diff_assoc($urls, $this->controller->urls) as $key => $value)
-                $urls[substr($key, 0, -1)."feed\//"] = "/".$value."&amp;feed";
+            foreach (array_diff_assoc($urls, $controller->urls) as $key => $value)
+                $urls[substr($key, 0, -1).preg_quote("feed/", $key[0]).$key[0]] = "/".$value."&amp;feed";
 
-            $urls["/\/(.*?)\/$/"] = "/?action=$1";
+            $urls["|/([^/]+)/$|"] = "/?action=$1";
 
             return $base.preg_replace(array_keys($urls), array_values($urls), "/".$url, 1);
         }

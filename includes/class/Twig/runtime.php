@@ -250,7 +250,7 @@ function twig_urlencode_filter($url, $raw=false)
 
 function twig_join_filter($value, $glue='')
 {
-    return implode($glue, $value);
+    return implode($glue, (array) $value);
 }
 
 function twig_default_filter($value, $default='')
