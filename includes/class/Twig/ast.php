@@ -365,10 +365,11 @@ class Twig_URL extends Twig_Node
 {
     public $expr;
 
-    public function __construct($expr, $lineno)
+    public function __construct($expr, $cont, $lineno)
     {
         parent::__construct($lineno);
         $this->expr = $expr;
+        $this->cont = $cont;
     }
 
     public function compile($compiler)
@@ -376,6 +377,10 @@ class Twig_URL extends Twig_Node
         $compiler->addDebugInfo($this);
         $compiler->raw('echo url(');
         $this->expr->compile($compiler);
+
+        if (!empty($this->cont))
+            $compiler->raw(", ".$this->cont->name."Controller::current()");
+
         $compiler->raw(');'."\n");
     }
 }
