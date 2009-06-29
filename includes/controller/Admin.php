@@ -29,7 +29,7 @@
          * Prepares Twig.
          */
         private function __construct() {
-            $this->twig = new Twig_Loader((file_exists(THEME_DIR."/admin") ? THEME_DIR."/admin" : MAIN_DIR."/admin/layout"),
+            $this->twig = new Twig_Loader((file_exists(THEME_DIR."/admin") ? THEME_DIR."/admin" : MAIN_DIR."/admin/theme"),
                                           (is_writable(INCLUDES_DIR."/caches") and !DEBUG) ?
                                               INCLUDES_DIR."/caches" :
                                               null);
@@ -2177,7 +2177,7 @@
          * Renders the page.
          *
          * Parameters:
-         *     $action - The template file to display, in /admin/layout/pages.
+         *     $action - The template file to display, in /admin/theme/pages.
          *     $context - Context for the template.
          *     $title - The title for the page. Defaults to a camlelization of the action, e.g. foo_bar -> Foo Bar.
          */
@@ -2275,9 +2275,9 @@
 
             $this->context["sql_debug"]  = SQL::current()->debug;
 
-            $template = file_exists(THEME_DIR."/admin/layout/pages/".$action.".twig") ?
+            $template = file_exists(THEME_DIR."/admin/theme/pages/".$action.".twig") ?
                             THEME_DIR."/admin/pages/".$action.".twig" :
-                            MAIN_DIR."/admin/layout/pages/".$action.".twig" ;
+                            MAIN_DIR."/admin/theme/pages/".$action.".twig" ;
 
             $config = Config::current();
             if (!file_exists($template)) {
@@ -2291,7 +2291,15 @@
                     error(__("Template Missing"), _f("Couldn't load template: <code>%s</code>", array($template)));
             }
 
-            return $this->twig->getTemplate($template)->display($this->context);
+            try {
+                $this->twig->getTemplate($template)->display($this->context);
+            } catch (Exception $e) {
+                $prettify = preg_replace("/([^:]+): (.+)/", "\\1: <code>\\2</code>", $e->getMessage());
+                $trace = debug_backtrace();
+                $twig = array("file" => $e->filename, "line" => $e->lineno);
+                array_unshift($trace, $twig);
+                error(__("Error"), $prettify, $trace);
+            }
         }
 
         /**
