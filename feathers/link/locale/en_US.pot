@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-11-02 15:46+0000\n"
+"POT-Creation-Date: 2009-06-30 22:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -17,23 +17,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: feathers/link/info.yaml:4
-msgid "Link to other sites, name it, and add an optional description."
-msgstr ""
-
-#: feathers/link/link.php:14
-msgid "Description"
+#: feathers/link/link.php:10
+msgid "Name"
 msgstr ""
 
 #: feathers/link/link.php:6
 msgid "URL"
 msgstr ""
 
+#: feathers/link/info.yaml:5
+msgid "Link to other sites, name it, and add an optional description."
+msgstr ""
+
 #: feathers/link/info.yaml:1
 msgid "Link"
 msgstr ""
 
-#: feathers/link/link.php:10
-msgid "Name"
+#: feathers/link/link.php:14
+msgid "Description"
 msgstr ""
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-11-02 15:46+0000\n"
+"POT-Creation-Date: 2009-06-30 22:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Textilize"
 msgstr ""
 
-#: modules/textilize/info.yaml:5
+#: modules/textilize/info.yaml:6
 msgid "A Textile wrapper for posts, pages, and comments. Uses <a href=\"http://www.textism.com/tools/textile/beta2.html\">Textism's Textile 2.0 Beta</a>."
 msgstr ""
 

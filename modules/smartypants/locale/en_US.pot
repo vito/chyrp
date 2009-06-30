@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-11-02 15:46+0000\n"
+"POT-Creation-Date: 2009-06-30 22:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "SmartyPants"
 msgstr ""
 
-#: modules/smartypants/info.yaml:5
+#: modules/smartypants/info.yaml:6
 msgid "A SmartyPants wrapper for posts, pages, and comments. Uses <a href=\"http://michelf.com/projects/php-smartypants/\">SmartyPants Typographer 1.0</a>."
 msgstr ""
 

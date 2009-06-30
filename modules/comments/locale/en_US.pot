@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2008-11-02 15:46+0000\n"
+"POT-Creation-Date: 2009-06-30 22:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -17,20 +17,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: modules/comments/pages/admin/manage_spam.twig:37
-msgid "Last 25 Spam"
+#: modules/comments/comments.php:150
+#: modules/comments/comments.php:312
+msgid "You do not have sufficient privileges to manage any comments."
 msgstr ""
 
-#: modules/comments/comments.php:38
+#: modules/comments/comments.php:177
+msgid "Comment Status"
+msgstr ""
+
+#: modules/comments/pages/admin/comment_settings.twig:33
+msgid "enabled"
+msgstr ""
+
+#: modules/comments/comments.php:37
 msgid "Add Comments"
 msgstr ""
 
-#: modules/comments/javascript.php:43
-msgid "Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this."
-msgstr ""
-
-#: modules/comments/comments.php:44
-msgid "Can Use HTML In Comments"
+#: modules/comments/comments.php:40
+msgid "Edit Own Comments"
 msgstr ""
 
 #: modules/comments/pages/admin/manage_spam.twig:26
@@ -40,16 +45,12 @@ msgstr ""
 msgid "With selected:"
 msgstr ""
 
-#: modules/comments/pages/admin/comment_settings.twig:12
-msgid "A very good spam blocker. Get an API key from <a href=\"http://defensio.com/\">Defensio.com</a>."
-msgstr ""
-
 #: modules/comments/pages/admin/manage_spam.twig:44
 #: modules/comments/pages/admin/manage_comments.twig:48
 msgid "Added"
 msgstr ""
 
-#: modules/comments/comments.php:189
+#: modules/comments/comments.php:188
 msgid "Registered Only"
 msgstr ""
 
@@ -57,65 +58,46 @@ msgstr ""
 msgid "Last 25 Comments"
 msgstr ""
 
-#: modules/comments/pages/admin/manage_comments.twig:34
-#: modules/comments/pages/admin/manage_comments.twig:98
-msgid "mark as spam"
-msgstr ""
-
 #: modules/comments/pages/admin/manage_comments.twig:3
 #: modules/comments/pages/admin/manage_comments.twig:6
 msgid "Manage Comments"
 msgstr ""
 
-#: modules/comments/info.yaml:7
+#: modules/comments/pages/admin/manage_spam.twig:34
+#: modules/comments/pages/admin/manage_spam.twig:87
+#: modules/comments/pages/admin/manage_comments.twig:37
+#: modules/comments/pages/admin/manage_comments.twig:101
+msgid "delete"
+msgstr ""
+
+#: modules/comments/info.yaml:6
 msgid "Please remember to update the permission settings for each group."
 msgstr ""
 
-#: modules/comments/comments.php:202
-#: modules/comments/comments.php:222
+#: modules/comments/comments.php:201
+#: modules/comments/comments.php:221
 msgid "A ping from that URL is already registered."
 msgstr ""
 
-#: modules/comments/comments.php:597
+#: modules/comments/comments.php:182
+msgid "Closed"
+msgstr ""
+
+#: modules/comments/comments.php:599
 #, php-format
 msgid "Comments on &#8220;%s&#8221;"
 msgstr ""
 
-#: modules/comments/pages/admin/comment_settings.twig:33
-msgid "enabled"
-msgstr ""
-
-#: modules/comments/comments.php:298
-msgid "An ID is required to edit a comment."
+#: modules/comments/pages/admin/manage_spam.twig:37
+msgid "Last 25 Spam"
 msgstr ""
 
 #: modules/comments/pages/admin/comment_settings.twig:15
 msgid "Allowed HTML Tags"
 msgstr ""
 
-#: modules/comments/pages/admin/delete_comment.twig:3
-msgid "Delete Comment"
-msgstr ""
-
-#: modules/comments/comments.php:151
-#: modules/comments/comments.php:310
-msgid "You do not have sufficient privileges to manage any comments."
-msgstr ""
-
-#: modules/comments/comments.php:124
-msgid "An ID is required to delete a comment."
-msgstr ""
-
-#: modules/comments/comments.php:71
-msgid "You cannot comment on this post."
-msgstr ""
-
-#: modules/comments/pages/admin/comment_settings.twig:20
-msgid "Default Comment Status"
-msgstr ""
-
-#: modules/comments/comments.php:183
-msgid "Closed"
+#: modules/comments/javascript.php:43
+msgid "Are you sure you want to delete this comment?\\n\\nIt cannot be restored if you do this."
 msgstr ""
 
 #: modules/comments/pages/admin/manage_spam.twig:42
@@ -123,8 +105,58 @@ msgstr ""
 msgid "Post"
 msgstr ""
 
+#: modules/comments/pages/admin/delete_comment.twig:3
+msgid "Delete Comment"
+msgstr ""
+
+#: modules/comments/comments.php:43
+msgid "Can Use HTML In Comments"
+msgstr ""
+
 #: modules/comments/pages/admin/comment_settings.twig:10
 msgid "Defensio API Key"
+msgstr ""
+
+#: modules/comments/info.yaml:1
+msgid "Comment System"
+msgstr ""
+
+#: modules/comments/pages/admin/manage_spam.twig:10
+#, php-format
+msgid "Delete All (%d)"
+msgstr ""
+
+#: modules/comments/comments.php:70
+msgid "You cannot comment on this post."
+msgstr ""
+
+#: modules/comments/pages/admin/manage_comments.twig:34
+#: modules/comments/pages/admin/manage_comments.twig:98
+msgid "mark as spam"
+msgstr ""
+
+#: modules/comments/edit_form.php:13
+msgid "Author URL"
+msgstr ""
+
+#: modules/comments/comments.php:38
+msgid "Add Comments to Private Posts"
+msgstr ""
+
+#: modules/comments/pages/admin/comment_settings.twig:20
+msgid "Default Comment Status"
+msgstr ""
+
+#: modules/comments/pages/admin/comment_settings.twig:12
+msgid "A very good spam blocker. Get an API key from <a href=\"http://defensio.com/\">Defensio.com</a>."
+msgstr ""
+
+#: modules/comments/comments.php:300
+msgid "An ID is required to edit a comment."
+msgstr ""
+
+#: modules/comments/comments.php:42
+msgid "Delete Own Comments"
 msgstr ""
 
 #: modules/comments/pages/admin/manage_spam.twig:28
@@ -139,42 +171,20 @@ msgstr ""
 msgid "Denied"
 msgstr ""
 
-#: modules/comments/info.yaml:2
-msgid "Comment System"
-msgstr ""
-
-#: modules/comments/pages/admin/manage_spam.twig:10
-#, php-format
-msgid "Delete All (%d)"
-msgstr ""
-
-#: modules/comments/comments.php:74
+#: modules/comments/comments.php:73
 msgid "E-Mail address can't be blank."
 msgstr ""
 
-#: modules/comments/info.yaml:1
+#: modules/comments/comments.php:123
+msgid "An ID is required to delete a comment."
+msgstr ""
+
+#: modules/comments/info.yaml:2
 msgid "Do you want to remove the Comments from the database?"
 msgstr ""
 
-#: modules/comments/comments.php:75
+#: modules/comments/comments.php:74
 msgid "Message can't be blank."
-msgstr ""
-
-#: modules/comments/comments.php:117
-#: modules/comments/comments.php:134
-msgid "You do not have sufficient privileges to delete this comment."
-msgstr ""
-
-#: modules/comments/edit_form.php:13
-msgid "Author URL"
-msgstr ""
-
-#: modules/comments/comments.php:39
-msgid "Add Comments to Private Posts"
-msgstr ""
-
-#: modules/comments/pages/admin/comment_settings.twig:28
-msgid "Comments Per Page"
 msgstr ""
 
 #: modules/comments/pages/admin/manage_spam.twig:31
@@ -184,21 +194,21 @@ msgstr ""
 msgid "approve"
 msgstr ""
 
-#: modules/comments/comments.php:73
+#: modules/comments/comments.php:72
 msgid "Author can't be blank."
 msgstr ""
 
-#: modules/comments/pages/admin/comment_settings.twig:32
-#, php-format
-msgid "Reload Comments Every %s Seconds"
+#: modules/comments/comments.php:395
+msgid "Selected comments marked as spam."
 msgstr ""
 
 #: modules/comments/pages/admin/delete_comment.twig:6
 msgid "Are you sure you want to delete this comment?"
 msgstr ""
 
-#: modules/comments/comments.php:43
-msgid "Delete Own Comments"
+#: modules/comments/comments.php:116
+#: modules/comments/comments.php:133
+msgid "You do not have sufficient privileges to delete this comment."
 msgstr ""
 
 #: modules/comments/pages/admin/comment_settings.twig:22
@@ -206,12 +216,21 @@ msgstr ""
 msgid "Approved"
 msgstr ""
 
-#: modules/comments/comments.php:393
-msgid "Selected comments marked as spam."
+#: modules/comments/pages/admin/comment_settings.twig:28
+msgid "Comments Per Page"
 msgstr ""
 
 #: modules/comments/pages/admin/manage_comments.twig:49
 msgid "Status"
+msgstr ""
+
+#: modules/comments/comments.php:169
+msgid "All spam deleted."
+msgstr ""
+
+#: modules/comments/pages/admin/comment_settings.twig:32
+#, php-format
+msgid "Reload Comments Every %s Seconds"
 msgstr ""
 
 #: modules/comments/pages/admin/manage_spam.twig:43
@@ -219,20 +238,24 @@ msgstr ""
 msgid "Author"
 msgstr ""
 
-#: modules/comments/upgrades.php:8
-msgid "Adding updated_at column to comments table..."
-msgstr ""
-
-#: modules/comments/edit_form.php:25
-#: modules/comments/comments.php:286
-msgid "Spam"
-msgstr ""
-
-#: modules/comments/comments.php:42
+#: modules/comments/comments.php:41
 msgid "Delete Comments"
 msgstr ""
 
-#: modules/comments/info.yaml:5
+#: modules/comments/comments.php:185
+msgid "Private"
+msgstr ""
+
+#: modules/comments/comments.php:284
+#, php-format
+msgid "Comments (%d)"
+msgstr ""
+
+#: modules/comments/comments.php:345
+msgid "Selected comments deleted."
+msgstr ""
+
+#: modules/comments/info.yaml:8
 msgid "Adds commenting functionality to posts, including Defensio spam protection, auto-reloading, pagination, etc. etc."
 msgstr ""
 
@@ -240,52 +263,51 @@ msgstr ""
 msgid "Format: <code>strong, blockquote, em</code>"
 msgstr ""
 
-#: modules/comments/comments.php:180
-msgid "Open"
+#: modules/comments/pages/admin/manage_spam.twig:3
+#: modules/comments/pages/admin/manage_spam.twig:6
+msgid "Manage Spam"
 msgstr ""
 
-#: modules/comments/comments.php:89
-#: modules/comments/comments.php:303
+#: modules/comments/comments.php:88
+#: modules/comments/comments.php:305
 msgid "You do not have sufficient privileges to edit this comment."
 msgstr ""
 
-#: modules/comments/comments.php:170
-msgid "All spam deleted."
+#: modules/comments/pages/admin/comment_settings.twig:3
+#: modules/comments/pages/admin/comment_settings.twig:6
+msgid "Comment Settings"
 msgstr ""
 
-#: modules/comments/comments.php:166
+#: modules/comments/comments.php:288
+#, php-format
+msgid "Spam (%d)"
+msgstr ""
+
+#: modules/comments/comments.php:165
 msgid "You do not have sufficient privileges to delete comments."
 msgstr ""
 
-#: modules/comments/comments.php:178
-msgid "Comment Status"
+#: modules/comments/upgrades.php:8
+msgid "Adding updated_at column to comments table..."
 msgstr ""
 
-#: modules/comments/model.Comment.php:110
+#: modules/comments/edit_form.php:25
+msgid "Spam"
+msgstr ""
+
+#: modules/comments/model.Comment.php:111
 msgid "Your comment has been marked as spam. It will have to be approved before it will show up."
 msgstr ""
 
-#: modules/comments/comments.php:186
-msgid "Private"
-msgstr ""
-
-#: modules/comments/comments.php:40
+#: modules/comments/comments.php:39
 msgid "Edit Comments"
 msgstr ""
 
-#: modules/comments/comments.php:41
-msgid "Edit Own Comments"
-msgstr ""
-
-#: modules/comments/comments.php:379
+#: modules/comments/comments.php:381
 msgid "Selected comments approved."
 msgstr ""
 
-#: modules/comments/comments.php:343
-msgid "Selected comments deleted."
-msgstr ""
-
-#: modules/comments/comments.php:364
+#: modules/comments/comments.php:366
 msgid "Selected comments denied."
 msgstr ""
 
@@ -297,30 +319,16 @@ msgstr ""
 msgid "Adding signature column to comments table..."
 msgstr ""
 
-#: modules/comments/pages/admin/manage_spam.twig:3
-#: modules/comments/pages/admin/manage_spam.twig:6
-msgid "Manage Spam"
+#: modules/comments/comments.php:179
+msgid "Open"
 msgstr ""
 
 #: modules/comments/edit_form.php:3
 msgid "Body"
 msgstr ""
 
-#: modules/comments/comments.php:273
-#: modules/comments/comments.php:282
-#: modules/comments/comments.php:408
+#: modules/comments/comments.php:272
+#: modules/comments/comments.php:410
 msgid "Comments"
-msgstr ""
-
-#: modules/comments/pages/admin/manage_spam.twig:34
-#: modules/comments/pages/admin/manage_spam.twig:87
-#: modules/comments/pages/admin/manage_comments.twig:37
-#: modules/comments/pages/admin/manage_comments.twig:101
-msgid "delete"
-msgstr ""
-
-#: modules/comments/pages/admin/comment_settings.twig:3
-#: modules/comments/pages/admin/comment_settings.twig:6
-msgid "Comment Settings"
 msgstr ""
 
