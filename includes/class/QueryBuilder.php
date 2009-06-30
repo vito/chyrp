@@ -273,7 +273,7 @@
             $tables = (array) $tables;
 
             if (!is_array($order))
-                $order = explode(", ", $order);
+                $order = comma_sep($order);
 
             foreach ($order as &$by) {
                 self::tablefy($by, $tables);

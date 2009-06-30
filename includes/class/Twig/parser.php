@@ -200,8 +200,16 @@ class Twig_Parser
     public function parseURL($token)
     {
         $expr = $this->parseExpression();
+
+        if ($this->stream->test("in")) {
+            $this->parseExpression();
+            $cont = $this->parseExpression();
+        } else
+            $cont = null;
+
         $this->stream->expect(Twig_Token::BLOCK_END_TYPE);
-        return new Twig_URL($expr, $token->lineno);
+
+        return new Twig_URL($expr, $cont, $token->lineno);
     }
 
     public function parseAdminURL($token)

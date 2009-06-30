@@ -5,7 +5,7 @@
      * Chyrp - A Lightweight Blogging Engine
      *
      * Version:
-     *     v2.0 RC3
+     *     v2.0
      *
      * License:
      *     GPL-3
@@ -16,7 +16,7 @@
 
     # Constant: CHYRP_VERSION
     # Chyrp's version number.
-    define('CHYRP_VERSION', "2.0 RC3");
+    define('CHYRP_VERSION', "2.0");
 
     # Constant: DEBUG
     # Should Chyrp use debugging processes?
@@ -283,6 +283,9 @@
 
     # Initiate the extensions.
     init_extensions();
+
+    # Prepare the trigger class
+    $trigger = Trigger::current();
 
     # Filter the visitor immediately after the Modules are initialized.
     # Example usage scenario: custom auth systems (e.g. OpenID)

@@ -2291,7 +2291,15 @@
                     error(__("Template Missing"), _f("Couldn't load template: <code>%s</code>", array($template)));
             }
 
-            return $this->twig->getTemplate($template)->display($this->context);
+            try {
+                $this->twig->getTemplate($template)->display($this->context);
+            } catch (Exception $e) {
+                $prettify = preg_replace("/([^:]+): (.+)/", "\\1: <code>\\2</code>", $e->getMessage());
+                $trace = debug_backtrace();
+                $twig = array("file" => $e->filename, "line" => $e->lineno);
+                array_unshift($trace, $twig);
+                error(__("Error"), $prettify, $trace);
+            }
         }
 
         /**
