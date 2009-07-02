@@ -11,7 +11,7 @@
      *     GPL-3
      *
      * Chyrp Copyright:
-     *     Copyright (c) 2008 Alex Suraci, <http://toogeneric.com/>
+     *     Copyright (c) 2009 Alex Suraci, <http://toogeneric.com/>
      */
 
     # Constant: CHYRP_VERSION
