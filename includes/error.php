@@ -144,7 +144,7 @@
             </div>
         </div>
 <?php if (defined("CHYRP_VERSION")): ?>
-        <p class="footer">Chyrp <?php echo CHYRP_VERSION; ?> &copy; 2008 Alex Suraci</p>
+        <p class="footer">Chyrp <?php echo CHYRP_VERSION; ?> &copy; 2009 Alex Suraci</p>
 <?php endif; ?>
     </body>
 </html>

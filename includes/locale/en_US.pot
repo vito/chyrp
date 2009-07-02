@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2009-06-30 22:41+0000\n"
+"POT-Creation-Date: 2009-07-02 17:42+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -1072,6 +1072,11 @@ msgstr ""
 msgid "Removing `includes/database.php` file..."
 msgstr ""
 
+#: admin/layout/layout.twig:64
+#, php-format
+msgid "v%s &copy; %d Alex Suraci"
+msgstr ""
+
 #: admin/layout/pages/user_settings.twig:15
 msgid "Default User Group"
 msgstr ""
@@ -1297,11 +1302,6 @@ msgstr ""
 #: includes/ajax.php:145
 #, php-format
 msgid "Please create the <code>%s</code> directory at your Chyrp install's root and CHMOD it to 777."
-msgstr ""
-
-#: admin/layout/layout.twig:64
-#, php-format
-msgid "v%s &copy; 2008 Alex Suraci"
 msgstr ""
 
 #: admin/layout/pages/content_settings.twig:10
