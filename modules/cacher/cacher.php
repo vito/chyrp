@@ -129,7 +129,7 @@
         }
 
         public function remove_post_cache($thing) {
-            $this->remove_caches_for($thing->post()->url());
+            $this->remove_caches_for(htmlspecialchars_decode($thing->post()->url()));
         }
 
         public function update_user($user) {
