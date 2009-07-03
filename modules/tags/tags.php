@@ -118,7 +118,7 @@
         }
 
         public function parse_urls($urls) {
-            $urls["/\/tag\/(.*?)\//"] = "/?action=tag&amp;name=$1";
+            $urls["|/tag/([^/]+)/|"] = "/?action=tag&name=$1";
             return $urls;
         }
 
@@ -236,7 +236,7 @@
             foreach ($popularity as $tag => $count)
                 if ($tags[$tag] == $_GET['name']) {
                     $tag = array("name" => $tag, "clean" => $tags[$tag]);
-                    continue;
+                    break;
                 }
 
             $admin->display("rename_tag", array("tag" => $tag));
