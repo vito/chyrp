@@ -611,9 +611,9 @@
 <?php if (!is_writable(INCLUDES_DIR."/caches")): ?>
                 <li><?php echo __("CHMOD <code>/includes/caches</code> to 777."); ?></li>
 <?php endif; ?>
-                <li><a href="http://chyrp.net/extend/browse/translations"><?php echo __("Look for a translation for your language."); ?></a></li>
-                <li><a href="http://chyrp.net/extend/browse/modules"><?php echo __("Install some Modules."); ?></a></li>
-                <li><a href="http://chyrp.net/extend/browse/feathers"><?php echo __("Find some Feathers you want."); ?></a></li>
+                <li><a href="http://chyrp.net/extend/type/translation"><?php echo __("Look for a translation for your language."); ?></a></li>
+                <li><a href="http://chyrp.net/extend/type/module"><?php echo __("Install some Modules."); ?></a></li>
+                <li><a href="http://chyrp.net/extend/type/feather"><?php echo __("Find some Feathers you want."); ?></a></li>
                 <li><a href="README.markdown"><?php echo __("Read &#8220;Getting Started&#8221;"); ?></a></li>
             </ol>
             <a class="big" href="<?php echo $config->chyrp_url; ?>"><?php echo __("Take me to my site! &rarr;"); ?></a>
