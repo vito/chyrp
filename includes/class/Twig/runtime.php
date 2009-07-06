@@ -44,6 +44,7 @@ $twig_filters = array(
     'translate_plural' => 'twig_translate_plural_string_filter',
     'normalize' =>        'normalize',
     'truncate' =>         'twig_truncate_filter',
+    'excerpt' =>          'twig_excerpt_filter',
     'replace' =>          'twig_replace_filter',
     'match' =>            'twig_match_filter',
     'contains' =>         'substr_count',
@@ -463,6 +464,14 @@ function twig_escape_filter($string, $quotes = true, $decode = true) {
 
 function twig_truncate_filter($text, $length = 100, $ending = "...", $exact = false, $html = true) {
     return truncate($text, $length, $ending, $exact, $html);
+}
+
+function twig_excerpt_filter($text, $length = 200, $ending = "...", $exact = false) {
+    $paragraphs = preg_split("/(\r?\n\r?\n|\r\r)/", $text);
+    if (count($paragraphs) > 1)
+        return $paragraphs[0];
+    else
+        return truncate($text, $length, $ending, $exact, $html);
 }
 
 function twig_sort_filter($array) {
