@@ -466,7 +466,7 @@ function twig_truncate_filter($text, $length = 100, $ending = "...", $exact = fa
     return truncate($text, $length, $ending, $exact, $html);
 }
 
-function twig_excerpt_filter($text, $length = 200, $ending = "...", $exact = false) {
+function twig_excerpt_filter($text, $length = 200, $ending = "...", $exact = false, $html = true) {
     $paragraphs = preg_split("/(\r?\n\r?\n|\r\r)/", $text);
     if (count($paragraphs) > 1)
         return $paragraphs[0];
