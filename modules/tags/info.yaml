@@ -1,6 +1,6 @@
 name: Tagginator
 url: http://chyrp.net/
-version: 2.0
+version: 2.0.1
 description: Adds tagging functionality to posts, allowing organization, grouping, and adding keywords to posts.
 author:
   name: Alex Suraci

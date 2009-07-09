@@ -118,7 +118,7 @@
         }
 
         public function parse_urls($urls) {
-            $urls["/\/tag\/(.*?)\//"] = "/?action=tag&amp;name=$1";
+            $urls["|/tag/([^/]+)/|"] = "/?action=tag&name=$1";
             return $urls;
         }
 
@@ -146,6 +146,9 @@
         }
 
         public function admin_manage_tags($admin) {
+            if (!Post::any_editable())
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to manage tags.", "tags"));
+
             $sql = SQL::current();
 
             $tags = array();
@@ -180,10 +183,7 @@
                                      "name" => $tag,
                                      "title" => sprintf(_p("%s post tagged with &quot;%s&quot;", "%s posts tagged with &quot;%s&quot;", $count, "tags"), $count, $tag),
                                      "clean" => $tags[$tag],
-                                     "url" => url("tag/".$tags[$tag]));
-
-                if (!Post::any_editable() and !Post::any_deletable())
-                    return $admin->display("manage_tags", array("tag_cloud" => $cloud));
+                                     "url" => url("tag/".$tags[$tag], MainController::current()));
             }
 
             fallback($_GET['query'], "");
@@ -214,6 +214,9 @@
         }
 
         public function admin_rename_tag($admin) {
+            if (!Visitor::current()->group->can("edit_post"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to edit tags.", "tags"));
+
             $sql = SQL::current();
 
             $tags = array();
@@ -236,15 +239,19 @@
             foreach ($popularity as $tag => $count)
                 if ($tags[$tag] == $_GET['name']) {
                     $tag = array("name" => $tag, "clean" => $tags[$tag]);
-                    continue;
+                    break;
                 }
 
             $admin->display("rename_tag", array("tag" => $tag));
         }
 
         public function admin_edit_tags($admin) {
-            if (!isset($_GET['id']))
+            if (empty($_GET['id']))
                 error(__("No ID Specified"), __("Please specify the ID of the post whose tags you would like to edit.", "tags"));
+
+            $post = new Post($_GET['id']);
+            if (!$post->editable())
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this post."));
 
             $admin->display("edit_tags", array("post" => new Post($_GET['id'])));
         }
@@ -256,7 +263,11 @@
             if (!isset($_POST['id']))
                 error(__("No ID Specified"), __("Please specify the ID of the post whose tags you would like to edit.", "tags"));
 
-            $this->update_post(new Post($_POST['id']));
+            $post = new Post($_POST['id']);
+            if (!$post->editable())
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this post."));
+
+            $this->update_post($post);
 
             Flash::notice(__("Tags updated.", "tags"), "/admin/?action=manage_tags");
         }
@@ -264,6 +275,10 @@
         public function admin_update_tag($admin) {
             if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
                 show_403(__("Access Denied"), __("Invalid security key."));
+
+            if (!Visitor::current()->group->can("edit_post"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to edit tags.", "tags"));
+
 
             $sql = SQL::current();
 
@@ -435,7 +450,7 @@
                                        "name" => $tag,
                                        "title" => sprintf(_p("%s post tagged with &quot;%s&quot;", "%s posts tagged with &quot;%s&quot;", $count, "tags"), $count, $tag),
                                        "clean" => $tags[$tag],
-                                       "url" => url("tag/".$tags[$tag]));
+                                       "url" => url("tag/".$tags[$tag], $main));
 
                 $main->display("pages/tags", array("tag_cloud" => $context), __("Tags", "tags"));
             }
@@ -513,7 +528,7 @@
 
             $linked = array();
             foreach ($tags as $tag => $clean)
-                $linked[] = '<a href="'.url("tag/".urlencode($clean)).'" rel="tag">'.$tag.'</a>';
+                $linked[] = '<a href="'.url("tag/".urlencode($clean), MainController::current()).'" rel="tag">'.$tag.'</a>';
 
             return $linked;
         }
@@ -703,7 +718,7 @@
                                 "value" => YAML::dump($tags),
                                 "post_id" => $post->id));
 
-            exit("{ url: \"".url("/tag/".$tags[$tag])."\", tag: \"".$_POST['name']."\" }");
+            exit("{ url: \"".url("tag/".$tags[$tag], MainController::current())."\", tag: \"".$_POST['name']."\" }");
         }
 
         function feed_item($post) {

@@ -378,7 +378,7 @@ class Twig_URL extends Twig_Node
         $compiler->raw('echo url(');
         $this->expr->compile($compiler);
 
-        if (!empty($this->cont))
+        if (!empty($this->cont) and class_exists($this->cont->name."Controller") and is_callable(array($this->cont->name."Controller", "current")))
             $compiler->raw(", ".$this->cont->name."Controller::current()");
 
         $compiler->raw(');'."\n");
