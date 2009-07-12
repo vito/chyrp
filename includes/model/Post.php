@@ -214,7 +214,7 @@
 
             $new_values = array("feather"    => $feather,
                                 "user_id"    => $user_id,
-                                "pinned"     => $pinned,
+                                "pinned"     => (int) $pinned,
                                 "status"     => $status,
                                 "clean"      => $clean,
                                 "url"        => $url,
