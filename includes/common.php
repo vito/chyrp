@@ -8,7 +8,7 @@
      *     v2.0
      *
      * License:
-     *     GPL-3
+     *     Modified MIT (See COPYING)
      *
      * Chyrp Copyright:
      *     Copyright (c) 2009 Alex Suraci, <http://toogeneric.com/>
