@@ -243,7 +243,7 @@
                 $page = $page->parent;
             }
 
-            return url("page/".implode("/", array_reverse($url)));
+            return url("page/".implode("/", array_reverse($url)), MainController::current());
         }
 
         /**
