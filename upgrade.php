@@ -31,7 +31,8 @@
         extension_loaded("zlib") and
         !ini_get("zlib.output_compression") and
         isset($_SERVER['HTTP_ACCEPT_ENCODING']) and
-        substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip")) {
+        substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip") and
+        USE_ZLIB) {
         ob_start("ob_gzhandler");
         header("Content-Encoding: gzip");
     } else
@@ -459,7 +460,7 @@
     /**
      * Function: rss_posts_to_feed_items
      * Rename the feed items setting.
-     * 
+     *
      * Versions: 1.1.3.2 => 2.0
      */
     function rss_posts_to_feed_items() {
@@ -722,7 +723,7 @@
 
         echo " - ".__("Backing up `posts` table...").
              test($backup = $sql->select("posts"));
-        
+
         if (!$backup)
             return;
 
@@ -804,7 +805,7 @@
                                   array("post_id" => $row["id"],
                                         "name" => $name,
                                         "value" => $value))) {
-                    # Clear successful attribute insertions so the 
+                    # Clear successful attribute insertions so the
                     # user can try again without primary key conflicts.
                     foreach ($inserts as $insertion)
                         $sql->delete("post_attributes",
@@ -836,7 +837,7 @@
 
             echo " - ".__("Backing up `posts` table...").
                  test($backup = $sql->select("posts"));
-        
+
             if (!$backup)
                 return;
 
@@ -933,7 +934,7 @@
             return;
 
         $backup = $groups->fetchAll();
-            
+
         $names = array();
         foreach($backup as $group) {
             $names[$group["id"]] = $group["name"];
@@ -955,7 +956,7 @@
                  test($sql->insert("groups",
                                    array("id" => $id,
                                         "name" => $name)));
-        
+
         foreach ($permissions as $id => $permissions)
             foreach ($permissions as $permission)
                 echo _f("Restoring permission `%s` on group `%s`...", array($permission, $names[$id])).
@@ -1005,7 +1006,7 @@
 
         echo " - ".__("Backing up `users` table...").
              test($backup = $sql->select("users"));
-        
+
         if (!$backup)
             return;
 

@@ -6,7 +6,7 @@
     if (strpos($_GET['file'], "/themes/") and strpos($_GET['file'], ".."))
         exit("GTFO.");
 
-    if (extension_loaded('zlib')) {
+    if (extension_loaded('zlib') and USE_ZLIB) {
         ob_start("ob_gzhandler");
         header("Content-Encoding: gzip");
     } else

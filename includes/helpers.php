@@ -60,7 +60,8 @@
             # Since the header might already be set to gzip, start output buffering again.
             if (extension_loaded("zlib") and !ini_get("zlib.output_compression") and
                 isset($_SERVER['HTTP_ACCEPT_ENCODING']) and
-                substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip")) {
+                substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip") and
+                USE_ZLIB) {
                 ob_start("ob_gzhandler");
                 header("Content-Encoding: gzip");
             } else
@@ -1242,7 +1243,7 @@
         set_timezone($orig);
         return strtotime($time);
     }
-    
+
     /**
      * Function: timezones
      * Returns an array of timezones that have unique offsets. Doesn't count deprecated timezones.
@@ -1552,7 +1553,7 @@
             if (($name == "week" and $difference >= ($val * 2)) or # Only say "weeks" after two have passed.
                 ($name != "week" and $difference >= $val))
                 $unit = $possible_units[] = $name;
-        
+
         $precision = (int) in_array("year", $possible_units);
         $amount = round($difference / $units[$unit], $precision);
 

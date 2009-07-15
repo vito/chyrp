@@ -83,6 +83,10 @@
     # Absolute path to /themes
     define('THEMES_DIR', MAIN_DIR."/themes");
 
+    # Constant: USE_ZLIB
+    # Use zlib to provide GZIP compression
+    define('USE_ZLIB', true);
+
     # Set error reporting levels, and headers for Chyrp's JS files.
     if (JAVASCRIPT) {
         error_reporting(0);
@@ -97,7 +101,8 @@
         extension_loaded("zlib") and
         !ini_get("zlib.output_compression") and
         isset($_SERVER['HTTP_ACCEPT_ENCODING']) and
-        substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip")) {
+        substr_count($_SERVER['HTTP_ACCEPT_ENCODING'], "gzip") and
+        USE_ZLIB) {
         ob_start("ob_gzhandler");
         header("Content-Encoding: gzip");
     } else
