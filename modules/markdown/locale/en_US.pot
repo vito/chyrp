@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2009-07-02 17:42+0000\n"
+"POT-Creation-Date: 2009-07-15 21:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: modules/markdown/info.yaml:1
-msgid "Markdown"
+#: modules/markdown/info.yaml:5
+msgid "A Markdown wrapper for posts, pages, and comments. Uses <a href=\"http://michelf.com/projects/php-markdown/\">PHP Markdown Extra 1.1.7</a>."
 msgstr ""
 
-#: modules/markdown/info.yaml:6
-msgid "A Markdown wrapper for posts, pages, and comments. Uses <a href=\"http://michelf.com/projects/php-markdown/\">PHP Markdown Extra 1.1.7</a>."
+#: modules/markdown/info.yaml:1
+msgid "Markdown"
 msgstr ""
 

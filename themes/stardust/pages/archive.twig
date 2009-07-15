@@ -26,7 +26,7 @@
 
 {% if posts.paginated %} {# Posts? (For daily/monthly archives) #}
                     {% if archive.depth == "day" %}
-                    <h1>${ "Archive of %s" | translate | format(archive.timestamp | strftime("%B %e, %Y" | translate)) }</h1>
+                    <h1>${ "Archive of %s" | translate | format(archive.timestamp | strftime("%B %d, %Y" | translate)) }</h1>
                     {% endif %}
                     {% if archive.depth == "month" %}
                     <h1>${ "Archive of %s" | translate | format(archive.timestamp | strftime("%B %Y" | translate)) }</h1>

@@ -13,7 +13,7 @@
                         <div class="clear"></div>
                         <span class="info">
                             {% if post.pinned %}
-                            <strong><a href="$post.url">${ post.created_at | strftime("%B %e @ %I:%M %p" | translate) }</a></strong>
+                            <strong><a href="$post.url">${ post.created_at | strftime("%B %d @ %I:%M %p" | translate) }</a></strong>
                             {% else %}
                             <strong><a href="$post.url">${ post.created_at | strftime("%I:%M %p" | translate) }</a></strong>
                             {% endif %}

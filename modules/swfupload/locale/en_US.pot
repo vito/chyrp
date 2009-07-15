@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.0 RC3\n"
 "Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2009-07-02 17:42+0000\n"
+"POT-Creation-Date: 2009-07-15 21:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "SWFUpload"
 msgstr ""
 
-#: modules/swfupload/info.yaml:5
+#: modules/swfupload/info.yaml:4
 msgid "This is a helper module, and does nothing on its own. It is only here to provide functionality to other modules."
 msgstr ""
 
