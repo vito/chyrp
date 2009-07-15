@@ -365,13 +365,13 @@
 
             $body.= "<h2>".__("Functions", "aggregator")."</h2>";
             $body.= "<cite><strong>".__("Usage")."</strong>: <code>call:foo_function(feed[foo] || feed[arg2])</code></cite>\n";
-            $body.= "<p>".__("To call a function and use its return value for the post's value, use <code>call:</code>. Separate arguments with <code> || </code>.")."</p>";
-            $body.= "<p>".__("The Aggregator module provides a couple helper functions:")."</p>";
+            $body.= "<p>".__("To call a function and use its return value for the post's value, use <code>call:</code>. Separate arguments with <code> || </code>.", "aggregator")."</p>";
+            $body.= "<p>".__("The Aggregator module provides a couple helper functions:", "aggregator")."</p>";
             $body.= "<cite><strong>".__("To upload an image from the content", "aggregator")."</strong>: <code>call:Aggregator::upload_image_from_content(feed[content])</code></cite>";
             $body.= "<cite><strong>".__("To get the URL of an image in the content", "aggregator")."</strong>: <code>call:Aggregator::image_from_content(feed[content])</code></cite>";
 
             $body.= "<h2>".__("Example", "aggregator")."</h2>";
-            $body.= "<p>".__("From the Photo feather:")."</pre>";
+            $body.= "<p>".__("From the Photo feather:", "aggregator")."</pre>";
             $body.= "<pre><code>filename: call:upload_from_url(feed[link].attr[href])\ncaption: feed[description]</code></pre>";
 
             return array($title, $body);
