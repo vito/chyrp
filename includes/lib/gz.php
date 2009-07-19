@@ -1,4 +1,8 @@
 <?php
+    # Constant: USE_ZLIB
+    # Use zlib to provide GZIP compression
+    define('USE_ZLIB', true);
+    
     $valid_files = "jquery.js plugins.js";
     if (!in_array($_GET['file'], explode(" ", $valid_files)) and strpos($_GET['file'], "/themes/") === false)
         exit("Access Denied.");
