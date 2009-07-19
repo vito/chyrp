@@ -1119,6 +1119,7 @@
                     $user_id = $sql->select("users", "id", array("login" => $login), "id DESC")->fetchColumn();
 
                     $data = xml2arr($entry->content);
+                    $data["imported_from"] = "chyrp";
 
                     if (!empty($_POST['media_url']))
                         array_walk_recursive($data, "media_url_scan");
@@ -1243,7 +1244,9 @@
                                               "future"  => "draft",
                                               "pending" => "draft");
 
-                    $data = array("title" => trim($item->title), "body" => trim($content->encoded));
+                    $data = array("title" => trim($item->title),
+                                  "body" => trim($content->encoded),
+                                  "imported_from" => "wordpress");
 
                     $post = Post::add($data,
                                       $clean,
@@ -1387,6 +1390,8 @@
                         break;
                 }
 
+                $values["imported_from"] = "tumblr";
+                
                 $new_post = Post::add($values,
                                       $clean,
                                       Post::check_url($clean),
@@ -1456,7 +1461,8 @@
                 $clean = fallback($post["url_title"], sanitize($post["Title"]));
 
                 $new_post = Post::add(array("title" => $post["Title"],
-                                            "body" => $post["Body"]),
+                                            "body" => $post["Body"],
+                                            "imported_from" => "textpattern"),
                                       $clean,
                                       Post::check_url($clean),
                                       "text",
@@ -1502,6 +1508,31 @@
 
             mysql_query("SET NAMES 'utf8'");
 
+            $get_authors = mysql_query("SELECT * FROM mt_author ORDER BY author_id ASC", $link) or error(__("Database Error"), mysql_error());
+            $users = array();
+            while ($author = mysql_fetch_array($get_authors)) {
+                # Try to figure out if this author is the same as the person doing the import.
+                if ($author["author_name"] == Visitor::current()->login or
+                    $author["author_nickname"] == Visitor::current()->login or
+                    $author["author_nickname"] == Visitor::current()->full_name or
+                    $author["author_url"] == Visitor::current()->website or
+                    $author["author_email"] == Visitor::current()->email)
+                    $users[$author["author_id"]] = Visitor::current();
+                else
+                    $users[$author["author_id"]] = User::add($author["author_name"],
+                                                             $author["author_password"],
+                                                             $author["author_email"],
+                                                             ($author["author_nickname"] != $author["author_name"] ?
+                                                                 $author["author_nickname"] :
+                                                                 ""),
+                                                             $author["author_url"],
+                                                             ($author["author_can_create_blog"] ?
+                                                                 Visitor::current()->group :
+                                                                 null),
+                                                             $author["author_created_on"],
+                                                             false);
+            }
+
             $get_posts = mysql_query("SELECT * FROM mt_entry ORDER BY entry_id ASC", $link) or error(__("Database Error"), mysql_error());
             $posts = array();
             while ($post = mysql_fetch_array($get_posts))
@@ -1528,23 +1559,24 @@
                                           3 => "draft",
                                           4 => "draft");
 
-                $clean = fallback($post["entry_basename"], sanitize($post["entry_title"]));
+                $clean = oneof($post["entry_basename"], sanitize($post["entry_title"]));
 
-                if ($post["entry_class"] == "entry") {
+                if (empty($post["entry_class"]) or $post["entry_class"] == "entry") {
                     $new_post = Post::add(array("title" => $post["entry_title"],
-                                                "body" => $body),
+                                                "body" => $body,
+                                                "imported_from" => "movabletype"),
                                           $clean,
                                           Post::check_url($clean),
                                           "text",
-                                          null,
+                                          @$users[$post["entry_author_id"]],
                                           false,
                                           $status_translate[$post["entry_status"]],
-                                          $post["entry_authored_on"],
+                                          oneof(@$post["entry_authored_on"], @$post["entry_created_on"], datetime()),
                                           $post["entry_modified_on"],
                                           "",
                                           false);
                     $trigger->call("import_movabletype_post", $post, $new_post, $link);
-                } elseif ($post["entry_class"] == "page") {
+                } elseif (@$post["entry_class"] == "page") {
                     $new_page = Page::add($post["entry_title"], $body, null, 0, true, 0, $clean, Page::check_url($clean));
                     $trigger->call("import_movabletype_page", $post, $new_page, $link);
                 }

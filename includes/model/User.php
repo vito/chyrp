@@ -59,8 +59,26 @@
                     # it on authentication to the new hashing scheme.
                     $check->update(null, self::hashPassword($password));
                     return true;
+                } else {
+                    # Some imports might use MySQL password hashing (such as MovableType 3).
+                    # Try those too, and update the user if they match.
+
+                    $sql = SQL::current();
+                    $old = $sql->query("SELECT OLD_PASSWORD(:pass)", array(":pass" => $password))->fetch();
+                    if ($old[0] == $check->password) {
+                        $check->update(null, self::hashPassword($password));
+                        return true;
+                    }
+
+                    $new = $sql->query("SELECT PASSWORD(:pass)", array(":pass" => $password))->fetch();
+                    if ($new[0] == $check->password) {
+                        $check->update(null, self::hashPassword($password));
+                        return true;
+                    }
                 }
             }
+
+            return false;
         }
 
         /**
@@ -73,6 +91,11 @@
          *     $login - The Login for the new user.
          *     $password - The Password for the new user. Don't hash this, it's done in the function.
          *     $email - The E-Mail for the new user.
+         *     $full_name - The full name of the user.
+         *     $website - The user's website.
+         *     $group - The user's group (defaults to the configured default group).
+         *     $joined_at - Join date (defaults to now).
+         *     $hash_password - Hash the password automatically? (defaults to true)
          *
          * Returns:
          *     The newly created <User>.
@@ -85,19 +108,25 @@
                             $email,
                             $full_name = "",
                             $website = "",
-                            $group_id = null,
-                            $joined_at = null) {
+                            $group_ = null,
+                            $joined_at = null,
+                            $hash_password = true) {
             $config = Config::current();
             $sql = SQL::current();
             $trigger = Trigger::current();
 
+            if (empty($group))
+                $group_id = $config->default_group;
+            else
+                $group_id = ($group instanceof Group) ? $group->id : $group;
+            
             $new_values = array("login"     => strip_tags($login),
-                                "password"  => self::hashPassword($password),
+                                "password"  => ($hash_password ? self::hashPassword($password) : $password),
                                 "email"     => strip_tags($email),
                                 "full_name" => strip_tags($full_name),
                                 "website"   => strip_tags($website),
-                                "group_id"  => fallback($group_id, $config->default_group),
-                                "joined_at" => fallback($joined_at, datetime()));
+                                "group_id"  => $group_id,
+                                "joined_at" => oneof($joined_at, datetime()));
 
             $trigger->filter($new_values, "before_add_user");
 
@@ -183,13 +212,13 @@
          * Returns:
          *     The securely hashed password to be stored in the database.
          */
-		static function hashPassword($password) {
-			$hasher = new PasswordHash(8, false);
-			$hashedPassword = $hasher->HashPassword($password);
-			return $hashedPassword;	
-		}
-		
-		/**
+         static function hashPassword($password) {
+             $hasher = new PasswordHash(8, false);
+             $hashedPassword = $hasher->HashPassword($password);
+             return $hashedPassword;	
+         }
+ 	
+	 /**
          * Function: checkPassword
          * Checks a given password against the stored hash.
          *
