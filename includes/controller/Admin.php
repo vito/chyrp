@@ -1526,7 +1526,7 @@
                                                                  $author["author_nickname"] :
                                                                  ""),
                                                              $author["author_url"],
-                                                             ($author["author_can_create_blog"] ?
+                                                             ($author["author_can_create_blog"] == "1" ?
                                                                  Visitor::current()->group :
                                                                  null),
                                                              $author["author_created_on"],

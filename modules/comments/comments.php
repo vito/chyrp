@@ -582,7 +582,7 @@
                              $comment["comment_email"],
                              $comment["comment_ip"],
                              "",
-                             ($comment["comment_visible"] ? "approved" : denied),
+                             ($comment["comment_visible"] ? "approved" : "denied"),
                              "",
                              $comment["comment_created_on"],
                              $comment["comment_modified_on"],
