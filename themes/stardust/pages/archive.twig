@@ -3,9 +3,7 @@
 {% block content %}
 {% if archives %} {# List? (For all/yearly archives) #}
                     {% if GET.year != null %}
-                    {% for archive in archives %}
-                    <h1>${ "Archive of %s" | translate | format(archive.year) }</h1>
-                    {% endfor %}
+                    <h1>${ "Archive of %s" | translate | format((archives | first).year) }</h1>
                     {% else %}
                     <h1>${ "Archives" | translate }</h1>
                     {% endif %}
