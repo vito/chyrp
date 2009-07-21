@@ -112,6 +112,7 @@
             $tags = array_combine($tags, $tags_cleaned);
 
             SQL::current()->replace("post_attributes",
+                                    array("post_id", "name"),
                                     array("name" => "tags",
                                           "value" => YAML::dump($tags),
                                           "post_id" => $post->id));
@@ -351,6 +352,7 @@
                     $tags[$tag] = sanitize($tag);
 
                     $sql->replace("post_attributes",
+                                  array("post_id", "name"),
                                   array("name" => "tags",
                                         "value" => YAML::dump($tags),
                                         "post_id" => $post_id));
@@ -700,7 +702,7 @@
             $tag = $_POST['name'];
 
             if (!$post->editable())
-                continue;
+                exit("{}");
 
             $tags = $sql->select("post_attributes",
                                  "value",
@@ -714,6 +716,7 @@
             $tags[$tag] = sanitize($tag);
 
             $sql->replace("post_attributes",
+                          array("post_id", "name"),
                           array("name" => "tags",
                                 "value" => YAML::dump($tags),
                                 "post_id" => $post->id));

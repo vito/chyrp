@@ -180,8 +180,8 @@
                             $user       = null,
                             $pinned     = null,
                             $status     = "",
-                            $created_at = "",
-                            $updated_at = "",
+                            $created_at = null,
+                            $updated_at = null,
                             $trackbacks = "",
                             $pingbacks  = true,
                             $options    = array()) {
@@ -199,7 +199,7 @@
                                    (!isset($_POST['original_time']) or $_POST['created_at'] != $_POST['original_time'])) ?
                                       datetime($_POST['created_at']) :
                                       datetime());
-            fallback($updated_at, oneof(@$_POST['updated_at'], "0000-00-00 00:00:00"));
+            fallback($updated_at, oneof(@$_POST['updated_at'], null));
             fallback($trackbacks, oneof(@$_POST['trackbacks'], ""));
             fallback($options,    oneof(@$_POST['option'], array()));
 
@@ -225,7 +225,7 @@
 
             $sql->insert("posts", $new_values);
 
-            $id = $sql->latest();
+            $id = $sql->latest("posts");
 
             if (empty($clean) or empty($url))
                 $sql->update("posts",
@@ -337,10 +337,16 @@
 
             # Insert the post attributes.
             foreach (array_merge($values, $options) as $name => $value)
-                $sql->replace("post_attributes",
-                              array("post_id" => $this->id,
-                                    "name" => $name,
-                                    "value" => $this->$name = $value));
+                if ($sql->count("post_attributes", array("post_id" => $this->id, "name" => $name)))
+                    $sql->update("post_attributes",
+                                 array("post_id" => $this->id,
+                                       "name" => $name),
+                                 array("value" => $this->$name = $value));
+                else
+                    $sql->insert("post_attributes",
+                                 array("post_id" => $this->id,
+                                       "name" => $name,
+                                       "value" => $this->$name = $value));
 
             $trigger->call("update_post", $this, $old, $options);
         }

@@ -84,7 +84,7 @@
                             $clean        = "",
                             $url          = "",
                             $created_at   = null,
-                            $updated_at   = "0000-00-00 00:00:00") {
+                            $updated_at   = null) {
             $user_id = ($user instanceof User) ? $user->id : $user ;
 
             $sql = SQL::current();
@@ -100,13 +100,13 @@
                                 "clean" =>        oneof($clean,        sanitize($title)),
                                 "url" =>          oneof($url,          self::check_url($clean)),
                                 "created_at" =>   oneof($created_at,   datetime()),
-                                "updated_at" =>   oneof($updated_at,   "0000-00-00 00:00:00"));
+                                "updated_at" =>   oneof($updated_at,   null));
 
             $trigger->filter($new_values, "before_add_page");
 
             $sql->insert("pages", $new_values);
 
-            $page = new self($sql->latest());
+            $page = new self($sql->latest("pages"));
 
             $trigger->call("add_page", $page);
 

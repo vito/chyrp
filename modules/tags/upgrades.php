@@ -46,10 +46,12 @@
         foreach ($tags->fetchAll() as $tag) {
             echo _f("Relocating tags for post #%d...", array($tag["post_id"]), "tags");
             $dirty = $sql->replace("post_attributes",
+                                   array("post_id", "name"),
                                    array("name" => "unclean_tags",
                                          "value" => $tag["tags"],
                                          "post_id" => $tag["post_id"]));
             $clean = $sql->replace("post_attributes",
+                                   array("post_id", "name"),
                                    array("name" => "clean_tags",
                                          "value" => $tag["clean"],
                                          "post_id" => $tag["post_id"]));

@@ -9,7 +9,8 @@
                   Config::current()->url."/includes/lib/gz.php?file=jquery.js" :
                   "http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" ;
 
-    Route::current(MainController::current());
+    if (class_exists("Route") and class_exists("MainController"))
+        Route::current(MainController::current());
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -137,7 +138,7 @@
                 </ol>
 <?php endif; ?>
                 <div class="clear"></div>
-<?php if (!logged_in() and $body != __("Route was initiated without a Controller.")): ?>
+<?php if (class_exists("Route") and !logged_in() and $body != __("Route was initiated without a Controller.")): ?>
                 <a href="<?php echo url("login"); ?>" class="big login"><?php echo __("Log In"); ?> &rarr;</a>
 <?php endif; ?>
                 <div class="clear last"></div>

@@ -71,7 +71,8 @@
                     $this->method = "mysqli";
                 elseif ($this->adapter == "mysql" and function_exists("mysql_connect"))
                     $this->method = "mysql";
-                elseif ($this->adapter == "sqlite" and in_array("sqlite", PDO::getAvailableDrivers()))
+                elseif ($this->adapter == "sqlite" and in_array("sqlite", PDO::getAvailableDrivers()) or
+                        $this->adapter == "pgsql" and in_array("pgsql", PDO::getAvailableDrivers()))
                     $this->method = "pdo";
             } else
                 if (class_exists("MySQLi"))
@@ -198,6 +199,25 @@
             if ($this->adapter == "sqlite")
                 $query = str_ireplace(" DEFAULT CHARSET=utf8", "", str_ireplace("AUTO_INCREMENT", "AUTOINCREMENT", $query));
 
+            if ($this->adapter == "pgsql")
+                $query = str_ireplace(array("CREATE TABLE IF NOT EXISTS",
+                                            "INTEGER PRIMARY KEY AUTO_INCREMENT",
+                                            ") DEFAULT CHARSET=utf8",
+                                            "TINYINT",
+                                            "DATETIME",
+                                            "DEFAULT '0000-00-00 00:00:00'",
+                                            "LONGTEXT",
+                                            "REPLACE INTO"),
+                                      array("CREATE TABLE",
+                                            "SERIAL PRIMARY KEY",
+                                            ")",
+                                            "SMALLINT",
+                                            "TIMESTAMP",
+                                            "",
+                                            "TEXT",
+                                            "INSERT INTO"),
+                                      $query);
+            
             $query = new Query($this, $query, $params, $throw_exceptions);
 
             return (!$query->query and UPGRADING) ? false : $query ;
@@ -254,16 +274,26 @@
 
         /**
          * Function: replace
-         * Performs a REPLACE with given data.
+         * Performs either an INSERT or an UPDATE depending on
+         * whether a row exists with the specified keys matching
+         * their values in the data.
          *
          * Parameters:
-         *     $table - Table to insert to.
-         *     $data - An associative array of data to insert.
-         *     $params - An associative array of parameters used in the query.
+         *     $table - Table to update or insert into.
+         *     $keys - Columns to match on.
+         *     $data - Data for the insert and value matches for the keys.
+         *     $params - An associative array of parameters to be used in the query.
          *     $throw_exceptions - Should exceptions be thrown on error?
          */
-        public function replace($table, $data, $params = array(), $throw_exceptions = false) {
-            return $this->query(QueryBuilder::build_replace($table, $data, $params), $params, $throw_exceptions);
+        public function replace($table, $keys, $data, $params = array(), $throw_exceptions = false) {
+            $match = array();
+            foreach ((array) $keys as $key)
+                $match[$key] = $data[$key];
+
+            if ($this->count($table, $match, $params))
+                $this->update($table, $match, $data, $params, $throw_exceptions);
+            else
+                $this->insert($table, $data, $params, $throw_exceptions);
         }
 
         /**
@@ -297,15 +327,20 @@
 
         /**
          * Function: latest
-         * Returns the last inserted ID.
+         * Returns the last inserted sequential value.
+         * Both function arguments are only relevant for PostgreSQL.
+         *
+         * Parameters:
+         *     $table - Table to get the latest value from.
+         *     $seq - Name of the sequence.
          */
-        public function latest() {
+        public function latest($table, $seq = "id_seq") {
             if (!isset($this->db))
                 $this->connect();
 
             switch($this->method) {
                 case "pdo":
-                    return $this->db->lastInsertId();
+                    return $this->db->lastInsertId($table."_".$seq);
                     break;
                 case "mysqli":
                     return $this->db->insert_id;

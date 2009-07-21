@@ -132,7 +132,7 @@
 
             $sql->insert("users", $new_values);
 
-            $user = new self($sql->latest());
+            $user = new self($sql->latest("users"));
 
             $trigger->call("add_user", $user);
 

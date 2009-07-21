@@ -266,7 +266,7 @@
                 $model->queryString = $query->queryString;
 
             if (isset($model->updated_at))
-                $model->updated = $model->updated_at != "0000-00-00 00:00:00";
+                $model->updated = !empty($model->updated_at);
 
             $clone = clone $model;
 

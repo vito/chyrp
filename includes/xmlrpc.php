@@ -1,4 +1,4 @@
-<?php
+    <?php
     /**
      * File: XML-RPC
      * Extensible XML-RPC interface for remotely controlling your Chyrp install.
@@ -25,23 +25,34 @@
             set_error_handler('XMLRPC::error_handler');
             set_exception_handler('XMLRPC::exception_handler');
 
-            $methods = array(
-                'pingback.ping'             => 'this:pingback_ping',
-                'metaWeblog.getRecentPosts' => 'this:metaWeblog_getRecentPosts',
-                'metaWeblog.getCategories'  => 'this:metaWeblog_getCategories',
-                'metaWeblog.newMediaObject' => 'this:metaWeblog_newMediaObject',
-                'metaWeblog.newPost'        => 'this:metaWeblog_newPost',
-                'metaWeblog.getPost'        => 'this:metaWeblog_getPost',
-                'metaWeblog.editPost'       => 'this:metaWeblog_editPost',
-                'blogger.deletePost'        => 'this:blogger_deletePost',
-                'blogger.getUsersBlogs'     => 'this:blogger_getUsersBlogs',
-                'blogger.getUserInfo'       => 'this:blogger_getUserInfo',
-                'mt.getRecentPostTitles'    => 'this:mt_getRecentPostTitles',
-                'mt.getCategoryList'        => 'this:mt_getCategoryList',
-                'mt.getPostCategories'      => 'this:mt_getPostCategories',
-                'mt.setPostCategories'      => 'this:mt_setPostCategories',
-                'mt.supportedTextFilters'   => 'this:mt_supportedTextFilters',
-                'mt.supportedMethods'       => 'this:listMethods');
+            $methods = array('pingback.ping'             => 'this:pingback_ping',
+
+                             # MetaWeblog
+                             'metaWeblog.getRecentPosts' => 'this:metaWeblog_getRecentPosts',
+                             'metaWeblog.getCategories'  => 'this:metaWeblog_getCategories',
+                             'metaWeblog.newMediaObject' => 'this:metaWeblog_newMediaObject',
+                             'metaWeblog.newPost'        => 'this:metaWeblog_newPost',
+                             'metaWeblog.getPost'        => 'this:metaWeblog_getPost',
+                             'metaWeblog.editPost'       => 'this:metaWeblog_editPost',
+
+                             # Blogger
+                             'blogger.deletePost'        => 'this:blogger_deletePost',
+                             'blogger.getUsersBlogs'     => 'this:blogger_getUsersBlogs',
+                             'blogger.getUserInfo'       => 'this:blogger_getUserInfo',
+
+                             # MovableType
+                             'mt.getRecentPostTitles'    => 'this:mt_getRecentPostTitles',
+                             'mt.getCategoryList'        => 'this:mt_getCategoryList',
+                             'mt.getPostCategories'      => 'this:mt_getPostCategories',
+                             'mt.setPostCategories'      => 'this:mt_setPostCategories',
+                             'mt.supportedTextFilters'   => 'this:mt_supportedTextFilters',
+                             'mt.supportedMethods'       => 'this:listMethods',
+
+                             # Chyrp
+                             "chyrp.getRecentPosts"      => "this:chyrp_getRecentPosts",
+                             "chyrp.newPost"             => "this:chyrp_newPost",
+                             "chyrp.getPost"             => "this:chyrp_getPost",
+                             "chyrp.editPost"            => "this:chyrp_editPost");
 
             Trigger::current()->filter($methods, "xmlrpc_methods");
 
@@ -136,15 +147,15 @@
 
             foreach ($this->getRecentPosts($args[3]) as $post) {
                 $struct = array(
-                    'postid'            => $post->id,
-                    'userid'            => $post->user_id,
-                    'title'             => $post->title,
-                    'dateCreated'       => new IXR_Date(when('Ymd\TH:i:s', $post->created_at)),
-                    'description'       => $post->body,
-                    'link'              => $post->url(),
-                    'permaLink'         => $post->url(),
-                    'mt_basename'       => $post->url,
-                    'mt_allow_pings'    => (int) $config->enable_trackbacking);
+                                'postid'            => $post->id,
+                                'userid'            => $post->user_id,
+                                'title'             => $post->title,
+                                'dateCreated'       => new IXR_Date(when('Ymd\TH:i:s', $post->created_at)),
+                                'description'       => $post->body,
+                                'link'              => $post->url(),
+                                'permaLink'         => $post->url(),
+                                'mt_basename'       => $post->url,
+                                'mt_allow_pings'    => (int) $config->enable_trackbacking);
 
                 $result[] = $trigger->filter($struct, 'metaWeblog_getPost', $post);
             }
@@ -192,15 +203,15 @@
 
             $post = new Post($args[0], array('filter' => false));
             $struct = array(
-                'postid'            => $post->id,
-                'userid'            => $post->user_id,
-                'title'             => $post->title,
-                'dateCreated'       => new IXR_Date(when('Ymd\TH:i:s', $post->created_at)),
-                'description'       => $post->body,
-                'link'              => $post->url(),
-                'permaLink'         => $post->url(),
-                'mt_basename'       => $post->url,
-                'mt_allow_pings'    => (int) Config::current()->enable_trackbacking);
+                            'postid'            => $post->id,
+                            'userid'            => $post->user_id,
+                            'title'             => $post->title,
+                            'dateCreated'       => new IXR_Date(when('Ymd\TH:i:s', $post->created_at)),
+                            'description'       => $post->body,
+                            'link'              => $post->url(),
+                            'permaLink'         => $post->url(),
+                            'mt_basename'       => $post->url,
+                            'mt_allow_pings'    => (int) Config::current()->enable_trackbacking);
 
             Trigger::current()->filter($struct, 'metaWeblog_getPost', $post);
             return array($struct);
@@ -242,11 +253,11 @@
             $trigger->call('metaWeblog_newPost_preQuery', $args[3]);
 
             $post = Post::add(
-                array(
-                    'title' => $args[3]['title'],
-                    'body'  => $body),
-                $clean,
-                $url);
+                              array(
+                                    'title' => $args[3]['title'],
+                                    'body'  => $body),
+                              $clean,
+                              $url);
 
             if ($post->no_results)
                 return new IXR_Error(500, __("Post not found."));
@@ -301,12 +312,12 @@
             $trigger->call('metaWeblog_editPost_preQuery', $args[3], $post);
 
             $post->update(
-                array('title' => $args[3]['title'], 'body' => $body ),
-                null,
-                null,
-                $status,
-                sanitize(oneof(@$args[3]['mt_basename'], $args[3]['title'])),
-                oneof($this->convertFromDateCreated($args[3]), $post->created_at));
+                          array('title' => $args[3]['title'], 'body' => $body ),
+                          null,
+                          null,
+                          $status,
+                          sanitize(oneof(@$args[3]['mt_basename'], $args[3]['title'])),
+                          oneof($this->convertFromDateCreated($args[3]), $post->created_at));
 
             $trigger->call('metaWeblog_editPost', $args[3], $post);
 
@@ -341,9 +352,9 @@
 
             $config = Config::current();
             return array(array(
-                'url'      => $config->url,
-                'blogName' => $config->name,
-                'blogid'   => 1));
+                               'url'      => $config->url,
+                               'blogName' => $config->name,
+                               'blogid'   => 1));
         }
 
         #
@@ -355,12 +366,12 @@
             global $user;
 
             return array(array(
-                'userid'    => $user->id,
-                'nickname'  => $user->full_name,
-                'firstname' => '',
-                'lastname'  => '',
-                'email'     => $user->email,
-                'url'       => $user->website));
+                               'userid'    => $user->id,
+                               'nickname'  => $user->full_name,
+                               'firstname' => '',
+                               'lastname'  => '',
+                               'email'     => $user->email,
+                               'url'       => $user->website));
         }
 
         #
@@ -374,10 +385,10 @@
 
             foreach ($this->getRecentPosts($args[3]) as $post) {
                 $result[] = array(
-                    'postid'      => $post->id,
-                    'userid'      => $post->user_id,
-                    'title'       => $post->title,
-                    'dateCreated' => new IXR_Date(when('Ymd\TH:i:s', $post->created_at)));
+                                  'postid'      => $post->id,
+                                  'userid'      => $post->user_id,
+                                  'title'       => $post->title,
+                                  'dateCreated' => new IXR_Date(when('Ymd\TH:i:s', $post->created_at)));
             }
 
             return $result;
@@ -392,8 +403,8 @@
 
             $categories = array();
             return Trigger::current()->filter(
-                $categories,
-                'mt_getCategoryList');
+                                              $categories,
+                                              'mt_getCategoryList');
         }
 
         #
@@ -408,9 +419,9 @@
 
             $categories = array();
             return Trigger::current()->filter(
-                $categories,
-                'mt_getPostCategories',
-                new Post($args[0], array('filter' => false)));
+                                              $categories,
+                                              'mt_getPostCategories',
+                                              new Post($args[0], array('filter' => false)));
         }
 
         #
@@ -461,11 +472,11 @@
                 $where['user_id'] = $user->id;
 
             return Post::find(
-                array(
-                    'where'  => $where,
-                    'order'  => 'created_at DESC, id DESC',
-                    'limit'  => $limit),
-                array('filter' => false));
+                              array(
+                                    'where'  => $where,
+                                    'order'  => 'created_at DESC, id DESC',
+                                    'limit'  => $limit),
+                              array('filter' => false));
         }
 
         #
@@ -492,14 +503,14 @@
                 throw new Exception(__("Login incorrect."));
             else
                 $user = new User(
-                    null,
-                    array(
-                        'where' => array(
-                            'login' => $login
-                        )
-                    )
-                );
-                            
+                                 null,
+                                 array(
+                                       'where' => array(
+                                                        'login' => $login
+                                                        )
+                                       )
+                                 );
+
 
             if (!$user->group->can("{$do}_own_post", "{$do}_post", "{$do}_draft", "{$do}_own_draft"))
                 throw new Exception(_f("You don't have permission to %s posts/drafts.", array($do)));
@@ -523,4 +534,4 @@
 
     }
     $server = new XMLRPC();
-?>
+    ?>

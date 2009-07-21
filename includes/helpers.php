@@ -117,7 +117,7 @@
      * Returns whether or not they are logged in by returning the <Visitor.$id> (which defaults to 0).
      */
     function logged_in() {
-        return (isset(Visitor::current()->id) and Visitor::current()->id != 0);
+        return (class_exists("Visitor") and isset(Visitor::current()->id) and Visitor::current()->id != 0);
     }
 
     /**
@@ -835,7 +835,7 @@
         $last = null;
         $args = func_get_args();
         foreach ($args as $index => $arg) {
-            if (!isset($arg) or (is_string($arg) and trim($arg) === "") or $arg === array() or (is_object($arg) and empty($arg)) or ($arg === "0000-00-00 00:00:00"))
+            if (!isset($arg) or (is_string($arg) and trim($arg) === "") or $arg === array() or (is_object($arg) and empty($arg)))
                 $last = $arg;
             else
                 return $arg;

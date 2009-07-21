@@ -1133,7 +1133,7 @@
                                       $chyrp->status,
                                       datetime($entry->published),
                                       ($entry->updated == $entry->published) ?
-                                          "0000-00-00 00:00:00" :
+                                          null :
                                           datetime($entry->updated),
                                       "",
                                       false);
@@ -1158,7 +1158,7 @@
                                       $chyrp->clean,
                                       Page::check_url($chyrp->url),
                                       datetime($entry->published),
-                                      ($entry->updated == $entry->published) ? "0000-00-00 00:00:00" : datetime($entry->updated));
+                                      ($entry->updated == $entry->published) ? null : datetime($entry->updated));
 
                     $trigger->call("import_chyrp_page", $entry, $page);
                 }

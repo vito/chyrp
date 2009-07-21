@@ -195,9 +195,9 @@
                                "signature" => $signature,
                                "post_id" => $post->id,
                                "user_id"=> $user_id,
-                               "created_at" => fallback($created_at, datetime()),
-                               "updated_at" => fallback($updated_at, "0000-00-00 00:00:00")));
-            $new = new self($sql->latest());
+                               "created_at" => oneof($created_at, datetime()),
+                               "updated_at" => oneof($updated_at, null)));
+            $new = new self($sql->latest("comments"));
 
             Trigger::current()->call("add_comment", $new);
             return $new;

@@ -583,8 +583,8 @@
                                              id VARCHAR(40) DEFAULT '',
                                              data LONGTEXT,
                                              user_id INTEGER DEFAULT '0',
-                                             created_at DATETIME DEFAULT '0000-00-00 00:00:00',
-                                             updated_at DATETIME DEFAULT '0000-00-00 00:00:00',
+                                             created_at DATETIME DEFAULT NULL,
+                                             updated_at DATETIME DEFAULT NULL,
                                              PRIMARY KEY (id)
                                          ) DEFAULT CHARSET=utf8") or die(mysql_error()));
     }
@@ -745,8 +745,8 @@
                                              pinned TINYINT(1) DEFAULT 0,
                                              status VARCHAR(32) DEFAULT 'public',
                                              user_id INTEGER DEFAULT 0,
-                                             created_at DATETIME DEFAULT '0000-00-00 00:00:00',
-                                             updated_at DATETIME DEFAULT '0000-00-00 00:00:00'
+                                             created_at DATETIME DEFAULT NULL,
+                                             updated_at DATETIME DEFAULT NULL
                                          ) DEFAULT CHARSET=utf8"));
 
         if (!$create) {
@@ -858,8 +858,8 @@
                                                  pinned TINYINT(1) DEFAULT 0,
                                                  status VARCHAR(32) DEFAULT 'public',
                                                  user_id INTEGER DEFAULT 0,
-                                                 created_at DATETIME DEFAULT '0000-00-00 00:00:00',
-                                                 updated_at DATETIME DEFAULT '0000-00-00 00:00:00'
+                                                 created_at DATETIME DEFAULT NULL,
+                                                 updated_at DATETIME DEFAULT NULL
                                              ) DEFAULT CHARSET=utf8"));
 
             if (!$create)
@@ -1027,7 +1027,7 @@
                                             `email` varchar(128) DEFAULT '',
                                             `website` varchar(128) DEFAULT '',
                                             `group_id` int(11) DEFAULT '0',
-                                            `joined_at` datetime DEFAULT '0000-00-00 00:00:00',
+                                            `joined_at` datetime DEFAULT NULL,
                                             PRIMARY KEY (`id`),
                                             UNIQUE KEY `login` (`login`)
                                         ) DEFAULT CHARSET=utf8"));

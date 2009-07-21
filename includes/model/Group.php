@@ -103,7 +103,7 @@
 
             $sql->insert("groups", array("name" => $name));
 
-            $group_id = $sql->latest();
+            $group_id = $sql->latest("groups");
 
             foreach ($permissions as $id)
                 $sql->insert("permissions",

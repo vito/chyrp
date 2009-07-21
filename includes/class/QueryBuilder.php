@@ -68,29 +68,6 @@
         }
 
         /**
-         * Function: build_replace
-         * Creates a full replace query.
-         *
-         * Parameters:
-         *     $table - Table to insert/replace into.
-         *     $data - Data to insert/replace.
-         *     &$params - An associative array of parameters used in the query.
-         *
-         * Returns:
-         *     A @REPLACE@ query string.
-         */
-        public static function build_replace($table, $data, &$params = array()) {
-            if (empty($params))
-                foreach ($data as $key => $val)
-                    $params[":".str_replace(array("(", ")", "."), "_", $key)] = $val;
-
-            return "REPLACE INTO __$table\n".
-                   self::build_insert_header($data)."\n".
-                   "VALUES\n".
-                   "(".implode(", ", array_keys($params)).")\n";
-        }
-
-        /**
          * Function: build_update
          * Creates a full update query.
          *

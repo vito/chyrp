@@ -244,11 +244,14 @@
 
             if (isset($_GET['year']) and isset($_GET['month']) and isset($_GET['day']))
                 $posts = new Paginator(Post::find(array("placeholders" => true,
-                                                        "where" => array("created_at like" => $_GET['year']."-".$_GET['month']."-".$_GET['day']."%"))),
+                                                        "where" => array("YEAR(created_at)" => $_GET['year'],
+                                                                         "MONTH(created_at)" => $_GET['month'],
+                                                                         "DAY(created_at)" => $_GET['day']))),
                                        $this->post_limit);
             elseif (isset($_GET['year']) and isset($_GET['month']))
                 $posts = new Paginator(Post::find(array("placeholders" => true,
-                                                        "where" => array("created_at like" => $_GET['year']."-".$_GET['month']."%"))),
+                                                        "where" => array("YEAR(created_at)" => $_GET['year'],
+                                                                         "MONTH(created_at)" => $_GET['month']))),
                                        $this->post_limit);
 
             $sql = SQL::current();
@@ -259,25 +262,27 @@
                                                array("DISTINCT YEAR(created_at) AS year",
                                                      "MONTH(created_at) AS month",
                                                      "created_at AS created_at",
-                                                     "COUNT(id) AS posts"),
+                                                     "COUNT(id) AS posts",
+                                                     "id"),
                                                array("YEAR(created_at)" => $_GET['year']),
-                                               "created_at DESC, id DESC",
+                                               array("created_at DESC", "id DESC"),
                                                array(),
                                                null,
                                                null,
-                                               array("YEAR(created_at)", "MONTH(created_at)"));
+                                               array("YEAR(created_at)", "MONTH(created_at)", "created_at", "id"));
                 else
                     $timestamps = $sql->select("posts",
                                                array("DISTINCT YEAR(created_at) AS year",
                                                      "MONTH(created_at) AS month",
                                                      "created_at AS created_at",
-                                                     "COUNT(id) AS posts"),
+                                                     "COUNT(id) AS posts",
+                                                     "id"),
                                                null,
                                                "created_at DESC, id DESC",
                                                array(),
                                                null,
                                                null,
-                                               array("YEAR(created_at)", "MONTH(created_at)"));
+                                               array("YEAR(created_at)", "MONTH(created_at)", "created_at", "id"));
 
                 $archives = array();
                 $archive_hierarchy = array();
@@ -285,7 +290,8 @@
                     $year = mktime(0, 0, 0, 1, 0, $time->year);
                     $month = mktime(0, 0, 0, $time->month + 1, 0, $time->year);
 
-                    $posts = Post::find(array("where" => array("created_at like" => when("Y-m", $time->created_at)."%")));
+                    $posts = Post::find(array("where" => array("YEAR(created_at)" => when("Y", $time->created_at),
+                                                               "MONTH(created_at)" => when("m", $time->created_at))));
 
                     $archives[$month] = array("posts" => $posts,
                                               "year" => $time->year,
