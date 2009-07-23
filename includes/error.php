@@ -9,7 +9,10 @@
                   Config::current()->url."/includes/lib/gz.php?file=jquery.js" :
                   "http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" ;
 
-    if (class_exists("Route") and class_exists("MainController"))
+    if (!class_exists("MainController"))
+        require INCLUDES_DIR."/controller/Main.php";
+
+    if (class_exists("Route"))
         Route::current(MainController::current());
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -139,7 +142,7 @@
 <?php endif; ?>
                 <div class="clear"></div>
 <?php if (class_exists("Route") and !logged_in() and $body != __("Route was initiated without a Controller.")): ?>
-                <a href="<?php echo url("login"); ?>" class="big login"><?php echo __("Log In"); ?> &rarr;</a>
+                <a href="<?php echo url("login", MainController::current()); ?>" class="big login"><?php echo __("Log In"); ?> &rarr;</a>
 <?php endif; ?>
                 <div class="clear last"></div>
             </div>

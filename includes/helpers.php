@@ -322,7 +322,7 @@
             extract($ending);
 
         if ($html) {
-            if (strlen(preg_replace('/<.*?>/', '', $text)) <= $length)
+            if (strlen(preg_replace("/<[^>]+>/", "", $text)) <= $length)
                 return $text;
 
             $totalLength = strlen($ending);
@@ -330,7 +330,8 @@
             $truncate = "";
             preg_match_all("/(<\/?([\w+]+)[^>]*>)?([^<>]*)/", $text, $tags, PREG_SET_ORDER);
             foreach ($tags as $tag) {
-                if (!preg_match('/img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param/s', $tag[2]) and preg_match('/<[\w]+[^>]*>/s', $tag[0]))
+                if (!preg_match('/img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param/s', $tag[2])
+                    and preg_match('/<[\w]+[^>]*>/s', $tag[0]))
                     array_unshift($openTags, $tag[2]);
                 elseif (preg_match('/<\/([\w]+)[^>]*>/s', $tag[0], $closeTag)) {
                     $pos = array_search($closeTag[1], $openTags);
