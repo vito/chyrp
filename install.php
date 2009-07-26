@@ -298,7 +298,7 @@
 
             foreach ($names as $id => $name)
                 $sql->replace("permissions",
-                              "id",
+                              array("id", "group_id"),
                               array("id" => $id,
                                     "name" => $name,
                                     "group_id" => 0));
@@ -318,7 +318,7 @@
 
                 foreach ($permissions as $permission)
                     $sql->replace("permissions",
-                                  "id",
+                                  array("id", "group_id"),
                                   array("id" => $permission,
                                         "name" => $names[$permission],
                                         "group_id" => $group_id[$name]));
