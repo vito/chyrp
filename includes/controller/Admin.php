@@ -1982,8 +1982,6 @@
          * Changes the admin theme.
          */
         public function change_admin_theme() {
-            if (!Visitor::current()->group->can("change_settings"))
-                show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
             if (empty($_GET['theme']))
                 error(__("No Theme Specified"), __("You did not specify a theme to switch to."));
 
