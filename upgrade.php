@@ -1176,7 +1176,7 @@
         Config::fallback("uploads_path", "/uploads/");
         Config::fallback("chyrp_url", Config::get("url"));
         Config::fallback("sql", Config::$yaml["database"]);
-        Config::fallback("timezone", "America/Indiana/Indianapolis");
+        Config::fallback("timezone", "America/New_York");
 
         Config::remove("rss_posts");
         Config::remove("time_offset");

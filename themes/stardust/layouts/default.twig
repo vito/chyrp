@@ -85,7 +85,7 @@ ${ trigger.call("head") }
                 {% for debug in sql_debug %}
                 <li>
                     <pre>${ debug.query | replace("\t", "    ") | escape }</pre>
-                    <em>${ "Called from <strong>%s</strong> on line <strong>%d</strong>." | translate | format(debug.file, debug.line) }</em>
+                    <em>${ "Called from <strong>%s</strong> on line <strong>%d</strong> at %ss." | translate | format(debug.file, debug.line, debug.time) }</em>
                 </li>
                 {% endfor %}
             </ol>

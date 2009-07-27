@@ -19,6 +19,9 @@
          *     $throw_exceptions - Throw exceptions on error?
          */
         public function __construct($sql, $query, $params = array(), $throw_exceptions = false) {
+            if (DEBUG)
+                global $time_start;
+            
             $this->sql = $sql;
 
             # Don't count config setting queries.
@@ -51,7 +54,8 @@
                 $this->sql->debug[] = array("number" => $this->sql->queries,
                                             "file" => str_replace(MAIN_DIR."/", "", $target["file"]),
                                             "line" => $target["line"],
-                                            "query" => $logQuery);
+                                            "query" => $logQuery,
+                                            "time" => timer_stop());
             }
 
             switch($this->sql->method) {

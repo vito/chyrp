@@ -8,9 +8,9 @@
                 <ul class="extend">
                     {% for safename, feather in enabled_feathers | items %}
                     <li class="$safename">
-                        <a class="$safename info_link" href="javascript:void(0)"><img src="theme/images/icons/info.png" class="info right" /></a>
+                        <a class="$safename info_link" href="javascript:void(0)"><img src="$theme_url/images/icons/info.png" class="info right" /></a>
                         {% if feather.help %}
-                        <a href="{% admin "help&id="~feather.help %}" class="help emblem"><img src="theme/images/icons/help.png" alt="help" /></a>
+                        <a href="{% admin "help&id="~feather.help %}" class="help emblem"><img src="$theme_url/images/icons/help.png" alt="help" /></a>
                         {% endif %}
                         ${ "<a href=\"%s\">%s</a> v%s <span class=\"sub\">by %s</span>" | translate | format(feather.url, feather.name | translate(safename), feather.version, feather.author.link) }
                         <div class="expand">
@@ -28,9 +28,9 @@
                 <ul class="extend">
                     {% for safename, feather in disabled_feathers | items %}
                     <li class="$safename">
-                        <a class="$safename info_link" href="javascript:void(0)"><img src="theme/images/icons/info.png" class="info right" /></a>
+                        <a class="$safename info_link" href="javascript:void(0)"><img src="$theme_url/images/icons/info.png" class="info right" /></a>
                         {% if feather.help %}
-                        <a href="{% admin "help&id="~feather.help %}" class="help emblem"><img src="theme/images/icons/help.png" alt="help" /></a>
+                        <a href="{% admin "help&id="~feather.help %}" class="help emblem"><img src="$theme_url/images/icons/help.png" alt="help" /></a>
                         {% endif %}
                         ${ "<a href=\"%s\">%s</a> v%s <span class=\"sub\">by %s</span>" | translate | format(feather.url, feather.name | translate(safename), feather.version, feather.author.link) }
                         <div class="expand">

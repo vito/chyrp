@@ -23,7 +23,7 @@
                             <span class="sub">${ "(optional)" | translate }</span>
                         </label>
                         <input class="text" type="text" name="url" value="{% if site.url != site.chyrp_url %}${ site.url | escape }{% endif %}" id="url" />
-                        <a href="{% admin "help&id=alternate_urls" %}" class="help emblem"><img src="theme/images/icons/help.png" alt="help" /></a>
+                        <a href="{% admin "help&id=alternate_urls" %}" class="help emblem"><img src="$theme_url/images/icons/help.png" alt="help" /></a>
                         <small>
                             ${ "Enter an alternate address here if you want your homepage URL to be different from the URL where Chyrp is normally available." | translate }
                         </small>
@@ -51,7 +51,7 @@
                     </p>
 
                     <p class="buttons">
-                        <button type="submit" class="yay"><img src="theme/images/icons/success.png" alt="success" />${ "Update" | translate }</button>
+                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.png" alt="success" />${ "Update" | translate }</button>
                     </p>
 
                     <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />

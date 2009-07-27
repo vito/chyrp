@@ -83,6 +83,10 @@
     # Absolute path to /themes
     define('THEMES_DIR', MAIN_DIR."/themes");
 
+    # Constant: ADMIN_THEMES_DIR
+    # Absolute path to /admin/themes
+    define('ADMIN_THEMES_DIR', MAIN_DIR."/admin/themes");
+
     # Constant: USE_ZLIB
     # Use zlib to provide GZIP compression
     define('USE_ZLIB', true);

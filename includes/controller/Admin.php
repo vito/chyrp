@@ -29,10 +29,17 @@
          * Prepares Twig.
          */
         private function __construct() {
-            $this->twig = new Twig_Loader((file_exists(THEME_DIR."/admin") ? THEME_DIR."/admin" : MAIN_DIR."/admin/theme"),
-                                          (is_writable(INCLUDES_DIR."/caches") and !DEBUG) ?
-                                              INCLUDES_DIR."/caches" :
-                                              null);
+            $this->admin_theme = fallback($_SESSION['admin_theme'], "default");
+
+            $this->theme = new Twig_Loader(MAIN_DIR."/admin/themes/".$this->admin_theme,
+                                           (is_writable(INCLUDES_DIR."/caches") and !DEBUG) ?
+                                               INCLUDES_DIR."/caches" :
+                                               null);
+
+            $this->default = new Twig_Loader(MAIN_DIR."/admin/themes/default",
+                                             (is_writable(INCLUDES_DIR."/caches") and !DEBUG) ?
+                                                 INCLUDES_DIR."/caches" :
+                                                 null);
         }
 
         /**
@@ -1749,7 +1756,7 @@
             if (!$open = @opendir(THEMES_DIR))
                 return Flash::warning(__("Could not read themes directory."));
 
-             while (($folder = readdir($open)) !== false) {
+            while (($folder = readdir($open)) !== false) {
                 if (!file_exists(THEMES_DIR."/".$folder."/info.yaml"))
                     continue;
 
@@ -1765,8 +1772,8 @@
                 fallback($info["author"], array("name" => "", "url" => ""));
 
                 $info["author"]["link"] = !empty($info["author"]["url"]) ?
-                                              '<a href="'.$info["author"]["url"].'">'.$info["author"]["name"].'</a>' :
-                                              $info["author"]["name"] ;
+                    '<a href="'.$info["author"]["url"].'">'.$info["author"]["name"].'</a>' :
+                    $info["author"]["name"] ;
                 $info["description"] = preg_replace("/<code>(.+)<\/code>/se",
                                                     "'<code>'.fix('\\1').'</code>'",
                                                     $info["description"]);
@@ -1777,9 +1784,45 @@
 
                 $this->context["themes"][] = array("name" => $folder,
                                                    "screenshot" => (file_exists(THEMES_DIR."/".$folder."/screenshot.png") ?
-                                                                       $config->chyrp_url."/themes/".$folder."/screenshot.png" :
-                                                                       $config->chyrp_url."/admin/images/noscreenshot.png"),
+                                                                        $config->chyrp_url."/themes/".$folder."/screenshot.png" :
+                                                                        ""),
                                                    "info" => $info);
+            }
+
+            if (!$open = @opendir(ADMIN_THEMES_DIR))
+                return Flash::warning(__("Could not read themes directory."));
+
+            while (($folder = readdir($open)) !== false) {
+                if (!file_exists(ADMIN_THEMES_DIR."/".$folder."/info.yaml"))
+                    continue;
+
+                if (file_exists(ADMIN_THEMES_DIR."/".$folder."/locale/".$config->locale.".mo"))
+                    load_translator($folder, ADMIN_THEMES_DIR."/".$folder."/locale/".$config->locale.".mo");
+
+                $info = YAML::load(ADMIN_THEMES_DIR."/".$folder."/info.yaml");
+
+                fallback($info["name"], $folder);
+                fallback($info["version"], "0");
+                fallback($info["url"]);
+                fallback($info["description"]);
+                fallback($info["author"], array("name" => "", "url" => ""));
+
+                $info["author"]["link"] = !empty($info["author"]["url"]) ?
+                    '<a href="'.$info["author"]["url"].'">'.$info["author"]["name"].'</a>' :
+                    $info["author"]["name"] ;
+                $info["description"] = preg_replace("/<code>(.+)<\/code>/se",
+                                                    "'<code>'.fix('\\1').'</code>'",
+                                                    $info["description"]);
+
+                $info["description"] = preg_replace("/<pre>(.+)<\/pre>/se",
+                                                    "'<pre>'.fix('\\1').'</pre>'",
+                                                    $info["description"]);
+
+                $this->context["admin_themes"][] = array("name" => $folder,
+                                                         "screenshot" => (file_exists(ADMIN_THEMES_DIR."/".$folder."/screenshot.png") ?
+                                                                              $config->chyrp_url."/admin/themes/".$folder."/screenshot.png" :
+                                                                              ""),
+                                                         "info" => $info);
             }
 
             closedir($open);
@@ -1932,6 +1975,39 @@
                 @unlink($cache);
 
             Flash::notice(_f("Theme changed to &#8220;%s&#8221;.", array($info["name"])), "/admin/?action=themes");
+        }
+
+        /**
+         * Function: theme
+         * Changes the admin theme.
+         */
+        public function change_admin_theme() {
+            if (!Visitor::current()->group->can("change_settings"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+            if (empty($_GET['theme']))
+                error(__("No Theme Specified"), __("You did not specify a theme to switch to."));
+
+            $config = Config::current();
+
+            $_SESSION['admin_theme'] = $_GET['theme'];
+
+            if (file_exists(ADMIN_THEMES_DIR."/".$_GET['theme']."/locale/".$config->locale.".mo"))
+                load_translator($_GET['theme'], ADMIN_THEMES_DIR."/".$_GET['theme']."/locale/".$config->locale.".mo");
+
+            $info = YAML::load(ADMIN_THEMES_DIR."/".$_GET['theme']."/info.yaml");
+            fallback($info["notifications"], array());
+
+            foreach ($info["notifications"] as &$notification)
+                $notification = __($notification, $_GET['theme']);
+
+            foreach ($info["notifications"] as $message)
+                Flash::message($message);
+
+            # Clear the caches made by the previous theme.
+            foreach (glob(INCLUDES_DIR."/caches/*.cache") as $cache)
+                @unlink($cache);
+
+            Flash::notice(_f("Admin theme changed to &#8220;%s&#8221;.", array($info["name"])), "/admin/?action=themes");
         }
 
         /**
@@ -2209,7 +2285,7 @@
          * Renders the page.
          *
          * Parameters:
-         *     $action - The template file to display, in /admin/theme/pages.
+         *     $action - The template file to display, in (theme dir)/pages.
          *     $context - Context for the template.
          *     $title - The title for the page. Defaults to a camlelization of the action, e.g. foo_bar -> Foo Bar.
          */
@@ -2250,6 +2326,8 @@
             $this->context["debug"]      = DEBUG;
             $this->context["feathers"]   = Feathers::$instances;
             $this->context["modules"]    = Modules::$instances;
+            $this->context["admin_theme"] = $this->admin_theme;
+            $this->context["theme_url"]  = Config::current()->chyrp_url."/admin/themes/".$this->admin_theme;
             $this->context["POST"]       = $_POST;
             $this->context["GET"]        = $_GET;
 
@@ -2307,9 +2385,10 @@
 
             $this->context["sql_debug"]  = SQL::current()->debug;
 
-            $template = file_exists(THEME_DIR."/admin/theme/pages/".$action.".twig") ?
-                            THEME_DIR."/admin/pages/".$action.".twig" :
-                            MAIN_DIR."/admin/theme/pages/".$action.".twig" ;
+            $file = MAIN_DIR."/admin/themes/%s/pages/".$action.".twig";
+            $template = file_exists(sprintf($file, $this->admin_theme)) ?
+                sprintf($file, $this->admin_theme) :
+                sprintf($file, "default");
 
             $config = Config::current();
             if (!file_exists($template)) {
@@ -2323,14 +2402,20 @@
                     error(__("Template Missing"), _f("Couldn't load template: <code>%s</code>", array($template)));
             }
 
+            # Try the theme first
             try {
-                $this->twig->getTemplate($template)->display($this->context);
-            } catch (Exception $e) {
-                $prettify = preg_replace("/([^:]+): (.+)/", "\\1: <code>\\2</code>", $e->getMessage());
-                $trace = debug_backtrace();
-                $twig = array("file" => $e->filename, "line" => $e->lineno);
-                array_unshift($trace, $twig);
-                error(__("Error"), $prettify, $trace);
+                $this->theme->getTemplate($template)->display($this->context);
+            } catch (Exception $t) {
+                # Fallback to the default
+                try {
+                    $this->default->getTemplate($template)->display($this->context);
+                } catch (Exception $e) {
+                    $prettify = preg_replace("/([^:]+): (.+)/", "\\1: <code>\\2</code>", $e->getMessage());
+                    $trace = debug_backtrace();
+                    $twig = array("file" => $e->filename, "line" => $e->lineno);
+                    array_unshift($trace, $twig);
+                    error(__("Error"), $prettify, $trace);
+                }
             }
         }
 

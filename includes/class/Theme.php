@@ -212,7 +212,7 @@
                     $stylesheets.= "<!--[if IE]>";
                 if (preg_match("/^ie([0-9\.]+)\.css/", $file, $matches))
                     $stylesheets.= "<!--[if IE ".$matches[1]."]>";
-                elseif (preg_match("/(lt|gt)ie([0-9\.]+)\.css/", $file, $matches))
+                elseif (preg_match("/(lte?|gte?)ie([0-9\.]+)\.css/", $file, $matches))
                     $stylesheets.= "<!--[if ".$matches[1]." IE ".$matches[2]."]>";
 
                 $stylesheets.= '<link rel="stylesheet" href="'.$config->chyrp_url.$path.'" type="text/css" media="'.($file == "print.css" ? "print" : "screen").'" charset="utf-8" />';
