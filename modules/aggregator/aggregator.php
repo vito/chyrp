@@ -247,7 +247,7 @@
 
             $config->aggregates[$_POST['name']] = $aggregate;
             $config->set("aggregates", $config->aggregates);
-            $config->set("last_aggregation", 0);    // to force a refresh
+            $config->set("last_aggregation", 0); # to force a refresh
 
             Flash::notice(__("Aggregate created.", "aggregator"), "/admin/?action=manage_aggregates");
         }

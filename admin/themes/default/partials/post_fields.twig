@@ -1,7 +1,7 @@
                     ${ trigger.call("before_post_fields", feather) }
                     {% for field in feather.fields %}
                     <p>
-                        <label for="$field.attr">
+                        <label for="${ field.attr }_field">
                             $field.label
                             {% if field.optional %}
                             <span class="sub">${ "(optional)" | translate }</span>
@@ -16,13 +16,13 @@
                             {% endif %}
                         </label>
                         {% if field.type == "text" or field.type == "file" %}
-                        <input class="$field.type{% if field.classes %} ${ field.classes | join(" ") }{% endif %}" type="$field.type" name="$field.attr" value="{% if not field.no_value %}${ field.value | fallback(post[field.attr] | escape(true, false)) }{% endif %}" id="$field.attr" />
+                        <input class="$field.type{% if field.classes %} ${ field.classes | join(" ") }{% endif %}" type="$field.type" name="$field.attr" value="{% if not field.no_value %}${ field.value | fallback(post[field.attr] | escape(true, false)) }{% endif %}" id="${ field.attr }_field" />
                         {% elseif field.type == "text_block" %}
-                        <textarea class="wide{% if field.classes %} ${ field.classes | join(" ") }{% endif %}" rows="${ field.rows | fallback(12) }" name="$field.attr" id="$field.attr" cols="50">{% if not field.no_value %}${ field.value | fallback(post[field.attr] | escape(false, false)) }{% endif %}</textarea>
+                        <textarea class="wide{% if field.classes %} ${ field.classes | join(" ") }{% endif %}" rows="${ field.rows | fallback(12) }" name="$field.attr" id="${ field.attr }_field" cols="50">{% if not field.no_value %}${ field.value | fallback(post[field.attr] | escape(false, false)) }{% endif %}</textarea>
                         {% elseif field.type == "checkbox" %}
-                        <input class="$field.type{% if field.classes %} ${ field.classes | join(" ") }{% endif %}" type="$field.type" name="$field.attr"{% if field.checked %}checked="checked"{% endif %} id="$field.attr">
+                        <input class="$field.type{% if field.classes %} ${ field.classes | join(" ") }{% endif %}" type="$field.type" name="$field.attr"{% if field.checked %}checked="checked"{% endif %} id="${ field.attr }_field" />
                         {% elseif field.type == "select" %}
-                        <select name="$field.attr" id="$field.attr"{% if field.classes %} class="${ field.classes | join(" ") }"{% endif %}>
+                        <select name="$field.attr" id="${ field.attr }_field"{% if field.classes %} class="${ field.classes | join(" ") }"{% endif %}>
                             {% for value, name in field.options | items %}
                             <option value="${ value | escape }"{% if not field.no_value %}${ value | option_selected(post[field.attr]) }{% endif %}>${ name | escape }</option>
                             {% endfor %}
