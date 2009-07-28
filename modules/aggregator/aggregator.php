@@ -29,18 +29,18 @@
             if ($config->disable_aggregation or time() - $config->last_aggregation < ($config->aggregate_every * 60))
                 return;
 
-            $aggregates = $config->aggregates;
+            $aggregates = (array) $config->aggregates;
 
             if (empty($aggregates))
                 return;
 
-            foreach ((array) $config->aggregates as $name => $feed) {
+            foreach ($aggregates as $name => $feed) {
                 $xml_contents = preg_replace(array("/<(\/?)dc:date>/", "/xmlns=/"),
                                              array("<\\1date>", "a="),
                                              get_remote($feed["url"]));
                 $xml = simplexml_load_string($xml_contents, "SimpleXMLElement", LIBXML_NOCDATA);
 
-                if ($xml == false)
+                if ($xml === false)
                     continue;
 
                 # Flatten namespaces recursively
@@ -210,8 +210,7 @@
 
             $config = Config::current();
             $set = array($config->set("aggregate_every", $_POST['aggregate_every']),
-                         $config->set("disable_aggregation", !empty($_POST['disable_aggregation'])),
-                         $config->set("aggregation_author", $_POST['aggregation_author']));
+                         $config->set("disable_aggregation", !empty($_POST['disable_aggregation'])));
 
             if (!in_array(false, $set))
                 Flash::notice(__("Settings updated."), "/admin/?action=aggregation_settings");

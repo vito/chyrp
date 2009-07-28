@@ -65,7 +65,7 @@
 
             $this->per_page = $per_page;
             $this->name = $name;
-            $this->model = fallback($model, (count($this->array) == 2 and is_array($this->array[0]) and class_exists($this->array[1])));
+            $this->model = fallback($model, (count($this->array) == 2 and is_array($this->array[0]) and is_string($this->array[1]) and class_exists($this->array[1])));
 
             if ($model)
                 list($this->array, $model_name) = $this->array;
