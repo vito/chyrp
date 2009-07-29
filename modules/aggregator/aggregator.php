@@ -70,8 +70,10 @@
                         
                         # Construct the post data from the user-defined XPath mapping:
                         $data = array("aggregate" => $name);
-                        foreach ($feed["data"] as $attr => $field)
-                            $data[$attr] = (!empty($field)) ? $this->parse_field($field, $item) : "" ;
+                        foreach ($feed["data"] as $attr => $field) {
+                            $field = (!empty($field) ? $this->parse_field($field, $item) : "");
+                            $data[$attr] = (is_string($field) ? $field : YAML::dump($field));
+                        }
 
                         if (isset($data["title"]) or isset($data["name"]))
                             $clean = sanitize(oneof(@$data["title"], @$data["name"]));
@@ -163,8 +165,17 @@
             return upload_from_url(self::image_from_content($html));
         }
 
-        public function parse_field($value, $item) {
-            if (preg_match("/^([a-z0-9:\/]+)$/", $value)) {
+        public function parse_field($value, $item, $basic = true) {
+            if (is_array($value)) {
+                $parsed = array();
+                foreach ($value as $key => $val)
+                    $parsed[$this->parse_field($key, $item, false)] = $this->parse_field($val, $item, false);
+                
+                return $parsed;
+            } elseif (!is_string($value))
+                return $value;
+            
+            if ($basic and preg_match("/^([a-z0-9:\/]+)$/", $value)) {
                 $xpath = $item->xpath($value);
                 return html_entity_decode($xpath[0], ENT_QUOTES, "utf-8");
             }
