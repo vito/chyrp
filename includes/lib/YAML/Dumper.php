@@ -197,7 +197,7 @@ class Horde_Yaml_Dumper
     {
         // Don't do anything if wordwrap is set to 0
         if (! $this->_options['wordwrap']) {
-            return (is_string($value) and !is_numeric($value) and !empty($value)) ? '"'.$value.'"' : $value ;
+            return (is_string($value) and !is_numeric($value) and !empty($value)) ? '"'.str_replace("\"", "\\\"", $value).'"' : $value ;
         }
 
         if (strlen($value) > $this->_options['wordwrap']) {
