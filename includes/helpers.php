@@ -898,12 +898,13 @@
      *     A unique version of the given $name.
      */
     function unique_filename($name, $path = "", $num = 2) {
-        if (!file_exists(MAIN_DIR.Config::current()->uploads_path.$path.$name))
+        $path = rtrim($path, "/");
+        if (!file_exists(MAIN_DIR.Config::current()->uploads_path.$path."/".$name))
             return $name;
 
         $name = explode(".", $name);
 
-        # Handle "double extensions"
+        # Handle common double extensions
         foreach (array("tar.gz", "tar.bz", "tar.bz2") as $extension) {
             list($first, $second) = explode(".", $extension);
             $file_first =& $name[count($name) - 2];
@@ -916,7 +917,7 @@
         $ext = ".".array_pop($name);
 
         $try = implode(".", $name)."-".$num.$ext;
-        if (!file_exists(MAIN_DIR.Config::current()->uploads_path.$path.$try))
+        if (!file_exists(MAIN_DIR.Config::current()->uploads_path.$path."/".$try))
             return $try;
 
         return unique_filename(implode(".", $name).$ext, $path, $num + 1);
@@ -937,14 +938,15 @@
      */
     function upload($file, $extension = null, $path = "", $put = false) {
         $file_split = explode(".", $file['name']);
-        $dir = rtrim(MAIN_DIR.Config::current()->uploads_path.$path, "/");
+        $path = rtrim($path, "/");
+        $dir = MAIN_DIR.Config::current()->uploads_path.$path;
 
         if (!file_exists($dir))
             mkdir($dir, 0777, true);
 
         $original_ext = end($file_split);
 
-        # Handle "double extensions"
+        # Handle common double extensions
         foreach (array("tar.gz", "tar.bz", "tar.bz2") as $ext) {
             list($first, $second) = explode(".", $ext);
             $file_first =& $file_split[count($file_split) - 2];
@@ -1018,6 +1020,9 @@
      *     $file - Filename relative to the uploads directory.
      */
     function uploaded($file, $url = true) {
+        if (empty($file))
+            return "";
+        
         $config = Config::current();
         return ($url ? $config->chyrp_url.$config->uploads_path.$file : MAIN_DIR.$config->uploads_path.$file);
     }
