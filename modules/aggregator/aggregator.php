@@ -180,7 +180,7 @@
                 return html_entity_decode($xpath[0], ENT_QUOTES, "utf-8");
             }
 
-            if (preg_match("/feed\[(.+)\]\.attr\[([^\]]+)\]/", $value, $matches)) {
+            if (preg_match("/feed\[([^\]]+)\]\.attr\[([^\]]+)\]/", $value, $matches)) {
                 $xpath = $item->xpath($matches[1]);
                 $value = str_replace($matches[0],
                                      html_entity_decode($xpath[0]->attributes()->$matches[2],
@@ -189,7 +189,7 @@
                                      $value);
             }
 
-            if (preg_match("/feed\[(.+)\]/", $value, $matches)) {
+            if (preg_match("/feed\[([^\]]+)\]/", $value, $matches)) {
                 $xpath = $item->xpath($matches[1]);
                 $value = str_replace($matches[0],
                                      html_entity_decode($xpath[0], ENT_QUOTES, "utf-8"),
