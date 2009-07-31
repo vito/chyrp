@@ -1,22 +1,9 @@
 <?php
+    require_once "filecacher.php";
     class Cacher extends Modules {
         public function __init() {
-            $this->user = (logged_in()) ? Visitor::current()->login : "guest" ;
-            $this->path = INCLUDES_DIR."/caches/".sanitize($this->user);
-
-            $this->caches = INCLUDES_DIR."/caches";
-            $this->url = self_url();
-            $this->file = $this->path."/".md5($this->url).".html";
-
-            # If the cache directory is not writable, disable this module and cancel execution.
-            if (!is_writable($this->caches))
-                cancel_module("cacher");
-
             # Prepare actions that should result in new cache files.
             $this->prepare_cache_updaters();
-
-            # Remove all expired files.
-            $this->remove_expired();
 
             $config = Config::current();
             $config->cache_exclude = (array) $config->cache_exclude;
@@ -25,18 +12,26 @@
                 foreach ($config->cache_exclude as &$exclude)
                     if (substr($exclude, 7) != "http://")
                         $exclude = $config->url."/".ltrim($exclude, "/");
+                        
+            $this->cacher = new FileCacher($config);
+            
+            
+            # Prepare actions that should result in new cache files.
+            $this->prepare_cache_updaters();
         }
 
         static function __install() {
             $config = Config::current();
             $config->set("cache_expire", 1800);
             $config->set("cache_exclude", array());
+            $config->set("cache_memcached_hosts", arry());
         }
 
         static function __uninstall() {
             $config = Config::current();
             $config->remove("cache_expire");
             $config->remove("cache_exclude");
+            $config->remove("cache_memcached_hosts");
         }
 
         public function route_init($route) {
@@ -44,37 +39,27 @@
                 !($route->controller instanceof MainController) or
                 in_array($this->url, Config::current()->cache_exclude) or
                 $this->cancelled or
-                !file_exists($this->file) or
+                !$this->cacher->cached() or
                 Flash::exists())
                 return;
-
-            if (DEBUG)
-                error_log("SERVING cache file for ".$this->url."...");
-
-            $cache = file_get_contents($this->file);
-
-            if (substr_count($cache, "<feed"))
-                header("Content-Type: application/atom+xml; charset=UTF-8");
-
-            exit($cache);
+            
+            $cache = $this->cacher->get($route);
+            
+            foreach($cache['headers'] as $header)
+              header($header);
+            
+            exit($cache['contents']);
         }
 
         public function end($route) {
             if (!($route->controller instanceof MainController) or
                 in_array($this->url, Config::current()->cache_exclude) or
                 $this->cancelled or
-                file_exists($this->file) or
+                $this->cacher->cached() or
                 Flash::exists())
                 return;
 
-            if (DEBUG)
-                error_log("GENERATING cache file for ".$this->url."...");
-
-            # Generate the user's directory.
-            if (!file_exists($this->path))
-                mkdir($this->path);
-
-            file_put_contents($this->file, ob_get_contents());
+              $this->cacher->set(ob_get_contents());
         }
 
         public function prepare_cache_updaters() {
@@ -92,40 +77,16 @@
                 $this->addAlias($action, "remove_post_cache");
         }
 
-        public function remove_expired() {
-            foreach ((array) glob($this->caches."/*/*.html") as $file) {
-                if (time() - filemtime($file) > Config::current()->cache_expire)
-                    @unlink($file);
-
-                $dir = dirname($file);
-                if (!count((array) glob($dir."/*")))
-                    @rmdir($dir);
-            }
-        }
-
         public function regenerate() {
-            if (DEBUG)
-                error_log("REGENERATING");
-
-            foreach ((array) glob($this->caches."/*/*.html") as $file)
-                @unlink($file);
+            $this->cacher->regenerate();
         }
 
         public function regenerate_local($user = null) {
-            if (DEBUG)
-                error_log("REGENERATING local user ".$this->user."...");
-
-            $directory = (isset($user)) ? $this->caches."/".$user : $this->path ;
-            foreach ((array) glob($directory."/*.html") as $file)
-                @unlink($file);
+            $this->cacher->regenerate_local($user);
         }
 
         public function remove_caches_for($url) {
-            if (DEBUG)
-                error_log("REMOVING caches for ".$url."...");
-
-            foreach ((array) glob($this->caches."/*/".md5($url).".html") as $file)
-                @unlink($file);
+            $this->cacher->remove_caches_for($url);
         }
 
         public function remove_post_cache($thing) {
@@ -154,9 +115,11 @@
                 show_403(__("Access Denied"), __("Invalid security key."));
 
             $exclude = (empty($_POST['cache_exclude']) ? array() : explode(", ", $_POST['cache_exclude']));
+            
+            $memcached_hosts = empty($_POST['cache_memcached_hosts']) ? array() : explode(", ", $_POST['cache_memcached_hosts']);
 
             $config = Config::current();
-            if ($config->set("cache_expire", $_POST['cache_expire']) and $config->set("cache_exclude", $exclude))
+            if ($config->set("cache_expire", $_POST['cache_expire']) and $config->set("cache_exclude", $exclude) and $config->set("cache_memcached_hosts", $memcached_hosts))
                 Flash::notice(__("Settings updated."), "/admin/?action=cache_settings");
         }
 
