@@ -1,11 +1,11 @@
 <?
 class FileCacher{
-  public function __construct() {
+  public function __construct($url, $config) {
       $this->user = (logged_in()) ? Visitor::current()->login : "guest" ;
       $this->path = INCLUDES_DIR."/caches/".sanitize($this->user);
 
       $this->caches = INCLUDES_DIR."/caches";
-      $this->url = self_url();
+      $this->url = $url;
       $this->file = $this->path."/".md5($this->url).".html";
 
       # If the cache directory is not writable, disable this module and cancel execution.
@@ -16,7 +16,7 @@ class FileCacher{
       $this->remove_expired();
   }
   
-  public function cached(){
+  public function url_available(){
     return file_exists($this->file);
   }
   

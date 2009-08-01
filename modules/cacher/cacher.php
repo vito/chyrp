@@ -1,5 +1,6 @@
 <?php
     require_once "filecacher.php";
+    require_once "memcacher.php";
     class Cacher extends Modules {
         public function __init() {
             # Prepare actions that should result in new cache files.
@@ -12,9 +13,12 @@
                 foreach ($config->cache_exclude as &$exclude)
                     if (substr($exclude, 7) != "http://")
                         $exclude = $config->url."/".ltrim($exclude, "/");
-                        
-            $this->cacher = new FileCacher($config);
             
+            if(count((array)$config->cache_memcached_hosts) > 0){
+              $this->cacher = new MemCacher(self_url(), $config);
+            }else{
+              $this->cacher = new FileCacher(self_url(), $config);
+            }
             
             # Prepare actions that should result in new cache files.
             $this->prepare_cache_updaters();
@@ -24,7 +28,7 @@
             $config = Config::current();
             $config->set("cache_expire", 1800);
             $config->set("cache_exclude", array());
-            $config->set("cache_memcached_hosts", arry());
+            $config->set("cache_memcached_hosts", array());
         }
 
         static function __uninstall() {
@@ -39,7 +43,7 @@
                 !($route->controller instanceof MainController) or
                 in_array($this->url, Config::current()->cache_exclude) or
                 $this->cancelled or
-                !$this->cacher->cached() or
+                !$this->cacher->url_available() or
                 Flash::exists())
                 return;
             
@@ -55,7 +59,7 @@
             if (!($route->controller instanceof MainController) or
                 in_array($this->url, Config::current()->cache_exclude) or
                 $this->cancelled or
-                $this->cacher->cached() or
+                $this->cacher->url_available() or
                 Flash::exists())
                 return;
 
@@ -132,3 +136,4 @@
             Flash::notice(__("Cache cleared.", "cacher"), "/admin/?action=cache_settings");
         }
     }
+?>
