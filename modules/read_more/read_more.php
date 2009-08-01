@@ -4,7 +4,7 @@
             $this->addAlias("markup_post_text", "makesafe", 8);
         }
 
-		# Replace the "read more" indicator before markup modules get to it.
+        # Replace the "read more" indicator before markup modules get to it.
         static function makesafe($text, $post = null) {
             if (!is_string($text) or !preg_match("/<!--more(\((.+)\))?-->/", $text)) return $text;
 
@@ -44,6 +44,6 @@
         }
 
         public function preview($text) {
-            return preg_replace("/<!--more(\((.+)\))?-->/", "<hr />", $text);
+            return preg_replace("/<!--more(\(([^\)]+)\))?-->/", "<hr />", $text);
         }
     }

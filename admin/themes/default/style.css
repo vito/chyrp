@@ -52,15 +52,21 @@ a:visited {
     background: #353535;
     padding: 2.5em 0;
     color: #fff;
+    position: relative;
 }
 #header h1 {
     font-size: 2em;
     line-height: 1.25em;
     text-shadow: #000 0 1px 1px;
 }
+#header h1 a {
+    text-decoration: none;
+}
 #header #navigation {
     float: right;
-    margin-top: 1em;
+    position: absolute;
+    bottom: 0;
+    right: 5em;
 }
 #header #navigation li {
     display: inline;
@@ -173,8 +179,6 @@ a:visited {
 /* @group Content */
 #content {
     background: #fff;
-    margin: 0 auto;
-    max-width: 53em;
     padding: 1em;
 }
 #content > form {
@@ -469,7 +473,7 @@ textarea {
     margin-bottom: .25em;
 }
 input.text {
-    width: 15em;
+    /* width: 15em; */
 }
 input.checkbox {
     margin: .6em .5em .75em 0;
@@ -916,8 +920,7 @@ a.emblem img {
     display: inline;
 }
 .column {
-    margin: 0 auto;
-    max-width: 55em;
+    margin: 0 5em;
 }
 br#after_options {
     display: none;
