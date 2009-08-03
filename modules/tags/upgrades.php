@@ -92,6 +92,7 @@
             echo _f("Relocating tags for post #%d...", array($post_id), "tags");
 
             echo test($insert = $sql->replace("post_attributes",
+                                              array("post_id", "name"),
                                               array("name" => "tags",
                                                     "value" => $yaml,
                                                     "post_id" => $post_id)),
@@ -114,9 +115,10 @@
 
         foreach ($tags->fetchAll() as $attr)
             $sql->replace("post_attributes",
-                         array("post_id" => $attr["post_id"],
-                               "name" => "tags",
-                               "value" => YAML::dump(YAML::load($attr["value"]))));
+                          array("post_id", "name"),
+                          array("post_id" => $attr["post_id"],
+                                "name" => "tags",
+                                "value" => YAML::dump(YAML::load($attr["value"]))));
     }
 
     update_tags_structure();
