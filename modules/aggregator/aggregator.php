@@ -75,8 +75,7 @@
                             $data[$attr] = (is_string($field) ? $field : YAML::dump($field));
                         }
 
-                        if (isset($data["title"]) or isset($data["name"]))
-                            $clean = sanitize(oneof(@$data["title"], @$data["name"]));
+                        $clean = sanitize(oneof(@$data["title"], @$data["name"], ""));
 
                         Post::add($data, $clean, null, $feed["feather"], $feed["author"],
                                   false,
@@ -180,7 +179,7 @@
                 return html_entity_decode($xpath[0], ENT_QUOTES, "utf-8");
             }
 
-            if (preg_match("/feed\[([^\]]+)\]\.attr\[([^\]]+)\]/", $value, $matches)) {
+            if (preg_match("/feed\[(.+)\]\.attr\[([^\]]+)\]/", $value, $matches)) {
                 $xpath = $item->xpath($matches[1]);
                 $value = str_replace($matches[0],
                                      html_entity_decode($xpath[0]->attributes()->$matches[2],
@@ -189,7 +188,7 @@
                                      $value);
             }
 
-            if (preg_match("/feed\[([^\]]+)\]/", $value, $matches)) {
+            if (preg_match("/feed\[(.+)\]/", $value, $matches)) {
                 $xpath = $item->xpath($matches[1]);
                 $value = str_replace($matches[0],
                                      html_entity_decode($xpath[0], ENT_QUOTES, "utf-8"),
@@ -382,7 +381,7 @@
 
             $body.= "<h2>".__("Example", "aggregator")."</h2>";
             $body.= "<p>".__("From the Photo feather:", "aggregator")."</pre>";
-            $body.= "<pre><code>filename: call:upload_from_url(feed[link].attr[href])\ncaption: feed[description]</code></pre>";
+            $body.= "<pre><code>filename: call:upload_from_url(feed[link].attr[href])\ncaption: feed[description] # or just \"description\"</code></pre>";
 
             return array($title, $body);
         }
