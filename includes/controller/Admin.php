@@ -171,6 +171,9 @@
             if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
                 show_403(__("Access Denied"), __("Invalid security key."));
 
+            if (!isset($_POST['draft']) and !$visitor->group->can("add_post"))
+                $_POST['draft'] = 'true';
+
             $post = Feathers::$instances[$_POST['feather']]->submit();
 
             if (!$post->redirect)
