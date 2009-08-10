@@ -13,13 +13,13 @@
                 foreach ($config->cache_exclude as &$exclude)
                     if (substr($exclude, 7) != "http://")
                         $exclude = $config->url."/".ltrim($exclude, "/");
-            
+        
             if(count((array)$config->cache_memcached_hosts) > 0){
               $this->cacher = new MemCacher(self_url(), $config);
             }else{
               $this->cacher = new FileCacher(self_url(), $config);
             }
-            
+        
             # Prepare actions that should result in new cache files.
             $this->prepare_cache_updaters();
         }
@@ -46,12 +46,12 @@
                 !$this->cacher->url_available() or
                 Flash::exists())
                 return;
-            
+        
             $cache = $this->cacher->get($route);
-            
+        
             foreach($cache['headers'] as $header)
               header($header);
-            
+        
             exit($cache['contents']);
         }
 
@@ -119,7 +119,7 @@
                 show_403(__("Access Denied"), __("Invalid security key."));
 
             $exclude = (empty($_POST['cache_exclude']) ? array() : explode(", ", $_POST['cache_exclude']));
-            
+        
             $memcached_hosts = empty($_POST['cache_memcached_hosts']) ? array() : explode(", ", $_POST['cache_memcached_hosts']);
 
             $config = Config::current();
@@ -136,4 +136,4 @@
             Flash::notice(__("Cache cleared.", "cacher"), "/admin/?action=cache_settings");
         }
     }
-?>
+
