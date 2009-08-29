@@ -58,3 +58,7 @@ msgstr ""
 msgid "Cache Settings"
 msgstr ""
 
+#: modules/cacher/pages/admin/cache_settings.twig:19
+msgid "Memcache Servers"
+msgstr ""
+

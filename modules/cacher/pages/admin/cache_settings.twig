@@ -14,6 +14,11 @@
                         <label for="cache_exclude">${ "Exclude URLs" | translate("cacher") }</label>
                         <input class="text" type="text" name="cache_exclude" value="${ site.cache_exclude | join(", ") | escape }" id="cache_exclude" /> <span class="sub">${ "(comma separated)" | translate("cacher") }</span>
                     </p>
+                    
+                    <p>
+                        <label for="cache_memcached_hosts">${ "Memcache Servers" | translate("cacher")}</label>
+                        <input class="text" type="text" name="cache_memcached_hosts" value="${ site.cache_memcached_hosts | join(", ") | escape }" id="cache_memcached_hosts" /> <span class="sub">${ "(comma separated)" | translate("cacher") }</span>
+                    </p>
 
                     <p class="buttons">
                         <p>
