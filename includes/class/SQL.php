@@ -71,15 +71,16 @@
                     $this->method = "mysqli";
                 elseif ($this->adapter == "mysql" and function_exists("mysql_connect"))
                     $this->method = "mysql";
-                elseif ($this->adapter == "sqlite" and in_array("sqlite", PDO::getAvailableDrivers()) or
-                        $this->adapter == "pgsql" and in_array("pgsql", PDO::getAvailableDrivers()))
+                elseif (class_exists("PDO") and
+                        ($this->adapter == "sqlite" and in_array("sqlite", PDO::getAvailableDrivers()) or
+                         $this->adapter == "pgsql" and in_array("pgsql", PDO::getAvailableDrivers())))
                     $this->method = "pdo";
             } else
                 if (class_exists("MySQLi"))
                     $this->method = "mysqli";
                 elseif (function_exists("mysql_connect"))
                     $this->method = "mysql";
-                elseif (in_array("mysql", PDO::getAvailableDrivers()))
+                elseif (class_exists("PDO") and in_array("mysql", PDO::getAvailableDrivers()))
                     $this->method = "pdo";
         }
 
@@ -217,7 +218,7 @@
                                             "TEXT",
                                             "INSERT INTO"),
                                       $query);
-            
+
             $query = new Query($this, $query, $params, $throw_exceptions);
 
             return (!$query->query and UPGRADING) ? false : $query ;

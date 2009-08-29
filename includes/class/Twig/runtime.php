@@ -120,6 +120,10 @@ class Twig_LoopContextIterator implements Iterator
     }
 }
 
+function unretarded_array_unshift(&$arr, &$val) {
+    $arr = array_merge(array(&$val), $arr);
+}
+
 /**
  * This is called like an ordinary filter just with the name of the filter
  * as first argument.  Currently we just raise an exception here but it
@@ -135,9 +139,10 @@ function twig_missing_filter($name)
     array_shift($args);
 
     array_unshift($args, $name);
-    array_unshift($args, $text);
+    unretarded_array_unshift($args, $text);
 
     $trigger = Trigger::current();
+
     if ($trigger->exists($name))
         return call_user_func_array(array($trigger, "filter"), $args);
 

@@ -675,6 +675,7 @@ a.prev_page:hover {
 }
 button:active,
 .button:active,
+.button.selected,
 a.next_page:active,
 a.prev_page:active {
     background-color: #d7d7d7;
