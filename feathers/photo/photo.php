@@ -17,7 +17,7 @@
                                   "label" => __("Caption", "photo"),
                                   "optional" => true,
                                   "preview" => true,
-                                  "bookmarklet" => "selection"));
+                                  "bookmarklet" => "page_link"));
 
             $this->setFilter("caption", array("markup_text", "markup_post_text"));
 
