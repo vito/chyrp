@@ -10,8 +10,8 @@
                 <span class="tag_wrap">
                     <a class="tag" href="$tag.url" style="font-size: $tag.size%" title="$tag.title">$tag.name</a>
                     <div class="controls">
-                        <a class="edit_tag" href="{% admin "rename_tag&name="~ tag.clean %}"><img src="theme/images/icons/edit.png" alt="edit" /></a>
-                        <a class="delete_tag" href="{% admin "delete_tag&name="~ (tag.name | urlencode) ~"&clean="~ tag.clean %}"><img src="theme/images/icons/delete.png" alt="edit" /></a>
+                        <a class="edit_tag" href="{% admin "rename_tag&name="~ tag.clean %}"><img src="$theme_url/images/icons/edit.png" alt="edit" /></a>
+                        <a class="delete_tag" href="{% admin "delete_tag&name="~ (tag.name | urlencode) ~"&clean="~ tag.clean %}"><img src="$theme_url/images/icons/delete.png" alt="edit" /></a>
                     </div>
                 </span>
                 {% else %}
@@ -30,7 +30,7 @@
                         <input type="hidden" name="action" value="manage_tags" />
                         <input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" size="15" />
                         <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
-                        <a href="{% admin "help&id=filtering_results" %}" class="help emblem"><img src="theme/images/icons/help.png" alt="help" /></a>
+                        <a href="{% admin "help&id=filtering_results" %}" class="help emblem"><img src="$theme_url/images/icons/help.png" alt="help" /></a>
                     </fieldset>
                 </form>
             </h2>
@@ -47,7 +47,7 @@
                             {% for name, clean in post.tags | items %}
                             <a class="tag" href="{% url "tag/"~ (clean | escape) %}">$name</a>
                             {% endfor %}
-                            <a class="edit_tag" href="{% admin "edit_tags&id="~ post.id %}"><img src="theme/images/icons/edit.png" alt="edit" /></a>
+                            <a class="edit_tag" href="{% admin "edit_tags&id="~ post.id %}"><img src="$theme_url/images/icons/edit.png" alt="edit" /></a>
                         </li>
                         {% else %}
                         <li>

@@ -6,12 +6,12 @@
             <h2>${ "Need more detail?" | translate }</h2>
             <form class="detail" action="index.php" method="get" accept-charset="utf-8">
                 <fieldset>
-                    <a class="button boo right" href="{% admin "purge_spam" %}"><img src="theme/images/icons/deny.png" alt="deny" />${ "Delete All (%d)" | translate("comments") | format(comments.total) }</a>
+                    <a class="button boo right" href="{% admin "purge_spam" %}"><img src="$theme_url/images/icons/deny.png" alt="deny" />${ "Delete All (%d)" | translate("comments") | format(comments.total) }</a>
                     <input type="hidden" name="action" value="manage_comments" />
                     <div class="left pad">
                         <h3>
                             ${ "Search&hellip;" | translate }
-                            <a href="{% admin "help&id=filtering_results" %}" class="help emblem"><img src="theme/images/icons/help.png" alt="help" /></a>
+                            <a href="{% admin "help&id=filtering_results" %}" class="help emblem"><img src="$theme_url/images/icons/help.png" alt="help" /></a>
                         </h3>
                         <input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" />
                         <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
@@ -44,11 +44,11 @@
                             <td>${ comment.created_at | strftime }</td>
                             ${ trigger.call("manage_comments_column", comment) }
                             {% if comment.editable and comment.deletable %}
-                        <td class="controls">${ comment.edit_link('<img src="theme/images/icons/edit.png" alt="edit" /> '~("edit" | translate)) }</td>
-                        <td class="controls">${ comment.delete_link('<img src="theme/images/icons/delete.png" alt="delete" /> '~("delete" | translate)) }</td>
+                        <td class="controls">${ comment.edit_link('<img src="'~ theme_url ~'/images/icons/edit.png" alt="edit" /> '~("edit" | translate)) }</td>
+                        <td class="controls">${ comment.delete_link('<img src="'~ theme_url ~'/images/icons/delete.png" alt="delete" /> '~("delete" | translate)) }</td>
                         {% elseif comment.editable or comment.deletable %}
-                        ${ comment.edit_link('<img src="theme/images/icons/edit.png" alt="edit" /> '~("edit" | translate), '<td class="controls" colspan="2">', '</td>') }
-                        ${ comment.delete_link('<img src="theme/images/icons/delete.png" alt="delete" /> '~("delete" | translate), '<td class="controls" colspan="2">', '</td>') }
+                        ${ comment.edit_link('<img src="'~ theme_url ~'/images/icons/edit.png" alt="edit" /> '~("edit" | translate), '<td class="controls" colspan="2">', '</td>') }
+                        ${ comment.delete_link('<img src="'~ theme_url ~'/images/icons/delete.png" alt="delete" /> '~("delete" | translate), '<td class="controls" colspan="2">', '</td>') }
                         {% endif %}
                         </tr>
                         <tr class="excerpt">
@@ -65,13 +65,13 @@
                 <div class="controls">
                     <h4>${ "With selected:" | translate("comments") }</h4>
                     <button class="lite" name="deny">
-                        <img src="theme/images/icons/deny.png" alt="deny" /> ${ "deny" | translate("comments") }
+                        <img src="$theme_url/images/icons/deny.png" alt="deny" /> ${ "deny" | translate("comments") }
                     </button>
                     <button class="lite yay" name="approve">
-                        <img src="theme/images/icons/success.png" alt="approve" /> ${ "approve" | translate("comments") }
+                        <img src="$theme_url/images/icons/success.png" alt="approve" /> ${ "approve" | translate("comments") }
                     </button>
                     <button class="lite boo" name="delete">
-                        <img src="theme/images/icons/delete.png" alt="delete" /> ${ "delete" | translate("comments") }
+                        <img src="$theme_url/images/icons/delete.png" alt="delete" /> ${ "delete" | translate("comments") }
                     </button>
                 </div>
             </form>

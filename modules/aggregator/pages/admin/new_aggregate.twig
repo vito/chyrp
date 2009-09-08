@@ -34,7 +34,7 @@
                         <label for="data">
                             ${ "Post Attributes" | translate("aggregator") }
                             <span class="sub">
-                                <a href="{% admin "help&id=aggregation_syntax" %}" class="help emblem"><img src="theme/images/icons/help.png" alt="help" /></a>
+                                <a href="{% admin "help&id=aggregation_syntax" %}" class="help emblem"><img src="$theme_url/images/icons/help.png" alt="help" /></a>
                             </span>
                         </label>
                         <textarea class="code" name="data" rows="9" cols="50" class="wide" id="data">${ POST.data | escape }</textarea>
@@ -43,7 +43,7 @@
                     <br />
 
                     <p>
-                        <button type="submit" class="yay"><img src="theme/images/icons/success.png" alt="success" />${ "Add Aggregate" | translate("aggregator") }</button>
+                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.png" alt="success" />${ "Add Aggregate" | translate("aggregator") }</button>
                     </p>
 
                     <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
