@@ -13,9 +13,9 @@
 
                     <div class="buttons">
                         <button type="submit" class="yay right" accesskey="s">
-                            <img src="theme/images/icons/success.png" alt="success" />${ "Save" | translate }
+                            <img src="$theme_url/images/icons/success.png" alt="success" />${ "Save" | translate }
                         </button>
-                        ${ comment.delete_link('<img src="theme/images/icons/delete.png" alt="delete" />'~ ("Delete" | translate), null, null, "button boo right") }
+                        ${ comment.delete_link('<img src="'~ theme_url ~'/images/icons/delete.png" alt="delete" />'~ ("Delete" | translate), null, null, "button boo right") }
                     </div>
 
                     <div class="clear"></div>

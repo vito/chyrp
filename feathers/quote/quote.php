@@ -13,7 +13,7 @@
                                   "label" => __("Source", "quote"),
                                   "optional" => true,
                                   "preview" => true,
-                                  "bookmarklet" => "page_title"));
+                                  "bookmarklet" => "page_link"));
 
             $this->setFilter("quote", array("markup_text", "markup_post_text"));
             $this->setFilter("source", array("markup_text", "markup_post_text"));

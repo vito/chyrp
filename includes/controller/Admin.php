@@ -154,6 +154,7 @@
                                  "selected_feather" => Feathers::$instances[$feather],
                                  "args" => array("url" => stripslashes($_GET['url']),
                                                  "page_url" => stripslashes($_GET['url']),
+                                                 "page_link" => '(via <a href="'.stripslashes($_GET['url']).'">'.$_GET['title'].'</a>)',
                                                  "title" => stripslashes($_GET['title']),
                                                  "page_title" => stripslashes($_GET['title']),
                                                  "selection" => stripslashes($_GET['selection']))));
