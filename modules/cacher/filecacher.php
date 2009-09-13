@@ -27,7 +27,7 @@
             $cache = array('contents' => file_get_contents($this->file), 'headers' => array());
 
             if (substr_count($cache['contents'], "<feed"))
-              $cache['contents'][] = "Content-Type: application/atom+xml; charset=UTF-8";
+                $cache["headers"][] = "Content-Type: application/atom+xml; charset=UTF-8";
 
             return $cache;
         }
