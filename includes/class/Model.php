@@ -171,7 +171,7 @@
             if (!isset($id) and isset($options["where"]["id"]))
                 $id = $options["where"]["id"];
 
-            $cache = (is_numeric($id) and isset(self::$caches[$model_name][$id])) ? 
+            $cache = (is_numeric($id) and isset(self::$caches[$model_name][$id])) ?
                          self::$caches[$model_name][$id] :
                          ((isset($options["read_from"]["id"]) and isset(self::$caches[$model_name][$options["read_from"]["id"]])) ?
                              self::$caches[$model_name][$options["read_from"]["id"]] :
@@ -266,7 +266,7 @@
                 $model->queryString = $query->queryString;
 
             if (isset($model->updated_at))
-                $model->updated = !empty($model->updated_at);
+                $model->updated = (!empty($model->updated_at) and $model->updated_at != "0000-00-00 00:00:00");
 
             $clone = clone $model;
 
