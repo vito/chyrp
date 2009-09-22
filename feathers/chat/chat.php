@@ -45,7 +45,7 @@
             $dialogue = oneof($post->dialogue_unformatted, $post->dialogue);
 
             $dialogue = explode("\n", $dialogue);
-            $line = preg_replace("/[ ]?[\[|\(]?[0-9]{1,2}:[0-9]{2}(:[0-9]{2})?[ ]?(pm|am)?[\]|\)]?[ ]?/i", "", $dialogue[0]);
+            $line = preg_replace("/^\s*[\[\(]?[0-9]{1,2}:[0-9]{2}(:[0-9]{2})?\s*(pm|am)?[\]|\)]?\s*/i", "", $dialogue[0]);
             $first_line = preg_replace("/([<]?)([^:|>]+)( \(me\)?)(:|>) (.+)/i", "\\1\\2\\4 \\5", $dialogue[0]);
 
             return oneof($post->title, $first_line);

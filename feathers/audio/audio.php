@@ -128,12 +128,12 @@ var ap_clearID = setInterval( ap_registerPlayers, 100 );
 
         public function enclose_mp3($post) {
             $config = Config::current();
-            if ($post->feather != "audio" or !file_exists(MAIN_DIR.$config->uploads_path.$post->filename))
+            if ($post->feather != "audio" or !file_exists(uploaded($post->filename, false)))
                 return;
 
-            $length = filesize(MAIN_DIR.$config->uploads_path.$post->filename);
+            $length = filesize(uploaded($post->filename, false));
 
-            echo '          <link rel="enclosure" href="'.$config->chyrp_url.$config->uploads_path.$post->filename.'" type="audio/mpeg" title="MP3" length="'.$length.'" />'."\n";
+            echo '          <link rel="enclosure" href="'.uploaded($post->filename).'" type="audio/mpeg" title="MP3" length="'.$length.'" />'."\n";
         }
 
         public function flash_player_for($filename, $params = array(), $post) {
