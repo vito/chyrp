@@ -70,7 +70,7 @@
             $links = array();
             foreach ($split as $line) {
                 # Remove the timstamps
-                $line = preg_replace("/[ ]?[\[|\(]?[0-9]{1,2}:[0-9]{2}(:[0-9]{2})?[ ]?(pm|am)?[\]|\)]?[ ]?/i", "", $line);
+                $line = preg_replace("/^\s*[\[\(]?[0-9]{1,2}:[0-9]{2}(:[0-9]{2})?\s*(pm|am)?[\]|\)]?\s*/i", "", $line);
 
                 preg_match("/(<?)(.+)(:|>)\s*(.+)/i", $line, $matches);
 
