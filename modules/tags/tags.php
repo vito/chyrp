@@ -222,7 +222,7 @@
 
             $tags = array();
             $names = array();
-            
+
             foreach($sql->select("post_attributes",
                                  "*",
                                  array("name" => "tags",
@@ -377,7 +377,7 @@
 
             $attributes = $sql->select("post_attributes",
                                        array("value", "post_id"),
-                                       array("name" => "tags", 
+                                       array("name" => "tags",
                                              "value like all" => $likes));
 
             $ids = array();
@@ -405,7 +405,7 @@
                 return false;
 
             $main->display(array("pages/tag", "pages/index"),
-                           array("posts" => $posts, "tag" => $tag),
+                           array("posts" => $posts, "tag" => $tag, "tags" => $tags),
                            _f("Posts tagged with %s", array($tag), "tags"));
         }
 
