@@ -4,3 +4,5 @@ feathers/photo/lib/cache/*
 uploads/*
 includes/config.yaml.php
 includes/database.yaml.php
+themes/*
+!themes/stardust
