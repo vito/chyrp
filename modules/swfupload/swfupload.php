@@ -51,7 +51,7 @@
                     echo '                  upload_progress_handler : '.$upload_progress_handler.','."\n";
                     echo '                  upload_error_handler : '.$upload_error_handler.','."\n";
                     echo '                  upload_success_handler : '.$upload_success_handler.','."\n";
-                    echo '                  button_placeholder_id : "'.$id.'",'."\n";
+                    echo '                  button_placeholder_id : "'.$id.'_field",'."\n";
                     echo '                  button_width : $("#'.$id.'_fake").width(),'."\n";
                     echo '                  button_height : $("#'.$id.'_fake").height(),'."\n";
                     echo '                  button_action : SWFUpload.BUTTON_ACTION.SELECT_FILES,'."\n";
