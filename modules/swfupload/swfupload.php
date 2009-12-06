@@ -34,7 +34,7 @@
                         foreach ($options as $key => $val)
                             $$key = $val;
 
-                    echo '              $("#'.$id.'").clone().attr("id", "'.$id.'_fake").addClass("swfupload_button").insertBefore("#'.$id.'")'."\n";
+                    echo '              $("#'.$id.'_field").clone().attr("id", "'.$id.'_fake").addClass("swfupload_button").insertBefore("#'.$id.'_field")'."\n";
                     echo "              ".$id." = new SWFUpload({\n";
                     echo '                  upload_url : "'.$upload_url.'",'."\n";
                     echo '                  flash_url : "'.$flash_url.'",'."\n";
