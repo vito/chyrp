@@ -7,7 +7,7 @@
     if (!in_array($_GET['file'], explode(" ", $valid_files)) and strpos($_GET['file'], "/themes/") === false)
         exit("Access Denied.");
 
-    if (strpos($_GET['file'], "/themes/") and strpos($_GET['file'], ".."))
+    if (substr_count($_GET['file'], "..") > 0 )
         exit("GTFO.");
 
     if (extension_loaded('zlib') and USE_ZLIB) {
