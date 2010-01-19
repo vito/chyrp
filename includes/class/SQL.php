@@ -341,7 +341,7 @@
 
             switch($this->method) {
                 case "pdo":
-                    return $this->db->lastInsertId($table."_".$seq);
+                    return $this->db->lastInsertId($this->prefix.$table."_".$seq);
                     break;
                 case "mysqli":
                     return $this->db->insert_id;
