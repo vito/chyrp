@@ -41,8 +41,8 @@
 
     # Atlantic/Reykjavik is 0 offset. Set it so the timezones() function is
     # always accurate, even if the server has its own timezone settings.
-    $default_timezone = date_default_timezone_get();
-    set_timezone("Atlantic/Reykjavik");
+    $default_timezone = oneof(ini_get("date.timezone"), "Atlantic/Reykjavik");
+    set_timezone($default_timezone);
 
     # Sanitize all input depending on magic_quotes_gpc's enabled status.
     sanitize_input($_GET);
