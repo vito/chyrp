@@ -289,11 +289,11 @@
          *     $name - Name of the column.
          */
         public static function safecol($name) {
-            $lower = strtolower($name);
-            if ($lower === "order" or $lower === "group")
-                return (SQL::current()->adapter == "mysql") ? "`".$name."`" : '"'.$name.'"' ;
-            else
-                return $name;
+            return preg_replace("/(([^a-zA-Z0-9_]|^)(order|group)([^a-zA-Z0-9_]|
+$))/i",
+                                (SQL::current()->adapter == "mysql") ? "\\2`\\3`
+\\4" : '\\2"\\3"\\4',
+                                $name);
         }
 
         /**
@@ -332,7 +332,7 @@
                             }
                         } elseif (substr($key, -5) == " like" and is_array($val)) { # multiple LIKE
                             $key = self::safecol(substr($key, 0, -5));
-                            
+
                             $likes = array();
                             foreach ($val as $index => $match) {
                                 $param = str_replace(array("(", ")", "."), "_", $key)."_".$index;
@@ -343,7 +343,7 @@
                             $cond = "(".implode(" OR ", $likes).")";
                         } elseif (substr($key, -9) == " like all" and is_array($val)) { # multiple LIKE
                             $key = self::safecol(substr($key, 0, -9));
-                            
+
                             $likes = array();
                             foreach ($val as $index => $match) {
                                 $param = str_replace(array("(", ")", "."), "_", $key)."_".$index;
@@ -354,7 +354,7 @@
                             $cond = "(".implode(" AND ", $likes).")";
                         } elseif (substr($key, -9) == " not like" and is_array($val)) { # multiple NOT LIKE
                             $key = self::safecol(substr($key, 0, -9));
-                            
+
                             $likes = array();
                             foreach ($val as $index => $match) {
                                 $param = str_replace(array("(", ")", "."), "_", $key)."_".$index;

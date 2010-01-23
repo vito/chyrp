@@ -2,7 +2,7 @@
     # Constant: USE_ZLIB
     # Use zlib to provide GZIP compression
     define('USE_ZLIB', true);
-    
+
     $valid_files = "jquery.js plugins.js";
     if (!in_array($_GET['file'], explode(" ", $valid_files)) and strpos($_GET['file'], "/themes/") === false)
         exit("Access Denied.");
@@ -23,14 +23,14 @@
         # Absolute path to the Chyrp root
         define('MAIN_DIR', dirname(dirname(dirname(__FILE__))));
 
-        header("Last-Modified: ".date("r", filemtime(MAIN_DIR.$_GET['file'])));
+        header("Last-Modified: ".@date("r", filemtime(MAIN_DIR.$_GET['file'])));
 
         if (file_exists(MAIN_DIR.$_GET['file']))
             readfile(MAIN_DIR.$_GET['file']);
         else
             echo "alert('File not found: ".addslashes($_GET['file'])."')";
     } elseif (file_exists($_GET['file'])) {
-        header("Last-Modified: ".date("r", filemtime($_GET['file'])));
+        header("Last-Modified: ".@date("r", filemtime($_GET['file'])));
         readfile($_GET['file']);
     } else
         echo "alert('File not found: ".addslashes($_GET['file'])."')";
