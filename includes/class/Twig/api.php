@@ -62,7 +62,7 @@ class Twig_Template
     {
         ob_start();
         $this->display($context);
-        return ob_end_clean();
+        return ob_get_clean();
     }
 
     /**
