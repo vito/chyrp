@@ -408,9 +408,9 @@ var Extend = {
                 success: Extend.finish_drop,
                 error: function() {
                     if (Extend.Drop.action == "enable")
-                        alert("<?php echo __("There was an error enabling the module."); ?>");
+                        alert("<?php echo __("There was an error enabling the extension."); ?>");
                     else
-                        alert("<?php echo __("There was an error disabling the module."); ?>");
+                        alert("<?php echo __("There was an error disabling the extension."); ?>");
 
                     Extend.Drop.pane.loader(true)
 
