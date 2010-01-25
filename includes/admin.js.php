@@ -291,8 +291,6 @@ var Manage = {
                 border: "1px solid #ddd",
                 cursor: "move"
             })
-
-			console.log("Hello?");
 			
             $("ul.sort_pages").tree({
                 sortOn: "li",
