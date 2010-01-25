@@ -300,7 +300,7 @@ var Manage = {
                 hoverClass: "sort_hover",
                 done: function(){
                     $("#content > form > ul.sort_pages").loader()
-                    $.post("<?php echo $config->url; ?>/includes/ajax.php",
+                    $.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php",
                            "action=organize_pages&"+ $("ul.sort_pages").sortable("serialize") + Manage.pages.parent_hash(),
                            function(){ $("#content > form > ul.sort_pages").loader(true) })
                 }
