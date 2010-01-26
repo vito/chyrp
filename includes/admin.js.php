@@ -204,7 +204,7 @@ var Write = {
         })
 
         $(document.createElement("button"))
-            .append("<?php echo __("Preview &#8594;"); ?>").attr("accesskey", "p")
+			.append("<?php echo __("Preview &rarr;"); ?>").attr("accesskey", "p")
             .click(function(){
                 $(".preview_me").each(function(){
                     var id = $(this).attr("id")
@@ -224,9 +224,9 @@ var Write = {
     more_options: function(){
         if ($("#more_options").size()) {
             if (Cookie.get("show_more_options") == "true")
-                var more_options_text = "<?php echo __("&#171; Fewer Options"); ?>";
+                var more_options_text = "<?php echo __("&uarr; Fewer Options"); ?>";
             else
-                var more_options_text = "<?php echo __("More Options &#187;"); ?>";
+                var more_options_text = "<?php echo __("More Options &darr;"); ?>";
 
             $(document.createElement("a")).attr({
                 id: "more_options_link",
@@ -241,10 +241,10 @@ var Write = {
 
             $("#more_options_link").click(function(){
                 if ($("#more_options").parent().css("display") == "none") {
-                    $(this).empty().append("<?php echo __("&#171; Fewer Options"); ?>")
+                    $(this).empty().append("<?php echo __("&uarr; Fewer Options"); ?>")
                     Cookie.set("show_more_options", "true", 30)
                 } else {
-                    $(this).empty().append("<?php echo __("More Options &#187;"); ?>")
+                    $(this).empty().append("<?php echo __("More Options &darr;"); ?>")
                     Cookie.destroy("show_more_options")
                 }
                 $("#more_options").parent().slideToggle()
@@ -284,18 +284,18 @@ var Manage = {
             return parent_hash
         },
         prepare_reordering: function(){
-            $(".sort_pages li").css({
+            $(".sort_pages li div").css({
                 background: "#f9f9f9",
                 padding: ".15em .5em",
                 marginBottom: ".5em",
                 border: "1px solid #ddd",
                 cursor: "move"
             })
-			
+
             $("ul.sort_pages").tree({
                 sortOn: "li",
                 dropOn: "li:not(.dragging) div",
-                hoverClass: "sort_hover",
+                hoverClass: "sort-hover",
                 done: function(){
                     $("#content > form > ul.sort_pages").loader()
                     $.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php",

@@ -334,7 +334,7 @@ div.warning {
 }
 div.date {
     background: url('../images/dots-lightgrey.gif') repeat top left;
-    cursor: normal;
+    cursor: default;
 }
 div.notice .sub, div.message .sub, div.warning .sub {
     font-size: .9em;
@@ -477,7 +477,7 @@ div.page span.controls {
 div.post span.info a:link,
 div.post span.info a:visited {
     color: #bbb;
-    padding: none;
+    padding: 0;
 }
 div.post span.controls,
 div.page span.controls {
@@ -492,7 +492,7 @@ div.post.quote blockquote {
     background: none;
     border: 0;
     color: #777;
-    font: 2em/1.25em normal "palatino linotype", palatino, georgia, "times new roman", times, serif;
+    font: 2em/1.25em normal palatino linotype, palatino, georgia, 'times new roman', times, serif;
     margin: 0 0 -.5em 0;
     padding: 0;
 }
@@ -725,7 +725,6 @@ span.waiting {
     background: #fff;
     border: 1px solid #ddd;
     padding: 0 .5em;
-    xoverflow-x: scroll;
     word-wrap: break-word;
 }
 #debug .toggle {
@@ -733,4 +732,3 @@ span.waiting {
     color: #666;
     float: right;
 }
-

@@ -3,7 +3,7 @@
         <label for="body"><?php echo __("Body", "comments"); ?></label>
         <textarea name="body" rows="8" cols="40" class="wide"><?php echo fix($comment->body, false, false); ?></textarea>
     </p>
-    <a id="more_options_link_<?php echo $comment->id; ?>" href="javascript:void(0)" class="more_options_link"><?php echo __("More Options &#187;"); ?></a>
+    <a id="more_options_link_<?php echo $comment->id; ?>" href="javascript:void(0)" class="more_options_link"><?php echo __("More Options &darr;"); ?></a>
     <div id="more_options_<?php echo $comment->id; ?>" class="more_options" style="display: none">
         <p>
             <label for="author"><?php echo __("Author"); ?></label>

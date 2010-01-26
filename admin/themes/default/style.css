@@ -801,8 +801,14 @@ ul.sort_pages input {
     font-size: 1em;
     margin: .25em .25em .25em 0;
 }
-#sortHelper {
+ul.sort_pages .sort-placeholder {
     border: 1px dashed #777;
+	display: list-item !important;
+	margin-bottom: .5em;
+	height: 1.8em;
+}
+ul.sort_pages .sort-hover {
+	border: 1px dashed #777 !important;
 }
 /* @end */
 

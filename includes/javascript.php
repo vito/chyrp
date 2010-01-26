@@ -44,10 +44,10 @@ var Post = {
 <?php $trigger->call("ajax_post_edit_form_javascript"); ?>
                     $("#more_options_link_"+id).click(function(){
                         if ($("#more_options_"+id).css("display") == "none") {
-                            $(this).empty().append("<?php echo __("&#171; Fewer Options"); ?>")
+                            $(this).empty().append("<?php echo __("&uarr; Fewer Options"); ?>")
                             $("#more_options_"+id).slideDown("slow");
                         } else {
-                            $(this).empty().append("<?php echo __("More Options &#187;"); ?>")
+                            $(this).empty().append("<?php echo __("More Options &darr;"); ?>")
                             $("#more_options_"+id).slideUp("slow");
                         }
                         return false;

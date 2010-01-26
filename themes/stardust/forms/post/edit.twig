@@ -25,7 +25,7 @@
                     </p>
                     {% endfor %}
 
-                    <a id="more_options_link_$post.id" href="javascript:void(0)" class="more_options_link">${ "More Options &#187;" | translate("chyrp") }</a>
+                    <a id="more_options_link_$post.id" href="javascript:void(0)" class="more_options_link">${ "More Options &darr;" | translate("chyrp") }</a>
                     <div id="more_options_$post.id" class="more_options" style="display: none">
                         {% if visitor.group.can("add_post") %}
                         <p>
