@@ -117,13 +117,13 @@
 
             if (!$visitor->group->can("change_settings"))
                 if ($type == "module")
-                    exit("{ notifications: ['".__("You do not have sufficient privileges to enable/disable modules.")."'] }");
+                    exit("{ \"notifications\": [\"".__("You do not have sufficient privileges to enable/disable modules.")."\"] }");
                 else
-                    exit("{ notifications: ['".__("You do not have sufficient privileges to enable/disable feathers.")."'] }");
+                    exit("{ \"notifications\": [\"".__("You do not have sufficient privileges to enable/disable feathers.")."\"] }");
 
             if (($type == "module" and module_enabled($_POST['extension'])) or
                 ($type == "feather" and feather_enabled($_POST['extension'])))
-                exit("{ notifications: [] }");
+                exit("{ \"notifications\": [] }");
 
             $enabled_array = ($type == "module") ? "enabled_modules" : "enabled_feathers" ;
             $folder        = ($type == "module") ? MODULES_DIR : FEATHERS_DIR ;
@@ -161,7 +161,7 @@
             array_push($new, $_POST["extension"]);
             $config->set($enabled_array, $new);
 
-            exit('{ notifications: ['.
+            exit('{ "notifications": ['.
                  (!empty($info["notifications"]) ? '"'.implode('", "', $info["notifications"]).'"' : "").
                  '] }');
 
@@ -172,13 +172,13 @@
 
             if (!$visitor->group->can("change_settings"))
                 if ($type == "module")
-                    exit("{ notifications: ['".__("You do not have sufficient privileges to enable/disable modules.")."'] }");
+                    exit("{ \"notifications\": [\"".__("You do not have sufficient privileges to enable/disable modules.")."\"] }");
                 else
-                    exit("{ notifications: ['".__("You do not have sufficient privileges to enable/disable feathers.")."'] }");
+                    exit("{ \"notifications\": [\"".__("You do not have sufficient privileges to enable/disable feathers.")."\"] }");
 
             if (($type == "module" and !module_enabled($_POST['extension'])) or
                 ($type == "feather" and !feather_enabled($_POST['extension'])))
-                exit("{ notifications: [] }");
+                exit("{ \"notifications\": [] }");
 
             $class_name = camelize($_POST["extension"]);
             if (method_exists($class_name, "__uninstall"))
@@ -188,7 +188,7 @@
             $config->set($enabled_array,
                          array_diff($config->$enabled_array, array($_POST['extension'])));
 
-            exit('{ notifications: [] }');
+            exit('{ "notifications": [] }');
 
             break;
 

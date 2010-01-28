@@ -721,7 +721,7 @@
                                 "value" => YAML::dump($tags),
                                 "post_id" => $post->id));
 
-            exit("{ url: \"".url("tag/".$tags[$tag], MainController::current())."\", tag: \"".$_POST['name']."\" }");
+            exit("{ \"url\": \"".url("tag/".$tags[$tag], MainController::current())."\", tag: \"".$_POST['name']."\" }");
         }
 
         function feed_item($post) {
