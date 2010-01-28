@@ -98,7 +98,7 @@
                              $created_at);
 
             if (isset($_POST['ajax']))
-                exit("{ comment_id: ".$_POST['id'].", comment_timestamp: \"".$created_at."\" }");
+                exit("{ \"comment_id\": ".$_POST['id'].", \"comment_timestamp\": \"".$created_at."\" }");
 
             if ($_POST['status'] == "spam")
                 Flash::notice(__("Comment updated."), "/admin/?action=manage_spam");

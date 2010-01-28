@@ -204,7 +204,7 @@ var Write = {
         })
 
         $(document.createElement("button"))
-			.append("<?php echo __("Preview &rarr;"); ?>").attr("accesskey", "p")
+            .append("<?php echo __("Preview &rarr;"); ?>").attr("accesskey", "p")
             .click(function(){
                 $(".preview_me").each(function(){
                     var id = $(this).attr("id")

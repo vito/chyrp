@@ -127,7 +127,7 @@
                     $_SESSION['comments'][] = $comment->id;
 
                     if (isset($_POST['ajax']))
-                        exit("{ comment_id: ".$comment->id.", comment_timestamp: \"".$comment->created_at."\" }");
+                        exit("{ \"comment_id\": ".$comment->id.", \"comment_timestamp\": \"".$comment->created_at."\" }");
 
                     Flash::notice(__("Comment added."), $post->url()."#comment_".$comment->id);
                 }
@@ -149,7 +149,7 @@
                 $_SESSION['comments'][] = $comment->id;
 
                 if (isset($_POST['ajax']))
-                    exit("{ comment_id: ".$comment->id.", comment_timestamp: \"".$comment->created_at."\" }");
+                    exit("{ \"comment_id\": ".$comment->id.", \"comment_timestamp\": \"".$comment->created_at."\" }");
 
                 Flash::notice(__("Comment added."), $post->url()."#comment_".$comment->id);
             }
