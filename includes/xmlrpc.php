@@ -1,4 +1,4 @@
-    <?php
+<?php
     /**
      * File: XML-RPC
      * Extensible XML-RPC interface for remotely controlling your Chyrp install.
