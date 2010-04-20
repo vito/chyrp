@@ -59,7 +59,7 @@
                     # it on authentication to the new hashing scheme.
                     $check->update(null, self::hashPassword($password));
                     return true;
-                } else {
+                } elseif(SQL::current()->adapter == "mysql") {
                     # Some imports might use MySQL password hashing (such as MovableType 3).
                     # Try those too, and update the user if they match.
 
