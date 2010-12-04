@@ -60,7 +60,7 @@
          * Parameters:
          *     $title - The Title for the new page.
          *     $body - The Body for the new page.
-         *     $body - The <User> or <User.id> of the page's author.
+         *     $user - The <User> or <User.id> of the page's author.
          *     $parent_id - The ID of the new page's parent page (0 for none).
          *     $show_in_list - Whether or not to show it in the pages list.
          *     $list_order - The order of the page in the list.
@@ -122,7 +122,7 @@
          * Parameters:
          *     $title - The new Title.
          *     $body - The new Body.
-         *     $body - The <User> or <User.id> of the page's author.
+         *     $user - The <User> or <User.id> of the page's author.
          *     $parent_id - The new parent ID.
          *     $show_in_list - Whether or not to show it in the pages list.
          *     $clean - The page's clean URL.
