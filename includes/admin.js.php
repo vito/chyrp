@@ -485,10 +485,9 @@ var Extend = {
         Extend.draw_dependencies()
     },
     draw_conflicts: function(){
-        if ($.browser.msie ||
-            Route.action != "modules" ||
-            (!$(".extend li.depends").size() &&
-                !($.browser.safari || $.browser.opera || ($.browser.mozilla && $.browser.version >= 1.9))))
+        if (!$.support.boxModel ||
+				    Route.action != "modules" ||
+            (!$(".extend li.conflict").size()))
             return false
 
         $("#conflicts_canvas").remove()
@@ -599,10 +598,9 @@ var Extend = {
         return true
     },
     draw_dependencies: function() {
-        if ($.browser.msie ||
-            Route.action != "modules" ||
-            (!$(".extend li.depends").size() &&
-                !($.browser.safari || $.browser.opera || ($.browser.mozilla && $.browser.version >= 1.9))))
+        if (!$.support.boxModel ||
+				    Route.action != "modules" ||
+            (!$(".extend li.depends").size()))
             return false
 
         $("#depends_canvas").remove()
