@@ -27,9 +27,9 @@ ${ trigger.call("admin_head") }
         </div>
         <div id="welcome">
             <div class="column">
-                <a href="$site.url" class="right">${ "View Site &rsaquo;" | translate }</a>
+                <a href="{% url "/?action=logout" %}" class="right">${ "Log Out &rsaquo;" | translate }</a>
                 ${ "Hello, %s!" | translate | format(visitor.full_name | split | first | fallback(visitor.login | fallback("Guest" | translate))) }
-                <a href="{% url "/?action=logout" %}">${ "Log Out &rsaquo;" | translate }</a>
+                <a href="$site.url">${ "View Site &rsaquo;" | translate }</a>
             </div>
         </div>
         <ul class="column ${ route.action }_nav" id="sub-nav">
