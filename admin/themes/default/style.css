@@ -74,7 +74,7 @@ a:visited {
 #header #navigation li a:link,
 #header #navigation li a:visited {
     float: left;
-    margin-left: 2em;
+    margin-left: 1em;
     text-shadow: #000 0 0 0;
     background: #444;
     color: #ebeeee;
@@ -95,7 +95,7 @@ a:visited {
 }
 
 #header #navigation li a:hover {
-    background: #494949;
+    background: #4c4c4c;
 }
 
 #welcome {
@@ -150,6 +150,9 @@ a:visited {
     color: #737373;
     text-decoration: none;
     margin: 0 0.7em 0 0;
+}
+#sub-nav li a:hover {
+    background: #e5e5e5;
 }
 #sub-nav li.selected a:link,
 #sub-nav li.selected a:visited {
