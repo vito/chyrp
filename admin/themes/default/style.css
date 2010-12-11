@@ -101,6 +101,7 @@ a:visited {
 #welcome {
     background: #fff;
     padding: .9em 0;
+    border-bottom: 1px solid #e1e1e1;
 }
 #welcome a:link,
 #welcome a:visited {
@@ -140,6 +141,9 @@ a:visited {
 }
 #sub-nav li {
     float: left;
+    position: relative;
+    top: 1px;
+    z-index: 1;
 }
 #sub-nav li a:link,
 #sub-nav li a:visited {
@@ -157,7 +161,8 @@ a:visited {
 #sub-nav li.selected a:link,
 #sub-nav li.selected a:visited {
     background: #fff;
-    border-top-color: #c7c7c7;
+    border: 1px solid #e1e1e1;
+    border-bottom: none;
 }
 #sub-nav li.right {
     margin: .75em 0 0;
@@ -183,6 +188,8 @@ a:visited {
 #content {
     background: #fff;
     padding: 1em;
+    border: 1px solid #e1e1e1;
+    position: relative;
 }
 #content > form {
     /* margin-top: .5em; */
