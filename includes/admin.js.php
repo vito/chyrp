@@ -164,8 +164,9 @@ var Write = {
         $("input.text").expand()
         $("textarea").each(function(){
             $(this).css({
-                minHeight: $(this).outerHeight() + 26,
-                lineHeight: "15px"
+                minHeight: $(this).outerHeight() + 24,
+                lineHeight: "18px",
+                padding: "3px 5px"
             }).autogrow()
         })
     },
@@ -486,7 +487,7 @@ var Extend = {
     },
     draw_conflicts: function(){
         if (!$.support.boxModel ||
-				    Route.action != "modules" ||
+            Route.action != "modules" ||
             (!$(".extend li.conflict").size()))
             return false
 
@@ -599,7 +600,7 @@ var Extend = {
     },
     draw_dependencies: function() {
         if (!$.support.boxModel ||
-				    Route.action != "modules" ||
+            Route.action != "modules" ||
             (!$(".extend li.depends").size()))
             return false
 
