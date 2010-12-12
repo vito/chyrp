@@ -50,7 +50,7 @@ a:visited {
 /* @group Header */
 #header {
     background: #353535;
-    padding: 2.5em 0;
+    padding: 2em 0;
     color: #fff;
     position: relative;
 }
@@ -78,7 +78,7 @@ a:visited {
     text-shadow: #000 0 0 0;
     background: #444;
     color: #ebeeee;
-    height: 5em;
+    height: 4em;
     line-height: 4em;
     text-transform: uppercase;
     width: 8em;
