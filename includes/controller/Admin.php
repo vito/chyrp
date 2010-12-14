@@ -116,7 +116,7 @@
 
             Trigger::current()->filter($options, array("write_post_options", "post_options"));
 
-            fallback($_GET['feather'], $config->enabled_feathers[0]);
+            fallback($_GET['feather'], reset($config->enabled_feathers));
 
             $this->display("write_post",
                            array("groups" => Group::find(array("order" => "id ASC")),
