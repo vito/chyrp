@@ -1373,20 +1373,19 @@
             } elseif ($test == "author") {
                 $user = new User(array("login" => $equals));
                 if ($user->no_results and $equals == "me")
-                    $where["user_id"] = Visitor::current()->id;
+                    $where["users.id"] = Visitor::current()->id;
                 else
-                    $where["user_id"] = $user->id;
+                    $where["users.id"] = $user->id;
             } elseif ($test == "group") {
                 $group = new Group(array("name" => $equals));
-                $test = "group_id";
-                $equals = ($group->no_results) ? 0 : $group->id ;
+                $where["group_id"] = $equals = ($group->no_results) ? 0 : $group->id;
             } else
                 $where[$test] = $equals;
         }
 
         if ($table)
             foreach ($where as $col => $val)
-                if (!isset($columns[$col])) {
+                if (!isset($where[$col])) {
                     if ($table == "posts") {
                         $where["post_attributes.name"] = $col;
                         $where["post_attributes.value like"] = "%".$val."%";
