@@ -1372,10 +1372,10 @@
                     $where[strtoupper($test)."(created_at)"] = $equals;
             } elseif ($test == "author") {
                 $user = new User(array("login" => $equals));
-                if ($user->no_results and $equals == "me")
-                    $where["users.id"] = Visitor::current()->id;
-                else
-                    $where["users.id"] = $user->id;
+                if ($user->no_results and $equals == "me") {
+                  !($table == "users") ? $where["user_id"] = Visitor::current()->id : $where["id"] = Visitor::current()->id;
+                } else
+                    !($table == "users") ? $where["user_id"] = $user->id : $where["id"] = $user->id;
             } elseif ($test == "group") {
                 $group = new Group(array("name" => $equals));
                 $where["group_id"] = $equals = ($group->no_results) ? 0 : $group->id;
