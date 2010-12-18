@@ -221,7 +221,7 @@ div#controls ul li.close a:hover {
 
 div#wrapper {
     width: 660px;
-    margin: 4em auto;
+    margin: 2em auto;
     padding: 0 0 1em 0;
 }
 
@@ -268,8 +268,8 @@ div#sidebar ul li {
 
 div#header {
     background-color: #111;
-    padding: 4em 0 .6em 0;
-    margin: 0 0 2em;
+    padding: 2em 0 .6em 0;
+    margin: 0 0 3em;
     width: 100%;
 }
 div#header .header_box {
@@ -277,7 +277,7 @@ div#header .header_box {
     width: 660px;
 }
 div#header h1 {
-    margin-bottom: 0;
+    margin-bottom: .2em;
 }
 div#header h1 a:link,
 div#header h1 a:visited,
