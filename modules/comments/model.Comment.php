@@ -75,7 +75,7 @@
             $visitor = Visitor::current();
 
             if (!$type) {
-                $status = ($post->user_id == $visitor->id) ? "approved" : $config->default_comment_status ;
+                $status = ($post->user_id == $visitor->id) ? "approved" : $config->default_comment_status;
                 $type = "comment";
             } else
                 $status = $type;
@@ -196,7 +196,7 @@
                                "post_id" => $post->id,
                                "user_id"=> $user_id,
                                "created_at" => oneof($created_at, datetime()),
-                               "updated_at" => oneof($updated_at, null)));
+                               "updated_at" => oneof($updated_at, "0000-00-00 00:00:00")));
             $new = new self($sql->latest("comments"));
 
             Trigger::current()->call("add_comment", $new);

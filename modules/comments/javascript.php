@@ -92,7 +92,7 @@ var Comment = {
                 $("#comment_cancel_edit_"+id).click(function(){
                     $("#comment_"+id).loader()
                     $.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "show_comment", comment_id: id }, function(data){
-                        $("#comment_"+id).replaceWith(data).loader(true)
+                        $("#comment_"+id).loader(true).replaceWith(data)
                     })
                 })
                 $("#comment_edit_"+id).ajaxForm({ beforeSubmit: function(){
