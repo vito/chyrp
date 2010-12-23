@@ -16,10 +16,10 @@
         public function admin_head() {
             $config = Config::current();
 ?>
+        <link rel="stylesheet" href="<?php echo $config->chyrp_url; ?>/modules/tags/admin.css" type="text/css" media="screen" />
         <script type="text/javascript">
-<?php $this->tagsJS(); ?>
+        <?php $this->tagsJS(); ?>
         </script>
-        <link rel="stylesheet" href="<?php echo $config->chyrp_url; ?>/modules/tags/admin.css" type="text/css" media="screen" title="no title" charset="utf-8" />
 <?php
         }
 
@@ -176,7 +176,7 @@
                 if ($spread == 0)
                     $spread = 1;
 
-                $step = 75 / $spread;
+                $step = 60 / $spread;
 
                 foreach ($popularity as $tag => $count)
                     $cloud[] = array("size" => (100 + (($count - $min_qty) * $step)),
@@ -652,11 +652,11 @@
                                 name: $(ui.draggable).text()
                             },
                             beforeSend: function(){
-                                $(self).loader();
+                                $(self).loader()
                             },
                             success: function(json){
-                                $(self).loader(true);
-                                $(document.createElement("a")).attr("href", json.url).addClass("tag").addClass("dropped").text(json.tag).insertBefore($(self).find(".edit_tag"));
+                                $(self).loader(true)
+                                $(document.createElement("a")).attr("href", json.url).addClass("tag dropped").text(json.tag).insertBefore($(self).find(".edit_tag"))
                             }
                         });
                     }
@@ -721,7 +721,7 @@
                                 "value" => YAML::dump($tags),
                                 "post_id" => $post->id));
 
-            exit("{ \"url\": \"".url("tag/".$tags[$tag], MainController::current())."\", tag: \"".$_POST['name']."\" }");
+            exit("{ \"url\": \"".url("tag/".$tags[$tag], MainController::current())."\", \"tag\": \"".$_POST['name']."\" }");
         }
 
         function feed_item($post) {
