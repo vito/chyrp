@@ -3,7 +3,7 @@
 {% block title %}${ "Manage Tags" | translate("tags") }{% endblock %}
 
 {% block content %}
-            <h2>${ "All Tags" | translate("tags") } <span class="sub right">${ "(hover for controls)" | translate("tags") }</span></h2>
+            <h2>${ "All Tags" | translate("tags") } <small class="sub right">${ "(hover for controls)" | translate("tags") }</small></h2>
             <br />
             <div class="tag_cloud">
                 {% for tag in tag_cloud %}
@@ -21,19 +21,17 @@
             </div>
             <hr />
             <br />
-            <h2>${ "Post Tags" | translate("tags") }</h2>
+            <h2 class="left">${ "Post Tags" | translate("tags") }</h2>
+            <form class="left margin-left" action="index.php" method="get" accept-charset="utf-8">
+                <fieldset>
+                    <input type="hidden" name="action" value="manage_tags" />
+                    <input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" size="15" />
+                    <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
+                    <a href="{% admin "help&id=filtering_results" %}" class="help emblem"><img src="$theme_url/images/icons/help.png" alt="help" /></a>
+                </fieldset>
+            </form>
+            <div class="clear" />
             <br />
-            <h2>
-                {% if GET.query %}${ "Search Results" | translate }{% else %}${ "Last 25 Posts" | translate }{% endif %}
-                <form class="detail inline" action="index.php" method="get" accept-charset="utf-8">
-                    <fieldset>
-                        <input type="hidden" name="action" value="manage_tags" />
-                        <input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" size="15" />
-                        <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
-                        <a href="{% admin "help&id=filtering_results" %}" class="help emblem"><img src="$theme_url/images/icons/help.png" alt="help" /></a>
-                    </fieldset>
-                </form>
-            </h2>
             <form class="detail" action="{% admin "bulk_tag" %}" method="post" accept-charset="utf-8">
                 <fieldset>
                     <ul class="post_tags">
@@ -56,7 +54,7 @@
                         {% endfor %}
                     </ul>
                     <div class="left pad">
-                        <h3>${ "Tag Selected:" | translate("tags") }</h3>
+                        <h3>${ "Tag Selected Post(s) with:" | translate("tags") }</h3>
                         <input type="text" name="name" value="" id="name" />
                         <button type="submit" class="inline">${ "Tag &rarr;" | translate("tags") }</button>
                         <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
