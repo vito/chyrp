@@ -13,7 +13,12 @@ $(function(){
         })
         .css("cursor", "pointer");
 
-    if ($.browser.safari)
+    $.support.placeholder = (function(){
+        var i = document.createElement('input');
+        return 'placeholder' in i;
+    })();
+
+    if ($.support.placeholder)
         $("input#search").attr({
             placeholder: "<?php echo __("Search...", "theme"); ?>"
         });
