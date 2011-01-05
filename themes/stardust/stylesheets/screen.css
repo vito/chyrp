@@ -707,7 +707,7 @@ span.waiting {
     left: 0;
     right: 0;
     max-height: 33%;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
 }
 #debug h5 {
