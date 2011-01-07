@@ -20,7 +20,7 @@ $(function(){
     })
 
     // Automated PNG fixing.
-    $.ifixpng("<?php echo $config->chyrp_url; ?>/admin/images/icons/pixel.gif")
+    $.ifixpng("<?php echo $config->chyrp_url; ?>/admin/themes/default/images/icons/pixel.gif")
     $("img[src$=.png]").ifixpng()
 
     // "Help" links should open in popup windows.

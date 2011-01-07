@@ -15,7 +15,6 @@
                     <li class="no_comments"></li> {# Needed for AJAX commenting and XHTML Strict validation. #}
                     {% endpaginate %}
                 </ol>
-                <input type="hidden" name="last_comment" value="$post.latest_comment" id="last_comment" />
                 $comments.prev_link
                 $comments.next_link
                 {% if comments.pages > 1 %}

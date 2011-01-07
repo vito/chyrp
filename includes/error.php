@@ -7,7 +7,7 @@
 
     $jquery = is_callable(array("Config", "current")) ?
                   Config::current()->url."/includes/lib/gz.php?file=jquery.js" :
-                  "http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" ;
+                  "http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js" ;
 
     if (!class_exists("MainController"))
         require INCLUDES_DIR."/controller/Main.php";

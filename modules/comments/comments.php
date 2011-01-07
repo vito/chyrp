@@ -98,7 +98,7 @@
                              $created_at);
 
             if (isset($_POST['ajax']))
-                exit("{ \"comment_id\": ".$_POST['id'].", \"comment_timestamp\": \"".$created_at."\" }");
+                exit("{ \"comment_id\": \"".$_POST['id']."\", \"comment_timestamp\": \"".$created_at."\" }");
 
             if ($_POST['status'] == "spam")
                 Flash::notice(__("Comment updated."), "/admin/?action=manage_spam");
@@ -158,7 +158,8 @@
                             array("comments" => new Paginator(Comment::find(array("placeholders" => true,
                                                                                   "where" => $where,
                                                                                   "params" => $params)),
-                                                              25)));        }
+                                                              25)));
+        }
 
         static function admin_purge_spam() {
             if (!Visitor::current()->group->can("delete_comment"))
@@ -441,15 +442,10 @@
                                                      "id, created_at",
                                                      array("post_id" => $_POST['post_id'],
                                                            "created_at >" => $_POST['last_comment'],
-                                                           "status not" => "spam",
-                                                           "status != 'denied' OR (
-                                                                (
-                                                                    user_id != 0 AND
-                                                                    user_id = :visitor_id
-                                                                ) OR (
-                                                                    id IN ".self::visitor_comments()."
-                                                                )
-                                                            )"),
+                                                           "status not" => "spam", "status != 'denied' OR (
+                                                              (user_id != 0 AND user_id = :visitor_id) OR (
+                                                                    id IN ".self::visitor_comments()."))"
+                                                           ),
                                                      "created_at ASC",
                                                      array(":visitor_id" => $visitor->id));
 
@@ -627,15 +623,10 @@
 
             $counts = SQL::current()->select("comments",
                                              array("COUNT(post_id) AS total", "post_id as post_id"),
-                                             array("status not" => "spam",
-                                                   "status != 'denied' OR (
-                                                                              (
-                                                                                  user_id != 0 AND
-                                                                                  user_id = :visitor_id
-                                                                              ) OR (
-                                                                                  id IN ".self::visitor_comments()."
-                                                                              )
-                                                                          )"),
+                                             array("status not" => "spam", "status != 'denied' OR (
+                                                      (user_id != 0 AND user_id = :visitor_id) OR (
+                                                            id IN ".self::visitor_comments()."))"
+                                                  ),
                                              null,
                                              array(":visitor_id" => Visitor::current()->id),
                                              null,
@@ -654,15 +645,10 @@
 
             $times = SQL::current()->select("comments",
                                             array("MAX(created_at) AS latest", "post_id"),
-                                            array("status not" => "spam",
-                                                  "status != 'denied' OR (
-                                                                             (
-                                                                                 user_id != 0 AND
-                                                                                 user_id = :visitor_id
-                                                                             ) OR (
-                                                                                 id IN ".self::visitor_comments()."
-                                                                             )
-                                                                         )"),
+                                            array("status not" => "spam", "status != 'denied' OR (
+                                                     (user_id != 0 AND user_id = :visitor_id) OR (
+                                                           id IN ".self::visitor_comments()."))"
+                                                 ),
                                             null,
                                             array(":visitor_id" => Visitor::current()->id),
                                             null,
@@ -681,13 +667,8 @@
 
             $options["where"]["status not"] = "spam";
             $options["where"][] = "status != 'denied' OR (
-                                                             (
-                                                                 user_id != 0 AND
-                                                                 user_id = :visitor_id
-                                                             ) OR (
-                                                                 id IN ".self::visitor_comments()."
-                                                             )
-                                                         )";
+                                 (user_id != 0 AND user_id = :visitor_id) OR (
+                                       id IN ".self::visitor_comments()."))";
             $options["order"] = "created_at ASC";
             $options["params"][":visitor_id"] = Visitor::current()->id;
         }
@@ -714,7 +695,7 @@
                 $atom.= '           <author chyrp:user_id="'.$comment->user_id.'">'."\r";
                 $atom.= "               <name>".fix($comment->author)."</name>\r";
                 if (!empty($comment->author_url))
-                    $atom.= "               <uri>".fix($comment->author_url)."</uri>\r";
+                $atom.= "               <uri>".fix($comment->author_url)."</uri>\r";
                 $atom.= "               <email>".fix($comment->author_email)."</email>\r";
                 $atom.= "               <chyrp:login>".fix(@$comment->user->login)."</chyrp:login>\r";
                 $atom.= "               <chyrp:ip>".long2ip($comment->author_ip)."</chyrp:ip>\r";
