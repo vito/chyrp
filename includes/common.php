@@ -5,18 +5,18 @@
      * Chyrp - A Lightweight Blogging Engine
      *
      * Version:
-     *     v2.1 git
+     *     v2.1 Beta 1
      *
      * License:
      *     Modified MIT (See COPYING)
      *
      * Chyrp Copyright:
-     *     Copyright (c) 2009 Alex Suraci, <http://toogeneric.com/>
+     *     Copyright (c) 2011 Chyrp Team (See AUTHORS)
      */
 
     # Constant: CHYRP_VERSION
     # Chyrp's version number.
-    define('CHYRP_VERSION', "2.1 git");
+    define('CHYRP_VERSION', "2.1 Beta 1");
 
     # Constant: DEBUG
     # Should Chyrp use debugging processes?

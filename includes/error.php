@@ -6,8 +6,8 @@
     }
 
     $jquery = is_callable(array("Config", "current")) ?
-                  Config::current()->url."/includes/lib/gz.php?file=jquery.js" :
-                  "http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js" ;
+              Config::current()->url."/includes/lib/gz.php?file=jquery.js" :
+              "http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js" ;
 
     if (!class_exists("MainController"))
         require INCLUDES_DIR."/controller/Main.php";
@@ -132,23 +132,23 @@
             <h1><?php echo $title; ?></h1>
             <div class="message">
                 <?php echo $body; ?>
-<?php if (!empty($backtrace)): ?>
+            <?php if (!empty($backtrace)): ?>
                 <h2><?php echo __("Backtrace"); ?></h2>
                 <ol class="backtrace">
-<?php foreach ($backtrace as $trace): ?>
+                <?php foreach ($backtrace as $trace): ?>
                     <li><code><?php echo _f("%s on line %d", array($trace["file"], fallback($trace["line"], 0))); ?></code></li>
-<?php endforeach; ?>
+                <?php endforeach; ?>
                 </ol>
-<?php endif; ?>
+            <?php endif; ?>
                 <div class="clear"></div>
-<?php if (class_exists("Route") and !logged_in() and $body != __("Route was initiated without a Controller.")): ?>
+            <?php if (class_exists("Route") and !logged_in() and $body != __("Route was initiated without a Controller.")): ?>
                 <a href="<?php echo url("login", MainController::current()); ?>" class="big login"><?php echo __("Log In"); ?> &rarr;</a>
-<?php endif; ?>
+            <?php endif; ?>
                 <div class="clear last"></div>
             </div>
         </div>
-<?php if (defined("CHYRP_VERSION")): ?>
-        <p class="footer">Chyrp <?php echo CHYRP_VERSION; ?> &copy; 2009 Alex Suraci</p>
-<?php endif; ?>
+    <?php if (defined("CHYRP_VERSION")): ?>
+        <p class="footer">Chyrp <?php echo CHYRP_VERSION; ?> &copy; 2011 Chyrp Team</p>
+    <?php endif; ?>
     </body>
 </html>
