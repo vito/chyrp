@@ -3,8 +3,8 @@ require "yaml"
 require "optparse"
 
 OPTIONS = {
-  :project => "Chyrp v2.1 git",
-  :maintainer => "Alex Suraci <suracil.icio.us@gmail.com>",
+  :project => "Chyrp v2.1",
+  :maintainer => "Chyrp Team <email@chyrp.net>",
   :domain  => nil,
   :msgstr  => "",#"XXX",
   :msgstr_filter => "",#"XXX :: %s",
@@ -223,7 +223,7 @@ class Gettext
 
   def print_pofile
     puts '# '+OPTIONS[:project]+' Translation File.'
-    puts '# Copyright (C) YEAR '+OPTIONS[:maintainer].gsub(/ <([^>]+)>/, "")
+    puts '# Copyright (C) '+Time.now.utc.strftime("%Y")+' '+OPTIONS[:maintainer].gsub(/ <([^>]+)>/, "")
     puts '# This file is distributed under the same license as the '+OPTIONS[:project]+' package.'
     puts '# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.'
     puts '#'
