@@ -502,13 +502,18 @@
                             .animate({ opacity: "show" })
 
                         $("#host_field, #username_field, #password_field, #prefix_field")
-                            .animate({ height: "hide", opacity: "hide" }).children().val("")
+                            .children()
+                                .val("")
+                                    .closest("div")
+                                        .animate({ height: "hide", opacity: "hide" })
                     } else {
                         $("#database_field label .sub")
-                            .animate({ opacity: "hide" }, function(){ $(this).remove() })
+                            .animate({ opacity: "hide" },
+                                function(){ $(this).remove() })
 
                         $("#host_field, #username_field, #password_field, #prefix_field")
-                            .animate({ height: "show", opacity: "show" })
+                            .parent()
+                                .animate({ height: "show", opacity: "show" })
                     }
                 })
             })
@@ -537,26 +542,34 @@
                         <?php endif; ?>
                     </select>
                 </p>
-                <p id="host_field">
-                    <label for="host"><?php echo __("Host"); ?> <span class="sub"><?php echo __("(usually ok as \"localhost\")"); ?></span></label>
-                    <input type="text" name="host" value="<?php value_fallback("host", ((isset($_ENV['DATABASE_SERVER'])) ? $_ENV['DATABASE_SERVER'] : "localhost")); ?>" id="host" />
-                </p>
-                <p id="username_field">
-                    <label for="username"><?php echo __("Username"); ?></label>
-                    <input type="text" name="username" value="<?php value_fallback("username"); ?>" id="username" />
-                </p>
-                <p id="password_field">
-                    <label for="password"><?php echo __("Password"); ?></label>
-                    <input type="password" name="password" value="<?php value_fallback("password"); ?>" id="password" />
-                </p>
+                <div<?php echo (isset($_POST['adapter']) and $_POST['adapter'] == "sqlite") ? ' style="display: none"' : "" ; ?>>
+                    <p id="host_field">
+                        <label for="host"><?php echo __("Host"); ?> <span class="sub"><?php echo __("(usually ok as \"localhost\")"); ?></span></label>
+                        <input type="text" name="host" value="<?php value_fallback("host", ((isset($_ENV['DATABASE_SERVER'])) ? $_ENV['DATABASE_SERVER'] : "localhost")); ?>" id="host" />
+                    </p>
+                </div>
+                <div<?php echo (isset($_POST['adapter']) and $_POST['adapter'] == "sqlite") ? ' style="display: none"' : "" ; ?>>
+                    <p id="username_field">
+                        <label for="username"><?php echo __("Username"); ?></label>
+                        <input type="text" name="username" value="<?php value_fallback("username"); ?>" id="username" />
+                    </p>
+                </div>
+                <div<?php echo (isset($_POST['adapter']) and $_POST['adapter'] == "sqlite") ? ' style="display: none"' : "" ; ?>>
+                    <p id="password_field">
+                        <label for="password"><?php echo __("Password"); ?></label>
+                        <input type="password" name="password" value="<?php value_fallback("password"); ?>" id="password" />
+                    </p>
+                </div>
                 <p id="database_field">
-                    <label for="database"><?php echo __("Database"); ?> </label>
+                    <label for="database"><?php echo __("Database"); ?> <?php echo (isset($_POST['adapter']) and $_POST['adapter'] == "sqlite") ? '<span class="sub">'.__("(full path)").'</span>' : "" ; ?></label>
                     <input type="text" name="database" value="<?php value_fallback("database"); ?>" id="database" />
                 </p>
-                <p id="prefix_field">
-                    <label for="prefix"><?php echo __("Table Prefix"); ?> <span class="sub"><?php echo __("(optional)"); ?></span></label>
-                    <input type="text" name="prefix" value="<?php value_fallback("prefix"); ?>" id="prefix" />
-                </p>
+                <div<?php echo (isset($_POST['adapter']) and $_POST['adapter'] == "sqlite") ? ' style="display: none"' : "" ; ?>>
+                    <p id="prefix_field">
+                        <label for="prefix"><?php echo __("Table Prefix"); ?> <span class="sub"><?php echo __("(optional)"); ?></span></label>
+                        <input type="text" name="prefix" value="<?php value_fallback("prefix"); ?>" id="prefix" />
+                    </p>
+                </div>
 
                 <hr />
 
