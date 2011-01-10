@@ -212,13 +212,13 @@
          * Returns:
          *     The securely hashed password to be stored in the database.
          */
-         static function hashPassword($password) {
-             $hasher = new PasswordHash(8, false);
-             $hashedPassword = $hasher->HashPassword($password);
-             return $hashedPassword;	
-         }
- 	
-	 /**
+        static function hashPassword($password) {
+            $hasher = new PasswordHash(8, false);
+            $hashedPassword = $hasher->HashPassword($password);
+            return $hashedPassword;
+        }
+
+        /**
          * Function: checkPassword
          * Checks a given password against the stored hash.
          *
@@ -229,10 +229,10 @@
          * Returns:
          *     @true@ or @false@
          */
-		static function checkPassword($password, $storedHash) {
-			$hasher = new PasswordHash(8, false);
-			return $hasher->CheckPassword($password, $storedHash);
-		}
+        static function checkPassword($password, $storedHash) {
+            $hasher = new PasswordHash(8, false);
+            return $hasher->CheckPassword($password, $storedHash);
+        }
 
         /**
          * Function: group

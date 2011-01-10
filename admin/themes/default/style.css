@@ -812,12 +812,12 @@ ul.sort_pages input {
 }
 ul.sort_pages .sort-placeholder {
     border: 1px dashed #777;
-	display: list-item !important;
-	margin-bottom: .5em;
-	height: 1.8em;
+    display: list-item !important;
+    margin-bottom: .5em;
+    height: 1.8em;
 }
 ul.sort_pages .sort-hover {
-	border: 1px dashed #777 !important;
+    border: 1px dashed #777 !important;
 }
 /* @end */
 
