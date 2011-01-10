@@ -1,6 +1,6 @@
 <?php
 /*
-   Copyright (c) 2003 Danilo Segan <danilo@kvota.net>.
+   Copyright (c) 2003, 2009 Danilo Segan <danilo@kvota.net>.
    Copyright (c) 2005 Nico Kaiser <nico@siriux.net>
 
    This file is part of PHP-gettext.
@@ -63,13 +63,18 @@ class gettext_reader {
   function readint() {
       if ($this->BYTEORDER == 0) {
         // low endian
-                $fix = unpack('V', $this->STREAM->read(4));
-                return array_shift($fix);
+        $input=unpack('V', $this->STREAM->read(4));
+        return array_shift($input);
       } else {
         // big endian
-        return array_shift(unpack('N', $this->STREAM->read(4)));
+        $input=unpack('N', $this->STREAM->read(4));
+        return array_shift($input);
       }
     }
+
+  function read($bytes) {
+    return $this->STREAM->read($bytes);
+  }
 
   /**
    * Reads an array of Integers from the Stream
@@ -103,24 +108,21 @@ class gettext_reader {
     // Caching can be turned off
     $this->enable_cache = $enable_cache;
 
-    // $MAGIC1 = (int)0x950412de; //bug in PHP 5
-    $MAGIC1 = (int) - 1794895138;
-    // $MAGIC2 = (int)0xde120495; //bug
-    $MAGIC2 = (int) - 569244523;
-    // 64-bit fix, via WP
-    $MAGIC3 = (int) 2500072158;
+    $MAGIC1 = "\x95\x04\x12\xde";
+    $MAGIC2 = "\xde\x12\x04\x95";
 
     $this->STREAM = $Reader;
-    $magic = $this->readint();
-    if ($magic == $MAGIC1 or $magic == $MAGIC3) {
-      $this->BYTEORDER = 0;
-    } elseif ($magic == $MAGIC2) {
+    $magic = $this->read(4);
+    if ($magic == $MAGIC1) {
       $this->BYTEORDER = 1;
+    } elseif ($magic == $MAGIC2) {
+      $this->BYTEORDER = 0;
     } else {
       $this->error = 1; // not MO file
       return false;
     }
 
+    // FIXME: Do we care about revision? We should.
     $revision = $this->readint();
 
     $this->total = $this->readint();
@@ -142,10 +144,14 @@ class gettext_reader {
       return;
 
     /* get original and translations tables */
-    $this->STREAM->seekto($this->originals);
-    $this->table_originals = $this->readintarray($this->total * 2);
-    $this->STREAM->seekto($this->translations);
-    $this->table_translations = $this->readintarray($this->total * 2);
+    if (!is_array($this->table_originals)) {
+      $this->STREAM->seekto($this->originals);
+      $this->table_originals = $this->readintarray($this->total * 2);
+    }
+    if (!is_array($this->table_translations)) {
+      $this->STREAM->seekto($this->translations);
+      $this->table_translations = $this->readintarray($this->total * 2);
+    }
 
     if ($this->enable_cache) {
       $this->cache_translations = array ();
@@ -264,6 +270,55 @@ class gettext_reader {
   }
 
   /**
+   * Sanitize plural form expression for use in PHP eval call.
+   *
+   * @access private
+   * @return string sanitized plural form expression
+   */
+  function sanitize_plural_expression($expr) {
+    // Get rid of disallowed characters.
+    $expr = preg_replace('@[^a-zA-Z0-9_:;\(\)\?\|\&=!<>+*/\%-]@', '', $expr);
+
+    // Add parenthesis for tertiary '?' operator.
+    $expr .= ';';
+    $res = '';
+    $p = 0;
+    for ($i = 0; $i < strlen($expr); $i++) {
+      $ch = $expr[$i];
+      switch ($ch) {
+      case '?':
+        $res .= ' ? (';
+        $p++;
+        break;
+      case ':':
+        $res .= ') : (';
+        break;
+      case ';':
+        $res .= str_repeat( ')', $p) . ';';
+        $p = 0;
+        break;
+      default:
+        $res .= $ch;
+      }
+    }
+    return $res;
+  }
+
+  /**
+   * Parse full PO header and extract only plural forms line.
+   *
+   * @access private
+   * @return string verbatim plural form header field
+   */
+  function extract_plural_forms_header_from_po_header($header) {
+    if (preg_match("/(^|\n)plural-forms: ([^\n]*)\n/i", $header, $regs))
+      $expr = $regs[2];
+    else
+      $expr = "nplurals=2; plural=n == 1 ? 0 : 1;";
+    return $expr;
+  }
+
+  /**
    * Get possible plural forms from MO header
    *
    * @access private
@@ -281,11 +336,8 @@ class gettext_reader {
       } else {
         $header = $this->get_translation_string(0);
       }
-      if (preg_match("/plural-forms: ([^\n]*)\n/", $header, $regs))
-        $expr = $regs[1];
-      else
-        $expr = "nplurals=2; plural=n == 1 ? 0 : 1;";
-      $this->pluralheader = $expr;
+      $expr = $this->extract_plural_forms_header_from_po_header($header);
+      $this->pluralheader = $this->sanitize_plural_expression($expr);
     }
     return $this->pluralheader;
   }
@@ -332,7 +384,7 @@ class gettext_reader {
     $select = $this->select_string($number);
 
     // this should contains all strings separated by NULLs
-    $key = $single.chr(0).$plural;
+    $key = $single . chr(0) . $plural;
 
 
     if ($this->enable_cache) {
@@ -355,6 +407,26 @@ class gettext_reader {
     }
   }
 
+  function pgettext($context, $msgid) {
+    $key = $context . chr(4) . $msgid;
+    $ret = $this->translate($key);
+    if (strpos($ret, "\004") !== FALSE) {
+      return $msgid;
+    } else {
+      return $ret;
+    }
+  }
+
+  function npgettext($context, $singular, $plural, $number) {
+    $key = $context . chr(4) . $singular;
+    $ret = $this->ngettext($key, $plural, $number);
+    if (strpos($ret, "\004") !== FALSE) {
+      return $singular;
+    } else {
+      return $ret;
+    }
+
+  }
 }
 
 ?>
