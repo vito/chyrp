@@ -389,7 +389,7 @@
             if (isset($attrs))
                 $post = Post::from_url($attrs, array("drafts" => true));
             else
-                $post = new Post(array("url" => @$_GET['url']));
+                $post = new Post(array("url" => @$_GET['url']), array("drafts" => true));
 
             if ($post->no_results)
                 return false;

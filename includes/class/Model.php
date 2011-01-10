@@ -118,8 +118,8 @@
                 return $this->$name = new $model(null, $opts);
             }
 
-			if (isset($this->$name))
-				return $this->$name;
+            if (isset($this->$name))
+                return $this->$name;
         }
 
         /**
