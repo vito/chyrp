@@ -106,6 +106,7 @@
          */
         public function write_post() {
             $visitor = Visitor::current();
+
             if (!$visitor->group->can("add_post", "add_draft"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
@@ -1324,8 +1325,8 @@
             $xml = simplexml_load_string($api);
 
             if (!isset($xml->tumblelog))
-                Flash::warning(__("The URL you specified does not seem to be a valid Tumblr site."),
-                               "/admin/?action=import");
+                Flash::warning(__("Content could not be retrieved from the given URL. ". get_remote($url)),
+                                  "/admin/?action=import");
 
             $already_in = $posts = array();
             foreach ($xml->posts->post as $post) {
@@ -1356,7 +1357,7 @@
             foreach ($posts as $key => $post) {
                 set_time_limit(3600);
                 if ($post->attributes()->type == "audio")
-                    continue; # Can't import Audio posts since Tumblr has the files locked in to Amazon.
+                    break; # Can't import Audio posts since Tumblr has the files locked in to Amazon.
 
                 $translate_types = array("regular" => "text", "conversation" => "chat");
 
@@ -1408,7 +1409,7 @@
                                       Post::check_url($clean),
                                       fallback($translate_types[(string) $post->attributes()->type], (string) $post->attributes()->type),
                                       null,
-                                      false,
+                                      null,
                                       "public",
                                       datetime((int) $post->attributes()->unix_timestamp),
                                       null,

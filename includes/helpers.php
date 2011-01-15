@@ -168,7 +168,7 @@
     function _p($single, $plural, $number, $domain = "chyrp") {
         global $l10n;
         return isset($l10n[$domain]) ?
-                   $l10n[$domain]->ngettext($single, $plural, $number) :
+                     $l10n[$domain]->ngettext($single, $plural, $number) :
                    (($number != 1) ? $plural : $single) ;
     }
 
@@ -1088,6 +1088,8 @@
 
         if (ini_get("allow_url_fopen")) {
             $content = @file_get_contents($url);
+            if ($http_response_header[0] != "HTTP/1.1 200 OK")
+                $content = "Server returned a message: $http_response_header[0]";
         } elseif (function_exists("curl_init")) {
             $handle = curl_init();
             curl_setopt($handle, CURLOPT_URL, $url);
@@ -1095,7 +1097,10 @@
             curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($handle, CURLOPT_TIMEOUT, 60);
             $content = curl_exec($handle);
+            $status = curl_getinfo($handle, CURLINFO_HTTP_CODE);
             curl_close($handle);
+            if ($status != 200)
+                $content = "Server returned a message: $status";
         } else {
             $path = (!isset($path)) ? '/' : $path ;
             if (isset($query)) $path.= '?'.$query;
@@ -1261,6 +1266,7 @@
         $zones = array();
 
         $deprecated = array("Brazil/Acre", "Brazil/DeNoronha", "Brazil/East", "Brazil/West", "Canada/Atlantic", "Canada/Central", "Canada/East-Saskatchewan", "Canada/Eastern", "Canada/Mountain", "Canada/Newfoundland", "Canada/Pacific", "Canada/Saskatchewan", "Canada/Yukon", "CET", "Chile/Continental", "Chile/EasterIsland", "CST6CDT", "Cuba", "EET", "Egypt", "Eire", "EST", "EST5EDT", "Etc/GMT", "Etc/GMT+0", "Etc/GMT+1", "Etc/GMT+10", "Etc/GMT+11", "Etc/GMT+12", "Etc/GMT+2", "Etc/GMT+3", "Etc/GMT+4", "Etc/GMT+5", "Etc/GMT+6", "Etc/GMT+7", "Etc/GMT+8", "Etc/GMT+9", "Etc/GMT-0", "Etc/GMT-1", "Etc/GMT-10", "Etc/GMT-11", "Etc/GMT-12", "Etc/GMT-13", "Etc/GMT-14", "Etc/GMT-2", "Etc/GMT-3", "Etc/GMT-4", "Etc/GMT-5", "Etc/GMT-6", "Etc/GMT-7", "Etc/GMT-8", "Etc/GMT-9", "Etc/GMT0", "Etc/Greenwich", "Etc/UCT", "Etc/Universal", "Etc/UTC", "Etc/Zulu", "Factory", "GB", "GB-Eire", "GMT", "GMT+0", "GMT-0", "GMT0", "Greenwich", "Hongkong", "HST", "Iceland", "Iran", "Israel", "Jamaica", "Japan", "Kwajalein", "Libya", "MET", "Mexico/BajaNorte", "Mexico/BajaSur", "Mexico/General", "MST", "MST7MDT", "Navajo", "NZ", "NZ-CHAT", "Poland", "Portugal", "PRC", "PST8PDT", "ROC", "ROK", "Singapore", "Turkey", "UCT", "Universal", "US/Alaska", "US/Aleutian", "US/Arizona", "US/Central", "US/East-Indiana", "US/Eastern", "US/Hawaii", "US/Indiana-Starke", "US/Michigan", "US/Mountain", "US/Pacific", "US/Pacific-New", "US/Samoa", "UTC", "W-SU", "WET", "Zulu");
+
         foreach (timezone_identifiers_list() as $zone)
             if (!in_array($zone, $deprecated))
                 $zones[] = array("name" => $zone,
