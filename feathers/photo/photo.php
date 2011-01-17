@@ -3,15 +3,14 @@
         public function __init() {
             $this->setField(array("attr" => "photo",
                                   "type" => "file",
-                                  "label" => __("Photo", "photo")));
-
+                                  "label" => __("Photo", "photo"),
+                                  "note" => "<small>(Max. file size: ".ini_get('upload_max_filesize').")</small>"));
             if (isset($_GET['action']) and $_GET['action'] == "bookmarklet")
                 $this->setField(array("attr" => "from_url",
                                       "type" => "text",
                                       "label" => __("From URL?", "photo"),
                                       "optional" => true,
                                       "no_value" => true));
-
             $this->setField(array("attr" => "caption",
                                   "type" => "text_block",
                                   "label" => __("Caption", "photo"),
