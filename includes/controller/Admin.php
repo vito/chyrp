@@ -1219,7 +1219,7 @@
                                          "<wp:meta_value>\\1&amp;\\2</wp:meta_value>",
                                          $sane_xml, -1, $fix_amps_count);
 
-            # Remove null (x00) characyers
+            # Remove null (x00) characters
             $sane_xml = str_replace("", "", $sane_xml);
 
             $xml = simplexml_load_string($sane_xml, "SimpleXMLElement", LIBXML_NOCDATA);
@@ -1246,6 +1246,8 @@
 
                 $clean = (isset($wordpress->post_name)) ? $wordpress->post_name : sanitize($item->title) ;
 
+                $pinned = (isset($wordpress->is_sticky)) ? $wordpress->is_sticky : 0 ;
+
                 if (empty($wordpress->post_type) or $wordpress->post_type == "post") {
                     $status_translate = array("publish" => "public",
                                               "draft"   => "draft",
@@ -1265,7 +1267,7 @@
                                       Post::check_url($clean),
                                       "text",
                                       null,
-                                      false,
+                                      $pinned,
                                       $status_translate[(string) $wordpress->status],
                                       (string) ($wordpress->post_date == "0000-00-00 00:00:00" ? datetime() : $wordpress->post_date),
                                       null,
@@ -1825,8 +1827,8 @@
 
                 $this->context["admin_themes"][] = array("name" => $folder,
                                                          "screenshot" => (file_exists(ADMIN_THEMES_DIR."/".$folder."/screenshot.png") ?
-                                                                              $config->chyrp_url."/admin/themes/".$folder."/screenshot.png" :
-                                                                              ""),
+                                                         $config->chyrp_url."/admin/themes/".$folder."/screenshot.png" :
+                                                         ""),
                                                          "info" => $info);
             }
 
@@ -2224,13 +2226,13 @@
                                                                "selected" => array("edit_page", "delete_page")),
                                       "manage_users"  => array("title" => __("Users"),
                                                                "show" => ($visitor->group->can("add_user",
-                                                                                                 "edit_user",
-                                                                                                 "delete_user")),
+                                                                                               "edit_user",
+                                                                                               "delete_user")),
                                                                "selected" => array("edit_user", "delete_user", "new_user")),
                                       "manage_groups" => array("title" => __("Groups"),
                                                                "show" => ($visitor->group->can("add_group",
-                                                                                                 "edit_group",
-                                                                                                 "delete_group")),
+                                                                                               "edit_group",
+                                                                                               "delete_group")),
                                                                "selected" => array("edit_group", "delete_group", "new_group")));
             $trigger->filter($subnav["manage"], "manage_nav");
 
