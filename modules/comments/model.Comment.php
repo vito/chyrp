@@ -75,27 +75,24 @@
             $visitor = Visitor::current();
 
             if (!$type) {
-                $status = ($post->user_id == $visitor->id) ? "approved" : $config->default_comment_status;
+                $status = ($post->user_id == $visitor->id) ? "approved" : $config->default_comment_status ;
                 $type = "comment";
             } else
                 $status = $type;
 
-            if (!empty($config->defensio_api_key)) {
-                $comment = array("user-ip" => $_SERVER['REMOTE_ADDR'],
-                                 "article-date" => when("Y/m/d", $post->created_at),
-                                 "comment-author" => $author,
-                                 "comment-type" => $type,
-                                 "comment-content" => $body,
-                                 "comment-author-email" => $email,
-                                 "comment-author-url" => $url,
-                                 "permalink" => $post->url(),
-                                 "referrer" => $_SERVER['HTTP_REFERER'],
-                                 "user-logged-in" => logged_in());
+            if (!empty($config->akismet_api_key)) {
+                $akismet = new Akismet($config->url, $config->akismet_api_key);
 
-                $defensio = new Defensio($config->url, $config->defensio_api_key);
-                list($spam, $spaminess, $signature) = $defensio->auditComment($comment);
+                $akismet->setCommentAuthor($author);
+                $akismet->setCommentAuthorEmail($email);
+                $akismet->setCommentAuthorURL($url);
+                $akismet->setCommentContent($body);
+                $akismet->setPermalink($post->url());
+                $akismet->setCommentType($type);
+                $akismet->setReferrer($_SERVER['HTTP_REFERER']);
+                $akismet->setUserIP($_SERVER['REMOTE_ADDR']);
 
-                if ($spam) {
+                if ($akismet->isCommentSpam()) {
                     self::add($body,
                               $author,
                               $url,
@@ -103,7 +100,7 @@
                               $_SERVER['REMOTE_ADDR'],
                               $_SERVER['HTTP_USER_AGENT'],
                               "spam",
-                              $signature,
+                              null,
                               null,
                               null,
                               $post,
@@ -117,7 +114,7 @@
                                          $_SERVER['REMOTE_ADDR'],
                                          $_SERVER['HTTP_USER_AGENT'],
                                          $status,
-                                         $signature,
+                                         null,
                                          null,
                                          null,
                                          $post,
@@ -139,7 +136,7 @@
                                      $_SERVER['REMOTE_ADDR'],
                                      $_SERVER['HTTP_USER_AGENT'],
                                      $status,
-                                     "",
+                                     null,
                                      null,
                                      null,
                                      $post,
@@ -192,7 +189,7 @@
                                "author_ip" => $ip,
                                "author_agent" => $agent,
                                "status" => $status,
-                               "signature" => $signature,
+                               "signature" => null,
                                "created_at" => oneof($created_at, datetime()),
                                "updated_at" => oneof($updated_at, "0000-00-00 00:00:00"),
                                "post_id" => $post->id,

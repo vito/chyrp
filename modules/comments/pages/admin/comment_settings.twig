@@ -6,9 +6,9 @@
             <form id="comment_settings" class="split" action="{% admin "comment_settings" %}" method="post">
                 <fieldset>
                     <p>
-                        <label for="defensio_api_key">${ "Defensio API Key" | translate("comments") }</label>
-                        <input class="text" type="text" name="defensio_api_key" value="${ site.defensio_api_key | escape }" id="defensio_api_key" /> <span class="sub">${ "(recommended)" | translate }</span>
-                        <small>${ "A very good spam blocker. Get an API key from <a href=\"http://defensio.com/\">Defensio.com</a>." | translate("comments") }</small>
+                        <label for="akismet_api_key">${ "Akismet API Key" | translate("comments") }</label>
+                        <input class="text" type="text" name="akismet_api_key" value="${ site.akismet_api_key | escape }" id="akismet_api_key" /> <span class="sub">${ "(recommended)" | translate }</span>
+                        <small>${ "A very good spam blocker. Get an API key from <a href=\"http://akismet.com/\">Akismet.com</a>." | translate("comments") }</small>
                     </p>
                     <p>
                         <label for="allowed_comment_html">${ "Allowed HTML Tags" | translate("comments") }</label>

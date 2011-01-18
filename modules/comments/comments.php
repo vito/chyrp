@@ -1,6 +1,6 @@
 <?php
     require_once "model.Comment.php";
-    require_once "lib/Defensio.php";
+    require_once "lib/Akismet.php";
 
     class Comments extends Modules {
         public function __init() {
@@ -30,7 +30,7 @@
             $config->set("default_comment_status", "denied");
             $config->set("allowed_comment_html", array("strong", "em", "blockquote", "code", "pre", "a"));
             $config->set("comments_per_page", 25);
-            $config->set("defensio_api_key", null);
+            $config->set("akismet_api_key", null);
             $config->set("auto_reload_comments", 30);
             $config->set("enable_reload_comments", false);
 
@@ -51,7 +51,7 @@
             $config->remove("default_comment_status");
             $config->remove("allowed_comment_html");
             $config->remove("comments_per_page");
-            $config->remove("defensio_api_key");
+            $config->remove("akismet_api_key");
             $config->remove("auto_reload_comments");
             $config->remove("enable_reload_comments");
 
@@ -254,14 +254,14 @@
                          $config->set("auto_reload_comments", $_POST['auto_reload_comments']),
                          $config->set("enable_reload_comments", isset($_POST['enable_reload_comments'])));
 
-            if (!empty($_POST['defensio_api_key'])) {
-                $_POST['defensio_api_key'] = trim($_POST['defensio_api_key']);
-                $defensio = new Defensio($config->url, $_POST['defensio_api_key']);
-                if ($defensio->errorsExist()) {
-                    Flash::warning(__("Invalid Defensio API key."));
+            if (!empty($_POST['akismet_api_key'])) {
+                $_POST['akismet_api_key'] = trim($_POST['akismet_api_key']);
+                $akismet = new Akismet($config->url, $_POST['akismet_api_key']);
+                if (!$akismet->isKeyValid()) {
+                    Flash::warning(__("Invalid Akismet API key."));
                     $set[] = false;
                 } else
-                    $set[] = $config->set("defensio_api_key", $_POST['defensio_api_key']);
+                    $set[] = $config->set("akismet_api_key", $_POST['akismet_api_key']);
             }
 
             if (!in_array(false, $set))
@@ -396,12 +396,12 @@
                 Flash::notice(__("Selected comments marked as spam.", "comments"));
             }
 
-            if (!empty($config->defensio_api_key)) {
-                $defensio = new Defensio($config->url, $config->defensio_api_key);
+            if (!empty($config->akismet_api_key)) {
+                $akismet = new Akismet($config->url, $config->akismet_api_key);
                 if (!empty($false_positives))
-                    $defensio->submitFalsePositives(implode(",", $false_positives));
+                    $akismet->submitHam(implode(",", $false_positives));
                 if (!empty($false_negatives))
-                    $defensio->submitFalseNegatives(implode(",", $false_negatives));
+                    $akismet->submitSpam(implode(",", $false_negatives));
             }
 
             redirect("/admin/?action=".$from);
