@@ -102,7 +102,6 @@
                               "spam",
                               null,
                               null,
-                              null,
                               $post,
                               $visitor->id);
                     error(__("Spam Comment"), __("Your comment has been marked as spam. It will have to be approved before it will show up.", "comments"));
@@ -114,7 +113,6 @@
                                          $_SERVER['REMOTE_ADDR'],
                                          $_SERVER['HTTP_USER_AGENT'],
                                          $status,
-                                         null,
                                          null,
                                          null,
                                          $post,
@@ -136,7 +134,6 @@
                                      $_SERVER['REMOTE_ADDR'],
                                      $_SERVER['HTTP_USER_AGENT'],
                                      $status,
-                                     null,
                                      null,
                                      null,
                                      $post,
@@ -164,14 +161,12 @@
          *     $ip - The commenter's IP address.
          *     $agent - The commenter's user agent.
          *     $status - The new comment's status.
-         *     $signature - Defensio's data signature of the comment, generated when it is checked
-         *                  if it's spam in <Comment.create>. Optional.
          *     $created_at - The new comment's "created" timestamp.
          *     $updated_at - The new comment's "last updated" timestamp.
          *     $post - The <Post> they're commenting on.
          *     $user_id - The ID of this <User> this comment was made by.
          */
-        static function add($body, $author, $url, $email, $ip, $agent, $status, $signature, $created_at = null, $updated_at = null, $post, $user_id) {
+        static function add($body, $author, $url, $email, $ip, $agent, $status, $created_at = null, $updated_at = null, $post, $user_id) {
             if (!empty($url)) # Add the http:// if it isn't there.
                 if (!@parse_url($url, PHP_URL_SCHEME))
                     $url = "http://".$url;
@@ -189,7 +184,6 @@
                                "author_ip" => $ip,
                                "author_agent" => $agent,
                                "status" => $status,
-                               "signature" => null,
                                "created_at" => oneof($created_at, datetime()),
                                "updated_at" => oneof($updated_at, "0000-00-00 00:00:00"),
                                "post_id" => $post->id,

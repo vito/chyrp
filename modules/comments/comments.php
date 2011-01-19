@@ -19,7 +19,6 @@
                              author_ip INTEGER DEFAULT '0',
                              author_agent VARCHAR(255) DEFAULT '',
                              status VARCHAR(32) default 'denied',
-                             signature VARCHAR(32) DEFAULT '',
                              post_id INTEGER DEFAULT 0,
                              user_id INTEGER DEFAULT 0,
                              created_at DATETIME DEFAULT NULL,
@@ -258,7 +257,7 @@
                 $_POST['akismet_api_key'] = trim($_POST['akismet_api_key']);
                 $akismet = new Akismet($config->url, $_POST['akismet_api_key']);
                 if (!$akismet->isKeyValid()) {
-                    Flash::warning(__("Invalid Akismet API key."));
+                    Flash::warning(__("Invalid Akismet API key."), "/admin/?action=comment_settings");
                     $set[] = false;
                 } else
                     $set[] = $config->set("akismet_api_key", $_POST['akismet_api_key']);
@@ -359,7 +358,7 @@
                         continue;
 
                     if ($comment->status == "spam")
-                        $false_positives[] = $comment->signature;
+                        $false_positives[] = $comment;
 
                     $sql->update("comments", array("id" => $comment->id), array("status" => "denied"));
                 }
@@ -374,7 +373,7 @@
                         continue;
 
                     if ($comment->status == "spam")
-                        $false_positives[] = $comment->signature;
+                        $false_positives[] = $comment;
 
                     $sql->update("comments", array("id" => $comment->id), array("status" => "approved"));
                 }
@@ -390,21 +389,50 @@
 
                     $sql->update("comments", array("id" => $comment->id), array("status" => "spam"));
 
-                    $false_negatives[] = $comment->signature;
+                    $false_negatives[] = $comment;
                 }
 
                 Flash::notice(__("Selected comments marked as spam.", "comments"));
             }
 
             if (!empty($config->akismet_api_key)) {
-                $akismet = new Akismet($config->url, $config->akismet_api_key);
                 if (!empty($false_positives))
-                    $akismet->submitHam(implode(",", $false_positives));
+                    self::reportHam($false_positives);
                 if (!empty($false_negatives))
-                    $akismet->submitSpam(implode(",", $false_negatives));
+                    self::reportSpam($false_negatives);
             }
 
             redirect("/admin/?action=".$from);
+        }
+
+        static function reportHam($comments) {
+            $config = Config::current();
+            foreach($comments as $comment) {
+                $akismet = new Akismet($config->url, $config->akismet_api_key);
+                $akismet->setCommentAuthor($comment->author);
+                $akismet->setCommentAuthorEmail($comment->author_email);
+                $akismet->setCommentAuthorURL($comment->author_url);
+                $akismet->setCommentContent($comment->body);
+                $akismet->setPermalink($comment->post_id);
+                $akismet->setReferrer($comment->author_agent);
+                $akismet->setUserIP($comment->author_ip);
+                $akismet->submitHam();
+            }
+        }
+
+        static function reportSpam($comments) {
+            $config = Config::current();
+            foreach($comments as $comment) {
+                $akismet = new Akismet($config->url, $config->akismet_api_key);
+                $akismet->setCommentAuthor($comment->author);
+                $akismet->setCommentAuthorEmail($comment->author_email);
+                $akismet->setCommentAuthorURL($comment->author_url);
+                $akismet->setCommentContent($comment->body);
+                $akismet->setPermalink($comment->post_id);
+                $akismet->setReferrer($comment->author_agent);
+                $akismet->setUserIP($comment->author_ip);
+                $akismet->submitSpam();
+            }
         }
 
         static function manage_posts_column_header() {
@@ -509,7 +537,6 @@
                              $chyrp->author->ip,
                              unfix($chyrp->author->agent),
                              $chyrp->status,
-                             $chyrp->signature,
                              datetime($comment->published),
                              ($comment->published == $comment->updated) ? null : datetime($comment->updated),
                              $post,
@@ -536,7 +563,6 @@
                              $comment->comment_author_IP,
                              "",
                              ((isset($comment->comment_approved) and $comment->comment_approved == "1") ? "approved" : "denied"),
-                             "",
                              $comment->comment_date,
                              null,
                              $post,
@@ -560,7 +586,6 @@
                              $comment["ip"],
                              "",
                              $status,
-                             "",
                              $comment["posted"],
                              null,
                              $post,
@@ -579,7 +604,6 @@
                              $comment["comment_ip"],
                              "",
                              ($comment["comment_visible"] ? "approved" : "denied"),
-                             "",
                              $comment["comment_created_on"],
                              $comment["comment_modified_on"],
                              $post,
@@ -689,24 +713,21 @@
             foreach ($comments as $comment) {
                 $updated = ($comment->updated) ? $comment->updated_at : $comment->created_at ;
 
-                $atom.= "       <chyrp:comment>\r";
-                $atom.= '           <updated>'.when("c", $updated).'</updated>'."\r";
-                $atom.= '           <published>'.when("c", $comment->created_at).'</published>'."\r";
-                $atom.= '           <author chyrp:user_id="'.$comment->user_id.'">'."\r";
-                $atom.= "               <name>".fix($comment->author)."</name>\r";
+                $atom.= "        <chyrp:comment>\r";
+                $atom.= '            <updated>'.when("c", $updated).'</updated>'."\r";
+                $atom.= '            <published>'.when("c", $comment->created_at).'</published>'."\r";
+                $atom.= '            <author chyrp:user_id="'.$comment->user_id.'">'."\r";
+                $atom.= "                <name>".fix($comment->author)."</name>\r";
                 if (!empty($comment->author_url))
-                $atom.= "               <uri>".fix($comment->author_url)."</uri>\r";
-                $atom.= "               <email>".fix($comment->author_email)."</email>\r";
-                $atom.= "               <chyrp:login>".fix(@$comment->user->login)."</chyrp:login>\r";
-                $atom.= "               <chyrp:ip>".long2ip($comment->author_ip)."</chyrp:ip>\r";
-                $atom.= "               <chyrp:agent>".fix($comment->author_agent)."</chyrp:agent>\r";
-                $atom.= "           </author>\r";
-                $atom.= "           <content>".fix($comment->body)."</content>\r";
-
-                foreach (array("status", "signature") as $attr)
-                    $atom.= "           <chyrp:".$attr.">".fix($comment->$attr)."</chyrp:".$attr.">\r";
-
-                $atom.= "       </chyrp:comment>\r";
+                $atom.= "                <uri>".fix($comment->author_url)."</uri>\r";
+                $atom.= "                <email>".fix($comment->author_email)."</email>\r";
+                $atom.= "                <chyrp:login>".fix(@$comment->user->login)."</chyrp:login>\r";
+                $atom.= "                <chyrp:ip>".long2ip($comment->author_ip)."</chyrp:ip>\r";
+                $atom.= "                <chyrp:agent>".fix($comment->author_agent)."</chyrp:agent>\r";
+                $atom.= "            </author>\r";
+                $atom.= "            <content>".fix($comment->body)."</content>\r";
+                $atom.= "                <chyrp:status>".fix($comment->status)."</chyrp:status>\r";
+                $atom.= "        </chyrp:comment>\r";
             }
 
             return $atom;
