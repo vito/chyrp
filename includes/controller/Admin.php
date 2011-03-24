@@ -1327,7 +1327,7 @@
             $xml = simplexml_load_string($api);
 
             if (!isset($xml->tumblelog))
-                Flash::warning(__("Content could not be retrieved from the given URL. ". get_remote($url)),
+                Flash::warning(_f("Content could not be retrieved from the given URL. ". get_remote($url)),
                                   "/admin/?action=import");
 
             $already_in = $posts = array();
