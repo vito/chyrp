@@ -23,9 +23,9 @@
     define('INDEX',        false);
     define('MAIN_DIR',     dirname(__FILE__));
     define('INCLUDES_DIR', dirname(__FILE__)."/includes");
-    define('MODULES_DIR', MAIN_DIR."/modules");
+    define('MODULES_DIR',  MAIN_DIR."/modules");
     define('FEATHERS_DIR', MAIN_DIR."/feathers");
-    define('THEMES_DIR', MAIN_DIR."/themes");
+    define('THEMES_DIR',   MAIN_DIR."/themes");
 
     if (!AJAX and
         extension_loaded("zlib") and
@@ -211,9 +211,7 @@
         Config::$yaml["config"] = YAML::load(preg_replace("/<\?php(.+)\?>\n?/s", "", file_get_contents(config_file())));
 
         if (database_file())
-            Config::$yaml["database"] = YAML::load(preg_replace("/<\?php(.+)\?>\n?/s",
-                                                                        "",
-                                                                        file_get_contents(database_file())));
+            Config::$yaml["database"] = YAML::load(preg_replace("/<\?php(.+)\?>\n?/s", "", file_get_contents(database_file())));
         else
             Config::$yaml["database"] = oneof(@Config::$yaml["config"]["sql"], array());
     } else {
@@ -379,8 +377,8 @@
 
         $contents = file_get_contents(INCLUDES_DIR."/config.yaml.php");
         $new_error = preg_replace("/<\?php (.+) \?>/",
-                             "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>",
-                             $contents);
+                                  "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>",
+                                  $contents);
 
         echo __("Updating protection code in config.yaml.php...").
              test(@file_put_contents(INCLUDES_DIR."/config.yaml.php", $new_error), __("Try CHMODding the file to 777."));
@@ -1267,7 +1265,7 @@
 </pre>
             <h1 class="what_now"><?php echo __("What now?"); ?></h1>
             <ol>
-                <li><?php echo __("Look through the results up there for any failed tasks. If you see any and you can't figure out why, you can ask for help at the <a href=\"http://chyrp.net/community/\">Chyrp Community</a>."); ?></li>
+                <li><?php echo __("Look through the results up there for any failed tasks. If you see any and you can't figure out why, you can ask for help at the <a href=\"http://chyrp.net/discuss/\">Chyrp Community</a>."); ?></li>
                 <li><?php echo __("If any of your Modules or Feathers have new versions available for this release, check if an <code>upgrades.php</code> file exists in their main directory. If that file exists, run this upgrader again after enabling the Module or Feather and it will run the upgrade tasks."); ?></li>
                 <li><?php echo __("When you are done, you can delete this file. It doesn't pose any real threat on its own, but you should delete it anyway, just to be sure."); ?></li>
             </ol>
