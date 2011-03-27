@@ -532,6 +532,10 @@
             elseif (!preg_match("/^[_A-z0-9-]+((\.|\+)[_A-z0-9-]+)*@[A-z0-9-]+(\.[A-z0-9-]+)*(\.[A-z]{2,4})$/", $_POST['email']))
                 error(__("Error"), __("Invalid e-mail address."));
 
+            if (!empty($_POST['website']) and strpos($_POST['website'], '://') === false) {
+                $_POST['website'] = 'http://' . $_POST['website'];
+            }
+
             User::add($_POST['login'],
                       $_POST['password1'],
                       $_POST['email'],
@@ -582,7 +586,6 @@
                 Flash::notice(_f("Login &#8220;%s&#8221; is already in use.", array($_POST['login'])),
                               "/admin/?action=edit_user&id=".$_POST['id']);
 
-
             $user = new User($_POST['id']);
 
             if ($user->no_results)
@@ -592,7 +595,11 @@
                             User::hashPassword($_POST['new_password1']) :
                             $user->password ;
 
-            $user->update($_POST['login'], $password, $_POST['email'], $_POST['full_name'], $_POST['website'], $_POST['group']);
+            $website = (!empty($_POST['website']) and strpos($_POST['website'], '://') === false) ?
+                           $_POST['website'] = 'http://' . $_POST['website'] :
+                           $_POST['website'] ;
+
+            $user->update($_POST['login'], $password, $_POST['email'], $_POST['full_name'], $website, $_POST['group']);
 
             if ($_POST['id'] == $visitor->id)
                 $_SESSION['password'] = $password;
