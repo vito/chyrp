@@ -196,10 +196,10 @@
             fallback($pinned,     (int) !empty($_POST['pinned']));
             fallback($status,     (isset($_POST['draft'])) ? "draft" : oneof(@$_POST['status'], "public"));
             fallback($created_at, (!empty($_POST['created_at']) and
-                                   (!isset($_POST['original_time']) or $_POST['created_at'] != $_POST['original_time'])) ?
+                                  (!isset($_POST['original_time']) or $_POST['created_at'] != $_POST['original_time'])) ?
                                       datetime($_POST['created_at']) :
                                       datetime());
-            fallback($updated_at, oneof(@$_POST['updated_at'], "0000-00-00 00:00:00"));
+            fallback($updated_at, oneof(@$_POST['updated_at'], $created_at));
             fallback($trackbacks, oneof(@$_POST['trackbacks'], ""));
             fallback($options,    oneof(@$_POST['option'], array()));
 

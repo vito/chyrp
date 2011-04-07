@@ -100,7 +100,7 @@
                                 "clean" =>        oneof($clean,        sanitize($title)),
                                 "url" =>          oneof($url,          self::check_url($clean)),
                                 "created_at" =>   oneof($created_at,   datetime()),
-                                "updated_at" =>   oneof($updated_at,   "0000-00-00 00:00:00"));
+                                "updated_at" =>   oneof($updated_at,   datetime()));
 
             $trigger->filter($new_values, "before_add_page");
 
