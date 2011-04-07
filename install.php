@@ -150,6 +150,7 @@
             $config->set("send_pingbacks", false);
             $config->set("enable_xmlrpc", true);
             $config->set("enable_ajax", true);
+            $config->set("enable_wysiwyg", false);
             $config->set("uploads_path", "/uploads/");
             $config->set("enabled_modules", array());
             $config->set("enabled_feathers", array("text"));
