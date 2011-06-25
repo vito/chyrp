@@ -1088,7 +1088,7 @@
 
         if (ini_get("allow_url_fopen")) {
             $content = @file_get_contents($url);
-            if ($http_response_header[0] != "HTTP/1.1 200 OK")
+            if (!strpos($http_response_header[0], " 200 OK"))
                 $content = "Server returned a message: $http_response_header[0]";
         } elseif (function_exists("curl_init")) {
             $handle = curl_init();
