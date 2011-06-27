@@ -10,8 +10,7 @@
     if (substr_count($_GET['file'], "..") > 0 )
         exit("GTFO.");
 
-    if (extension_loaded('zlib') and USE_ZLIB and ini_get('zlib.output_compression') === 'On') {
-        @ini_set('zlib.output_compression', 'Off');
+    if (extension_loaded('zlib') and USE_ZLIB and !ini_get("zlib.output_compression")) {
         ob_start("ob_gzhandler");
         header("Content-Encoding: gzip");
     } else
