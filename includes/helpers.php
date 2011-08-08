@@ -437,10 +437,11 @@
      * Parameters:
      *     $string - String to fix.
      *     $quotes - Encode quotes?
+     *     $double - Encode encoded?
      */
-    function fix($string, $quotes = false) {
+    function fix($string, $quotes = false, $double = false) {
         $quotes = ($quotes) ? ENT_QUOTES : ENT_NOQUOTES ;
-        return htmlspecialchars($string, $quotes, "utf-8");
+        return htmlspecialchars($string, $quotes, "utf-8", $double);
     }
 
     /**
