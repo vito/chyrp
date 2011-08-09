@@ -36,6 +36,11 @@
 
             $config = Config::current();
 
+            if (substr_count($_SERVER['REQUEST_URI'], "..") > 0 )
+                exit("GTFO.");
+            elseif (isset($_GET['action']) and preg_match("/[^(\w+)]/", $_GET['action']))
+                exit("Nope!");
+
             $this->action =& $_GET['action'];
 
             if (isset($_GET['feed']))
@@ -53,6 +58,9 @@
                                  $_SERVER['REQUEST_URI'] :
                                  preg_replace("/{$this->safe_path}?/", "", $_SERVER['REQUEST_URI'], 1) ;
             $this->arg = array_map("urldecode", explode("/", trim($this->request, "/")));
+
+            if (substr_count($this->arg[0], "?") > 0 and !preg_match("/\?\w+/", $this->arg[0]))
+                exit("No-Go!");
 
             if (method_exists($controller, "parse"))
                 $controller->parse($this);
