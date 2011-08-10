@@ -395,7 +395,7 @@
                 return false;
 
             if ((oneof(@$attrs["url"], @$attrs["clean"]) == "feed") and # do some checking to see if they're trying
-                (count(explode("/", trim($post_url, "/"))) > count($args) or              # to view the post or the post's feed.
+                (count(explode("/", trim($post_url, "/"))) > count($args) or # to view the post or the post's feed.
                  end($args) != "feed"))
                 $this->feed = false;
 
@@ -529,10 +529,7 @@
                     return $trigger->call("authenticate");
 
                 if (!User::authenticate($_POST['login'], $_POST['password']))
-                    if (!count(User::find(array("where" => array("login" => $_POST['login'])))))
-                        Flash::warning(__("There is no user with that login name."));
-                    else
-                        Flash::warning(__("Password incorrect."));
+                    Flash::warning(__("Incorrect username and/or password, please try again."));
 
                 if (!Flash::exists("warning")) {
                     $user = new User(array("login" => $_POST['login']));
