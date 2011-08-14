@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="${ site.locale | split("_") | first }" lang="${ site.locale | split("_") | first }">
     <head>
         <meta http-equiv="Content-type" content="$theme.type; charset=utf-8" />
+        <meta name="robots" content="noindex" />
         <title>$site.name: {% block title %}$title{% endblock %}</title>
         <link rel="stylesheet" href="$theme_url/style.css" type="text/css" media="screen" title="no title" charset="utf-8" />
         <script src="$site.chyrp_url/includes/lib/gz.php?file=jquery.js" type="text/javascript" charset="utf-8"></script>
