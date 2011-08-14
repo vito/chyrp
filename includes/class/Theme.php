@@ -177,9 +177,7 @@
          * Outputs the default stylesheet links.
          */
         public function stylesheets() {
-            $visitor = Visitor::current();
             $config = Config::current();
-            $trigger = Trigger::current();
 
             $stylesheets = array();
             Trigger::current()->filter($stylesheets, "stylesheets");
@@ -231,15 +229,13 @@
          * Outputs the default JavaScript script references.
          */
         public function javascripts() {
+            $config = Config::current();
             $route = Route::current();
 
             $args = "";
             foreach ($_GET as $key => $val)
                 if (!empty($val) and $val != $route->action)
                     $args.= "&amp;".$key."=".urlencode($val);
-
-            $config = Config::current();
-            $trigger = Trigger::current();
 
             $javascripts = array($config->chyrp_url."/includes/lib/gz.php?file=jquery.js",
                                  $config->chyrp_url."/includes/lib/gz.php?file=plugins.js",
