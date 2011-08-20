@@ -521,7 +521,7 @@
          * Generates an acceptable Title from the post's excerpt.
          *
          * Returns:
-         *     The post's excerpt. iltered -> first line -> ftags stripped -> truncated to 75 characters -> normalized.
+         *     The post's excerpt. filtered -> first line -> ftags stripped -> truncated to 75 characters -> normalized.
          */
         public function title_from_excerpt() {
             if ($this->no_results)
