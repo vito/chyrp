@@ -89,7 +89,7 @@
             }
 
             if (empty($route->action) or $route->action == "extend") {
-                # "Modules", if they can configure the installation.
+                # "Modules", if they can can enable/disable extensions.
                 if ($visitor->group->can("toggle_extensions"))
                     return $route->action = "modules";
             }
