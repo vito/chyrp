@@ -65,6 +65,7 @@
                                 {% endif %}
                                 <option value="public"${ post.status | option_selected("public") }>${ "Public" | translate }</option>
                                 <option value="private"${ post.status | option_selected("private") }>${ "Private" | translate }</option>
+                                <option value="scheduled"${ post.status | option_selected("scheduled") }>${ "Scheduled" | translate }</option>
                                 <option value="registered_only"${ post.status | option_selected("registered_only") }>${ "Registered Only" | translate }</option>
                                 {% if groups %}
                                 <optgroup label="${ "Group" | translate }">

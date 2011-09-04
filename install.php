@@ -250,6 +250,7 @@
                                      __("Toggle Extensions"),
                                      __("View Site"),
                                      __("View Private Posts"),
+                                     __("View Scheduled Posts"),
                                      __("View Drafts"),
                                      __("View Own Drafts"),
                                      __("Add Posts"),
@@ -276,6 +277,7 @@
                            "toggle_extensions" => "Toggle Extensions",
                            "view_site" => "View Site",
                            "view_private" => "View Private Posts",
+                           "view_scheduled" => "View Scheduled Posts",
                            "view_draft" => "View Drafts",
                            "view_own_draft" => "View Own Drafts",
                            "add_post" => "Add Posts",
@@ -307,7 +309,7 @@
 
             $groups = array("admin"  => array_keys($names),
                             "member" => array("view_site"),
-                            "friend" => array("view_site", "view_private"),
+                            "friend" => array("view_site", "view_private", "view_scheduled"),
                             "banned" => array(),
                             "guest"  => array("view_site"));
 

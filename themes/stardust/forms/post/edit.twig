@@ -34,6 +34,7 @@
                                 <option value="draft"{% if post.status == "draft" %} selected="selected"{% endif %}>${ "Draft" | translate }</option>
                                 <option value="public"{% if post.status == "public" %} selected="selected"{% endif %}>${ "Public" | translate }</option>
                                 <option value="private"{% if post.status == "private" %} selected="selected"{% endif %}>${ "Private" | translate }</option>
+                                <option value="scheduled"{% if post.status == "scheduled" %} selected="selected"{% endif %}>${ "Scheduled" | translate }</option>
                                 <option value="registered_only"{% if post.status == "registered_only" %} selected="selected"{% endif %}>${ "Registered Only" | translate }</option>
                                 {% if groups %}
                                 <optgroup label="${ "Group" | translate }">

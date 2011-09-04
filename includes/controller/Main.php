@@ -228,6 +228,19 @@
          * Grabs the posts for the main page.
          */
         public function index() {
+            $sql = SQL::current();
+            $posts = $sql->select("posts",
+                                  "posts.id",
+                                  array("posts.created_at <=" => datetime(),
+                                        "posts.status" => "scheduled"))->fetchAll();
+
+            if (!empty($posts))
+                foreach ($posts as $post) {
+                    $sql->update("posts",
+                                 array("id" => $post),
+                                 array("status" => "public"));
+                }
+
             $this->display("pages/index",
                            array("posts" => new Paginator(Post::find(array("placeholders" => true)),
                                                           $this->post_limit)));
@@ -405,6 +418,9 @@
 
             if ($post->status == "draft")
                 Flash::message(__("This post is a draft."));
+
+            if ($post->status == "scheduled")
+                Flash::message(_f("This post is scheduled to be published ".relative_time($post->created_at)));
 
             if ($post->groups() and !substr_count($post->status, "{".Visitor::current()->group->id."}"))
                 Flash::message(_f("This post is only visible by the following groups: %s.", $post->groups()));

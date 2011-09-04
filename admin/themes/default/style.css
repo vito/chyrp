@@ -567,9 +567,12 @@ table tbody tr td.controls a:visited {
 }
 tr.draft,
 tr.excerpt,
+tr.scheduled,
 tr.draft td,
 tr.excerpt td,
-tr.draft td.main {
+tr.scheduled td,
+tr.draft td.main,
+tr.scheduled td.main {
     background-color: #dff4ff;
     border-color: #c2e1ef !important;
     color: #336699;
@@ -632,106 +635,46 @@ p.message.boo {
 
 /* @group Buttons */
 /* Inspiration from Chawlk. */
-button,
-.button,
-a.next_page,
-a.prev_page {
-    display: inline-block;
-    font-family: Verdana, Helvetica, Arial, sans-serif;
-    font-weight: bold;
-    font-size: 1.125em;
-    margin: 0 .5em 0 0;
-    color: #333;
-    padding: .5em .75em;
-    background: #f1f1f1;
-    border: 1px solid #ccc;
-    border-top-color: #f1f1f1;
-    border-left-color: #f1f1f1;
-    border-bottom: 1px solid #ccc !important;
+/* Google Btns style */
+.jhp input[type="submit"], button, .button {
+    background-color: #F5F5F5;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 2px 2px 2px 2px;
+    color: #666666;
     cursor: pointer;
-    text-decoration: none !important;
+    font-size: 13px;
+    font-weight: normal;
+    font-family: Arial;
+    height: 31px;
+    line-height: 27px;
+    margin: 11px 6px;
+    min-width: 54px;
+    padding: 0 8px;
+    text-align: center;
 }
-.button {
-    padding: .6em 1em .5em .9em;
+.jhp input[type="submit"]:hover, button:hover, .button:hover {
+    background-color: #F8F8F8;
+    border: 1px solid #C6C6C6;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    color: #333333;
 }
-button.lite {
-    padding: .15em .375em .25em .275em;
+.jhp input[type="submit"]:focus, button:focus, .button:focus {
+    border: 1px solid #4D90FE;
+    outline: medium none;
 }
-.button.lite,
-a.next_page,
-a.prev_page {
-    padding: .1em .4em .2em;
-}
-button.inline {
-    position: relative;
-    top: -1px;
-    padding: 4px 5px 4px 4px;
-}
-button.right,
-.button.right,
-a.next_page {
-    margin: 0 0 0 .5em;
-    float: right;
-}
-button:hover,
-.button:hover,
-a.next_page:hover,
-a.prev_page:hover {
-    background: #f7f7f7;
-    border-color: #f7f7f7;
-    border-bottom-color: #d1d1d1 !important;
-    border-right-color: #d1d1d1;
-}
-button:active,
-.button:active,
-.button.selected,
-a.next_page:active,
-a.prev_page:active {
-    background-color: #d7d7d7;
-    border-color: #d7d7d7;
-    border-left-color: #b1b1b1;
-    border-top-color: #b1b1b1;
-    border-bottom-color: #d7d7d7 !important;
-}
-button.boo,
-.button.boo {
-    background: #faebe4;
-    color: #3e3634;
-    border-color: #faebe4;
-    border-bottom-color: #d6bdb5;
-    border-right-color: #d6bdb5;
-}
-button.boo:hover,
-.button.boo:hover {
-    background: #d51800;
-    color: #fff;
-    border-color: #d51800;
-    border-bottom-color: #9f1000 !important;
-    border-right-color: #9f1000;
-}
-button.boo:active,
-.button.boo:active {
-    background: #b30600;
-    border-color: #b30600;
-    border-left-color: #7d0000;
-    border-top-color: #7d0000;
-    border-bottom-color: #b30600 !important;
-}
+button > img, .button > img { float: left; padding: 5px 5px 0 0; }
+/*end of google btns*/
+
 button.yay,
 .button.yay {
     background: #ebfae4;
     color: #363e34;
-    border-color: #ebfae4;
-    border-bottom-color: #bdd6b5;
-    border-right-color: #bdd6b5;
 }
 button.yay:hover,
 .button.yay:hover {
     background: #189100;
     color: #fff;
-    border-color: #189100;
-    border-bottom-color: #105f00 !important;
-    border-right-color: #105f00;
+    border: 1px solid #888;
 }
 button.yay:active,
 .button.yay:active {
@@ -741,28 +684,26 @@ button.yay:active,
     border-top-color: #003d00;
     border-bottom-color: #067000 !important;
 }
-button[disabled="disabled"],
-button.disabled {
-    background: #f0f0f0;
-    border-color: #f0f0f0 !important;
-    color: #999;
+button.boo,
+.button.boo {
+    background: #faebe4;
+    color: #3e3634;
 }
-button[disabled="disabled"]:hover,
-button.disabled:hover {
-    background: #f0f0f0;
-    border-color: #f0f0f0 !important;
-    color: #999;
-    cursor: default;
+button.boo:hover,
+.button.boo:hover {
+    background: #d51800;
+    color: #fff;
+    border: 1px solid #888;
 }
-button img,
-.button img {
-    margin: 0 6px -3px -4px;
+button.boo:active,
+.button.boo:active {
+    background: #b30600;
+    border-color: #b30600;
+    border-left-color: #7d0000;
+    border-top-color: #7d0000;
+    border-bottom-color: #b30600 !important;
 }
-button.lite img,
-.button.lite img {
-    margin: 0 -1px -3px 0;
-}
-/* @end */
+
 
 /* @group Options */
 .more_options_link {
@@ -943,6 +884,17 @@ br#after_options {
 }
 .js_enabled {
     display: none;
+}
+
+.quick_links {
+    padding: 2px 0 0;
+    visibility: hidden;
+}
+tr:hover .quick_links, div.comment-item:hover .quick_links {
+    visibility: visible;
+}
+.quick_links-visible {
+    padding: 2px 0 0;
 }
 /* @end */
 

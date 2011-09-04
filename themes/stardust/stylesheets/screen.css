@@ -438,6 +438,20 @@ div.post .pinned_text {
     margin: .15em 0 0 -1em;
     color: #e35533;
 }
+div.post .private_text {
+    float: left;
+    font-size: .8em;
+    font-weight: bold;
+    margin: .3em 0 0 -5em;
+    color: #e35533;
+}
+div.post .scheduled_text {
+    float: left;
+    font-size: .8em;
+    font-weight: bold;
+    margin: .3em 0 0 -7em;
+    color: #e35533;
+}
 div.post p,
 div.page p {
     padding: 0 0 1em;

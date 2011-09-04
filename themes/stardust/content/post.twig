@@ -3,6 +3,8 @@
                     {% endif %}
                     <div class="post $post.feather{% if post.pinned %} pinned{% endif %}" id="post_$post.id">
                         {% if post.pinned %}<span class="pinned_text">${ "!" | translate }</span>{% endif %}
+                        {% if post.status == "private" %}<span class="private_text">${ "PRIVATE" | translate }</span>{% endif %}
+                        {% if post.status == "scheduled" %}<span class="scheduled_text">${ "SCHEDULED" | translate }</span>{% endif %}
                         {% block content %}{% endblock %}
                         {% if route.action == "view" and post.paginated and post.paginated.pages > 1 %}
                         <div class="clear"></div>

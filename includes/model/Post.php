@@ -723,7 +723,7 @@
          * Returns a SQL query "chunk" for the "status" column permissions of the current user.
          *
          * Parameters:
-         *     $start - An array of additional statuses to allow; "registered_only" and "private" are added deterministically.
+         *     $start - An array of additional statuses to allow; "registered_only", "private" and "scheduled" are added deterministically.
          */
         static function statuses($start = array()) {
             $visitor = Visitor::current();
@@ -735,6 +735,9 @@
 
             if ($visitor->group->can("view_private"))
                 $statuses[] = "private";
+
+            if ($visitor->group->can("view_scheduled"))
+                $statuses[] = "scheduled";
 
             return "(posts.status IN ('".implode("', '", $statuses)."') OR posts.status LIKE '%{".$visitor->group->id."}%') OR (posts.status LIKE '%{%' AND posts.user_id = ".$visitor->id.")";
         }
