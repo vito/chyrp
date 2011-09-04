@@ -1,15 +1,21 @@
 <?php
     class Emailblog extends Modules {
         public function __init() {
+        	$config = Config::current();
+        	$username = $config->email_blog_address;
+        	$password = $config->email_blog_pass;
+        	if($username!="example@gmail.com"&&$password!="password"){
            $this->addAlias("runtime", "getMail");
+           }
            //run on every page load- not very efficient, but it works.
         }
         /* Gets the mail from the inbox
         * Reads all the messages there, and adds posts based on them. Then it deletes the entire mailbox.
         */
 		function getMail(){
-       		$hostname = '{imap.gmail.com:993/imap/ssl}INBOX';
+       		$hostname = '{imap.gmail.com:993/ssl/novalidate-cert}INBOX';
        		// this isn't working well on localhost
+       		$config = Config::current();
         	$username = $config->email_blog_address;
         	$password = $config->email_blog_pass;
         	$inbox = imap_open($hostname,$username,$password) or die('Cannot connect to Gmail: ' . imap_last_error());
@@ -19,7 +25,7 @@
         	    foreach($emails as $email_number) {    
         	        $message = imap_fetchbody($inbox,$email_number,2);  
         	        $overview = imap_fetch_overview($inbox,$email_number,0);
-        	        imap_delete($inbox,$email_number);
+        	        //imap_delete($inbox,$email_number);
         	        $title=htmlspecialchars($overview[0]->subject);
         	        $body=htmlspecialchars($message);
         	        Post::add(array("title" => $title,
@@ -29,7 +35,7 @@
         	} 
         	
         	// close the connection 
-        	imap_close($inbox,CL_EXPUNGE);
+        	//imap_close($inbox,CL_EXPUNGE);
 		}
 		static function __install() {
             $config = Config::current();
