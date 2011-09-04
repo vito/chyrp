@@ -64,13 +64,13 @@
                     # Try those too, and update the user if they match.
 
                     $sql = SQL::current();
-                    $old = $sql->query("SELECT OLD_PASSWORD(:pass)", array(":pass" => $password))->fetch();
+                    $old = $sql->query("SELECT OLD_PASSWORD(:pass) FROM users WHERE is_approved = 1", array(":pass" => $password))->fetch();
                     if ($old[0] == $check->password) {
                         $check->update(null, self::hashPassword($password));
                         return true;
                     }
 
-                    $new = $sql->query("SELECT PASSWORD(:pass)", array(":pass" => $password))->fetch();
+                    $new = $sql->query("SELECT PASSWORD(:pass) FROM users WHERE is_approved = 1", array(":pass" => $password))->fetch();
                     if ($new[0] == $check->password) {
                         $check->update(null, self::hashPassword($password));
                         return true;
@@ -126,6 +126,7 @@
                                 "full_name" => strip_tags($full_name),
                                 "website"   => strip_tags($website),
                                 "group_id"  => $group_id,
+                                "is_approved"  => ($config->email_activation ? 0 : 1),
                                 "joined_at" => oneof($joined_at, datetime()));
 
             $trigger->filter($new_values, "before_add_user");

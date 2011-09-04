@@ -1026,6 +1026,7 @@
                                             `email` varchar(128) DEFAULT '',
                                             `website` varchar(128) DEFAULT '',
                                             `group_id` int(11) DEFAULT '0',
+                                            `is_approved` int(2) DEFAULT NULL,
                                             `joined_at` datetime DEFAULT NULL,
                                             PRIMARY KEY (`id`),
                                             UNIQUE KEY `login` (`login`)
@@ -1046,6 +1047,26 @@
 
         echo " -".test(true);
     }
+
+    /**
+     * Function: add_user_approva_column
+     * Adds the @is_approved@ column on the "users" table, and approves all current users.
+     *
+     * Versions: 2.1 => 2.2
+     */
+    function add_user_approved_column() {
+        $sql = SQL::current();
+        $exists = false;
+
+        if(count($sql->query("SHOW COLUMNS FROM __users LIKE 'is_approved'")) >= 1) {
+            echo " - ".__("Modifying `users` table...").
+                test($create = $sql->query("ALTER TABLE users ADD `is_approved` int(2) DEFAULT NULL"));
+            $sql->query("UPDATE users set is_approved=1");
+        }
+
+        echo " -".test(true);
+    }
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -1233,6 +1254,8 @@
         remove_old_files();
 
         update_user_password_column();
+        
+        add_user_approved_column();
 
         # Perform Module/Feather upgrades.
 
