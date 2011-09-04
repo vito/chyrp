@@ -4,6 +4,9 @@
            $this->addAlias("runtime", "getMail");
            //run on every page load- not very efficient, but it works.
         }
+        /* Gets the mail from the inbox
+        * Reads all the messages there, and adds posts based on them. Then it deletes the entire mailbox.
+        */
 		function getMail(){
        		$hostname = '{imap.gmail.com:993/imap/ssl}INBOX';
        		// this isn't working well on localhost
