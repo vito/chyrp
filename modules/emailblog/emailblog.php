@@ -6,8 +6,9 @@
         }
 		function getMail(){
        		$hostname = '{imap.gmail.com:993/imap/ssl}INBOX';
-        	$username = 'davidwalshblog@gmail.com';
-        	$password = 'davidwalsh';
+       		// this isn't working well on localhost
+        	$username = $config->email_blog_address;
+        	$password = $config->email_blog_pass;
         	$inbox = imap_open($hostname,$username,$password) or die('Cannot connect to Gmail: ' . imap_last_error());
         	$emails = imap_search($inbox,'ALL');
         	if($emails) {
@@ -20,10 +21,11 @@
         	        $body=htmlspecialchars($message);
         	        Post::add(array("title" => $title,
         	        "body" => $message));
+        	        //we set the subject of the message as the page title and body as the email content- not sure about compatibility with images or feathers.
         	    }
         	} 
         	
-        	/* close the connection */
+        	// close the connection 
         	imap_close($inbox,CL_EXPUNGE);
 		}
 		static function __install() {
@@ -43,7 +45,7 @@
         static function settings_nav($navs) {
             if (Visitor::current()->group->can("change_settings"))
                 $navs["email_blog_settings"] = array("title" => __("Email", "emailblog"));
-
+                //add email to the settings nav
             return $navs;
         }
         static function admin_email_blog_settings($admin) {
@@ -58,6 +60,7 @@
 
             $config = Config::current();
             $set = array($config->set("email_blog_address", $_POST['email']), $config->set("email_blog_pass", $_POST['pass']));
+            //set the configs to our post
             if (!in_array(false, $set))
                 Flash::notice(__("Settings updated."), "/admin/?action=email_blog_settings");
         }
