@@ -1,11 +1,11 @@
 <?php
     class Emailblog extends Modules {
         public function __init() {
-        	$config = Config::current();
-        	$username = $config->email_blog_address;
-        	$password = $config->email_blog_pass;
-       		// this isn't working well on localhost
-        	if($username!="example@gmail.com"&&$password!="password"){
+            $config = Config::current();
+            $username = $config->email_blog_address;
+            $password = $config->email_blog_pass;
+       	    // this isn't working well on localhost
+            if($username!="example@gmail.com"&&$password!="password"){
                 $this->addAlias("runtime", "getMail");
             }
            //run on every page load- not very efficient, but it works.
@@ -16,7 +16,7 @@
         */
 	function getMail(){
 	    $config = Config::current();
-	    if(time()-3600>=$config->checkemailblog){
+	    if(time()-(60*$config->email_blog_minutes)>=$config->checkemailblog){
        	        $hostname = '{imap.gmail.com:993/ssl/novalidate-cert}INBOX';
        	        // this isn't working well on localhost
                 $username = $config->email_blog_address;
@@ -43,17 +43,20 @@
             }
 	}
 		// called on install- we init all the configs.
-		static function __install() {
+	static function __install() {
             $config = Config::current();
             $config->set("email_blog_address", "example@gmail.com");
             $config->set("email_blog_pass", "password");
             $config->set("checkemailblog", time());
+            $config->set("email_blog_minutes", 60);
         }
         // called on uninstall- we delete all the configs.
         static function __uninstall($confirm) {
-             $config = Config::current();
+            $config = Config::current();
             $config->remove("email_blog_address");
             $config->remove("email_blog_pass");
+            $config->remove("checkemailblog");
+            $config->remove("email_blog_minutes");
         }
 	static function manage_nav_pages($pages) {
             array_push($pages, "email_blog_settings");
