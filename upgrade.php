@@ -1056,13 +1056,12 @@
      */
     function add_user_approved_column() {
         $sql = SQL::current();
-        $exists = false;
+        if ($column = $sql->query("SHOW COLUMNS FROM __users WHERE Field = 'is_approved'"))
+             return;
 
-        if(count($sql->query("SHOW COLUMNS FROM __users LIKE 'is_approved'")) >= 1) {
-            echo " - ".__("Modifying `users` table...").
-                test($create = $sql->query("ALTER TABLE users ADD `is_approved` int(2) DEFAULT NULL"));
-            $sql->query("UPDATE users set is_approved=1");
-        }
+        echo " - ".__("Adding `is_approved` column on `users` table...").
+            test($create = $sql->query("ALTER TABLE __users ADD `is_approved` int(2) DEFAULT NULL"));
+        $sql->query("UPDATE __users set is_approved = 1");
 
         echo " -".test(true);
     }
