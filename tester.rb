@@ -2,6 +2,11 @@ require "test/unit"
 require "net/http"
 require "rubygems"
 require "hpricot"
+require "yaml"
+
+open("includes/config.yaml.php") do |config_file|
+  CONFIG = YAML::load(config_file.read.sub(%Q{<?php header("Status: 403"); exit("Access denied."); ?>\n}, ''))
+end
 
 `rm -Rfv uploads/*`
 `mysql -f --user=root -D chyrp -e 'TRUNCATE TABLE posts; TRUNCATE TABLE post_attributes; TRUNCATE TABLE pages; TRUNCATE TABLE comments;'`
@@ -54,6 +59,7 @@ class Chyrp < Test::Unit::TestCase
       end
 
       data['feather'] = feather.to_s
+      data['hash'] = CONFIG['secure_hashkey']
 
       post (page/"form").attr("action"), data
     end
@@ -72,6 +78,7 @@ class Chyrp < Test::Unit::TestCase
       data['feather'] = feather.to_s
       data['draft'] = "true"
       data['status'] = "draft"
+      data['hash'] = CONFIG['secure_hashkey']
 
       post (page/"form").attr("action"), data
     end
@@ -91,8 +98,10 @@ class Chyrp < Test::Unit::TestCase
     resp, write = get "/admin/?action=write_page"
 
     page = Hpricot(write)
+    data = form_fuzz(page/"form")
+    data['hash'] = CONFIG['secure_hashkey']
 
-    post (page/"form").attr("action"), form_fuzz(page/"form")
+    post (page/"form").attr("action"), data
   end
 
   def test_view_page

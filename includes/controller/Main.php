@@ -176,36 +176,30 @@
         public function post_from_url($route, $request, $return_post = false) {
             $config = Config::current();
 
-            $post_url = $config->post_url;
-
-            foreach (explode("/", $post_url) as $path)
-                foreach (preg_split("/\(([^\)]+)\)/", $path) as $leftover) {
-                    $request  = preg_replace("/".preg_quote($leftover)."/", "", $request, 1);
-                    $post_url = preg_replace("/".preg_quote($leftover)."/", "", $post_url, 1);
+            $post_url_parts = preg_split('!(\([^)]+\))!', $config->post_url, null, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
+            $url_regex = '';
+            $url_parameters = array();
+            Trigger::current()->filter(Post::$url_attrs, 'url_code');
+            foreach ($post_url_parts as $part) {
+                if (isset(Post::$url_attrs[$part])) {
+                    $url_regex .= Post::$url_attrs[$part];
+                    $url_parameters[] = trim($part, '()');
+                } else {
+                    $url_regex .= preg_quote($part, '/');
                 }
+            }
 
-            $args = array_map("urldecode", explode("/", trim($request, "/")));
-
-            $post_url = $this->key_regexp(rtrim($post_url, "/"));
-            $post_url_attrs = array();
-            preg_match_all("/\(([^\/]+)\)/", $config->post_url, $parameters);
-            if (preg_match("/".$post_url."/", rtrim($request, "/"), $matches)) {
-                array_shift($matches);
-
-                foreach ($parameters[0] as $index => $parameter)
-                    if ($parameter[0] == "(") {
-                        if ($parameter == "(id)") {
-                            $post_url_attrs = array("id" => $args[$index]);
-                            break;
-                        } else
-                            $post_url_attrs[rtrim(ltrim($parameter, "("), ")")] = $args[$index];
-                    }
+            if (preg_match("/$url_regex/", trim($request, '/'), $matches)) {
+                $post_url_attrs = array();
+                for ($i = 0; $i < count($url_parameters); $i++) {
+                    $post_url_attrs[$url_parameters[$i]] = urldecode($matches[$i + 1]);
+                }
 
                 if ($return_post)
                     return Post::from_url($post_url_attrs);
                 else
                     $route->try["view"] = array($post_url_attrs, $args);
-            }
+            }            
         }
 
         /**
