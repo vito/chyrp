@@ -16,6 +16,11 @@
                         <small>${ "Password to the above email address" | translate("emailblog") }</small>
                     </p>
                     <p>
+                        <label for="subjpass">${ "Subject Password" | translate("emailblog") }</label>
+                        <input class="text" type="text" name="subjpass" value="${ site.emailblog_subjpass | escape }" id="email" />
+                        <small>${ 'This is a "password" to allow you to post, it helps to cut down on spam posts. You must set the subject of your email that you want to post to this exactly.' | translate("emailblog") }</small>
+                    </p>
+                    <p>
                         <label for="minutes">${ "Check for new Messages Every __ Minutes" | translate("emailblog") }</label>
                         <input class="text" type="text" name="minutes" value="${ site.emailblog_minutes | escape }" id="email" />
                         <small>${ "Decreasing the time between will result in faster posting but a slower site." | translate("emailblog") }</small>
