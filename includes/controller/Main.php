@@ -511,8 +511,8 @@
                 if (!Flash::exists("warning")) {
                     if ($config->email_activation) {
                         $to      = $_POST['email'];
-                        $subject = $config->name.__("Registration Pending");
-                        $message = "Hello, ".$_POST['login'].". You are receiving this message because you recently registered at ".$config->chyrp_url." To complete your registration, go to ".$config->chyrp_url."?action=validate&email=".$_POST['email'];
+                        $subject = _f($config->name." Registration Pending");
+                        $message = _f("Hello, ".$_POST['login'].".\n\nYou are receiving this message because you recently registered at ".$config->chyrp_url."\nTo complete your registration, go to ".$config->chyrp_url."/?action=validate&email=".fix($_POST['email']));
                         $headers = "From:".$config->email."\r\n" .
                                    "Reply-To:".$config->email. "\r\n" .
                                    "X-Mailer: PHP/".phpversion() ;
@@ -547,14 +547,13 @@
             if (logged_in())
                 error(__("Error"), __("You're already logged in."));
 
-            $user = new User(array("email" => $_GET['email']));
-            if ($user->no_results) {
-                Flash::warning(__("A user with that email doesn't seem to exist in the our database."), "/");
-            }
+            $user = new User(array("email" => fix($_GET['email'])));
+            if ($user->no_results)
+                Flash::warning(__("A user with that email doesn't seem to exist in our database."), "/");
 
             if (!$user->is_approved == 1) {
-                SQL::current()->query("UPDATE users SET is_approved = 1 WHERE email=".$user->email);
-                Flash::notice(__("Your account is now active. Welcome aboard!"), "/");
+                SQL::current()->query("UPDATE users SET is_approved = 1 WHERE email = '$user->email'");
+                Flash::notice(__("Your account is now active. Welcome aboard!"), "/?action=login");
             } else
                 Flash::notice(__("Your account has already been activated."), "/");
         }
