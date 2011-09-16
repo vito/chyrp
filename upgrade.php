@@ -1060,7 +1060,7 @@
              return;
 
         echo " - ".__("Adding `is_approved` column on `users` table...").
-            test($create = $sql->query("ALTER TABLE __users ADD `is_approved` int(2) DEFAULT NULL"));
+            test($create = $sql->query("ALTER TABLE __users ADD `is_approved` int(2) DEFAULT 1"));
         $sql->query("UPDATE __users set is_approved = 1");
 
         echo " -".test(true);

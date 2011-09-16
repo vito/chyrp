@@ -214,7 +214,7 @@
                              email VARCHAR(128) DEFAULT '',
                              website VARCHAR(128) DEFAULT '',
                              group_id INTEGER DEFAULT 0,
-                             is_approved int(2) DEFAULT NULL,
+                             is_approved int(2) DEFAULT 1,
                              joined_at DATETIME DEFAULT NULL,
                              UNIQUE (login)
                          ) DEFAULT CHARSET=utf8");
