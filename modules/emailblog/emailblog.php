@@ -15,6 +15,7 @@
                 $config = Config::current();
                 $config->set("emailblog_address", "example@gmail.com");
                 $config->set("emailblog_pass", "password");
+                $config->set("emailblog_subjpass", "password");
                 $config->set("emailblog_mail_checked", time());
                 $config->set("emailblog_minutes", 60);
             }
@@ -23,6 +24,7 @@
             $config = Config::current();
             $config->remove("emailblog_address");
             $config->remove("emailblog_pass");
+            $config->remove("emailblog_subjpass");
             $config->remove("emailblog_mail_checked");
             $config->remove("emailblog_minutes");
         }
@@ -41,6 +43,7 @@
             $set = array($config->set("emailblog_address", $_POST['email']),
                          $config->set("emailblog_pass", $_POST['pass']),
                          $config->set("emailblog_minutes", $_POST['minutes']));
+                         $config->set("emailblog_subjpass", $_POST['subjpass']));
 
             if (!in_array(false, $set))
                 Flash::notice(__("Settings updated."), "/admin/?action=emailblog_settings");
@@ -63,8 +66,9 @@
                     # this isn't working well on localhost
                     $username = $config->email_blog_address;
                     $password = $config->email_blog_pass;
+                    $subjpass = $config->emailblog_subjpass;
                     $inbox = imap_open($hostname, $username, $password) or exit("Cannot connect to Gmail: " . imap_last_error());
-                    $emails = imap_search($inbox, "ALL");
+                    $emails = imap_search($inbox,'SUBJECT "'.$subjpass.'"');
                     if ($emails) {
                         rsort($emails);
                         foreach ($emails as $email_number) {
