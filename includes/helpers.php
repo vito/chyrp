@@ -1134,11 +1134,8 @@
      * Returns the current URL.
      */
     function self_url() {
-        $split = explode("/", $_SERVER['SERVER_PROTOCOL']);
-        $protocol = strtolower($split[0]);
-        $default_port = ($protocol == "http") ? 80 : 443 ;
-        $port = ($_SERVER['SERVER_PORT'] == $default_port) ? "" : ":".$_SERVER['SERVER_PORT'] ;
-        return $protocol."://".$_SERVER['SERVER_NAME'].$port.$_SERVER['REQUEST_URI'];
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        return $protocol.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
     }
 
     /**
