@@ -189,7 +189,7 @@
                 }
             }
 
-            if (preg_match("/$url_regex/", ltrim($request, '/'), $matches)) {
+            if (preg_match("/^$url_regex$/", ltrim($request, '/'), $matches)) {
                 $post_url_attrs = array();
                 for ($i = 0; $i < count($url_parameters); $i++) {
                     $post_url_attrs[$url_parameters[$i]] = urldecode($matches[$i + 1]);
