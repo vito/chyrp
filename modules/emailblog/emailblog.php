@@ -2,8 +2,8 @@
     class EmailBlog extends Modules {
         public function __init() {
             $config = Config::current();
-            $username = $config->email_blog_address;
-            $password = $config->email_blog_pass;
+            $username = $config->emailblog_address;
+            $password = $config->emailblog_pass;
 
             # this isn't working well on localhost
             # run on every page load - not very efficient, but it works
@@ -15,7 +15,7 @@
                 $config = Config::current();
                 $config->set("emailblog_address", "example@gmail.com");
                 $config->set("emailblog_pass", "password");
-                $config->set("emailblog_subjpass", "password");
+                $config->set("emailblog_subjpass", "BlogPost");
                 $config->set("emailblog_mail_checked", time());
                 $config->set("emailblog_minutes", 60);
             }
@@ -42,7 +42,7 @@
             $config = Config::current();
             $set = array($config->set("emailblog_address", $_POST['email']),
                          $config->set("emailblog_pass", $_POST['pass']),
-                         $config->set("emailblog_minutes", $_POST['minutes']));
+                         $config->set("emailblog_minutes", $_POST['minutes']),
                          $config->set("emailblog_subjpass", $_POST['subjpass']));
 
             if (!in_array(false, $set))
@@ -61,14 +61,14 @@
          */
         function getMail(){
             $config = Config::current();
-            if (time() - (60 * $config->email_blog_minutes) >= $config->email_blog_mail_checked) {
+            if (time() - (60 * $config->emailblog_minutes) >= $config->emailblog_mail_checked) {
                     $hostname = '{imap.gmail.com:993/ssl/novalidate-cert}INBOX';
                     # this isn't working well on localhost
-                    $username = $config->email_blog_address;
-                    $password = $config->email_blog_pass;
+                    $username = $config->emailblog_address;
+                    $password = $config->emailblog_pass;
                     $subjpass = $config->emailblog_subjpass;
                     $inbox = imap_open($hostname, $username, $password) or exit("Cannot connect to Gmail: " . imap_last_error());
-                    $emails = imap_search($inbox,'SUBJECT "'.$subjpass.'"');
+                    $emails = imap_search($inbox, 'SUBJECT "'.$subjpass.'"');
                     if ($emails) {
                         rsort($emails);
                         foreach ($emails as $email_number) {

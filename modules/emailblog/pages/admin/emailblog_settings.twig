@@ -8,7 +8,7 @@
                     <p>
                         <label for="email">${ "Email Address" | translate("emailblog") }</label>
                         <input class="text" type="text" name="email" value="${ site.emailblog_address | escape }" id="email" />
-                        <small>${ "Currently only supports gmail accounts.<br /> Note: please set up a specialized mailbox for this and not a normal inbox, otherwise all messages that you recieve will be added as posts." | translate("emailblog") }</small>
+                        <small>${ "Currently only supports GMail accounts." | translate("emailblog") }</small>
                     </p>
                      <p>
                         <label for="pass">${ "Email Password" | translate("emailblog") }</label>
@@ -16,9 +16,10 @@
                         <small>${ "Password to the above email address" | translate("emailblog") }</small>
                     </p>
                     <p>
-                        <label for="subjpass">${ "Subject Password" | translate("emailblog") }</label>
+                        <label for="subjpass">${ "Email Filter" | translate("emailblog") }</label>
                         <input class="text" type="text" name="subjpass" value="${ site.emailblog_subjpass | escape }" id="email" />
-                        <small>${ 'This is a "password" to allow you to post, it helps to cut down on spam posts. You must set the subject of your email that you want to post to this exactly.' | translate("emailblog") }</small>
+                        <small>${ "You must set the subject of your email that you want to post to match this exactly." | translate("emailblog") }
+                        </small>
                     </p>
                     <p>
                         <label for="minutes">${ "Check for new Messages Every __ Minutes" | translate("emailblog") }</label>
