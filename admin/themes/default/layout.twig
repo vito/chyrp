@@ -46,6 +46,11 @@ ${ trigger.call("admin_head") }
         </ul>
         <div class="clear"></div>
         <div class="column" id="content">
+        {% if new_update == 1 %}
+        <p id="update_available" class="message">
+            ${ "Your Chyrp install is out of date. To upgrade, go <a href='%s'>here</a>" | translate | format(site.chyrp_url ~"/upgrade.php?task=upgrade") }
+        </p>
+        {% endif %}
             {% for notice in flash.notices %}
             <p class="message yay">$notice</p>
             {% endfor %}
@@ -59,11 +64,6 @@ ${ trigger.call("admin_head") }
             <div class="clear"></div>
         </div>
         <div class="column" id="footer">
-            <span id="update_available">
-               {% if new_update == 1 %}
-                   ${"Your Chyrp install is out of date. To upgrade, go <a href="$site.chyrp_url/upgrade.php?task=upgrade">here</a>" | translate }<br />
-               {% endif %}
-           </span>
             ${ "Chyrp loves you." | translate }<br />
             <span class="sub">
                 ${ "v%s &dash; &copy; %d Chyrp Team" | translate | format(version, 2011) }
