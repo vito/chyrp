@@ -90,6 +90,9 @@
     # Constant: USE_ZLIB
     # Use zlib to provide GZIP compression
     define('USE_ZLIB', true);
+    # Constant: CHECK_UPDATES
+    # Should Chyrp check for updates?
+    define('CHECK_UPDATES', true);
 
     # Set error reporting levels, and headers for Chyrp's JS files.
     if (JAVASCRIPT) {

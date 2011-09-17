@@ -277,6 +277,53 @@
             echo __("Appending to .htaccess file...").
                  test(@file_put_contents(MAIN_DIR."/.htaccess", "\n\n".$htaccess, FILE_APPEND), __("Try creating the file and/or CHMODding it to 777 temporarily."));
     }
+    /**
+     * Function: download_new_version
+     * Downloads the newest version of chyrp 
+     */
+    function download_new_version(){
+        rmdir('old');
+        //delete everything from 2 versions back
+        rmdir('updates');
+        mkdir('updates');
+        mkdir('old');
+        $files = array('includes',
+        'admin',
+        'index.php',
+        'upgrade.php',
+        'modules',
+        'feathers');
+        foreach($files as $file) {
+            if (file_exists($file)) {
+               rename($file, 'old/'.$file);
+               unlink($file);
+               //move stuff to the old dir so we can download some new shit.
+            }
+        }
+        $version=file_get_contents('http://api.chyrp.net/v1/chyrp_version.php');
+        $fp = fopen ('updates/latest.zip', 'w+');
+        $ch = curl_init('http://chyrp.net/releases/chyrp_v'.$version.'.zip');//Here is the file we are downloading
+        curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+        curl_setopt($ch, CURLOPT_FILE, $fp);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_exec($ch);
+        curl_close($ch);
+        fclose($fp);
+        $zip = new ZipArchive();  
+        $x = $zip->open('updates/latest.zip');  
+        if($x === true) {  
+            $zip->extractTo('updates/');  
+            $zip->close();  
+            unlink('updates/latest.zip');  
+        }
+        foreach($files as $file) {
+            if (file_exists('updates/chyrp/'.$file)) {
+               rename('updates/chyrp/'.$file, $file);
+            }
+        }
+        copy('old/includes/config.yaml.php', 'includes/config.yaml.php');
+        rmdir('updates');
+    }
 
     /**
      * Function: tweets_to_posts
@@ -1026,7 +1073,6 @@
                                             `email` varchar(128) DEFAULT '',
                                             `website` varchar(128) DEFAULT '',
                                             `group_id` int(11) DEFAULT '0',
-                                            `is_approved` int(2) DEFAULT NULL,
                                             `joined_at` datetime DEFAULT NULL,
                                             PRIMARY KEY (`id`),
                                             UNIQUE KEY `login` (`login`)
@@ -1047,25 +1093,6 @@
 
         echo " -".test(true);
     }
-
-    /**
-     * Function: add_user_approva_column
-     * Adds the @is_approved@ column on the "users" table, and approves all current users.
-     *
-     * Versions: 2.1 => 2.2
-     */
-    function add_user_approved_column() {
-        $sql = SQL::current();
-        if ($column = $sql->query("SHOW COLUMNS FROM __users WHERE Field = 'is_approved'"))
-             return;
-
-        echo " - ".__("Adding `is_approved` column on `users` table...").
-            test($create = $sql->query("ALTER TABLE __users ADD `is_approved` int(2) DEFAULT 1"));
-        $sql->query("UPDATE __users set is_approved = 1");
-
-        echo " -".test(true);
-    }
-
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -1174,15 +1201,17 @@
     </head>
     <body>
         <div class="window">
-<?php if (!empty($_POST) and $_POST['upgrade'] == "yes"): ?>
+<?php if ((!empty($_POST) and $_POST['upgrade'] == "yes")||$_GET['task']=="upgrade"): ?>
             <pre class="pane"><?php
         # Begin with file/config upgrade tasks.
-
+        download_new_version();
+        
         fix_htaccess();
 
         remove_beginning_slash_from_post_url();
 
         move_yml_yaml();
+        
 
         update_protection();
 
@@ -1253,8 +1282,6 @@
         remove_old_files();
 
         update_user_password_column();
-        
-        add_user_approved_column();
 
         # Perform Module/Feather upgrades.
 
