@@ -60,8 +60,8 @@ ${ trigger.call("admin_head") }
         </div>
         <div class="column" id="footer">
             <span id="update_available">
-               {% if update_message ==1%}
-                   ${'Your Chyrp install is out of date. To upgrade, go <a href="$site.chyrp_url/upgrade.php?task=upgrade">here</a>' | translate }<br />
+               {% if new_update == 1 %}
+                   ${"Your Chyrp install is out of date. To upgrade, go <a href="$site.chyrp_url/upgrade.php?task=upgrade">here</a>" | translate }<br />
                {% endif %}
            </span>
             ${ "Chyrp loves you." | translate }<br />

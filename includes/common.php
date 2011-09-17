@@ -22,6 +22,10 @@
     # Should Chyrp use debugging processes?
     define('DEBUG', true);
 
+    # Constant: CHECK_UPDATES
+    # Should Chyrp check for updates?
+    define('CHECK_UPDATES', true);
+
     # Constant: CACHE_TWIG
     # If defined, this will take priority over DEBUG and toggle Twig template caching.
     # Do not enable this during theme development.
@@ -90,9 +94,6 @@
     # Constant: USE_ZLIB
     # Use zlib to provide GZIP compression
     define('USE_ZLIB', true);
-    # Constant: CHECK_UPDATES
-    # Should Chyrp check for updates?
-    define('CHECK_UPDATES', true);
 
     # Set error reporting levels, and headers for Chyrp's JS files.
     if (JAVASCRIPT) {

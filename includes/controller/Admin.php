@@ -2333,6 +2333,7 @@
             $this->context["site"]       = Config::current();
             $this->context["visitor"]    = $visitor;
             $this->context["logged_in"]  = logged_in();
+            $this->context["new_update"] = update_check();
             $this->context["route"]      = $route;
             $this->context["hide_admin"] = isset($_SESSION["hide_admin"]);
             $this->context["now"]        = time();
@@ -2344,9 +2345,6 @@
             $this->context["theme_url"]  = Config::current()->chyrp_url."/admin/themes/".$this->admin_theme;
             $this->context["POST"]       = $_POST;
             $this->context["GET"]        = $_GET;
-            if (defined('CHECK_UPDATES')&&CHECK_UPDATES==true) {
-                $this->context["update_message"] = self::update_check();
-            }
 
             $this->context["navigation"] = array();
 
@@ -2443,12 +2441,5 @@
         public static function & current() {
             static $instance = null;
             return $instance = (empty($instance)) ? new self() : $instance ;
-        }
-        public function update_check(){
-           $version = file_get_contents("http://api.chyrp.net/v1/chyrp_version.php");
-           if($version > CHYRP_VERSION)
-               return true;
-           else
-               return false;
         }
     }

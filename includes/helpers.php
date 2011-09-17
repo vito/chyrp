@@ -1628,3 +1628,21 @@
         $cleaned = array_diff(array_unique($trimmed), array(""));
         return $cleaned;
     }
+
+    /**
+     * Function: update_check
+     * Checks for new versions of Chyrp.
+     *
+     * Returns:
+     *     Boolean
+     */
+    function update_check(){
+        if (!defined('CHECK_UPDATES') or CHECK_UPDATES == false)
+            return;
+
+        $version = file_get_contents("http://api.chyrp.net/v1/chyrp_version.php");
+        if ($version > CHYRP_VERSION)
+            return true;
+        else
+            return false;
+    }
