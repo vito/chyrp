@@ -1204,7 +1204,9 @@
 <?php if ((!empty($_POST) and $_POST['upgrade'] == "yes")||$_GET['task']=="upgrade"): ?>
             <pre class="pane"><?php
         # Begin with file/config upgrade tasks.
-        download_new_version();
+        if (defined('CHECK_UPDATES')&&CHECK_UPDATES==true) {
+            download_new_version();
+        }
         
         fix_htaccess();
 
