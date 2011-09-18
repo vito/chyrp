@@ -100,6 +100,17 @@
     }
 
     /**
+     * Function: error_panicker
+     * Exits and states where the error occurred.
+     */
+    function error_panicker($errno, $message, $file, $line) {
+        if (error_reporting() === 0)
+            return; # Suppressed error.
+
+        exit("ERROR: ".$message." (".$file." on line ".$line.")");
+    }
+
+    /**
      * Function: show_403
      * Shows an error message with a 403 HTTP header.
      *
@@ -110,6 +121,33 @@
     function show_403($title, $body) {
         header("Status: 403");
         error($title, $body);
+    }
+
+    /**
+     * Function: deprecated
+     * Returns a warning if a deprecated function has been used.
+     *
+     * Parameters:
+     *     $f The function that was called
+     *     $v Chyrp version that deprecated the function
+     *     $r Optional. The function that should have been called
+     */
+    function deprecated($f, $v, $r = null, $trace) {    
+        if (!logged_in())
+            return;
+
+        error_reporting(E_ALL);
+        ini_set("display_errors", 1);
+
+        if (DEBUG) {
+    		if (!is_null($r))
+    			trigger_error(_f("%s is <strong>deprecated</strong> since version %s! Use %s instead.", array($f, $v, $r)));
+    		else
+    			trigger_error(_f("%s is <strong>deprecated</strong> since version %s.", $f, $v));
+        }
+
+        error_reporting(E_ALL | E_STRICT);
+        ini_set("display_errors", 0);
     }
 
     /**
@@ -1302,17 +1340,6 @@
             return date_default_timezone_get();
         else
             return ini_get("date.timezone");
-    }
-
-    /**
-     * Function: error_panicker
-     * Exits and states where the error occurred.
-     */
-    function error_panicker($errno, $message, $file, $line) {
-        if (error_reporting() === 0)
-            return; # Suppressed error.
-
-        exit("ERROR: ".$message." (".$file." on line ".$line.")");
     }
 
     /**
