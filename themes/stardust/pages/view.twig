@@ -7,7 +7,7 @@
 {% include "feathers/" ~ post.feather ~ ".twig" %}
 {% if enabled_modules.comments and (post.comment_count > 0 or post.commentable) %}
                 <br />
-                <h2 class="comments">${ "Comments" | translate }</h2>
+                <h2 class="comments" id="comments">${ "Comments" | translate }</h2>
                 <ol class="comments" id="comments_$post.id">
                     {% paginate site.comments_per_page comments in post.comments as comment %}
                     {% include "content/comment.twig" %}

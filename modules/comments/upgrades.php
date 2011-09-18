@@ -10,14 +10,18 @@
     }
 
     function remove_defensio_set_akismet() {
-        if (!Config::check("defensio_api_key")) {
-            Config::fallback("defensio_api_key", " ", "Adding a temporary defensio_api_key...");
-            Config::set("akismet_api_key", " ", "Creating akismet_api_key setting...");
-            Config::remove("defensio_api_key");
-        } else {
-            Config::remove("defensio_api_key");
+        if (!Config::check("defensio_api_key"))
+            Config::set("akismet_api_key", null, "Creating akismet_api_key setting...");
+        else {
+            Config::remove("defensio_api_key", " ", "Removing defensio_api_key...");;
             Config::set("akismet_api_key", " ", "Creating akismet_api_key setting...");
         }
+    }
+
+    function add_comment_parent_id_field() {
+        if (!SQL::current()->query("SELECT parent_id FROM __comments"))
+            echo __("Adding parent_id column to comments table...", "comments").
+                test(SQL::current()->query("ALTER TABLE __comments ADD parent_id INTEGER DEFAULt 0 AFTER user_id"));
     }
 
     Config::fallback("auto_reload_comments", 30);
@@ -25,3 +29,4 @@
 
     remove_signature_add_updated_at();
     remove_defensio_set_akismet();
+    add_comment_parent_id_field();

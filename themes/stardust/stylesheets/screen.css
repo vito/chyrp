@@ -105,6 +105,7 @@ hr {
 
 a.comment_delete_link,
 a.comment_edit_link,
+a.comment_replyto_link,
 a.delete_link,
 a.edit_link,
 a.next_page,
@@ -117,7 +118,8 @@ a.logout {
 }
 
 a.comment_delete_link,
-a.comment_edit_link {
+a.comment_edit_link,
+a.comment_replyto_link {
     float: right;
     margin: 0 0 0 .5em;
 }
@@ -126,6 +128,9 @@ a.delete_link {
 }
 a.edit_link {
     color: #93ba52 !important;
+}
+a.comment_replyto_link {
+
 }
 a.next_page,
 a.prev_page,

@@ -9,7 +9,9 @@
     class Comment extends Model {
         public $no_results = false;
 
-        public $belongs_to = array("post", "user");
+        public $belongs_to = array("post", "user", "parent" => array("model" => "comment"));
+
+        public $has_many = array("children" => array("model" => "comment", "by" => "parent"));
 
         /**
          * Function: __construct
@@ -56,17 +58,18 @@
 
         /**
          * Function: create
-         * Attempts to create a comment using the passed information. If a Defensio API key is present, it will check it.
+         * Attempts to create a comment using the passed information. If the Akismet API key is present, it will check it.
          *
          * Parameters:
-         *     $author - The name of the commenter.
-         *     $email - The commenter's email.
-         *     $url - The commenter's website.
          *     $body - The comment.
+         *     $author - The name of the commenter.
+         *     $url - The commenter's website.
+         *     $email - The commenter's email.
          *     $post - The <Post> they're commenting on.
+         *     $parent - The <Comment> they're replying to.
          *     $type - The type of comment. Optional, used for trackbacks/pingbacks.
          */
-        static function create($author, $email, $url, $body, $post, $type = null) {
+        static function create($body, $author, $url, $email, $post, $parent = 0, $type = null) {
             if (!self::user_can($post->id) and !in_array($type, array("trackback", "pingback")))
                 return;
 
@@ -83,10 +86,10 @@
             if (!empty($config->akismet_api_key)) {
                 $akismet = new Akismet($config->url, $config->akismet_api_key);
 
-                $akismet->setCommentAuthor($author);
-                $akismet->setCommentAuthorEmail($email);
-                $akismet->setCommentAuthorURL($url);
                 $akismet->setCommentContent($body);
+                $akismet->setCommentAuthor($author);
+                $akismet->setCommentAuthorURL($url);
+                $akismet->setCommentAuthorEmail($email);
                 $akismet->setPermalink($post->url());
                 $akismet->setCommentType($type);
                 $akismet->setReferrer($_SERVER['HTTP_REFERER']);
@@ -100,11 +103,10 @@
                               $_SERVER['REMOTE_ADDR'],
                               $_SERVER['HTTP_USER_AGENT'],
                               "spam",
-                              null,
-                              null,
-                              $post,
-                              $visitor->id);
-                    error(__("Spam Comment"), __("Your comment has been marked as spam. It will have to be approved before it will show up.", "comments"));
+                              $post->id,
+                              $visitor->id,
+                              $parent);
+                    error(__("Spam Comment"), __("Your comment has been marked as spam. It has to be reviewed and/or approved by an admin.", "comments"));
                 } else {
                     $comment = self::add($body,
                                          $author,
@@ -113,10 +115,9 @@
                                          $_SERVER['REMOTE_ADDR'],
                                          $_SERVER['HTTP_USER_AGENT'],
                                          $status,
-                                         null,
-                                         null,
-                                         $post,
-                                         $visitor->id);
+                                         $post->id,
+                                         $visitor->id,
+                                         $parent);
 
                     fallback($_SESSION['comments'], array());
                     $_SESSION['comments'][] = $comment->id;
@@ -124,7 +125,7 @@
                     if (isset($_POST['ajax']))
                         exit("{ \"comment_id\": \"".$comment->id."\", \"comment_timestamp\": \"".$comment->created_at."\" }");
 
-                    Flash::notice(__("Comment added."), $post->url()."#comment_".$comment->id);
+                    Flash::notice(__("Comment added."), $post->url()."#comments");
                 }
             } else {
                 $comment = self::add($body,
@@ -134,10 +135,9 @@
                                      $_SERVER['REMOTE_ADDR'],
                                      $_SERVER['HTTP_USER_AGENT'],
                                      $status,
-                                     null,
-                                     null,
-                                     $post,
-                                     $visitor->id);
+                                     $post->id,
+                                     $visitor->id,
+                                     $parent);
 
                 fallback($_SESSION['comments'], array());
                 $_SESSION['comments'][] = $comment->id;
@@ -145,7 +145,7 @@
                 if (isset($_POST['ajax']))
                     exit("{ \"comment_id\": \"".$comment->id."\", \"comment_timestamp\": \"".$comment->created_at."\" }");
 
-                Flash::notice(__("Comment added."), $post->url()."#comment_".$comment->id);
+                Flash::notice(__("Comment added."), $post->url()."#comment");
             }
         }
 
@@ -161,12 +161,13 @@
          *     $ip - The commenter's IP address.
          *     $agent - The commenter's user agent.
          *     $status - The new comment's status.
-         *     $created_at - The new comment's "created" timestamp.
-         *     $updated_at - The new comment's "last updated" timestamp.
          *     $post - The <Post> they're commenting on.
          *     $user_id - The ID of this <User> this comment was made by.
+         *     $parent - The <Comment> they're replying to.
+         *     $created_at - The new comment's "created" timestamp.
+         *     $updated_at - The new comment's "last updated" timestamp.
          */
-        static function add($body, $author, $url, $email, $ip, $agent, $status, $created_at = null, $updated_at = null, $post, $user_id) {
+        static function add($body, $author, $url, $email, $ip, $agent, $status, $post, $user_id, $parent, $created_at = null, $updated_at = null) {
             if (!empty($url)) # Add the http:// if it isn't there.
                 if (!@parse_url($url, PHP_URL_SCHEME))
                     $url = "http://".$url;
@@ -184,10 +185,12 @@
                                "author_ip" => $ip,
                                "author_agent" => $agent,
                                "status" => $status,
+                               "post_id" => $post,
+                               "user_id"=> $user_id,
+                               "parent_id" => $parent,
                                "created_at" => oneof($created_at, datetime()),
-                               "updated_at" => oneof($updated_at, "0000-00-00 00:00:00"),
-                               "post_id" => $post->id,
-                               "user_id"=> $user_id));
+                               "updated_at" => oneof($updated_at, "0000-00-00 00:00:00")));
+
             $new = new self($sql->latest("comments"));
 
             Trigger::current()->call("add_comment", $new);
@@ -276,7 +279,7 @@
             $visitor = Visitor::current();
             if (!$visitor->group->can("add_comment")) return false;
 
-            // assume allowed comments by default
+            # assume allowed comments by default
             return empty($post->comment_status) or
                    !($post->comment_status == "closed" or
                     ($post->comment_status == "registered_only" and !logged_in()) or
@@ -286,6 +289,26 @@
         static function user_count($user_id) {
             $count = SQL::current()->count("comments", array("user_id" => $user_id));
             return $count;
+        }
+
+        /**
+         * Function: reply_to_link
+         * Outputs a Reply to comment link, if the <User.can> add comment and allow_nested_comments is checked.
+         *
+         * Parameters:
+         *     $text - The text to show for the link.
+         *     $before - If the link can be shown, show this before it.
+         *     $after - If the link can be shown, show this after it.
+         *     $classes - Extra CSS classes for the link, space-delimited.
+         */
+        public function replyto_link($text = null, $before = null, $after = null, $classes = "") {
+            if (!Config::current()->allow_nested_comments) return;
+
+            fallback($text, __("Reply"));
+
+            $name = strtolower(get_class($this));
+
+            echo $before.'<a href="'.self_url().'&amp;replyto'.$name.'='.$this->id.'#add_comment" title="Reply to '.$this->author.'" class="'.($classes ? $classes." " : '').$name.'_replyto_link replyto">'.$text.'</a>'.$after;
         }
 
         # !! DEPRECATED AFTER 2.0 !!

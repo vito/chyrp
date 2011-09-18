@@ -11,7 +11,7 @@ $(function(){
         var updater = setInterval("Comment.reload()", <?php echo $config->auto_reload_comments * 1000; ?>);
 <?php endif; ?>
         $("#add_comment").append($(document.createElement("input")).attr({ type: "hidden", name: "ajax", value: "true", id: "ajax" }))
-        $("#add_comment").ajaxForm({ dataType: "json", resetForm: true, beforeSubmit: function(){
+        $("#add_comment").ajaxForm({ dataType: "json", resetForm: true, beforeSubmit: function() {
             $("#add_comment").loader();
         }, success: function(json){
             $.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "show_comment", comment_id: json.comment_id, reason: "added" }, function(data) {
@@ -30,12 +30,12 @@ $(function(){
         } })
     }
 <?php echo "\n"; if (!isset($config->enable_ajax) or $config->enable_ajax): ?>
-    $(".comment_edit_link").live("click", function(){
+    $(".comment_edit_link").live("click", function() {
         var id = $(this).attr("id").replace(/comment_edit_/, "")
         Comment.edit(id)
         return false
     })
-    $(".comment_delete_link").live("click", function(){
+    $(".comment_delete_link").live("click", function() {
         var id = $(this).attr("id").replace(/comment_delete_/, "")
 
         notice++

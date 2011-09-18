@@ -21,6 +21,7 @@
                              status VARCHAR(32) default 'denied',
                              post_id INTEGER DEFAULT 0,
                              user_id INTEGER DEFAULT 0,
+                             parent_id INTEGER DEFAULT 0,
                              created_at DATETIME DEFAULT NULL,
                              updated_at DATETIME DEFAULT NULL
                          ) DEFAULT CHARSET=utf8");
@@ -32,6 +33,7 @@
             $config->set("akismet_api_key", null);
             $config->set("auto_reload_comments", 30);
             $config->set("enable_reload_comments", false);
+            $config->set("allow_nested_comments", true);
 
             Group::add_permission("add_comment", "Add Comments");
             Group::add_permission("add_comment_private", "Add Comments to Private Posts");
@@ -53,6 +55,7 @@
             $config->remove("akismet_api_key");
             $config->remove("auto_reload_comments");
             $config->remove("enable_reload_comments");
+            $config->remove("allow_nested_comments");
 
             Group::remove_permission("add_comment");
             Group::remove_permission("add_comment_private");
@@ -68,14 +71,15 @@
             if (!Comment::user_can($post))
                 show_403(__("Access Denied"), __("You cannot comment on this post.", "comments"));
 
+            if (empty($_POST['body']))   error(__("Error"), __("Message can't be blank.", "comments"));
             if (empty($_POST['author'])) error(__("Error"), __("Author can't be blank.", "comments"));
             if (empty($_POST['email']))  error(__("Error"), __("E-Mail address can't be blank.", "comments"));
-            if (empty($_POST['body']))   error(__("Error"), __("Message can't be blank.", "comments"));
-            Comment::create($_POST['author'],
-                            $_POST['email'],
+            Comment::create($_POST['body'],
+                            $_POST['author'],
                             $_POST['url'],
-                            $_POST['body'],
-                            $post);
+                            $_POST['email'],
+                            $post,
+                            $_POST['parent_id']);
         }
 
         static function admin_update_comment() {
@@ -89,10 +93,10 @@
             $visitor = Visitor::current();
             $status = ($visitor->group->can("edit_comment")) ? $_POST['status'] : $comment->status ;
             $created_at = ($visitor->group->can("edit_comment")) ? datetime($_POST['created_at']) : $comment->created_at ;
-            $comment->update($_POST['author'],
-                             $_POST['author_email'],
+            $comment->update($_POST['body'],
+                             $_POST['author'],
                              $_POST['author_url'],
-                             $_POST['body'],
+                             $_POST['author_email'],
                              $status,
                              $created_at);
 
@@ -251,7 +255,8 @@
                          $config->set("default_comment_status", $_POST['default_comment_status']),
                          $config->set("comments_per_page", $_POST['comments_per_page']),
                          $config->set("auto_reload_comments", $_POST['auto_reload_comments']),
-                         $config->set("enable_reload_comments", isset($_POST['enable_reload_comments'])));
+                         $config->set("enable_reload_comments", isset($_POST['enable_reload_comments'])),
+                         $config->set("allow_nested_comments", isset($_POST['allow_nested_comments'])));
 
             if (!empty($_POST['akismet_api_key'])) {
                 $_POST['akismet_api_key'] = trim($_POST['akismet_api_key']);
