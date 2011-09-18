@@ -46,7 +46,7 @@
                         <td class="main"><a href="$post.url">${ post.title | truncate }</a></td>
                         <td>${ post.created_at | strftime }</td>
                         <td>$post.status_name</td>
-                        <td>$post.user.login</td>
+                        <td>$post.author.name</td>
                         ${ trigger.call("manage_posts_column", post) }
                         {% if post.editable and post.deletable %}
                         <td class="controls">${ post.edit_link('<img src="'~ theme_url ~'/images/icons/edit.png" alt="edit" /> '~("edit" | translate)) }</td>
