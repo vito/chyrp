@@ -69,7 +69,7 @@
          *     $parent - The <Comment> they're replying to.
          *     $type - The type of comment. Optional, used for trackbacks/pingbacks.
          */
-        static function create($body, $author, $url, $email, $post, $parent = 0, $type = null,$notify=1) {
+        static function create($body, $author, $url, $email, $post, $parent = 0, $notify = 1, $type = null) {
             if (!self::user_can($post->id) and !in_array($type, array("trackback", "pingback")))
                 return;
 
@@ -170,7 +170,7 @@
          *     $created_at - The new comment's "created" timestamp.
          *     $updated_at - The new comment's "last updated" timestamp.
          */
-        static function add($body, $author, $url, $email, $ip, $agent, $status, $post, $user_id, $parent, $created_at = null, $updated_at = null,$notify) {
+        static function add($body, $author, $url, $email, $ip, $agent, $status, $post, $user_id, $parent, $notify, $created_at = null, $updated_at = null) {
             if (!empty($url)) # Add the http:// if it isn't there.
                 if (!@parse_url($url, PHP_URL_SCHEME))
                     $url = "http://".$url;
@@ -190,8 +190,8 @@
                                "status" => $status,
                                "post_id" => $post,
                                "user_id"=> $user_id,
-                               "notify"=>$notify,
                                "parent_id" => $parent,
+                               "notify" => $notify,
                                "created_at" => oneof($created_at, datetime()),
                                "updated_at" => oneof($updated_at, "0000-00-00 00:00:00")));
 
@@ -201,20 +201,20 @@
             return $new;
         }
 
-        public function update($author, $author_email, $author_url, $body, $status, $timestamp, $update_timestamp = true,$notify) {
+        public function update($body, $author, $url, $email, $status, $notify, $timestamp, $update_timestamp = true) {
             $sql = SQL::current();
             $sql->update("comments",
                          array("id" => $this->id),
-                         array("author" => strip_tags($author),
-                               "author_email" => strip_tags($author_email),
-                               "author_url" => strip_tags($author_url),
-                               "body" => $body,
+                         array("body" => $body,
+                               "author" => strip_tags($author),
+                               "author_url" => strip_tags($url),
+                               "author_email" => strip_tags($email),
                                "status" => $status,
-                               "notify"=>$notify,
+                               "notify" => $notify,
                                "created_at" => $timestamp,
                                "updated_at" => ($update_timestamp) ? datetime() : $this->updated_at));
 
-            Trigger::current()->call("update_comment", $this, $author, $author_email, $author_url, $body, $status, $timestamp, $update_timestamp);
+            Trigger::current()->call("update_comment", $this, $body, $author, $url, $email, $status, $notify, $timestamp, $update_timestamp);
         }
 
         static function delete($comment_id) {
@@ -315,19 +315,21 @@
 
             echo $before.'<a href="'.self_url().'&amp;replyto'.$name.'='.$this->id.'#add_comment" title="Reply to '.$this->author.'" class="'.($classes ? $classes." " : '').$name.'_replyto_link replyto">'.$text.'</a>'.$after;
         }
+
         /**
-         * Function: email
+         * Function: notify
          * Emails everyone that wants to be notified for a new comment
          * Parameters:
          *     $author - The person that wrote the new comment.
          *     $body - The new comment
          *     $post - The id of the post that was commented on
          */
-        public function email($author,$body,$post){
-            $sql=Sql::Current();
-            $config=Config::current();
-            $post=New Post($post);
-            $emails=$sql->select('__comments', 'author_email', 'notify=1 AND post='.$post);
+        public function notify($author, $body, $post){
+            $sql = SQL::Current();
+            $config = Config::current();
+            $post = new Post($post);
+
+            $emails = $sql->select('__comments', 'author_email', 'notify = 1 AND post = '.$post);
             $to = $_POST['email'];
             $subject = $config->name.__("New Comment");
             $message = "There is a new comment at ".$post->url()."\n Poster: ".$author."\n Message: ".$body;
@@ -350,4 +352,42 @@
             else
                 return false;
         }
+    }
+
+    class Threaded extends Comment {
+    
+        public $parents  = array();
+        public $children = array();
+
+        function __construct($comments) {
+            foreach ($comments as $comment) {
+                if ($comment['parent_id'] === 0)
+                    $this->parents[$comment['id']][] = $comment;
+                else
+                    $this->children[$comment['parent_id']][] = $comment;
+            }
+        }
+    
+        private function format_comment($comment, $depth) {
+            for ($depth; $depth > 0; $depth--)
+                echo "\t";
+    
+            echo $comment['text'];
+            echo "\n";
+        }
+
+        private function print_parent($comment, $depth = 0) {
+            foreach ($comment as $c) {
+                $this->format_comment($c, $depth);
+    
+                if (isset($this->children[$c['id']]))
+                    $this->print_parent($this->children[$c['id']], $depth + 1);
+            }
+        }
+    
+        public function print_comments() {
+            foreach ($this->parents as $c)
+                $this->print_parent($c);
+        }
+    
     }

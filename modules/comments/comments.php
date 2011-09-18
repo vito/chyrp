@@ -80,11 +80,12 @@
                             $_POST['url'],
                             $_POST['email'],
                             $post,
-                           	null,
+                            $_POST['parent_id'],
                             $_POST['notify']);
-            Comment::email($_POST['author'],
-                           $_POST['body'],
-                           $post);
+
+            Comment::notify($_POST['author'],
+                            $_POST['body'],
+                            $post);
         }
 
         static function admin_update_comment() {
