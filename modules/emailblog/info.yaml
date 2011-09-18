@@ -3,6 +3,6 @@ url: http://chyrp.net
 version: 1.0
 description: Allows you to email a gmail account to post a new message.
 author:
-  name: Jack Lightbody
+  name: Chyrp Team
   url: http://chyrp.net
 conflicts:
