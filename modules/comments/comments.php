@@ -22,6 +22,7 @@
                              post_id INTEGER DEFAULT 0,
                              user_id INTEGER DEFAULT 0,
                              parent_id INTEGER DEFAULT 0,
+                             notify INTEGER DEFAULT 1,
                              created_at DATETIME DEFAULT NULL,
                              updated_at DATETIME DEFAULT NULL
                          ) DEFAULT CHARSET=utf8");
@@ -79,7 +80,11 @@
                             $_POST['url'],
                             $_POST['email'],
                             $post,
-                            $_POST['parent_id']);
+                           	null,
+                            $_POST['notify']);
+            Comment::email($_POST['author'],
+                           $_POST['body'],
+                           $post);
         }
 
         static function admin_update_comment() {
@@ -98,7 +103,8 @@
                              $_POST['author_url'],
                              $_POST['author_email'],
                              $status,
-                             $created_at);
+                             $created_at,
+                             $_POST['notify']);
 
             if (isset($_POST['ajax']))
                 exit("{ \"comment_id\": \"".$_POST['id']."\", \"comment_timestamp\": \"".$created_at."\" }");

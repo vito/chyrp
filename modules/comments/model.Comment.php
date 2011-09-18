@@ -69,7 +69,7 @@
          *     $parent - The <Comment> they're replying to.
          *     $type - The type of comment. Optional, used for trackbacks/pingbacks.
          */
-        static function create($body, $author, $url, $email, $post, $parent = 0, $type = null) {
+        static function create($author, $email, $url, $body, $post,$type = null,$notify=1) {
             if (!self::user_can($post->id) and !in_array($type, array("trackback", "pingback")))
                 return;
 
@@ -105,7 +105,8 @@
                               "spam",
                               $post->id,
                               $visitor->id,
-                              $parent);
+                              $parent,
+                              $notify);
                     error(__("Spam Comment"), __("Your comment has been marked as spam. It has to be reviewed and/or approved by an admin.", "comments"));
                 } else {
                     $comment = self::add($body,
@@ -117,7 +118,8 @@
                                          $status,
                                          $post->id,
                                          $visitor->id,
-                                         $parent);
+                                         $parent,
+                                         $notify);
 
                     fallback($_SESSION['comments'], array());
                     $_SESSION['comments'][] = $comment->id;
@@ -137,7 +139,8 @@
                                      $status,
                                      $post->id,
                                      $visitor->id,
-                                     $parent);
+                                     $parent,
+                                     $notify);
 
                 fallback($_SESSION['comments'], array());
                 $_SESSION['comments'][] = $comment->id;
@@ -167,7 +170,7 @@
          *     $created_at - The new comment's "created" timestamp.
          *     $updated_at - The new comment's "last updated" timestamp.
          */
-        static function add($body, $author, $url, $email, $ip, $agent, $status, $post, $user_id, $parent, $created_at = null, $updated_at = null) {
+        static function add($body, $author, $url, $email, $ip, $agent, $status, $created_at = null, $updated_at = null, $post, $user_id,$notify) {
             if (!empty($url)) # Add the http:// if it isn't there.
                 if (!@parse_url($url, PHP_URL_SCHEME))
                     $url = "http://".$url;
@@ -187,6 +190,7 @@
                                "status" => $status,
                                "post_id" => $post,
                                "user_id"=> $user_id,
+                               "notify"=>$notify,
                                "parent_id" => $parent,
                                "created_at" => oneof($created_at, datetime()),
                                "updated_at" => oneof($updated_at, "0000-00-00 00:00:00")));
@@ -197,7 +201,7 @@
             return $new;
         }
 
-        public function update($author, $author_email, $author_url, $body, $status, $timestamp, $update_timestamp = true) {
+        public function update($author, $author_email, $author_url, $body, $status, $timestamp, $update_timestamp = true,$notify) {
             $sql = SQL::current();
             $sql->update("comments",
                          array("id" => $this->id),
@@ -206,6 +210,7 @@
                                "author_url" => strip_tags($author_url),
                                "body" => $body,
                                "status" => $status,
+                               "notify"=>$notify,
                                "created_at" => $timestamp,
                                "updated_at" => ($update_timestamp) ? datetime() : $this->updated_at));
 
@@ -309,6 +314,28 @@
             $name = strtolower(get_class($this));
 
             echo $before.'<a href="'.self_url().'&amp;replyto'.$name.'='.$this->id.'#add_comment" title="Reply to '.$this->author.'" class="'.($classes ? $classes." " : '').$name.'_replyto_link replyto">'.$text.'</a>'.$after;
+        }
+        /**
+         * Function: email
+         * Emails everyone that wants to be notified for a new comment
+         * Parameters:
+         *     $author - The person that wrote the new comment.
+         *     $body - The new comment
+         *     $post - The id of the post that was commented on
+         */
+        public function email($author,$body,$post){
+            $sql=Sql::Current();
+            $config=Config::current();
+            $post=New Post($post);
+            $emails=$sql->select('__comments', 'author_email', 'notify=1 AND post='.$post);
+            $to = $_POST['email'];
+            $subject = $config->name.__("New Comment");
+            $message = "There is a new comment at ".$post->url()."\n Poster: ".$author."\n Message: ".$body;
+            $headers = "From:".$config->email."\r\n" .
+                                   "Reply-To:".$config->email. "\r\n" .
+                                   "X-Mailer: PHP/".phpversion() ;
+
+            $sent = email($to, $subject, $message, $headers);
         }
 
         # !! DEPRECATED AFTER 2.0 !!
