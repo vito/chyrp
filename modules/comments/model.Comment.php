@@ -69,7 +69,7 @@
          *     $parent - The <Comment> they're replying to.
          *     $type - The type of comment. Optional, used for trackbacks/pingbacks.
          */
-        static function create($author, $email, $url, $body, $post,$type = null,$notify=1) {
+        static function create($body, $author, $url, $email, $post, $parent = 0, $type = null,$notify=1) {
             if (!self::user_can($post->id) and !in_array($type, array("trackback", "pingback")))
                 return;
 
@@ -170,7 +170,7 @@
          *     $created_at - The new comment's "created" timestamp.
          *     $updated_at - The new comment's "last updated" timestamp.
          */
-        static function add($body, $author, $url, $email, $ip, $agent, $status, $created_at = null, $updated_at = null, $post, $user_id,$notify) {
+        static function add($body, $author, $url, $email, $ip, $agent, $status, $post, $user_id, $parent, $created_at = null, $updated_at = null,$notify) {
             if (!empty($url)) # Add the http:// if it isn't there.
                 if (!@parse_url($url, PHP_URL_SCHEME))
                     $url = "http://".$url;
