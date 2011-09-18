@@ -751,16 +751,37 @@
         }
 
         /**
+         * Function: author
+         * Returns a post's author. Example: $post->author->name
+         */
+        public function author() {
+            if ($this->no_results)
+                return false;
+
+            $user = new User($this->user_id);
+            $group = new Group($user->group_id);
+
+            $author = array("nick"    => $user->login,
+                            "name"    => oneof($user->full_name, $user->login),
+                            "website" => $user->website,
+                            "email"   => $user->email,
+                            "joined"  => $user->joined_at,
+                            "group"   => $group->name);
+
+            unset($user, $group);
+
+            return (object) $author;
+        }
+
+        /**
          * Function: user
          * Returns a post's user. Example: $post->user->login
          * 
          * !! DEPRECATED AFTER 2.0 !!
          */
         public function user() {
-            if ($this->no_results)
-                return false;
-
-            return new User($this->user_id);
+            deprecated("\$post.user", "2.0", "\$post.author", debug_backtrace());
+            return self::author();
         }
 
         /**
