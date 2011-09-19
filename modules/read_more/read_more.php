@@ -26,7 +26,7 @@
             if (Route::current()->action == "view")
                 return preg_replace('/(<p>)?<a class="read_more" href="([^"]+)">e51b2b9a58824dd068d8777ec6e97e4d<\/a>\(\(\(more(\((.+)\))?\)\)\)(<\/p>(\n\n<\/p>(\n\n)?)?)?/', "", $text);
 
-            preg_match_all("/e51b2b9a58824dd068d8777ec6e97e4d(\(\(\(more(\((.+)\))?\)\)\))/", preg_replace("/<[^>]+>/", "", $text), $more, PREG_OFFSET_CAPTURE);
+            preg_match_all("/e51b2b9a58824dd068d8777ec6e97e4d(\(\(\(more(\((.+)\))?\)\)\))/", preg_replace("/<[^>]+>/", "", html_entity_decode($text, ENT_QUOTES)), $more, PREG_OFFSET_CAPTURE);
             $body = truncate($text, $more[1][0][1], "", true, true);
             $body.= @$more[3][0];
 
