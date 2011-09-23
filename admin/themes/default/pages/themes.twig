@@ -30,7 +30,7 @@
             <h1>${ "Admin Themes" | translate }</h1>
             {% for theme in admin_themes %}
             <div class="theme{% if theme.name == admin_theme %} current{% endif %}{% if loop.index % 2 == 0 %} last{% endif %} box left">
-                <a href="{% admin "change_theme&theme=" ~ theme.name %}" class="link">
+                <a href="{% admin "change_admin_theme&theme=" ~ theme.name %}" class="link">
                     <span>${ theme.info.name | translate(theme.name) | escape }</span>
                     {% if theme.screenshot %}
                     <img src="$theme.screenshot" alt="${ ('"' ~ theme.info.name ~ '"') | escape } screenshot" class="screenshot" width="285" />

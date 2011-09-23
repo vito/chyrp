@@ -29,7 +29,7 @@
          * Prepares Twig.
          */
         private function __construct() {
-            $this->admin_theme = fallback($_SESSION['admin_theme'], "default");
+            $this->admin_theme = fallback(Config::current()->admin_theme, "default");
 
             $this->theme = new Twig_Loader(MAIN_DIR."/admin/themes/".$this->admin_theme,
                                            (is_writable(INCLUDES_DIR."/caches") and !DEBUG) ?
@@ -1761,6 +1761,9 @@
          * Theme switching/previewing.
          */
         public function themes() {
+            if (!Visitor::current()->group->can("change_settings"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+
             $config = Config::current();
 
             $this->context["preview"] = !empty($_SESSION['theme']) ? $_SESSION['theme'] : "" ;
@@ -1965,11 +1968,11 @@
         public function change_theme() {
             if (!Visitor::current()->group->can("change_settings"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+
             if (empty($_GET['theme']))
                 error(__("No Theme Specified"), __("You did not specify a theme to switch to."));
 
             $config = Config::current();
-
             $config->set("theme", $_GET['theme']);
 
             if (file_exists(THEMES_DIR."/".$_GET['theme']."/locale/".$config->locale.".mo"))
@@ -1996,12 +1999,14 @@
          * Changes the admin theme.
          */
         public function change_admin_theme() {
+            if (!Visitor::current()->group->can("change_settings"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+
             if (empty($_GET['theme']))
                 error(__("No Theme Specified"), __("You did not specify a theme to switch to."));
 
             $config = Config::current();
-
-            $_SESSION['admin_theme'] = $_GET['theme'];
+            $config->set("admin_theme", $_GET['theme']);
 
             if (file_exists(ADMIN_THEMES_DIR."/".$_GET['theme']."/locale/".$config->locale.".mo"))
                 load_translator($_GET['theme'], ADMIN_THEMES_DIR."/".$_GET['theme']."/locale/".$config->locale.".mo");
@@ -2029,6 +2034,7 @@
         public function preview_theme() {
             if (!Visitor::current()->group->can("change_settings"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to preview themes."));
+
             if (empty($_GET['theme']))
                 error(__("No Theme Specified"), __("You did not specify a theme to preview."));
 
