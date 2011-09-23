@@ -175,31 +175,28 @@
          */
         public function post_from_url($route, $request, $return_post = false) {
             $config = Config::current();
-
-            $post_url_parts = preg_split('!(\([^)]+\))!', $config->post_url, null, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
-            $url_regex = '';
+            $post_url_parts = preg_split("!(\([^)]+\))!", $config->post_url, null, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
+            $url_regex = "";
             $url_parameters = array();
-            Trigger::current()->filter(Post::$url_attrs, 'url_code');
-            foreach ($post_url_parts as $part) {
+            Trigger::current()->filter(Post::$url_attrs, "url_code");
+
+            foreach ($post_url_parts as $part)
                 if (isset(Post::$url_attrs[$part])) {
                     $url_regex .= Post::$url_attrs[$part];
-                    $url_parameters[] = trim($part, '()');
-                } else {
-                    $url_regex .= preg_quote($part, '/');
-                }
-            }
+                    $url_parameters[] = trim($part, "()");
+                } else
+                    $url_regex .= preg_quote($part, "/");
 
-            if (preg_match("/^$url_regex$/", ltrim($request, '/'), $matches)) {
+            if (preg_match("/^$url_regex$/", ltrim($request, "/"), $matches)) {
                 $post_url_attrs = array();
-                for ($i = 0; $i < count($url_parameters); $i++) {
+                for ($i = 0; $i < count($url_parameters); $i++)
                     $post_url_attrs[$url_parameters[$i]] = urldecode($matches[$i + 1]);
-                }
 
                 if ($return_post)
                     return Post::from_url($post_url_attrs);
                 else
-                    $route->try["view"] = array($post_url_attrs, $args);
-            }            
+                    $route->try["view"] = array($post_url_attrs);
+            }
         }
 
         /**
@@ -229,11 +226,10 @@
                                         "posts.status" => "scheduled"))->fetchAll();
 
             if (!empty($posts))
-                foreach ($posts as $post) {
+                foreach ($posts as $post)
                     $sql->update("posts",
                                  array("id" => $post),
                                  array("status" => "public"));
-                }
 
             $this->display("pages/index",
                            array("posts" => new Paginator(Post::find(array("placeholders" => true)),
