@@ -1722,7 +1722,8 @@
                 return Flash::warning(__("Could not read feathers directory."));
 
             while (($folder = readdir($open)) !== false) {
-                if (!file_exists(FEATHERS_DIR."/".$folder."/".$folder.".php") or !file_exists(FEATHERS_DIR."/".$folder."/info.yaml")) continue;
+                if (!file_exists(FEATHERS_DIR."/".$folder."/".$folder.".php") or !file_exists(FEATHERS_DIR."/".$folder."/info.yaml"))
+                    continue;
 
                 if (file_exists(FEATHERS_DIR."/".$folder."/locale/".$config->locale.".mo"))
                     load_translator($folder, FEATHERS_DIR."/".$folder."/locale/".$config->locale.".mo");
@@ -1995,7 +1996,7 @@
         }
 
         /**
-         * Function: theme
+         * Function: change_admin_theme
          * Changes the admin theme.
          */
         public function change_admin_theme() {
@@ -2073,9 +2074,7 @@
             }
 
             if (empty($_POST))
-                return $this->display("general_settings",
-                                      array("locales" => $locales,
-                                            "timezones" => timezones()));
+                return $this->display("general_settings", array("locales" => $locales, "timezones" => timezones()));
 
             if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
                 show_403(__("Access Denied"), __("Invalid security key."));
@@ -2184,7 +2183,7 @@
                     break;
                 case "slugs":
                     $title = __("Post Slugs");
-                    $body = __("Post slugs are strings to use for the URL of a post. They are directly respondible for the <code>(url)</code> attribute in a post's clean URL, or the <code>/?action=view&amp;url=<strong>foo</strong></code> in a post's dirty URL. A post slug should not contain any special characters other than hyphens.");
+                    $body = __("Post slugs are strings to use for the URL of a post. They are directly responsible for the <code>(url)</code> attribute in a post's clean URL, or the <code>/?action=view&amp;url=<strong>foo</strong></code> in a post's dirty URL. A post slug should not contain any special characters other than hyphens.");
                     break;
                 case "trackbacks":
                     $title = __("Trackbacks");
@@ -2356,22 +2355,22 @@
 
             $show = array("write" => array($visitor->group->can("add_draft", "add_post", "add_page")),
                           "manage" => array($visitor->group->can("view_own_draft",
-                                                                   "view_draft",
-                                                                   "edit_own_draft",
-                                                                   "edit_own_post",
-                                                                   "edit_post",
-                                                                   "delete_own_draft",
-                                                                   "delete_own_post",
-                                                                   "delete_post",
-                                                                   "add_page",
-                                                                   "edit_page",
-                                                                   "delete_page",
-                                                                   "add_user",
-                                                                   "edit_user",
-                                                                   "delete_user",
-                                                                   "add_group",
-                                                                   "edit_group",
-                                                                   "delete_group")),
+                                                                 "view_draft",
+                                                                 "edit_own_draft",
+                                                                 "edit_own_post",
+                                                                 "edit_post",
+                                                                 "delete_own_draft",
+                                                                 "delete_own_post",
+                                                                 "delete_post",
+                                                                 "add_page",
+                                                                 "edit_page",
+                                                                 "delete_page",
+                                                                 "add_user",
+                                                                 "edit_user",
+                                                                 "delete_user",
+                                                                 "add_group",
+                                                                 "edit_group",
+                                                                 "delete_group")),
                           "settings" => array($visitor->group->can("change_settings")),
                           "extend" => array($visitor->group->can("toggle_extensions")));
 
