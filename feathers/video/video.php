@@ -1,4 +1,6 @@
 <?php
+    require_once "lib/AutoEmbed.class.php";
+
     class Video extends Feathers implements Feather {
         public function __init() {
             $this->setField(array("attr" => "video",
@@ -61,31 +63,12 @@
             if (isset($field) and $field != "embed")
                 return $video; # If they're previewing and the field argument isn't the embed, return the original.
 
-            if (preg_match("/http:\/\/(www\.|[a-z]{2}\.)?youtube\.com\/watch\?v=([^&]+)/", $video, $matches)) {
-                return '<object type="application/x-shockwave-flash" class="object-youtube" data="http://'.$matches[1].'youtube.com/v/'.$matches[2].'" width="468" height="391"><param name="movie" value="http://'.$matches[1].'youtube.com/v/'.$matches[2].'" /><param name="FlashVars" value="playerMode=embedded" /></object>';
-            } else if (preg_match("/^http:\/\/(www\.)?vimeo.com\/([0-9]+)/", $video, $matches)) {
-                $site = get_remote("http://vimeo.com/".$matches[2]);
-                preg_match('/<div id="vimeo_player_[0-9]+" class="player" style="width:([0-9]+)px;height:([0-9]+)px;">/',
-                           $site,
-                           $scale);
-                return '<object type="application/x-shockwave-flash" class="object-vimeo" width="'.$scale[1].'" height="'.$scale[2].'" data="http://www.vimeo.com/moogaloop.swf?clip_id='.$matches[2].'&amp;server=www.vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1"><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="http://www.vimeo.com/moogaloop.swf?clip_id='.$matches[2].'&amp;server=www.vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1" /></object>';
-            } else if (preg_match("/http:\/\/(www\.)?metacafe.com\/watch\/([0-9]+)\/([^\/&\?]+)/", $video, $matches)) {
-                return '<object type="application/x-shockwave-flash" class="object-metacafe" data="http://www.metacafe.com/fplayer/'.$matches[2].'/'.$matches[3].'.swf" width="400" height="345"></object>';
-            } else if (preg_match("/http:\/\/(www\.)?revver.com\/video\/([0-9]+)/", $video, $matches)) {
-                return '<script src="http://flash.revver.com/player/1.0/player.js?mediaId:'.$matches[2].';width:468;height:391;" type="text/javascript"></script>';
-            } else if (preg_match("/http:\/\/(www\.)viddler\.com\/.+/", $video)) {
-                $viddler_page = get_remote($video);
-
-                if (preg_match("/<link\s+rel=\"video_src\"\s+href=\"http:\/\/(www\.)?viddler.com\/player\/([0-9a-fA-F]+)/", $viddler_page, $matches) and
-                    preg_match("/<meta\s+name=\"video_height\"\s+content=\"([0-9]+)\"/", $viddler_page, $height) and
-                    preg_match("/<meta\s+name=\"video_width\"\s+content=\"([0-9]+)\"/", $viddler_page, $width)) {
-                    return '<object type="application/x-shockwave-flash" data="http://www.viddler.com/player/'.$matches[2].'/" width="'.$width[1].'" height="'.$height[1].'" id="viddler_'.$matches[2].'" class="object-youtube"><param name="movie" value="http://www.viddler.com/player/'.$matches[2].'/" /><param name="allowScriptAccess" value="always" /><param name="allowFullScreen" value="true" /></object>';
-                }
-
+            $AE = new AutoEmbed();
+            if ($AE->parseUrl($video)) {
+                $AE->setParam("wmode", "transparent");
+                return $AE->getEmbedCode();
+            } else
                 return $video;
-            }
-
-            return $video;
         }
 
         public function embed_tag_for($post, $max_width = 500) {
@@ -113,13 +96,7 @@
             if (!isset($_GET['url']))
                 return false;
 
-            if (preg_match("/http:\/\/(www\.|[a-z]{2}\.)?youtube\.com\/watch\?v=([^&]+)/", $_GET['url']) or
-                preg_match("/http:\/\/(www\.)?vimeo.com\/([0-9]+)/", $_GET['url']) or
-                preg_match('/http:\/\/(www\.)?metacafe.com\/watch\/([0-9]+)\/([^\/&\?]+)/', $_GET['url']) or
-                preg_match("/http:\/\/(www\.)?revver.com\/video\/([0-9]+)/", $_GET['url']) or
-                preg_match("/http:\/\/(www\.)viddler\.com\/.+/", $_GET['url']))
-                return true;
-
-            return false;
+            $AE = new AutoEmbed();
+            return $result = $AE->parseUrl($video) ? true : false ;
         }
     }
