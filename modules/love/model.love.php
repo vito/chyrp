@@ -13,19 +13,43 @@
          * Adds a love to the database.
          *
          * Parameters:
-         *     $author - The name of the commenter.
-         *     $post - The <Post> they're commenting on.
+         *     $post - The <Post> they're loving
          */
-        static function add($author,$post) {
+        static function add($post) {
             $sql = SQL::current();
-            $sql->insert("loves",
-                         array("author" => strip_tags($author),
-                               "post_id" => $post->id);
+            $visitor = Visitor::current();
+            $loves=$sql->select("posts",
+                         "love_user_id",
+                         array("id" => $post->id));
+            $loves=unserialize($loves);
+            array_push($loves,$visitor->id);
+            $loves=serialize($loves);
+            $sql->update("posts",
+                        array("id"=>$post->id),
+                        array("love_user_id"=>$loves));
         }
 
 
         static function delete($love_id) {
-            SQL::current()->delete("loves", array("id" => $love_id));
+             $sql = SQL::current();
+            $visitor = Visitor::current();
+            $loves=$sql->select("posts",
+                         "love_user_id",
+                         array("id" => $post->id));
+            $loves=unserialize($loves);
+            $deloved=false;
+            foreach($loves as $key=>$value){
+                if($deloved==false){
+                    if($value==$visitor->id){
+                        unset($loves[$key]);
+                        $deloved=true;
+                    }
+                }
+            }
+            $loves=serialize($loves);
+            $sql->update("posts",
+                        array("id"=>$post->id),
+                        array("love_user_id"=>$loves));
         }
 
     }
