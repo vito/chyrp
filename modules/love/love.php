@@ -2,11 +2,8 @@
     class Love extends Modules {
         static function __install() {
             $sql = SQL::current();
-            $sql->query("CREATE TABLE IF NOT EXISTS __loves (
-                             id INTEGER PRIMARY KEY AUTO_INCREMENT,
-                             name VARCHAR(250) DEFAULT 'Guest',
-                             post_id INTEGER DEFAULT 0
-                         ) DEFAULT CHARSET=utf8");
+            $sql->query("ALTER TABLE __posts 
+            			ADD love_user_id VARCHAR");
 
         }
 
@@ -16,9 +13,10 @@
         }
         static function route_add_love(){
         	$post = new Post($_POST['post_id'], array("drafts" => true));
-        	Comment::add($_POST['author'],
-                            $post);
+        	Love::add($post);
         }
-        static function remove_love()
+        static function route_remove_love(){
+        	Love::delete();	
+        }
 
-	}
+    }
