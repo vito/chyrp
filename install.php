@@ -341,7 +341,8 @@
                                    "website" => $config->url,
                                    "group_id" => $group_id["admin"],
                                    "joined_at" => datetime()));
-
+            $user = new User(array("login" => $_POST['login']));
+            $_SESSION['user_id'] = $user->id;
             $installed = true;
         }
     }
@@ -624,7 +625,7 @@
         <?php else: ?>
             <h1><?php echo __("Done!"); ?></h1>
             <p>
-                <?php echo __("Chyrp has been successfully installed."); ?>
+                <?php echo __("Chyrp has been successfully installed and you have been logged in."); ?>
             </p>
             <h2><?php echo __("So, what now?"); ?></h2>
             <ol>
