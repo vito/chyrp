@@ -1,0 +1,27 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Theme Editor" | translate("theme_editor") }{% endblock %}
+
+{% block content %}
+    ${ theme_path | inspect }
+    ${ theme_files | inspect }
+    <ul>
+	{% for theme in theme_files %}
+		<li><a href="?action=theme_editor&file=${ theme_get }/${ theme }">${ theme }</a></li>
+	{% endfor %}
+	</ul>
+	{% if theme_content %}
+		<form id="theme_editor" class="split" action="{% admin "theme_editor_files" %}" method="post">
+                <fieldset>
+                    <p>
+                        <label for="email">${ "Theme File Content" | translate("theme_editor") }</label>
+                        <textarea name="content" style="height:300px;width:100%;">${theme_content}</textarea>
+                        <input type="hidden"name="file"value="${theme_path}">
+						<input type="submit" value="${ "Save" | translate("theme_editor") }">
+                    <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+                </fieldset>
+            </form>
+    {% else %}
+    
+	{% endif %}
+{% endblock %}
