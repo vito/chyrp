@@ -33,7 +33,7 @@
          */
         private function __construct() {
             foreach (array("messages", "notices", "warnings") as $type)
-                if (isset($_SESSION[$type]) and !empty($_SESSION[$type]))
+                if (isset($_SESSION[$type]) and empty($_SESSION[$type]))
                     unset($_SESSION[$type]);
         }
 
