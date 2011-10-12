@@ -2397,7 +2397,9 @@
 
             $this->context["navigation"]["extend"] = array("title" => __("Extend"),
                                                            "show" => in_array(true, $show["extend"]),
-                                                           "selected" => (in_array($action, $extend)));
+                                                           "selected" => (in_array($action, $extend) or
+                                                                         match(array("/_extend$/",
+                                                                                     "/_editor$/"), $action)));
 
             $this->subnav_context($route->action);
 
