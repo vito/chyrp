@@ -1,81 +1,55 @@
 <?php
+    require_once("lib/file_tree.php");
+
     class ThemeEditor extends Modules {
-    	public function init(){
-    		$this->addAlias("runtime", "admin_context");
-    	}
-        static function extend_nav($navs) {
-            if (Visitor::current()->group->can("change_settings"))
+
+        public function extend_nav($navs) {
+            if (Visitor::current()->group->can("toggle_extensions"))
                 $navs["theme_editor"] = array("title" => __("Theme Editor", "theme_editor"));
 
             return $navs;
         }
-		static function extend_nav_pages($pages) {
-            array_push($pages, "theme_editor");
-            return $pages;
+
+        public function admin_head() {
+            $config = Config::current();
+            if (Route::current()->action != "theme_editor")
+                return;
+?>
+        <link rel="stylesheet" href="<?php echo $config->chyrp_url; ?>/modules/theme_editor/lib/style.css" type="text/css" media="screen" />
+        <script src="<?php echo $config->chyrp_url; ?>/modules/theme_editor/lib/file_tree.js" type="text/javascript" charset="utf-8"></script>
+<?php
         }
-        public function admin_context($context) {
-            $theme = Config::current()->theme;
 
-            if (isset($_GET['file']) and is_file(THEME_DIR."/".$_GET['file'])) {
-                # we have a file
-                $context["theme_content"] = file_get_contents(THEME_DIR."/".$_GET['file']);
-                $context["theme_path"] = THEME_DIR."/".$_GET['file'];
-        	} elseif (isset($_GET['file']) and is_dir(THEME_DIR."/".$_GET['file'])) {
-        		# we have a theme
-                $context["theme_files"] = self::getFiles(THEME_DIR."/".$_GET['file']);
-                $context["theme_get"] = $_GET['file'];
-                $context["theme_path"] = THEME_DIR;
-			} else {
-                $context["theme_files"] = self::getFiles(THEME_DIR);
-                $context["theme_get"] = $_GET['file'];
-                $context["theme_path"] = THEME_DIR."/".$_GET['file'];
-			}
-            #$admin->display("pages/admin/theme_editor.twig", array("theme_files" => $context), __("Theme Editor", "theme_editor"));
-            return $context;
-        }
-        public function getFiles($file = null){
-        	if (!ADMIN)
-        	   return;
-
-            $theme = oneof($_GET['theme']);
-            fallback($file, $_GET['file']);
-
-    		if (isset($_GET['file']) and is_file(THEME_DIR."/".$file))
-                return file_get_contents(THEME_DIR."/".$file); # we have a file
-            elseif (isset($theme) and is_dir(THEME_DIR))
-				$filelist = self::getList(); # we have a theme
-            else
-				$filelist = self::getList($file);
-
-			return $filelist;
-    	}
-    	public function getList($dir = "themes"){
-    		$filelist=array();
-    		if (is_dir($dir)) {
-				$handle = opendir($dir);
-				if ($handle){
-					while(($file = readdir($handle)) !== false){
-						$extension=substr(strrchr($file,'.'),1);
-						if (substr($file, 0, 1) != '.' and ($extension == "twig" or $extension == "css" or $extension=="")){
-							array_push($filelist, $file);
-						}
-					}
-				}
-            }
-			return $filelist;
-    	}
-    	static function admin_theme_editor_files($admin){
-    		if (empty($_POST))
-                return $admin->display("theme_editor");
+        public function admin_theme_editor($admin) {
+            if (empty($_POST))
+                return $admin->display("theme_editor", array("editor" => self::admin_context($admin->context)), __("Theme Editor", "theme_editor"));
 
             if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
                 show_403(__("Access Denied"), __("Invalid security key."));
 
-            $config = Config::current();
-            file_put_contents($_POST['file'], $_POST['content']);
-            //set the configs to our post
-            if (!in_array(false, $set))
-                Flash::notice(__("File Saved"), "/admin/?action=theme_editor");
-    	}
+            if (isset($_POST['file']) and isset($_POST['newcontent'])) {
+                $done = file_put_contents($_POST['file'], $_POST['newcontent']);
+                if (!empty($done))
+                    Flash::notice(__("File Updated"), "/admin/?action=theme_editor&file=".$_POST['cur_file']);
+            }
+        }
+
+        static function admin_context($context) {
+            $theme = Config::current()->theme;
+            $theme_dir = THEME_DIR."/";
+
+            $file = ltrim(isset($_GET['file']) ? $_GET['file'] : "info.yaml", "/");
+            $cur_file = $theme_dir.$file;
+
+            $ext = array("css", "js", "php", "pot", "twig", "yaml");
+            $context["editor"]["list_all"] = php_file_tree($theme_dir, "?action=theme_editor&file=[link]", $ext);
+            if (isset($cur_file) and is_file($cur_file)) {
+                $context["editor"]["file_name"] = $file;
+                $context["editor"]["file_path"] = $cur_file;
+                $context["editor"]["file_content"] = file_get_contents($cur_file);
+            }
+
+            return $context;
+        }
     }
-?>
+
