@@ -1,0 +1,18 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Extension Manager" | translate("extension_manager") }{% endblock %}
+
+{% block content %}
+
+<div id="extension_manager_content">
+
+<div id="extension_manger">
+		<h1>${ "Extensions" | translate("extension_manager") }</h1><hr/>
+		$extensions.extensions<br/>
+		<h1>${ "Themes" | translate("extension_manager") }</h1><hr/>
+		$extensions.themes<br/>
+		<h1>${ "Feathers" | translate("extension_manager") }</h1><hr/>
+		$extensions.feathers<br/>
+</div>
+</div>
+{% endblock %}
