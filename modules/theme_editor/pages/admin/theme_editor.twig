@@ -3,25 +3,30 @@
 {% block title %}${ "Theme Editor" | translate("theme_editor") }{% endblock %}
 
 {% block content %}
-    ${ theme_path | inspect }
-    ${ theme_files | inspect }
-    <ul>
-	{% for theme in theme_files %}
-		<li><a href="?action=theme_editor&file=${ theme_get }/${ theme }">${ theme }</a></li>
-	{% endfor %}
-	</ul>
-	{% if theme_content %}
-		<form id="theme_editor" class="split" action="{% admin "theme_editor_files" %}" method="post">
-                <fieldset>
-                    <p>
-                        <label for="email">${ "Theme File Content" | translate("theme_editor") }</label>
-                        <textarea name="content" style="height:300px;width:100%;">${theme_content}</textarea>
-                        <input type="hidden"name="file"value="${theme_path}">
-						<input type="submit" value="${ "Save" | translate("theme_editor") }">
-                    <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
-                </fieldset>
-            </form>
-    {% else %}
-    
-	{% endif %}
+
+<div id="theme_editor_content">
+<div id="theme_files">
+    <h2>${ "Theme Files" | translate("theme_editor") }</h2>
+        $editor.list_all
+</div>
+
+<div id="theme_editor">
+    <form class="split" action="{% admin "theme_editor" %}" method="post">
+    <fieldset>
+        <h2>${ theme.name~": <strong>"~editor.file_name~"</strong>" | translate("theme_editor") }</h2>
+        <textarea cols="100" rows="20" name="newcontent" id="newcontent" tabindex="1">${ editor.file_content | e }</textarea>
+        <input type="hidden" name="file" value="$editor.file_path" />
+        <input type="hidden" name="cur_file" value="{% if GET.file %}$GET.file{% else %}/info.yaml{% endif %}" />
+        <input type="hidden" name="theme" value="$theme.name" />
+        <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+        <div class="clear"></div>
+        <p class="editor-buttons">
+            <button type="submit" class="yay"><img src="$theme_url/images/icons/success.png" alt="success" />
+            ${ "Update" | translate("theme_editor") }
+            </button>
+        </p>
+        </fieldset>
+    </form>
+</div>
+</div>
 {% endblock %}

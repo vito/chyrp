@@ -1,8 +1,8 @@
 name: Theme Editor
-url: chyrp.net
+url: http://chyrp.net
 version: 1.0
 description: Allows you to edit twig files from the dashboard
 author:
-  name: Chryp Team
-  url: chyrp.net
+  name: the Chyrp team
+  url: http://chyrp.net
 conflicts:
