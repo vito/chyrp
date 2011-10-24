@@ -341,8 +341,9 @@
                                    "website" => $config->url,
                                    "group_id" => $group_id["admin"],
                                    "joined_at" => datetime()));
-            $user = new User(array("login" => $_POST['login']));
-            $_SESSION['user_id'] = $user->id;
+
+            # $user_id = $sql->select("users", "id", array("login" => $_POST['login']))->fetchColumn();
+            # $_SESSION['user_id'] = $user_id;
             $installed = true;
         }
     }
