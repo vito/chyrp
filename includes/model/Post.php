@@ -597,7 +597,7 @@
         /**
          * Function: next
          * Returns:
-         *     The next post (the post made after this one).
+         *     The next post (the post made before this one).
          */
         public function next() {
             if ($this->no_results)
@@ -606,17 +606,17 @@
             if (isset($this->next))
                 return $this->next;
 
-            return $this->next = new self(null, array("where" => array("created_at >" => $this->created_at,
+            return $this->next = new self(null, array("where" => array("created_at <" => $this->created_at,
                                                                        $this->status == "draft" ?
                                                                            self::statuses(array("draft")) :
                                                                            self::statuses()),
-                                                      "order" => "created_at ASC, id ASC"));
+                                                      "order" => "created_at DESC, id DESC"));
         }
 
         /**
          * Function: prev
          * Returns:
-         *     The next post (the post made after this one).
+         *     The previous post (the post made after this one).
          */
         public function prev() {
             if ($this->no_results)
@@ -625,11 +625,11 @@
             if (isset($this->prev))
                 return $this->prev;
 
-            return $this->prev = new self(null, array("where" => array("created_at <" => $this->created_at,
+            return $this->prev = new self(null, array("where" => array("created_at >" => $this->created_at,
                                                                        ($this->status == "draft" ?
                                                                            self::statuses(array("draft")) :
                                                                            self::statuses())),
-                                                      "order" => "created_at DESC, id DESC"));
+                                                      "order" => "created_at ASC, id ASC"));
         }
 
         /**
