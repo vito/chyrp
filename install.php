@@ -145,6 +145,7 @@
             $config->set("post_url", "(year)/(month)/(day)/(url)/");
             $config->set("timezone", $_POST['timezone']);
             $config->set("can_register", true);
+            $config->set("email_activation", true);
             $config->set("default_group", 0);
             $config->set("guest_group", 0);
             $config->set("enable_trackbacking", true);
