@@ -161,7 +161,7 @@
 
         /**
          * Function: check
-         * Goes a config exist?
+         * Does a config exist?
          *
          * Parameters:
          *     $setting - Name of the config to check.
@@ -1104,7 +1104,7 @@
      * Function: add_user_approva_column
      * Adds the @is_approved@ column on the "users" table, and approves all current users.
      *
-     * Versions: 2.1 => 2.2
+     * Versions: 2.1 => 2.5
      */
     function add_user_approved_column() {
         $sql = SQL::current();
@@ -1250,6 +1250,8 @@
         Config::fallback("chyrp_url", Config::get("url"));
         Config::fallback("sql", Config::$yaml["database"]);
         Config::fallback("timezone", "America/New_York");
+        Config::fallback("email_activation", Config::get("can_register"));
+        Config::fallback("enable_wysiwyg", false);
 
         Config::remove("rss_posts");
         Config::remove("time_offset");
