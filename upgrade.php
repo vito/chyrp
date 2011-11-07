@@ -284,8 +284,10 @@
      */
     function download_new_version(){
         # delete everything from 2 versions back
-        rmdir("old");
-        rmdir("updates");
+        if(is_dir("old"))
+            rmdir("old");
+        if(is_dir("updates"))
+            rmdir("updates");
         mkdir("updates");
         mkdir("old");
 
@@ -300,7 +302,6 @@
             if (file_exists($file)) {
                # move stuff to the old dir so we can download the new one
                rename($file, 'old/'.$file);
-               unlink($file);
             }
         }
 
@@ -325,9 +326,10 @@
         foreach($files as $file)
             if (file_exists("updates/chyrp/".$file))
                rename("updates/chyrp/".$file, $file);
-
-        copy("old/includes/config.yaml.php", "includes/config.yaml.php");
-        rmdir("updates");
+        if(file_exists("old/includes/config.yaml.php"))
+            copy("old/includes/config.yaml.php", "includes/config.yaml.php");
+        if(is_dir("updates"))
+            rmdir("updates");
     }
 
     /**
