@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: modules/aggregator/aggregator.php:372
+#: modules/aggregator/aggregator.php:374
 msgid "You can use XPath to navigate the feed and find the correct attribute."
 msgstr ""
 
@@ -25,11 +25,11 @@ msgstr ""
 msgid "Delete Aggregate"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:345
+#: modules/aggregator/aggregator.php:347
 msgid "Aggregate deleted."
 msgstr ""
 
-#: modules/aggregator/aggregator.php:108
+#: modules/aggregator/aggregator.php:109
 msgid "Aggregates"
 msgstr ""
 
@@ -51,19 +51,19 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:377
+#: modules/aggregator/aggregator.php:379
 msgid "To call a function and use its return value for the post's value, use <code>call:</code>. Separate arguments with <code> || </code>."
 msgstr ""
 
-#: modules/aggregator/aggregator.php:378
+#: modules/aggregator/aggregator.php:380
 msgid "Functions"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:368
+#: modules/aggregator/aggregator.php:370
 msgid "Use <a href=\"http://yaml.org/\">YAML</a> to specify what post attribute holds what value of the feed entry."
 msgstr ""
 
-#: modules/aggregator/aggregator.php:133
+#: modules/aggregator/aggregator.php:134
 msgid "Aggregation"
 msgstr ""
 
@@ -72,7 +72,7 @@ msgstr ""
 msgid "Source URL"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:307
+#: modules/aggregator/aggregator.php:309
 msgid "Aggregate updated."
 msgstr ""
 
@@ -82,11 +82,11 @@ msgstr ""
 msgid "Feather"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:386
+#: modules/aggregator/aggregator.php:388
 msgid "From the Photo feather:"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:376
+#: modules/aggregator/aggregator.php:378
 msgid "To get the attribute of an element, use XPath to find it and the <code>.attr[]</code> syntax to grab an attribute."
 msgstr ""
 
@@ -95,15 +95,15 @@ msgstr ""
 msgid "Check Feeds Every %s Minutes"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:386
+#: modules/aggregator/aggregator.php:385
 msgid "To get the URL of an image in the content"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:263
+#: modules/aggregator/aggregator.php:264
 msgid "Aggregate created."
 msgstr ""
 
-#: modules/aggregator/aggregator.php:233
+#: modules/aggregator/aggregator.php:234
 msgid "You do not have sufficient privileges to add aggregates."
 msgstr ""
 
@@ -113,23 +113,23 @@ msgstr ""
 msgid "Edit Aggregate"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:385
+#: modules/aggregator/aggregator.php:387
 msgid "Example"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:365
+#: modules/aggregator/aggregator.php:368
 msgid "Post Values"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:271
-#: modules/aggregator/aggregator.php:315
-#: modules/aggregator/aggregator.php:338
+#: modules/aggregator/aggregator.php:272
+#: modules/aggregator/aggregator.php:317
+#: modules/aggregator/aggregator.php:340
 msgid "You do not have sufficient privileges to delete this aggregate."
 msgstr ""
 
-#: modules/aggregator/aggregator.php:268
-#: modules/aggregator/aggregator.php:312
-#: modules/aggregator/aggregator.php:329
+#: modules/aggregator/aggregator.php:269
+#: modules/aggregator/aggregator.php:314
+#: modules/aggregator/aggregator.php:331
 msgid "An ID is required to delete an aggregate."
 msgstr ""
 
@@ -145,7 +145,7 @@ msgstr ""
 msgid "Add Aggregate"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:370
+#: modules/aggregator/aggregator.php:372
 msgid "XPath"
 msgstr ""
 
@@ -153,7 +153,7 @@ msgstr ""
 msgid "source"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:343
+#: modules/aggregator/aggregator.php:345
 msgid "Aggregate and its posts deleted."
 msgstr ""
 
@@ -161,15 +161,15 @@ msgstr ""
 msgid "disable"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:382
+#: modules/aggregator/aggregator.php:384
 msgid "To upload an image from the content"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:381
+#: modules/aggregator/aggregator.php:383
 msgid "The Aggregator module provides a couple helper functions:"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:374
+#: modules/aggregator/aggregator.php:376
 msgid "Attributes"
 msgstr ""
 

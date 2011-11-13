@@ -98,7 +98,8 @@
             foreach ((array) Config::current()->aggregates as $name => $aggregate)
                 $aggregates[] = array_merge(array("name" => $name), array("user" => new User($aggregate["author"])), $aggregate);
 
-            $admin->display("manage_aggregates", array("aggregates" => new Paginator($aggregates, 25)));
+            $admin->display("manage_aggregates", array("aggregates" => new Paginator($aggregates, 25),
+                                                       "groups" => Group::find(array("order" => "id ASC"))));
         }
 
         public function manage_nav($navs) {
@@ -279,6 +280,7 @@
             if (empty($_POST))
                 return $admin->display("edit_aggregate",
                                        array("users" => User::find(),
+                                             "groups" => Group::find(array("order" => "id ASC")),
                                              "aggregate" => array("name" => $_GET['id'],
                                                                   "url" => $aggregate["url"],
                                                                   "feather" => $aggregate["feather"],
