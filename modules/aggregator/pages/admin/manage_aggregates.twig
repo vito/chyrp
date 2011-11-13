@@ -8,6 +8,7 @@
                     <tr class="head">
                         <th>${ "Name" | translate("aggregator") }</th>
                         <th>${ "Feather" | translate("aggregator") }</th>
+                        <th>${ "Default Status" | translate("aggregator") }</th>
                         <th>${ "Author" | translate("aggregator") }</th>
                         <th>${ "Last Update" | translate("aggregator") }</th>
                         ${ trigger.call("manage_aggregates_column_header") }
@@ -19,6 +20,7 @@
                     <tr class="aggregate {% if loop.last %} last{% endif %}">
                         <td class="main">$aggregate.name <span class="sub">(<a href="$aggregate.url">${ "source" | translate("aggregator") }</a>)</a></td>
                         <td>${ aggregate.feather | capitalize }</td>
+                        <td>${ aggregate.status | capitalize }</td>
                         <td>${ aggregate.user.full_name | fallback(aggregate.user.login) }</td>
                         <td>{% if aggregate.last_updated %}${ aggregate.last_updated | strftime }{% else %}<span class="sub">${ "never" | translate }</span>{% endif %}</td>
                         ${ trigger.call("manage_aggregates_column", aggregate) }
