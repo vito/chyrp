@@ -23,6 +23,54 @@
             Group::remove_permission("edit_aggregate");
             Group::remove_permission("delete_aggregate");
         }
+        
+        function get_xml_remote($url) {
+            extract(parse_url($url), EXTR_SKIP);
+
+            if (ini_get("allow_url_fopen")) {
+                $context = stream_context_create(array('http'=>array('user_agent'=>"Chyrp/".CHYRP_VERSION)));
+                $content = @file_get_contents($url,false,$context);
+                if (!((strpos($http_response_header[0], " 200 ")) || (strpos($http_response_header[0], " 301 ")) || (strpos($http_response_header[0], " 302 ")) || (strpos($http_response_header[0], " 303 ")) || (strpos($http_response_header[0], " 307 "))))
+                    $content = "Server returned a message: $http_response_header[0]";
+            } elseif (function_exists("curl_init")) {
+                $handle = curl_init();
+                curl_setopt($handle, CURLOPT_URL, $url);
+                curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, 1);
+                curl_setopt($handle, CURLOPT_FOLLOWLOCATION, True);
+                curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($handle, CURLOPT_TIMEOUT, 60);
+                curl_setopt($handle, CURLOPT_USERAGENT, 'Chyrp/'.CHYRP_VERSION);
+                $content = curl_exec($handle);
+                $status = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+                curl_close($handle);
+                if (!(($status == 200) || ($status == 301) || ($status == 302) || ($status == 303) || ($status == 307)))
+                    $content = "Server returned a message: $status";
+            } else {
+                $path = (!isset($path)) ? '/' : $path ;
+                if (isset($query)) $path.= '?'.$query;
+                $port = (isset($port)) ? $port : 80 ;
+
+                $connect = @fsockopen($host, $port, $errno, $errstr, 2);
+                if (!$connect) return false;
+
+                # Send the GET headers
+                fwrite($connect, "GET ".$path." HTTP/1.1\r\n");
+                fwrite($connect, "Host: ".$host."\r\n");
+                fwrite($connect, "User-Agent: Chyrp/".CHYRP_VERSION."\r\n\r\n");
+
+                $content = "";
+                while (!feof($connect)) {
+                    $line = fgets($connect, 128);
+                    if (preg_match("/\r\n/", $line)) continue;
+
+                    $content.= $line;
+                }
+
+                fclose($connect);
+            }
+
+            return $content;
+        }
 
         public function main_index($main) {
             $config = Config::current();
@@ -37,7 +85,7 @@
             foreach ($aggregates as $name => $feed) {
                 $xml_contents = preg_replace(array("/<(\/?)dc:date>/", "/xmlns=/"),
                                              array("<\\1date>", "a="),
-                                             get_remote($feed["url"]));
+                                             $this->get_xml_remote($feed["url"]));
                 $xml = simplexml_load_string($xml_contents, "SimpleXMLElement", LIBXML_NOCDATA);
 
                 if ($xml === false)
