@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.1\n"
 "Report-Msgid-Bugs-To: email@chyrp.net\n"
-"POT-Creation-Date: 2011-01-10 22:17+0000\n"
+"POT-Creation-Date: 2011-11-13 21:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: modules/aggregator/aggregator.php:374
+#: modules/aggregator/aggregator.php:422
 msgid "You can use XPath to navigate the feed and find the correct attribute."
 msgstr ""
 
@@ -25,12 +25,19 @@ msgstr ""
 msgid "Delete Aggregate"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:347
-msgid "Aggregate deleted."
+#: modules/aggregator/pages/admin/manage_aggregates.twig:3
+msgid "Manage Aggregates"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:109
-msgid "Aggregates"
+#: modules/aggregator/pages/admin/new_aggregate.twig:31
+#: modules/aggregator/pages/admin/edit_aggregate.twig:32
+msgid "Scheduled"
+msgstr ""
+
+#: modules/aggregator/pages/admin/new_aggregate.twig:10
+#: modules/aggregator/pages/admin/edit_aggregate.twig:11
+#: modules/aggregator/pages/admin/manage_aggregates.twig:9
+msgid "Name"
 msgstr ""
 
 #: modules/aggregator/info.yaml:5
@@ -41,30 +48,12 @@ msgstr ""
 msgid "Aggregator"
 msgstr ""
 
-#: modules/aggregator/pages/admin/manage_aggregates.twig:3
-msgid "Manage Aggregates"
+#: modules/aggregator/aggregator.php:395
+msgid "Aggregate deleted."
 msgstr ""
 
-#: modules/aggregator/pages/admin/new_aggregate.twig:10
-#: modules/aggregator/pages/admin/manage_aggregates.twig:9
-#: modules/aggregator/pages/admin/edit_aggregate.twig:11
-msgid "Name"
-msgstr ""
-
-#: modules/aggregator/aggregator.php:379
-msgid "To call a function and use its return value for the post's value, use <code>call:</code>. Separate arguments with <code> || </code>."
-msgstr ""
-
-#: modules/aggregator/aggregator.php:380
-msgid "Functions"
-msgstr ""
-
-#: modules/aggregator/aggregator.php:370
-msgid "Use <a href=\"http://yaml.org/\">YAML</a> to specify what post attribute holds what value of the feed entry."
-msgstr ""
-
-#: modules/aggregator/aggregator.php:134
-msgid "Aggregation"
+#: modules/aggregator/aggregator.php:157
+msgid "Aggregates"
 msgstr ""
 
 #: modules/aggregator/pages/admin/new_aggregate.twig:14
@@ -72,139 +61,20 @@ msgstr ""
 msgid "Source URL"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:309
-msgid "Aggregate updated."
+#: modules/aggregator/aggregator.php:430
+msgid "To call a function and use its return value for the post's value, use <code>call:</code>. Separate arguments with <code> || </code>."
 msgstr ""
 
-#: modules/aggregator/pages/admin/new_aggregate.twig:18
-#: modules/aggregator/pages/admin/manage_aggregates.twig:10
-#: modules/aggregator/pages/admin/edit_aggregate.twig:19
-msgid "Feather"
+#: modules/aggregator/aggregator.php:428
+msgid "Functions"
 msgstr ""
 
-#: modules/aggregator/aggregator.php:388
-msgid "From the Photo feather:"
+#: modules/aggregator/aggregator.php:418
+msgid "Use <a href=\"http://yaml.org/\">YAML</a> to specify what post attribute holds what value of the feed entry."
 msgstr ""
 
-#: modules/aggregator/aggregator.php:378
-msgid "To get the attribute of an element, use XPath to find it and the <code>.attr[]</code> syntax to grab an attribute."
-msgstr ""
-
-#: modules/aggregator/pages/admin/aggregation_settings.twig:9
-#, php-format
-msgid "Check Feeds Every %s Minutes"
-msgstr ""
-
-#: modules/aggregator/aggregator.php:385
-msgid "To get the URL of an image in the content"
-msgstr ""
-
-#: modules/aggregator/aggregator.php:264
-msgid "Aggregate created."
-msgstr ""
-
-#: modules/aggregator/aggregator.php:234
-msgid "You do not have sufficient privileges to add aggregates."
-msgstr ""
-
-#: modules/aggregator/pages/admin/edit_aggregate.twig:3
-#: modules/aggregator/pages/admin/edit_aggregate.twig:7
-#: modules/aggregator/aggregator.php:11
-msgid "Edit Aggregate"
-msgstr ""
-
-#: modules/aggregator/aggregator.php:387
-msgid "Example"
-msgstr ""
-
-#: modules/aggregator/aggregator.php:368
-msgid "Post Values"
-msgstr ""
-
-#: modules/aggregator/aggregator.php:272
-#: modules/aggregator/aggregator.php:317
-#: modules/aggregator/aggregator.php:340
-msgid "You do not have sufficient privileges to delete this aggregate."
-msgstr ""
-
-#: modules/aggregator/aggregator.php:269
-#: modules/aggregator/aggregator.php:314
-#: modules/aggregator/aggregator.php:331
-msgid "An ID is required to delete an aggregate."
-msgstr ""
-
-#: modules/aggregator/pages/admin/new_aggregate.twig:52
-#: modules/aggregator/pages/admin/edit_aggregate.twig:53
-msgid "Post Attributes"
-msgstr ""
-
-#: modules/aggregator/pages/admin/new_aggregate.twig:3
-#: modules/aggregator/pages/admin/new_aggregate.twig:63
-#: modules/aggregator/pages/admin/manage_aggregates.twig:57
-#: modules/aggregator/aggregator.php:10
-msgid "Add Aggregate"
-msgstr ""
-
-#: modules/aggregator/aggregator.php:372
-msgid "XPath"
-msgstr ""
-
-#: modules/aggregator/pages/admin/manage_aggregates.twig:21
-msgid "source"
-msgstr ""
-
-#: modules/aggregator/aggregator.php:345
-msgid "Aggregate and its posts deleted."
-msgstr ""
-
-#: modules/aggregator/pages/admin/aggregation_settings.twig:10
-msgid "disable"
-msgstr ""
-
-#: modules/aggregator/aggregator.php:384
-msgid "To upload an image from the content"
-msgstr ""
-
-#: modules/aggregator/aggregator.php:383
-msgid "The Aggregator module provides a couple helper functions:"
-msgstr ""
-
-#: modules/aggregator/aggregator.php:376
-msgid "Attributes"
-msgstr ""
-
-#: modules/aggregator/pages/admin/aggregation_settings.twig:3
-msgid "Aggregation Settings"
-msgstr ""
-
-#: modules/aggregator/info.yaml:7
-msgid "Pulls content RSS2/Atom feeds into your Chyrp installation as posts."
-msgstr ""
-
-#: modules/aggregator/pages/admin/manage_aggregates.twig:13
-msgid "Last Update"
-msgstr ""
-
-#: modules/aggregator/pages/admin/new_aggregate.twig:43
-#: modules/aggregator/pages/admin/manage_aggregates.twig:12
-#: modules/aggregator/pages/admin/edit_aggregate.twig:44
-msgid "Author"
-msgstr ""
-
-#: modules/aggregator/pages/admin/new_aggregate.twig:26
-#: modules/aggregator/pages/admin/manage_aggregates.twig:11
-#: modules/aggregator/pages/admin/edit_aggregate.twig:27
-msgid "Default Status"
-msgstr ""
-
-#: modules/aggregator/pages/admin/new_aggregate.twig:28
-#: modules/aggregator/pages/admin/edit_aggregate.twig:29
-msgid "Draft"
-msgstr ""
-
-#: modules/aggregator/pages/admin/new_aggregate.twig:29
-#: modules/aggregator/pages/admin/edit_aggregate.twig:30
-msgid "Public"
+#: modules/aggregator/aggregator.php:182
+msgid "Aggregation"
 msgstr ""
 
 #: modules/aggregator/pages/admin/new_aggregate.twig:30
@@ -212,9 +82,110 @@ msgstr ""
 msgid "Private"
 msgstr ""
 
-#: modules/aggregator/pages/admin/new_aggregate.twig:31
-#: modules/aggregator/pages/admin/edit_aggregate.twig:32
-msgid "Scheduled"
+#: modules/aggregator/pages/admin/new_aggregate.twig:29
+#: modules/aggregator/pages/admin/edit_aggregate.twig:30
+msgid "Public"
+msgstr ""
+
+#: modules/aggregator/pages/admin/new_aggregate.twig:18
+#: modules/aggregator/pages/admin/edit_aggregate.twig:19
+#: modules/aggregator/pages/admin/manage_aggregates.twig:10
+msgid "Feather"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:357
+msgid "Aggregate updated."
+msgstr ""
+
+#: modules/aggregator/pages/admin/aggregation_settings.twig:9
+#, php-format
+msgid "Check Feeds Every %s Minutes"
+msgstr ""
+
+#: modules/aggregator/pages/admin/new_aggregate.twig:26
+#: modules/aggregator/pages/admin/edit_aggregate.twig:27
+#: modules/aggregator/pages/admin/manage_aggregates.twig:11
+msgid "Default Status"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:436
+msgid "From the Photo feather:"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:426
+msgid "To get the attribute of an element, use XPath to find it and the <code>.attr[]</code> syntax to grab an attribute."
+msgstr ""
+
+#: modules/aggregator/pages/admin/new_aggregate.twig:34
+#: modules/aggregator/pages/admin/edit_aggregate.twig:35
+msgid "Group"
+msgstr ""
+
+#: modules/aggregator/pages/admin/new_aggregate.twig:28
+#: modules/aggregator/pages/admin/edit_aggregate.twig:29
+msgid "Draft"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:433
+msgid "To get the URL of an image in the content"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:312
+msgid "Aggregate created."
+msgstr ""
+
+#: modules/aggregator/aggregator.php:282
+msgid "You do not have sufficient privileges to add aggregates."
+msgstr ""
+
+#: modules/aggregator/aggregator.php:11
+#: modules/aggregator/pages/admin/edit_aggregate.twig:3
+#: modules/aggregator/pages/admin/edit_aggregate.twig:7
+msgid "Edit Aggregate"
+msgstr ""
+
+#: modules/aggregator/pages/admin/new_aggregate.twig:52
+#: modules/aggregator/pages/admin/edit_aggregate.twig:53
+msgid "Post Attributes"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:435
+msgid "Example"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:416
+msgid "Post Values"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:320
+#: modules/aggregator/aggregator.php:365
+#: modules/aggregator/aggregator.php:388
+msgid "You do not have sufficient privileges to delete this aggregate."
+msgstr ""
+
+#: modules/aggregator/aggregator.php:317
+#: modules/aggregator/aggregator.php:362
+#: modules/aggregator/aggregator.php:379
+msgid "An ID is required to delete an aggregate."
+msgstr ""
+
+#: modules/aggregator/aggregator.php:10
+#: modules/aggregator/pages/admin/new_aggregate.twig:3
+#: modules/aggregator/pages/admin/new_aggregate.twig:63
+#: modules/aggregator/pages/admin/manage_aggregates.twig:57
+msgid "Add Aggregate"
+msgstr ""
+
+#: modules/aggregator/pages/admin/manage_aggregates.twig:21
+msgid "source"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:420
+msgid "XPath"
+msgstr ""
+
+#: modules/aggregator/pages/admin/aggregation_settings.twig:10
+msgid "disable"
 msgstr ""
 
 #: modules/aggregator/pages/admin/new_aggregate.twig:32
@@ -222,7 +193,37 @@ msgstr ""
 msgid "Registered Only"
 msgstr ""
 
-#: modules/aggregator/pages/admin/new_aggregate.twig:33
-#: modules/aggregator/pages/admin/edit_aggregate.twig:34
-msgid "Group"
+#: modules/aggregator/aggregator.php:393
+msgid "Aggregate and its posts deleted."
 msgstr ""
+
+#: modules/aggregator/pages/admin/aggregation_settings.twig:3
+msgid "Aggregation Settings"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:432
+msgid "To upload an image from the content"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:431
+msgid "The Aggregator module provides a couple helper functions:"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:424
+msgid "Attributes"
+msgstr ""
+
+#: modules/aggregator/pages/admin/manage_aggregates.twig:13
+msgid "Last Update"
+msgstr ""
+
+#: modules/aggregator/pages/admin/new_aggregate.twig:43
+#: modules/aggregator/pages/admin/edit_aggregate.twig:44
+#: modules/aggregator/pages/admin/manage_aggregates.twig:12
+msgid "Author"
+msgstr ""
+
+#: modules/aggregator/info.yaml:7
+msgid "Pulls content RSS2/Atom feeds into your Chyrp installation as posts."
+msgstr ""
+
