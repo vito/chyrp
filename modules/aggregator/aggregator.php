@@ -79,7 +79,7 @@
 
                         Post::add($data, $clean, null, $feed["feather"], $feed["author"],
                                   false,
-                                  "public",
+                                  $feed['status'],
                                   datetime($created),
                                   datetime($updated));
 
@@ -98,7 +98,8 @@
             foreach ((array) Config::current()->aggregates as $name => $aggregate)
                 $aggregates[] = array_merge(array("name" => $name), array("user" => new User($aggregate["author"])), $aggregate);
 
-            $admin->display("manage_aggregates", array("aggregates" => new Paginator($aggregates, 25)));
+            $admin->display("manage_aggregates", array("aggregates" => new Paginator($aggregates, 25),
+                                                       "groups" => Group::find(array("order" => "id ASC"))));
         }
 
         public function manage_nav($navs) {
@@ -253,6 +254,7 @@
                                "last_updated" => 0,
                                "feather" => $_POST['feather'],
                                "author" => $_POST['author'],
+                               "status" => $_POST['status'],
                                "data" => YAML::load($_POST['data']));
 
             $config->aggregates[$_POST['name']] = $aggregate;
@@ -278,10 +280,12 @@
             if (empty($_POST))
                 return $admin->display("edit_aggregate",
                                        array("users" => User::find(),
+                                             "groups" => Group::find(array("order" => "id ASC")),
                                              "aggregate" => array("name" => $_GET['id'],
                                                                   "url" => $aggregate["url"],
                                                                   "feather" => $aggregate["feather"],
                                                                   "author" => $aggregate["author"],
+                                                                  "status" => $aggregate['status'],
                                                                   "data" => preg_replace("/---\n/",
                                                                                          "",
                                                                                          YAML::dump($aggregate["data"])))));
@@ -293,6 +297,7 @@
                                "last_updated" => 0,
                                "feather" => $_POST['feather'],
                                "author" => $_POST['author'],
+                               "status" => $_POST['status'],
                                "data" => YAML::load($_POST['data']));
 
             unset($config->aggregates[$_GET['id']]);

@@ -24,6 +24,23 @@
                         </select>
                     </p>
                     <p>
+                        <label for="status">${ "Default Status" | translate("aggregator") }</label>
+                        <select name="status" id="status">
+                            <option value="draft"{% if aggregate.status == "draft" %} selected="selected"{% endif %}>${ "Draft" | translate("aggregator") }</option>
+                            <option value="public"{% if aggregate.status == "public" %} selected="selected"{% endif %}>${ "Public" | translate("aggregator") }</option>
+                            <option value="private"{% if aggregate.status == "private" %} selected="selected"{% endif %}>${ "Private" | translate("aggregator") }</option>
+                            <option value="scheduled"{% if aggregate.status == "scheduled" %} selected="selected"{% endif %}>${ "Scheduled" | translate("aggregator") }</option>
+                            <option value="registered_only"{% if aggregate.status == "registered_only" %} selected="selected"{% endif %}>${ "Registered Only" | translate("aggregator") }</option>
+                            {% if groups %}
+                            <optgroup label="${ "Group" | translate("aggregator") }">
+                                {% for group in groups %}
+                                <option value="{$group.id}"${ aggregate.status | option_selected("{"~ group.id ~"}") }>${ group.name | escape }</option>
+                                {% endfor %}
+                            </optgroup>
+                            {% endif %}
+                        </select>
+                    </p>
+                    <p>
                         <label for="author">${ "Author" | translate("aggregator") }</label>
                         <select name="author" id="author">
                         {% for user in users %}
