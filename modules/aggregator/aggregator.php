@@ -342,7 +342,7 @@
                 show_403(__("Access Denied"), __("Invalid security key."));
 
             $aggregate = array("url" => $_POST['url'],
-                               "last_updated" => 0,
+                               "last_updated" => $aggregate['last_updated'],
                                "feather" => $_POST['feather'],
                                "author" => $_POST['author'],
                                "status" => $_POST['status'],
