@@ -340,9 +340,11 @@
 
             if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
                 show_403(__("Access Denied"), __("Invalid security key."));
+                
+            $last_updated = $aggregate["last_updated"];
 
             $aggregate = array("url" => $_POST['url'],
-                               "last_updated" => 0,
+                               "last_updated" => $last_updated,
                                "feather" => $_POST['feather'],
                                "author" => $_POST['author'],
                                "status" => $_POST['status'],
