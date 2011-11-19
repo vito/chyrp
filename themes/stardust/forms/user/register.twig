@@ -19,7 +19,8 @@
             <label for="email">${ "E-Mail" | translate }</label>
             <input type="text" name="email" value="${ POST.email | escape }" id="email" />
         </p>
-${ trigger.call("user_register") }
+        $captcha
+        ${ trigger.call("user_register") }
 
         <p><button type="submit">${ "Register" | translate }</button></p>
     </form>

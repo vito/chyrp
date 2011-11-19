@@ -488,7 +488,8 @@
 
             if (!empty($_POST)) {
                 $route = Route::current();
-
+                if(!check_captcha())
+                    Flash::warning(__("Incorrect captcha code. Please try again."));
                 if (empty($_POST['login']))
                     Flash::warning(__("Please enter a username for your account."));
                 elseif (count(User::find(array("where" => array("login" => $_POST['login'])))))
@@ -782,6 +783,7 @@
             $this->context["POST"]         = $_POST;
             $this->context["GET"]          = $_GET;
             $this->context["sql_queries"] =& SQL::current()->queries;
+            $this->context["captcha"]      = generate_captcha();
 
             $this->context["visitor"]->logged_in = logged_in();
 

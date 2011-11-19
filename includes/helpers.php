@@ -1681,7 +1681,7 @@
      *     A string containing an form input type
      */
     function generate_captcha(){
-        require INCLUDES_DIR."/lib/recaptchalib.php";
+        require_once INCLUDES_DIR."/lib/recaptchalib.php";
         $publickey = "6Lf6RsoSAAAAAEqUPsm4icJTg7Ph3mY561zCQ3l3";
         return recaptcha_get_html($publickey);
     }
@@ -1693,7 +1693,7 @@
      *     A string containing an form input type
      */
     function check_captcha(){
-         require_once('recaptchalib.php');
+         require_once INCLUDES_DIR."/lib/recaptchalib.php";
          $privatekey = "6Lf6RsoSAAAAAKn-wPxc1kE-DE0M73i206w56HEN";
          $resp = recaptcha_check_answer ($privatekey,
                                 $_SERVER["REMOTE_ADDR"],
