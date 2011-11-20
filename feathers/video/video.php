@@ -8,9 +8,7 @@
                                   "rows" => 4,
                                   "label" => __("Video", "video"),
                                   "preview" => true,
-                                  "bookmarklet" => $this->isVideo() ?
-                                                    "url" :
-                                                    ""));
+                                  "bookmarklet" => $this->isVideo() ? "url" : "")) ;
             $this->setField(array("attr" => "caption",
                                   "type" => "text_block",
                                   "rows" => 4,
@@ -97,6 +95,6 @@
                 return false;
 
             $AE = new AutoEmbed();
-            return $result = $AE->parseUrl($video) ? true : false ;
+            return $result = $AE->parseUrl($_GET['url']) ? true : false ;
         }
     }
