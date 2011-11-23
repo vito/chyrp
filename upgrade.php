@@ -296,7 +296,8 @@
                        "index.php",
                        "upgrade.php",
                        "modules",
-                       "feathers");
+                       "feathers",
+                       "themes");
 
         foreach ($files as $file) {
             if (file_exists($file)) {
