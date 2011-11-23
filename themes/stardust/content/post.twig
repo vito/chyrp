@@ -27,6 +27,10 @@
                             |
                             <a href="$post.url#comments">${ "%s Comment" | translate_plural("%s Comments", post.comment_count) | format(post.comment_count) }</a>
                             {% endif %}
+                            {% if enabled_modules.likes %}
+                            |
+                            <a href="{% url "/?action=like" %}">${ "Like (%s)" | translate_plural("Like (%s)", post.like_count) | format(post.like_count) }</a>
+                            {% endif %}
                             {% if post.linked_tags | length > 0 %}
                             |
                             ${ "Tags" | translate }: ${ post.linked_tags | join(", ") }
