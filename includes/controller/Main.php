@@ -488,8 +488,10 @@
 
             if (!empty($_POST)) {
                 $route = Route::current();
-                if(!check_captcha())
-                    Flash::warning(__("Incorrect captcha code. Please try again."));
+                if ($config->enable_recaptcha==1){
+                    if(!check_captcha())
+                        Flash::warning(__("Incorrect captcha code. Please try again."));
+                }
                 if (empty($_POST['login']))
                     Flash::warning(__("Please enter a username for your account."));
                 elseif (count(User::find(array("where" => array("login" => $_POST['login'])))))
