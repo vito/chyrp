@@ -2100,30 +2100,6 @@
         }
 
         /**
-         * Function: user_settings
-         * User Settings page.
-         */
-        public function user_settings() {
-            if (!Visitor::current()->group->can("change_settings"))
-                show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
-
-            if (empty($_POST))
-                return $this->display("user_settings", array("groups" => Group::find(array("order" => "id DESC"))));
-
-            if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-                show_403(__("Access Denied"), __("Invalid security key."));
-
-            $config = Config::current();
-            $set = array($config->set("can_register", !empty($_POST['can_register'])),
-                         $config->set("email_activation", !empty($_POST['email_activation'])),
-                         $config->set("default_group", $_POST['default_group']),
-                         $config->set("guest_group", $_POST['guest_group']));
-
-            if (!in_array(false, $set))
-                Flash::notice(__("Settings updated."), "/admin/?action=user_settings");
-        }
-
-        /**
          * Function: content_settings
          * Content Settings page.
          */
@@ -2151,6 +2127,30 @@
 
             if (!in_array(false, $set))
                 Flash::notice(__("Settings updated."), "/admin/?action=content_settings");
+        }
+
+        /**
+         * Function: user_settings
+         * User Settings page.
+         */
+        public function user_settings() {
+            if (!Visitor::current()->group->can("change_settings"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+
+            if (empty($_POST))
+                return $this->display("user_settings", array("groups" => Group::find(array("order" => "id DESC"))));
+
+            if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+                show_403(__("Access Denied"), __("Invalid security key."));
+
+            $config = Config::current();
+            $set = array($config->set("can_register", !empty($_POST['can_register'])),
+                         $config->set("email_activation", !empty($_POST['email_activation'])),
+                         $config->set("default_group", $_POST['default_group']),
+                         $config->set("guest_group", $_POST['guest_group']));
+
+            if (!in_array(false, $set))
+                Flash::notice(__("Settings updated."), "/admin/?action=user_settings");
         }
 
         /**
