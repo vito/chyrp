@@ -633,6 +633,21 @@
             $this->display("forms/user/controls", array(), __("Controls"));
         }
 
+
+        /**
+         * Function: profile
+         * Your Profile page.
+         */
+        public function profile() {
+            if (!logged_in())
+                error(__("Error"), __("You must be logged in to access this area."));
+
+            $visitor = Visitor::current();
+            $visitor->gravatar = get_gravatar($visitor->email);
+
+            return $this->display("pages/profile");
+        }
+
         /**
          * Function: lost_password
          * Handles e-mailing lost passwords to a user's email address.

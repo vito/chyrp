@@ -1,0 +1,31 @@
+{% extends "layouts/default.twig" %}
+
+{% block title %}${ "Profile" | translate }{% endblock %}
+
+{% block content %}
+                    <h2>Your Profile</h2>
+                    <p>
+                        <img class="gravatar-emblem" src="$visitor.gravatar" alt="Profile Photo" />
+                    </p>
+                    <br />
+                    <p>
+                        <label for="login">${ "Login:" | translate } $visitor.login</label><br />
+                    </p>
+                    <p>
+                        <label for="full_name">${ "Full Name:" | translate } $visitor.full_name</label><br />
+                    </p>
+                    <p>
+                        <label for="bio">${ "Bio:" | translate } $user.bio</label>
+                    </p>
+                    <br />
+                    <h2>Contact</h2>
+                    <p>
+                        <label for="email">${ "Email:" | translate } $visitor.email</label><br />
+                    </p>
+                    <p>
+                        <label for="website">${ "Website:" | translate } $visitor.website</label><br />
+                    </p>
+                    <p>
+                        <label for="twitter">${ "Twitter:" | translate } $visitor.field</label><br />
+                    </p>
+{% endblock %}

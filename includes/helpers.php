@@ -1663,7 +1663,7 @@
      * Returns:
      *     Boolean
      */
-    function update_check(){
+    function update_check() {
         if (!defined('CHECK_UPDATES') or CHECK_UPDATES == false)
             return;
 
@@ -1673,6 +1673,7 @@
         else
             return false;
     }
+
     /**
      * Function: generate_captcha
      * Generates a recaptcha form element.
@@ -1680,11 +1681,12 @@
      * Returns:
      *     A string containing an form input type
      */
-    function generate_captcha(){
+    function generate_captcha() {
         require_once INCLUDES_DIR."/lib/recaptchalib.php";
         $publickey = "6Lf6RsoSAAAAAEqUPsm4icJTg7Ph3mY561zCQ3l3";
         return recaptcha_get_html($publickey);
     }
+
     /**
      * Function: check_captcha
      * Checks if the answer to a captcha is right.
@@ -1692,15 +1694,44 @@
      * Returns:
      *     A string containing an form input type
      */
-    function check_captcha(){
+    function check_captcha() {
          require_once INCLUDES_DIR."/lib/recaptchalib.php";
          $privatekey = "6Lf6RsoSAAAAAKn-wPxc1kE-DE0M73i206w56HEN";
          $resp = recaptcha_check_answer ($privatekey,
-                                $_SERVER["REMOTE_ADDR"],
-                                $_POST["recaptcha_challenge_field"],
-                                $_POST["recaptcha_response_field"]);
+                                $_SERVER['REMOTE_ADDR'],
+                                $_POST['recaptcha_challenge_field'],
+                                $_POST['recaptcha_response_field']);
          if (!$resp->is_valid) 
              return false;
          else
              return true;
+    }
+
+    /**
+     * Function: get_gravatar
+     * Get either a Gravatar URL or complete image tag for a specified email address.
+     *
+     * Parameters:
+     *     $email - The email address
+     *     $s - Size in pixels, defaults to 80px [ 1 - 512 ]
+     *     $d - Default imageset to use [ 404 | mm | identicon | monsterid | wavatar ]
+     *     $r - Maximum rating (inclusive) [ g | pg | r | x ]
+     *     $img - True to return a complete IMG tag False for just the URL
+     *     $atts - Optional, additional key/value attributes to include in the IMG tag
+     *
+     * Returns:
+     *     String containing either just a URL or a complete image tag
+     *
+     * Source:
+     *     http://gravatar.com/site/implement/images/php/
+     */
+    function get_gravatar($email, $s = 80, $d = "mm", $r = "g", $img = false, $atts = array()) {
+    	$url = "http://www.gravatar.com/avatar/".md5(strtolower(trim($email)))."?s=$s&d=$d&r=$r";
+    	if ($img) {
+    		$url = '<img src="' . $url . '"';
+    		foreach ($atts as $key => $val)
+    			$url .= ' ' . $key . '="' . $val . '"';
+    		$url .= " />";
+    	}
+    	return $url;
     }
