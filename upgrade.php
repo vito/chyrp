@@ -283,14 +283,23 @@
      * Downloads the newest version of chyrp 
      */
     function download_new_version(){
+        $e=0;
         # delete everything from 2 versions back
         if(is_dir("old"))
-            rmdir("old");
+            if(!rmdir("old")) 
+                echo __("Please manually delete the directory root/updates"));
+                $e=1;
         if(is_dir("updates"))
-            rmdir("updates");
-        mkdir("updates");
-        mkdir("old");
-
+            if(!rmdir("updates")) 
+                echo __("Please manually delete the directory root/updates"));
+                $e=1;
+        if(!mkdir("updates")) 
+                echo __("Please manually create the directory root/updates"));
+                $e=1;
+        if(!mkdir("old")) 
+                echo __("Please manually create the directory root/old"));
+                $e=1;
+        
         $files = array("includes",
                        "admin",
                        "index.php",
@@ -298,39 +307,46 @@
                        "modules",
                        "feathers",
                        "themes");
+        if($e==0){
+            foreach ($files as $file) {
+                if (file_exists($file)) {
+                   # move stuff to the old dir so we can download the new one
+                   rename($file, 'old/'.$file);
+                   if(!rename($file, 'old/'.$file))
+                        echo __("Please move the file at root/".$file.' to root/old/'.$file));
+                }
+            }
 
-        foreach ($files as $file) {
-            if (file_exists($file)) {
-               # move stuff to the old dir so we can download the new one
-               rename($file, 'old/'.$file);
+            $version=file_get_contents("http://api.chyrp.net/v1/chyrp_version.php");
+            $fp = fopen ("updates/latest.zip", 'w+');
+            $ch = curl_init("http://chyrp.net/releases/chyrp_v".$version.".zip"); # Here is the file we are downloading
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+            curl_setopt($ch, CURLOPT_FILE, $fp);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_exec($ch);
+            curl_close($ch);
+            fclose($fp);
+            if (function_exists('zip_open')) {
+                $zip = new ZipArchive();
+                $x = $zip->open("updates/latest.zip");
+                if ($x === true) {
+                    $zip->extractTo("updates/");
+                    $zip->close();
+                    unlink("updates/latest.zip");
+                }
+                foreach($files as $file)
+                    if (file_exists("updates/chyrp/".$file))
+                       if(!rename("updates/chyrp/".$file, $file))
+                            echo __("Please move the file at root/updates/chyrp/".$file." to root/".$file));
+                if(file_exists("old/includes/config.yaml.php"))
+                    if(!copy("old/includes/config.yaml.php", "includes/config.yaml.php")) 
+                        echo __("Please manually copy the file root/old/includes/config.yaml.php to root/includes/config.yaml.php"));
+                if(is_dir("updates"))
+                    if(!rmdir("updates")) 
+                        echo __("Please manually delete the directory root/updates"));
             }
         }
-
-        $version=file_get_contents("http://api.chyrp.net/v1/chyrp_version.php");
-        $fp = fopen ("updates/latest.zip", 'w+');
-        $ch = curl_init("http://chyrp.net/releases/chyrp_v".$version.".zip"); # Here is the file we are downloading
-        curl_setopt($ch, CURLOPT_FILE, $fp);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 50);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_exec($ch);
-        curl_close($ch);
-        fclose($fp);
-
-        $zip = new ZipArchive();
-        $x = $zip->open("updates/latest.zip");
-        if ($x === true) {
-            $zip->extractTo("updates/");
-            $zip->close();
-            unlink("updates/latest.zip");
-        }
-
-        foreach($files as $file)
-            if (file_exists("updates/chyrp/".$file))
-               rename("updates/chyrp/".$file, $file);
-        if(file_exists("old/includes/config.yaml.php"))
-            copy("old/includes/config.yaml.php", "includes/config.yaml.php");
-        if(is_dir("updates"))
-            rmdir("updates");
     }
 
     /**
