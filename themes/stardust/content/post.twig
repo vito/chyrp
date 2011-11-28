@@ -29,7 +29,9 @@
                             {% endif %}
                             {% if enabled_modules.likes %}
                             |
-                            <a href="{% url "/?action=like" %}">${ "Like (%s)" | translate_plural("Like (%s)", post.like_count) | format(post.like_count) }</a>
+                            <span id="likes">
+                                <a href="#" id="post_id_$post.id" class="likepost">${ "(%s) Like" | translate_plural("(%s) Like", post.like_count) | format(post.like_count) }</a>
+                            </span>
                             {% endif %}
                             {% if post.linked_tags | length > 0 %}
                             |
