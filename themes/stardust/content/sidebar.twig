@@ -42,6 +42,19 @@
                 </ul>
 
 ${ trigger.call("sidebar") }
+
+                {% if categorize %}
+                <h1>${ "Categories" | translate }</h1>
+                <ul id="categorize">
+                    {% for cat in categorize %}
+                    <li>
+                        <a href="{% url "category/" ~ cat.clean %}">${ cat.name }</a>
+                        <span class="sub">($cat.total)</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
                 {% if tags %}
                 <h1>${ "Tags" | translate }</h1>
                 <ul id="tags_list">
