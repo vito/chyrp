@@ -1,11 +1,1 @@
-<h1>${ "Categories" | translate }</h1>
-<ul id="categorize">
-    {% for cat in categorize %}
-    	{% if cat.show_on_home  == 1 %}
-    	<li>
-    	    <a href="{% url "category/" ~ cat.clean %}">${ cat.name }</a>
-    	    <span class="sub">($cat.total)</span>
-    	</li>
-    	{% endif %}
-    {% endfor %}
-</ul>
+Delete this file.
