@@ -9,7 +9,7 @@
                 <input type="hidden" name="action" value="manage_categorize" />
                 {% if visitor.group.can("manage_categorize") %}
                 <a href="{% admin "add_category" %}" class="button yay right"> 
-                    <img src="images/icons/add.png" alt="add" /> ${ "Add Category" | translate("categorize") }
+                    <img src="$theme_url/images/icons/add.png" alt="add" /> ${ "Add Category" | translate("categorize") }
                 </a>
                 {% endif %}
             </fieldset>
@@ -29,15 +29,15 @@
                 {% for category in categorize %}
                 <tr id="category_$cat.id">
                     <td class="center show_on_home">
-                        {% if category.show_on_home %}<img src="images/icons/success.png">
+                        {% if category.show_on_home %}<img src="$theme_url/images/icons/success.png">
                         {% else %}&nbsp;
                         {% endif %}
                     </td>
                     <td class="name">
                         ${ category.name | truncate }
                     </td>
-                    <td class="controls"><a href="{% admin "edit_category&id="~ category.id %}"><img src="images/icons/edit.png" alt="edit" /></a>
-                    <td class="controls"><a href="{% admin "delete_category&id="~ category.id %}"><img src="images/icons/delete.png" alt="delete" /></a>
+                    <td class="controls"><a href="{% admin "edit_category&id="~ category.id %}"><img src="$theme_url/images/icons/edit.png" alt="edit" /></a>
+                    <td class="controls"><a href="{% admin "delete_category&id="~ category.id %}"><img src="$theme_url/images/icons/delete.png" alt="delete" /></a>
                 </tr>
                 {% else %}
                 <tr class="last">
