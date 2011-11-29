@@ -1042,7 +1042,7 @@
      *     <upload>
      */
     function upload_from_url($url, $extension = null, $path = "") {
-        $file = tempnam(null, "chyrp");
+        $file = tempnam(getcwd()."/tmp", "chyrp");
         file_put_contents($file, get_remote($url));
 
         $fake_file = array("name" => basename(parse_url($url, PHP_URL_PATH)),
@@ -1127,7 +1127,7 @@
 
         if (ini_get("allow_url_fopen")) {
             $content = @file_get_contents($url);
-            if (!strpos($http_response_header[0], " 200 OK"))
+            if (!$content or !strpos($http_response_header[0], " 200 OK"))
                 $content = "Server returned a message: $http_response_header[0]";
         } elseif (function_exists("curl_init")) {
             $handle = curl_init();
