@@ -32,10 +32,9 @@
          */
         static function add($post, $user) {
             $sql = SQL::current();
-            $user = new User($user);
 
             $like = $sql->select("likes",
-                           array("post_id, total_likes"),
+                           array("post_id, user_id, total_likes"),
                            array("post_id" => $post->id))->fetchObject();
 
             if (!$like) {
@@ -52,12 +51,12 @@
                     self::remove($like->id, $post->id, $user->id);
             }
 
-            $like = new self($sql->latest("likes"));
-            Trigger::current()->call("like", $like);
-            return $like;
+            $new = $sql->select("likes",
+                           array("id, total_likes"),
+                           array("post_id" => $post->id))->fetchObject();
 
-            if (isset($_POST['ajax']))
-                exit("{ \"like_id\": \"".$like["id"]."\", \"total_likes\": \"".$like["total_likes"]."\" }");
+            Trigger::current()->call("liked", $new);
+            return $new;
         }
 
 /*

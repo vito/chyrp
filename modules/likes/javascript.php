@@ -19,7 +19,6 @@
                     data: dataString,
                     cache: false,
                     success: function(html) {
-                        parent.html(html);
                         parent.fadeIn(200);
                     } 
             });

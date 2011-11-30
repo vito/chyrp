@@ -13,14 +13,19 @@
 
         static function route_like() {
             $post = new Post($_POST['post_id']);
-            $user = Visitor::current();
-        	Like::add($post, $user);
+            $user = new User(Visitor::current()->id);
+            $like = Like::add($post, $user);
+
+            if (isset($_POST['ajax']))
+                exit("{ \"like_id\": \"".$like->id."\", \"total_likes\": \"".$like->total_likes."\" }");
+
+            Flash::notice(__("Post Liked!"), $post->url()."#liked");
         }
 
         static function route_unlike() {
             $post = new Post($_POST['post_id']);
-            $user = Visitor::current()->id;
-        	Like::remove($post, $user);
+            $user = new User(Visitor::current()->id);
+            Like::remove($post, $user);
         }
 
         static function scripts($scripts) {
