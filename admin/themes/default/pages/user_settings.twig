@@ -16,6 +16,11 @@
                         ${ "Should users activate by email?" | translate }
                     </p>
                     <p>
+                        <label for="enable_recaptcha">${ "Enable Recaptcha" | translate }</label>
+                        <input class="checkbox" type="checkbox" name="enable_recaptcha" id="enable_recaptcha"${ site.enable_recaptcha | checked } />
+                        ${ "Use recaptcha to prevent bots from registering." | translate }
+                    </p>
+                    <p>
                         <label for="default_group">${ "Default User Group" | translate }</label>
                         <select name="default_group" id="default_group">
                             {% for group in groups %}
