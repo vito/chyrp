@@ -329,7 +329,7 @@
             $config = Config::current();
             $post = new Post($post);
 
-            $emails = $sql->select('__comments', 'author_email', 'notify = 1 AND post = '.$post);
+            $emails = $sql->select('__comments', 'author_email', 'notify = 1 AND post = '.$post)->fetchAll();
             $to = $_POST['email'];
             $subject = $config->name.__("New Comment");
             $message = "There is a new comment at ".$post->url()."\n Poster: ".$author."\n Message: ".$body;
