@@ -64,7 +64,7 @@
                     # Try those too, and update the user if they match.
 
                     $sql = SQL::current();
-                    $old = $sql->select("__users","pass", array("is_approved"=>1))->fetch();
+                    $old = $sql->select("__users", "password", array("is_approved" => 1))->fetch();
                     if ($old[0] == $check->password) {
                         $check->update(null, self::hashPassword($password));
                         return true;
