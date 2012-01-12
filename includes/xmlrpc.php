@@ -316,6 +316,7 @@
                           null,
                           null,
                           $status,
+                          null,
                           sanitize(oneof(@$args[3]['mt_basename'], $args[3]['title'])),
                           oneof($this->convertFromDateCreated($args[3]), $post->created_at));
 
