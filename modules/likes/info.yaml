@@ -1,8 +1,8 @@
 name: Likes
 url: http://chyrp.net/
 version: 1.0
-description: Allow users to like/unlike a post.
+description: Allow users to like a post.
 author:
   name: the Chyrp team
   url: http://chyrp.net/
-confirm: Are you sure you want to remove all Post Likes from the database?
+confirm: Are you sure you want to remove all Likes from the database?

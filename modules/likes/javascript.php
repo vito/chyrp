@@ -6,24 +6,71 @@
 ?>
 <!-- --><script>
     $(function() {
-        $(".likepost").click(function() {
-            var id = $(this).attr("id").replace(/post_id_/, "");
-            var dataString = 'post_id='+ id +'&ajax=true';
-            var fullUrl = '<?php echo Config::current()->chyrp_url; ?>/?action=like'
-            var parent = $(this);
-
-            $(this).fadeOut(100);
-            $.ajax({type: "post",
-                    dataType: "json",
-                    url: fullUrl,
-                    data: dataString,
-                    cache: false,
-                    success: function(html) {
-                        parent.fadeIn(200);
-                    } 
-            });
-            return false;
-        });
-    });
+    	var likes = {};
+    	likes.action = "like";
+    	likes.didPrevFinish = true;
+    	likes.makeCall = function(post_id, callback, isUnlike) {
+    		if (!this.didPrevFinish) return false;
+    		if (isUnlike == true) this.action = "unlike"; else this.action = "like";
+    		params = {};
+    		params["action"] = this.action;
+    		params["post_id"] = post_id;
+    		jQuery.ajax({
+    			type: "POST",
+    			url: "<?php echo $config->chyrp_url; ?>/includes/ajax.php",
+    			data: params,
+    			beforeSend: function() {
+        			this.didPrevFinish = false;	
+    			}
+    			success:function(response) {
+    				if(response.success == true) {
+    					callback(response);
+    				}
+    				else {
+    					likes.log("unsuccessful request, response from server:"+ response)
+    				}
+    			}
+    			error:function (xhr, ajaxOptions, thrownError) {
+                    likes.log('error in AJAX request.')
+    				likes.log('xhrObj:'+xhr)
+    				likes.log('thrownError:'+thrownError)
+    				likes.log('ajaxOptions:'+ajaxOptions)
+                }
+    			complete:function() {
+    				this.didPrevFinish = true
+    			}
+    			dataType: "json",
+    			cache: false
+    		})
+    	}
+    	likes.like = function(post_id) {
+    		likes.log("like click for post- "+post_id);
+    		$("#likes_post-"+post_id+" a.like").fadeTo(500,.2);
+    		this.makeCall(post_id,function(response) {
+    			var postDom = $("#likes_post-"+post_id);
+    			postDom.children("span.text").html(response.likeText);
+    			var thumbImg = postDom.children("a.like").children("img");
+            postDom.children("a.like").attr('title',"").removeAttr('href').text("").addClass("liked").removeClass("like");
+    			thumbImg.appendTo(postDom.children("a.liked").eq(0));
+    			postDom.children("a.liked").fadeTo("500",.80);
+    			postDom.find(".like").hide("fast");
+    			postDom.children("div.unlike").show("fast")
+    		},false);
+    	}
+        likes.unlike = function(post_id) {
+        	likes.log("unlike click for post- "+post_id);
+        	$("#likes_post-"+post_id+" a.liked").fadeTo(500,.2);
+        	this.makeCall(post_id,function(response) {
+        		var postDom = $("#likes_post-"+post_id);
+        		postDom.children("span.text").html(response.likeText);
+        		postDom.children("a.liked").attr("href","javascript:likes.like("+post_id+")").addClass("like").removeClass("liked").fadeTo("500",1);
+        		postDom.children("div.unlike").hide("fast")
+        		postDom.find(".like").show("fast");	
+        	},true)
+        }
+    	likes.log = function(obj){
+    		if(typeof console != "undefined")console.log(obj);
+    	}
+    })
 <?php Trigger::current()->call("likes_javascript"); ?>
 <!-- --></script>
