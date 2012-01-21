@@ -17,12 +17,13 @@
                     </p>
                     {# modules['likes'].getLikeImages | inspect #}
                     <p>
-                        <label for="like_img">${ "Like Button Image" | translate("likes") }</label>
-                        {% for image in modules['likes'].getLikeImages %}
-                        <input class="radio" type="radio" name="likeImage" value="$site.chyrp_url.likeImage[]" id="likes_img" />
-                        <img src="$image" alt="${ "Likes Image" | translate("likes") }" />
-                        {% endfor %}
+                        <label for="likeImage">${ "Like Button Image" | translate("likes") }</label>
+                        <select name="likeImage">
+                            {% for image in modules['likes'].getLikeImages %}
+                            <option value="$image"${ image | option_selected(site.module_like.likeImage) }>$image</option>
+                            {% endfor %}
                         </select>
+                        <img src="${ site.chyrp_url~"/modules/likes/images/"~site.module_like.likeImage }" alt="${ "Likes Image" | translate("likes") }" />
                     </p>
                     <p>
                         <table>

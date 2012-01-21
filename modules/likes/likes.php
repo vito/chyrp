@@ -34,7 +34,7 @@
             $set = array($config->set("module_like",
                                 array("showOnFront" => isset($_POST['showOnFront']),
                                       "likeWithText" => isset($_POST['likeWithText']),
-                                      "likeImage" => $likeImageUrl.$_POST['likeImage'],
+                                      "likeImage" => $_POST['likeImage'],
                                       "isCacherOn" => isset($_POST['isCacherOn']),
                                       "likeText" => $likeText)));
 
@@ -217,6 +217,7 @@
             $route = Route::current();
             $visitor = Visitor::current();
             $likeSettings = $config->module_like;
+            $likeImage = $config->chyrp_url."/modules/likes/images/".$likeSettings["likeImage"];
 
             if (!$visitor->group->can("like_post")) return;
             if ($likeSettings["showOnFront"] == false and $route->action == "index") return;
@@ -242,7 +243,7 @@
             if (!$hasPersonLiked) {
                 $returnStr.= "<a class='like' href=\"javascript:likes.like($post->id);\" title='".
                     ($like->total_count ? $likeSettings["likeText"][6] : "")."' >";
-                $returnStr.= "<img src=\"".$likeSettings["likeImage"]."\" alt='' />";
+                $returnStr.= "<img src=\"".$likeImage."\" alt='Like Post-$post->id' />";
                 # $this->text_default[6] = "Like";
                 $returnStr.= "</a>";
                 $returnStr.= "<span class='text'>";
@@ -259,7 +260,7 @@
                 # $this->text_default[7] = "Unlike";
                 $returnStr.= "</span>";
             } else {
-                $returnStr.= "<a class='liked'><img src=\"".$likeSettings["likeImage"]."\" alt='' /></a><span class='text'>";
+                $returnStr.= "<a class='liked'><img src=\"".$likeImage."\" alt='Like Post-$post->id' /></a><span class='text'>";
                 if ($like->total_count == 1)
                     # $this->text_default[0] = "You like this post.";
                     $returnStr.= $like->getText($like->total_count, $likeSettings["likeText"][0]);
@@ -296,21 +297,17 @@
             $images = glob($imagesDir . "*.{jpg,jpeg,png,gif}", GLOB_BRACE);
 
             foreach ($images as $image) {
-                $pattern = "/\/(\w.*)\/modules/"; 
-                $replacement = Config::current()->chyrp_url."/modules$2";
-                return preg_replace($pattern, $replacement, $images);
+                $pattern = "/\/(\w.*)\/images\//";
+                # $replacement = Config::current()->chyrp_url."/modules/likes/images/$2";
+                return preg_replace($pattern, "", $images);
             }
         }
 /*
         function feed_item($post) {
             $config = Config::current();
-            if (is_feed()) {
-                #this is a call from RSS feed
-                # $returnStr.= "</p><div><b>$likes->total_count</b> $settings->likeActors $settings->likeText.</div>";
-                return $content;
-            }
+            $returnStr.= "</p><div><b></b> $settings->likeActors $settings->likeText.</div>";
             foreach ($post->tags as $tag => $clean)
-                echo "        <category scheme=\"".$config->url."/tag/\" term=\"".$clean."\" label=\"".fix($tag)."\" />\n";
+                echo "        <category scheme=\"".$config->url."/likes/\" term=\"".likes."\" label=\"".fix($likes->total_count)."\" />\n";
         }
 */
     }
