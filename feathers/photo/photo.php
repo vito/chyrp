@@ -123,15 +123,16 @@
             return '<img src="'.$config->chyrp_url.'/includes/thumb.php?file=..'.$config->uploads_path.urlencode($filename).'&amp;max_width='.$max_width.'&amp;max_height='.$max_height.'&amp;'.$more_args.'" alt="'.$alt.'" />';
         }
 
-        public function image_link($post, $max_width = 500, $max_height = null, $more_args="quality=100") {
+        public function image_link($post, $max_width = 500, $max_height = null, $more_args = "quality=100") {
             $source = !empty($post->source) ? $post->source : uploaded($post->filename) ;
             return '<a href="'.$source.'">'.$this->image_tag($post, $max_width, $max_height, $more_args).'</a>';
         }
 
         public function add_option($options, $post = null) {
             if (isset($post) and $post->feather != "photo") return;
-            if (!isset($_GET['feather']) and Config::current()->enabled_feathers[0] != "photo" or
-                isset($_GET['feather']) and $_GET['feather'] != "photo") return;
+            elseif (Route::current()->action == "write_post")
+                if (!isset($_GET['feather']) and Config::current()->enabled_feathers[0] != "photo" or
+                    isset($_GET['feather']) and $_GET['feather'] != "photo") return;
 
             $options[] = array("attr" => "option[alt_text]",
                                "label" => __("Alt-Text", "photo"),

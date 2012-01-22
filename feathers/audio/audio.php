@@ -155,8 +155,9 @@ var ap_clearID = setInterval( ap_registerPlayers, 100 );
 
         public function add_option($options, $post = null) {
             if (isset($post) and $post->feather != "audio") return;
-            if (!isset($_GET['feather']) and Config::current()->enabled_feathers[0] != "audio" or
-                isset($_GET['feather']) and $_GET['feather'] != "audio") return;
+            elseif (Route::current()->action == "write_post")
+                if (!isset($_GET['feather']) and Config::current()->enabled_feathers[0] != "audio" or
+                    isset($_GET['feather']) and $_GET['feather'] != "audio") return;
 
             $options[] = array("attr" => "from_url",
                                "label" => __("From URL?", "audio"),
