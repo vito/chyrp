@@ -10,8 +10,10 @@
 
             if (!empty($this->insert_swfupload)) {
                 echo '      <script src="'.$config->chyrp_url.'/modules/swfupload/lib/swfupload.js" type="text/javascript" charset="utf-8"></script>'."\n";
+                echo '      <script src="'.$config->chyrp_url.'/modules/swfupload/lib/swfupload.queue.js" type="text/javascript" charset="utf-8"></script>'."\n";
+                echo '      <script src="'.$config->chyrp_url.'/modules/swfupload/lib/fileprogress.js" type="text/javascript" charset="utf-8"></script>'."\n";
                 echo '      <script src="'.$config->chyrp_url.'/modules/swfupload/lib/handlers.js" type="text/javascript" charset="utf-8"></script>'."\n";
-                echo '      <link rel="stylesheet" href="'.$config->chyrp_url.'/modules/swfupload/style.css" type="text/css" media="screen" title="no title" charset="utf-8" />'."\n";
+                echo '      <link rel="stylesheet" href="'.$config->chyrp_url.'/modules/swfupload/assets/style.css" type="text/css" media="screen" charset="utf-8" />'."\n";
                 echo '      <script type="text/javascript">'."\n";
                 echo "          $(function(){\n";
                 foreach ($this->insert_swfupload as $id => $options) {
@@ -20,13 +22,19 @@
                     $file_types                   = "*";
                     $file_types_description       = "All Files";
                     $debug                        = false;
+                    $file_queued_handler          = "fileQueued";
                     $file_queue_error_handler     = "fileQueueError";
                     $file_dialog_complete_handler = "fileDialogComplete";
+                    $file_upload_limit            = 100;
+                    $file_queue_limit             = 0;
+                    $swfupload_preload_handler    = "preLoad";
+                    $swfupload_load_failed_handler= "loadFailed";
                     $upload_start_handler         = "uploadStart";
                     $upload_progress_handler      = "uploadProgress";
                     $upload_error_handler         = "uploadError";
                     $upload_success_handler       = "uploadSuccess";
                     $upload_complete_handler      = "uploadComplete";
+                    $queue_complete_handler       = "queueComplete";
 
                     if (is_string($options))
                         $file_types = $options;
@@ -42,24 +50,31 @@
                     echo '                  file_size_limit : "100 MB",'."\n";
                     echo '                  file_types : "'.$file_types.'",'."\n";
                     echo '                  file_types_description : "'.$file_types_description.'",'."\n";
-                    if ($debug)
-                        echo '                  debug: true,'."\n";
-                    echo '                  '."\n";
+                    echo '                  file_queued_handler : '.$file_queued_handler.','."\n";
                     echo '                  file_queue_error_handler : '.$file_queue_error_handler.','."\n";
                     echo '                  file_dialog_complete_handler : '.$file_dialog_complete_handler.','."\n";
+                    echo '                  file_upload_limit : '.$file_upload_limit.','."\n";
+                    echo '                  file_queue_limit : '.$file_queue_limit.','."\n";
+                    echo '                  custom_settings : { "progressTarget" : "fsUploadProgress",
+                                      "cancelButtonId" : "btnCancel" },'."\n";
+                    if ($debug) echo '                  debug: true,'."\n";
+                    echo '                  '."\n";
+                    echo '                  button_placeholder_id : "'.$id.'_field",'."\n";
+                    echo '                  button_width : 100,'."\n";
+                    echo '                  button_height : 10,'."\n";
+                    echo '                  button_action : SWFUpload.BUTTON_ACTION.SELECT_FILES,'."\n";
+                    echo '                  swfupload_preload_handler : '.$swfupload_preload_handler.','."\n";
+                    echo '                  swfupload_load_failed_handler : '.$swfupload_load_failed_handler.','."\n";
                     echo '                  upload_start_handler : '.$upload_start_handler.','."\n";
                     echo '                  upload_progress_handler : '.$upload_progress_handler.','."\n";
                     echo '                  upload_error_handler : '.$upload_error_handler.','."\n";
                     echo '                  upload_success_handler : '.$upload_success_handler.','."\n";
-                    echo '                  button_placeholder_id : "'.$id.'_field",'."\n";
-                    echo '                  button_width : $("#'.$id.'_fake").width(),'."\n";
-                    echo '                  button_height : $("#'.$id.'_fake").height(),'."\n";
-                    echo '                  button_action : SWFUpload.BUTTON_ACTION.SELECT_FILES,'."\n";
-                    echo '                  upload_complete_handler : '.$upload_complete_handler.''."\n";
+                    echo '                  upload_complete_handler : '.$upload_complete_handler.','."\n";
+                    echo '                  queue_complete_handler : '.$queue_complete_handler.''."\n";
                     echo '              })'."\n";
                     echo '              $("#SWFUpload_0")'."\n";
-                    echo '                  .css({ position: "absolute", top: $("#'.$id.'_fake").offset().top, left: $("#'.$id.'_fake").offset().left })'."\n";
-                    echo '                  .before(\'<div id="progress"><div class="back"><div class="fill"></div><div class="clear"></div></div></div>\')'."\n";
+                    echo '                  .css({ position: "absolute", top: 60, left: 10 })'."\n";
+                    echo '                  .before(\'<div id="fsUploadProgress"></div>\')'."\n";
                 }
                 echo "          })\n";
                 echo "      </script>\n";
