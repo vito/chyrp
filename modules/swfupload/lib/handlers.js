@@ -52,9 +52,8 @@ function fileQueueError(file, errorCode, message) {
 }
 function fileDialogComplete(numFilesSelected, numFilesQueued) {
     try {
-        if (numFilesSelected > 0) {
-            document.getElementById(this.customSettings.cancelButtonId).disabled = false;
-        }
+//        if (numFilesSelected > 0) {
+//            document.getElementById(this.customSettings.cancelButtonId).disabled = false;
         /* Auto start the upload. */
         this.startUpload();
     } catch (ex)  {
@@ -151,10 +150,6 @@ function uploadError(file, errorCode, message) {
             this.debug("Error Code: File Validation Failed, File name: " + file.name + ", File size: " + file.size + ", Message: " + message);
             break;
         case SWFUpload.UPLOAD_ERROR.FILE_CANCELLED:
-            // If there aren't any files left (they were all cancelled) disable the cancel button
-            if (this.getStats().files_queued === 0) {
-                document.getElementById(this.customSettings.cancelButtonId).disabled = true;
-            }
             progress.setStatus("Cancelled");
             progress.setCancelled();
             break;
@@ -171,10 +166,9 @@ function uploadError(file, errorCode, message) {
     }
 }
 function uploadComplete(file) {
-    if (this.getStats().files_queued === 0) {
-        document.getElementById(this.customSettings.cancelButtonId).disabled = true;
-    }
-
+//    if (this.getStats().files_queued === 0) {
+//        document.getElementById(this.customSettings.cancelButtonId).disabled = true;
+//    }
     $("#progress").addClass("done")
     $("#publish, #save").removeAttr("disabled").removeClass("disabled")
 }

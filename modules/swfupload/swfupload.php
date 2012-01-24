@@ -13,7 +13,7 @@
                 echo '      <script src="'.$config->chyrp_url.'/modules/swfupload/lib/swfupload.queue.js" type="text/javascript" charset="utf-8"></script>'."\n";
                 echo '      <script src="'.$config->chyrp_url.'/modules/swfupload/lib/fileprogress.js" type="text/javascript" charset="utf-8"></script>'."\n";
                 echo '      <script src="'.$config->chyrp_url.'/modules/swfupload/lib/handlers.js" type="text/javascript" charset="utf-8"></script>'."\n";
-                echo '      <link rel="stylesheet" href="'.$config->chyrp_url.'/modules/swfupload/assets/style.css" type="text/css" media="screen" charset="utf-8" />'."\n";
+                echo '      <link rel="stylesheet" href="'.$config->chyrp_url.'/modules/swfupload/lib/style.css" type="text/css" media="screen" charset="utf-8" />'."\n";
                 echo '      <script type="text/javascript">'."\n";
                 echo "          $(function(){\n";
                 foreach ($this->insert_swfupload as $id => $options) {
@@ -35,6 +35,7 @@
                     $upload_success_handler       = "uploadSuccess";
                     $upload_complete_handler      = "uploadComplete";
                     $queue_complete_handler       = "queueComplete";
+                    $use_query_string             = true;
 
                     if (is_string($options))
                         $file_types = $options;
@@ -55,8 +56,9 @@
                     echo '                  file_dialog_complete_handler : '.$file_dialog_complete_handler.','."\n";
                     echo '                  file_upload_limit : '.$file_upload_limit.','."\n";
                     echo '                  file_queue_limit : '.$file_queue_limit.','."\n";
+                    echo '                  use_query_string : '.$use_query_string.','."\n";
                     echo '                  custom_settings : { "progressTarget" : "fsUploadProgress",
-                                      "cancelButtonId" : "btnCancel" },'."\n";
+                                      "cancelButtonId" : "progressCancel" },'."\n";
                     if ($debug) echo '                  debug: true,'."\n";
                     echo '                  '."\n";
                     echo '                  button_placeholder_id : "'.$id.'_field",'."\n";
@@ -64,7 +66,7 @@
                     echo '                  button_height : 10,'."\n";
                     echo '                  button_action : SWFUpload.BUTTON_ACTION.SELECT_FILES,'."\n";
                     echo '                  swfupload_preload_handler : '.$swfupload_preload_handler.','."\n";
-                    echo '                  swfupload_load_failed_handler : '.$swfupload_load_failed_handler.','."\n";
+                   #echo '                  swfupload_load_failed_handler : '.$swfupload_load_failed_handler.','."\n";
                     echo '                  upload_start_handler : '.$upload_start_handler.','."\n";
                     echo '                  upload_progress_handler : '.$upload_progress_handler.','."\n";
                     echo '                  upload_error_handler : '.$upload_error_handler.','."\n";
@@ -74,7 +76,7 @@
                     echo '              })'."\n";
                     echo '              $("#SWFUpload_0")'."\n";
                     echo '                  .css({ position: "absolute", top: 60, left: 10 })'."\n";
-                    echo '                  .before(\'<div id="fsUploadProgress"></div>\')'."\n";
+                    echo '                  .before(\'<div id="fsUploadProgress"></div><div id="divStatus">0 Files Uploaded</div>\')'."\n";
                 }
                 echo "          })\n";
                 echo "      </script>\n";
