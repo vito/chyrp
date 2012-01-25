@@ -16,6 +16,6 @@
     if (!isset($_POST['filename'])) {
         echo "ERROR:invalid upload";
         exit(0);
-    } elseif (isset($_FILES['photo']) and $_FILES['photo']['error'] == 0)
-        exit(upload($_FILES['photo'], array("jpg", "jpeg", "png", "gif", "bmp")));
+    } else
+        exit(upload($_POST['filename'], array("jpg", "jpeg", "png", "gif", "bmp")));
     

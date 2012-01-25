@@ -76,7 +76,7 @@
                     echo '              })'."\n";
                     echo '              $("#SWFUpload_0")'."\n";
                     echo '                  .css({ position: "absolute", top: 60, left: 10 })'."\n";
-                    echo '                  .before(\'<div id="fsUploadProgress"></div><div id="divStatus">0 Files Uploaded</div>\')'."\n";
+                    echo '                  .before(\'<div id="fsUploadProgress"><div id="divStatus">0 Files Uploaded</div></div>\')'."\n";
                 }
                 echo "          })\n";
                 echo "      </script>\n";
