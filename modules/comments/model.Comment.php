@@ -330,7 +330,11 @@
             $post = new Post($post);
 
             $emails = $sql->select('__comments', 'author_email', 'notify = 1 AND post = '.$post)->fetchAll();
-            $to = $_POST['email'];
+            $list=array();
+            foreach($emails as $email){
+                $list[]=$email->author_email;
+            }
+            $to = $_POST['email'].implode(', ', $list);;
             $subject = $config->name.__("New Comment");
             $message = "There is a new comment at ".$post->url()."\n Poster: ".$author."\n Message: ".$body;
             $headers = "From:".$config->email."\r\n" .
