@@ -87,7 +87,7 @@
                              $_POST['feather']);
 
             echo "<h2 class=\"preview-header\">".__("Preview")."</h2>\n".
-                 "<div class=\"preview-content\">".$_POST['content']."</div>";
+                 "<div class=\"preview-content\">".fix($_POST['content'])."</div>";
             break;
 
         case "check_confirm":
