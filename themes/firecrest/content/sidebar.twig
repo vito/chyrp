@@ -1,0 +1,116 @@
+<div id="sidebar">
+                <div id="user_links">
+                    <ul>
+                    {% if visitor.logged_in %}
+                    <li><a class="profile_link" href="{% url "profile" %}">${ "Profile" | translate }</a></li>
+                    <li><a class="logout_link" href="{% url "logout" %}">${ "Log Out" | translate }</a></li>
+                    {% else %}
+                    <li><a class="login_link" href="{% url "login" %}">${ "Log In" | translate }</a></span></li>
+                    {% if site.can_register %}
+                    <li><a class="register_link" href="{% url "register" %}">${ "Register" | translate }</a></span></li>
+                    {% endif %}
+                    {% endif %}
+                    </ul>
+                </div>
+                <div id="about_info">
+                    <p><img src="$theme.url/images/profile.jpg" alt="Arian Xhezairi" />
+                        Firecrest is a Premium Chyrp Theme designed and developed with detail in mind.
+                        It serves as a great example of how cool and easy is to create Chyrp themes and the benefit behind using Template Engines.
+                        Finally, you can delete all this text and replace it with your stunning About You bio. :)</p>
+                </div>
+                <div id="asides">
+                    <div id="elsewhere">
+                        <h5>${ "Elsewhere" | translate }</h5>
+                        <ul id="social_sites">
+                            {% if visitor.logged_in %}
+                            <li><a class="profile_link" href="{% url "profile" %}">${ "Profile" | translate }</a></li>
+                            <li><a class="logout_link" href="{% url "logout" %}">${ "Log Out" | translate }</a></li>
+                            {% else %}
+                            <li><a class="login_link" href="{% url "login" %}">${ "Log In" | translate }</a></span></li>
+                            {% if site.can_register %}
+                            <li><a class="register_link" href="{% url "register" %}">${ "Register" | translate }</a></span></li>
+                            {% endif %}
+                        {% endif %}
+                        </ul>
+                    </div>
+                    <div id="user_controls">
+                        <h5>${ "Welcome, %s!" | translate | format(visitor.login | fallback("Guest" | translate)) }</h5>
+                        <ul>
+                            {% if visitor.logged_in %}
+                            <li><a href="{% url "controls" %}">${ "User Controls" | translate }</a></li>
+                                {% if visitor.group.can("add_post", "add_page", "view_own_draft", "view_draft", "change_settings") %}
+                                <li><a class="toggle_admin" href="{% url "toggle_admin" %}">${ "Toggle Admin Bar" | translate }</a></li>
+                                {% endif %}
+                            {% else %}
+                            {% if site.can_register %}
+                            <li><a href="{% url "register" %}">${ "Register" | translate }</a></li>
+                            {% endif %}
+                            <li><a href="{% url "lost_password" %}">${ "Lost Password?" | translate }</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    {% if theme.pages_list %}
+                    <div id="page_list">
+                        <h5>${ "Pages" | translate }</h5>
+                        <ul>
+                            {% for item in theme.pages_list %}
+                            <li>
+                                <a href="$item.page.url">$item.page.title</a>
+        
+                                {% if item.has_children %}<ul>{% endif %}
+                            {% if not item.has_children %}</li>{% endif %}
+                            {% for ul, li in item.end_tags %}
+                                $ul
+                            $li
+                            {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+${ trigger.call("sidebar") }
+                    {% if categorize %}
+                    <div id="category_list">
+                        <h5>${ "Categories" | translate }</h5>
+                        <ul id="categorize">
+                            {% for cat in categorize %}
+                            <li>
+                                <a href="{% url "category/" ~ cat.clean %}">${ cat.name }</a>
+                                <span class="sub">($cat.total)</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    {% if tags %}
+                    <div id="tag_list">
+                        <h5>${ "Tags" | translate }</h5>
+                        <ul id="tags_list">
+                            {% for tag in tags %}
+                            <li>
+                                <a href="{% url "tag/" ~ tag.url %}" title="${ "%d post tagged &quot;%s&quot;" | translate_plural("%d posts tagged &quot;%s&quot;", tag.popularity) | format(tag.popularity, (tag.name | escape)) }">$tag.name</a>
+                                <span class="sub">($tag.popularity)</span>
+                                {% if route.action == "tag" and not (GET.name | contains(tag.clean)) %}
+                                <span class="sub">&nbsp;<a href="{% url "tag/"~ tag.url ~"+"~ (GET.name | urlencode) %}">(+)</a></span>
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+                            <li><a href="{% url "tags" %}">${ "All &rarr;" | translate }</a></li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                    {% if theme.archives_list %}
+                    <div id="archive_list">
+                        <h5>${ "Archives" | translate }</h5>
+                        <ul>
+                            {% for archive in theme.archives_list %}
+                            <li>
+                                <a href="$archive.url">${ archive.when | strftime("%B %Y" | translate) }</a>
+                                <span class="sub">($archive.count)</span>
+                            </li>
+                            {% endfor %}
+                            <li><a href="{% url "archive" %}">${ "All &rarr;" | translate }</a></li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>

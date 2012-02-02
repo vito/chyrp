@@ -6,5 +6,5 @@
                             <a href="$post.url" rel="bookmark" title="${ "Permanent Link to" | translate } &quot;$post.title&quot;">$post.title</a>
                         </h2>
 {% endif %}
-                        ${ post.body | read_more }
+                        <p>${ post.body | read_more }</p>
 {% endblock %}

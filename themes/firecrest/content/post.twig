@@ -1,0 +1,53 @@
+<div class="post $post.feather{% if post.pinned %} pinned{% endif %}" id="post_$post.id">
+                    <div class="feather_type">
+                        <span class="feather_type_name">$post.feather</span>
+                        <span class="shadow"></span>
+                    </div>
+                    <div class="subpost">
+                        {% if post.pinned %}<span class="pinned_text">${ "!" | translate }</span>{% endif %}
+                        {% if post.status == "private" %}<span class="private_text">${ "PRIVATE" | translate }</span>{% endif %}
+                        {% if post.status == "scheduled" %}<span class="scheduled_text">${ "SCHEDULED" | translate }</span>{% endif %}
+                        {% block content %}{% endblock %}
+                        {% if route.action == "view" and post.paginated and post.paginated.pages > 1 %}
+                        <div class="clear"></div>
+                        $post.paginated.prev_link
+                        $post.paginated.next_link
+                        <span class="pages">${ "Page %d of %d" | translate | format(post.paginated.page, post.paginated.pages) }</span>
+                        {% endif %}
+                        <div class="clear"></div>
+                        <div class="post_meta">
+                            <ul class="info">
+                                {% if post.pinned %}<li class="date has_icon icon_posted pinned"><div class="icon"></div>
+                                <strong><a href="$post.url">${ post.created_at | strftime("%B %d @ %I:%M %p" | translate) }</a></strong></li>
+                                {% else %}
+                                <li class="date has_icon icon_posted"><div class="icon"></div>
+                                    <a href="$post.url">${ post.created_at | strftime("%B %d" | translate) }</a></li>
+                                {% endif %}
+                                {% if enabled_modules.comments and visitor.group.can("add_comment") %}
+                                <li class="comment_count has_icon icon_comment"><div class="icon"></div>
+                                <a href="$post.url#comments">
+                                ${ "%s Comment" | translate_plural("%s Comments", post.comment_count) | format(post.comment_count) }</a></li>
+                                {% endif %}
+                                {% if enabled_modules.likes and visitor.group.can("like_post") %}
+                                <li class="like_count has_icon icon_like"><div class="icon"></div>$post.getLikes</li>
+                                {% endif %}
+                                {% if enabled_modules.categorize and post.category.id != 0 %}
+                                <li class="category has_icon icon_category"><div class="icon"></div>
+                                    <a href="$post.category.url" rel="tag">$post.category.name</a></li>
+                                {% endif %}
+                            </ul>
+                            <span class="permalink has_icon icon_permalink"><div class="icon"></div><a href="$post.url">Permalink</a></span>
+                            {% if post.linked_tags | length > 0 %}
+                            <span class="tags has_icon icon_tags"><div class="icon"></div>
+                            ${ "Tags" | translate }: ${ post.linked_tags | join(" ") }
+                            </span>
+                            {% endif %}
+                        </div>
+                        <div class="clear"></div>
+                        {% if post.editable or post.deletable %}
+                        <span class="controls">$post.edit_link ${ post.delete_link("Delete" | translate, " | ") }</span>
+                        {% endif %}
+                        <div class="clear"></div>
+                    </div>
+                    <div class="post_shadow"></div>
+                </div>
