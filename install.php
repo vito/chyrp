@@ -137,7 +137,7 @@
             $config->set("feed_url", "");
             $config->set("email", $_POST['email']);
             $config->set("locale", "en_US");
-            $config->set("theme", "stardust");
+            $config->set("theme", "firecrest");
             $config->set("admin_theme", "default");
             $config->set("posts_per_page", 5);
             $config->set("feed_items", 20);
