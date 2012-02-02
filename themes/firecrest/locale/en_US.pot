@@ -17,449 +17,449 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: themes/stardust/layouts/default.twig:78
+#: themes/firecrest/layouts/default.twig:78
 msgid "Stats"
 msgstr ""
 
-#: themes/stardust/pages/archive.twig:27
+#: themes/firecrest/pages/archive.twig:27
 msgid "%B %d, %Y"
 msgstr ""
 
-#: themes/stardust/content/comment.twig:11
+#: themes/firecrest/content/comment.twig:11
 #, php-format
 msgid "<strong>%s</strong> on <a href=\"%s\" class=\"permalink\">%s</a>"
 msgstr ""
 
-#: themes/stardust/content/comment.twig:11
+#: themes/firecrest/content/comment.twig:11
 msgid "%B %d, %Y, at %I:%M %p"
 msgstr ""
 
-#: themes/stardust/content/post.twig:36
-#: themes/stardust/content/comment.twig:9
+#: themes/firecrest/content/post.twig:36
+#: themes/firecrest/content/comment.twig:9
 msgid "Delete"
 msgstr ""
 
-#: themes/stardust/forms/comment/new.twig:20
+#: themes/firecrest/forms/comment/new.twig:20
 msgid "Your Website"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:90
+#: themes/firecrest/layouts/default.twig:90
 #, php-format
 msgid "Called from <strong>%s</strong> on line <strong>%d</strong> at %ss."
 msgstr ""
 
-#: themes/stardust/forms/user/register.twig:11
-#: themes/stardust/forms/user/login.twig:11
+#: themes/firecrest/forms/user/register.twig:11
+#: themes/firecrest/forms/user/login.twig:11
 msgid "Password"
 msgstr ""
 
-#: themes/stardust/pages/search.twig:5
+#: themes/firecrest/pages/search.twig:5
 #, php-format
 msgid "Search results for &#8220;%s&#8221;"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:68
+#: themes/firecrest/layouts/default.twig:68
 msgid "Powered by <a class=\"chyrp\" href=\"http://chyrp.net/\">Chyrp</a>"
 msgstr ""
 
-#: themes/stardust/pages/tags.twig:5
+#: themes/firecrest/pages/tags.twig:5
 msgid "Tag Maelstrom"
 msgstr ""
 
-#: themes/stardust/content/comment.twig:10
+#: themes/firecrest/content/comment.twig:10
 msgid "Edit"
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:39
+#: themes/firecrest/content/sidebar.twig:39
 msgid "Lost Password?"
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:10
+#: themes/firecrest/content/sidebar.twig:10
 msgid "Pages"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:37
+#: themes/firecrest/forms/post/edit.twig:37
 msgid "Registered Only"
 msgstr ""
 
-#: themes/stardust/forms/user/register.twig:15
+#: themes/firecrest/forms/user/register.twig:15
 msgid "Password "
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:85
+#: themes/firecrest/layouts/default.twig:85
 msgid "Queries"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:99
+#: themes/firecrest/forms/post/edit.twig:99
 msgid "Save"
 msgstr ""
 
-#: themes/stardust/info.yaml:1
-msgid "Stardust"
+#: themes/firecrest/info.yaml:1
+msgid "firecrest"
 msgstr ""
 
-#: themes/stardust/forms/user/register.twig:15
+#: themes/firecrest/forms/user/register.twig:15
 msgid "(again)"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:82
+#: themes/firecrest/layouts/default.twig:82
 msgid "seconds"
 msgstr ""
 
-#: themes/stardust/forms/user/lost_password.twig:6
+#: themes/firecrest/forms/user/lost_password.twig:6
 msgid "Please enter your username below and we will e-mail you a new password for your account."
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:36
+#: themes/firecrest/layouts/default.twig:36
 msgid "Close"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:34
+#: themes/firecrest/layouts/default.twig:34
 msgid "Admin"
 msgstr ""
 
-#: themes/stardust/forms/comment/new.twig:6
+#: themes/firecrest/forms/comment/new.twig:6
 msgid "Log Out &rarr;"
 msgstr ""
 
-#: themes/stardust/pages/tags.twig:12
+#: themes/firecrest/pages/tags.twig:12
 msgid "There aren't any tags yet. Such a shame."
 msgstr ""
 
-#: themes/stardust/content/post.twig:5
+#: themes/firecrest/content/post.twig:5
 msgid "!"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:100
+#: themes/firecrest/forms/post/edit.twig:100
 msgid "Cancel"
 msgstr ""
 
-#: themes/stardust/pages/archive.twig:12
+#: themes/firecrest/pages/archive.twig:12
 msgid "%B"
 msgstr ""
 
-#: themes/stardust/content/post.twig:18
+#: themes/firecrest/content/post.twig:18
 msgid "%I:%M %p"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:58
+#: themes/firecrest/forms/post/edit.twig:58
 msgid "Timestamp"
 msgstr ""
 
-#: themes/stardust/forms/user/controls.twig:19
+#: themes/firecrest/forms/user/controls.twig:19
 msgid "New Password?"
 msgstr ""
 
-#: themes/stardust/pages/tags.twig:11
+#: themes/firecrest/pages/tags.twig:11
 msgid "No Tags"
 msgstr ""
 
-#: themes/stardust/pages/archive.twig:18
+#: themes/firecrest/pages/archive.twig:18
 msgid "%d"
 msgstr ""
 
-#: themes/stardust/pages/drafts.twig:10
+#: themes/firecrest/pages/drafts.twig:10
 msgid "No Drafts"
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:29
+#: themes/firecrest/content/sidebar.twig:29
 msgid "User Controls"
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:26
+#: themes/firecrest/content/sidebar.twig:26
 msgid "Guest"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:63
+#: themes/firecrest/forms/post/edit.twig:63
 msgid "Trackbacks"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:51
+#: themes/firecrest/forms/post/edit.twig:51
 msgid "(shows this post above all others)"
 msgstr ""
 
-#: themes/stardust/forms/user/controls.twig:4
+#: themes/firecrest/forms/user/controls.twig:4
 msgid "Controls"
 msgstr ""
 
-#: themes/stardust/forms/user/controls.twig:23
+#: themes/firecrest/forms/user/controls.twig:23
 msgid "Confirm"
 msgstr ""
 
-#: themes/stardust/pages/tag.twig:14
+#: themes/firecrest/pages/tag.twig:14
 msgid "No tag specified."
 msgstr ""
 
-#: themes/stardust/pages/archive.twig:14
-#: themes/stardust/pages/archive.twig:30
-#: themes/stardust/content/sidebar.twig:65
+#: themes/firecrest/pages/archive.twig:14
+#: themes/firecrest/pages/archive.twig:30
+#: themes/firecrest/content/sidebar.twig:65
 msgid "%B %Y"
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:49
+#: themes/firecrest/content/sidebar.twig:49
 #, php-format
 msgid "%d post tagged &quot;%s&quot;"
 msgid_plural "%d posts tagged &quot;%s&quot;"
 msgstr[0] ""
 msgstr[1] ""
 
-#: themes/stardust/forms/user/register.twig:4
-#: themes/stardust/forms/user/register.twig:24
-#: themes/stardust/content/sidebar.twig:37
+#: themes/firecrest/forms/user/register.twig:4
+#: themes/firecrest/forms/user/register.twig:24
+#: themes/firecrest/content/sidebar.twig:37
 msgid "Register"
 msgstr ""
 
-#: themes/stardust/pages/view.twig:21
-#: themes/stardust/layouts/default.twig:64
-#: themes/stardust/content/post.twig:11
+#: themes/firecrest/pages/view.twig:21
+#: themes/firecrest/layouts/default.twig:64
+#: themes/firecrest/content/post.twig:11
 #, php-format
 msgid "Page %d of %d"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:35
+#: themes/firecrest/forms/post/edit.twig:35
 msgid "Public"
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:33
+#: themes/firecrest/content/sidebar.twig:33
 msgid "Log Out"
 msgstr ""
 
-#: themes/stardust/forms/comment/new.twig:7
+#: themes/firecrest/forms/comment/new.twig:7
 #, php-format
 msgid "Logged in as %s"
 msgstr ""
 
-#: themes/stardust/pages/tag.twig:12
+#: themes/firecrest/pages/tag.twig:12
 msgid "There are no posts with the tag you specified."
 msgstr ""
 
-#: themes/stardust/pages/index.twig:8
+#: themes/firecrest/pages/index.twig:8
 msgid "Nothing here yet!"
 msgstr ""
 
-#: themes/stardust/forms/user/controls.twig:28
+#: themes/firecrest/forms/user/controls.twig:28
 msgid "Update"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:31
+#: themes/firecrest/layouts/default.twig:31
 msgid "Your Drafts"
 msgstr ""
 
-#: themes/stardust/forms/user/lost_password.twig:4
+#: themes/firecrest/forms/user/lost_password.twig:4
 msgid "Lost Password"
 msgstr ""
 
-#: themes/stardust/pages/tag.twig:10
-#: themes/stardust/pages/index.twig:7
-#: themes/stardust/pages/archive.twig:38
+#: themes/firecrest/pages/tag.twig:10
+#: themes/firecrest/pages/index.twig:7
+#: themes/firecrest/pages/archive.twig:38
 msgid "No Posts"
 msgstr ""
 
-#: themes/stardust/pages/search.twig:11
+#: themes/firecrest/pages/search.twig:11
 msgid "Your search did not return any results."
 msgstr ""
 
-#: themes/stardust/content/post.twig:2
+#: themes/firecrest/content/post.twig:2
 msgid "%B %d"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:49
+#: themes/firecrest/forms/post/edit.twig:49
 msgid "Pinned?"
 msgstr ""
 
-#: themes/stardust/forms/user/login.twig:4
-#: themes/stardust/forms/user/login.twig:15
-#: themes/stardust/content/sidebar.twig:35
+#: themes/firecrest/forms/user/login.twig:4
+#: themes/firecrest/forms/user/login.twig:15
+#: themes/firecrest/content/sidebar.twig:35
 msgid "Log In"
 msgstr ""
 
-#: themes/stardust/forms/user/register.twig:7
-#: themes/stardust/forms/user/lost_password.twig:8
-#: themes/stardust/forms/user/login.twig:7
+#: themes/firecrest/forms/user/register.twig:7
+#: themes/firecrest/forms/user/lost_password.twig:8
+#: themes/firecrest/forms/user/login.twig:7
 msgid "Username"
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:26
+#: themes/firecrest/content/sidebar.twig:26
 #, php-format
 msgid "Welcome, %s!"
 msgstr ""
 
-#: themes/stardust/pages/drafts.twig:5
+#: themes/firecrest/pages/drafts.twig:5
 msgid "Drafts"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:34
+#: themes/firecrest/forms/post/edit.twig:34
 msgid "Draft"
 msgstr ""
 
-#: themes/stardust/javascripts/theme.js.php:10
+#: themes/firecrest/javascripts/theme.js.php:10
 msgid "(click to hide)"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:32
+#: themes/firecrest/forms/post/edit.twig:32
 msgid "Status"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:36
+#: themes/firecrest/forms/post/edit.twig:36
 msgid "Private"
 msgstr ""
 
-#: themes/stardust/pages/search.twig:10
+#: themes/firecrest/pages/search.twig:10
 msgid "No Results"
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:56
-#: themes/stardust/content/sidebar.twig:69
+#: themes/firecrest/content/sidebar.twig:56
+#: themes/firecrest/content/sidebar.twig:69
 msgid "All &rarr;"
 msgstr ""
 
-#: themes/stardust/forms/comment/new.twig:35
+#: themes/firecrest/forms/comment/new.twig:35
 msgid "Speak"
 msgstr ""
 
-#: themes/stardust/forms/comment/new.twig:12
+#: themes/firecrest/forms/comment/new.twig:12
 msgid "Your Name"
 msgstr ""
 
-#: themes/stardust/pages/404.twig:4
+#: themes/firecrest/pages/404.twig:4
 msgid "Not Found"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:23
+#: themes/firecrest/layouts/default.twig:23
 msgid "Write"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:81
+#: themes/firecrest/layouts/default.twig:81
 msgid "Queries:"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:9
+#: themes/firecrest/forms/post/edit.twig:9
 msgid "(optional)"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:28
+#: themes/firecrest/forms/post/edit.twig:28
 msgid "More Options &darr;"
 msgstr ""
 
-#: themes/stardust/content/post.twig:26
+#: themes/firecrest/content/post.twig:26
 #, php-format
 msgid "%s Comment"
 msgid_plural "%s Comments"
 msgstr[0] ""
 msgstr[1] ""
 
-#: themes/stardust/feathers/text.twig:6
-#: themes/stardust/feathers/chat.twig:6
+#: themes/firecrest/feathers/text.twig:6
+#: themes/firecrest/feathers/chat.twig:6
 msgid "Permanent Link to"
 msgstr ""
 
-#: themes/stardust/forms/comment/new.twig:16
+#: themes/firecrest/forms/comment/new.twig:16
 msgid "Your E-Mail"
 msgstr ""
 
-#: themes/stardust/javascripts/theme.js.php:23
+#: themes/firecrest/javascripts/theme.js.php:23
 msgid "Search..."
 msgstr ""
 
-#: themes/stardust/pages/tags.twig:18
+#: themes/firecrest/pages/tags.twig:18
 msgid "To view posts that have tag combinations, separate the tags with \"+\" in the URL (see example below), or view one and click the plus signs next to the tags in the sidebar."
 msgstr ""
 
-#: themes/stardust/pages/archive.twig:39
+#: themes/firecrest/pages/archive.twig:39
 msgid "There aren't any posts in the timeframe you specified."
 msgstr ""
 
-#: themes/stardust/pages/404.twig:5
+#: themes/firecrest/pages/404.twig:5
 msgid "Sorry, but you are looking for something that isn't here."
 msgstr ""
 
-#: themes/stardust/forms/user/controls.twig:15
+#: themes/firecrest/forms/user/controls.twig:15
 msgid "Website"
 msgstr ""
 
-#: themes/stardust/content/comment.twig:3
+#: themes/firecrest/content/comment.twig:3
 msgid "Your comment is awaiting moderation."
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:45
-#: themes/stardust/content/post.twig:30
+#: themes/firecrest/content/sidebar.twig:45
+#: themes/firecrest/content/post.twig:30
 msgid "Tags"
 msgstr ""
 
-#: themes/stardust/content/sidebar.twig:31
+#: themes/firecrest/content/sidebar.twig:31
 msgid "Toggle Admin Bar"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:39
+#: themes/firecrest/forms/post/edit.twig:39
 msgid "Group"
 msgstr ""
 
-#: themes/stardust/forms/user/lost_password.twig:12
+#: themes/firecrest/forms/user/lost_password.twig:12
 msgid "Submit"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:77
+#: themes/firecrest/layouts/default.twig:77
 msgid "Toggle"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:82
+#: themes/firecrest/layouts/default.twig:82
 msgid "Load Time:"
 msgstr ""
 
-#: themes/stardust/pages/drafts.twig:11
+#: themes/firecrest/pages/drafts.twig:11
 msgid "You don't have any drafts."
 msgstr ""
 
-#: themes/stardust/content/post.twig:16
+#: themes/firecrest/content/post.twig:16
 msgid "%B %d @ %I:%M %p"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:99
+#: themes/firecrest/forms/post/edit.twig:99
 msgid "or"
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:28
+#: themes/firecrest/layouts/default.twig:28
 msgid "Add Page"
 msgstr ""
 
-#: themes/stardust/pages/archive.twig:8
-#: themes/stardust/content/sidebar.twig:61
+#: themes/firecrest/pages/archive.twig:8
+#: themes/firecrest/content/sidebar.twig:61
 msgid "Archives"
 msgstr ""
 
-#: themes/stardust/pages/view.twig:10
+#: themes/firecrest/pages/view.twig:10
 msgid "Comments"
 msgstr ""
 
-#: themes/stardust/forms/post/edit.twig:54
+#: themes/firecrest/forms/post/edit.twig:54
 msgid "Slug"
 msgstr ""
 
-#: themes/stardust/pages/view.twig:27
+#: themes/firecrest/pages/view.twig:27
 msgid "Comments are not accepted on this entry."
 msgstr ""
 
-#: themes/stardust/layouts/default.twig:25
+#: themes/firecrest/layouts/default.twig:25
 msgid "Write Draft"
 msgstr ""
 
-#: themes/stardust/forms/user/controls.twig:7
+#: themes/firecrest/forms/user/controls.twig:7
 msgid "Full Name"
 msgstr ""
 
-#: themes/stardust/forms/user/register.twig:19
-#: themes/stardust/forms/user/controls.twig:11
+#: themes/firecrest/forms/user/register.twig:19
+#: themes/firecrest/forms/user/controls.twig:11
 msgid "E-Mail"
 msgstr ""
 
-#: themes/stardust/pages/archive.twig:6
-#: themes/stardust/pages/archive.twig:27
-#: themes/stardust/pages/archive.twig:30
+#: themes/firecrest/pages/archive.twig:6
+#: themes/firecrest/pages/archive.twig:27
+#: themes/firecrest/pages/archive.twig:30
 #, php-format
 msgid "Archive of %s"
 msgstr ""
 
-#: themes/stardust/pages/tag.twig:5
+#: themes/firecrest/pages/tag.twig:5
 msgid "Posts tagged with %s"
 msgstr ""
 

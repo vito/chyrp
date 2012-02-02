@@ -1,4 +1,4 @@
-@import url('http://fonts.googleapis.com/css?family=Droid+Serif:400,400italic');
+@import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,400italic);
 
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td { margin: 0; padding: 0; }
 table { border-collapse: collapse; border-spacing: 0; }
@@ -61,16 +61,16 @@ a:hover {
 h1, h2 { letter-spacing: -.01em; }
 h1 { /* displayed at 28px */
     color: #45555d;
-    font: bold 2.4em "Droid Serif", "times new roman", "palatino linotype", palatino, georgia, times, serif;
+    font: bold 2.4em "Droid Serif", Georgia, serif;
     margin-bottom: .3em
 }
 h2 { /* displayed at 26px */
     color: #45555d;
-    font: normal 2.2em "Droid Serif", "times new roman", "palatino linotype", palatino, georgia, times, serif;
+    font: normal 2.2em "Droid Serif", Georgia, serif;
     margin-bottom: .4em;
 }
 h3 { /* displayed at 18px */
-    font: normal 1.5em "Droid Serif", "times new roman", "palatino linotype", palatino, georgia, times, serif;
+    font: normal 1.5em "Droid Serif", Georgia, serif;
     margin-bottom: .5em;
 }
 h4 { /* displayed at 15px */
@@ -106,7 +106,7 @@ hr {
 label {
     color: #45555d;
     display: block;
-    font: normal 1em "Droid Serif", georgia, "times new roman", times, serif;
+    font: normal 1em "Droid Serif", Georgia, serif;
     padding: 0 0 0.5em 0;
 }
 input[type="text"],
@@ -656,7 +656,7 @@ div.post ul {
 div.post.quote blockquote {
     border: 0;
     color: #45555d;
-    font: italic 1.7em/1.25em "Droid Serif";
+    font: italic 1.7em/1.25em "Droid Serif", Georgia, serif;
     margin: -20px 0 10px -20px;
     padding: 50px 20px;
     width: 470px;
@@ -759,7 +759,7 @@ div.page .page_shadow, div.archive .page_shadow {
 }
 div.page h2 {
     color: #45555d;
-    font: normal 2.2em "Droid Serif", palatino, georgia, "times new roman", times, serif;
+    font: normal 2.2em "Droid Serif", Georgia, serif;
     letter-spacing: -.01em;
 }
 div.page h2.title {
@@ -1030,7 +1030,7 @@ ol.comments li ol li {
 
     /* Tags module. */
     .tag {
-        font-family: "palatino linotype", palatino, georgia, "times new roman", times, serif;
+        font-family: "Droid Serif", Georgia, serif;
     }
     .tags_select {
         display: inline-block;
