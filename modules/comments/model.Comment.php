@@ -196,7 +196,7 @@
                                "updated_at" => oneof($updated_at, "0000-00-00 00:00:00")));
 
             $new = new self($sql->latest("comments"));
-
+            self::notify(strip_tags($author),$body,$post);
             Trigger::current()->call("add_comment", $new);
             return $new;
         }
@@ -328,8 +328,7 @@
             $sql = SQL::Current();
             $config = Config::current();
             $post = new Post($post);
-
-            $emails = $sql->select('__comments', 'author_email', 'notify = 1 AND post = '.$post)->fetchAll();
+            $emails = $sql->select('__comments', 'author_email', array('notify' => 1, 'post_id' =>$post))->fetchAll();
             $list=array();
             foreach($emails as $email){
                 $list[]=$email->author_email;
@@ -340,7 +339,6 @@
             $headers = "From:".$config->email."\r\n" .
                                    "Reply-To:".$config->email. "\r\n" .
                                    "X-Mailer: PHP/".phpversion() ;
-
             $sent = email($to, $subject, $message, $headers);
         }
 
