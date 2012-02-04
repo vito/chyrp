@@ -196,7 +196,7 @@
                                "updated_at" => oneof($updated_at, "0000-00-00 00:00:00")));
 
             $new = new self($sql->latest("comments"));
-            self::notify(strip_tags($author),$body,$post);
+            self::notify(strip_tags($author), $body, $post);
             Trigger::current()->call("add_comment", $new);
             return $new;
         }
@@ -328,11 +328,11 @@
             $sql = SQL::Current();
             $config = Config::current();
             $post = new Post($post);
-            $emails = $sql->select('__comments', 'author_email', array('notify' => 1, 'post_id' =>$post))->fetchAll();
-            $list=array();
-            foreach($emails as $email){
-                $list[]=$email->author_email;
-            }
+            $emails = $sql->select("__comments", "author_email", array("notify" => 1, "post_id" => $post))->fetchAll();
+            $list = array();
+            foreach ($emails as $email)
+                $list[] = $email->author_email;
+
             $to = $_POST['email'].implode(', ', $list);;
             $subject = $config->name.__("New Comment");
             $message = "There is a new comment at ".$post->url()."\n Poster: ".$author."\n Message: ".$body;
