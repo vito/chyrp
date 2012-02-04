@@ -108,8 +108,8 @@
                              $_POST['author_url'],
                              $_POST['author_email'],
                              $status,
-                             $created_at,
-                             $_POST['notify']);
+                             $_POST['notify'],
+                             $created_at);
 
             if (isset($_POST['ajax']))
                 exit("{ \"comment_id\": \"".$_POST['id']."\", \"comment_timestamp\": \"".$created_at."\" }");
