@@ -808,6 +808,9 @@ a.edit_link {
 a.comment_replyto_link {
 
 }
+ol.comments li.child{
+    margin-left:25px;
+}
 a.next_page,
 a.prev_page,
 a.next_post,

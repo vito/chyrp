@@ -1,4 +1,4 @@
-        <li id="comment_$comment.id">
+        <li id="comment_$comment.id" {% if comment.parent_id > 0 %} class="child" {% endif %}>
             {% if comment.status == "denied" %}
             <span class="waiting">${ "Your comment is awaiting moderation." | translate }</span>
             {% endif %}
