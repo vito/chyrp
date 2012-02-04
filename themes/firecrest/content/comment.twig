@@ -8,7 +8,7 @@
             <cite>
                 ${ comment.delete_link("Delete" | translate, "") }
                 ${ comment.edit_link("Edit" | translate, "") }
-                ${ comment.replyto_link("Reply" | translate, "") }
+                {% if comment.parent_id < 1 %} ${ comment.replyto_link("Reply" | translate, "") }{% endif %}
                 ${ "<strong>%s</strong> on <a href=\"%s\" class=\"permalink\">%s</a>" | translate | format(comment.author_link, comment.post.url ~ "#comment_"~comment.id, comment.created_at | strftime("%B %d, %Y, at %I:%M %p" | translate)) }
             </cite>
         </li>
