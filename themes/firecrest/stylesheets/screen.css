@@ -22,7 +22,6 @@ body {
     margin: 0;
     height: 100%;
     word-spacing: 1px;
-    border-top: 5px solid #E4EBEF;
 }
 
 /* Main Colors */
@@ -944,7 +943,7 @@ span.pages {
 }
 span.who,
 span.waiting {
-    background-color: #e4ebef;
+    background-color: #fffdcc;
     display: block;
     margin: 0 0 1em;
     padding: 4px 6px;
@@ -964,7 +963,7 @@ span.waiting {
 div#comment_form {
     padding: 20px;
 }
-h3.comments { margin: 0 0 1.0em 0; }
+h3.comments { margin: 1em 0; }
 ol.comments {
     list-style: none;
     margin-bottom: 1em;
@@ -977,8 +976,8 @@ ol.comments li {
     width: auto;
 }
 ol.comments li blockquote {
-    background: #111;
-    color: #eee;
+    background: #E4EBEF;
+    color: #45555d;
     margin: 0;
     padding: 1em 1em 0;
 }
@@ -994,7 +993,7 @@ ol.comments li blockquote blockquote {
     color: #aaa;
 }
 ol.comments li cite {
-    background: #141414;
+    background: #E4EBEF;
     color: #666;
     display: block;
     font-style: normal;
@@ -1003,11 +1002,11 @@ ol.comments li cite {
 }
 ol.comments li cite a:link,
 ol.comments li cite a:visited {
-    color: #bbb;
+    color: #45555d;
 }
 ol.comments li cite a.permalink:link,
 ol.comments li cite a.permalink:visited {
-    color: #666;
+    color: #8699a3;
 }
 ol.comments li ul,
 ol.comments li ol {
@@ -1023,7 +1022,7 @@ ol.comments li ol li {
     list-style-type: decimal;
 }
 
-#add_comment { margin-top: 2em; }
+#add_comment { margin-top: 3em; border-top: 4px solid #D0DDE4; }
 
 /* Miscellaneous */
     /* Emoticons module. */
@@ -1061,7 +1060,7 @@ div#footer {
     background: #E4EBEF;
     clear: both;
     color: #45555d;
-    margin: 3em 0;
+    margin: 8em 0 3em;
     padding: .4em .9em;
     border-top: 1px solid #D0DDE4;
     width: 500px;

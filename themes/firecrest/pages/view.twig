@@ -7,8 +7,8 @@
             {% if not post.prev.no_results %}<a class="left prev_post" href="$post.prev.url">&larr; ${ post.prev.title | truncate(40) }</a>{% endif %}
             <div class="clear"></div>
 {% if enabled_modules.comments and (post.comment_count > 0 or post.commentable) %}
-            <div id="comment_form">
-                <h3 class="comments" id="comments">${ "Comments" | translate }</h3>
+            <div id="comment_form" id="comments">
+                <h3 class="comments">${ "Comments" | translate }</h3>
                 <ol class="comments" id="comments_$post.id">
                     {% paginate site.comments_per_page comments in post.comments as comment %}
                     {% include "content/comment.twig" %}
