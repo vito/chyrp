@@ -67,6 +67,7 @@
          *     $email - The commenter's email.
          *     $post - The <Post> they're commenting on.
          *     $parent - The <Comment> they're replying to.
+         *     $notify - Notification on follow-up comments.
          *     $type - The type of comment. Optional, used for trackbacks/pingbacks.
          */
         static function create($body, $author, $url, $email, $post, $parent = 0, $notify = 1, $type = null) {
@@ -167,6 +168,7 @@
          *     $post - The <Post> they're commenting on.
          *     $user_id - The ID of this <User> this comment was made by.
          *     $parent - The <Comment> they're replying to.
+         *     $notify - Notification on follow-up comments.
          *     $created_at - The new comment's "created" timestamp.
          *     $updated_at - The new comment's "last updated" timestamp.
          */
@@ -324,7 +326,7 @@
          *     $body - The new comment
          *     $post - The id of the post that was commented on
          */
-        public function notify($author, $body, $post){
+        static function notify($author, $body, $post) {
             $sql = SQL::Current();
             $config = Config::current();
             $post = new Post($post);
@@ -333,7 +335,7 @@
             foreach ($emails as $email)
                 $list[] = $email->author_email;
 
-            $to = $_POST['email'].implode(', ', $list);;
+            $to = $_POST['email'].implode(", ", $list);;
             $subject = $config->name.__("New Comment");
             $message = "There is a new comment at ".$post->url()."\n Poster: ".$author."\n Message: ".$body;
             $headers = "From:".$config->email."\r\n" .

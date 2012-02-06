@@ -46,6 +46,7 @@
          *     @true@ or @false@
          */
         static function authenticate($login, $password) {
+            $sql = SQL::current();
             $check = new self(array("login" => $login));
 
             if ($check->no_results)
@@ -59,11 +60,9 @@
                     # it on authentication to the new hashing scheme.
                     $check->update(null, self::hashPassword($password));
                     return true;
-                } elseif(SQL::current()->adapter == "mysql") {
+                } elseif ($sql->adapter == "mysql") {
                     # Some imports might use MySQL password hashing (such as MovableType 3).
                     # Try those too, and update the user if they match.
-
-                    $sql = SQL::current();
                     $old = $sql->select("__users", "password", array("is_approved" => 1))->fetch();
                     if ($old[0] == $check->password) {
                         $check->update(null, self::hashPassword($password));

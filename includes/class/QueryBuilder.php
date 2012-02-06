@@ -289,10 +289,8 @@
          *     $name - Name of the column.
          */
         public static function safecol($name) {
-            return preg_replace("/(([^a-zA-Z0-9_]|^)(order|group)([^a-zA-Z0-9_]|
-$))/i",
-                                (SQL::current()->adapter == "mysql") ? "\\2`\\3`
-\\4" : '\\2"\\3"\\4',
+            return preg_replace("/(([^a-zA-Z0-9_]|^)(order|group)([^a-zA-Z0-9_]|$))/i",
+                                (SQL::current()->adapter == "mysql") ? "\\2`\\3`\\4" : '\\2"\\3"\\4',
                                 $name);
         }
 

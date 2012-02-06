@@ -363,11 +363,16 @@
             Flash::notice(__("Posts tagged.", "tags"), "/admin/?action=manage_tags");
         }
 
+        public function main_context($context) {
+            $context["tags"] = self::list_tags();
+            return $context;
+        }
+
         public function main_tag($main) {
             if (!isset($_GET['name']))
                 return $main->resort(array("pages/tag", "pages/index"),
                                      array("reason" => "no_tag_specified"),
-                                     __("No Tag", "tags"));
+                                        __("No Tag", "tags"));
 
             $sql = SQL::current();
 
@@ -397,7 +402,7 @@
             if (empty($ids))
                 return $main->resort(array("pages/tag", "pages/index"),
                                      array("reason" => "tag_not_found"),
-                                     __("Invalid Tag", "tags"));
+                                        __("Invalid Tag", "tags"));
 
             $posts = new Paginator(Post::find(array("placeholders" => true,
                                                     "where" => array("id" => $ids))),
@@ -519,11 +524,6 @@
                 $_POST['tags'] = $post->unlinked_tags;
             else
                 $_POST['tags'] = '';
-        }
-
-        public function main_context($context) {
-            $context["tags"] = self::list_tags();
-            return $context;
         }
 
         static function linked_tags($tags) {
