@@ -103,7 +103,7 @@ hr {
 }
 
 label {
-    color: #45555d;
+    color: #8699a3;
     display: block;
     font: normal 1em "Droid Serif", Georgia, serif;
     padding: 0 0 0.5em 0;
@@ -807,9 +807,6 @@ a.edit_link {
 a.comment_replyto_link {
 
 }
-ol.comments li.child{
-    margin-left:25px;
-}
 a.next_page,
 a.prev_page,
 a.next_post,
@@ -820,12 +817,31 @@ a.prev_post {
     padding: .6em .8em;
     border: none;
 }
+a.next_page span.arrow, a.next_post span.arrow {
+    background: url(../images/arrows.png) no-repeat right top;
+    float: right;
+    height: 9px;
+    position: relative;
+    width: 6px;
+    margin-left: 5px;
+    margin-top: 4px;
+}
+a.prev_page span.arrow, a.prev_post span.arrow {
+    background: url(../images/arrows.png) no-repeat left top;
+    float: left;
+    height: 9px;
+    position: relative;
+    width: 6px;
+    margin-right: 5px;
+    margin-top: 4px;
+}
 a.next_page, a.next_post {
     -moz-border-radius-topright: 3px;
     -moz-border-radius-bottomright: 3px;
     -webkit-border-top-right-radius: 3px;
     -webkit-border-bottom-right-radius: 3px;
     border-radius: 0px 3px 3px 0px;
+    position: relative;
 }
 a.prev_page, a.prev_post {
     -moz-border-radius-topleft: 3px;
@@ -994,19 +1010,26 @@ ol.comments li blockquote blockquote {
 }
 ol.comments li cite {
     background: #E4EBEF;
-    color: #666;
+    color: #8699a3;
     display: block;
     font-style: normal;
     margin: 0;
     padding: .4em 1.3em;
+    font-size: 0.91em;
 }
 ol.comments li cite a:link,
 ol.comments li cite a:visited {
     color: #45555d;
+    border: none;
 }
 ol.comments li cite a.permalink:link,
 ol.comments li cite a.permalink:visited {
     color: #8699a3;
+    border-bottom: 1px dotted;
+}
+ol.comments li cite a:hover {
+    color: #45555d!important;
+    border: none!important;    
 }
 ol.comments li ul,
 ol.comments li ol {
@@ -1021,8 +1044,14 @@ ol.comments li ol li {
 ol.comments li ol li {
     list-style-type: decimal;
 }
-
-#add_comment { margin-top: 3em; border-top: 4px solid #D0DDE4; }
+ol.comments li.child{
+    margin-left:25px;
+}
+span.comment_author a {
+    color: #ff6039!important;
+}
+span.label { color: #8699a3; }
+#add_comment { margin-top: 3em; border-top: 4px solid #D0DDE4; padding-top: 1em; }
 
 /* Miscellaneous */
     /* Emoticons module. */
