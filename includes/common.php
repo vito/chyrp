@@ -5,18 +5,18 @@
      * Chyrp - A Lightweight Blogging Engine
      *
      * Version:
-     *     v2.1
+     *     v2.5
      *
      * License:
      *     Modified MIT (See COPYING)
      *
      * Chyrp Copyright:
-     *     Copyright (c) 2011 Chyrp Team (See AUTHORS)
+     *     Copyright (c) 2012 The Chyrp Team (See AUTHORS)
      */
 
     # Constant: CHYRP_VERSION
     # Chyrp's version number.
-    define('CHYRP_VERSION', "2.5b1");
+    define('CHYRP_VERSION', "2.5b2");
 
     # Constant: DEBUG
     # Should Chyrp use debugging processes?
