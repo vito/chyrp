@@ -282,24 +282,27 @@
      * Function: download_new_version
      * Downloads the newest version of chyrp 
      */
-    function download_new_version(){
-        $e=0;
+    function download_new_version() {
+        $e = 0;
         # delete everything from 2 versions back
-        if(is_dir("old"))
-            if(!rmdir("old")) 
-                echo __("Please manually delete the directory root/updates"));
-                $e=1;
-        if(is_dir("updates"))
-            if(!rmdir("updates")) 
-                echo __("Please manually delete the directory root/updates"));
-                $e=1;
-        if(!mkdir("updates")) 
-                echo __("Please manually create the directory root/updates"));
-                $e=1;
-        if(!mkdir("old")) 
-                echo __("Please manually create the directory root/old"));
-                $e=1;
-        
+        if (is_dir("old"))
+            if (!rmdir("old")) 
+                echo __("Please manually delete the directory root/updates");
+                $e = 1;
+
+        if (is_dir("updates"))
+            if (!rmdir("updates")) 
+                echo __("Please manually delete the directory root/updates");
+                $e = 1;
+
+        if (!mkdir("updates")) 
+            echo __("Please manually create the directory root/updates");
+            $e = 1;
+
+        if (!mkdir("old")) 
+            echo __("Please manually create the directory root/old");
+            $e = 1;
+
         $files = array("includes",
                        "admin",
                        "index.php",
@@ -307,18 +310,17 @@
                        "modules",
                        "feathers",
                        "themes");
-        if($e==0){
-            foreach ($files as $file) {
+        if ($e == 0) {
+            foreach ($files as $file)
                 if (file_exists($file)) {
                    # move stuff to the old dir so we can download the new one
-                   rename($file, 'old/'.$file);
-                   if(!rename($file, 'old/'.$file))
-                        echo __("Please move the file at root/".$file.' to root/old/'.$file));
+                   rename($file, "old/".$file);
+                   if (!rename($file, "old/".$file))
+                        echo __("Please move the file at root/".$file." to root/old/".$file);
                 }
-            }
 
             $version=file_get_contents("http://api.chyrp.net/v1/chyrp_version.php");
-            $fp = fopen ("updates/latest.zip", 'w+');
+            $fp = fopen ("updates/latest.zip", "w+");
             $ch = curl_init("http://chyrp.net/releases/chyrp_v".$version.".zip"); # Here is the file we are downloading
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
             curl_setopt($ch, CURLOPT_FILE, $fp);
@@ -327,7 +329,7 @@
             curl_exec($ch);
             curl_close($ch);
             fclose($fp);
-            if (function_exists('zip_open')) {
+            if (function_exists("zip_open")) {
                 $zip = new ZipArchive();
                 $x = $zip->open("updates/latest.zip");
                 if ($x === true) {
@@ -335,16 +337,19 @@
                     $zip->close();
                     unlink("updates/latest.zip");
                 }
+
                 foreach($files as $file)
                     if (file_exists("updates/chyrp/".$file))
-                       if(!rename("updates/chyrp/".$file, $file))
-                            echo __("Please move the file at root/updates/chyrp/".$file." to root/".$file));
-                if(file_exists("old/includes/config.yaml.php"))
-                    if(!copy("old/includes/config.yaml.php", "includes/config.yaml.php")) 
-                        echo __("Please manually copy the file root/old/includes/config.yaml.php to root/includes/config.yaml.php"));
-                if(is_dir("updates"))
-                    if(!rmdir("updates")) 
-                        echo __("Please manually delete the directory root/updates"));
+                       if (!rename("updates/chyrp/".$file, $file))
+                            echo __("Please move the file at root/updates/chyrp/".$file." to root/".$file);
+
+                if (file_exists("old/includes/config.yaml.php"))
+                    if (!copy("old/includes/config.yaml.php", "includes/config.yaml.php"))
+                        echo __("Please manually copy the file root/old/includes/config.yaml.php to root/includes/config.yaml.php");
+
+                if (is_dir("updates"))
+                    if (!rmdir("updates")) 
+                        echo __("Please manually delete the directory root/updates");
             }
         }
     }
@@ -1245,7 +1250,7 @@
     </head>
     <body>
         <div class="window">
-<?php if ((!empty($_POST) and $_POST['upgrade'] == "yes") or $_GET['task'] == "upgrade") : ?>
+<?php if ((!empty($_POST) and $_POST['upgrade'] == "yes") or isset($_GET['task']) == "upgrade") : ?>
             <pre class="pane"><?php
         # Begin with file/config upgrade tasks.
         download_new_version();
@@ -1382,7 +1387,7 @@
                 <li><?php echo __("Disable any third-party Modules and Feathers."); ?></li>
                 <li><?php echo __("Ensure that the Chyrp installation directory is writable by the server."); ?></li>
             </ol>
-            <p><?php echo __("If any of the upgrade processes fail, you can safely keep refreshing &ndash; it will only attempt to do tasks that are not already successfully completed. If you cannot figure something out, please make a topic (with details!) at the <a href=\"http://chyrp.net/community/\">Chyrp Community</a>."); ?></p>
+            <p><?php echo __("If any of the upgrade processes fail, you can safely keep refreshing &ndash; it will only attempt to do tasks that are not already successfully completed. If you cannot figure something out, please make a topic (with details!) at the <a href=\"http://chyrp.net/discuss/\">Chyrp Community</a>."); ?></p>
             <form action="upgrade.php" method="post">
                 <button type="submit" name="upgrade" value="yes"><?php echo __("Upgrade me!"); ?></button>
             </form>
