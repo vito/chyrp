@@ -70,7 +70,7 @@
          *     $notify - Notification on follow-up comments.
          *     $type - The type of comment. Optional, used for trackbacks/pingbacks.
          */
-        static function create($body, $author, $url, $email, $post, $parent = 0, $notify = 1, $type = null) {
+        static function create($body, $author, $url, $email, $post, $parent, $notify, $type = null) {
             if (!self::user_can($post->id) and !in_array($type, array("trackback", "pingback")))
                 return;
 
@@ -198,8 +198,8 @@
                                "updated_at" => oneof($updated_at, "0000-00-00 00:00:00")));
 
             $new = new self($sql->latest("comments"));
-            self::notify(strip_tags($author), $body, $post);
             Trigger::current()->call("add_comment", $new);
+            self::notify(strip_tags($author), $body, $post);
             return $new;
         }
 
@@ -329,8 +329,10 @@
         static function notify($author, $body, $post) {
             $sql = SQL::Current();
             $config = Config::current();
+
             $post = new Post($post);
-            $emails = $sql->select("__comments", "author_email", array("notify" => 1, "post_id" => $post))->fetchAll();
+            $emails = $sql->select("__comments", "author_email", array("notify" => 1, "post_id" => $post->id))->fetchAll();
+
             $list = array();
             foreach ($emails as $email)
                 $list[] = $email->author_email;

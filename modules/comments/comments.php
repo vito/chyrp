@@ -22,7 +22,7 @@
                              post_id INTEGER DEFAULT 0,
                              user_id INTEGER DEFAULT 0,
                              parent_id INTEGER DEFAULT 0,
-                             notify INTEGER DEFAULT 1,
+                             notify INTEGER DEFAULT 0,
                              created_at DATETIME DEFAULT NULL,
                              updated_at DATETIME DEFAULT NULL
                          ) DEFAULT CHARSET=utf8");
