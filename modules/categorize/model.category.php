@@ -3,18 +3,18 @@
 class Category extends Model {
 
         static function getCategory($id = null) {
-            // we give all of the categories if there isn't one specified
+            # we give all of the categories if there isn't one specified
             if (!isset($id))
                 return SQL::current()->select("categorize",
                     "id,name,clean,show_on_home,concat(:url,clean) AS url", NULL, "name ASC",
                     array(":url" => Config::current()->chyrp_url . "/category/"))->fetchAll();
-            // single entry
+            # single entry
             return SQL::current()->select("categorize",
                 "id,name,clean,show_on_home,concat(:url,clean) AS url", "id = :id", "name ASC",
                 array(':id' => $id, ":url" => Config::current()->chyrp_url . "/category/"), 1)->fetchObject();
         }
 
-        // This gets used to convert the category/<foo> name back to an ID or whatever else.
+        # This gets used to convert the category/<foo> name back to an ID or whatever else.
         static function getCategorybyClean($name = string) {
             return SQL::current()->select("categorize", "id,name,clean,show_on_home,concat(:url,clean) AS url", "clean = :clean", "name ASC",
                 array(":url" => Config::current()->chyrp_url . "/category/", ":clean" => $name), 1)->fetchObject();
@@ -25,7 +25,7 @@ class Category extends Model {
                 array(":name" => $name), 1)->fetchObject();
         }
 
-        // This might be a nice way of showing the list of cats in the sidebar
+        # This might be a nice way of showing the list of cats in the sidebar
         static function getCategoryList() {
             return SQL::current()->select(array('categorize', 'post_attributes', 'posts'),
                 "__categorize.name,__categorize.clean,__categorize.show_on_home,count(__categorize.id) AS total, concat(:url,__categorize.clean) AS url",
@@ -73,8 +73,10 @@ class Category extends Model {
         }
 
         static function uninstallCategorize() {
-            SQL::current()->query("DROP TABLE IF EXISTS `__categorize`");
-            SQL::current()->delete("post_attributes", "name = 'category_id'");
+            if ($confirm) {
+                SQL::current()->query("DROP TABLE __categorize");
+                SQL::current()->delete("post_attributes", "name = 'category_id'");
+            }
         }
 
 }
