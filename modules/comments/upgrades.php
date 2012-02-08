@@ -24,9 +24,16 @@
                 test(SQL::current()->query("ALTER TABLE __comments ADD parent_id INTEGER DEFAULt 0 AFTER user_id"));
     }
 
+    function add_comment_notify_field() {
+        if (!SQL::current()->query("SELECT notify FROM __comments"))
+            echo __("Adding notify column to comments table...", "comments").
+                test(SQL::current()->query("ALTER TABLE __comments ADD notify INTEGER DEFAULt 0 AFTER parent_id"));
+    }
+
     Config::fallback("auto_reload_comments", 30);
     Config::fallback("enable_reload_comments", false);
 
     remove_signature_add_updated_at();
     remove_defensio_set_akismet();
     add_comment_parent_id_field();
+    add_comment_notify_field();
