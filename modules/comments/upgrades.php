@@ -21,13 +21,13 @@
     function add_comment_parent_id_field() {
         if (!SQL::current()->query("SELECT parent_id FROM __comments"))
             echo __("Adding parent_id column to comments table...", "comments").
-                test(SQL::current()->query("ALTER TABLE __comments ADD parent_id INTEGER DEFAULt 0 AFTER user_id"));
+                test(SQL::current()->query("ALTER TABLE __comments ADD parent_id INTEGER DEFAULT 0 AFTER user_id"));
     }
 
     function add_comment_notify_field() {
         if (!SQL::current()->query("SELECT notify FROM __comments"))
             echo __("Adding notify column to comments table...", "comments").
-                test(SQL::current()->query("ALTER TABLE __comments ADD notify INTEGER DEFAULt 0 AFTER parent_id"));
+                test(SQL::current()->query("ALTER TABLE __comments ADD notify INTEGER DEFAULT 0 AFTER parent_id"));
     }
 
     Config::fallback("auto_reload_comments", 30);
