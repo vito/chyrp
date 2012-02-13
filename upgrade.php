@@ -1125,7 +1125,7 @@
     }
 
     /**
-     * Function: add_user_approva_column
+     * Function: add_user_approved_column
      * Adds the @is_approved@ column on the "users" table, and approves all current users.
      *
      * Versions: 2.1 => 2.5

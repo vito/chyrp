@@ -5,7 +5,7 @@
     <form action="{% url "login" %}" method="post">
         <p>
             <label for="login">${ "Username" | translate }</label>
-            <input type="text" name="login" value="${ POST.login | escape }" id="login" tabindex="1" />
+            <input type="text" name="login" autofocus="autofocus" value="${ POST.login | escape }" id="login" tabindex="1" />
         </p>
         <p>
             <label for="password">${ "Password" | translate }</label>
