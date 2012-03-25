@@ -463,3 +463,56 @@ msgstr ""
 msgid "Posts tagged with %s"
 msgstr ""
 
+#: themes/firecrest/pages/sidebar.twig:23
+msgid "Elsewhere"
+msgstr ""
+
+#: themes/firecrest/pages/profile.twig:5
+#: themes/firecrest/pages/profile.twig:26
+msgid "Profile"
+msgstr ""
+
+#: themes/firecrest/forms/user/controls.twig:7
+msgid "Login"
+msgstr ""
+
+#: themes/firecrest/forms/user/controls.twig:7
+msgid "Cannot be changed."
+msgstr ""
+
+#: themes/firecrest/contents/post.twig:39
+msgid "Permalink"
+msgstr ""
+
+#: themes/firecrest/pages/profile.twig:39
+msgid "Your Profile"
+msgstr ""
+
+#: themes/firecrest/pages/profile.twig:12
+msgid "Login:"
+msgstr ""
+
+#: themes/firecrest/pages/profile.twig:15
+msgid "Full Name:"
+msgstr ""
+
+#: themes/firecrest/pages/profile.twig:18
+msgid "Bio:"
+msgstr ""
+
+#: themes/firecrest/pages/profile.twig:21
+msgid "Contact"
+msgstr ""
+
+#: themes/firecrest/pages/profile.twig:23
+msgid "Email:"
+msgstr ""
+
+#: themes/firecrest/pages/profile.twig:26
+msgid "Website:"
+msgstr ""
+
+#: themes/firecrest/pages/profile.twig:29
+msgid "Twitter:"
+msgstr ""
+
