@@ -20,7 +20,7 @@ ruby gettext.rb ./modules/tags/         --domain=tags         > ./modules/tags/l
 ruby gettext.rb ./modules/textilize/    --domain=textilize    > ./modules/textilize/locale/en_US.pot
 ruby gettext.rb ./modules/swfupload/    --domain=swfupload    > ./modules/swfupload/locale/en_US.pot
 
-ruby gettext.rb ./themes/stardust/ --domain=theme > ./themes/stardust/locale/en_US.pot
+ruby gettext.rb ./themes/firecrest/ --domain=theme > ./themes/firecrest/locale/en_US.pot
 
 # msgfmt -v ./includes/locale/en_US.pot         -o ./includes/locale/en_US.mo
 #
@@ -37,10 +37,10 @@ ruby gettext.rb ./themes/stardust/ --domain=theme > ./themes/stardust/locale/en_
 # msgfmt -v ./modules/markdown/locale/en_US.pot       -o ./modules/markdown/locale/en_US.mo
 # msgfmt -v ./modules/paging/locale/en_US.pot         -o ./modules/paging/locale/en_US.mo
 # msgfmt -v ./modules/read_more/locale/en_US.pot      -o ./modules/read_more/locale/en_US.mo
-# msgfmt -v ./modules/aggregator/locale/en_US.pot            -o ./modules/aggregator/locale/en_US.mo
+# msgfmt -v ./modules/aggregator/locale/en_US.pot     -o ./modules/aggregator/locale/en_US.mo
 # msgfmt -v ./modules/smartypants/locale/en_US.pot    -o ./modules/smartypants/locale/en_US.mo
 # msgfmt -v ./modules/tags/locale/en_US.pot           -o ./modules/tags/locale/en_US.mo
 # msgfmt -v ./modules/textilize/locale/en_US.pot      -o ./modules/textilize/locale/en_US.mo
-# msgfmt -v ./modules/swfupload/locale/en_US.pot   -o ./modules/swfupload/locale/en_US.mo
+# msgfmt -v ./modules/swfupload/locale/en_US.pot      -o ./modules/swfupload/locale/en_US.mo
 #
-# msgfmt -v ./themes/stardust/locale/en_US.pot   -o ./themes/stardust/locale/en_US.mo
+# msgfmt -v ./themes/firecrest/locale/en_US.pot  -o ./themes/firecrest/locale/en_US.mo

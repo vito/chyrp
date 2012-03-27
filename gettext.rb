@@ -3,8 +3,8 @@ require "yaml"
 require "optparse"
 
 OPTIONS = {
-  :project => "Chyrp v2.1",
-  :maintainer => "Chyrp Team <email@chyrp.net>",
+  :project => "Chyrp v2.5",
+  :maintainer => "The Chyrp Team <email@chyrp.net>",
   :domain  => nil,
   :msgstr  => "",#"XXX",
   :msgstr_filter => "",#"XXX :: %s",

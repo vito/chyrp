@@ -1,14 +1,14 @@
-# Chyrp v2.1 Translation File.
-# Copyright (C) 2011 Chyrp Team
-# This file is distributed under the same license as the Chyrp v2.1 package.
+# Chyrp v2.5 Translation File.
+# Copyright (C) 2012 The Chyrp Team
+# This file is distributed under the same license as the Chyrp v2.5 package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Chyrp v2.1\n"
+"Project-Id-Version: Chyrp v2.5\n"
 "Report-Msgid-Bugs-To: email@chyrp.net\n"
-"POT-Creation-Date: 2011-01-10 22:16+0000\n"
+"POT-Creation-Date: 2012-03-27 16:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -34,13 +34,13 @@ msgstr ""
 msgid "Photo"
 msgstr ""
 
-#: feathers/photo/photo.php:17
+#: feathers/photo/photo.php:16
 msgid "Caption"
 msgstr ""
 
 #: feathers/photo/photo.php:11
-#: feathers/photo/photo.php:39
-#: feathers/photo/photo.php:49
+#: feathers/photo/photo.php:38
+#: feathers/photo/photo.php:48
 #: feathers/photo/photo.php:148
 msgid "From URL?"
 msgstr ""

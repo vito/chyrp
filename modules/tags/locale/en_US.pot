@@ -1,14 +1,14 @@
-# Chyrp v2.1 Translation File.
-# Copyright (C) 2011 Chyrp Team
-# This file is distributed under the same license as the Chyrp v2.1 package.
+# Chyrp v2.5 Translation File.
+# Copyright (C) 2012 The Chyrp Team
+# This file is distributed under the same license as the Chyrp v2.5 package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Chyrp v2.1\n"
+"Project-Id-Version: Chyrp v2.5\n"
 "Report-Msgid-Bugs-To: email@chyrp.net\n"
-"POT-Creation-Date: 2011-01-10 22:17+0000\n"
+"POT-Creation-Date: 2012-03-27 16:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -21,17 +21,17 @@ msgstr ""
 msgid "Tag &rarr;"
 msgstr ""
 
-#: modules/tags/tags.php:409
+#: modules/tags/tags.php:416
 #, php-format
 msgid "Posts tagged with %s"
 msgstr ""
 
-#: modules/tags/tags.php:303
+#: modules/tags/tags.php:305
 msgid "Tag renamed."
 msgstr ""
 
-#: modules/tags/tags.php:251
-#: modules/tags/tags.php:265
+#: modules/tags/tags.php:253
+#: modules/tags/tags.php:267
 msgid "Please specify the ID of the post whose tags you would like to edit."
 msgstr ""
 
@@ -44,11 +44,11 @@ msgstr ""
 msgid "Edit Tags"
 msgstr ""
 
-#: modules/tags/tags.php:398
+#: modules/tags/tags.php:405
 msgid "Invalid Tag"
 msgstr ""
 
-#: modules/tags/tags.php:273
+#: modules/tags/tags.php:275
 msgid "Tags updated."
 msgstr ""
 
@@ -78,7 +78,7 @@ msgstr ""
 msgid "Edit Tag &#8220;%s&#8221;"
 msgstr ""
 
-#: modules/tags/tags.php:437
+#: modules/tags/tags.php:444
 msgid "No Tags"
 msgstr ""
 
@@ -90,7 +90,7 @@ msgstr ""
 msgid "Post Tags"
 msgstr ""
 
-#: modules/tags/tags.php:151
+#: modules/tags/tags.php:153
 msgid "You do not have sufficient privileges to manage tags."
 msgstr ""
 
@@ -102,12 +102,12 @@ msgstr ""
 msgid "Manage Tags"
 msgstr ""
 
-#: modules/tags/tags.php:361
+#: modules/tags/tags.php:363
 msgid "Posts tagged."
 msgstr ""
 
-#: modules/tags/tags.php:185
-#: modules/tags/tags.php:453
+#: modules/tags/tags.php:187
+#: modules/tags/tags.php:460
 #, php-format
 msgid "%s post tagged with &quot;%s&quot;"
 msgid_plural "%s posts tagged with &quot;%s&quot;"
@@ -128,14 +128,14 @@ msgstr ""
 msgid "(hover for controls)"
 msgstr ""
 
-#: modules/tags/tags.php:368
+#: modules/tags/tags.php:375
 msgid "No Tag"
 msgstr ""
 
 #: modules/tags/tags.php:46
-#: modules/tags/tags.php:127
-#: modules/tags/tags.php:138
-#: modules/tags/tags.php:457
+#: modules/tags/tags.php:129
+#: modules/tags/tags.php:140
+#: modules/tags/tags.php:464
 msgid "Tags"
 msgstr ""
 
@@ -151,7 +151,7 @@ msgstr ""
 msgid "Dropping old tags table..."
 msgstr ""
 
-#: modules/tags/tags.php:325
+#: modules/tags/tags.php:327
 msgid "Tag deleted."
 msgstr ""
 
@@ -159,8 +159,8 @@ msgstr ""
 msgid "Edit Tag"
 msgstr ""
 
-#: modules/tags/tags.php:219
-#: modules/tags/tags.php:281
+#: modules/tags/tags.php:221
+#: modules/tags/tags.php:283
 msgid "You do not have sufficient privileges to edit tags."
 msgstr ""
 
