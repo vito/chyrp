@@ -53,6 +53,8 @@
             if ($check->no_results)
                 return false;
             else {
+                if (self::checkPassword($password, $check->password))
+                    return true;
                 elseif (md5($password) == $check->password) {
                     # Backwards-compatibility:
                     # if their old password is stored as MD5, update
