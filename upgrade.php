@@ -1254,13 +1254,12 @@
             <pre class="pane"><?php
         # Begin with file/config upgrade tasks.
         download_new_version();
-        
+
         fix_htaccess();
 
         remove_beginning_slash_from_post_url();
 
         move_yml_yaml();
-        
 
         update_protection();
 

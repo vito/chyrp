@@ -319,7 +319,7 @@
 
             # Insert the default groups (see above)
             $group_id = array();
-            foreach($groups as $name => $permissions) {
+            foreach ($groups as $name => $permissions) {
                 $sql->replace("groups", "name", array("name" => ucfirst($name)));
 
                 $group_id[$name] = $sql->latest("groups");
