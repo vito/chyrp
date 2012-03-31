@@ -339,28 +339,25 @@
                 !substr_count($_SERVER['REQUEST_URI'], "%2F")) # Searches with / and clean URLs = server 404
                 redirect("search/".urlencode($_GET['query'])."/");
 
-            if (empty($_GET['query'])) {
+            if (empty($_GET['query']))
+                Flash::warning(__("Please enter a search term."));
+
+            list($where, $params) = keywords($_GET['query'], "post_attributes.value LIKE :query OR url LIKE :query", "posts");
+
+            $results = Post::find(array("placeholders" => true,
+                                        "where" => $where,
+                                        "params" => $params));
+
+            $ids = array();
+            foreach ($results[0] as $result)
+                $ids[] = $result["id"];
+
+            if (!empty($ids))
+                $posts = new Paginator(Post::find(array("placeholders" => true,
+                                                        "where" => array("id" => $ids))),
+                                       $this->post_limit);
+            else
                 $posts = new Paginator(array());
-                // return Flash::warning(__("Please enter a search term."));
-            }
-            else {
-                list($where, $params) = keywords($_GET['query'], "post_attributes.value LIKE :query OR url LIKE :query", "posts");
-
-                $results = Post::find(array("placeholders" => true,
-                                            "where" => $where,
-                                            "params" => $params));
-
-                $ids = array();
-                foreach ($results[0] as $result)
-                    $ids[] = $result["id"];
-
-                if (!empty($ids))
-                    $posts = new Paginator(Post::find(array("placeholders" => true,
-                                                            "where" => array("id" => $ids))),
-                                           $this->post_limit);
-                else
-                    $posts = new Paginator(array());
-            }
 
             $this->display(array("pages/search", "pages/index"),
                            array("posts" => $posts,
