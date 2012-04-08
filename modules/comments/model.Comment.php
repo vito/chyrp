@@ -331,7 +331,7 @@
             $config = Config::current();
 
             $post = new Post($post);
-            $emails = $sql->select("__comments", "author_email", array("notify" => 1, "post_id" => $post->id))->fetchAll();
+            $emails = $sql->select("comments", "author_email", array("notify" => 1, "post_id" => $post->id))->fetchAll();
 
             $list = array();
             foreach ($emails as $email)
