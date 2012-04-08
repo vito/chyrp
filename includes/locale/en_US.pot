@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.5\n"
 "Report-Msgid-Bugs-To: email@chyrp.net\n"
-"POT-Creation-Date: 2012-03-27 16:46+0000\n"
+"POT-Creation-Date: 2012-04-08 12:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -26,7 +26,7 @@ msgstr ""
 msgid "Close this window"
 msgstr ""
 
-#: includes/controller/Main.php:496
+#: includes/controller/Main.php:493
 msgid "Incorrect captcha code. Please try again."
 msgstr ""
 
@@ -169,7 +169,7 @@ msgstr ""
 msgid "DESTROY!"
 msgstr ""
 
-#: includes/controller/Main.php:368
+#: includes/controller/Main.php:365
 #, php-format
 msgid "Search results for \"%s\""
 msgstr ""
@@ -304,7 +304,7 @@ msgstr ""
 msgid "Body can't be blank."
 msgstr ""
 
-#: includes/controller/Main.php:638
+#: includes/controller/Main.php:635
 #: admin/themes/default/pages/manage_users.twig:34
 #: admin/themes/default/pages/manage_posts.twig:40
 #: admin/themes/default/pages/manage_pages.twig:29
@@ -394,7 +394,7 @@ msgstr ""
 msgid "Archive of %s"
 msgstr ""
 
-#: includes/controller/Main.php:610
+#: includes/controller/Main.php:607
 msgid "Logged out."
 msgstr ""
 
@@ -535,12 +535,12 @@ msgstr ""
 msgid "Permissions"
 msgstr ""
 
-#: includes/controller/Main.php:826
+#: includes/controller/Main.php:823
 #: includes/controller/Admin.php:2433
 msgid "Template Missing"
 msgstr ""
 
-#: includes/controller/Main.php:388
+#: includes/controller/Main.php:385
 msgid "Drafts"
 msgstr ""
 
@@ -625,7 +625,7 @@ msgstr ""
 msgid "%s is <strong>deprecated</strong> since version %s! Use %s instead."
 msgstr ""
 
-#: includes/controller/Main.php:542
+#: includes/controller/Main.php:539
 msgid "Register"
 msgstr ""
 
@@ -633,7 +633,7 @@ msgstr ""
 msgid "Day submitted"
 msgstr ""
 
-#: includes/controller/Main.php:501
+#: includes/controller/Main.php:498
 #: includes/controller/Admin.php:523
 msgid "That username is already in use."
 msgstr ""
@@ -646,7 +646,7 @@ msgstr ""
 msgid "Chyrp loves you."
 msgstr ""
 
-#: includes/controller/Main.php:379
+#: includes/controller/Main.php:376
 msgid "You do not have sufficient privileges to view drafts."
 msgstr ""
 
@@ -755,9 +755,9 @@ msgstr ""
 msgid "Pages reordered."
 msgstr ""
 
-#: includes/controller/Main.php:490
-#: includes/controller/Main.php:550
-#: includes/controller/Main.php:568
+#: includes/controller/Main.php:487
+#: includes/controller/Main.php:547
+#: includes/controller/Main.php:565
 msgid "You're already logged in."
 msgstr ""
 
@@ -816,7 +816,7 @@ msgstr ""
 msgid "Delete User &#8220;%s&#8221;?"
 msgstr ""
 
-#: includes/controller/Main.php:554
+#: includes/controller/Main.php:551
 msgid "A user with that email doesn't seem to exist in our database."
 msgstr ""
 
@@ -828,7 +828,7 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: includes/controller/Main.php:413
+#: includes/controller/Main.php:410
 msgid "This post is a draft."
 msgstr ""
 
@@ -865,7 +865,7 @@ msgid "Dropping `posts` table..."
 msgstr ""
 
 #: install.php:114
-#: includes/controller/Main.php:504
+#: includes/controller/Main.php:501
 #: includes/controller/Admin.php:526
 msgid "Password cannot be blank."
 msgstr ""
@@ -1054,8 +1054,8 @@ msgstr ""
 msgid "You did not specify a theme to preview."
 msgstr ""
 
-#: includes/controller/Main.php:665
-#: includes/controller/Main.php:698
+#: includes/controller/Main.php:662
+#: includes/controller/Main.php:695
 msgid "Lost Password"
 msgstr ""
 
@@ -1114,7 +1114,7 @@ msgstr ""
 msgid "Draft"
 msgstr ""
 
-#: includes/controller/Main.php:537
+#: includes/controller/Main.php:534
 msgid "Registration successful."
 msgstr ""
 
@@ -1170,7 +1170,7 @@ msgstr ""
 msgid "Allows you to set an alternative URL for <code>/feed/</code>, e.g. your feed on <a href=\"http://feedburner.com/\">FeedBurner</a>."
 msgstr ""
 
-#: includes/controller/Main.php:560
+#: includes/controller/Main.php:557
 msgid "Your account has already been activated."
 msgstr ""
 
@@ -1298,11 +1298,11 @@ msgstr ""
 msgid "Registration"
 msgstr ""
 
-#: includes/controller/Main.php:410
+#: includes/controller/Main.php:407
 msgid "The feather theme file for this post does not exist. The post cannot be displayed."
 msgstr ""
 
-#: includes/controller/Main.php:635
+#: includes/controller/Main.php:632
 msgid "Your profile has been updated."
 msgstr ""
 
@@ -1315,7 +1315,7 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
-#: includes/controller/Main.php:826
+#: includes/controller/Main.php:823
 #: includes/controller/Admin.php:2433
 #, php-format
 msgid "Couldn't load template: <code>%s</code>"
@@ -1428,7 +1428,7 @@ msgstr ""
 msgid "The %s feather is not enabled."
 msgstr ""
 
-#: includes/controller/Main.php:529
+#: includes/controller/Main.php:526
 msgid "There was an error emailing the activation link to your email address."
 msgstr ""
 
@@ -1604,7 +1604,7 @@ msgstr ""
 msgid "There was an error disabling the extension."
 msgstr ""
 
-#: includes/controller/Main.php:509
+#: includes/controller/Main.php:506
 #: includes/controller/Admin.php:531
 msgid "E-mail address cannot be blank."
 msgstr ""
@@ -1665,7 +1665,7 @@ msgstr ""
 msgid "Renaming tweets table to posts..."
 msgstr ""
 
-#: includes/controller/Main.php:511
+#: includes/controller/Main.php:508
 #: includes/controller/Admin.php:533
 msgid "Invalid e-mail address."
 msgstr ""
@@ -1726,7 +1726,7 @@ msgstr ""
 msgid "Trackbacks are special urls to posts from other blogs that your post is related to or references. The other blog will be notified of your post, and in some cases a comment will automatically be added to the post in question linking back to your post. It's basically a way to network between blogs via posts."
 msgstr ""
 
-#: includes/controller/Main.php:694
+#: includes/controller/Main.php:691
 msgid "E-Mail could not be sent. Password change cancelled."
 msgstr ""
 
@@ -1811,7 +1811,7 @@ msgid "Check the group permissions &ndash; they might have changed, and certain 
 msgstr ""
 
 #: includes/error.php:145
-#: includes/controller/Main.php:595
+#: includes/controller/Main.php:592
 msgid "Log In"
 msgstr ""
 
@@ -1850,7 +1850,7 @@ msgid "Contact E-Mail Address"
 msgstr ""
 
 #: install.php:117
-#: includes/controller/Main.php:506
+#: includes/controller/Main.php:503
 #: includes/controller/Admin.php:528
 msgid "Passwords do not match."
 msgstr ""
@@ -1904,7 +1904,7 @@ msgstr ""
 msgid "Updating protection code in config.yaml.php..."
 msgstr ""
 
-#: includes/controller/Main.php:419
+#: includes/controller/Main.php:416
 #, php-format
 msgid "This post is only visible by the following groups: %s."
 msgstr ""
@@ -1924,7 +1924,7 @@ msgstr ""
 msgid "Settings updated."
 msgstr ""
 
-#: includes/controller/Main.php:664
+#: includes/controller/Main.php:661
 msgid "Invalid user specified."
 msgstr ""
 
@@ -1999,7 +1999,7 @@ msgstr ""
 msgid "Website Setup"
 msgstr ""
 
-#: includes/controller/Main.php:678
+#: includes/controller/Main.php:675
 msgid "Lost Password Request"
 msgstr ""
 
@@ -2037,13 +2037,13 @@ msgstr ""
 msgid "Dropping `users` table..."
 msgstr ""
 
-#: includes/controller/Main.php:527
+#: includes/controller/Main.php:524
 msgid "The email address you provided has been sent details to confirm registration."
 msgstr ""
 
 #: index.php:19
 #: includes/helpers.php:84
-#: includes/controller/Main.php:379
+#: includes/controller/Main.php:376
 #: includes/controller/Admin.php:100
 #: includes/controller/Admin.php:111
 #: includes/controller/Admin.php:136
@@ -2119,7 +2119,7 @@ msgstr ""
 msgid "Access Denied"
 msgstr ""
 
-#: includes/controller/Main.php:558
+#: includes/controller/Main.php:555
 msgid "Your account is now active. Welcome aboard!"
 msgstr ""
 
@@ -2132,7 +2132,7 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-#: includes/controller/Main.php:580
+#: includes/controller/Main.php:577
 msgid "Incorrect username and/or password, please try again."
 msgstr ""
 
@@ -2166,14 +2166,14 @@ msgstr ""
 #: includes/helpers.php:1027
 #: includes/helpers.php:1401
 #: includes/controller/Main.php:313
-#: includes/controller/Main.php:410
-#: includes/controller/Main.php:490
-#: includes/controller/Main.php:550
-#: includes/controller/Main.php:568
-#: includes/controller/Main.php:604
-#: includes/controller/Main.php:619
-#: includes/controller/Main.php:648
-#: includes/controller/Main.php:835
+#: includes/controller/Main.php:407
+#: includes/controller/Main.php:487
+#: includes/controller/Main.php:547
+#: includes/controller/Main.php:565
+#: includes/controller/Main.php:601
+#: includes/controller/Main.php:616
+#: includes/controller/Main.php:645
+#: includes/controller/Main.php:832
 #: includes/controller/Admin.php:358
 #: includes/controller/Admin.php:399
 #: includes/controller/Admin.php:519
@@ -2271,7 +2271,7 @@ msgid "You are not allowed to view this site."
 msgstr ""
 
 #: install.php:111
-#: includes/controller/Main.php:499
+#: includes/controller/Main.php:496
 #: includes/controller/Admin.php:519
 msgid "Please enter a username for your account."
 msgstr ""
@@ -2323,8 +2323,8 @@ msgstr ""
 msgid "Are you sure you want to delete user &#8220;%s&#8221;?"
 msgstr ""
 
-#: includes/controller/Main.php:619
-#: includes/controller/Main.php:648
+#: includes/controller/Main.php:616
+#: includes/controller/Main.php:645
 msgid "You must be logged in to access this area."
 msgstr ""
 
@@ -2405,7 +2405,7 @@ msgstr ""
 msgid "Body"
 msgstr ""
 
-#: includes/controller/Main.php:487
+#: includes/controller/Main.php:484
 msgid "I'm sorry, but this site is not allowing registration."
 msgstr ""
 
@@ -2421,7 +2421,7 @@ msgstr ""
 msgid "E-Mail Address"
 msgstr ""
 
-#: includes/controller/Main.php:344
+#: includes/controller/Main.php:343
 msgid "Please enter a search term."
 msgstr ""
 
@@ -2578,7 +2578,7 @@ msgstr ""
 msgid "You do not have sufficient privileges to edit pages."
 msgstr ""
 
-#: includes/controller/Main.php:487
+#: includes/controller/Main.php:484
 msgid "Registration Disabled"
 msgstr ""
 
@@ -2620,11 +2620,11 @@ msgstr ""
 msgid "XML-RPC support is disabled for this site."
 msgstr ""
 
-#: includes/controller/Main.php:604
+#: includes/controller/Main.php:601
 msgid "You aren't logged in."
 msgstr ""
 
-#: includes/controller/Main.php:591
+#: includes/controller/Main.php:588
 msgid "Logged in."
 msgstr ""
 
