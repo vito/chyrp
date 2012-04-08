@@ -335,7 +335,7 @@
 
             $list = array();
             foreach ($emails as $email)
-                $list[] = $email->author_email;
+                $list[] = $email["author_email"];
 
             $to = $_POST['email'].implode(", ", $list);;
             $subject = $config->name.__("New Comment");
