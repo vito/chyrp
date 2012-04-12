@@ -14,7 +14,7 @@
     <form class="split" action="{% admin "theme_editor" %}" method="post">
     <fieldset>
         <h2>${ theme.name~": <strong>"~editor.file_name~"</strong>" | translate("theme_editor") }</h2>
-        <textarea cols="100" rows="20" name="newcontent" id="newcontent" tabindex="1">${ editor.file_content | e }</textarea>
+        <textarea cols="100" rows="20" name="newcontent" id="newcontent" tabindex="1">${ editor.file_content | escape(false, false) }</textarea>
         <input type="hidden" name="file" value="$editor.file_path" />
         <input type="hidden" name="cur_file" value="{% if GET.file %}$GET.file{% else %}/info.yaml{% endif %}" />
         <input type="hidden" name="theme" value="$theme.name" />

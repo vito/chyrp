@@ -48,7 +48,7 @@
             if (isset($cur_file) and is_file($cur_file)) {
                 $context["editor"]["file_name"] = $file;
                 $context["editor"]["file_path"] = $cur_file;
-                $context["editor"]["file_content"] = file_get_contents($cur_file);
+                $context["editor"]["file_content"] = htmlentities(file_get_contents($cur_file));
             }
 
             return $context;
