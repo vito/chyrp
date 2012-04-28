@@ -12,13 +12,13 @@
 
         static function admin_context($context) {
             if($_GET['action']=='extend_manager'){
-                $extensions=file_get_contents('http://api.chyrp.net/v1/chyrp_extensions.php');
+                $extensions=file_get_contents('http://chyrp.net/api/v1/chyrp_extensions.php');
                 $extensions=explode(',',$extensions);
                 array_pop($extensions);
                 $extensions=array_reverse($extensions);
                 $content='';
                 foreach($extensions as $id){
-                    $info=file_get_contents('http://api.chyrp.net/v1/chyrp_extensions.php?id='.$id);
+                    $info=file_get_contents('http://chyrp.net/api/v1/chyrp_extensions.php?id='.$id);
                     $name = preg_replace("#\s*.*\[name\](.*?)\[/name\].*\s*#s", '$1', $info);
                     $description = strip_tags(substr(preg_replace("#\s*.*\[description\](.*?)\[/description\].*\s*#s", '$1', $info),0,128)).'…';
                     $download = preg_replace("#\s*.*\[download\](.*?)\[/download\].*\s*#s", '$1', $info);
@@ -27,13 +27,13 @@
                     $content.='<a href="?action=newextension&url='.$download.'/">Download to Site</a></p></div>';
                 }
                 $context["extensions"]["extensions"] = $content;
-                $themes=file_get_contents('http://api.chyrp.net/v1/chyrp_themes.php');
+                $themes=file_get_contents('http://chyrp.net/api/v1/chyrp_themes.php');
                 $themes=explode(',',$themes);
                 array_pop($themes);
                 $themes=array_reverse($themes);
                 $content='';
                 foreach($themes as $id){
-                    $info=file_get_contents('http://api.chyrp.net/v1/chyrp_themes.php?id='.$id);
+                    $info=file_get_contents('http://chyrp.net/api/v1/chyrp_themes.php?id='.$id);
                     $name = preg_replace("#\s*.*\[name\](.*?)\[/name\].*\s*#s", '$1', $info);
                     $description = strip_tags(substr(preg_replace("#\s*.*\[description\](.*?)\[/description\].*\s*#s", '$1', $info),0,128)).'…';
                     $download = preg_replace("#\s*.*\[download\](.*?)\[/download\].*\s*#s", '$1', $info);
@@ -42,13 +42,13 @@
                     $content.='<a href="?action=newtheme&url='.$download.'/">Download to Site</a></p></div>';
                 }
                 $context["extensions"]["themes"] = $content;
-                $feathers=file_get_contents('http://api.chyrp.net/v1/chyrp_feathers.php');
+                $feathers=file_get_contents('http://chyrp.net/api/v1/chyrp_feathers.php');
                 $feathers=explode(',',$feathers);
                 array_pop($feathers);
                 $feathers=array_reverse($feathers);
                 $content='';
                 foreach($feathers as $id){
-                    $info=file_get_contents('http://api.chyrp.net/v1/chyrp_feathers.php?id='.$id);
+                    $info=file_get_contents('http://chyrp.net/api/v1/chyrp_feathers.php?id='.$id);
                     $name = preg_replace("#\s*.*\[name\](.*?)\[/name\].*\s*#s", '$1', $info);
                     $description = strip_tags(substr(preg_replace("#\s*.*\[description\](.*?)\[/description\].*\s*#s", '$1', $info),0,128)).'…';
                     $download = preg_replace("#\s*.*\[download\](.*?)\[/download\].*\s*#s", '$1', $info);
