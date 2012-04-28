@@ -1,0 +1,147 @@
+[main]
+host = https://www.transifex.net
+
+[chyrp.feathers_audio]
+file_filter = feathers/audio/locale/<lang>.po
+source_file = feathers/audio/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.feathers_chat]
+file_filter = feathers/chat/locale/<lang>.po
+source_file = feathers/chat/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.feathers_link]
+file_filter = feathers/link/locale/<lang>.po
+source_file = feathers/link/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.feathers_photo]
+file_filter = feathers/photo/locale/<lang>.po
+source_file = feathers/photo/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.feathers_quote]
+file_filter = feathers/quote/locale/<lang>.po
+source_file = feathers/quote/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.feathers_text]
+file_filter = feathers/text/locale/<lang>.po
+source_file = feathers/text/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.feathers_video]
+file_filter = feathers/video/locale/<lang>.po
+source_file = feathers/video/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.includes_locale]
+file_filter = includes/locale/<lang>.po
+source_file = includes/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.modules_aggregator]
+file_filter = modules/aggregator/locale/<lang>.po
+source_file = modules/aggregator/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.modules_cacher]
+file_filter = modules/cacher/locale/<lang>.po
+source_file = modules/cacher/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.modules_comments]
+file_filter = modules/comments/locale/<lang>.po
+source_file = modules/comments/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.modules_emailblog]
+file_filter = modules/emailblog/locale/<lang>.po
+source_file = modules/emailblog/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.modules_likes]
+file_filter = modules/likes/locale/<lang>.po
+source_file = modules/likes/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.modules_markdown]
+file_filter = modules/markdown/locale/<lang>.po
+source_file = modules/markdown/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.modules_paging]
+file_filter = modules/paging/locale/<lang>.po
+source_file = modules/paging/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.modules_read_more]
+file_filter = modules/read_more/locale/<lang>.po
+source_file = modules/read_more/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.modules_smartypants]
+file_filter = modules/smartypants/locale/<lang>.po
+source_file = modules/smartypants/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.modules_swfupload]
+file_filter = modules/swfupload/locale/<lang>.po
+source_file = modules/swfupload/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.modules_tags]
+file_filter = modules/tags/locale/<lang>.po
+source_file = modules/tags/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.modules_textilize]
+file_filter = modules/textilize/locale/<lang>.po
+source_file = modules/textilize/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.modules_theme_editor]
+file_filter = modules/theme_editor/locale/<lang>.po
+source_file = modules/theme_editor/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.themes_firecrest]
+file_filter = themes/firecrest/locale/<lang>.po
+source_file = themes/firecrest/locale/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.themes_stardust]
+file_filter = themes/stardust/<lang>.po
+source_file = themes/stardust/en_US.pot
+source_lang = en_US
+type = PO
+
+[chyrp.global]
+file_filter = global/locale/<lang>.po
+source_file = global/locale/en_US.pot
+source_lang = en_US
+type = PO
+

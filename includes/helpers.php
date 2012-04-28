@@ -1667,7 +1667,7 @@
         if (!defined('CHECK_UPDATES') or CHECK_UPDATES == false)
             return;
 
-        $version = file_get_contents("http://api.chyrp.net/v1/chyrp_version.php");
+        $version = file_get_contents("http://chyrp.net/api/v1/chyrp_version.php");
         if ($version > CHYRP_VERSION)
             return true;
         else
