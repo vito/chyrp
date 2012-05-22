@@ -291,6 +291,8 @@
     # Load the Visitor.
     $visitor = Visitor::current();
 
+    $captchaHooks = array();
+
     # Prepare the notifier.
     $flash = Flash::current();
 

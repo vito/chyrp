@@ -871,7 +871,7 @@ msgid "Password cannot be blank."
 msgstr ""
 
 #: admin/themes/default/pages/user_settings.twig:19
-msgid "Enable Recaptcha"
+msgid "Enable CAPTCHA"
 msgstr ""
 
 #: install.php:578
@@ -2303,7 +2303,7 @@ msgid "Gives your site prettier urls."
 msgstr ""
 
 #: admin/themes/default/pages/user_settings.twig:21
-msgid "Use recaptcha to prevent bots from registering."
+msgid "Use an CAPTCHA to prevent bots from registering (requires plugin)."
 msgstr ""
 
 #: install.php:642

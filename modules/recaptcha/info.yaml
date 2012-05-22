@@ -1,0 +1,7 @@
+name: reCAPTCHA
+url: http://chyrp.net
+version: 0.1
+description: Use reCAPTCHA to prevent spam.
+author:
+  name: the Chyrp team
+  url: http://chyrp.net
