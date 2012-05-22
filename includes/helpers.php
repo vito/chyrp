@@ -1676,15 +1676,16 @@
 
     /**
      * Function: generate_captcha
-     * Generates a recaptcha form element.
+     * Generates a captcha form element.
      *
      * Returns:
      *     A string containing an form input type
      */
     function generate_captcha() {
-        require_once INCLUDES_DIR."/lib/recaptchalib.php";
-        $publickey = "6Lf6RsoSAAAAAEqUPsm4icJTg7Ph3mY561zCQ3l3";
-        return recaptcha_get_html($publickey);
+        global $captchaHooks;
+        if (!$captchaHooks)
+           return 0;
+        return call_user_func($captchaHooks[0] . "::getCaptcha");
     }
 
     /**
@@ -1695,16 +1696,10 @@
      *     A string containing an form input type
      */
     function check_captcha() {
-         require_once INCLUDES_DIR."/lib/recaptchalib.php";
-         $privatekey = "6Lf6RsoSAAAAAKn-wPxc1kE-DE0M73i206w56HEN";
-         $resp = recaptcha_check_answer ($privatekey,
-                                $_SERVER['REMOTE_ADDR'],
-                                $_POST['recaptcha_challenge_field'],
-                                $_POST['recaptcha_response_field']);
-         if (!$resp->is_valid) 
-             return false;
-         else
-             return true;
+        global $captchaHooks;
+        if (!$captchaHooks)
+           return true;
+        return call_user_func($captchaHooks[0] . "::verifyCaptcha");
     }
 
     /**
