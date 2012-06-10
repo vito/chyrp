@@ -511,12 +511,13 @@
                     if ($config->email_activation) {
                         $to      = $_POST['email'];
                         $subject = _f($config->name." Registration Pending");
-                        $message = _f("Hello, ".$_POST['login'].".\n\nYou are receiving this message because you recently registered at ".$config->chyrp_url."\nTo complete your registration, go to ".$config->chyrp_url."/?action=validate&email=".fix($_POST['email']));
+                        $message = _f("Hello, ".$_POST['login'].".\n\nYou are receiving this message because you recently registered at ".$config->chyrp_url."\nTo complete your registration, go to ".$config->chyrp_url."/?action=validate&login=".fix($_POST['login'])."&token=");
                         $headers = "From:".$config->email."\r\n" .
                                    "Reply-To:".$config->email. "\r\n" .
                                    "X-Mailer: PHP/".phpversion() ;
 
                         $user = User::add($_POST['login'], $_POST['password1'], $_POST['email']);
+                        $message .= md5($_POST['email'] . $user->id);
 
                         $sent = email($to, $subject, $message, $headers);
 
@@ -546,9 +547,16 @@
             if (logged_in())
                 error(__("Error"), __("You're already logged in."));
 
-            $user = new User(array("email" => fix($_GET['email'])));
+            if (!$_GET['token'])
+                error(__("Error"), __("No token found."));
+
+            $user = new User(array("login" => fix($_GET['login'])));
+
             if ($user->no_results)
                 Flash::warning(__("A user with that email doesn't seem to exist in our database."), "/");
+
+            if (md5($user->email . $user->id) != $_GET['token'])
+                error(__("Error"), __("Token invalid."));
 
             if (!$user->is_approved == 1) {
                 SQL::current()->query("UPDATE users SET is_approved = 1 WHERE email = '$user->email'");
