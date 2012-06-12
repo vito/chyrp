@@ -13,6 +13,7 @@
 
         static function __install() {
                 $config = Config::current();
+                $config->set("emailblog_server", "imap.gmail.com:993/ssl/novalidate-cert");
                 $config->set("emailblog_address", "example@gmail.com");
                 $config->set("emailblog_pass", "password");
                 $config->set("emailblog_subjpass", "BlogPost");
@@ -27,6 +28,7 @@
             $config->remove("emailblog_subjpass");
             $config->remove("emailblog_mail_checked");
             $config->remove("emailblog_minutes");
+            $config->remove("emailblog_server");
         }
 
         static function admin_emailblog_settings($admin) {
@@ -43,7 +45,8 @@
             $set = array($config->set("emailblog_address", $_POST['email']),
                          $config->set("emailblog_pass", $_POST['pass']),
                          $config->set("emailblog_minutes", $_POST['minutes']),
-                         $config->set("emailblog_subjpass", $_POST['subjpass']));
+                         $config->set("emailblog_subjpass", $_POST['subjpass']),
+                         $config->set("emailblog_server", $_POST['server']));
 
             if (!in_array(false, $set))
                 Flash::notice(__("Settings updated."), "/admin/?action=emailblog_settings");
@@ -62,7 +65,7 @@
         function getMail(){
             $config = Config::current();
             if (time() - (60 * $config->emailblog_minutes) >= $config->emailblog_mail_checked) {
-                    $hostname = '{imap.gmail.com:993/ssl/novalidate-cert}INBOX';
+                    $hostname = '{'.$config->emailblog_server.'}INBOX';
                     # this isn't working well on localhost
                     $username = $config->emailblog_address;
                     $password = $config->emailblog_pass;

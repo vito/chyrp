@@ -18,7 +18,11 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: modules/emailblog/pages/admin/emailblog_settings.twig:9
-msgid "Email Address"
+msgid "IMAP Server"
+msgstr ""
+
+#: modules/emailblog/pages/admin/emailblog_settings.twig:9
+msgid "Username"
 msgstr ""
 
 #: modules/emailblog/pages/admin/emailblog_settings.twig:14
@@ -26,7 +30,7 @@ msgid "Email Password"
 msgstr ""
 
 #: modules/emailblog/info.yaml:6
-msgid "Allows you to email a gmail account to post a new message."
+msgid "Allows you to email to post a new message."
 msgstr ""
 
 #: modules/emailblog/pages/admin/emailblog_settings.twig:19
@@ -34,7 +38,7 @@ msgid "Email Filter"
 msgstr ""
 
 #: modules/emailblog/pages/admin/emailblog_settings.twig:11
-msgid "Currently only supports GMail accounts."
+msgid "The address to your IMAP server. If you don't know it, just leave this at the default and use Gmail."
 msgstr ""
 
 #: modules/emailblog/pages/admin/emailblog_settings.twig:27

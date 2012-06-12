@@ -6,9 +6,14 @@
             <form id="comment_settings" class="split" action="{% admin "emailblog_settings" %}" method="post">
                 <fieldset>
                     <p>
-                        <label for="email">${ "Email Address" | translate("emailblog") }</label>
+                        <label for="server">${ "IMAP Server" | translate("emailblog") }</label>
+                        <input class="text" type="text" name="server" value="${ site.emailblog_server | escape }" id="email" />
+                        <small>${ "The address to your IMAP server. If you don't know it, just leave this at the default and use Gmail." | translate("emailblog") }</small>
+                    </p>
+                    <p>
+                        <label for="email">${ "Username" | translate("emailblog") }</label>
                         <input class="text" type="text" name="email" value="${ site.emailblog_address | escape }" id="email" />
-                        <small>${ "Currently only supports GMail accounts." | translate("emailblog") }</small>
+                        <small>${ "Your username on the IMAP server, usually your email." | translate("emailblog") }</small>
                     </p>
                      <p>
                         <label for="pass">${ "Email Password" | translate("emailblog") }</label>
