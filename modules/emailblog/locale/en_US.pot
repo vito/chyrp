@@ -38,7 +38,7 @@ msgid "Email Filter"
 msgstr ""
 
 #: modules/emailblog/pages/admin/emailblog_settings.twig:11
-msgid "The address to your IMAP server."
+msgid "The address to your IMAP server. If you don't know it, just leave this at the default and use Gmail."
 msgstr ""
 
 #: modules/emailblog/pages/admin/emailblog_settings.twig:27
