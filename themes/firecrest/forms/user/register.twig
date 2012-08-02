@@ -19,7 +19,7 @@
             <label for="email">${ "E-Mail" | translate }</label>
             <input type="text" name="email" value="${ POST.email | escape }" id="email" />
         </p>
-        {% if site.enable_recaptcha %}
+        {% if site.enable_recaptcha and enabled_modules.recaptcha %}
             $captcha
         {% endif %}
         ${ trigger.call("user_register") }
