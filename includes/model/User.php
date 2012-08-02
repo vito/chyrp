@@ -47,8 +47,7 @@
          */
         static function authenticate($login, $password) {
             $sql = SQL::current();
-            $check = new self(array("login" => $login, 
-            "is_approved" => 1));
+            $check = new self(array("login" => $login, "is_approved" => 1));
 
             if ($check->no_results)
                 return false;

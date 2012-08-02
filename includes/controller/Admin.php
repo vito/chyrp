@@ -81,29 +81,26 @@
                     return $route->action = "manage_users";
 
                 # "Manage > Groups", if they can manage groups.
-                if ($visitor->group->can("edit_group") or $visitor->group->can("delete_group")){
+                if ($visitor->group->can("edit_group") or $visitor->group->can("delete_group"))
                     return $route->action = "manage_groups";
-                else{
+                else
                     show_403(__("Access Denied"), __("You do not have sufficient privileges to view this area."));
-                }
             }
 
             if (empty($route->action) or $route->action == "settings") {
                 # "General Settings", if they can configure the installation.
                 if ($visitor->group->can("change_settings")){
                     return $route->action = "general_settings";
-                }else{
+                else
                     show_403(__("Access Denied"), __("You do not have sufficient privileges to view this area."));
-                }
             }
 
             if (empty($route->action) or $route->action == "extend") {
                 # "Modules", if they can can enable/disable extensions.
-                if ($visitor->group->can("toggle_extensions")){
+                if ($visitor->group->can("toggle_extensions"))
                     return $route->action = "modules";
-                }else{
+                else
                     show_403(__("Access Denied"), __("You do not have sufficient privileges to view this area."));
-                }
             }
 
             Trigger::current()->filter($route->action, "admin_determine_action");
