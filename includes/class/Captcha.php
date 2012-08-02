@@ -8,6 +8,6 @@
      */
 
     interface Captcha {
-       public function getCaptcha();
-       public function verifyCaptcha();
+       public static function getCaptcha();
+       public static function verifyCaptcha();
     }
