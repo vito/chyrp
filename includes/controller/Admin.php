@@ -60,11 +60,10 @@
                     return $route->action = "write_post";
 
                 # "Write > Page", if they can add pages.
-                if ($visitor->group->can("add_page")){
+                if ($visitor->group->can("add_page"))
                     return $route->action = "write_page";
-                }else{
+                else
                     show_403(__("Access Denied"), __("You do not have sufficient privileges to view this area."));
-                }
             }
 
             if (empty($route->action) or $route->action == "manage") {
@@ -89,7 +88,7 @@
 
             if (empty($route->action) or $route->action == "settings") {
                 # "General Settings", if they can configure the installation.
-                if ($visitor->group->can("change_settings")){
+                if ($visitor->group->can("change_settings"))
                     return $route->action = "general_settings";
                 else
                     show_403(__("Access Denied"), __("You do not have sufficient privileges to view this area."));
