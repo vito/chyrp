@@ -559,7 +559,7 @@
                 error(__("Error"), __("Token invalid."));
 
             if (!$user->is_approved == 1) {
-                SQL::current()->query("UPDATE users SET is_approved = 1 WHERE email = '$user->email'");
+                SQL::current()->update("users", array("email" => $user->email), array("is_approved" => 1));
                 Flash::notice(__("Your account is now active. Welcome aboard!"), "/?action=login");
             } else
                 Flash::notice(__("Your account has already been activated."), "/");
