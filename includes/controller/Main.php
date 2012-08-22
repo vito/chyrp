@@ -333,7 +333,8 @@
         public function search() {
             fallback($_GET['query'], "");
             $config = Config::current();
-            $_GET['query']=strip_tags($_GET['query']);
+            $_GET['query'] = strip_tags($_GET['query']);
+
             if ($config->clean_urls and
                 substr_count($_SERVER['REQUEST_URI'], "?") and
                 !substr_count($_SERVER['REQUEST_URI'], "%2F")) # Searches with / and clean URLs = server 404
