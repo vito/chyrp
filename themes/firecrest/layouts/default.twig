@@ -46,7 +46,7 @@ ${ trigger.call("head") }
                     <form action="$site.url" method="get" accept-charset="utf-8">
                         <fieldset>
                             <input type="hidden" name="action" value="search" id="action" />
-                            <input type="text" id="search" name="query" value="${ GET.query | escape }" />
+                            <input type="text" id="search" name="query" value="${ GET.query | escape }" x-webkit-speech />
                         </fieldset>
                     </form>
                 </div>
