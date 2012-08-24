@@ -23,7 +23,7 @@
                             <option value="$image"${ image | option_selected(site.module_like.likeImage) }>$image</option>
                             {% endfor %}
                         </select>
-                        <img src="${ site.chyrp_url~"/modules/likes/images/"~site.module_like.likeImage }" alt="${ "Likes Image" | translate("likes") }" />
+                        <img src="$site.module_like.likeImage" alt="${ "Likes Image" | translate("likes") }"
                     </p>
                     <p>
                         <table>
