@@ -7,21 +7,21 @@
         }
 
         static function __uninstall($confirm) {
-            if ($confirm)
-                Like::uninstall();
+            if ($confirm) Like::uninstall();
         }
 
         static function admin_like_settings($admin) {
+            $config = Config::current();
+
             if (!Visitor::current()->group->can("change_settings"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
             if (empty($_POST))
                 return $admin->display("like_settings");
 
-            if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+            if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
                 show_403(__("Access Denied"), __("Invalid security key."));
 
-            $config = Config::current();
             $likeText = array();
             foreach($_POST as $key => $value) {
             	if (strstr($key, "likeText-")) {
@@ -30,11 +30,10 @@
             	}
             }
 
-            $likeImageUrl = $config->chyrp_url."/modules/likes/images/";
             $set = array($config->set("module_like",
                                 array("showOnFront" => isset($_POST['showOnFront']),
                                       "likeWithText" => isset($_POST['likeWithText']),
-                                      "likeImage" => $likeImageUrl.$_POST['likeImage'],
+                                      "likeImage" => $_POST['likeImage'],
                                       "isCacherOn" => isset($_POST['isCacherOn']),
                                       "likeText" => $likeText)));
 
@@ -203,6 +202,7 @@
         static function delete_user($user) {
             SQL::current()->update("likes", array("user_id" => $user->id), array("user_id" => 0));
         }
+
         public function post($post) {
             $post->has_many[] = "likes";
         }
@@ -241,17 +241,15 @@
                 # $this->text_default[6] = "Like";
                 $returnStr.= "</a>";
                 $returnStr.= "<span class='text'>";
-                if ($like->total_count == 0) {
+                if ($like->total_count == 0)
                     # $this->text_default[3] = "Be the first to like.";
                     $returnStr.= $like->getText($like->total_count, $likeSetting["likeText"][3]);
-                } elseif ($like->total_count == 1) {
+                elseif ($like->total_count == 1)
                     # $this->text_default[4] = "1 person likes this post.";
                     $returnStr= $returnStr.$like->getText($like->total_count, $likeSetting["likeText"][4]);
-                } elseif ($like->total_count > 1) {
+                elseif ($like->total_count > 1)
                     # $this->text_default[5] = "%NUM% people like this post.";
                     $returnStr.= $like->getText($like->total_count, $likeSetting["likeText"][5]);
-                }
-                # $this->text_default[7] = "Unlike";
                 $returnStr.= "</span>";
             } else {
                 $returnStr.= "<a class='liked'><img src=\"".$likeSetting["likeImage"]."\" alt='Like Post-$post->id' /></a><span class='text'>";
@@ -272,7 +270,7 @@
             if ($likeSetting["likeWithText"]) {
                 $returnStr.= "<div class='like' ".($hasPersonLiked ? 'style="display:none"' : "")."><a href=\"javascript:likes.like($post->id);\">".$likeSetting["likeText"][6]."</a></div>";
                 if ($visitor->group->can("unlike_post"))
-                    $returnStr.= "<div class='unlike' ".($hasPersonLiked ? 'style="display:block"' : "")."><a href=\"javascript:likes.unlike($post->id);\">".$likeSetting["likeText"][7]."</a></div>";
+                    $returnStr.= "<div class='unlike' ".($hasPersonLiked ? 'style="display:block"' : "")."><a href=\"javascript:likes.unlike($post->id);\">".$likeSetting["likeText"][7]."</a></div>"; # $this->text_default[7] = "Unlike";
             }
 
             $returnStr.= "</div>";
@@ -286,23 +284,18 @@
                 return $count = $like->fetchCount();
         }
 */
+
         public function getLikeImages() {
             $imagesDir = MODULES_DIR."/likes/images/";
             $images = glob($imagesDir . "*.{jpg,jpeg,png,gif}", GLOB_BRACE);
 
             foreach ($images as $image) {
                 $pattern = "/\/(\w.*)\/images\//";
-                # $replacement = Config::current()->chyrp_url."/modules/likes/images/$2";
-                return preg_replace($pattern, "", $images);
+                $image = preg_replace($pattern, "", $images);
+                while (list($key, $val) = each($image))
+                    $arr[] = Config::current()->chyrp_url."/modules/likes/images/$val";
+
+                return array_combine($image, $arr);
             }
         }
-/*
-        function feed_item($post) {
-            $config = Config::current();
-            $returnStr.= "</p><div><b></b> $settings->likeActors $settings->likeText.</div>";
-            foreach ($post->tags as $tag => $clean)
-                echo "        <category scheme=\"".$config->url."/likes/\" term=\"".likes."\" label=\"".fix($likes->total_count)."\" />\n";
-        }
-*/
     }
-    

@@ -15,15 +15,14 @@
                         <input type="checkbox" class="checkbox" name="likeWithText"${ site.module_like.likeWithText | checked } /> ${ "enabled" | translate("likes") }
                         <small>${ "Enables like with text links (i.e. Like/Unlike)." | translate("likes") }</small>
                     </p>
-                    {# modules['likes'].getLikeImages | inspect #}
                     <p>
                         <label for="likeImage">${ "Like Button Image" | translate("likes") }</label>
                         <select name="likeImage">
-                            {% for image in modules['likes'].getLikeImages %}
-                            <option value="$image"${ image | option_selected(site.module_like.likeImage) }>$image</option>
+                            {% for key, val in modules['likes'].getLikeImages | items %}
+                            <option value="$val" ${ val | option_selected(site.module_like.likeImage) }>$key</option>
                             {% endfor %}
                         </select>
-                        <img src="$site.module_like.likeImage" alt="${ "Likes Image" | translate("likes") }"
+                        <img src="$site.module_like.likeImage" alt="${ "Likes Image" | translate("likes") }" />
                     </p>
                     <p>
                         <table>
