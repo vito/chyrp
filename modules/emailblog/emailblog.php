@@ -80,6 +80,7 @@
                             imap_delete($inbox, $email_number);
 
                             $title = htmlspecialchars($overview->Subject);
+                            $title = preg_replace($subjpass,"",$title);
                             $clean = strtolower($title);
                             $body = htmlspecialchars($message);
 
