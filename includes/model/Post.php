@@ -758,17 +758,12 @@
             if ($this->no_results)
                 return false;
 
-            $user = new User($this->user_id);
-            $group = new Group($user->group_id);
-
-            $author = array("nick"    => $user->login,
-                            "name"    => oneof($user->full_name, $user->login),
-                            "website" => $user->website,
-                            "email"   => $user->email,
-                            "joined"  => $user->joined_at,
-                            "group"   => $group->name);
-
-            unset($user, $group);
+            $author = array("nick"    => $this->user->login,
+                            "name"    => oneof($this->user->full_name, $this->user->login),
+                            "website" => $this->user->website,
+                            "email"   => $this->user->email,
+                            "joined"  => $this->user->joined_at,
+                            "group"   => $this->user->group->name);
 
             return (object) $author;
         }
