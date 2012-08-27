@@ -600,28 +600,42 @@
             return ($limit) ? array_slice($list, 0, $limit) : $list ;
         }
 
-        public function list_related($post = null, $prefix = "Related: ", $suffix = null, $match = 2, $limit = 5, $link = true, $echo = true, $order_by = "id", $order = "ASC") {
+          public function list_related($post = null, $prefix = "Related: ", $suffix = null, $match = 2, $limit = 5, $link = true, $echo = true, $order_by = "id", $order = "ASC") {
             if (Route::current()->action != "view") return;
             $sql = SQL::current();
 
             $tags_list = implode(", ", $post->tags); # Get the tags of the current post
             # Get the related posts
-            $result = $sql->query("SELECT DISTINCT __post_attributes.value,
-                                        __posts.id
-                                   FROM __posts
-                                   LEFT JOIN __post_attributes ON __posts.id = __post_attributes.post_id
-                                       AND __post_attributes.name = 'tags'
+            $results = array();
+            foreach($post->tags as $key=>$tag){
+                $results[] = $sql->query("SELECT DISTINCT post_attributes.value,
+                                        posts.id
+                                   FROM posts
+                                   LEFT JOIN post_attributes ON posts.id = post_attributes.post_id
+                                       AND post_attributes.name = 'tags'
                                        AND __posts.id != ".$post->id."
-                                   WHERE __post_attributes.value LIKE '%".YAML::dump($post->tags)."%'
+                                   WHERE __post_attributes.value LIKE '%$key: \"$tag\"%'
                                    GROUP BY __post_attributes.post_".$order_by."
-                                   ORDER BY __posts.created_at ".$order."
-                                   LIMIT ".$limit)->fetchObject();
-
+                                   ORDER BY __posts.created_at ".$order)->fetchObject();
+            }
             $fallback = "There are no related posts.";
             $list = array();
             $p_count = 0;
-                    var_dump($result);
-            while ($result) {
+            $count = array();
+            foreach($results as $r){
+                if(is_object($r)){
+                    $count[$r->id]++;
+                }
+            }
+            arsort($count, SORT_NUMERIC);
+            $count = array_slice($count, 0, $limit,true);
+            foreach($results as $key=>$r){
+                if(!isset($count[$r->id])){
+                    unset($results[$key]);
+                }
+            }
+            $results=array_values($results);
+            foreach($results as $result){
                 $tmp = "<li>";
                 if ($link)
                     $tmp .= '<a href="'.$post->url($result->id).'">'.$post->title($result->id).'</a>';
