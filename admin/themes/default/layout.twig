@@ -46,11 +46,7 @@ ${ trigger.call("admin_head") }
         </ul>
         <div class="clear"></div>
         <div class="column" id="content">
-        {% if new_update == 1 %}
-        <p id="update_available" class="message">
-            ${ "Your Chyrp install is out of date. To upgrade, go <a href='%s'>here</a>" | translate | format(site.chyrp_url ~"/upgrade.php?task=upgrade") }
-        </p>
-        {% endif %}
+            {% if new_update %} $new_update {% endif %}
             {% for notice in flash.notices %}
             <p class="message yay">$notice</p>
             {% endfor %}

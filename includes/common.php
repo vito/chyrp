@@ -220,6 +220,11 @@
     #     <Route>
     require_once INCLUDES_DIR."/class/Route.php";
 
+    # File: Update
+    # See Also:
+    #     <Update>
+    require_once INCLUDES_DIR."/class/Update.php";
+
     # File: Main
     # See Also:
     #     <Main Controller>

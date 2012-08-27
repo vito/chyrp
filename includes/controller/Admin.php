@@ -32,14 +32,14 @@
             $this->admin_theme = fallback(Config::current()->admin_theme, "default");
 
             $this->theme = new Twig_Loader(MAIN_DIR."/admin/themes/".$this->admin_theme,
-                                           (is_writable(INCLUDES_DIR."/caches") and !DEBUG) ?
-                                               INCLUDES_DIR."/caches" :
-                                               null);
+                                            (is_writable(INCLUDES_DIR."/caches") and !DEBUG) ?
+                                                INCLUDES_DIR."/caches" :
+                                                null);
 
             $this->default = new Twig_Loader(MAIN_DIR."/admin/themes/default",
-                                             (is_writable(INCLUDES_DIR."/caches") and !DEBUG) ?
-                                                 INCLUDES_DIR."/caches" :
-                                                 null);
+                                            (is_writable(INCLUDES_DIR."/caches") and !DEBUG) ?
+                                                INCLUDES_DIR."/caches" :
+                                                null);
         }
 
         /**
@@ -2185,6 +2185,22 @@
         }
 
         /**
+         * Function: update
+         * Chyrp Update.
+         */
+        public function update() {
+            if (!Visitor::current()->group->can("change_settings"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to perform the update."));
+
+            if (isset($_GET['get_update']))
+                return $this->display("update",
+                                array("updating" => Update::get_update()));
+            else
+                return $this->display("update",
+                                array("changelog" => Update::get_changelog()));
+        }
+
+        /**
          * Function: help
          * Sets the $title and $body for various help IDs.
          */
@@ -2355,7 +2371,7 @@
             $this->context["site"]       = Config::current();
             $this->context["visitor"]    = $visitor;
             $this->context["logged_in"]  = logged_in();
-            $this->context["new_update"] = update_check();
+            $this->context["new_update"] = Update::check_update();
             $this->context["route"]      = $route;
             $this->context["hide_admin"] = isset($_SESSION["hide_admin"]);
             $this->context["now"]        = time();

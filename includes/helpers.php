@@ -1657,21 +1657,33 @@
     }
 
     /**
-     * Function: update_check
-     * Checks for new versions of Chyrp.
+     * Function: delete_dir
+     * Removes directories recursively.
      *
-     * Returns:
-     *     Boolean
+     * License GPLv2, Source http://candycms.org/
      */
-    function update_check() {
-        if (!defined('CHECK_UPDATES') or CHECK_UPDATES == false)
-            return;
+    function delete_dir($dir) {
+       if (substr($dir, strlen($dir)-1, 1) != '/')
+           $dir .= '/';
 
-        $version = file_get_contents("http://chyrp.net/api/v1/chyrp_version.php");
-        if ($version > CHYRP_VERSION)
-            return true;
-        else
-            return false;
+       if ($handle = opendir($dir)) {
+           while ($obj = readdir($handle)) {
+               if ($obj != '.' && $obj != '..')
+                   if (is_dir($dir.$obj))
+                       if (!delete_dir($dir.$obj))
+                           return false;
+                   elseif (is_file($dir.$obj))
+                       if (!unlink($dir.$obj)) 
+                           return false; 
+           }
+
+           closedir($handle);
+
+           if (!@rmdir($dir))
+               return false;
+           return true;
+       }
+       return false;
     }
 
     /**
