@@ -109,38 +109,11 @@
         }
 
         /**
-         * Function: write
-         * Post writing.
-         */
-        public function write_post() {
-            $visitor = Visitor::current();
-
-            if (!$visitor->group->can("add_post", "add_draft"))
-                show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
-
-            $config = Config::current();
-
-            if (empty($config->enabled_feathers))
-                error(__("No Feathers"), __("Please install a feather or two in order to add a post."));
-
-            Trigger::current()->filter($options, array("write_post_options", "post_options"));
-
-            fallback($_GET['feather'], reset($config->enabled_feathers));
-
-            $this->display("write_post",
-                           array("groups" => Group::find(array("order" => "id ASC")),
-                                 "options" => $options,
-                                 "feathers" => Feathers::$instances,
-                                 "feather" => Feathers::$instances[$_GET['feather']]));
-        }
-
-        /**
          * Function: bookmarklet
          * Post writing, from the bookmarklet.
          */
         public function bookmarklet() {
-            $visitor = Visitor::current();
-            if (!$visitor->group->can("add_post", "add_draft"))
+            if (!Visitor::current()->group->can("add_post", "add_draft"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
             $config = Config::current();
@@ -170,11 +143,36 @@
         }
 
         /**
+         * Function: write
+         * Post writing.
+         */
+        public function write_post() {
+            if (!Visitor::current()->group->can("add_post", "add_draft"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
+
+            $config = Config::current();
+
+            if (empty($config->enabled_feathers))
+                error(__("No Feathers"), __("Please install a feather or two in order to add a post."));
+
+            Trigger::current()->filter($options, array("write_post_options", "post_options"));
+
+            fallback($_GET['feather'], reset($config->enabled_feathers));
+
+            $this->display("write_post",
+                           array("groups" => Group::find(array("order" => "id ASC")),
+                                 "options" => $options,
+                                 "feathers" => Feathers::$instances,
+                                 "feather" => Feathers::$instances[$_GET['feather']]));
+        }
+
+        /**
          * Function: add_post
          * Adds a post when the form is submitted.
          */
         public function add_post() {
             $visitor = Visitor::current();
+
             if (!$visitor->group->can("add_post", "add_draft"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
