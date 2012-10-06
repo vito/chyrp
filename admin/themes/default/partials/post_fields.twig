@@ -17,7 +17,7 @@
                         </label>
                         {% if field.type == "text" or field.type == "file" %}
                         <input class="$field.type{% if field.classes %} ${ field.classes | join(" ") }{% endif %}" type="$field.type" name="$field.attr" value="{% if not field.no_value %}${ field.value | fallback(post[field.attr] | escape(true, false)) }{% endif %}" id="${ field.attr }_field" />
-                        {% if post.filename and route.action == "edit_post" %}
+                        {% if field.type == "file" and post.filename and route.action == "edit_post" %}
                         <em>Current file name: <strong>${ post.filename | escape('') }</strong></em>
                         {% endif %}
                         {% elseif field.type == "text_block" %}

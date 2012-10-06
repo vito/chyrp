@@ -724,7 +724,7 @@ div.post.chat li .label {
 div.post.chat li.me .label {
     color: #AB2F26;
 }
-div.post.photo img {
+div.post.photo img, div.post.text img {
     max-width: 510px;
     margin: -20px 0px 20px -20px;
 }
