@@ -84,10 +84,10 @@
 
         public function filter_post($post) {
             if ($post->feather != "text") return;
-            $post->featured_image = $this->image_tag($post, 510);
+            $post->image = $this->image_tag($post, 510);
         }
 
-        public function featured_image($post, $max_width = 500, $max_height = null, $more_args = "quality=100") {
+        public function image_link($post, $max_width = 500, $max_height = null, $more_args = "quality=100") {
             return '<a href="'.uploaded($post->filename).'">'.$this->image_tag($post, $max_width, $max_height, $more_args).'</a>';
         }
 

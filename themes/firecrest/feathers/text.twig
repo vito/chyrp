@@ -6,7 +6,6 @@
                             <a href="$post.url" rel="bookmark" title="${ "Permanent Link to" | translate } &quot;$post.title&quot;">$post.title</a>
                         </h2>
 {% endif %}
-								$post.featured_image
-								{# feathers['text'].featured_image(post, 510) #}
+                        ${ feathers['text'].image_link(post, 510) }
                         <p>${ post.body | read_more }</p>
 {% endblock %}
