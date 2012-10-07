@@ -8,6 +8,7 @@
                                   "rows" => 4,
                                   "label" => __("Video", "video"),
                                   "preview" => true,
+                                  "help" => "video_embed",
                                   "bookmarklet" => $this->isVideo() ? "url" : "")) ;
             $this->setField(array("attr" => "caption",
                                   "type" => "text_block",
@@ -23,6 +24,7 @@
             $this->setFilter("caption", array("markup_text", "markup_post_text"));
 
             $this->respondTo("preview_video", "embed_tag");
+            $this->respondTo("help_video_embed", "help");
         }
 
         public function submit() {
@@ -96,5 +98,18 @@
 
             $AE = new AutoEmbed();
             return $result = $AE->parseUrl($_GET['url']) ? true : false ;
+        }
+
+        public function help() {
+            $title = __("Video Embeds", "video");
+
+            $body = "<p>".__("Chyrp will automatically parse a video URL and create the right embed code for you. ", "video");
+            $body.= __("You can simply enter the URL to a video:", "video")."</p>\n";
+            $body.= "<p><code>http://www.youtube.com/watch?v=SomeVideo</code></p>";
+
+            $body.= "<p>".__("Although AutoEmbed supports most of the major video hosting sites, i.e. YouTube, Vimeo, DailyMotion, Blip.tv, etc.", "video");
+            $body.= __("you may still paste the respective video embed code accordingly.", "video")."</p>";
+
+            return array($title, $body);
         }
     }
