@@ -20,6 +20,12 @@ $(function(){
             $(this).val($(this).val().replace(/([^\\]|^)\\ct/gm, "  "))
     })
 
+    // Use RedactorJS for <textarea> elements.
+    var elements = ["#body_field", "#quote_field", "#description_field", "#caption_field", "#dialogue_field", "#body"];
+    $.each(elements, function(index, element) {
+        $(element).redactor();
+    });
+
     // Automated PNG fixing.
     $.ifixpng("<?php echo $config->chyrp_url; ?>/admin/themes/default/images/icons/pixel.gif")
     $("img[src$=.png]").ifixpng()
@@ -163,13 +169,13 @@ var Write = {
     },
     auto_expand_fields: function(){
         $("input.text").expand()
-        $("textarea").each(function(){
-            $(this).css({
-                minHeight: $(this).outerHeight() + 24,
-                lineHeight: "18px",
-                padding: "3px 5px"
-            }).autogrow()
-        })
+        $(".redactor_editor").each(function(){
+                     $(this).css({
+                         minHeight: $(this).outerHeight() + 24,
+                         lineHeight: "18px",
+                         padding: "3px 5px"
+                     }).autogrow()
+                 })
     },
     sortable_feathers: function(){
         // Make the Feathers sortable

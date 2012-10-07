@@ -3,7 +3,7 @@
     # Use zlib to provide GZIP compression
     define('USE_ZLIB', true);
 
-    $valid_files = "jquery.js plugins.js";
+    $valid_files = "jquery.js plugins.js redactor/redactor.min.js";
     if (!in_array($_GET['file'], explode(" ", $valid_files)) and strpos($_GET['file'], "/themes/") === false)
         exit("Access Denied.");
 
