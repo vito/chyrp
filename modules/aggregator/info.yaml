@@ -1,9 +1,0 @@
-name: Aggregator
-url: http://chyrp.net/
-version: 1.0
-description: Pulls content RSS2/Atom feeds into your Chyrp installation as posts.
-author:
-  name: Alex Suraci
-  url: http://chyrp.net/
-notifications:
-  - Please remember to update the permission settings for your group in order to add aggregates.

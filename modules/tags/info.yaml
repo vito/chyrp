@@ -1,8 +1,0 @@
-name: Tagginator
-url: http://chyrp.net/
-version: 2.0.1
-description: Adds tagging functionality to posts, allowing organization, grouping, and adding keywords to posts.
-author:
-  name: Alex Suraci
-  url: http://ecks.tc/
-confirm: Do you want to remove your Tags from the database?
