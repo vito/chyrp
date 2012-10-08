@@ -46,8 +46,7 @@
          *     @true@ or @false@
          */
         static function authenticate($login, $password) {
-            $sql = SQL::current();
-            $check = new self(array("login" => $login, "is_approved" => 1));
+            $check = new self(array("login" => $login));
 
             if ($check->no_results)
                 return false;
@@ -60,7 +59,7 @@
                     # it on authentication to the new hashing scheme.
                     $check->update(null, self::hashPassword($password));
                     return true;
-                } elseif ($sql->adapter == "mysql") {
+                } elseif (SQL::current()->adapter == "mysql") {
                     # Some imports might use MySQL password hashing (such as MovableType 3).
                     # Try those too, and update the user if they match.
                     if ($password == $check->password) {
@@ -110,7 +109,7 @@
             if (empty($group))
                 $group_id = $config->default_group;
             else
-                $group_id = ($group instanceof Group) ? $group->id : $group;
+                $group_id = ($group instanceof Group) ? $group->id : $group ;
             
             $new_values = array("login"     => strip_tags($login),
                                 "password"  => ($hash_password ? self::hashPassword($password) : $password),

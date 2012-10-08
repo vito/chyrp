@@ -498,7 +498,7 @@
                 elseif (count(User::find(array("where" => array("login" => $_POST['login'])))))
                     Flash::warning(__("That username is already in use."));
 
-                if (empty($_POST['password1']) and empty($_POST['password2']))
+                if (empty($_POST['password1']))
                     Flash::warning(__("Password cannot be blank."));
                 elseif ($_POST['password1'] != $_POST['password2'])
                     Flash::warning(__("Passwords do not match."));
@@ -512,14 +512,12 @@
                     if ($config->email_activation) {
                         $to      = $_POST['email'];
                         $subject = _f($config->name." Registration Pending");
-                        $message = _f("Hello, ".$_POST['login'].".\n\nYou are receiving this message because you recently registered at ".$config->chyrp_url."\nTo complete your registration, go to ".$config->chyrp_url."/?action=validate&login=".fix($_POST['login'])."&token=");
+                        $message = _f("Hello, ".fix($_POST['login']).".\n\nYou are receiving this message because you recently registered at ".$config->chyrp_url."\nTo complete your registration, go to ".$config->chyrp_url."/?action=validate&login=".fix($_POST['login'])."&token=".sha1($_POST['login'].$_POST['email']));
                         $headers = "From:".$config->email."\r\n" .
                                    "Reply-To:".$config->email. "\r\n" .
                                    "X-Mailer: PHP/".phpversion() ;
 
-                        $user = User::add($_POST['login'], $_POST['password1'], $_POST['email']);
-                        $message .= md5($_POST['email'] . $user->id);
-
+                        $user = User::add($_POST['login'], $_POST['password1'], $_POST['email'], "", "", 5);
                         $sent = email($to, $subject, $message, $headers);
 
                         if ($sent)
@@ -540,7 +538,8 @@
 
             $this->display("forms/user/register", array(), __("Register"));
         }
-         /**
+
+        /**
          * Function: validate
          * Approves a user registration for a given email.
          */
@@ -548,23 +547,27 @@
             if (logged_in())
                 error(__("Error"), __("You're already logged in."));
 
-            if (!$_GET['token'])
+            if (empty($_GET['token']))
                 error(__("Error"), __("No token found."));
 
-            $user = new User(array("login" => fix($_GET['login'])));
+            $user = new User(array("login" => strip_tags($_GET['login'])));
 
             if ($user->no_results)
                 Flash::warning(__("A user with that email doesn't seem to exist in our database."), "/");
 
-            if (md5($user->email . $user->id) != $_GET['token'])
-                error(__("Error"), __("Token invalid."));
+            if (sha1($user->login.$user->email) !== $_GET['token'])
+                error(__("Error"), __("Invalid token."));
 
-            if (!$user->is_approved == 1) {
-                SQL::current()->update("users", array("email" => $user->email), array("is_approved" => 1));
+            if ($user->is_approved != 1 or $user->group_id != 5) {
+                SQL::current()->update("users",
+                                 array("login" => $user->login),
+                                 array("is_approved" => 1, "group_id" => 2));
+
                 Flash::notice(__("Your account is now active. Welcome aboard!"), "/?action=login");
             } else
                 Flash::notice(__("Your account has already been activated."), "/");
         }
+
         /**
          * Function: login
          * Process logging in. If the username and password are incorrect or if the user is already logged in, it will error.
