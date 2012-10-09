@@ -31,8 +31,6 @@
            if (!isset($_POST['filename'])) {
                if (isset($_FILES['featured_image']) and $_FILES['featured_image']['error'] == 0)
                    $filename = upload($_FILES['featured_image'], array("jpg", "jpeg", "png", "gif", "bmp"));
-               else
-                   error(__("Error"), __("Couldn't upload photo."));
            } else
                $filename = $_POST['filename'];
 
