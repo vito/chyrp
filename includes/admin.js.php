@@ -21,10 +21,19 @@ $(function(){
     })
 
     // Use RedactorJS for <textarea> elements.
-    var elements = ["#body_field", "#quote_field", "#description_field", "#caption_field", "#dialogue_field", "#body"];
-    $.each(elements, function(index, element) {
-        $(element).redactor();
-    });
+    var fullStack = ["#body_field", "#body"]
+    $.each(fullStack, function(index, element) {
+        $(element).redactor({ minHeight: 140 })
+    })
+
+    var miniStack = ["#quote_field", "#description_field", "#caption_field", "#dialogue_field"]
+    $.each(miniStack, function(index, element) {
+        $(element).redactor({
+            buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|',
+                        'unorderedlist', 'orderedlist', 'link'],
+            minHeight: 140
+        })
+    })
 
     // Automated PNG fixing.
     $.ifixpng("<?php echo $config->chyrp_url; ?>/admin/themes/default/images/icons/pixel.gif")
@@ -169,13 +178,13 @@ var Write = {
     },
     auto_expand_fields: function(){
         $("input.text").expand()
-        $(".redactor_editor").each(function(){
-                     $(this).css({
-                         minHeight: $(this).outerHeight() + 24,
-                         lineHeight: "18px",
-                         padding: "3px 5px"
-                     }).autogrow()
-                 })
+        // $(".redactor_editor").each(function(){
+        //              $(this).css({
+        //                  minHeight: $(this).outerHeight() + 24,
+        //                  lineHeight: "18px",
+        //                  padding: "3px 5px"
+        //              }).autogrow()
+        //          })
     },
     sortable_feathers: function(){
         // Make the Feathers sortable
