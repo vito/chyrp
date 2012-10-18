@@ -24,7 +24,7 @@ $(function(){
         });
 
     if ($("#debug").size())
-        $("#wrapper").css("padding-bottom", $("#debug").height());
+        $("#container").css("padding-bottom", $("#debug").height());
 
     $("#debug .toggle").click(function(){
         if (Cookie.get("hide_debug") == "true") {
@@ -35,10 +35,17 @@ $(function(){
             Cookie.set("hide_debug", "true", 30);
             $("#debug").animate({ height: 15 });
             $("#debug ul li").each(function(){
-                $("<span class=\"sub\"> | "+ $(this).html() +"</span>").appendTo("#debug h5").first();
+                $("<span class=\"sub\"> | "+ $(this).html() +"</span>").appendTo("#debug h5:first-child");
             })
         }
     })
+
+    if (Cookie.get("hide_debug") == "true") {
+        $("#debug").height(15);
+        $("#debug ul li").each(function(){
+            $("<span class=\"sub\"> | "+ $(this).html() +"</span>").appendTo("#debug h5:first-child");
+        })
+    }
 
     $("input#slug").live("keyup", function(e){
         if (/^([a-zA-Z0-9\-\._:]*)$/.test($(this).val()))
@@ -46,13 +53,6 @@ $(function(){
         else
             $(this).css("background", "#ff2222")
     })
-
-    if (Cookie.get("hide_debug") == "true") {
-        $("#debug").height(15);
-        $("#debug ul li").each(function(){
-            $("<span class=\"sub\"> | "+ $(this).html() +"</span>").appendTo("#debug h5").first();
-        })
-    }
 
 	WebFontConfig = {
 	  google: { families: [ 'Droid+Serif:400,400italic:latin' ] }

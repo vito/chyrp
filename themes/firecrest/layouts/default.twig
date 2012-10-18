@@ -14,7 +14,7 @@
         $theme.feeds
         $theme.stylesheets
         $theme.javascripts
-${ trigger.call("head") }
+    ${ trigger.call("head") }
     </head>
     <body>
         {% if visitor.group.can("add_post", "add_draft", "add_page", "view_own_draft", "view_draft", "change_settings", "toggle_extensions") %}
@@ -82,8 +82,8 @@ ${ trigger.call("head") }
                 </div>
             </div>
         </div>
+        ${ trigger.call("end_content") }
         {% include "content/debug.twig" %}
         <!-- Queries: $sql_queries | Load Time: $theme.load_time -->
-        ${ trigger.call("end_content") }
     </body>
 </html>
