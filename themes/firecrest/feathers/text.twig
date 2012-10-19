@@ -6,8 +6,5 @@
                             <a href="$post.url" rel="bookmark" title="${ "Permanent Link to" | translate } &quot;$post.title&quot;">$post.title</a>
                         </h2>
 {% endif %}
-{% if post['filename'] %}
-                        ${ feathers['text'].image_link(post, 510) }
-{% endif %}
                         <p>${ post.body | read_more }</p>
 {% endblock %}
