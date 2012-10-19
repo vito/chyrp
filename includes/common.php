@@ -11,12 +11,12 @@
      *     Modified MIT (See COPYING)
      *
      * Chyrp Copyright:
-     *     Copyright (c) 2012 The Chyrp Team (See AUTHORS)
+     *     Copyright (c) 2012 Chyrp Team (See AUTHORS)
      */
 
     # Constant: CHYRP_VERSION
     # Chyrp's version number.
-    define('CHYRP_VERSION', "2.5b2");
+    define('CHYRP_VERSION', "2.5b3");
 
     # Constant: DEBUG
     # Should Chyrp use debugging processes?
