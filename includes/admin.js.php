@@ -23,7 +23,10 @@ $(function(){
     // Use RedactorJS for <textarea> elements.
     var fullStack = ["#body_field", "#body"]
     $.each(fullStack, function(index, element) {
-        $(element).redactor({ minHeight: 140 })
+        $(element).redactor({
+                        imageUpload: "../includes/uploader.php",
+                        imageGetJson: "../includes/uploader.php",
+                        minHeight: 140 })
     })
 
     var miniStack = ["#quote_field", "#description_field", "#caption_field", "#dialogue_field"]
