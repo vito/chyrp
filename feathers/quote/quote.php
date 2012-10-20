@@ -24,7 +24,7 @@
                 error(__("Error"), __("Quote can't be empty.", "quote"));
 
             return Post::add(array("quote" => $_POST['quote'],
-                                    "source" => $_POST['source']),
+                                   "source" => $_POST['source']),
                              $_POST['slug'],
                              Post::check_url($_POST['slug']));
         }
