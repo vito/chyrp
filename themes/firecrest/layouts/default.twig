@@ -77,7 +77,7 @@
                 <div class="clear"></div>
                 <div id="footer">
                     <p>${ "Powered by <a class=\"chyrp\" href=\"http://chyrp.net/\">Chyrp</a>" | translate } | 
-                        Firecrest Theme &copy; 2012 <a href="http://poenta.me">Poenta</a></p>
+                       ${ "Firecrest Theme &copy; %d, Chyrp Team" | format("now" | date("Y")) }</p>
                     <a class="atom" href="{% url "feed" %}">atom</a>
                 </div>
             </div>

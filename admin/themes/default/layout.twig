@@ -64,7 +64,7 @@ ${ trigger.call("admin_head") }
         <div class="column" id="footer">
             ${ "Chyrp loves you." | translate }<br />
             <span class="sub">
-                ${ "v%s &dash; &copy; %d Chyrp Team" | translate | format(version, 2011) }
+                ${ "v%s &dash; &copy; %d, Chyrp Team" | translate | format(version, "now" | date("Y")) }
             </span>
         </div>
     </body>
