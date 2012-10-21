@@ -1,0 +1,42 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "EmailBlog Settings" | translate("emailblog") }{% endblock %}
+
+{% block content %}
+            <form id="comment_settings" class="split" action="{% admin "emailblog_settings" %}" method="post">
+                <fieldset>
+                    <p>
+                        <label for="server">${ "IMAP Server" | translate("emailblog") }</label>
+                        <input class="text" type="text" name="server" value="${ site.emailblog_server | escape }" id="email" />
+                        <small>${ "The address to your IMAP server. If you don't know it, just leave this at the default and use Gmail." | translate("emailblog") }</small>
+                    </p>
+                    <p>
+                        <label for="email">${ "Username" | translate("emailblog") }</label>
+                        <input class="text" type="text" name="email" value="${ site.emailblog_address | escape }" id="email" />
+                        <small>${ "Your username on the IMAP server, usually your email." | translate("emailblog") }</small>
+                    </p>
+                     <p>
+                        <label for="pass">${ "Email Password" | translate("emailblog") }</label>
+                        <input class="text" type="text" name="pass" value="${ site.emailblog_pass | escape }" id="email" />
+                        <small>${ "Password to the above email address" | translate("emailblog") }</small>
+                    </p>
+                    <p>
+                        <label for="subjpass">${ "Email Filter" | translate("emailblog") }</label>
+                        <input class="text" type="text" name="subjpass" value="${ site.emailblog_subjpass | escape }" id="email" />
+                        <small>${ "You must set the subject of your email that you want to post to match this exactly." | translate("emailblog") }
+                        </small>
+                    </p>
+                    <p>
+                        <label for="minutes">${ "Check for new Messages Every __ Minutes" | translate("emailblog") }</label>
+                        <input class="text" type="text" name="minutes" value="${ site.emailblog_minutes | escape }" id="email" />
+                        <small>${ "Decreasing the time between will result in faster posting but a slower site." | translate("emailblog") }</small>
+                    </p>
+
+                    <p class="buttons">
+                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.png" alt="success" />${ "Update" | translate }</button>
+                    </p>
+
+                    <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+                </fieldset>
+            </form>
+{% endblock %}

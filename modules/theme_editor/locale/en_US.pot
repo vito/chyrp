@@ -1,0 +1,38 @@
+# Chyrp v2.5 Translation File.
+# Copyright (C) 2012 The Chyrp Team
+# This file is distributed under the same license as the Chyrp v2.5 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Chyrp v2.5\n"
+"Report-Msgid-Bugs-To: email@chyrp.net\n"
+"POT-Creation-Date: 2012-04-08 12:45+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
+"Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: modules/theme_editor/pages/admin/theme_editor.twig:25
+msgid "Update"
+msgstr ""
+
+#: modules/theme_editor/info.yaml:6
+msgid "Allows you to edit twig files from the dashboard"
+msgstr ""
+
+#: modules/theme_editor/pages/admin/theme_editor.twig:9
+msgid "Theme Files"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:8
+#: modules/theme_editor/theme_editor.php:27
+#: modules/theme_editor/pages/admin/theme_editor.twig:3
+#: modules/theme_editor/info.yaml:1
+msgid "Theme Editor"
+msgstr ""
+

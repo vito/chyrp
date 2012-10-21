@@ -1,0 +1,9 @@
+name: Markdown
+url: http://chyrp.net/
+version: 2.5
+description: A Markdown wrapper for posts, pages, and comments. Uses <a href="http://michelf.com/projects/php-markdown/">PHP Markdown Extra 1.2.5</a>.
+author:
+  name: Chyrp Team
+  url: http://chyrp.net/
+conflicts:
+  - textilize
