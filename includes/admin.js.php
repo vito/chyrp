@@ -20,12 +20,14 @@ $(function(){
             $(this).val($(this).val().replace(/([^\\]|^)\\ct/gm, "  "))
     })
 
+    <?php if (Config::current()->enable_wysiwyg) : ?>
     // Use RedactorJS for <textarea> elements.
     var fullStack = ["#body_field", "#body"]
     $.each(fullStack, function(index, element) {
-        $(element).redactor({ 
-                        imageUpload: "../includes/uploader.php",
-                        minHeight: 140 })
+        $(element).redactor({
+            minHeight: 140,
+            imageUpload: "../includes/uploader.php",
+       })
     })
 
     var miniStack = ["#quote_field", "#description_field", "#caption_field", "#dialogue_field"]
@@ -36,6 +38,7 @@ $(function(){
             minHeight: 140
         })
     })
+    <?php endif; ?>
 
     // Automated PNG fixing.
     $.ifixpng("<?php echo $config->chyrp_url; ?>/admin/themes/default/images/icons/pixel.gif")
