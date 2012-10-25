@@ -164,7 +164,7 @@
 
     header("Last-Modified: ".gmdate("D, d M Y H:i:s", filemtime($filename))." GMT");
     header("Content-type: ".$mime);
-    header("Content-Disposition: inline; filename=".$cache_filename.".".$extension);
+    header("Content-Disposition: inline; filename=".$filename.".".$extension);
 
     if ($done == "imagepng")
         imagesavealpha($thumbnail, true);
