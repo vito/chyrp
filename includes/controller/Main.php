@@ -488,11 +488,6 @@
                 error(__("Error"), __("You're already logged in."));
 
             if (!empty($_POST)) {
-                $route = Route::current();
-                if ($config->enable_recaptcha)
-                    if (!check_captcha())
-                        Flash::warning(__("Incorrect captcha code. Please try again."));
-
                 if (empty($_POST['login']))
                     Flash::warning(__("Please enter a username for your account."));
                 elseif (count(User::find(array("where" => array("login" => $_POST['login'])))))
@@ -507,6 +502,9 @@
                     Flash::warning(__("E-mail address cannot be blank."));
                 elseif (!preg_match("/^[_A-z0-9-]+((\.|\+)[_A-z0-9-]+)*@[A-z0-9-]+(\.[A-z0-9-]+)*(\.[A-z]{2,4})$/", $_POST['email']))
                     Flash::warning(__("Invalid e-mail address."));
+
+                if ($config->enable_recaptcha and !check_captcha())
+                    Flash::warning(__("Incorrect captcha code. Please try again."));
 
                 if (!Flash::exists("warning")) {
                     if ($config->email_activation) {
