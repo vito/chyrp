@@ -608,11 +608,11 @@
             # Get the related posts
             $results = array();
             foreach($post->tags as $key=>$tag){
-                $results[] = $sql->query("SELECT DISTINCT post_attributes.value,
-                                        posts.id
-                                   FROM posts
-                                   LEFT JOIN post_attributes ON posts.id = post_attributes.post_id
-                                       AND post_attributes.name = 'tags'
+                $results[] = $sql->query("SELECT DISTINCT __post_attributes.value,
+                                        __posts.id
+                                   FROM __posts
+                                   LEFT JOIN __post_attributes ON __posts.id = __post_attributes.post_id
+                                       AND __post_attributes.name = 'tags'
                                        AND __posts.id != ".$post->id."
                                    WHERE __post_attributes.value LIKE '%$key: \"$tag\"%'
                                    GROUP BY __post_attributes.post_".$order_by."
