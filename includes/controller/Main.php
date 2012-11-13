@@ -674,22 +674,21 @@
 
                 $new_password = random(16);
 
-                $user->update($user->login,
-                              User::hashPassword($new_password),
-                              $user->email,
-                              $user->full_name,
-                              $user->website,
-                              $user->group_id);
-
                 $sent = email($user->email,
                               __("Lost Password Request"),
                               _f("%s,\n\nWe have received a request for a new password for your account at %s.\n\nPlease log in with the following password, and feel free to change it once you've successfully logged in:\n\t%s",
                                  array($user->login, Config::current()->name, $new_password)));
 
-                if ($sent)
-                    Flash::notice(_f("An e-mail has been sent to your e-mail address that contains a new password. Once you have logged in, you can change it at <a href=\"%s\">User Controls</a>.",
-                                  array(url("controls"))));
-                else {
+                if ($sent) {
+                    $user->update($user->login,
+                                  User::hashPassword($new_password),
+                                  $user->email,
+                                  $user->full_name,
+                                  $user->website,
+                                  $user->group_id);
+
+                    Flash::notice(_f("An e-mail has been sent to your e-mail address that contains a new password. Once you have logged in, you can change it at <a href=\"%s\">User Controls</a>.", array(url("controls"))));
+                } else {
                     # Set their password back to what it was originally.
                     $user->update($user->login,
                                   $user->password,
