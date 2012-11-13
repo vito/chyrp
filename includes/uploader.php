@@ -6,22 +6,19 @@
 
     ini_set("html_errors", "0");
 
-    $route = Route::current(MainController::current());
+    $config = Config::current();
 
-    if (!empty($_FILES)) {
+    if (!empty($_FILES) or $_FILES['file']['error'] != 0) {
         $_FILES['file']['type'] = strtolower($_FILES['file']['type']);
 
         # Verify that the file being uploaded is of a supported type
-        if ($_FILES['file']['type'] == 'image/png' 
-         || $_FILES['file']['type'] == 'image/jpg' 
-         || $_FILES['file']['type'] == 'image/gif' 
-         || $_FILES['file']['type'] == 'image/jpeg'
-         || $_FILES['file']['type'] == 'image/pjpeg') {
+        if ($_FILES['file']['type'] == "image/png"
+         || $_FILES['file']['type'] == "image/jpg"
+         || $_FILES['file']['type'] == "image/gif"
+         || $_FILES['file']['type'] == "image/jpeg"
+         || $_FILES['file']['type'] == "image/pjpeg") {
 
-            $path = Config::current()->chyrp_url."/uploads/";
-            # setting file's mysterious name
-            //$file = $dir.md5(date('YmdHis')).'.jpg';
-
+            $path = $config->chyrp_url.$config->uploads_path;
             $file = upload($_FILES['file'], array("jpg", "jpeg", "gif", "png", "bmp"));
 
             # Send the JSON back to the browser for Redactor

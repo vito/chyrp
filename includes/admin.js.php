@@ -27,7 +27,8 @@ $(function(){
         $(element).redactor({
             minHeight: 140,
             imageUpload: "../includes/uploader.php",
-       })
+            imageGetJson: "../includes/uploaded.php"
+        })
     })
 
     var miniStack = ["#quote_field", "#description_field", "#caption_field", "#dialogue_field"]
