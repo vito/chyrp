@@ -23,64 +23,16 @@
             Group::remove_permission("edit_aggregate");
             Group::remove_permission("delete_aggregate");
         }
-        
-        function get_xml_remote($url) {
-            extract(parse_url($url), EXTR_SKIP);
-
-            if (ini_get("allow_url_fopen")) {
-                $context = stream_context_create(array('http'=>array('user_agent'=>"Chyrp/".CHYRP_VERSION)));
-                $content = @file_get_contents($url,false,$context);
-                if (!((strpos($http_response_header[0], " 200 ")) || (strpos($http_response_header[0], " 301 ")) || (strpos($http_response_header[0], " 302 ")) || (strpos($http_response_header[0], " 303 ")) || (strpos($http_response_header[0], " 307 "))))
-                    $content = "Server returned a message: $http_response_header[0]";
-            } elseif (function_exists("curl_init")) {
-                $handle = curl_init();
-                curl_setopt($handle, CURLOPT_URL, $url);
-                curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, 1);
-                curl_setopt($handle, CURLOPT_FOLLOWLOCATION, True);
-                curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($handle, CURLOPT_TIMEOUT, 60);
-                curl_setopt($handle, CURLOPT_USERAGENT, 'Chyrp/'.CHYRP_VERSION);
-                $content = curl_exec($handle);
-                $status = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-                curl_close($handle);
-                if (!(($status == 200) || ($status == 301) || ($status == 302) || ($status == 303) || ($status == 307)))
-                    $content = "Server returned a message: $status";
-            } else {
-                $path = (!isset($path)) ? '/' : $path ;
-                if (isset($query)) $path.= '?'.$query;
-                $port = (isset($port)) ? $port : 80 ;
-
-                $connect = @fsockopen($host, $port, $errno, $errstr, 2);
-                if (!$connect) return false;
-
-                # Send the GET headers
-                fwrite($connect, "GET ".$path." HTTP/1.1\r\n");
-                fwrite($connect, "Host: ".$host."\r\n");
-                fwrite($connect, "User-Agent: Chyrp/".CHYRP_VERSION."\r\n\r\n");
-
-                $content = "";
-                while (!feof($connect)) {
-                    $line = fgets($connect, 128);
-                    if (preg_match("/\r\n/", $line)) continue;
-
-                    $content.= $line;
-                }
-
-                fclose($connect);
-            }
-
-            return $content;
-        }
 
         public function main_index($main) {
             $config = Config::current();
             if ($config->disable_aggregation or time() - $config->last_aggregation < ($config->aggregate_every * 60))
-                exit;
+                return;
 
             $aggregates = (array) $config->aggregates;
 
             if (empty($aggregates))
-                exit;
+                return;
 
             foreach ($aggregates as $name => $feed) {
                 $xml_contents = preg_replace(array("/<(\/?)dc:date>/", "/xmlns=/"),
@@ -127,7 +79,7 @@
 
                         Post::add($data, $clean, null, $feed["feather"], $feed["author"],
                                   false,
-                                  $feed['status'],
+                                  $feed["status"],
                                   datetime($created),
                                   datetime($updated));
 
@@ -138,7 +90,6 @@
 
             $config->set("aggregates", $aggregates);
             $config->set("last_aggregation", time());
-            return true;
         }
 
         public function admin_manage_aggregates($admin) {
@@ -183,6 +134,54 @@
                 $navs["aggregation_settings"] = array("title" => __("Aggregation", "aggregator"));
 
             return $navs;
+        }
+
+        private function get_xml_remote($url) {
+            extract(parse_url($url), EXTR_SKIP);
+
+            if (ini_get("allow_url_fopen")) {
+                $context = stream_context_create(array('http'=>array('user_agent'=>"Chyrp/".CHYRP_VERSION)));
+                $content = @file_get_contents($url,false,$context);
+                if (!((strpos($http_response_header[0], " 200 ")) || (strpos($http_response_header[0], " 301 ")) || (strpos($http_response_header[0], " 302 ")) || (strpos($http_response_header[0], " 303 ")) || (strpos($http_response_header[0], " 307 "))))
+                    $content = "Server returned a message: $http_response_header[0]";
+            } elseif (function_exists("curl_init")) {
+                $handle = curl_init();
+                curl_setopt($handle, CURLOPT_URL, $url);
+                curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, 1);
+                curl_setopt($handle, CURLOPT_FOLLOWLOCATION, True);
+                curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($handle, CURLOPT_TIMEOUT, 60);
+                curl_setopt($handle, CURLOPT_USERAGENT, 'Chyrp/'.CHYRP_VERSION);
+                $content = curl_exec($handle);
+                $status = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+                curl_close($handle);
+                if (!(($status == 200) || ($status == 301) || ($status == 302) || ($status == 303) || ($status == 307)))
+                    $content = "Server returned a message: $status";
+            } else {
+                $path = (!isset($path)) ? '/' : $path ;
+                if (isset($query)) $path.= '?'.$query;
+                $port = (isset($port)) ? $port : 80 ;
+
+                $connect = @fsockopen($host, $port, $errno, $errstr, 2);
+                if (!$connect) return false;
+
+                # Send the GET headers
+                fwrite($connect, "GET ".$path." HTTP/1.1\r\n");
+                fwrite($connect, "Host: ".$host."\r\n");
+                fwrite($connect, "User-Agent: Chyrp/".CHYRP_VERSION."\r\n\r\n");
+
+                $content = "";
+                while (!feof($connect)) {
+                    $line = fgets($connect, 128);
+                    if (preg_match("/\r\n/", $line)) continue;
+
+                    $content.= $line;
+                }
+
+                fclose($connect);
+            }
+
+            return $content;
         }
 
         private function flatten(&$start) {
@@ -308,17 +307,17 @@
 
             $config->aggregates[$_POST['name']] = $aggregate;
             $config->set("aggregates", $config->aggregates);
-            $config->set("last_aggregation", 0); # to force a refresh
+            $config->set("last_aggregation", 0);    # to force a refresh
 
             Flash::notice(__("Aggregate created.", "aggregator"), "/admin/?action=manage_aggregates");
         }
 
         public function admin_edit_aggregate($admin) {
             if (empty($_GET['id']))
-                error(__("No ID Specified"), __("An ID is required to delete an aggregate.", "aggregator"));
+                error(__("No ID Specified"), __("An ID is required to edit an aggregate.", "aggregator"));
 
             if (!Visitor::current()->group->can("edit_aggregate"))
-                show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this aggregate.", "aggregator"));
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this aggregate.", "aggregator"));
 
             $admin->context["users"] = User::find();
 
@@ -334,16 +333,16 @@
                                                                   "url" => $aggregate["url"],
                                                                   "feather" => $aggregate["feather"],
                                                                   "author" => $aggregate["author"],
-                                                                  "status" => $aggregate['status'],
+                                                                  "status" => $aggregate["status"],
                                                                   "data" => preg_replace("/---\n/",
                                                                                          "",
                                                                                          YAML::dump($aggregate["data"])))));
 
-            if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+            if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
                 show_403(__("Access Denied"), __("Invalid security key."));
 
             $aggregate = array("url" => $_POST['url'],
-                               "last_updated" => $aggregate['last_updated'],
+                               "last_updated" => $aggregate["last_updated"],
                                "feather" => $_POST['feather'],
                                "author" => $_POST['author'],
                                "status" => $_POST['status'],
@@ -365,9 +364,7 @@
             if (!Visitor::current()->group->can("delete_aggregate"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this aggregate.", "aggregator"));
 
-            $config = Config::current();
-
-            $aggregate = $config->aggregates[$_GET['id']];
+            $aggregate = Config::current()->aggregates[$_GET['id']];
 
             $admin->context["aggregate"] = array("name" => $_GET['id'],
                                                  "url" => $aggregate["url"]);
