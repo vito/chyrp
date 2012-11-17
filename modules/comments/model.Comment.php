@@ -321,28 +321,30 @@
         /**
          * Function: notify
          * Emails everyone that wants to be notified for a new comment
+         *
          * Parameters:
-         *     $author - The person that wrote the new comment.
-         *     $body - The new comment
-         *     $post - The id of the post that was commented on
+         *     $author - The new comment author
+         *     $body - The new comment message
+         *     $post - The new comment post ID
          */
         static function notify($author, $body, $post) {
-            $sql = SQL::Current();
-            $config = Config::current();
-
             $post = new Post($post);
-            $emails = $sql->select("comments", "author_email", array("notify" => 1, "post_id" => $post->id))->fetchAll();
+            $emails = SQL::current()->select("comments",
+                                             "author_email",
+                                             array("notify" => 1, "post_id" => $post->id))->fetchAll();
 
             $list = array();
             foreach ($emails as $email)
                 $list[] = $email["author_email"];
 
-            $to = $_POST['email'].implode(", ", $list);;
+            $config = Config::current();
+
+            $to = implode(", ", $list);
             $subject = $config->name.__("New Comment");
-            $message = "There is a new comment at ".$post->url()."\n Poster: ".$author."\n Message: ".$body;
+            $message = __("There is a new comment at ").$post->url()."\n Poster: ".fix($author)."\n Message: ".fix($body);
             $headers = "From:".$config->email."\r\n" .
-                                   "Reply-To:".$config->email. "\r\n" .
-                                   "X-Mailer: PHP/".phpversion() ;
+                                   "Reply-To:".$config->email."\r\n".
+                                   "X-Mailer: PHP/".phpversion();
             $sent = email($to, $subject, $message, $headers);
         }
 

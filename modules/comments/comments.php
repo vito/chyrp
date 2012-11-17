@@ -76,8 +76,8 @@
             if (empty($_POST['author'])) error(__("Error"), __("Author can't be blank.", "comments"));
             if (empty($_POST['email']))  error(__("Error"), __("E-Mail address can't be blank.", "comments"));
 
-            fallback($parent,     (int) !empty($_POST['parent_id']));
-            fallback($notify,     (int) !empty($_POST['notify']));
+            fallback($parent, (int) !empty($_POST['parent_id']));
+            fallback($notify, (int) !empty($_POST['notify']));
 
             Comment::create($_POST['body'],
                             $_POST['author'],
@@ -86,10 +86,6 @@
                             $post,
                             $parent,
                             $notify);
-
-            Comment::notify($_POST['author'],
-                            $_POST['body'],
-                            $post);
         }
 
         static function admin_update_comment() {
