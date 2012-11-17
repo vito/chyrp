@@ -15,7 +15,7 @@
                 $extensions = array_reverse($extensions);
                 $content = "";
 
-                foreach($extensions as $id){
+                foreach($extensions as $id) {
                     $info=file_get_contents('http://chyrp.net/api/v1/chyrp_extensions.php?id='.$id);
                     $name = preg_replace("#\s*.*\[name\](.*?)\[/name\].*\s*#s", '$1', $info);
                     $description = strip_tags(substr(preg_replace("#\s*.*\[description\](.*?)\[/description\].*\s*#s", '$1', $info),0,128)).'…';
@@ -58,6 +58,7 @@
             }
             return $context;
         }
+
         public function route_newextension(){
         	$fp = fopen ("../modules/latest.zip", 'w+');
         	$ch = curl_init($_GET['url']); # Here is the file we are downloading
@@ -87,6 +88,7 @@
         	}
         	header('location: ?action=extend_manager');
     	}
+
     	public function route_newtheme(){
         	$fp = fopen ("../themes/latest.zip", 'w+');
         	$ch = curl_init($_GET['url']); # Here is the file we are downloading
@@ -105,7 +107,7 @@
         		$handle=opendir("../themes/latest");
 				if ($handle) {
 					while (($file = readdir($handle)) !== false) {
-						if (is_dir("../themes/latest/".$file)) {
+						if (is_dir("../themes/latest/".$file))
 							rename("../themes/latest/".$file,"../themes/".$file);
 					}
 				}
@@ -136,7 +138,7 @@
         		$handle=opendir("../feathers/latest");
 				if($handle) {
 					while(($file = readdir($handle)) !== false) {
-						if(is_dir("../feathers/latest/".$file)){
+						if(is_dir("../feathers/latest/".$file))
 							rename("../feathers/latest/".$file,"../modules/".$file);
 					}
 				}
