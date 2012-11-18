@@ -34,7 +34,7 @@
             $config->set("akismet_api_key", null);
             $config->set("auto_reload_comments", 30);
             $config->set("enable_reload_comments", false);
-            $config->set("allow_nested_comments", true);
+            $config->set("allow_nested_comments", false);
 
             Group::add_permission("add_comment", "Add Comments");
             Group::add_permission("add_comment_private", "Add Comments to Private Posts");
