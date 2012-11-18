@@ -145,8 +145,6 @@
             Group::add_permission("like_post", "Like Posts");
             Group::add_permission("unlike_post", "Unlike Posts");
 
-            $config = Config::current();
-            $likeText = array();
             $likeText = array(0 => "You like this post.",
                               1 => "You and 1 person like this post.",
                               2 => "You and %NUM% people like this post.",
@@ -156,6 +154,7 @@
                               6 => "Like",
                               7 => "Unlike");
 
+            $config = Config::current();
             $set = array($config->set("module_like",
                                 array("showOnFront" => true,
                                       "likeWithText" => false,
