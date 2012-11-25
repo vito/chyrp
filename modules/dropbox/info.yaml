@@ -1,0 +1,8 @@
+name: Dropbox
+url: http://chyrp.net
+version: 1.0
+description: Interacts with the Dropbox API, fetches posts in Markdown/YAML format.
+author:
+  name: Chyrp Team
+  url: http://chyrp.net
+conflicts:

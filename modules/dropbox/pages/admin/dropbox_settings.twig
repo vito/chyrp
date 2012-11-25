@@ -1,0 +1,35 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Dropbox Server Settings" | translate("likes") }{% endblock %}
+
+{% block content %}
+            <form id="dropbox_settings" class="split" action="{% admin "dropbox_settings" %}" method="post">
+                <fieldset>
+                    {% if site.module_dropbox.access_token == "" %}
+                    <p>
+                        <button name="authorize" value="authorize" class="yay"><img src="$theme_url/images/icons/success.png" alt="success" />${ "Authorize" | translate }</button>
+                        <small>Authorize with Dropbox</small>
+                    </p>
+                    {% else %}
+                    <p>
+                        <span class="button yay">Authorized  as @$site.chweet_username</span>
+                    </p>
+                    <hr />
+                    <br />
+                    {% endif %}
+                    <p>
+                        <label for="app_key">${ "Dropbox App Key" | translate }</label>
+                        <input class="text" type="text" name="app_key" value="${ site.module_dropbox.app_key | escape }" id="app_key" />
+                    </p>
+                    <p>
+                        <label for="app_secret">${ "Dropbox App Secret" | translate }</label>
+                        <input class="text" type="text" name="app_secret" value="${ site.module_dropbox.app_secret | escape }" id="app_secret" />
+                    </p>
+                    <p class="buttons">
+                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.png" alt="success" />${ "Update" | translate }</button>
+                    </p>
+
+                    <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+                </fieldset>
+            </form>
+{% endblock %}
