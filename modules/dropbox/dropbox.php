@@ -52,9 +52,8 @@
                 	# Build authorize URL and redirect to Dropbox
                 	redirect($OAuth->getAuthoriseURL());
 
-                	$_SESSION['oauth'] = $OAuth;
-                	$_SESSION['oauth_token'] = $token = $request_token["oauth_token"];
-                	$_SESSION['oauth_token_secret'] = $request_token["oauth_token_secret"];
+                	$OAuth->getAccessToken();
+                	$_SESSION['access_token'] = $storage->get("access_token");
                 } catch(\Dropbox\Exception $e) {
                 	echo $e->getMessage() . PHP_EOL;
                 	exit("Setup failed! Please try running setup again.");
@@ -76,9 +75,7 @@
             # The user is redirected here by Dropbox after the authorization screen
             if (isset($_GET['oauth_token']) and isset($_GET["uid"])) {
                 $config = Config::current();
-                $OAuth = $_SESSION['oauth'];
-                $access_token = $OAuth->getAccessToken();
-
+                $access_token = $_SESSION['access_token']
             	# Acquire the access token
                 $set = array($config->set("module_dropbox",
                                     array("app_key" => $config->module_dropbox["app_key"],
@@ -97,7 +94,7 @@
         function parse_url_detail($url) {
             $parts = parse_url($url);
 
-            if(isset($parts['query']))
+            if(isset($parts["query"]))
                 parse_str(urldecode($parts["query"]), $parts["query"]);
 
             return $parts;
