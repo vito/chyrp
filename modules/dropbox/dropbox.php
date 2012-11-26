@@ -9,7 +9,7 @@
                                                 "app_secret"   => null,
                                                 "oauth_token"  => null,
                                                 "oauth_secret" => null,
-                                                "uid"          => null)));
+                                                "user_id"      => null)));
         }
 
         static function __uninstall() {
@@ -49,8 +49,7 @@
                 	# Build authorize URL and redirect to Dropbox
                 	redirect($OAuth->getAuthoriseURL());
                 } catch(\Dropbox\Exception $e) {
-                	echo $e->getMessage() . PHP_EOL;
-                	exit("Setup failed! Please try running setup again.");
+                	error("Dropbox Sync Error!", $e->getMessage());
                 }
             }
 
