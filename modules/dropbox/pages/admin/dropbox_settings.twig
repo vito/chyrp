@@ -5,14 +5,14 @@
 {% block content %}
             <form id="dropbox_settings" class="split" action="{% admin "dropbox_settings" %}" method="post">
                 <fieldset>
-                    {% if site.module_dropbox.access_token == "" %}
+                    {% if site.module_dropbox.oauth_secret == "" %}
                     <p>
                         <button name="authorize" value="authorize" class="yay"><img src="$theme_url/images/icons/success.png" alt="success" />${ "Authorize" | translate }</button>
                         <small>Authorize with Dropbox</small>
                     </p>
                     {% else %}
                     <p>
-                        <span class="button yay">Authorized  as @$site.chweet_username</span>
+                        <span class="button yay">Authorized</span>
                     </p>
                     <hr />
                     <br />
