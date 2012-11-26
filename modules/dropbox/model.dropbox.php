@@ -2,7 +2,7 @@
     # Register a simple autoload function
     require_once("lib/Dropbox/AutoLoader.php");
 
-    class Dropbox extends Model { 
+    class DropboxModel extends Model { 
         function __construct() {
             # Your token and secret
             $config = Config::current();
@@ -20,15 +20,15 @@
         }
 
         // Retrieve the account information
-        private account_info() {
+        private function account_info() {
             return $this->accountInfo();
         }
 
-        private get_file($path, $outFile = false) {
+        private function get_file($path, $outFile = false) {
             return $this->getFile($path, $outFile);
         }
 
-        private put_file() {
+        private function put_file() {
             // Create a temporary file and write some data to it
             $tmp = tempnam('/tmp', 'dropbox');
             $data = 'This file was uploaded using the Dropbox API!';
@@ -41,7 +41,7 @@
             unlink($tmp);
         }
 
-        private put_stream() {
+        private function put_stream() {
             // Open a stream for reading and writing
             $stream = fopen('php://temp', 'rw');
             
@@ -56,7 +56,7 @@
             fclose($stream);
         }
 
-        private meta_data() {
+        private function meta_data() {
             // Set the file path
             // You will need to modify $path or run putFile.php first
             $path = 'api_upload_test.txt';
@@ -65,7 +65,7 @@
             $metaData = $this->metaData($path);
         }
 
-        private chunked_upload() {
+        private function chunked_upload() {
             // Extend your sript execution time where required
             set_time_limit(0);
             
