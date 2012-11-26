@@ -35,14 +35,11 @@
             if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
                 show_403(__("Access Denied"), __("Invalid security key."));
 
-            if (empty($app_key) or empty($app_secret))
-            	Flash::message("Please fill in your Dropbox App Key and App Secret!");
+            if (isset($_POST['authorize'])) {
+                $app_key    = $config->module_dropbox["app_key"];
+                $app_secret = $config->module_dropbox["app_secret"];
+                $callback   = url("/admin/?action=dropbox_oauth");
 
-            $app_key    = $config->module_dropbox["app_key"];
-            $app_secret = $config->module_dropbox["app_secret"];
-            $callback   = url("/admin/?action=dropbox_oauth");
-
-            if (isset($_POST['authorize']) and empty($config->module_dropbox["access_token"])) {
                 try {
                 	$storage = new \Dropbox\OAuth\Storage\Session;
                 	# if (!$storage->get("access_token")) $storage->delete();
@@ -51,9 +48,6 @@
 
                 	# Build authorize URL and redirect to Dropbox
                 	redirect($OAuth->getAuthoriseURL());
-
-                	$OAuth->getAccessToken();
-                	$_SESSION['access_token'] = $storage->get("access_token");
                 } catch(\Dropbox\Exception $e) {
                 	echo $e->getMessage() . PHP_EOL;
                 	exit("Setup failed! Please try running setup again.");
@@ -73,22 +67,26 @@
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
             # The user is redirected here by Dropbox after the authorization screen
-            if (isset($_GET['oauth_token']) and isset($_GET["uid"])) {
-                $config = Config::current();
-                $access_token = $_SESSION['access_token']
-            	# Acquire the access token
-                $set = array($config->set("module_dropbox",
-                                    array("app_key" => $config->module_dropbox["app_key"],
-                                          "app_secret" => $config->module_dropbox["app_secret"],
-                                          "oauth_secret" => $access_token,
-                                          "oauth_token" => trim($_GET['oauth_token']),
-                                          "uid" => trim($_GET['uid']))));
+            $config = Config::current();
+            $app_key    = $config->module_dropbox["app_key"];
+            $app_secret = $config->module_dropbox["app_secret"];
+            $storage = new \Dropbox\OAuth\Storage\Session;
+            $OAuth = new \Dropbox\OAuth\Consumer\Curl($app_key, $app_secret, $storage);
+
+            # Acquire the access token
+            $token_data = get_object_vars($storage->get("access_token"));
+
+            $set = array($config->set("module_dropbox",
+                                array("app_key" => $app_key,
+                                      "app_secret" => $app_secret,
+                                      "oauth_secret" => $token_data["oauth_token_secret"],
+                                      "oauth_token" => $token_data["oauth_token"],
+                                      "uid" => $token_data["uid"])));
 
             if (!in_array(false, $set))
                 Flash::notice(__("Dropbox was successfully authorized."), "/admin/?action=dropbox_settings");
             else
                 Flash::warning(__("Dropbox couldn't be authorized."), "/admin/?action=dropbox_settings");
-            }
         }
 
         function parse_url_detail($url) {
