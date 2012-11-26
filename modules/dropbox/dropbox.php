@@ -103,13 +103,21 @@
             $post = new FrontMatter($file);
 
             $data = array_merrge($post->fetch("title"), $post->fetch("content"));
-            Post::add(array($data, $post->fetch("slug"), "text", Visitor::current()->id,
-                            $post->fetch("pinned"),
-                            "draft",
-                            datetime($post->fetch("date")),
-                            datetime($post->fetch("date")));
+            $post = Post::add($data,
+                              $post->fetch("slug"),
+                              Post::check_url($chyrp->url),
+                              "text",
+                              ($user_id ? $user_id : $visitor->id),
+                              (bool) (int) $post->fetch("pinned"),
+                              "public",
+                              datetime($post->fetch("date")),
+                              datetime($post->fetch("date")),
+                              false);
 
-            Flash::notice(__("Post imported successfully."), "/admin/?action=manage_posts");
+            Flash::notice(_f("Post updated. <a href=\"%s\">View Post &rarr;</a>",
+                             array($post->url())),
+                             "/admin/?action=manage_posts");
+            # Flash::notice(__("Post imported successfully."), "/admin/?action=manage_posts");
         }
 
         function parse_url_detail($url) {
