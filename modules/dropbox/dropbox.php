@@ -65,27 +65,49 @@
             if (!Visitor::current()->group->can("change_settings"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
 
-            # The user is redirected here by Dropbox after the authorization screen
-            $config = Config::current();
-            $app_key    = $config->module_dropbox["app_key"];
-            $app_secret = $config->module_dropbox["app_secret"];
-            $storage = new \Dropbox\OAuth\Storage\Session;
-            $OAuth = new \Dropbox\OAuth\Consumer\Curl($app_key, $app_secret, $storage);
+            if (!empty($_GET["uid"]) and !empty($_GET["oauth_token"])) {
+                # The user is redirected here by Dropbox after the authorization screen
+                $config = Config::current();
+                $app_key    = $config->module_dropbox["app_key"];
+                $app_secret = $config->module_dropbox["app_secret"];
+                $storage = new \Dropbox\OAuth\Storage\Session;
+                $OAuth = new \Dropbox\OAuth\Consumer\Curl($app_key, $app_secret, $storage);
 
-            # Acquire the access token
-            $token_data = get_object_vars($storage->get("access_token"));
+                # Acquire the access token
+                $token_data = get_object_vars($storage->get("access_token"));
 
-            $set = array($config->set("module_dropbox",
-                                array("app_key" => $app_key,
-                                      "app_secret" => $app_secret,
-                                      "oauth_secret" => $token_data["oauth_token_secret"],
-                                      "oauth_token" => $token_data["oauth_token"],
-                                      "uid" => $token_data["uid"])));
+                $set = array($config->set("module_dropbox",
+                                    array("app_key"      => $app_key,
+                                          "app_secret"   => $app_secret,
+                                          "oauth_secret" => $token_data["oauth_token_secret"],
+                                          "oauth_token"  => $token_data["oauth_token"],
+                                          "user_id"  => $token_data["uid"])));
 
-            if (!in_array(false, $set))
-                Flash::notice(__("Dropbox was successfully authorized."), "/admin/?action=dropbox_settings");
-            else
-                Flash::warning(__("Dropbox couldn't be authorized."), "/admin/?action=dropbox_settings");
+                if (!in_array(false, $set))
+                    Flash::notice(__("Dropbox was successfully authorized."), "/admin/?action=dropbox_settings");
+            } elseif (isset($_GET["not_approved"]))
+                    Flash::notice(__("Fine! You'll authorize it some other time."), "/admin/?action=dropbox_settings");
+        }
+
+
+        static function sync_posts() {
+            if (!Visitor::current()->group->can("add_post", "add_draft"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
+
+            $path = "2012-11-26.md";
+            $dropbox = new Dropbox;
+            $file = $dropbox->get_file($path);
+
+            $post = new FrontMatter($file);
+
+            $data = array_merrge($post->fetch("title"), $post->fetch("content"));
+            Post::add(array($data, $post->fetch("slug"), "text", Visitor::current()->id,
+                            $post->fetch("pinned"),
+                            "draft",
+                            datetime($post->fetch("date")),
+                            datetime($post->fetch("date")));
+
+            Flash::notice(__("Post imported successfully."), "/admin/?action=manage_posts");
         }
 
         function parse_url_detail($url) {
