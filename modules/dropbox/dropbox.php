@@ -1,6 +1,8 @@
 <?php
     # Register the AutoLoad function
     require_once("lib/Dropbox/AutoLoader.php");
+    require_once("lib/model.dropbox.php");
+    require_once(INCLUDES_DIR."/lib/FrontMatter.php");
 
     class Dropbox extends Modules {
         static function __install() {
