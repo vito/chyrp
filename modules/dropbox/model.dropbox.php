@@ -4,9 +4,6 @@
 
     class Dropbox extends Model { 
         function __construct() {
-            if (empty($oauth_token) or empty($oauth_secret))
-            	error("The Dropbox module is not configured!");
-
             # Your token and secret
             $config = Config::current();
             $token  = $config->module_dropbox["oauth_token"];
@@ -16,7 +13,7 @@
             $encrypter = new \Dropbox\OAuth\Storage\Encrypter($secret);
             $storage = new \Dropbox\OAuth\Storage\Session($encrypter);
 
-            $OAuth = new \Dropbox\OAuth\Consumer\Curl($token, $secret, $storage, $config->chyrp_url);
+            $OAuth = new \Dropbox\OAuth\Consumer\Curl($token, $secret, $storage);
             $dropbox = new \Dropbox\API($OAuth);
             
             return $dropbox;
@@ -27,19 +24,8 @@
             return $this->accountInfo();
         }
 
-        private get_file() {
-            // Set the file path
-            // You will need to modify $path or run putFile.php first
-            $path = 'api_upload_test.txt';
-            
-            // Set the output file
-            // If $outFile is set, the downloaded file will be written
-            // directly to disk rather than storing file data in memory
-            $outFile = false;
-            
-            // Download the file
-            $file = $this->getFile($path, $outFile);
-            return $this->accountInfo();
+        private get_file($path, $outFile = false) {
+            return $this->getFile($path, $outFile);
         }
 
         private put_file() {
