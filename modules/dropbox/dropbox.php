@@ -86,9 +86,9 @@
                                           "user_id"  => $token_data["uid"])));
 
                 if (!in_array(false, $set))
-                    Flash::notice(__("Dropbox was successfully authorized."), "/admin/?action=dropbox_settings");
+                    Flash::notice(__("Dropbox was successfully authorized.", "dropbox"), "/admin/?action=dropbox_settings");
             } elseif (isset($_GET["not_approved"]))
-                    Flash::notice(__("Fine! You'll authorize it some other time."), "/admin/?action=dropbox_settings");
+                    Flash::notice(__("Fine! You'll authorize it some other time.", "dropbox"), "/admin/?action=dropbox_settings");
         }
 
 
