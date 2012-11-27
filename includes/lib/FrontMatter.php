@@ -13,7 +13,9 @@ class FrontMatter {
 
     /**
      * Constructor method, checks a file and then puts the contents into custom strings for usage
-     * @param string $file The input file
+     *
+     * Parameters:
+     *     $file - The file being parsed
      */
     public function __construct($file) {
         $file = $this->read_file($file);
@@ -56,7 +58,7 @@ class FrontMatter {
 
         foreach($vars as $variable) {
             # Explode so we can see both key and value
-            $var = explode(": ",$variable);
+            $var = explode(": ", $variable);
 
             # Store Key and Value
             $key = $var[0];
