@@ -92,7 +92,7 @@
 
         public function filter_post($post) {
             if ($post->feather != "audio") return;
-            $post->audio_player = $this->flash_player_for($post->filename, array(), $post);
+            $post->audio_player = $this->audio_player($post->filename, array(), $post);
         }
 
         public function player_js() {
@@ -135,13 +135,15 @@ var ap_clearID = setInterval( ap_registerPlayers, 100 );
             echo '          <link rel="enclosure" href="'.uploaded($post->filename).'" type="audio/mpeg" title="MP3" length="'.$length.'" />'."\n";
         }
 
-        public function flash_player_for($filename, $params = array(), $post) {
+        public function audio_player($filename, $params = array(), $post) {
             $vars = "";
             foreach ($params as $name => $val)
                 $vars.= "&amp;".$name."=".$val;
 
             $config = Config::current();
-            $player = '<script src="'.$config->chyrp_url.'/feathers/audio/lib/audio-player.js" type="text/javascript" charset="utf-8"></script>'."\n";
+            $player = '<audio id="audio_with_controls" controls>'."\n\t";
+            $player.= '<source src="'.$config->chyrp_url.$config->uploads_path.$filename.$vars.'" type="audio/mpeg" />'."\n\t";
+
             $player.= '<object type="application/x-shockwave-flash" data="'.$config->chyrp_url.'/feathers/audio/lib/player.swf" id="audioplayer'.$post->id.'" height="24" width="290">'."\n\t";
             $player.= '<param name="movie" value="'.$config->chyrp_url.'/feathers/audio/lib/player.swf" />'."\n\t";
             $player.= '<param name="FlashVars" value="playerID='.$post->id.'&amp;soundFile='.$config->chyrp_url.$config->uploads_path.$filename.$vars.'" />'."\n\t";
@@ -149,6 +151,19 @@ var ap_clearID = setInterval( ap_registerPlayers, 100 );
             $player.= '<param name="menu" value="false" />'."\n\t";
             $player.= '<param name="wmode" value="transparent" />'."\n";
             $player.= '</object>'."\n";
+            $player.= '</audio>'."\n";
+
+            $player.= '<div id="player_fallback"></div>'."\n\t";
+            $player.= '<script src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js" type="text/javascript" charset="utf-8"></script>'."\n\t";
+            $player.= '<script>'."\n\t";
+            $player.= "if (document.createElement('audio').canPlayType) {"."\n\t";
+            $player.= "    if (!document.createElement('audio').canPlayType('audio/mpeg')) {"."\n\t";
+            $player.= '        swfobject.embedSWF("'.$config->chyrp_url.'/feathers/audio/lib/player.swf",
+                               "player_fallback", "290", "24", "9.0.0", "",
+                               {"playerID":"'.$post->id.'&soundFile='.$config->chyrp_url.$config->uploads_path.$filename.$vars.'"});'."\n\t";
+            $player.= "        document.getElementById('audio_with_controls').style.display = 'none'; }"."\n\t";
+            $player.= '}'."\n\t";
+            $player.= '</script>'."\n\t";
 
             return $player;
         }
