@@ -28,7 +28,7 @@
             fallback($_POST['slug'], sanitize($_POST['title']));
 
             return Post::add(array("title" => $_POST['title'],
-                                    "dialogue" => $_POST['dialogue']),
+                                   "dialogue" => $_POST['dialogue']),
                              $_POST['slug'],
                              Post::check_url($_POST['slug']));
         }
