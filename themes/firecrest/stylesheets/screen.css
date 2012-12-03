@@ -706,22 +706,22 @@ div.post.link p {
 div.post.chat p {
     display: inline;
 }
-div.post.chat ul {
+div.post.chat ul.dialogue {
     font-family: "monaco", monospace;
     font-size: .9em;
     margin: 0 1em 1em 0;
     padding: 0;
     color: #535353;
 }
-div.post.chat ul li {
+div.post.chat ul.dialogue li {
     background: none;
     list-style-type: none;
     padding: 0;
 }
-div.post.chat li .label {
+div.post.chat ul.dialogue li .label {
     color: #2D3879;
 }
-div.post.chat li.me .label {
+div.post.chat ul.dialogue li.me .label {
     color: #AB2F26;
 }
 div.post.photo img, div.post.text img {
