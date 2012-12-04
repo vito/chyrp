@@ -1,0 +1,12 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Synchronize Dropbox Posts" | translate("comments") }{% endblock %}
+
+{% block content %}
+            <form class="split" action="{% admin "dropbox_sync" %}" method="post" accept-charset="utf-8">
+                <fieldset>
+                    <h2>${ "Synchronize Dropbox Posts" | translate }</h2>
+                    <p>
+                        <button name="synchronize" value="synchronize" class="yay"><img src="$theme_url/images/icons/success.png" alt="success" />${ "Synchronize" | translate }</button>
+                    </p>
+{% endblock %}

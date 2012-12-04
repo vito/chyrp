@@ -18,6 +18,21 @@
             Config::current()->remove("module_dropbox");
         }
 
+        static function manage_nav_pages($pages) {
+            array_push($pages, "manage_dropbox");
+            return $pages;
+        }
+
+        static function manage_nav($navs) {
+            if (!Visitor::current()->group->can("add_post", "add_draft"))
+                return $navs;
+    
+            $navs["manage_dropbox"] = array("title" => __("Dropbox Sync", "dropbox"),
+                                            "selected" => array("manage_dropbox"));
+    
+            return $navs;
+        }
+    
         static function settings_nav($navs) {
             if (Visitor::current()->group->can("change_settings"))
                 $navs["dropbox_settings"] = array("title" => __("Dropbox", "dropbox"));
