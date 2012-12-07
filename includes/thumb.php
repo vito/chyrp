@@ -178,7 +178,7 @@
 
     # Serve the image.
     if ($done == "imagejpeg")
-        $done($thumbnail, "", $quality);
+        $done($thumbnail, null, $quality);
     else
         $done($thumbnail);
 
