@@ -498,13 +498,13 @@ div.post h2.title a:visited {
 div.post h2.title a:hover {
     color: #ff6039;
 }
-div.post .pinned_text {
-    content: "!";
+div.post .pinned_icon {
     float: left;
-    font-size: 1.5em;
-    font-weight: bold;
-    margin: -1.5em 0 0 -2em;
-    color: #e35533;
+    width: 25px;
+    height: 25px;
+    background-image: url(../images/pin.png);
+    background-repeat: no-repeat;
+    margin: -2.5em 0 0 -4em;
 }
 div.post .private_text {
     float: left;

@@ -4,7 +4,7 @@
                         <span class="shadow"></span>
                     </div>
                     <div class="subpost">
-                        {% if post.pinned %}<span class="pinned_text">${ "!" | translate }</span>{% endif %}
+                        {% if post.pinned %}<span class="pinned_icon" title="Pinned Post">&nbsp;</span>{% endif %}
                         {% if post.status == "private" %}<span class="private_text">${ "PRIVATE" | translate }</span>{% endif %}
                         {% if post.status == "scheduled" %}<span class="scheduled_text">${ "SCHEDULED" | translate }</span>{% endif %}
                         {% block content %}{% endblock %}
