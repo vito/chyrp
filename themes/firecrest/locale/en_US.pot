@@ -1,5 +1,5 @@
 # Chyrp v2.5 Translation File.
-# Copyright (C) 2012 The Chyrp Team
+# Copyright (C) 2012 Chyrp Team
 # This file is distributed under the same license as the Chyrp v2.5 package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.5\n"
 "Report-Msgid-Bugs-To: email@chyrp.net\n"
-"POT-Creation-Date: 2012-03-27 16:46+0000\n"
+"POT-Creation-Date: 2012-12-09 19:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -17,155 +17,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: themes/firecrest/forms/comment/new.twig:6
-msgid "Log Out &rarr;"
+#: themes/firecrest/content/comment.twig:3
+msgid "Your comment is awaiting moderation."
 msgstr ""
 
-#: themes/firecrest/forms/comment/new.twig:11
-msgid "Speak up!"
-msgstr ""
-
-#: themes/firecrest/forms/post/edit.twig:35
-msgid "Public"
-msgstr ""
-
-#: themes/firecrest/forms/user/controls.twig:4
-msgid "Controls"
-msgstr ""
-
-#: themes/firecrest/forms/post/edit.twig:59
-msgid "Timestamp"
-msgstr ""
-
-#: themes/firecrest/forms/post/edit.twig:103
-msgid "Cancel"
-msgstr ""
-
-#: themes/firecrest/content/debug.twig:8
-msgid "Queries:"
-msgstr ""
-
-#: themes/firecrest/pages/drafts.twig:5
-msgid "Drafts"
-msgstr ""
-
-#: themes/firecrest/content/post.twig:24
-msgid "%B %d"
-msgstr ""
-
-#: themes/firecrest/pages/tags.twig:12
-msgid "There aren't any tags yet. Such a shame."
-msgstr ""
-
-#: themes/firecrest/content/post.twig:48
 #: themes/firecrest/content/comment.twig:9
+#: themes/firecrest/content/post.twig:48
 msgid "Delete"
 msgstr ""
 
-#: themes/firecrest/content/sidebar.twig:23
-msgid "Elsewhere"
+#: themes/firecrest/content/comment.twig:10
+msgid "Edit"
 msgstr ""
 
-#: themes/firecrest/content/sidebar.twig:6
-#: themes/firecrest/content/sidebar.twig:27
-msgid "Log Out"
+#: themes/firecrest/content/comment.twig:11
+msgid "Reply"
 msgstr ""
 
-#: themes/firecrest/content/sidebar.twig:48
-msgid "Lost Password?"
-msgstr ""
-
-#: themes/firecrest/forms/user/register.twig:19
-#: themes/firecrest/forms/user/controls.twig:18
-msgid "E-Mail"
-msgstr ""
-
-#: themes/firecrest/forms/post/edit.twig:28
-msgid "More Options &darr;"
-msgstr ""
-
-#: themes/firecrest/pages/index.twig:8
-msgid "Nothing here yet!"
-msgstr ""
-
-#: themes/firecrest/forms/post/edit.twig:64
-msgid "Trackbacks"
-msgstr ""
-
-#: themes/firecrest/forms/comment/new.twig:30
-msgid "Notify me when others comment on this post"
-msgstr ""
-
-#: themes/firecrest/pages/profile.twig:3
-#: themes/firecrest/content/sidebar.twig:5
-#: themes/firecrest/content/sidebar.twig:26
-msgid "Profile"
-msgstr ""
-
-#: themes/firecrest/forms/post/edit.twig:9
-msgid "(optional)"
-msgstr ""
-
-#: themes/firecrest/forms/post/edit.twig:36
-msgid "Private"
-msgstr ""
-
-#: themes/firecrest/content/sidebar.twig:40
-msgid "User Controls"
-msgstr ""
-
-#: themes/firecrest/content/debug.twig:9
-msgid "seconds"
-msgstr ""
-
-#: themes/firecrest/forms/post/edit.twig:37
-msgid "Scheduled"
-msgstr ""
-
-#: themes/firecrest/forms/post/edit.twig:34
-msgid "Draft"
-msgstr ""
-
-#: themes/firecrest/pages/archive.twig:15
-#: themes/firecrest/pages/archive.twig:31
-#: themes/firecrest/content/sidebar.twig:107
-msgid "%B %Y"
-msgstr ""
-
-#: themes/firecrest/forms/user/register.twig:15
-msgid "(again)"
-msgstr ""
-
-#: themes/firecrest/layouts/default.twig:30
-msgid "Add Page"
-msgstr ""
-
-#: themes/firecrest/javascripts/theme.js.php:23
-msgid "Search..."
-msgstr ""
-
-#: themes/firecrest/forms/user/lost_password.twig:4
-msgid "Lost Password"
-msgstr ""
-
-#: themes/firecrest/forms/user/controls.twig:26
-msgid "New Password?"
-msgstr ""
-
-#: themes/firecrest/forms/post/edit.twig:102
-msgid "Save"
-msgstr ""
-
-#: themes/firecrest/layouts/default.twig:27
-msgid "Write Draft"
-msgstr ""
-
-#: themes/firecrest/forms/post/edit.twig:55
-msgid "Slug"
-msgstr ""
-
-#: themes/firecrest/forms/post/edit.twig:102
-msgid "or"
+#: themes/firecrest/content/comment.twig:12
+msgid "%B %d, %Y, at %I:%M %p"
 msgstr ""
 
 #: themes/firecrest/content/comment.twig:12
@@ -173,136 +43,56 @@ msgstr ""
 msgid "<span class=\"comment_author\">%s</span> on <a href=\"%s\" class=\"permalink\">%s</a>"
 msgstr ""
 
-#: themes/firecrest/pages/profile.twig:12
-msgid "Login:"
-msgstr ""
-
-#: themes/firecrest/pages/tag.twig:10
-#: themes/firecrest/pages/index.twig:7
-#: themes/firecrest/pages/archive.twig:41
-msgid "No Posts"
-msgstr ""
-
-#: themes/firecrest/forms/user/register.twig:15
-msgid "Password "
-msgstr ""
-
-#: themes/firecrest/forms/post/edit.twig:40
-msgid "Group"
-msgstr ""
-
 #: themes/firecrest/content/debug.twig:4
 msgid "Toggle"
 msgstr ""
 
-#: themes/firecrest/pages/archive.twig:19
-#: themes/firecrest/pages/archive.twig:35
-msgid "%d"
+#: themes/firecrest/content/debug.twig:5
+msgid "Stats"
 msgstr ""
 
-#: themes/firecrest/info.yaml:1
-msgid "Firecrest"
+#: themes/firecrest/content/debug.twig:8
+msgid "Queries:"
 msgstr ""
 
-#: themes/firecrest/content/comment.twig:11
-msgid "Reply"
+#: themes/firecrest/content/debug.twig:9
+msgid "Load Time:"
 msgstr ""
 
-#: themes/firecrest/forms/user/lost_password.twig:12
-msgid "Submit"
+#: themes/firecrest/content/debug.twig:9
+msgid "seconds"
 msgstr ""
 
-#: themes/firecrest/forms/user/register.twig:4
-#: themes/firecrest/forms/user/register.twig:27
-#: themes/firecrest/content/sidebar.twig:10
-#: themes/firecrest/content/sidebar.twig:31
-#: themes/firecrest/content/sidebar.twig:46
-msgid "Register"
+#: themes/firecrest/content/debug.twig:12
+msgid "Queries"
 msgstr ""
 
-#: themes/firecrest/pages/profile.twig:29
-msgid "Twitter:"
-msgstr ""
-
-#: themes/firecrest/pages/archive.twig:9
-#: themes/firecrest/content/sidebar.twig:103
-msgid "Archives"
-msgstr ""
-
-#: themes/firecrest/layouts/default.twig:25
-msgid "Write"
-msgstr ""
-
-#: themes/firecrest/forms/comment/new.twig:7
+#: themes/firecrest/content/debug.twig:17
 #, php-format
-msgid "Logged in as %s"
+msgid "Called from <strong>%s</strong> on line <strong>%d</strong> at %ss."
 msgstr ""
 
-#: themes/firecrest/pages/tag.twig:5
-msgid "Posts tagged with %s"
+#: themes/firecrest/content/post.twig:8
+msgid "PRIVATE"
 msgstr ""
 
-#: themes/firecrest/forms/post/edit.twig:50
-msgid "Pinned?"
+#: themes/firecrest/content/post.twig:9
+msgid "SCHEDULED"
 msgstr ""
 
-#: themes/firecrest/pages/archive.twig:13
-msgid "%B"
-msgstr ""
-
-#: themes/firecrest/forms/user/controls.twig:35
-msgid "Update"
-msgstr ""
-
-#: themes/firecrest/pages/search.twig:5
+#: themes/firecrest/content/post.twig:15
+#: themes/firecrest/layouts/default.twig:72
+#: themes/firecrest/pages/view.twig:22
 #, php-format
-msgid "Search results for &#8220;%s&#8221;"
+msgid "Page %d of %d"
 msgstr ""
 
-#: themes/firecrest/pages/drafts.twig:11
-msgid "You don't have any drafts."
+#: themes/firecrest/content/post.twig:21
+msgid "%B %d @ %I:%M %p"
 msgstr ""
 
-#: themes/firecrest/pages/profile.twig:26
-msgid "Website:"
-msgstr ""
-
-#: themes/firecrest/forms/post/edit.twig:32
-msgid "Status"
-msgstr ""
-
-#: themes/firecrest/forms/user/controls.twig:10
-msgid "Cannot be changed."
-msgstr ""
-
-#: themes/firecrest/content/sidebar.twig:97
-#: themes/firecrest/content/sidebar.twig:111
-msgid "All &rarr;"
-msgstr ""
-
-#: themes/firecrest/pages/tag.twig:12
-msgid "There are no posts with the tag you specified."
-msgstr ""
-
-#: themes/firecrest/content/sidebar.twig:37
-msgid "Guest"
-msgstr ""
-
-#: themes/firecrest/layouts/default.twig:38
-msgid "Close"
-msgstr ""
-
-#: themes/firecrest/content/sidebar.twig:86
-#: themes/firecrest/content/post.twig:42
-msgid "Tags"
-msgstr ""
-
-#: themes/firecrest/pages/tag.twig:14
-msgid "No tag specified."
-msgstr ""
-
-#: themes/firecrest/pages/archive.twig:42
-msgid "There aren't any posts in the timeframe you specified."
+#: themes/firecrest/content/post.twig:24
+msgid "%B %d"
 msgstr ""
 
 #: themes/firecrest/content/post.twig:29
@@ -312,70 +102,304 @@ msgid_plural "%s Comments"
 msgstr[0] ""
 msgstr[1] ""
 
-#: themes/firecrest/content/sidebar.twig:73
-msgid "Categories"
+#: themes/firecrest/content/post.twig:42
+#: themes/firecrest/content/sidebar.twig:78
+msgid "Tags"
 msgstr ""
 
-#: themes/firecrest/content/post.twig:21
-msgid "%B %d @ %I:%M %p"
+#: themes/firecrest/content/sidebar.twig:5
+msgid "Profile"
 msgstr ""
 
+#: themes/firecrest/content/sidebar.twig:6
+msgid "Log Out"
+msgstr ""
+
+#: themes/firecrest/content/sidebar.twig:8
 #: themes/firecrest/forms/user/login.twig:4
 #: themes/firecrest/forms/user/login.twig:15
-#: themes/firecrest/content/sidebar.twig:8
-#: themes/firecrest/content/sidebar.twig:29
 msgid "Log In"
 msgstr ""
 
-#: themes/firecrest/forms/user/controls.twig:30
-msgid "Confirm"
+#: themes/firecrest/content/sidebar.twig:10
+#: themes/firecrest/content/sidebar.twig:38
+#: themes/firecrest/forms/user/register.twig:4
+#: themes/firecrest/forms/user/register.twig:27
+msgid "Register"
 msgstr ""
 
-#: themes/firecrest/pages/profile.twig:15
-msgid "Full Name:"
+#: themes/firecrest/content/sidebar.twig:23
+msgid "Elsewhere"
 msgstr ""
 
-#: themes/firecrest/pages/tags.twig:5
-msgid "Tag Maelstrom"
+#: themes/firecrest/content/sidebar.twig:25
+msgid "@chyrp on Twitter"
 msgstr ""
 
-#: themes/firecrest/content/comment.twig:10
-msgid "Edit"
+#: themes/firecrest/content/sidebar.twig:29
+msgid "Guest"
 msgstr ""
 
-#: themes/firecrest/content/sidebar.twig:54
+#: themes/firecrest/content/sidebar.twig:29
+#, php-format
+msgid "Welcome, %s!"
+msgstr ""
+
+#: themes/firecrest/content/sidebar.twig:32
+msgid "User Controls"
+msgstr ""
+
+#: themes/firecrest/content/sidebar.twig:34
+msgid "Toggle Admin Bar"
+msgstr ""
+
+#: themes/firecrest/content/sidebar.twig:40
+msgid "Lost Password?"
+msgstr ""
+
+#: themes/firecrest/content/sidebar.twig:46
 msgid "Pages"
+msgstr ""
+
+#: themes/firecrest/content/sidebar.twig:65
+msgid "Categories"
+msgstr ""
+
+#: themes/firecrest/content/sidebar.twig:82
+#, php-format
+msgid "%d post tagged &quot;%s&quot;"
+msgid_plural "%d posts tagged &quot;%s&quot;"
+msgstr[0] ""
+msgstr[1] ""
+
+#: themes/firecrest/content/sidebar.twig:89
+#: themes/firecrest/content/sidebar.twig:103
+msgid "All &rarr;"
+msgstr ""
+
+#: themes/firecrest/content/sidebar.twig:95
+#: themes/firecrest/pages/archive.twig:9
+msgid "Archives"
+msgstr ""
+
+#: themes/firecrest/content/sidebar.twig:99
+#: themes/firecrest/pages/archive.twig:15
+#: themes/firecrest/pages/archive.twig:31
+msgid "%B %Y"
+msgstr ""
+
+#: themes/firecrest/feathers/chat.twig:6
+#: themes/firecrest/feathers/text.twig:6
+msgid "Permanent Link to"
+msgstr ""
+
+#: themes/firecrest/forms/comment/new.twig:6
+msgid "Log Out &rarr;"
+msgstr ""
+
+#: themes/firecrest/forms/comment/new.twig:7
+#, php-format
+msgid "Logged in as %s"
+msgstr ""
+
+#: themes/firecrest/forms/comment/new.twig:11
+msgid "Speak up!"
 msgstr ""
 
 #: themes/firecrest/forms/comment/new.twig:13
 msgid "Your Name"
 msgstr ""
 
-#: themes/firecrest/pages/view.twig:22
-#: themes/firecrest/layouts/default.twig:73
-#: themes/firecrest/content/post.twig:15
-#, php-format
-msgid "Page %d of %d"
+#: themes/firecrest/forms/comment/new.twig:17
+msgid "Your E-Mail"
 msgstr ""
 
-#: themes/firecrest/content/post.twig:8
-msgid "PRIVATE"
+#: themes/firecrest/forms/comment/new.twig:21
+msgid "Your Website"
 msgstr ""
 
-#: themes/firecrest/content/debug.twig:12
-msgid "Queries"
+#: themes/firecrest/forms/comment/new.twig:30
+msgid "Notify me when others comment on this post"
+msgstr ""
+
+#: themes/firecrest/forms/comment/new.twig:41
+msgid "Speak"
+msgstr ""
+
+#: themes/firecrest/forms/post/edit.twig:9
+msgid "(optional)"
+msgstr ""
+
+#: themes/firecrest/forms/post/edit.twig:28
+msgid "More Options &darr;"
+msgstr ""
+
+#: themes/firecrest/forms/post/edit.twig:32
+msgid "Status"
+msgstr ""
+
+#: themes/firecrest/forms/post/edit.twig:34
+msgid "Draft"
+msgstr ""
+
+#: themes/firecrest/forms/post/edit.twig:35
+msgid "Public"
+msgstr ""
+
+#: themes/firecrest/forms/post/edit.twig:36
+msgid "Private"
+msgstr ""
+
+#: themes/firecrest/forms/post/edit.twig:37
+msgid "Scheduled"
+msgstr ""
+
+#: themes/firecrest/forms/post/edit.twig:38
+msgid "Registered Only"
+msgstr ""
+
+#: themes/firecrest/forms/post/edit.twig:40
+msgid "Group"
+msgstr ""
+
+#: themes/firecrest/forms/post/edit.twig:50
+msgid "Pinned?"
+msgstr ""
+
+#: themes/firecrest/forms/post/edit.twig:52
+msgid "(shows this post above all others)"
+msgstr ""
+
+#: themes/firecrest/forms/post/edit.twig:55
+msgid "Slug"
+msgstr ""
+
+#: themes/firecrest/forms/post/edit.twig:59
+msgid "Timestamp"
+msgstr ""
+
+#: themes/firecrest/forms/post/edit.twig:64
+msgid "Trackbacks"
+msgstr ""
+
+#: themes/firecrest/forms/post/edit.twig:102
+msgid "Save"
+msgstr ""
+
+#: themes/firecrest/forms/post/edit.twig:102
+msgid "or"
+msgstr ""
+
+#: themes/firecrest/forms/post/edit.twig:103
+msgid "Cancel"
+msgstr ""
+
+#: themes/firecrest/forms/user/controls.twig:4
+msgid "Controls"
+msgstr ""
+
+#: themes/firecrest/forms/user/controls.twig:7
+msgid "Login"
+msgstr ""
+
+#: themes/firecrest/forms/user/controls.twig:10
+msgid "Cannot be changed."
+msgstr ""
+
+#: themes/firecrest/forms/user/controls.twig:14
+msgid "Full Name"
+msgstr ""
+
+#: themes/firecrest/forms/user/controls.twig:18
+#: themes/firecrest/forms/user/register.twig:19
+msgid "E-Mail"
 msgstr ""
 
 #: themes/firecrest/forms/user/controls.twig:22
 msgid "Website"
 msgstr ""
 
-#: themes/firecrest/pages/profile.twig:23
-msgid "Email:"
+#: themes/firecrest/forms/user/controls.twig:26
+msgid "New Password?"
 msgstr ""
 
-#: themes/firecrest/content/post.twig:9
-msgid "SCHEDULED"
+#: themes/firecrest/forms/user/controls.twig:30
+msgid "Confirm"
+msgstr ""
+
+#: themes/firecrest/forms/user/controls.twig:35
+msgid "Update"
+msgstr ""
+
+#: themes/firecrest/forms/user/login.twig:7
+#: themes/firecrest/forms/user/lost_password.twig:8
+#: themes/firecrest/forms/user/register.twig:7
+msgid "Username"
+msgstr ""
+
+#: themes/firecrest/forms/user/login.twig:11
+#: themes/firecrest/forms/user/register.twig:11
+msgid "Password"
+msgstr ""
+
+#: themes/firecrest/forms/user/lost_password.twig:4
+msgid "Lost Password"
+msgstr ""
+
+#: themes/firecrest/forms/user/lost_password.twig:6
+msgid "Please enter your username below and we will e-mail you a new password for your account."
+msgstr ""
+
+#: themes/firecrest/forms/user/lost_password.twig:12
+msgid "Submit"
+msgstr ""
+
+#: themes/firecrest/forms/user/register.twig:15
+msgid "Password "
+msgstr ""
+
+#: themes/firecrest/forms/user/register.twig:15
+msgid "(again)"
+msgstr ""
+
+#: themes/firecrest/info.yaml:1
+msgid "Firecrest"
+msgstr ""
+
+#: themes/firecrest/layouts/default.twig:24
+msgid "Write"
+msgstr ""
+
+#: themes/firecrest/layouts/default.twig:26
+msgid "Write Draft"
+msgstr ""
+
+#: themes/firecrest/layouts/default.twig:29
+msgid "Add Page"
+msgstr ""
+
+#: themes/firecrest/layouts/default.twig:32
+msgid "Your Drafts"
+msgstr ""
+
+#: themes/firecrest/layouts/default.twig:35
+msgid "Admin"
+msgstr ""
+
+#: themes/firecrest/layouts/default.twig:37
+msgid "Close"
+msgstr ""
+
+#: themes/firecrest/layouts/default.twig:79
+msgid "Powered by <a class=\"chyrp\" href=\"http://chyrp.net/\">Chyrp</a>"
+msgstr ""
+
+#: themes/firecrest/pages/404.twig:5
+msgid "Not Found"
+msgstr ""
+
+#: themes/firecrest/pages/404.twig:6
+msgid "Sorry, but you are looking for something that isn't here."
 msgstr ""
 
 #: themes/firecrest/pages/archive.twig:7
@@ -385,152 +409,91 @@ msgstr ""
 msgid "Archive of %s"
 msgstr ""
 
-#: themes/firecrest/pages/404.twig:5
-msgid "Sorry, but you are looking for something that isn't here."
+#: themes/firecrest/pages/archive.twig:13
+msgid "%B"
 msgstr ""
 
-#: themes/firecrest/feathers/text.twig:6
-#: themes/firecrest/feathers/chat.twig:6
-msgid "Permanent Link to"
-msgstr ""
-
-#: themes/firecrest/pages/tags.twig:11
-msgid "No Tags"
-msgstr ""
-
-#: themes/firecrest/forms/user/lost_password.twig:6
-msgid "Please enter your username below and we will e-mail you a new password for your account."
-msgstr ""
-
-#: themes/firecrest/layouts/default.twig:80
-msgid "Powered by <a class=\"chyrp\" href=\"http://chyrp.net/\">Chyrp</a>"
-msgstr ""
-
-#: themes/firecrest/content/comment.twig:12
-msgid "%B %d, %Y, at %I:%M %p"
-msgstr ""
-
-#: themes/firecrest/pages/drafts.twig:10
-msgid "No Drafts"
-msgstr ""
-
-#: themes/firecrest/content/comment.twig:3
-msgid "Your comment is awaiting moderation."
-msgstr ""
-
-#: themes/firecrest/pages/tags.twig:18
-msgid "To view posts that have tag combinations, separate the tags with \"+\" in the URL (see example below), or view one and click the plus signs next to the tags in the sidebar."
-msgstr ""
-
-#: themes/firecrest/pages/404.twig:4
-msgid "Not Found"
-msgstr ""
-
-#: themes/firecrest/javascripts/theme.js.php:10
-msgid "(click to hide)"
-msgstr ""
-
-#: themes/firecrest/pages/profile.twig:18
-msgid "Bio:"
-msgstr ""
-
-#: themes/firecrest/pages/view.twig:11
-msgid "Comments"
-msgstr ""
-
-#: themes/firecrest/forms/comment/new.twig:41
-msgid "Speak"
-msgstr ""
-
-#: themes/firecrest/pages/search.twig:10
-msgid "No Results"
-msgstr ""
-
-#: themes/firecrest/forms/post/edit.twig:38
-msgid "Registered Only"
-msgstr ""
-
-#: themes/firecrest/content/debug.twig:5
-msgid "Stats"
+#: themes/firecrest/pages/archive.twig:19
+#: themes/firecrest/pages/archive.twig:35
+msgid "%d"
 msgstr ""
 
 #: themes/firecrest/pages/archive.twig:28
 msgid "%B %d, %Y"
 msgstr ""
 
-#: themes/firecrest/forms/post/edit.twig:52
-msgid "(shows this post above all others)"
+#: themes/firecrest/pages/archive.twig:41
+#: themes/firecrest/pages/index.twig:7
+#: themes/firecrest/pages/tag.twig:10
+msgid "No Posts"
 msgstr ""
 
-#: themes/firecrest/layouts/default.twig:36
-msgid "Admin"
+#: themes/firecrest/pages/archive.twig:42
+msgid "There aren't any posts in the timeframe you specified."
 msgstr ""
 
-#: themes/firecrest/content/sidebar.twig:37
+#: themes/firecrest/pages/drafts.twig:5
+msgid "Drafts"
+msgstr ""
+
+#: themes/firecrest/pages/drafts.twig:10
+msgid "No Drafts"
+msgstr ""
+
+#: themes/firecrest/pages/drafts.twig:11
+msgid "You don't have any drafts."
+msgstr ""
+
+#: themes/firecrest/pages/index.twig:8
+msgid "Nothing here yet!"
+msgstr ""
+
+#: themes/firecrest/pages/search.twig:5
 #, php-format
-msgid "Welcome, %s!"
+msgid "Search results for &#8220;%s&#8221;"
+msgstr ""
+
+#: themes/firecrest/pages/search.twig:10
+msgid "No Results"
 msgstr ""
 
 #: themes/firecrest/pages/search.twig:11
 msgid "Your search did not return any results."
 msgstr ""
 
-#: themes/firecrest/forms/user/controls.twig:7
-msgid "Login"
+#: themes/firecrest/pages/tag.twig:5
+msgid "Posts tagged with %s"
 msgstr ""
 
-#: themes/firecrest/content/sidebar.twig:90
-#, php-format
-msgid "%d post tagged &quot;%s&quot;"
-msgid_plural "%d posts tagged &quot;%s&quot;"
-msgstr[0] ""
-msgstr[1] ""
-
-#: themes/firecrest/forms/comment/new.twig:21
-msgid "Your Website"
+#: themes/firecrest/pages/tag.twig:12
+msgid "There are no posts with the tag you specified."
 msgstr ""
 
-#: themes/firecrest/content/debug.twig:17
-#, php-format
-msgid "Called from <strong>%s</strong> on line <strong>%d</strong> at %ss."
+#: themes/firecrest/pages/tag.twig:14
+msgid "No tag specified."
 msgstr ""
 
-#: themes/firecrest/forms/user/controls.twig:14
-msgid "Full Name"
+#: themes/firecrest/pages/tags.twig:5
+msgid "Tag Maelstrom"
 msgstr ""
 
-#: themes/firecrest/content/debug.twig:9
-msgid "Load Time:"
+#: themes/firecrest/pages/tags.twig:11
+msgid "No Tags"
 msgstr ""
 
-#: themes/firecrest/forms/user/register.twig:7
-#: themes/firecrest/forms/user/lost_password.twig:8
-#: themes/firecrest/forms/user/login.twig:7
-msgid "Username"
+#: themes/firecrest/pages/tags.twig:12
+msgid "There aren't any tags yet. Such a shame."
 msgstr ""
 
-#: themes/firecrest/content/post.twig:7
-msgid "!"
+#: themes/firecrest/pages/tags.twig:18
+msgid "To view posts that have tag combinations, separate the tags with \"+\" in the URL (see example below), or view one and click the plus signs next to the tags in the sidebar."
 msgstr ""
 
-#: themes/firecrest/forms/user/register.twig:11
-#: themes/firecrest/forms/user/login.twig:11
-msgid "Password"
-msgstr ""
-
-#: themes/firecrest/layouts/default.twig:33
-msgid "Your Drafts"
+#: themes/firecrest/pages/view.twig:11
+msgid "Comments"
 msgstr ""
 
 #: themes/firecrest/pages/view.twig:28
 msgid "Comments are not accepted on this entry."
-msgstr ""
-
-#: themes/firecrest/content/sidebar.twig:42
-msgid "Toggle Admin Bar"
-msgstr ""
-
-#: themes/firecrest/forms/comment/new.twig:17
-msgid "Your E-Mail"
 msgstr ""
 
