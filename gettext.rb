@@ -4,7 +4,7 @@ require "optparse"
 
 OPTIONS = {
   :project => "Chyrp v2.5",
-  :maintainer => "The Chyrp Team <email@chyrp.net>",
+  :maintainer => "Chyrp Team <email@chyrp.net>",
   :domain  => nil,
   :msgstr  => "",#"XXX",
   :msgstr_filter => "",#"XXX :: %s",
@@ -24,17 +24,17 @@ ARGV.options do |o|
   o.separator ""
 
   o.on("--project=[val]", String,
-       "The name of the project the .pot file is for.") { |OPTIONS[:project]| }
+       "The name of the project the .pot file is for.") { OPTIONS[:project] }
   o.on("--maintainer=[val]", String,
-       "The maintainer of the .pot file. (Firstname Lastname <foo@bar.com>)") { |OPTIONS[:maintainer]| }
+       "The maintainer of the .pot file. (Firstname Lastname <foo@bar.com>)") { OPTIONS[:maintainer] }
   o.on("--domain=[val]", String,
-       "Domain to scan for translations.") { |OPTIONS[:domain]| }
+       "Domain to scan for translations.") { OPTIONS[:domain] }
   o.on("--msgstr=[val]", String,
-       "Message string to translate all found translations to. Useful for debugging.") { |OPTIONS[:mststr]| }
+       "Message string to translate all found translations to. Useful for debugging.") { OPTIONS[:mststr] }
   o.on("--exclude=[val1,val2]", Array,
-       "A list of directories to exclude from the scan.") { |OPTIONS[:exclude]| }
+       "A list of directories to exclude from the scan.") { OPTIONS[:exclude] }
   o.on("--keys=[val1,val2]", Array,
-       "A list of YAML keys for which to generate translations.") { |OPTIONS[:keys]| }
+       "A list of YAML keys for which to generate translations.") { OPTIONS[:keys] }
 
   o.separator ""
 
