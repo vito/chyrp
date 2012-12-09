@@ -22,15 +22,7 @@
                     <div id="elsewhere">
                         <h5>${ "Elsewhere" | translate }</h5>
                         <ul id="social_sites">
-                            {% if visitor.logged_in %}
-                            <li><a class="profile_link" href="{% url "profile" %}">${ "Profile" | translate }</a></li>
-                            <li><a class="logout_link" href="{% url "logout" %}">${ "Log Out" | translate }</a></li>
-                            {% else %}
-                            <li><a class="login_link" href="{% url "login" %}">${ "Log In" | translate }</a></span></li>
-                            {% if site.can_register %}
-                            <li><a class="register_link" href="{% url "register" %}">${ "Register" | translate }</a></span></li>
-                            {% endif %}
-                        {% endif %}
+                            <li><a class="twitter_link" href="http://twitter.com/chyrp">${ "@chyrp on Twitter" | translate }</a></span></li>
                         </ul>
                     </div>
                     <div id="user_controls">
@@ -43,9 +35,9 @@
                                 {% endif %}
                             {% else %}
                             {% if site.can_register %}
-                            <li><a href="{% url "register" %}">${ "Register" | translate }</a></li>
+                            <li><a class="register_link" href="{% url "register" %}">${ "Register" | translate }</a></li>
                             {% endif %}
-                            <li><a href="{% url "lost_password" %}">${ "Lost Password?" | translate }</a></li>
+                            <li><a class="lost_password_link" href="{% url "lost_password" %}">${ "Lost Password?" | translate }</a></li>
                             {% endif %}
                         </ul>
                     </div>
