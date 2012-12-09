@@ -108,31 +108,28 @@
 
 
         static function sync_posts() {
-            if (!Visitor::current()->group->can("add_post", "add_draft"))
+            $visitor = Visitor::current();
+
+            if (!$visitor->group->can("add_post", "add_draft"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
-            $path = "2012-11-26.md";
             $dropbox = new Dropbox;
-            $file = $dropbox->get_file($path);
-
-            $post = new FrontMatter($file);
+            $path = "2012-11-26.md";
+            $post = new FrontMatter($dropbox->get_file($path));
 
             $data = array_merrge($post->fetch("title"), $post->fetch("content"));
             $post = Post::add($data,
                               $post->fetch("slug"),
                               Post::check_url($chyrp->url),
                               "text",
-                              ($user_id ? $user_id : $visitor->id),
+                              $visitor->id,
                               (bool) (int) $post->fetch("pinned"),
                               "public",
                               datetime($post->fetch("date")),
                               datetime($post->fetch("date")),
                               false);
 
-            Flash::notice(_f("Post updated. <a href=\"%s\">View Post &rarr;</a>",
-                             array($post->url())),
-                             "/admin/?action=manage_posts");
-            # Flash::notice(__("Post imported successfully."), "/admin/?action=manage_posts");
+            Flash::notice(_f("Post imported successfully."), "/admin/?action=manage_posts");
         }
 
         function parse_url_detail($url) {
