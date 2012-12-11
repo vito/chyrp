@@ -590,12 +590,12 @@
                     $user = new User(array("login" => $_POST['login']));
                     $_SESSION['user_id'] = $user->id;
 
-                    if (isset($_SESSION['redirect_to'])) {
-                        $redirect = $_SESSION['redirect_to'];
+                    if (!isset($redirect)) {
+                        $redirect = oneof(@$_SESSION['redirect_to'], "/");
                         unset($_SESSION['redirect_to']);
                     }
 
-                    Flash::notice(__("Logged in."), oneof($redirect, "/"));
+                    Flash::notice(__("Logged in."), $redirect);
                 }
             }
 
