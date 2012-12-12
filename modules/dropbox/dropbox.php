@@ -128,8 +128,8 @@
                         $file = $dropbox->getFile(ltrim($entry[0], "/"), $tmpfname);
                         $post = new FrontMatter($file["name"]);
 
-                        $values = array_merge("title" => $post->fetch("title"),
-                                              "body"  => $post->fetch("content"));
+                        $values = array("title" => $post->fetch("title"),
+                                        "body"  => $post->fetch("content"));
                         $post = Post::add($values,
                                           $post->fetch("slug"),
                                           Post::check_url($post->fetch("slug")),
