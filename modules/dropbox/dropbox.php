@@ -1,7 +1,6 @@
 <?php
     # Register the AutoLoad function
     require_once("lib/Dropbox/AutoLoader.php");
-    require_once("model.dropbox.php");
     require_once(INCLUDES_DIR."/lib/FrontMatter.php");
 
     class Dropbox extends Modules {
@@ -9,9 +8,7 @@
             $set = array(Config::current()->set("module_dropbox",
                                           array("app_key"      => null,
                                                 "app_secret"   => null,
-                                                "oauth_token"  => null,
-                                                "oauth_secret" => null,
-                                                "user_id"      => null)));
+                                                "cursor"       => null)));
         }
 
         static function __uninstall() {
@@ -71,8 +68,9 @@
             }
 
             $set = array($config->set("module_dropbox",
-                                array("app_key" => trim($_POST['app_key']),
-                                      "app_secret" => trim($_POST['app_secret']))));
+                                array("app_key"    => trim($_POST['app_key']),
+                                      "app_secret" => trim($_POST['app_secret']),
+                                      "cursor"     => null)));
 
             if (!in_array(false, $set))
                 Flash::notice(__("Settings updated."), "/admin/?action=dropbox_settings");
@@ -94,11 +92,9 @@
                 $token_data = get_object_vars($storage->get("access_token"));
 
                 $set = array($config->set("module_dropbox",
-                                    array("app_key"      => $app_key,
-                                          "app_secret"   => $app_secret,
-                                          "oauth_secret" => $token_data["oauth_token_secret"],
-                                          "oauth_token"  => $token_data["oauth_token"],
-                                          "user_id"  => $token_data["uid"])));
+                                    array("app_key"    => $app_key,
+                                          "app_secret" => $app_secret,
+                                          "cursor"     => null)));
 
                 if (!in_array(false, $set))
                     Flash::notice(__("Dropbox was successfully authorized.", "dropbox"), "/admin/?action=dropbox_settings");
@@ -107,29 +103,54 @@
         }
 
 
-        static function sync_posts() {
-            $visitor = Visitor::current();
-
-            if (!$visitor->group->can("add_post", "add_draft"))
+        static function admin_manage_dropbox($admin) {
+            if (!Visitor::current()->group->can("add_post", "add_draft"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
-            $dropbox = new Dropbox;
-            $path = "2012-11-26.md";
-            $post = new FrontMatter($dropbox->get_file($path));
+            if (empty($_POST))
+                return $admin->display("manage_dropbox");
 
-            $data = array_merrge($post->fetch("title"), $post->fetch("content"));
-            $post = Post::add($data,
-                              $post->fetch("slug"),
-                              Post::check_url($chyrp->url),
-                              "text",
-                              $visitor->id,
-                              (bool) (int) $post->fetch("pinned"),
-                              "public",
-                              datetime($post->fetch("date")),
-                              datetime($post->fetch("date")),
-                              false);
+            $config = Config::current();
+            $app_key    = $config->module_dropbox["app_key"];
+            $app_secret = $config->module_dropbox["app_secret"];
 
-            Flash::notice(_f("Post imported successfully."), "/admin/?action=manage_posts");
+            $storage = new \Dropbox\OAuth\Storage\Session;
+            $OAuth = new \Dropbox\OAuth\Consumer\Curl($app_key, $app_secret, $storage);
+            $dropbox = new \Dropbox\API($OAuth);
+
+            $delta = $dropbox->delta();
+            $delta = $delta["body"];
+
+            if ($delta->cursor != $config->module_dropbox["cursor"]) {
+                if (count($delta->entries) > 0) {
+                    foreach ($delta->entries as $entry) {
+                        $tmpfname = tempnam("/tmp", "md");
+                        $file = $dropbox->getFile(ltrim($entry[0], "/"), $tmpfname);
+                        $post = new FrontMatter($file["name"]);
+
+                        $values = array_merge("title" => $post->fetch("title"),
+                                              "body"  => $post->fetch("content"));
+                        $post = Post::add($values,
+                                          $post->fetch("slug"),
+                                          Post::check_url($post->fetch("slug")),
+                                          "text",
+                                          1,
+                                          (bool) (int) $post->fetch("pinned"),
+                                          "public",
+                                          datetime($post->fetch("date")),
+                                          datetime($post->fetch("date")),
+                                          false);
+                    }
+                }
+
+                $set = array($config->set("module_dropbox",
+                                    array("app_key"      => $app_key,
+                                          "app_secret"   => $app_secret,
+                                          "cursor"       => $delta->cursor)));
+
+                if (!in_array(false, $set))
+                    Flash::notice(_f("Post imported successfully."), "/admin/?action=manage_posts");
+            }
         }
 
         function parse_url_detail($url) {
