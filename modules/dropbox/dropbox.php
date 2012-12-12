@@ -128,15 +128,18 @@
                         $file = $dropbox->getFile(ltrim($entry[0], "/"), $tmpfname);
                         $post = new FrontMatter($file["name"]);
 
+                        $date = explode(".", ltrim($entry[0], "/"));
                         $values = array("title" => $post->fetch("title"),
                                         "body"  => $post->fetch("content"));
-                        $post = Post::add($values,
-                                          $post->fetch("slug"),
-                                          Post::check_url($post->fetch("slug")),
-                                          "text",
-                                          1,
-                                          (bool) (int) $post->fetch("pinned"),
-                                          "public",
+                        # Set defaults
+                        fallback($clean,  isset($post->fetch("slug")) ? $post->fetch("slug") : strtolower($post->fetch("title")) ;
+                        fallback($url,    Post::check_url($clean));
+                        fallback($pinned, (int) !empty($post->fetch("pinned")));
+                        fallback($status, isset($post->fetch("status")));
+                        fallback($date,   isset($post->fetch("date")) ? datetime($post->fetch("date")) : datetime($date[0]));
+
+                        $post = Post::add($values, $clean, $url, "text",
+                                          1, $pinned, $status,
                                           datetime($post->fetch("date")),
                                           datetime($post->fetch("date")),
                                           false);
