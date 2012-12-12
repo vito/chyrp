@@ -132,12 +132,11 @@
                         $values = array("title" => $post->fetch("title"),
                                         "body"  => $post->fetch("content"));
                         # Set defaults
-                        fallback($clean,  isset($post->fetch("slug")) ? $post->fetch("slug") :
-                                                strtolower(str_replace(" ", "-", $post->fetch("title"))) ;
+                        fallback($clean,  oneof($post->fetch("slug"), strtolower(str_replace(" ", "-", $post->fetch("title")))));
                         fallback($url,    Post::check_url($clean));
-                        fallback($pinned, (int) !empty($post->fetch("pinned")));
-                        fallback($status, isset($post->fetch("status")));
-                        fallback($date,   isset($post->fetch("date")) ? datetime($post->fetch("date")) : datetime($date[0]));
+                        fallback($pinned, oneof($post->fetch("pinned"), 0));
+                        fallback($status, oneof($post->fetch("status"), "text"));
+                        fallback($date,   oneof(datetime($post->fetch("date")), datetime($date[0])));
 
                         $post = Post::add($values, $clean, $url, "text",
                                           1, $pinned, $status,
