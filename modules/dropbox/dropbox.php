@@ -132,7 +132,8 @@
                         $values = array("title" => $post->fetch("title"),
                                         "body"  => $post->fetch("content"));
                         # Set defaults
-                        fallback($clean,  isset($post->fetch("slug")) ? $post->fetch("slug") : strtolower($post->fetch("title")) ;
+                        fallback($clean,  isset($post->fetch("slug")) ? $post->fetch("slug") :
+                                                strtolower(str_replace(" ", "-", $post->fetch("title"))) ;
                         fallback($url,    Post::check_url($clean));
                         fallback($pinned, (int) !empty($post->fetch("pinned")));
                         fallback($status, isset($post->fetch("status")));
