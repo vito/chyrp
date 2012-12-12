@@ -29,7 +29,7 @@ class FrontMatter {
      * Function: fetch
      * Return $value by $key reference.
      */
-    protected function fetch($key) {
+    public function fetch($key) {
         return $this->data[$key];
     }
 
