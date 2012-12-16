@@ -124,6 +124,32 @@
     }
 
     /**
+     * Function: show_404
+     * Shows a 404 error message and immediately exits.
+     *
+     * Parameters:
+     *     $scope - An array of values to extract into the scope.
+     */
+     function show_404() {
+        header("HTTP/1.1 404 Not Found");
+
+        if (!defined('CHYRP_VERSION'))
+            exit("404 Not Found");
+
+        $theme = Theme::current();
+        $main = MainController::current();
+
+        Trigger::current()->call("not_found");
+
+        if ($theme->file_exists("pages/404"))
+            $main->display("pages/404", array(), "404");
+        else
+            error(__("404 Not Found"), __("The requested page could not be located."));
+
+        exit;
+    }
+
+    /**
      * Function: deprecated
      * Returns a warning if a deprecated function has been used.
      *
@@ -181,6 +207,76 @@
     }
 
     /**
+     * Function: set_locale
+     * Set locale in a platform-independent way
+     *
+     * Parameters:
+     *     $locale - the locale name (@en_US@, @uk_UA@, @fr_FR@ etc.)
+     *
+     * Returns:
+     *     The encoding name used by locale-aware functions.
+     */
+    function set_locale($locale) { # originally via http://www.onphp5.com/article/22; heavily modified
+        if ($locale == "en_US") return; # en_US is the default in Chyrp; their system may have
+                                        # its own locale setting and no Chyrp translation available
+                                        # for their locale, so let's just leave it alone.
+
+        list($lang, $cty) = explode("_", $locale);
+        $locales = array($locale.".UTF-8", $lang, "en_US.UTF-8", "en");
+        $result = setlocale(LC_ALL, $locales);
+
+        return (!strpos($result, 'UTF-8')) ? "CP".preg_replace('~\.(\d+)$~', "\\1", $result) : "UTF-8" ;
+    }
+
+    /**
+     * Function: lang_code
+     * Returns the passed language code (e.g. en_US) to the human-readable text (e.g. English (US))
+     *
+     * Parameters:
+     *     $code - The language code to convert
+     *
+     * Author:
+     *     TextPattern devs, modified to fit with Chyrp.
+     */
+    function lang_code($code) {
+        $langs = array("ar_DZ" => "جزائري عربي",
+                       "ca_ES" => "Català",
+                       "cs_CZ" => "Čeština",
+                       "da_DK" => "Dansk",
+                       "de_DE" => "Deutsch",
+                       "el_GR" => "Ελληνικά",
+                       "en_GB" => "English (GB)",
+                       "en_US" => "English (US)",
+                       "es_ES" => "Español",
+                       "et_EE" => "Eesti",
+                       "fi_FI" => "Suomi",
+                       "fr_FR" => "Français",
+                       "gl_GZ" => "Galego (Galiza)",
+                       "he_IL" => "עברית",
+                       "hu_HU" => "Magyar",
+                       "id_ID" => "Bahasa Indonesia",
+                       "is_IS" => "Íslenska",
+                       "it_IT" => "Italiano",
+                       "ja_JP" => "日本語",
+                       "lv_LV" => "Latviešu",
+                       "nl_NL" => "Nederlands",
+                       "no_NO" => "Norsk",
+                       "pl_PL" => "Polski",
+                       "pt_PT" => "Português",
+                       "ro_RO" => "Română",
+                       "ru_RU" => "Русский",
+                       "sk_SK" => "Slovenčina",
+                       "sv_SE" => "Svenska",
+                       "th_TH" => "ไทย",
+                       "uk_UA" => "Українська",
+                       "vi_VN" => "Tiếng Việt",
+                       "zh_CN" => "中文(简体)",
+                       "zh_TW" => "中文(繁體)",
+                       "bg_BG" => "Български");
+        return (isset($langs[$code])) ? str_replace(array_keys($langs), array_values($langs), $code) : $code ;
+    }
+
+    /**
      * Function: __
      * Returns a translated string.
      *
@@ -223,35 +319,6 @@
         $args = (array) $args;
         array_unshift($args, __($string, $domain));
         return call_user_func_array("sprintf", $args);
-    }
-
-    /**
-     * Function: redirect
-     * Redirects to the given URL and exits immediately.
-     *
-     * Parameters:
-     *     $url - The URL to redirect to. If it begins with @/@ it will be relative to the @Config.chyrp_url@.
-     *     $use_chyrp_url - Use the @Config.chyrp_url@ instead of @Config.url@ for $urls beginning with @/@?
-     */
-    function redirect($url, $use_chyrp_url = false) {
-        # Handle URIs without domain
-        if ($url[0] == "/")
-            $url = (ADMIN or $use_chyrp_url) ?
-                       Config::current()->chyrp_url.$url :
-                       Config::current()->url.$url ;
-        elseif (file_exists(INCLUDES_DIR."/config.yaml.php") and class_exists("Route") and !substr_count($url, "://"))
-            $url = url($url);
-
-        header("Location: ".html_entity_decode($url));
-        exit;
-    }
-
-    /**
-     * Function: url
-     * Mask for Route->url().
-     */
-    function url($url, $controller = null) {
-        return Route::current()->url($url, $controller);
     }
 
     /**
@@ -339,6 +406,119 @@
             return substr($string, 0, -1);
         else
             return $replaced;
+    }
+
+    /**
+     * Function: when
+     * Returns date formatting for a string that isn't a regular time() value
+     *
+     * Parameters:
+     *     $formatting - The formatting for date().
+     *     $when - Time to base on. If it is not numeric it will be run through strtotime.
+     *     $strftime - Use @strftime@ instead of @date@?
+     */
+    function when($formatting, $when, $strftime = false) {
+        $time = (is_numeric($when)) ? $when : strtotime($when) ;
+
+        if ($strftime)
+            return strftime($formatting, $time);
+        else
+            return date($formatting, $time);
+    }
+
+    /**
+     * Function: datetime
+     * Returns a standard datetime string based on either the passed timestamp or their time offset, usually for MySQL inserts.
+     *
+     * Parameters:
+     *     $when - An optional timestamp.
+     */
+    function datetime($when = null) {
+        fallback($when, time());
+
+        $time = (is_numeric($when)) ? $when : strtotime($when) ;
+
+        return date("Y-m-d H:i:s", $time);
+    }
+
+    /**
+     * Function: fix
+     * Returns a HTML-sanitized version of a string.
+     *
+     * Parameters:
+     *     $string - String to fix.
+     *     $quotes - Encode quotes?
+     *     $double - Encode encoded?
+     */
+    function fix($string, $quotes = false, $double = false) {
+        $quotes = ($quotes) ? ENT_QUOTES : ENT_NOQUOTES ;
+        return htmlspecialchars($string, $quotes, "utf-8", $double);
+    }
+
+    /**
+     * Function: unfix
+     * Returns the reverse of fix().
+     *
+     * Parameters:
+     *     $string - String to unfix.
+     */
+    function unfix($string) {
+        return htmlspecialchars_decode($string, ENT_QUOTES, "utf-8");
+    }
+
+    /**
+     * Function: sanitize_input
+     * Makes sure no inherently broken ideas such as magic_quotes break our application
+     *
+     * Parameters:
+     *     $data - The array to be sanitized, usually one of @$_GET@, @$_POST@, @$_COOKIE@, or @$_REQUEST@
+     */
+    function sanitize_input(&$data) {
+        foreach ($data as &$value)
+            if (is_array($value))
+                sanitize_input($value);
+            else
+                $value = get_magic_quotes_gpc() ? stripslashes($value) : $value ;
+    }
+
+    /**
+     * Function: sanitize
+     * Returns a sanitized string, typically for URLs.
+     *
+     * Parameters:
+     *     $string - The string to sanitize.
+     *     $force_lowercase - Force the string to lowercase?
+     *     $anal - If set to *true*, will remove all non-alphanumeric characters.
+     *     $trunc - Number of characters to truncate to (default 100, 0 to disable).
+     */
+    function sanitize($string, $force_lowercase = true, $anal = false, $trunc = 100) {
+        $strip = array("~", "`", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "=", "+", "[", "{", "]",
+                       "}", "\\", "|", ";", ":", "\"", "'", "&#8216;", "&#8217;", "&#8220;", "&#8221;", "&#8211;", "&#8212;",
+                       "—", "–", ",", "<", ".", ">", "/", "?");
+        $clean = trim(str_replace($strip, "", strip_tags($string)));
+        $clean = preg_replace('/\s+/', "-", $clean);
+        $clean = ($anal ? preg_replace("/[^a-zA-Z0-9]/", "", $clean) : $clean);
+        $clean = ($trunc ? substr($clean, 0, $trunc) : $clean);
+        return ($force_lowercase) ?
+            (function_exists('mb_strtolower')) ?
+                mb_strtolower($clean, 'UTF-8') :
+                strtolower($clean) :
+            $clean;
+    }
+
+    /**
+     * Function: normalize
+     * Attempts to normalize all newlines and whitespace into single spaces.
+     *
+     * Returns:
+     *     The normalized string.
+     */
+    function normalize($string) {
+        $trimmed = trim($string);
+        $newlines = str_replace("\n\n", " ", $trimmed);
+        $newlines = str_replace("\n", "", $newlines);
+        $normalized = preg_replace("/[\s\n\r\t]+/", " ", $newlines);
+        return $normalized;
     }
 
     /**
@@ -436,137 +616,6 @@
     }
 
     /**
-     * Function: when
-     * Returns date formatting for a string that isn't a regular time() value
-     *
-     * Parameters:
-     *     $formatting - The formatting for date().
-     *     $when - Time to base on. If it is not numeric it will be run through strtotime.
-     *     $strftime - Use @strftime@ instead of @date@?
-     */
-    function when($formatting, $when, $strftime = false) {
-        $time = (is_numeric($when)) ? $when : strtotime($when) ;
-
-        if ($strftime)
-            return strftime($formatting, $time);
-        else
-            return date($formatting, $time);
-    }
-
-    /**
-     * Function: datetime
-     * Returns a standard datetime string based on either the passed timestamp or their time offset, usually for MySQL inserts.
-     *
-     * Parameters:
-     *     $when - An optional timestamp.
-     */
-    function datetime($when = null) {
-        fallback($when, time());
-
-        $time = (is_numeric($when)) ? $when : strtotime($when) ;
-
-        return date("Y-m-d H:i:s", $time);
-    }
-
-    /**
-     * Function: fix
-     * Returns a HTML-sanitized version of a string.
-     *
-     * Parameters:
-     *     $string - String to fix.
-     *     $quotes - Encode quotes?
-     *     $double - Encode encoded?
-     */
-    function fix($string, $quotes = false, $double = false) {
-        $quotes = ($quotes) ? ENT_QUOTES : ENT_NOQUOTES ;
-        return htmlspecialchars($string, $quotes, "utf-8", $double);
-    }
-
-    /**
-     * Function: unfix
-     * Returns the reverse of fix().
-     *
-     * Parameters:
-     *     $string - String to unfix.
-     */
-    function unfix($string) {
-        return htmlspecialchars_decode($string, ENT_QUOTES, "utf-8");
-    }
-
-    /**
-     * Function: lang_code
-     * Returns the passed language code (e.g. en_US) to the human-readable text (e.g. English (US))
-     *
-     * Parameters:
-     *     $code - The language code to convert
-     *
-     * Author:
-     *     TextPattern devs, modified to fit with Chyrp.
-     */
-    function lang_code($code) {
-        $langs = array("ar_DZ" => "جزائري عربي",
-                       "ca_ES" => "Català",
-                       "cs_CZ" => "Čeština",
-                       "da_DK" => "Dansk",
-                       "de_DE" => "Deutsch",
-                       "el_GR" => "Ελληνικά",
-                       "en_GB" => "English (GB)",
-                       "en_US" => "English (US)",
-                       "es_ES" => "Español",
-                       "et_EE" => "Eesti",
-                       "fi_FI" => "Suomi",
-                       "fr_FR" => "Français",
-                       "gl_GZ" => "Galego (Galiza)",
-                       "he_IL" => "עברית",
-                       "hu_HU" => "Magyar",
-                       "id_ID" => "Bahasa Indonesia",
-                       "is_IS" => "Íslenska",
-                       "it_IT" => "Italiano",
-                       "ja_JP" => "日本語",
-                       "lv_LV" => "Latviešu",
-                       "nl_NL" => "Nederlands",
-                       "no_NO" => "Norsk",
-                       "pl_PL" => "Polski",
-                       "pt_PT" => "Português",
-                       "ro_RO" => "Română",
-                       "ru_RU" => "Русский",
-                       "sk_SK" => "Slovenčina",
-                       "sv_SE" => "Svenska",
-                       "th_TH" => "ไทย",
-                       "uk_UA" => "Українська",
-                       "vi_VN" => "Tiếng Việt",
-                       "zh_CN" => "中文(简体)",
-                       "zh_TW" => "中文(繁體)",
-                       "bg_BG" => "Български");
-        return (isset($langs[$code])) ? str_replace(array_keys($langs), array_values($langs), $code) : $code ;
-    }
-
-    /**
-     * Function: sanitize
-     * Returns a sanitized string, typically for URLs.
-     *
-     * Parameters:
-     *     $string - The string to sanitize.
-     *     $force_lowercase - Force the string to lowercase?
-     *     $anal - If set to *true*, will remove all non-alphanumeric characters.
-     *     $trunc - Number of characters to truncate to (default 100, 0 to disable).
-     */
-    function sanitize($string, $force_lowercase = true, $anal = false, $trunc = 100) {
-        $strip = array("~", "`", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "=", "+", "[", "{", "]",
-                       "}", "\\", "|", ";", ":", "\"", "'", "&#8216;", "&#8217;", "&#8220;", "&#8221;", "&#8211;", "&#8212;",
-                       "—", "–", ",", "<", ".", ">", "/", "?");
-        $clean = trim(str_replace($strip, "", strip_tags($string)));
-        $clean = preg_replace('/\s+/', "-", $clean);
-        $clean = ($anal ? preg_replace("/[^a-zA-Z0-9]/", "", $clean) : $clean);
-        $clean = ($trunc ? substr($clean, 0, $trunc) : $clean);
-        return ($force_lowercase) ?
-            (function_exists('mb_strtolower')) ?
-                mb_strtolower($clean, 'UTF-8') :
-                strtolower($clean) :
-            $clean;
-    }
-
-    /**
      * Function: trackback_respond
      * Responds to a trackback request.
      *
@@ -655,23 +704,6 @@
     }
 
     /**
-     * Function: grab_urls
-     * Crawls a string for links.
-     *
-     * Parameters:
-     *     $string - The string to crawl.
-     *
-     * Returns:
-     *     An array of all URLs found in the string.
-     */
-    function grab_urls($string) {
-        $regexp = "/<a[^>]+href=[\"|']([^\"]+)[\"|']>[^<]+<\/a>/";
-        preg_match_all(Trigger::current()->filter($regexp, "link_regexp"), stripslashes($string), $matches);
-        $matches = $matches[1];
-        return $matches;
-    }
-
-    /**
      * Function: pingback_url
      * Checks if a URL is pingback-capable.
      *
@@ -728,6 +760,61 @@
         fclose($connect);
 
         return false;
+    }
+
+    /**
+     * Function: grab_urls
+     * Crawls a string for links.
+     *
+     * Parameters:
+     *     $string - The string to crawl.
+     *
+     * Returns:
+     *     An array of all URLs found in the string.
+     */
+    function grab_urls($string) {
+        $regexp = "/<a[^>]+href=[\"|']([^\"]+)[\"|']>[^<]+<\/a>/";
+        preg_match_all(Trigger::current()->filter($regexp, "link_regexp"), stripslashes($string), $matches);
+        $matches = $matches[1];
+        return $matches;
+    }
+
+    /**
+     * Function: redirect
+     * Redirects to the given URL and exits immediately.
+     *
+     * Parameters:
+     *     $url - The URL to redirect to. If it begins with @/@ it will be relative to the @Config.chyrp_url@.
+     *     $use_chyrp_url - Use the @Config.chyrp_url@ instead of @Config.url@ for $urls beginning with @/@?
+     */
+    function redirect($url, $use_chyrp_url = false) {
+        # Handle URIs without domain
+        if ($url[0] == "/")
+            $url = (ADMIN or $use_chyrp_url) ?
+                       Config::current()->chyrp_url.$url :
+                       Config::current()->url.$url ;
+        elseif (file_exists(INCLUDES_DIR."/config.yaml.php") and class_exists("Route") and !substr_count($url, "://"))
+            $url = url($url);
+
+        header("Location: ".html_entity_decode($url));
+        exit;
+    }
+
+    /**
+     * Function: url
+     * Mask for Route->url().
+     */
+    function url($url, $controller = null) {
+        return Route::current()->url($url, $controller);
+    }
+
+    /**
+     * Function: self_url
+     * Returns the current URL.
+     */
+    function self_url() {
+        $protocol = (!empty($_SERVER['HTTPS']) and $_SERVER['HTTPS'] !== "off" or $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://" ;
+        return $protocol.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
     }
 
     /**
@@ -829,6 +916,90 @@
     function feather_enabled($name) {
         $config = Config::current();
         return in_array($name, $config->enabled_feathers);
+    }
+
+    /**
+     * Function: cancel_module
+     * Temporarily removes a module from $config->enabled_modules.
+     *
+     * Parameters:
+     *     $target - Module name to disable.
+     */
+     function cancel_module($target) {
+        $this_disabled = array();
+
+        if (isset(Modules::$instances[$target]))
+            Modules::$instances[$target]->cancelled = true;
+
+        $config = Config::current();
+        foreach ($config->enabled_modules as $module)
+            if ($module != $target)
+                $this_disabled[] = $module;
+
+        return $config->enabled_modules = $this_disabled;
+    }
+
+    /**
+     * Function: init_extensions
+     * Initialize all Modules and Feathers.
+     */
+    function init_extensions() {
+        $config = Config::current();
+
+        # Instantiate all Modules.
+        foreach ($config->enabled_modules as $index => $module) {
+            if (!file_exists(MODULES_DIR."/".$module."/".$module.".php")) {
+                unset($config->enabled_modules[$index]);
+                continue;
+            }
+
+            if (file_exists(MODULES_DIR."/".$module."/locale/".$config->locale.".mo"))
+                load_translator($module, MODULES_DIR."/".$module."/locale/".$config->locale.".mo");
+
+            require MODULES_DIR."/".$module."/".$module.".php";
+
+            $camelized = camelize($module);
+            if (!class_exists($camelized))
+                continue;
+
+            Modules::$instances[$module] = new $camelized;
+            Modules::$instances[$module]->safename = $module;
+
+            foreach (YAML::load(MODULES_DIR."/".$module."/info.yaml") as $key => $val)
+                Modules::$instances[$module]->$key = (is_string($val)) ? __($val, $module) : $val ;
+        }
+
+        # Instantiate all Feathers.
+        foreach ($config->enabled_feathers as $index => $feather) {
+            if (!file_exists(FEATHERS_DIR."/".$feather."/".$feather.".php")) {
+                unset($config->enabled_feathers[$index]);
+                continue;
+            }
+
+            if (file_exists(FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo"))
+                load_translator($feather, FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo");
+
+            require FEATHERS_DIR."/".$feather."/".$feather.".php";
+
+            $camelized = camelize($feather);
+            if (!class_exists($camelized))
+                continue;
+
+            Feathers::$instances[$feather] = new $camelized;
+            Feathers::$instances[$feather]->safename = $feather;
+
+            foreach (YAML::load(FEATHERS_DIR."/".$feather."/info.yaml") as $key => $val)
+                Feathers::$instances[$feather]->$key = (is_string($val)) ? __($val, $feather) : $val ;
+        }
+
+        # Initialize all modules.
+        foreach (Feathers::$instances as $feather)
+            if (method_exists($feather, "__init"))
+                $feather->__init();
+
+        foreach (Modules::$instances as $module)
+            if (method_exists($module, "__init"))
+                $module->__init();
     }
 
     /**
@@ -1098,21 +1269,6 @@
     }
 
     /**
-     * Function: normalize
-     * Attempts to normalize all newlines and whitespace into single spaces.
-     *
-     * Returns:
-     *     The normalized string.
-     */
-    function normalize($string) {
-        $trimmed = trim($string);
-        $newlines = str_replace("\n\n", " ", $trimmed);
-        $newlines = str_replace("\n", "", $newlines);
-        $normalized = preg_replace("/[\s\n\r\t]+/", " ", $newlines);
-        return $normalized;
-    }
-
-    /**
      * Function: get_remote
      * Grabs the contents of a website/location.
      *
@@ -1168,78 +1324,6 @@
     }
 
     /**
-     * Function: self_url
-     * Returns the current URL.
-     */
-    function self_url() {
-        $protocol = (!empty($_SERVER['HTTPS']) and $_SERVER['HTTPS'] !== "off" or $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://" ;
-        return $protocol.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-    }
-
-    /**
-     * Function: show_404
-     * Shows a 404 error message and immediately exits.
-     *
-     * Parameters:
-     *     $scope - An array of values to extract into the scope.
-     */
-     function show_404() {
-        header("HTTP/1.1 404 Not Found");
-
-        if (!defined('CHYRP_VERSION'))
-            exit("404 Not Found");
-
-        $theme = Theme::current();
-        $main = MainController::current();
-
-        Trigger::current()->call("not_found");
-
-        if ($theme->file_exists("pages/404"))
-            $main->display("pages/404", array(), "404");
-        else
-            error(__("404 Not Found"), __("The requested page could not be located."));
-
-        exit;
-    }
-
-    /**
-     * Function: set_locale
-     * Set locale in a platform-independent way
-     *
-     * Parameters:
-     *     $locale - the locale name (@en_US@, @uk_UA@, @fr_FR@ etc.)
-     *
-     * Returns:
-     *     The encoding name used by locale-aware functions.
-     */
-    function set_locale($locale) { # originally via http://www.onphp5.com/article/22; heavily modified
-        if ($locale == "en_US") return; # en_US is the default in Chyrp; their system may have
-                                        # its own locale setting and no Chyrp translation available
-                                        # for their locale, so let's just leave it alone.
-
-        list($lang, $cty) = explode("_", $locale);
-        $locales = array($locale.".UTF-8", $lang, "en_US.UTF-8", "en");
-        $result = setlocale(LC_ALL, $locales);
-
-        return (!strpos($result, 'UTF-8')) ? "CP".preg_replace('~\.(\d+)$~', "\\1", $result) : "UTF-8" ;
-    }
-
-    /**
-     * Function: sanitize_input
-     * Makes sure no inherently broken ideas such as magic_quotes break our application
-     *
-     * Parameters:
-     *     $data - The array to be sanitized, usually one of @$_GET@, @$_POST@, @$_COOKIE@, or @$_REQUEST@
-     */
-    function sanitize_input(&$data) {
-        foreach ($data as &$value)
-            if (is_array($value))
-                sanitize_input($value);
-            else
-                $value = get_magic_quotes_gpc() ? stripslashes($value) : $value ;
-    }
-
-    /**
      * Function: match
      * Try to match a string against an array of regular expressions.
      *
@@ -1259,27 +1343,6 @@
                 return true;
 
         return false;
-    }
-
-    /**
-     * Function: cancel_module
-     * Temporarily removes a module from $config->enabled_modules.
-     *
-     * Parameters:
-     *     $target - Module name to disable.
-     */
-     function cancel_module($target) {
-        $this_disabled = array();
-
-        if (isset(Modules::$instances[$target]))
-            Modules::$instances[$target]->cancelled = true;
-
-        $config = Config::current();
-        foreach ($config->enabled_modules as $module)
-            if ($module != $target)
-                $this_disabled[] = $module;
-
-        return $config->enabled_modules = $this_disabled;
     }
 
     /**
@@ -1435,69 +1498,6 @@
         Trigger::current()->filter($keywords, "keyword_search", $query, $plain);
 
         return $keywords;
-    }
-
-    /**
-     * Function: init_extensions
-     * Initialize all Modules and Feathers.
-     */
-    function init_extensions() {
-        $config = Config::current();
-
-        # Instantiate all Modules.
-        foreach ($config->enabled_modules as $index => $module) {
-            if (!file_exists(MODULES_DIR."/".$module."/".$module.".php")) {
-                unset($config->enabled_modules[$index]);
-                continue;
-            }
-
-            if (file_exists(MODULES_DIR."/".$module."/locale/".$config->locale.".mo"))
-                load_translator($module, MODULES_DIR."/".$module."/locale/".$config->locale.".mo");
-
-            require MODULES_DIR."/".$module."/".$module.".php";
-
-            $camelized = camelize($module);
-            if (!class_exists($camelized))
-                continue;
-
-            Modules::$instances[$module] = new $camelized;
-            Modules::$instances[$module]->safename = $module;
-
-            foreach (YAML::load(MODULES_DIR."/".$module."/info.yaml") as $key => $val)
-                Modules::$instances[$module]->$key = (is_string($val)) ? __($val, $module) : $val ;
-        }
-
-        # Instantiate all Feathers.
-        foreach ($config->enabled_feathers as $index => $feather) {
-            if (!file_exists(FEATHERS_DIR."/".$feather."/".$feather.".php")) {
-                unset($config->enabled_feathers[$index]);
-                continue;
-            }
-
-            if (file_exists(FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo"))
-                load_translator($feather, FEATHERS_DIR."/".$feather."/locale/".$config->locale.".mo");
-
-            require FEATHERS_DIR."/".$feather."/".$feather.".php";
-
-            $camelized = camelize($feather);
-            if (!class_exists($camelized))
-                continue;
-
-            Feathers::$instances[$feather] = new $camelized;
-            Feathers::$instances[$feather]->safename = $feather;
-
-            foreach (YAML::load(FEATHERS_DIR."/".$feather."/info.yaml") as $key => $val)
-                Feathers::$instances[$feather]->$key = (is_string($val)) ? __($val, $feather) : $val ;
-        }
-
-        # Initialize all modules.
-        foreach (Feathers::$instances as $feather)
-            if (method_exists($feather, "__init"))
-                $feather->__init();
-
-        foreach (Modules::$instances as $module)
-            if (method_exists($module, "__init"))
-                $module->__init();
     }
 
     /**
