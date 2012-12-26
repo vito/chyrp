@@ -515,7 +515,7 @@
                                    "Reply-To:".$config->email. "\r\n" .
                                    "X-Mailer: PHP/".phpversion() ;
 
-                        $user = User::add($_POST['login'], $_POST['password1'], $_POST['email'], "", "", 5);
+                        $user = User::add($_POST['login'], $_POST['password1'], $_POST['email'], "", "", 5, false);
                         $sent = email($to, $subject, $message, $headers);
 
                         if ($sent)
@@ -556,10 +556,10 @@
             if (sha1($user->login.$user->email) !== $_GET['token'])
                 error(__("Error"), __("Invalid token."));
 
-            if ($user->is_approved != 1 or $user->group_id != 5) {
+            if (!$user->approved or $user->group_id = 5) {
                 SQL::current()->update("users",
                                  array("login" => $user->login),
-                                 array("is_approved" => 1, "group_id" => 2));
+                                 array("approved" => true, "group_id" => 2));
 
                 Flash::notice(__("Your account is now active. Welcome aboard!"), "/?action=login");
             } else

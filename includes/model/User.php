@@ -100,6 +100,7 @@
                             $full_name = "",
                             $website = "",
                             $group_ = null,
+                            $approved = true,
                             $joined_at = null,
                             $hash_password = true) {
             $config = Config::current();
@@ -117,7 +118,7 @@
                                 "full_name" => strip_tags($full_name),
                                 "website"   => strip_tags($website),
                                 "group_id"  => $group_id,
-                                "is_approved"  => ($config->email_activation ? 0 : 1),
+                                "approved"  => oneof($approved, true),
                                 "joined_at" => oneof($joined_at, datetime()));
 
             $trigger->filter($new_values, "before_add_user");
