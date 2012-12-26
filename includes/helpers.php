@@ -23,7 +23,7 @@
                                  array("Session", "write"),
                                  array("Session", "destroy"),
                                  array("Session", "gc"));
-        $domain = (substr_count($_SERVER['HTTP_HOST'], ".")) ? preg_replace("/^www\./", ".", $_SERVER['HTTP_HOST']) : "" ;
+        $domain = (substr_count($_SERVER['HTTP_HOST'], ".")) ? preg_replace("/^www\./", ".", $_SERVER['HTTP_HOST']) : $_SERVER['REMOTE_ADDR'] ;
         session_set_cookie_params(60 * 60 * 24 * 30, "/", $domain);
         session_name("ChyrpSession");
         register_shutdown_function("session_write_close");
