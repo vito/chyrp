@@ -218,7 +218,7 @@
                              email VARCHAR(128) DEFAULT '',
                              website VARCHAR(128) DEFAULT '',
                              group_id INTEGER DEFAULT 0,
-                             is_approved INTEGER DEFAULT 0,
+                             approved BOOLEAN DEFAULT '1',
                              joined_at DATETIME DEFAULT NULL,
                              UNIQUE (login)
                          ) DEFAULT CHARSET=utf8");
@@ -343,7 +343,7 @@
                                    "email" => $_POST['email'],
                                    "website" => $config->url,
                                    "group_id" => $group_id["admin"],
-                                   "is_approved" => 1,
+                                   "approved" => true,
                                    "joined_at" => datetime()));
 
             $installed = true;
