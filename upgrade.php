@@ -1102,7 +1102,7 @@
                                             `email` varchar(128) DEFAULT '',
                                             `website` varchar(128) DEFAULT '',
                                             `group_id` int(11) DEFAULT '0',
-                                            `is_approved` int(2) DEFAULT '1',
+                                            `approved` BOOLEAN DEFAULT '1',
                                             `joined_at` datetime DEFAULT NULL,
                                             PRIMARY KEY (`id`),
                                             UNIQUE KEY `login` (`login`)
@@ -1131,13 +1131,68 @@
      * Versions: 2.1 => 2.5
      */
     function add_user_approved_column() {
+        if (SQL::current()->query("SELECT approved FROM __users"))
+            return;
+
+        echo __("Adding approved column to users table...").
+             test(SQL::current()->query("ALTER TABLE __users ADD approved BOOLEAN DEFAULT '1' AFTER group_id"));
+    }
+
+    /**
+     * Function: update_user_approved_column
+     * Updates the @is_approved@ column on the "users" table.
+     *
+     * Versions: 2.5b3 => 2.5rc1
+     */
+    function update_user_approved_column() {
         $sql = SQL::current();
-        if ($column = $sql->query("SHOW COLUMNS FROM __users WHERE Field = 'is_approved'"))
+        if (!$column = $sql->query("SHOW COLUMNS FROM __users WHERE Field = 'is_approved'"))
              return;
 
-        echo " - ".__("Adding `is_approved` column on `users` table...").
-            test($create = $sql->query("ALTER TABLE __users ADD `is_approved` int(2) DEFAULT 1"));
-        $sql->query("UPDATE __users set is_approved = 1");
+        if ($column->fetchObject()->Type == "boolean")
+            return;
+
+        echo __("Updating `approved` column on `users` table...")."\n";
+
+        echo " - ".__("Backing up `users` table...").
+             test($backup = $sql->select("users"));
+
+        if (!$backup) return;
+
+        $backups = $backup->fetchAll();
+
+        echo " - ".__("Dropping `users` table...").
+             test($drop = $sql->query("DROP TABLE __users"));
+
+        if (!$drop) return;
+
+        echo " - ".__("Creating `users` table...").
+             test($create = $sql->query("CREATE TABLE IF NOT EXISTS `__users` (
+                                            `id` int(11) NOT NULL AUTO_INCREMENT,
+                                            `login` varchar(64) DEFAULT '',
+                                            `password` varchar(60) DEFAULT NULL,
+                                            `full_name` varchar(250) DEFAULT '',
+                                            `email` varchar(128) DEFAULT '',
+                                            `website` varchar(128) DEFAULT '',
+                                            `group_id` int(11) DEFAULT '0',
+                                            `approved` tinyint(1) DEFAULT '1',
+                                            `joined_at` datetime DEFAULT NULL,
+                                            PRIMARY KEY (`id`),
+                                            UNIQUE KEY `login` (`login`)
+                                        ) DEFAULT CHARSET=utf8"));
+
+        if (!$create) {
+            echo " -".test(false, _f("Backup written to %s.", array("./_users.bak.txt")));
+            return file_put_contents("./_users.bak.txt", var_export($backups, true));
+        }
+
+        foreach ($backups as $backup) {
+            echo " - "._f("Restoring user #%d...", array($backup["id"])).
+                 test($insert = $sql->insert("users", $backup), _f("Backup written to %s.", array("./_users.bak.txt")));
+
+            if (!$insert)
+                return file_put_contents("./_users.bak.txt", var_export($backups, true));
+        }
 
         echo " -".test(true);
     }
