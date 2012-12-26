@@ -724,11 +724,12 @@ div.post.chat ul.dialogue li .label {
 div.post.chat ul.dialogue li.me .label {
     color: #AB2F26;
 }
-div.post.photo img, div.post.text img {
+div.post.photo img {
     max-width: 510px;
     margin: -20px 0px 20px -20px;
 }
-div.post a img { border: none; vertical-align: top; }
+div.post a img, div.page a img { border: none; vertical-align: top; }
+div.post img, div.page img { max-width: 100%; }
 div.post.photo p,
 div.post.audio p,
 div.post.video p {
