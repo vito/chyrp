@@ -2102,7 +2102,8 @@
                          $config->set("url", rtrim(oneof($_POST['url'], $_POST['chyrp_url']), "/")),
                          $config->set("email", $_POST['email']),
                          $config->set("timezone", $_POST['timezone']),
-                         $config->set("locale", $_POST['locale']));
+                         $config->set("locale", $_POST['locale']),
+                         $config->set("check_updates", !empty($_POST['check_updates'])));
 
             if (!in_array(false, $set))
                 Flash::notice(__("Settings updated."), "/admin/?action=general_settings");

@@ -18,7 +18,7 @@
          * Checks if the a new version of Chyrp is available.
          */
         public static function check_update() {
-            if (!defined('CHECK_UPDATES') or CHECK_UPDATES == false)
+            if (!Config::current()->check_updates)
                 return;
 
             $xml = self::xml();
