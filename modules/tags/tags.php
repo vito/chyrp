@@ -540,7 +540,6 @@
         public function post($post) {
             $post->tags = !empty($post->tags) ? YAML::load($post->tags) : array() ;
             $post->linked_tags = self::linked_tags($post->tags);
-            $post->list_related = self::list_related($post);
         }
 
         public function sort_tags_name_asc($a, $b) {
@@ -598,65 +597,6 @@
             usort($list, array($this, "sort_tags_".$order_by."_".$order));
 
             return ($limit) ? array_slice($list, 0, $limit) : $list ;
-        }
-
-          public function list_related($post = null, $prefix = "Related: ", $suffix = null, $match = 2, $limit = 5, $link = true, $echo = true, $order_by = "id", $order = "ASC") {
-            if (Route::current()->action != "view") return;
-            $sql = SQL::current();
-
-            $tags_list = implode(", ", $post->tags); # Get the tags of the current post
-            # Get the related posts
-            $results = array();
-            foreach($post->tags as $key=>$tag){
-                $results[] = $sql->query("SELECT DISTINCT __post_attributes.value,
-                                        __posts.id
-                                   FROM __posts
-                                   LEFT JOIN __post_attributes ON __posts.id = __post_attributes.post_id
-                                       AND __post_attributes.name = 'tags'
-                                       AND __posts.id != ".$post->id."
-                                   WHERE __post_attributes.value LIKE '%$key: \"$tag\"%'
-                                   GROUP BY __post_attributes.post_".$order_by."
-                                   ORDER BY __posts.created_at ".$order)->fetchObject();
-            }
-            $fallback = "There are no related posts.";
-            $list = array();
-            $p_count = 0;
-            $count = array();
-            foreach($results as $r){
-                if(is_object($r)){
-                    $count[$r->id]++;
-                }
-            }
-            arsort($count, SORT_NUMERIC);
-            $count = array_slice($count, 0, $limit,true);
-            foreach($results as $key=>$r){
-                if(!isset($count[$r->id])){
-                    unset($results[$key]);
-                }
-            }
-            $results=array_values($results);
-            foreach($results as $result){
-                $tmp = "<li>";
-                if ($link)
-                    $tmp .= '<a href="'.$post->url($result->id).'">'.$post->title($result->id).'</a>';
-                else
-                    $tmp .= $post->title($result->id);
-        
-                $tmp .= '</li>';
-                $list[] = $tmp;
-                $p_count++;
-            }
-
-            // Returns
-            if (!empty($list) and !$echo) return $prefix.$list.$suffix;
-            if ( empty($list) and !$echo and !is_null($fallback)) return $prefix.$fallback.$suffix;
-            if (!empty($list) and  $echo) {
-                echo $prefix."\n<ul>";
-                foreach ( $list as $p ) { echo $p; }
-                echo "</ul>\n".$suffix;
-            }
-            if ( empty($list) and $echo and !is_null($fallback)) echo $prefix.$fallback.$suffix;
-
         }
 
         public function yaml_match($name) {
