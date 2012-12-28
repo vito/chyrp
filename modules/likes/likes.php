@@ -175,11 +175,12 @@
                     # $this->text_default[5] = "%NUM% people like this post.";
                     $returnStr.= $like->getText($like->total_count, $likeSetting["likeText"][5]);
                 $returnStr.= "</span>";
-            } else {
-                $returnStr.= "<a class='liked'><img src=\"".$likeSetting["likeImage"]."\" alt='Like Post-$post->id' />";
-                if ($likeSetting["likeWithText"] and $visitor->group->can("unlike_post"))
-                    $returnStr.= "<a class='unlike' ".($hasPersonLiked ? 'style="display:inline"' : "")." href=\"javascript:likes.unlike($post->id);\">(".$likeSetting["likeText"][7].") </a>"; # $this->text_default[7] = "Unlike";
-                $returnStr.= "</a><span class='text'>";
+            } else { //".($hasPersonLiked ? 'style="display:inline"' : "")."
+                # $this->text_default[7] = "Unlike";
+                if ($likeSetting["likeWithText"] and $visitor->group->can("unlike_post") and $hasPersonLiked)
+                    $returnStr.= "<a class='liked' href=\"javascript:likes.unlike($post->id);\"><img src=\"".$likeSetting["likeImage"]."\" alt='Like Post-$post->id' />(".$likeSetting["likeText"][7].") </a><span class='text'>";
+                else
+                    $returnStr.= "<a class='liked'><img src=\"".$likeSetting["likeImage"]."\" alt='Like Post-$post->id' /></a><span class='text'>";
                 if ($like->total_count == 1)
                     # $this->text_default[0] = "You like this post.";
                     $returnStr.= $like->getText($like->total_count, $likeSetting["likeText"][0]);
