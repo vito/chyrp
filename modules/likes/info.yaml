@@ -5,4 +5,6 @@ description: Allow users to like a post.
 author:
   name: Chyrp team
   url: http://chyrp.net/
+notifications:
+  - Please remember to update the permission settings for each group.
 confirm: Are you sure you want to remove all Likes from the database?
