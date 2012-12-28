@@ -2,7 +2,7 @@
                 <div id="user_links">
                     <ul>
                     {% if visitor.logged_in %}
-                    <li><a class="profile_link" href="{% url "profile" %}">${ "Profile" | translate }</a></li>
+                    <li><a class="controls_link" href="{% url "controls" %}">${ "Controls" | translate }</a></li>
                     <li><a class="logout_link" href="{% url "logout" %}">${ "Log Out" | translate }</a></li>
                     {% else %}
                     <li><a class="login_link" href="{% url "login" %}">${ "Log In" | translate }</a></span></li>
@@ -28,17 +28,16 @@
                     <div id="user_controls">
                         <h5>${ "Welcome, %s!" | translate | format(visitor.login | fallback("Guest" | translate)) }</h5>
                         <ul>
-                            {% if visitor.logged_in %}
-                            <li><a href="{% url "controls" %}">${ "User Controls" | translate }</a></li>
-                                {% if visitor.group.can("add_post", "add_page", "view_own_draft", "view_draft", "change_settings") %}
-                                <li><a class="toggle_admin" href="{% url "toggle_admin" %}">${ "Toggle Admin Bar" | translate }</a></li>
-                                {% endif %}
-                            {% else %}
+                        {% if visitor.logged_in %}
+                            {% if visitor.group.can("add_post", "add_page", "view_own_draft", "view_draft", "change_settings") %}
+                            <li><a class="toggle_admin" href="{% url "toggle_admin" %}">${ "Toggle Admin Bar" | translate }</a></li>
+                            {% endif %}
+                        {% else %}
                             {% if site.can_register %}
                             <li><a class="register_link" href="{% url "register" %}">${ "Register" | translate }</a></li>
                             {% endif %}
                             <li><a class="lost_password_link" href="{% url "lost_password" %}">${ "Lost Password?" | translate }</a></li>
-                            {% endif %}
+                        {% endif %}
                         </ul>
                     </div>
                     {% if theme.pages_list %}
