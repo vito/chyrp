@@ -1,7 +1,7 @@
 <?php
     /**
-     * Class: Love
-     * The model for the love SQL table.
+     * Class: Like
+     * The model for the Like SQL table.
      *
      * See Also:
      *     <Model>
@@ -67,12 +67,7 @@
         	$people = SQL::current()->select("likes",
         	                                 "session_hash",
         	                                 array("post_id" => $this->post_id))->fetchAll();
-/*
-            foreach ($counts->fetchAll() as $count)
-                $this->likes_count[$count["post_id"]] = (int) $count["total"];
 
-            return oneof(@$this->likes_count[$post->id], 0);
-*/
         	$this->total_count = count($people);
         	return $people;
         }

@@ -129,9 +129,10 @@
 
         public function post($post) {
             $post->has_many[] = "likes";
+            $post->get_likes = self::get_likes($post);
         }
 
-        public function post_getLikes_attr($attr, $post) {
+        static function get_likes($post) {
             $config = Config::current();
             $route = Route::current();
             $visitor = Visitor::current();
@@ -175,7 +176,7 @@
                     # $this->text_default[5] = "%NUM% people like this post.";
                     $returnStr.= $like->getText($like->total_count, $likeSetting["likeText"][5]);
                 $returnStr.= "</span>";
-            } else { //".($hasPersonLiked ? 'style="display:inline"' : "")."
+            } else {
                 # $this->text_default[7] = "Unlike";
                 if ($likeSetting["likeWithText"] and $visitor->group->can("unlike_post") and $hasPersonLiked)
                     $returnStr.= "<a class='liked' href=\"javascript:likes.unlike($post->id);\"><img src=\"".$likeSetting["likeImage"]."\" alt='Like Post-$post->id' />(".$likeSetting["likeText"][7].") </a><span class='text'>";
@@ -192,11 +193,12 @@
                     # $this->text_default[2] = "You and %NUM% people like this post.";
                     $returnStr.= $like->getText($like->total_count, $likeSetting["likeText"][2]);
                 }
+
                 $returnStr.= "</span>";
             }
 
             $returnStr.= "</div>";
-            return $post->getLikes = $returnStr;
+            return $post->get_likes = $returnStr;
         }
 
 /*

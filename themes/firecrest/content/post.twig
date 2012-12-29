@@ -29,7 +29,7 @@
                                 ${ "%s Comment" | translate_plural("%s Comments", post.comment_count) | format(post.comment_count) }</a></li>
                                 {% endif %}
                                 {% if enabled_modules.likes and visitor.group.can("like_post") %}
-                                <li class="like_count has_icon icon_like"><div class="icon"></div>$post.getLikes</li>
+                                <li class="like_count has_icon icon_like"><div class="icon"></div>$post.get_likes</li>
                                 {% endif %}
                                 {% if enabled_modules.categorize and post.category.id != 0 %}
                                 <li class="category has_icon icon_category"><div class="icon"></div>
