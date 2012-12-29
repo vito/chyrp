@@ -721,7 +721,18 @@
          * Grabs posts for the feed.
          */
         public function feed($posts = null) {
-            fallback($posts, Post::find(array("limit" => Config::current()->feed_items)));
+            $result = SQL::current()->select("posts",
+                                             "posts.id",
+                                             array("posts.status" => "public"),
+                                             array("posts.id DESC"),
+                                             array(),
+                                             Config::current()->feed_items);
+            $ids = array();
+            foreach ($result->fetchAll() as $index => $row)
+                $ids[] = $row["id"];
+
+            if (!empty($ids))
+                fallback($posts, Post::find(array("where" => array("id" => $ids))));
 
             header("Content-Type: application/atom+xml; charset=UTF-8");
 
@@ -730,7 +741,7 @@
 
             $latest_timestamp = 0;
             foreach ($posts as $post)
-                if (strtotime($post->created_at) > $latest_timestamp)
+                if ($latest_timestamp < strtotime($post->created_at))
                     $latest_timestamp = strtotime($post->created_at);
 
             require INCLUDES_DIR."/feed.php";
