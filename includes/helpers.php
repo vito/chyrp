@@ -457,7 +457,7 @@
      *     $quotes - Encode quotes?
      *     $double - Encode encoded?
      */
-    function fix($string, $quotes = false, $double = false) {
+    function fix($string, $quotes = false, $double = true) {
         $quotes = ($quotes) ? ENT_QUOTES : ENT_NOQUOTES ;
         return htmlspecialchars($string, $quotes, "utf-8", $double);
     }
