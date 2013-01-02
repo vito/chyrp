@@ -69,12 +69,12 @@ var Post = {
                                 $(this).replaceWith(data)
                                 $(this).hide().fadeIn("fast")
                             })
-                        })
+                        }, "html")
                         return false
                     })
                 })
             })
-        })
+        }, "html")
     },
     updated: function(response){
         id = Post.id
@@ -100,7 +100,7 @@ var Post = {
                     $(this).replaceWith(data)
                     $("#post_"+id).hide().fadeIn("fast")
                 })
-            })
+            }, "html")
         }
     },
     destroy: function(id) {
@@ -123,7 +123,7 @@ var Post = {
                     if (Route.action == "view")
                         window.location = "<?php echo $config->url; ?>"
                 })
-        })
+        }, "html")
     },
     prepare_links: function(id) {
         $(".post_edit_link:not(.no_ajax)").live("click", function(){
