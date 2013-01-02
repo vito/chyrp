@@ -24,7 +24,7 @@ $(function(){
                 }
                 $("#last_comment").val(json.comment_timestamp)
                 $(data).appendTo(".comments:not(:header)").hide().fadeIn("slow")
-            })
+            }, "html")
         }, complete: function(){
             $("#add_comment").loader(true)
         } })
@@ -68,7 +68,7 @@ var Comment = {
                 $.each(json.comment_ids, function(i, id) {
                     $.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "show_comment", comment_id: id }, function(data){
                         $(data).appendTo(".comments:not(:header)").hide().fadeIn("slow")
-                    })
+                    }, "html")
                 })
             } })
         }
@@ -106,10 +106,10 @@ var Comment = {
                         $("#comment_"+id).fadeOut("fast", function(){
                             $(this).replaceWith(data).fadeIn("fast")
                         })
-                    })
+                    }, "html")
                 } })
             }) })
-        })
+        }, "html")
     },
     destroy: function(id) {
         notice--
@@ -134,7 +134,7 @@ var Comment = {
                 var plural = (count == 1) ? "" : "s"
                 $(".comment_plural").text(plural)
             }
-        })
+        }, "html")
     }
 }
 <?php Trigger::current()->call("comments_javascript"); ?>
