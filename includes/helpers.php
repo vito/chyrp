@@ -25,7 +25,7 @@
                                  array("Session", "gc"));
         $host = $_SERVER['HTTP_HOST'];
         if (is_numeric(str_replace(".", "", $host)))
-            $domain = $_SERVER['REMOTE_ADDR'];
+            $domain = $host;
         elseif (count(explode(".", $host)) >= 2)
             $domain = preg_replace("/^www\./", ".", $host);
         else
