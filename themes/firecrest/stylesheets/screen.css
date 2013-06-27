@@ -906,7 +906,7 @@ a.logout:hover {
        -moz-box-sizing: border-box;
     		box-sizing: border-box;
 }
-.inline_edit .more_options_link {
+.inline_edit .more_options_link:link {
     color: #5B7C99;
     display: block;
     font-weight: bold;
