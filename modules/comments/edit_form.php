@@ -35,7 +35,7 @@
     <input type="hidden" name="id" value="<?php echo fix($comment->id); ?>" id="id" />
     <input type="hidden" name="ajax" value="true" id="ajax" />
     <div class="buttons">
-        <input type="submit" value="<?php echo __("Update"); ?>" accesskey="s" /> <?php echo __("or"); ?>
+        <button><?php echo __("Update"); ?></button> <?php echo __("or"); ?>
         <a href="javascript:void(0)" id="comment_cancel_edit_<?php echo $comment->id; ?>" class="cancel"><?php echo __("Cancel"); ?></a>
     </div>
 </form>

@@ -317,6 +317,16 @@ div#sidebar #user_links li a:hover {
 div#sidebar #user_links li:first-child {
     border-right: 1px solid #eee;
 }
+div#sidebar #user_links li.single {
+	width: 100%;
+    border-right: none;
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+    		box-sizing: border-box;
+}
+div#sidebar #user_links li.single a {
+	float: none;
+}
 div#sidebar #user_links .logout_link {
 }
 div#sidebar #about_info {
@@ -482,7 +492,7 @@ div.post h2.title, div.page h2.title {
 div.page h2.title {
     margin: -4px -20px 20px;
 }
-div.post.text h2.title, div.page h2.title {
+div.post h2.title, div.page h2.title {
     background: url('../images/title-ptn.png') repeat left top;
     margin: -5px -20px 20px;
     padding: 0px 20px;
@@ -891,13 +901,19 @@ a.logout:hover {
     border: none;
     color: #45555d;
     padding: .4em;
-    width: 490px;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+    		box-sizing: border-box;
 }
-.inline_edit .more_options_link:link {
+.inline_edit .more_options_link {
     color: #5B7C99;
     display: block;
     font-weight: bold;
     padding: 0 0 .3em 0;
+}
+.inline_edit .more_options_link:hover {
+	border-bottom: 1px solid #5B7C99;
 }
 .inline_edit .more_options {
     background-color: #E4EBEF;
