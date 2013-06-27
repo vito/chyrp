@@ -70,6 +70,10 @@
             } else
                 $filename = $_POST['filename'];
 
+            // Prepend scheme if a URL is detected
+            if (preg_match('~^((([a-z]|[0-9]|\-)+)\.)+([a-z]){2,6}/~', @$_POST['option']['source']))
+                $_POST['option']['source'] = "http://".$_POST['option']['source'];
+
             return Post::add(array("filename" => $filename,
                                    "caption" => $_POST['caption']),
                              $_POST['slug'],
@@ -90,6 +94,10 @@
                 $this->delete_file($post);
                 $filename = $_POST['filename'];
             }
+
+            // Prepend scheme if a URL is detected
+            if (preg_match('~^((([a-z]|[0-9]|\-)+)\.)+([a-z]){2,6}/~', @$_POST['option']['source']))
+                $_POST['option']['source'] = "http://".$_POST['option']['source'];
 
             $post->update(array("filename" => $filename,
                                 "caption" => $_POST['caption']));
