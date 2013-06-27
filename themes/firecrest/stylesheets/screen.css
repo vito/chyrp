@@ -492,7 +492,7 @@ div.post h2.title, div.page h2.title {
 div.page h2.title {
     margin: -4px -20px 20px;
 }
-div.post h2.title, div.page h2.title {
+div.post.text h2.title, div.page h2.title {
     background: url('../images/title-ptn.png') repeat left top;
     margin: -5px -20px 20px;
     padding: 0px 20px;
