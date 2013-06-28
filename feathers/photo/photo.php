@@ -70,7 +70,7 @@
             } else
                 $filename = $_POST['filename'];
 
-            // Prepend scheme if a URL is detected
+            # Prepend scheme if a URL is detected
             if (preg_match('~^((([a-z]|[0-9]|\-)+)\.)+([a-z]){2,6}/~', @$_POST['option']['source']))
                 $_POST['option']['source'] = "http://".$_POST['option']['source'];
 
@@ -95,7 +95,7 @@
                 $filename = $_POST['filename'];
             }
 
-            // Prepend scheme if a URL is detected
+            # Prepend scheme if a URL is detected
             if (preg_match('~^((([a-z]|[0-9]|\-)+)\.)+([a-z]){2,6}/~', @$_POST['option']['source']))
                 $_POST['option']['source'] = "http://".$_POST['option']['source'];
 
