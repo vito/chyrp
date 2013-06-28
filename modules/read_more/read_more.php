@@ -6,6 +6,9 @@
 
         # Replace the "read more" indicator before markup modules get to it.
         static function makesafe($text, $post = null) {
+            # Catch posts created with the WYSIWYG editor
+            if (is_string($text)) $text = str_replace("&lt;!--more--&gt;", "<!--more-->", $text);
+
             if (!is_string($text) or !preg_match("/<!--more(\((.+)\))?-->/", $text)) return $text;
 
             $controller = Route::current()->controller;
