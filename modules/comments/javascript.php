@@ -56,7 +56,7 @@ $(function(){
 var editing = 0
 var notice = 0
 var Comment = {
-    delete_animations: { height: "hide", opacity: "hide" },
+    delete_animations: { height: "hide", margin: "hide", opacity: "hide" },
     delete_wrap: "",
     reload: function() {
         if ($(".comments:not(:header)").attr("id") == undefined) return;
