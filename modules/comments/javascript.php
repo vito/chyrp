@@ -23,7 +23,7 @@ $(function(){
                     $(".comment_plural").text(plural)
                 }
                 $("#last_comment").val(json.comment_timestamp)
-                $(data).appendTo(".comments:not(:header)").hide().fadeIn("slow")
+                $(data).prependTo(".comments:not(:header)").hide().fadeIn("slow")
             }, "html")
         }, complete: function(){
             $("#add_comment").loader(true)
