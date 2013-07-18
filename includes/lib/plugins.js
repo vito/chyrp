@@ -344,3 +344,6 @@ Array.prototype.remove = function(value) {
 
   return this
 }
+$(document).ready(function() {
+  $('.post:not(.chat) .subpost').not(':has(h2.title)').addClass('no_title');
+});
