@@ -64,7 +64,7 @@
             return $scripts;
         }
 
-        static function ajax() {
+        static function ajax_like() {
             header("Content-type: text/json");
             header("Content-Type: application/x-javascript", true);
 
@@ -81,6 +81,8 @@
                 $likeText = "";
                 switch ($like->action) {
                 	case "like":
+                        header("Content-type: text/json");
+                        header("Content-Type: application/x-javascript", true);
                         $like->like();
                         $like->fetchCount();
                         if ($like->total_count == 1)
@@ -95,19 +97,47 @@
                         	$likeText = $like->getText($like->total_count, $likeSetting["likeText"][2]);
                         }
                 	break;
-                	case "unlike":
+                	default: throw new Exception("invalid action");
+                }
+
+                $responseObj["likeText"] = $likeText;
+            }
+            catch(Exception $e) {
+                $responseObj["success"] = false;
+                $responseObj["error_txt"] = $e->getMessage();
+            }
+            echo json_encode($responseObj);
+        }
+
+        static function ajax_unlike() {
+            header("Content-type: text/json");
+            header("Content-Type: application/x-javascript", true);
+
+            if (!isset($_REQUEST["action"]) or !isset($_REQUEST["post_id"])) exit();
+            
+            $user_id = Visitor::current()->id;
+            $likeSetting = Config::current()->module_like;
+            $responseObj = array();
+            $responseObj["uid"] = $user_id;
+            $responseObj["success"] = true;
+            
+            try {
+                $like = new Like($_REQUEST, $user_id);
+                $likeText = "";
+                switch ($like->action) {
+                    case "unlike":
                         $like->unlike();
                         $like->fetchCount();
                         if ($like->total_count > 1) {
                             # $this->text_default[5] = "%NUM% people like this post.";
                             $likeText = $like->getText($like->total_count, $likeSetting["likeText"][5]);
                         } elseif ($like->total_count == 1) {
-                        	# $this->text_default[4] = "1 person likes this post.";
-                        	$likeText = $like->getText($like->total_count, $likeSetting["likeText"][4]);
+                            # $this->text_default[4] = "1 person likes this post.";
+                            $likeText = $like->getText($like->total_count, $likeSetting["likeText"][4]);
                         } elseif ($like->total_count == 0)
-                        	$likeText = $like->getText($like->total_count, $likeSetting["likeText"][3]);
-                	break;
-                	default: throw new Exception("invalid action");
+                            $likeText = $like->getText($like->total_count, $likeSetting["likeText"][3]);
+                    break;
+                    default: throw new Exception("invalid action");
                 }
 
                 $responseObj["likeText"] = $likeText;

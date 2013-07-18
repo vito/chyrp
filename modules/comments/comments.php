@@ -461,8 +461,6 @@
         }
 
         static function ajax() {
-            header("Content-Type: application/x-javascript", true);
-
             $config  = Config::current();
             $sql     = SQL::current();
             $trigger = Trigger::current();
