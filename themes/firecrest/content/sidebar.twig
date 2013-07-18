@@ -5,9 +5,11 @@
                     <li><a class="controls_link" href="{% url "controls" %}">${ "Controls" | translate }</a></li>
                     <li><a class="logout_link" href="{% url "logout" %}">${ "Log Out" | translate }</a></li>
                     {% else %}
-                    <li class="single"><a class="login_link" href="{% url "login" %}">${ "Log In" | translate }</a></span></li>
                     {% if site.can_register %}
+                    <li><a class="login_link" href="{% url "login" %}">${ "Log In" | translate }</a></span></li>
                     <li><a class="register_link" href="{% url "register" %}">${ "Register" | translate }</a></span></li>
+                    {% else %}
+                    <li class="single"><a class="login_link" href="{% url "login" %}">${ "Log In" | translate }</a></span></li>
                     {% endif %}
                     {% endif %}
                     </ul>
