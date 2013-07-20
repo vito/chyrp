@@ -347,3 +347,19 @@ Array.prototype.remove = function(value) {
 $(document).ready(function() {
   $('.post:not(.chat) .subpost').not(':has(h2.title)').addClass('no_title');
 });
+
+$(window).load(function() {
+  var top = $('.redactor_toolbar').offset().top;
+  $(window).scroll(function() {
+    var windowLocation = $(window).scrollTop();
+    if (windowLocation > top) {
+      $('.redactor_toolbar').css({"position":"fixed"});
+      $('.redactor_box').css({"margin-top":"33px"});
+      $('.redactor_box li:first-child').css({"margin-left":$('.redactor_box').offset().left + 1});
+    } else {
+      $('.redactor_toolbar').css({"position":"static"});
+      $('.redactor_box').css({"margin-top":"0"});
+      $('.redactor_box li:first-child').css({"margin-left":"0"});
+    }
+  });
+});
