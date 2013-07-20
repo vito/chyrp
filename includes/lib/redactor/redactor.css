@@ -249,8 +249,8 @@ body .redactor_box_fullscreen {
 */
 .redactor_toolbar {
 	font-family: Helvetica, Arial, Verdana, Tahoma, sans-serif !important;
-	position: relative;
 	left: 0;
+	right: 0;
 	top: 0;
 	margin: 0 !important;
 	padding: 0 !important;
@@ -269,13 +269,14 @@ body .redactor_box_fullscreen {
 	overflow: hidden !important;
 	height: 32px !important;
 	border-bottom: 1px solid #bbb;
+	z-index: 9999;
 }
 body .redactor_air .redactor_toolbar {
 	padding-right: 2px !important;
 }
 .redactor_toolbar li {
 	float: left !important;
-	margin: 0 !important;
+	margin: 0;
 	padding: 3px 1px;
 	padding-right: 0;
 	list-style: none !important;
