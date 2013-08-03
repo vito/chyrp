@@ -1,6 +1,11 @@
 <?php
     class Photo extends Feathers implements Feather {
         public function __init() {
+            $this->setField(array("attr" => "title",
+                                  "type" => "text",
+                                  "label" => __("Title", "text"),
+                                  "optional" => true,
+                                  "bookmarklet" => "title"));
             $this->setField(array("attr" => "photo",
                                   "type" => "file",
                                   "label" => __("Photo", "photo"),
@@ -18,6 +23,7 @@
                                   "preview" => true,
                                   "bookmarklet" => "page_link"));
 
+            $this->setFilter("title", array("markup_title", "markup_post_title"));
             $this->setFilter("caption", array("markup_text", "markup_post_text"));
 
             $this->respondTo("delete_post", "delete_file");
@@ -33,7 +39,8 @@
                 $page = get_remote($_GET['url']);
                 preg_match("/class=\"photoImgDiv\">\n<img src=\"([^\?\"]+)/", $page, $image);
 
-                $this->setField(array("attr" => "from_url",
+                $this->setField(array("title" => $_POST['title'],
+                                      "attr" => "from_url",
                                       "type" => "text",
                                       "label" => __("From URL?", "photo"),
                                       "optional" => true,
@@ -43,7 +50,8 @@
             if (isset($_GET['url']) and preg_match("/\.(jpg|jpeg|png|gif|bmp)$/", $_GET['url'])) {
                 $this->bookmarkletSelected();
 
-                $this->setField(array("attr" => "from_url",
+                $this->setField(array("title" => $_POST['title'],
+                                      "attr" => "from_url",
                                       "type" => "text",
                                       "label" => __("From URL?", "photo"),
                                       "optional" => true,
@@ -69,12 +77,15 @@
                     error(__("Error"), __("Couldn't upload photo."));
             } else
                 $filename = $_POST['filename'];
+                
+                // Prepend scheme if a URL is detected
+    			if (preg_match('~^((([a-z]|[0-9]|\-)+)\.)+([a-z]){2,6}/~', @$_POST['option']['source']))
+					$_POST['option']['source'] = "http://".$_POST['option']['source'];
+                
+            fallback($_POST['slug'], sanitize($_POST['title']));
 
-            # Prepend scheme if a URL is detected
-            if (preg_match('~^((([a-z]|[0-9]|\-)+)\.)+([a-z]){2,6}/~', @$_POST['option']['source']))
-                $_POST['option']['source'] = "http://".$_POST['option']['source'];
-
-            return Post::add(array("filename" => $filename,
+            return Post::add(array("title" => $_POST['title'],
+                                   "filename" => $filename,
                                    "caption" => $_POST['caption']),
                              $_POST['slug'],
                              Post::check_url($_POST['slug']));
@@ -94,17 +105,18 @@
                 $this->delete_file($post);
                 $filename = $_POST['filename'];
             }
+            
+            // Prepend scheme if a URL is detected
+			if (preg_match('~^((([a-z]|[0-9]|\-)+)\.)+([a-z]){2,6}/~', @$_POST['option']['source']))
+				$_POST['option']['source'] = "http://".$_POST['option']['source'];
 
-            # Prepend scheme if a URL is detected
-            if (preg_match('~^((([a-z]|[0-9]|\-)+)\.)+([a-z]){2,6}/~', @$_POST['option']['source']))
-                $_POST['option']['source'] = "http://".$_POST['option']['source'];
-
-            $post->update(array("filename" => $filename,
+            $post->update(array("title" => $_POST['title'],
+                                "filename" => $filename,
                                 "caption" => $_POST['caption']));
         }
 
         public function title($post) {
-            return oneof($post->title_from_excerpt(), $post->filename);
+            return oneof($post->title, $post->title_from_excerpt());
         }
         public function excerpt($post) {
             return $post->caption;
@@ -124,14 +136,14 @@
             $post->image = $this->image_tag($post);
         }
 
-        public function image_tag($post, $max_width = 500, $max_height = null, $more_args = "quality=100") {
+        public function image_tag($post, $max_width = 510, $max_height = null, $more_args = "quality=100") {
             $filename = $post->filename;
             $config = Config::current();
             $alt = !empty($post->alt_text) ? fix($post->alt_text, true) : $filename ;
-            return '<img src="'.$config->chyrp_url.'/includes/thumb.php?file=..'.$config->uploads_path.urlencode($filename).'&amp;max_width='.$max_width.'&amp;max_height='.$max_height.'&amp;'.$more_args.'" alt="'.$alt.'" />';
+            return '<img src="'.$config->chyrp_url.$config->uploads_path.($filename).'" class="image" />';
         }
 
-        public function image_link($post, $max_width = 500, $max_height = null, $more_args = "quality=100") {
+        public function image_link($post, $max_width = 510, $max_height = null, $more_args = "quality=100") {
             $source = !empty($post->source) ? $post->source : uploaded($post->filename) ;
             return '<a href="'.$source.'">'.$this->image_tag($post, $max_width, $max_height, $more_args).'</a>';
         }
@@ -159,4 +171,3 @@
             return $options;
         }
     }
-

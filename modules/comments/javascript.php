@@ -23,7 +23,7 @@ $(function(){
                     $(".comment_plural").text(plural)
                 }
                 $("#last_comment").val(json.comment_timestamp)
-                $(data).appendTo(".comments:not(:header)").hide().fadeIn("slow")
+                $(data).prependTo(".comments:not(:header)").hide().fadeIn("slow")
             }, "html")
         }, complete: function(){
             $("#add_comment").loader(true)
@@ -56,7 +56,7 @@ $(function(){
 var editing = 0
 var notice = 0
 var Comment = {
-    delete_animations: { height: "hide", opacity: "hide" },
+    delete_animations: { height: "hide", margin: "hide", opacity: "hide" },
     delete_wrap: "",
     reload: function() {
         if ($(".comments:not(:header)").attr("id") == undefined) return;
