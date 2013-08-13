@@ -1,0 +1,11 @@
+{% extends "content/post.twig" %}
+
+{% block content %}
+    <div class="post">
+    <div class="title">${post.title | escape}</div>
+        ${ post.caption | read_more }
+
+        <a href="${ post.link | escape }">${ post.filename | escape }</a>
+    </div>
+    <div class="clear"></div>
+{% endblock %}
