@@ -1,0 +1,32 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Chyrp v2.1\n"
+"Report-Msgid-Bugs-To: dan@pimley.net\n"
+"POT-Creation-Date: 2013-07-16 21:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
+"Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: modules/cascade/info.yaml:1
+msgid "Cascade"
+msgstr ""
+
+#: modules/cascade/info.yaml:4
+msgid "Adds ajax-powered infinite scrolling to the index, archive, and search pages."
+msgstr ""
+
+#: modules/cascade/pages/admin/cascade_settings.twig:6
+msgid "Cascade Settings"
+msgstr ""
+
+#: modules/cascade/pages/admin/cascade_settings.twig:9
+msgid "Automatic"
+msgstr ""
+
+#: modules/cascade/pages/admin/cascade_settings.twig:11
+msgid "Load more posts when the visitor scrolls to the bottom of the page?"
+msgstr ""

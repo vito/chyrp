@@ -18,10 +18,10 @@
                 <br />
                 <br />
                 {% if theme.name == site.theme %}
-                <span class="button yay center"><img src="$theme_url/images/icons/success.png" alt="current theme" />${ "Current Theme" | translate }</span>
+                <span class="button yay center"><img src="$theme_url/images/icons/success.svg" alt="current theme" />${ "Current Theme" | translate }</span>
                 {% else %}
-                <a class="button center" href="{% admin "change_theme&theme=" ~ theme.name %}"><img src="$theme_url/images/icons/appearance.png" alt="Select" />${ "Select" | translate }</a>
-                <a class="button center${ preview | selected(theme.name, true) }" href="{% admin "preview_theme&theme=" ~ theme.name %}"><img src="$theme_url/images/icons/magnifier.png" alt="Preview" />${ "Preview" | translate }</a>
+                <a class="button center" href="{% admin "change_theme&theme=" ~ theme.name %}"><img src="$theme_url/images/icons/appearance.svg" alt="Select" />${ "Select" | translate }</a>
+                <a class="button center${ preview | selected(theme.name, true) }" href="{% admin "preview_theme&theme=" ~ theme.name %}"><img src="$theme_url/images/icons/magnifier.svg" alt="Preview" />${ "Preview" | translate }</a>
                 {% endif %}
             </div>
             {% endfor %}
@@ -43,9 +43,9 @@
                 <br />
                 <br />
                 {% if theme.name == admin_theme %}
-                <span class="button yay center"><img src="$theme_url/images/icons/success.png" alt="current theme" />${ "Current Theme" | translate }</span>
+                <span class="button yay center"><img src="$theme_url/images/icons/success.svg" alt="current theme" />${ "Current Theme" | translate }</span>
                 {% else %}
-                <a class="button center" href="{% admin "change_admin_theme&theme=" ~ theme.name %}"><img src="$theme_url/images/icons/appearance.png" alt="Select" />${ "Select" | translate }</a>
+                <a class="button center" href="{% admin "change_admin_theme&theme=" ~ theme.name %}"><img src="$theme_url/images/icons/appearance.svg" alt="Select" />${ "Select" | translate }</a>
                 {% endif %}
             </div>
             {% endfor %}

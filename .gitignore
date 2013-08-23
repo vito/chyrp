@@ -9,3 +9,5 @@ themes/*
 /chyrp.esproj
 /chyrp.tmproj
 /.idea/
+
+*.idraw

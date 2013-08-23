@@ -17,11 +17,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: feathers/audio/audio.php:47
+#: feathers/audio/audio.php:6
+msgid "Audio File"
+msgstr ""
+
+#: feathers/audio/audio.php:11
+msgid "From URL?"
+msgstr ""
+
+#: feathers/audio/audio.php:16
+msgid "Description"
+msgstr ""
+
+#: feathers/audio/audio.php:46
 msgid "Error"
 msgstr ""
 
-#: feathers/audio/audio.php:47
+#: feathers/audio/audio.php:46
 msgid "Couldn't upload audio file."
 msgstr ""
 

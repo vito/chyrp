@@ -10,6 +10,13 @@
             if ($confirm) Like::uninstall();
         }
 
+        public function admin_head() {
+            $config = Config::current();
+?>
+        <link rel="stylesheet" href="<?php echo $config->chyrp_url; ?>/modules/likes/admin.css" type="text/css" media="screen" />
+<?php
+        }
+
         static function admin_like_settings($admin) {
             $config = Config::current();
 
@@ -241,7 +248,7 @@
 
         public function get_like_images() {
             $imagesDir = MODULES_DIR."/likes/images/";
-            $images = glob($imagesDir . "*.{jpg,jpeg,png,gif}", GLOB_BRACE);
+            $images = glob($imagesDir . "*.{jpg,jpeg,png,gif,svg}", GLOB_BRACE);
 
             foreach ($images as $image) {
                 $pattern = "/\/(\w.*)\/images\//";

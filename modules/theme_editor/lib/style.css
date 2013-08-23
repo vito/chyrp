@@ -22,8 +22,36 @@
 	#theme_files .theme-file-tree .open { font-style: italic; }
 	#theme_files .theme-file-tree .closed { font-style: normal; }
 	
-	#theme_files .theme-file-tree .pft-dir { list-style-image: url(images/folder.gif); }
-	#theme_files .theme-file-tree .pft-file { list-style-image: url(images/document.gif); }
+	#theme_files .theme-file-tree .pft-dir {
+		list-style: none;
+		padding-left: 18px;
+		background: transparent url(images/folder.svg) no-repeat left 0.33em;
+	}
+	#theme_files .theme-file-tree .pft-file {
+		list-style: none;
+		padding-left: 18px;
+		background: transparent url(images/document.svg) no-repeat left 0.33em;
+	}
 
     p.editor-buttons { float: left; }
     p.editor-buttons button { margin: 0!important; }
+
+/* @media-query for small screens */
+@media screen and (max-width: 768px) {
+	#theme_files {
+		width: 100%;
+	}
+	#theme_editor {
+		width: 100%;
+	}
+	textarea#newcontent {
+		height: 640px;
+		white-space: pre;
+		word-wrap: normal;
+		overflow: scroll;
+	}
+	p.editor-buttons {
+		width: 100%;
+	}
+}
+/* @end */

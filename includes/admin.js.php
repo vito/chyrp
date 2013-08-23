@@ -41,10 +41,6 @@ $(function(){
     })
     <?php endif; ?>
 
-    // Automated PNG fixing.
-    $.ifixpng("<?php echo $config->chyrp_url; ?>/admin/themes/default/images/icons/pixel.gif")
-    $("img[src$='.png']").ifixpng()
-
     // "Help" links should open in popup windows.
     $(".help").live("click", function(){
         window.open($(this).attr("href"), "help", "status=0, scrollbars=1, location=0, menubar=0, "+
@@ -52,24 +48,17 @@ $(function(){
         return false
     })
 
+    // Make the Redactor toolbar sticky
+    $('.redactor_box').stickyToolbar()
+
+    // SVG fallback for browsers that do not support SVG images
+    $("img").fixsvg()
+
     // Auto-expand input fields
     $(".expand").expand()
 
     // Checkbox toggling.
     togglers()
-
-    if ($.browser.safari)
-        $("code, .code").each(function(){
-            $(this).css({
-                fontFamily: "Monaco, monospace",
-                fontSize: "9px"
-            })
-
-            if ($(this).parent().parent().parent().hasClass("split") && $(this).attr("type") == "text") {
-                $(this).css("margin-top", "2px")
-                $(this).parent().css("margin-top", "-2px")
-            }
-        })
 
     if (/(edit|write)_/.test(Route.action))
         Write.init()
@@ -184,13 +173,6 @@ var Write = {
     },
     auto_expand_fields: function(){
         $("input.text").expand()
-        // $(".redactor_editor").each(function(){
-        //              $(this).css({
-        //                  minHeight: $(this).outerHeight() + 24,
-        //                  lineHeight: "18px",
-        //                  padding: "3px 5px"
-        //              }).autogrow()
-        //          })
     },
     sortable_feathers: function(){
         // Make the Feathers sortable
@@ -365,7 +347,7 @@ var Extend = {
         })
     },
     prepare_draggables: function(){
-        $(".enable h2, .disable h2").append(" <span class=\"sub\"><?php echo __("(drag)"); ?></span>")
+        $(".enable h2, .disable h2").append(" <span class=\"sub desktop\"><?php echo __("(drag)"); ?></span>")
 
         $(".disable > ul > li:not(.missing_dependency), .enable > ul > li").draggable({
             zIndex: 100,
@@ -496,10 +478,10 @@ var Extend = {
         $("ul.extend").height("auto")
         $("ul.extend").each(function(){
             if ($(".enable ul.extend").height() > $(this).height())
-                $(this).height($(".enable ul.extend").height())
+                $(this).css('min-height', $(".enable ul.extend").height())
 
             if ($(".disable ul.extend").height() > $(this).height())
-                $(this).height($(".disable ul.extend").height())
+                $(this).css('min-height', $(".disable ul.extend").height())
         })
     },
     redraw: function(){

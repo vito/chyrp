@@ -7,7 +7,7 @@
                 <fieldset>
                     {% if site.module_dropbox.oauth_secret == "" %}
                     <p>
-                        <button name="authorize" value="authorize" class="yay"><img src="$theme_url/images/icons/success.png" alt="success" />${ "Authorize" | translate }</button>
+                        <button name="authorize" value="authorize" class="yay"><img src="$theme_url/images/icons/success.svg" alt="success" />${ "Authorize" | translate }</button>
                         <small>Authorize with Dropbox</small>
                     </p>
                     {% else %}
@@ -26,7 +26,7 @@
                         <input class="text" type="text" name="app_secret" value="${ site.module_dropbox.app_secret | escape }" id="app_secret" />
                     </p>
                     <p class="buttons">
-                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.png" alt="success" />${ "Update" | translate }</button>
+                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.svg" alt="success" />${ "Update" | translate }</button>
                     </p>
 
                     <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />

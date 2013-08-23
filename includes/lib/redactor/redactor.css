@@ -1,7 +1,8 @@
 .redactor_box {
 	position: relative;
 	border: 1px solid #ddd;
-	overflow: visible;
+	overflow: hidden;
+	padding-top: 32px !important;
 }
 .redactor_box, .redactor_box textarea {
 	background-color: #fff;
@@ -249,12 +250,18 @@ body .redactor_box_fullscreen {
 */
 .redactor_toolbar {
 	font-family: Helvetica, Arial, Verdana, Tahoma, sans-serif !important;
+<<<<<<< HEAD
+=======
+	position: absolute;
+	width: 100%;
+>>>>>>> 141a45b13ed50d006b2525065c37353af8e787f8
 	left: 0;
 	right: 0;
 	top: 0;
+	z-index: +1;
 	margin: 0 !important;
 	padding: 0 !important;
-	padding-left: 2px !important;
+	padding-left: 0px !important;
 	line-height: 0 !important;
 	list-style: none !important;
 	font-size: 0;
