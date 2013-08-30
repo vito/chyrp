@@ -250,11 +250,8 @@ body .redactor_box_fullscreen {
 */
 .redactor_toolbar {
 	font-family: Helvetica, Arial, Verdana, Tahoma, sans-serif !important;
-<<<<<<< HEAD
-=======
 	position: absolute;
 	width: 100%;
->>>>>>> 141a45b13ed50d006b2525065c37353af8e787f8
 	left: 0;
 	right: 0;
 	top: 0;
