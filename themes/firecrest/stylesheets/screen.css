@@ -443,7 +443,7 @@ div.post .no_title {
         z-index: 1;
     }*/
 div.post .feather_type {
-    position: relative;
+    position: absolute;
     margin-left: -47px;
     top: 1.66em;
 }
@@ -465,7 +465,7 @@ div.post .feather_type_name {
 div.post .feather_type span.shadow {
     background: url(../images/post-tag-shadow.png) top left no-repeat;
     position: absolute;
-    top: 27px;
+    bottom: -4px;
     left: 0;
     width: 40px;
     height: 4px;
