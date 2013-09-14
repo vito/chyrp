@@ -184,7 +184,7 @@
 
             if (!empty($stylesheets))
                 $stylesheets = '<link rel="stylesheet" href="'.
-                               implode('" type="text/css" media="screen" charset="utf-8" /'."\n\t".'<link rel="stylesheet" href="', $stylesheets).
+                               implode('" type="text/css" media="screen" charset="utf-8" />'."\n\t".'<link rel="stylesheet" href="', $stylesheets).
                                '" type="text/css" media="screen" charset="utf-8" />';
             else
                 $stylesheets = "";
