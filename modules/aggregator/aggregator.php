@@ -1,5 +1,9 @@
 <?php
     class Aggregator extends Modules {
+        public function __construct() {
+            $this->setPriority("main_index", 5);
+        }
+
         static function __install() {
             $config = Config::current();
             $config->set("last_aggregation", 0);
