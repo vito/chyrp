@@ -670,7 +670,7 @@ div.post.quote blockquote {
     border: 0;
     color: #45555d;
     font: italic 1.7em/1.25em "Droid Serif", Georgia, serif;
-    margin: -20px 0 10px -20px;
+    margin: 0px 0px 10px -20px;
     padding: 50px 20px;
     width: 470px;
     text-align: center;
