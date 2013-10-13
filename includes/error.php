@@ -148,7 +148,7 @@
             </div>
         </div>
     <?php if (defined("CHYRP_VERSION")): ?>
-        <p class="footer">Chyrp <?php echo CHYRP_VERSION; ?> &copy; 2011 Chyrp Team</p>
+        <p class="footer">Chyrp <?php echo CHYRP_VERSION; ?> &copy; Chyrp Team <?php echo date("Y"); ?></p>
     <?php endif; ?>
     </body>
 </html>
