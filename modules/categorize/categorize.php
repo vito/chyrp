@@ -62,7 +62,7 @@
         /* End XML Stuff */
     
         public function parse_urls($urls) {
-            $urls["/\/category\/(.*?)\//"] = "/?action=category&amp;name=$1";
+            $urls["/\/category\/(.*?)/"] = "/?action=category&name=$1";
             return $urls;
         }
     
@@ -100,37 +100,7 @@
     
             return $fields;
         }
-    
-        // Add post_attributes for post.
-    /*
-        public function add_post($post) {
-            if (empty($_POST['category_id'])) return;
-    
-            $category_id = $_POST['category_id'];
-            if (!is_int($category_id)) return; # Ensure we are dealing with a real number
-    
-            SQL::current()->insert("post_attributes",
-                                       array("name" => "category_id",
-                                             "value" => $category_id,
-                                             "post_id" => $post->id));
-        }
-    */
-    
-        // Update post_attributes when changing a post.
-    /*
-        public function update_post($post) {
-            if (empty($_POST['category_id'])) return; # Bail on not set
-    
-            $category_id = $_POST['category_id'];
-            if (!is_int($category_id)) return; # Ensure we are dealing with a real number
-    
-            SQL::current()->replace("post_attributes",
-                                       array("name" => "category_id",
-                                             "value" => $category_id,
-                                             "post_id" => $post->id));
-        }
-    */
-    
+
         public function post($post) {
             if (!empty($post->category_id))
                 $post->category = Category::getCategory($post->category_id);

@@ -13,6 +13,16 @@
                 <input class="text" type="text" name="name" value="${ categorize.name | escape }" id="name" />
             </p>
             <p>
+                <label for="clean">
+                    ${ "URL" | translate("categorize") }
+                    <span class="sub">${ "(optional)" | translate }</span>
+                </label>
+                <input class="text" type="text" name="clean" value="${ categorize.clean | escape }" id="clean" />
+                <small>
+                    ${ "Enter a “clean” name here if your category name contains characters that cannot be displayed in a URL, or if you want the category name to appear differently in the URL." | translate("categorize") }
+                </small>
+            </p>
+            <p>
                 <label for="show_on_home">${ "Show on home?" | translate("categorize") }</label>
                 <input class="checkbox" type="checkbox" name="show_on_home" id="show_on_home"{% if categorize.show_on_home %} checked="checked"{% endif %} />
             </p>
