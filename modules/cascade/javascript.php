@@ -19,7 +19,8 @@
             },
             watch: function() {
                 var docViewTop = $(window).scrollTop();
-                var docViewBottom = docViewTop + $(window).height();
+                var windowHeight = window.innerHeight ? window.innerHeight : $(window).height();
+                var docViewBottom = docViewTop + windowHeight;
                 var docViewed = docViewBottom - $(document).height();
                 if ( docViewed == 0 ) ChyrpAjaxScroll.fetch();
             },
