@@ -11,8 +11,8 @@
                         {% if route.action == "view" and post.paginated and post.paginated.pages > 1 %}
                         <div class="clear"></div>
                         $post.paginated.prev_link
-                        $post.paginated.next_link
                         <span class="pages">${ "Page %d of %d" | translate | format(post.paginated.page, post.paginated.pages) }</span>
+                        $post.paginated.next_link
                         {% endif %}
                         <div class="clear"></div>
                         <div class="post_meta">

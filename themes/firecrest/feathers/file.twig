@@ -1,11 +1,13 @@
 {% extends "content/post.twig" %}
 
 {% block content %}
-    <div class="post">
-    <div class="title">${post.title | escape}</div>
-        ${ post.caption | read_more }
+    {% if post['title'] %}
+        <h2 class="title">
+            <a href="$post.url" rel="bookmark" title="${ "Permanent Link to" | translate } &quot;$post.title&quot;">${post.title | escape}</a>
+        </h2>
+    {% endif %}
+    <p>${ post.caption | read_more }</p>
 
-        <a href="${ post.link | escape }">${ post.filename | escape }</a>
-    </div>
+    Download: <a href="${ post.link | escape }" class="file">${ post.filename | escape }</a>
     <div class="clear"></div>
 {% endblock %}

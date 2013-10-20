@@ -1,5 +1,6 @@
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td { margin: 0; padding: 0; }
-table { border-collapse: collapse; border-spacing: 0; }
+table,tr,th,td { border-collapse: collapse; border-spacing: 0; border: 1px solid #ddd;}
+th,td { padding: 3px;}
 fieldset,img { border: 0; }
 address,caption,cite,code,dfn,em,strong,th,var { font-style: normal; font-weight: normal; }
 li { list-style: none; }
@@ -132,6 +133,7 @@ input[type="password"] {
 }
 textarea.wide {
     width: 470px;
+    max-width: 470px;
 }
 input.big {
     font-size: 1.5em;
@@ -259,7 +261,7 @@ div#sidebar {
     border-bottom: 1px solid #d0dde4;
     color: #8699a3;
     font-size: 0.91em;
-    -webkit-border-radius: 0 0 3px 3px
+    -webkit-border-radius: 0 0 3px 3px;
     -moz-border-radius: 0 0 3px 3px;
     border-radius: 0 0 3px 3px;
 }
@@ -612,6 +614,7 @@ div.post .post_meta .info li:last-child {
 .post_meta .tags {
     position: relative;
     overflow: hidden;
+    max-width: 365px;
     margin: 15px 0;
     padding: 0px 0px 0px 20px;
     float: left;
@@ -620,12 +623,12 @@ div.post .post_meta .info li:last-child {
     font-family: "Droid Serif", Georgia, serif;
     font-size: 0.83em;
     line-height: 1;
-    display: inline;
+    display: inline-block;
     padding: 3px 6px 4px;
     background: #f4f5f6;
-    -webkit-transition: background .3s;
-    -moz-transition: background .3s;
-    transition:; background .3s;
+    -webkit-transition: background .3s, color .3s;
+    -moz-transition: background .3s, color .3s;
+    transition: background .3s, color .3s;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
@@ -633,10 +636,7 @@ div.post .post_meta .info li:last-child {
     font-style: normal;
 }
 .post_meta .tags a:hover {
-    -webkit-transition: background .3s;
-    -moz-transition: background .3s;
-    color: #8699a3!important;
-    border: none;
+    color: #8699a3;
     background: #E4EBEF;
 }
 .post_meta .author_avatar {
@@ -737,6 +737,12 @@ div.post.chat ul.dialogue li.me .label {
 div.post.photo img {
     max-width: 510px;
     margin: 0px 0px 20px -20px;
+    margin: -20px 0 20px -20px;
+}
+div.post.photo div.subpost h2.title + a:link,
+div.post.photo div.subpost h2.title + a:visited {
+    display: inline-block;
+    border: none;
 }
 div.post a img, div.page a img { border: none; vertical-align: top; }
 div.post img, div.page img { max-width: 100%; }
@@ -974,9 +980,11 @@ button:hover {
 p.lost_pass { margin: 0 0 1em 0; }
 
 span.pages {
-    color: #8699a3;
+    color: #788B96;
     font-weight: bold;
-    padding: 0 0.3em;
+    padding: 4px 8px 5px;
+    background: #D1DCE2;
+    margin: 0 -3px;
 }
 span.who,
 span.waiting {
