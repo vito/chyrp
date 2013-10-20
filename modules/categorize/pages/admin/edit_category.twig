@@ -3,10 +3,8 @@
 {% block title %}${ "Edit Category - %s" | translate("categorize") | format(categorize.name | escape) }{% endblock %}
 
 {% block content %}
-			<h1>${ "Editing Category &#8220;%s&#8221;" | translate("categorize") | format(categorize.name | escape) }</h1>
-			<form id="edit_category" class="split" action="{% admin "edit_category" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
-
-    <form id="add_category" class="split" action="{% admin "add_category" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+	<h1>${ "Editing Category &#8220;%s&#8221;" | translate("categorize") | format(categorize.name | escape) }</h1>
+	<form id="edit_category" class="split" action="{% admin "edit_category" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
         <fieldset>
             <p>
                 <label for="name">${ "Name" | translate("categorize") }</label>
@@ -34,9 +32,5 @@
             <input type="hidden" name="id" value="$categorize.id" id="id" />
             <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
         </fieldset>
-    </form> 
-
-					<input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
-				</fieldset>
-			</form>
+    </form>
 {% endblock %}
