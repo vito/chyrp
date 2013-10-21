@@ -1693,7 +1693,7 @@
                 fallback($info["help"]);
 
                 $info["description"] = __($info["description"], $folder);
-                $info["description"] = preg_replace(array("/<code>(.+)<\/code>/se", "/<pre>(.+)<\/pre>/se"),
+                $info["description"] = preg_replace(array("/<code>(.+)<\/code>/s", "/<pre>(.+)<\/pre>/s"),
                                                     array("'<code>'.fix('\\1').'</code>'", "'<pre>'.fix('\\1').'</pre>'"),
                                                     $info["description"]);
 
@@ -2293,12 +2293,14 @@
             $pages["manage"][] = "new_group";
             foreach (array_keys($subnav["manage"]) as $manage)
                 $pages["manage"] = array_merge($pages["manage"], array($manage,
-                                                                       preg_replace("/manage_(.+)/e",
-                                                                                    "'edit_'.depluralize('\\1')",
-                                                                                    $manage),
-                                                                       preg_replace("/manage_(.+)/e",
-                                                                                    "'delete_'.depluralize('\\1')",
-                                                                                    $manage)));
+                                                                       preg_replace_callback("/manage_(.+)/",
+                                                                            function($m) {
+                                                                                return "edit_".depluralize($m[1]);
+                                                                            }, $manage),
+                                                                       preg_replace_callback("/manage_(.+)/",
+                                                                            function($m) {
+                                                                                return "delete_".depluralize($m[1]);
+                                                                            }, $manage)));
 
             # Settings navs
             $subnav["settings"] = array("general_settings" => array("title" => __("General"),
