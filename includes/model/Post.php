@@ -90,7 +90,7 @@
                 if (!empty($key)) {
                      $keys = array("body", "caption", "description", "dialogue");
                      if ( in_array( $key, $keys ) and Config::current()->enable_emoji)
-                         $this->attributes[$key] =  emote($val);
+                         $this->$key =  emote($val);
                      else
                          $this->$key =  $val;
                  }
