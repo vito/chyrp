@@ -86,9 +86,14 @@
 
             fallback($this->clean, $this->url);
 
-            foreach ($this->attributes as $key => $val)
-                if (!empty($key))
-                    $this->$key = $val;
+            foreach($this->attributes as $key => $val)
+                if (!empty($key)) {
+                     $keys = array("body", "caption", "description", "dialogue");
+                     if ( in_array( $key, $keys ) and Config::current()->enable_emoji)
+                         $this->$key =  emote($val);
+                     else
+                         $this->$key =  $val;
+                 }
 
             Trigger::current()->filter($this, "post");
 

@@ -36,7 +36,7 @@
 
         static function addCategory($post = array()) {
             $show_on_home = (isset($post['show_on_home'])) ? 1 : 0;
-            $clean = sanitize($post['name']);
+            $clean = sanitize(fallback($_POST['clean'], $_POST['name']));
             $name = $post['name'];
             SQL::current()->insert("categorize",
                 array("name" => ":name", "clean" => ":clean", "show_on_home" => ":show_on_home"),
@@ -45,7 +45,7 @@
 
         static function updateCategory($post = array()) {
             $show_on_home = (isset($post['show_on_home'])) ? 1 : 0;
-            $clean = sanitize($post['name']);
+            $clean = sanitize(fallback($_POST['clean'], $_POST['name']));
             $name = $post['name'];
             $id = $post['id'];
             SQL::current()->update("categorize", "`id` = :id",

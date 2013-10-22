@@ -66,6 +66,13 @@
                             ${ "Use a visual WYSIWYG Text Editor." | translate }
                         </small>
                     </p>
+                    <p>
+                        <label for="enable_emoji">${ "Enable Unicode Emoticons" | translate }</label>
+                        <input class="checkbox" type="checkbox" name="enable_emoji" id="enable_emoji"${ site.enable_emoji | checked } />
+                        <small>
+                            ${ "Use Unicode Emoticons." | translate }
+                        </small>
+                    </p>
                     <p class="buttons">
                         <button type="submit" class="yay">
                             <img src="$theme_url/images/icons/success.svg" alt="success" />${ "Update" | translate }

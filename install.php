@@ -150,6 +150,7 @@
             $config->set("enable_xmlrpc", true);
             $config->set("enable_ajax", true);
             $config->set("enable_wysiwyg", true);
+            $config->set("enable_emoji", true);
             $config->set("can_register", false);
             $config->set("email_activation", false);
             $config->set("enable_recaptcha", false);

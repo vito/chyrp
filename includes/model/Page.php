@@ -33,7 +33,7 @@
 
             if ($this->filtered) {
                 $this->title_unfiltered = $this->title;
-                $this->body_unfiltered = $this->body;
+                $this->body_unfiltered = $this->body = (Config::current()->enable_emoji) ? emote($this->body) : $this->body ;
 
                 $trigger->filter($this->title, array("markup_title", "markup_page_title"), $this);
                 $trigger->filter($this->body, array("markup_text", "markup_page_text"), $this);
