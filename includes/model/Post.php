@@ -95,10 +95,6 @@
                          $this->$key =  $val;
                  }
 
-            foreach ($this->attributes as $key => $val)
-                if (!empty($key))
-                    $this->$key = $val;
-
             Trigger::current()->filter($this, "post");
 
             if ($this->filtered)
