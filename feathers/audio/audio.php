@@ -197,7 +197,9 @@
             $player.= "\n\t\t".'</div>';
             $player.= "\n\t".'</div>';
 
-            $player.= "\n\t".'<link href="'.$config->chyrp_url.'/feathers/audio/skin/blue.monday.hd/jplayer.blue.monday.hd.css" rel="stylesheet" type="text/css" />';
+            if (!file_exists(THEME_DIR."/stylesheets/jplayer.css"))
+                $player.= "\n\t".'<link href="'.$config->chyrp_url.'/feathers/audio/skin/blue.monday.hd/jplayer.blue.monday.hd.css" rel="stylesheet" type="text/css" />';
+
             $player.= "\n\t".'<script src="'.$config->chyrp_url.'/feathers/audio/jplayer/jquery.jplayer.js" type="text/javascript"></script>';
             $player.= "\n\t".'<script>';
             $player.= "\n\t".'$(document).ready(function(){';
