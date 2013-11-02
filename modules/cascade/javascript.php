@@ -32,12 +32,20 @@
                     if ( next_page_url && last_post.length ) {
                         $.get(next_page_url, function(data){
                             if ( !!history.replaceState ) history.replaceState(ChyrpAjaxScroll.state, '', next_page_url );
+                            // Insert new posts
                             $(".post").last().after($(data).find(".post"));
+                            // Find and execute scripts
+                            $(data).filter('script').each(function(){
+                                $.globalEval(this.text || this.textContent || this.innerHTML || '');
+                            });
+                            // Search for next_page_page
                             var ajax_page_url = $(data).find("#next_page_page").last().attr('href');
                             if ( ajax_page_url ) {
+                                // We found another page to load
                                 $("#next_page_page").attr('href', ajax_page_url);
                                 ChyrpAjaxScroll.busy = false;
                             } else {
+                                // That's all Folks!
                                 $("#next_page_page").fadeOut('fast');
                             }
                         }).fail( function() { ChyrpAjaxScroll.fail = true });

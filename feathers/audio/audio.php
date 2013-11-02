@@ -202,7 +202,7 @@
 
             $player.= "\n\t".'<script src="'.$config->chyrp_url.'/feathers/audio/jplayer/jquery.jplayer.js" type="text/javascript"></script>';
             $player.= "\n\t".'<script>';
-            $player.= "\n\t".'$(document).ready(function(){';
+            $player.= "\n\t".'$(function(){';
             $player.= "\n\t\t".'$("#jquery_jplayer_'.$post->id.'").jPlayer({';
             $player.= "\n\t\t\t".'ready: function() {';
             $player.= "\n\t\t\t\t".'$(this).jPlayer("setMedia", {';
