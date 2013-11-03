@@ -170,7 +170,7 @@
             $player = "\n\t".'<div id="jquery_jplayer_'.$post->id.'" class="jp-jplayer"></div>';
             $player.= "\n\t".'<div id="jp_container_'.$post->id.'" class="jp-audio">';
             $player.= "\n\t\t".'<div class="jp-type-single">';
-            $player.= "\n\t\t\t".'<div class="jp-gui jp-interface">';
+            $player.= "\n\t\t\t".'<div id="jp-gui'.$post->id.'" class="jp-gui jp-interface" style="display:none;">';
             $player.= "\n\t\t\t\t".'<ul class="jp-controls">';
             $player.= "\n\t\t\t\t\t".'<li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li>';
             $player.= "\n\t\t\t\t\t".'<li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li>';
@@ -200,6 +200,12 @@
             $player.= "\n\t\t\t\t".'<span>Update Required</span>';
             $player.= "\n\t\t\t\t".'To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.';
             $player.= "\n\t\t\t".'</div>';
+            $player.= "\n\t\t\t".'<noscript>';
+            $player.= "\n\t\t\t\t".'<div class="jp-no-solution" style="display:block;">';
+            $player.= "\n\t\t\t\t\t".'<span>JavaScript Required</span>';
+            $player.= "\n\t\t\t\t\t".'To play <a href="'.uploaded($post->filename).'" type="'.$this->audio_type($post->filename).'">'.truncate(strip_tags($post->description)).'</a> you must enable JavaScript.';
+            $player.= "\n\t\t\t\t".'</div>';
+            $player.= "\n\t\t\t".'</noscript>';
             $player.= "\n\t\t".'</div>';
             $player.= "\n\t".'</div>';
 
