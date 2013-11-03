@@ -20,9 +20,7 @@ $(function(){
 var Write = {
     init: function(){
         this.auto_expand_fields()
-
-        if (!$.browser.msie)
-            this.sortable_feathers()
+        this.sortable_feathers()
 
     },
     auto_expand_fields: function(){
