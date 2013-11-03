@@ -34,14 +34,11 @@
                             if ( !!history.replaceState ) history.replaceState(ChyrpAjaxScroll.state, '', next_page_url );
                             // Insert new posts
                             $(".post").last().after($(data).find(".post"));
-                            // Find and execute scripts
+                            // Execute inline scripts
                             $(data).filter('script').each(function(){
-                                if ( this.src )
-                                    $.ajax({ url: this.src, async: false, dataType: "script" });
-                                else
-                                    $.globalEval( this.text || this.textContent || this.innerHTML || "" );
+                                $.globalEval( this.text || this.textContent || this.innerHTML || "" );
                             });
-                            // Search for next_page_page
+                            // Search for the next page link
                             var ajax_page_url = $(data).find("#next_page_page").last().attr('href');
                             if ( ajax_page_url ) {
                                 // We found another page to load
