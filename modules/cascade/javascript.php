@@ -36,7 +36,10 @@
                             $(".post").last().after($(data).find(".post"));
                             // Find and execute scripts
                             $(data).filter('script').each(function(){
-                                $.globalEval(this.text || this.textContent || this.innerHTML || '');
+                                if ( this.src )
+                                    $.ajax({ url: this.src, async: false, dataType: "script" });
+                                else
+                                    $.globalEval( this.text || this.textContent || this.innerHTML || "" );
                             });
                             // Search for next_page_page
                             var ajax_page_url = $(data).find("#next_page_page").last().attr('href');
