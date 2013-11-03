@@ -32,6 +32,12 @@
             $this->respondTo("admin_write_post", "swfupload");
             $this->respondTo("admin_edit_post", "swfupload");
             $this->respondTo("post_options", "add_option");
+            $this->respondTo("scripts", "add_jplayer_script");
+        }
+
+        public function add_jplayer_script($scripts) {
+            $scripts[] = Config::current()->chyrp_url."/feathers/audio/jplayer/jquery.jplayer.js";
+            return $scripts;
         }
 
         public function swfupload($admin, $post = null) {
@@ -200,7 +206,6 @@
             if (!file_exists(THEME_DIR."/stylesheets/jplayer.css"))
                 $player.= "\n\t".'<link href="'.$config->chyrp_url.'/feathers/audio/skin/blue.monday.hd/jplayer.blue.monday.hd.css" rel="stylesheet" type="text/css" />';
 
-            $player.= "\n\t".'<script src="'.$config->chyrp_url.'/feathers/audio/jplayer/jquery.jplayer.js" type="text/javascript"></script>';
             $player.= "\n\t".'<script>';
             $player.= "\n\t".'$(function(){';
             $player.= "\n\t\t".'$("#jquery_jplayer_'.$post->id.'").jPlayer({';
