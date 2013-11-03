@@ -170,7 +170,7 @@
             $player = "\n\t".'<div id="jquery_jplayer_'.$post->id.'" class="jp-jplayer"></div>';
             $player.= "\n\t".'<div id="jp_container_'.$post->id.'" class="jp-audio">';
             $player.= "\n\t\t".'<div class="jp-type-single">';
-            $player.= "\n\t\t\t".'<div id="jp-gui'.$post->id.'" class="jp-gui jp-interface" style="display:none;">';
+            $player.= "\n\t\t\t".'<div class="jp-gui jp-interface" style="display:none;">';
             $player.= "\n\t\t\t\t".'<ul class="jp-controls">';
             $player.= "\n\t\t\t\t\t".'<li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li>';
             $player.= "\n\t\t\t\t\t".'<li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li>';
