@@ -16,7 +16,7 @@
                     {% endif %}
                     <ul>
                         {% for post in archive.posts %}
-                        <li>${ post.created_at | strftime("%d" | translate) }: <a href="$post.url">${ post.title | normalize | truncate(70) }</a></li>
+                        <li class="post">${ post.created_at | strftime("%d" | translate) }: <a href="$post.url">${ post.title | normalize | truncate(70) }</a></li>
                         {% endfor %}
                     </ul>
                     <br />
@@ -32,7 +32,7 @@
                     {% endif %}
                     <ul>
                         {% for post in posts.paginated %}
-                        <li>${ post.created_at | strftime("%d" | translate) }: <a href="$post.url">${ post.title | normalize | truncate(70) }</a></li>
+                        <li class="post">${ post.created_at | strftime("%d" | translate) }: <a href="$post.url">${ post.title | normalize | truncate(70) }</a></li>
                         {% endfor %}
                     </ul>
 {% endif %}
