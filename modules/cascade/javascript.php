@@ -38,11 +38,13 @@
                             $(data).filter('script').each(function(){
                                 $.globalEval( this.text || this.textContent || this.innerHTML || "" );
                             });
+                            // Update the page description
+                            $(".pages").last().replaceWith( $(data).find('.pages').last() );
                             // Search for the next page link
-                            var ajax_page_url = $(data).find("#next_page_page").last().attr('href');
-                            if ( ajax_page_url ) {
+                            var ajax_page_link = $(data).find("#next_page_page").last();
+                            if ( ajax_page_link ) {
                                 // We found another page to load
-                                $("#next_page_page").attr('href', ajax_page_url);
+                                $("#next_page_page").replaceWith(ajax_page_link);
                                 ChyrpAjaxScroll.busy = false;
                             } else {
                                 // That's all Folks!
