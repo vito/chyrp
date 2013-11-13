@@ -45,6 +45,7 @@
                             if ( ajax_page_link ) {
                                 // We found another page to load
                                 $("#next_page_page").replaceWith(ajax_page_link);
+                                if ( !ChyrpAjaxScroll.auto ) $("#next_page_page").click(ChyrpAjaxScroll.fetch);
                                 ChyrpAjaxScroll.busy = false;
                             } else {
                                 // That's all Folks!
