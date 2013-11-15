@@ -353,7 +353,7 @@
     }
 
     function value_fallback($index, $fallback = "") {
-        echo (isset($_POST[$index])) ? $_POST[$index] : $fallback ;
+        echo (isset($_POST[$index])) ? fix($_POST[$index]) : $fallback ;
     }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
