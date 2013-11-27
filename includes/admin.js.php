@@ -7,7 +7,7 @@
 ?>
 <!-- --><script>
 var Route = {
-    action: "<?php echo $_GET['action']; ?>"
+    action: "<?php echo fix($_GET['action']); ?>"
 }
 
 var site_url = "<?php echo $config->chyrp_url; ?>"
