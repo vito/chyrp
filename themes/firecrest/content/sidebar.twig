@@ -67,7 +67,7 @@ ${ trigger.call("sidebar") }
                         <ul id="categorize">
                             {% for cat in categorize %}
                             <li>
-                                <a href="{% url "category/" ~ cat.clean %}">${ cat.name }</a>
+                                <a href="${ cat.url }">${ cat.name }</a>
                                 <span class="sub">($cat.total)</span>
                             </li>
                             {% endfor %}
