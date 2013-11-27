@@ -31,7 +31,9 @@ $(function(){
     var fullStack = ["#body_field", "#body"]
     $.each(fullStack, function(index, element) {
         $(element).redactor({
+            toolbarFixedBox: true,
             minHeight: 140,
+            focus: true,
             imageUpload: "../includes/uploader.php",
             imageGetJson: "../includes/uploaded.php"
         })
@@ -40,9 +42,11 @@ $(function(){
     var miniStack = ["#quote_field", "#description_field", "#caption_field", "#dialogue_field"]
     $.each(miniStack, function(index, element) {
         $(element).redactor({
+            toolbarFixedBox: true,
+            minHeight: 140,
+            focus: true,
             buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|',
-                        'unorderedlist', 'orderedlist', 'link'],
-            minHeight: 140
+                      'unorderedlist', 'orderedlist', 'link']
         })
     })
     <?php endif; ?>
@@ -53,9 +57,6 @@ $(function(){
                                                   "toolbar=0, resizable=1, height=450, width=400")
         return false
     })
-
-    // Make the Redactor toolbar sticky
-    $('.redactor_box').stickyToolbar()
 
     // SVG fallback for browsers that do not support SVG images
     $("img").fixsvg()

@@ -260,30 +260,6 @@ $.fn.loader = function(remove) {
 	}
 }
 
-// Make the Redactor toolbar sticky when the user scrolls beyond it
-$.fn.stickyToolbar = function() {
-	window.stickyToolbar = {
-		timer: undefined,
-		handler: function() {
-			$('.redactor_box').each( function() {
-				var top = $(this).offset().top;
-				var windowLocation = $(window).scrollTop();
-				if (windowLocation > top) {
-					$(this).children('.redactor_toolbar').css( 'top', ( windowLocation - top ) + 'px' );
-				} else {
-					$(this).children('.redactor_toolbar').css('top', '0px');
-				}
-			})
-		},
-		trigger: function() {
-			clearTimeout(stickyToolbar.timer);
-			stickyToolbar.timer = setTimeout( stickyToolbar.handler, 250);
-		}
-	}
-	$(window).scroll(stickyToolbar.trigger);
-	$(window).resize(stickyToolbar.trigger);
-}
-
 // Originally from http://livepipe.net/extra/cookie
 var Cookie = {
   set: function (name, value, days) {
