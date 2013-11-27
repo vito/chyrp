@@ -32,6 +32,12 @@
             $this->respondTo("admin_write_post", "swfupload");
             $this->respondTo("admin_edit_post", "swfupload");
             $this->respondTo("post_options", "add_option");
+            $this->respondTo("scripts", "add_jplayer_script");
+        }
+
+        public function add_jplayer_script($scripts) {
+            $scripts[] = Config::current()->chyrp_url."/feathers/audio/jplayer/jquery.jplayer.js";
+            return $scripts;
         }
 
         public function swfupload($admin, $post = null) {
@@ -164,7 +170,7 @@
             $player = "\n\t".'<div id="jquery_jplayer_'.$post->id.'" class="jp-jplayer"></div>';
             $player.= "\n\t".'<div id="jp_container_'.$post->id.'" class="jp-audio">';
             $player.= "\n\t\t".'<div class="jp-type-single">';
-            $player.= "\n\t\t\t".'<div class="jp-gui jp-interface">';
+            $player.= "\n\t\t\t".'<div class="jp-gui jp-interface" style="display:none;">';
             $player.= "\n\t\t\t\t".'<ul class="jp-controls">';
             $player.= "\n\t\t\t\t\t".'<li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li>';
             $player.= "\n\t\t\t\t\t".'<li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li>';
@@ -194,13 +200,20 @@
             $player.= "\n\t\t\t\t".'<span>Update Required</span>';
             $player.= "\n\t\t\t\t".'To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.';
             $player.= "\n\t\t\t".'</div>';
+            $player.= "\n\t\t\t".'<noscript>';
+            $player.= "\n\t\t\t\t".'<div class="jp-no-solution" style="display:block;">';
+            $player.= "\n\t\t\t\t\t".'<span>JavaScript Required</span>';
+            $player.= "\n\t\t\t\t\t".'To play <a href="'.uploaded($post->filename).'" type="'.$this->audio_type($post->filename).'">'.truncate(strip_tags($post->description)).'</a> you must enable JavaScript.';
+            $player.= "\n\t\t\t\t".'</div>';
+            $player.= "\n\t\t\t".'</noscript>';
             $player.= "\n\t\t".'</div>';
             $player.= "\n\t".'</div>';
 
-            $player.= "\n\t".'<link href="'.$config->chyrp_url.'/feathers/audio/skin/blue.monday.hd/jplayer.blue.monday.hd.css" rel="stylesheet" type="text/css" />';
-            $player.= "\n\t".'<script src="'.$config->chyrp_url.'/feathers/audio/jplayer/jquery.jplayer.js" type="text/javascript"></script>';
+            if (!file_exists(THEME_DIR."/stylesheets/jplayer.css"))
+                $player.= "\n\t".'<link href="'.$config->chyrp_url.'/feathers/audio/skin/blue.monday.hd/jplayer.blue.monday.hd.css" rel="stylesheet" type="text/css" />';
+
             $player.= "\n\t".'<script>';
-            $player.= "\n\t".'$(document).ready(function(){';
+            $player.= "\n\t".'$(function(){';
             $player.= "\n\t\t".'$("#jquery_jplayer_'.$post->id.'").jPlayer({';
             $player.= "\n\t\t\t".'ready: function() {';
             $player.= "\n\t\t\t\t".'$(this).jPlayer("setMedia", {';
