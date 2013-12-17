@@ -140,12 +140,12 @@
             Group::add_permission("like_post", "Like Posts");
             Group::add_permission("unlike_post", "Unlike Posts");
 
-            $likeText = array(0 => "You like this post.",
-                              1 => "You and 1 person like this post.",
-                              2 => "You and %NUM% people like this post.",
+            $likeText = array(0 => "You like this.",
+                              1 => "You and 1 other like this.",
+                              2 => "You and %NUM% other like this.",
                               3 => "Be the first to like.",
-                              4 => "1 person likes this post.",
-                              5 => "%NUM% people like this post.",
+                              4 => "1 person likes this.",
+                              5 => "%NUM% people like this.",
                               6 => "Like",
                               7 => "Unlike");
 

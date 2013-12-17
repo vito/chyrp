@@ -28,12 +28,12 @@
                                 <a href="$post.url#comments">
                                 ${ "%s Comment" | translate_plural("%s Comments", post.comment_count) | format(post.comment_count) }</a></li>
                                 {% endif %}
-                                {% if enabled_modules.likes and visitor.group.can("like_post") %}
-                                <li class="like_count has_icon icon_like"><div class="icon"></div>$post.get_likes</li>
-                                {% endif %}
                                 {% if enabled_modules.categorize and post.category.id != 0 %}
                                 <li class="category has_icon icon_category"><div class="icon"></div>
                                     <a href="$post.category.url" rel="tag">$post.category.name</a></li>
+                                {% endif %}
+                                {% if enabled_modules.likes and visitor.group.can("like_post") %}
+                                <li class="like_count has_icon icon_like"><div class="icon"></div>$post.get_likes</li>
                                 {% endif %}
                             </ul>
                             <span class="permalink has_icon icon_permalink"><div class="icon"></div><a href="$post.url">Permalink</a></span>
