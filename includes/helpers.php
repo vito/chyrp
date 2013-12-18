@@ -336,6 +336,7 @@
                        "ro_RO" => "Română",
                        "ru_RU" => "Русский",
                        "sk_SK" => "Slovenčina",
+                       "sq_AL" => "Shqip",
                        "sv_SE" => "Svenska",
                        "th_TH" => "ไทย",
                        "uk_UA" => "Українська",
