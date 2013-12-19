@@ -4,12 +4,6 @@
     require_once(INCLUDES_DIR."/lib/frontmatter.php");
 
     class Dropbox extends Modules {
-        /**
-         * The API endpoint.
-         *
-         * @var string
-         */
-        protected $endpoint = "http://chyrp.net/api/1/";
 
         static function __install() {
             $set = array(Config::current()->set("module_dropbox",
@@ -57,29 +51,24 @@
                 show_403(__("Access Denied"), __("Invalid security key."));
 
             if (isset($_POST['authorize'])) {
-                $data   = json_decode(file_get_contents($endpoint."dropboxsync.php?keys"), true);
+                $data   = json_decode(file_get_contents("http://chyrp.net/api/1/dropboxsync.php?keys"), true);
                 $app_key    = $data["key"];
                 $app_secret = $data["secret"];
                 $callback   = url("/admin/?action=dropbox_oauth");
 
                 try {
-                	$storage = new \Dropbox\OAuth\Storage\Session;
-                	# if (!$storage->get("access_token")) $storage->delete();
-                	$storage->delete();
-                	$OAuth = new \Dropbox\OAuth\Consumer\Curl($app_key, $app_secret, $storage, $callback);
+                    $storage = new \Dropbox\OAuth\Storage\Session;
 
-                	# Build authorize URL and redirect to Dropbox
-                	redirect($OAuth->getAuthoriseURL());
+                    // if (!$storage->get("access_token"))
+                    $storage->delete();
+
+                    $OAuth = new \Dropbox\OAuth\Consumer\Curl($app_key, $app_secret, $storage, $callback);
+                    # Build authorize URL and redirect to Dropbox
+                    redirect($OAuth->getAuthoriseURL());
                 } catch(\Dropbox\Exception $e) {
-                	error("Dropbox Sync Error!", $e->getMessage());
+                    error("Dropbox Sync Error!", $e->getMessage());
                 }
             }
-
-            $set = array($config->set("module_dropbox",
-                                array("cursor"     => null)));
-
-            if (!in_array(false, $set))
-                Flash::notice(__("Settings updated."), "/admin/?action=dropbox_settings");
         }
 
         static function admin_dropbox_oauth($admin) {
@@ -88,8 +77,7 @@
 
             if (!empty($_GET["uid"]) and !empty($_GET["oauth_token"])) {
                 # The user is redirected here by Dropbox after the authorization screen
-                $config = Config::current();
-                $data   = json_decode(file_get_contents($endpoint."dropboxsync.php?keys"), true);
+                $data   = json_decode(file_get_contents("http://chyrp.net/api/1/dropboxsync.php?keys"), true);
                 $app_key    = $data["key"];
                 $app_secret = $data["secret"];
 
@@ -99,8 +87,11 @@
                 # Acquire the access token
                 $token_data = get_object_vars($storage->get("access_token"));
 
-                $set = array($config->set("module_dropbox",
-                                    array("cursor" => null)));
+                $set = array(Config::current()->set("module_dropbox",
+                                              array("oauth_token_secret" => $token_data['oauth_token_secret'],
+                                                    "oauth_token" => $token_data['oauth_token'],
+                                                    "uid" => $token_data['uid'],
+                                                    "cursor" => null)));
 
                 if (!in_array(false, $set))
                     Flash::notice(__("Dropbox was successfully authorized.", "dropbox"), "/admin/?action=dropbox_settings");
@@ -117,7 +108,7 @@
                 return $admin->display("manage_dropbox");
 
             $config = Config::current();
-            $data   = json_decode(file_get_contents($endpoint."dropboxsync.php?keys"), true);
+            $data   = json_decode(file_get_contents("http://chyrp.net/api/1/dropboxsync.php?keys"), true);
             $app_key    = $data["key"];
             $app_secret = $data["secret"];
 
