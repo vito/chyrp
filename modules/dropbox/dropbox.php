@@ -135,7 +135,7 @@
                         fallback($clean,  oneof($post->fetch("slug"), strtolower(str_replace(" ", "-", $post->fetch("title")))));
                         fallback($url,    Post::check_url($clean));
                         fallback($pinned, oneof($post->fetch("pinned"), 0));
-                        fallback($status, oneof($post->fetch("status"), "published"));
+                        fallback($status, oneof($post->fetch("status"), "public"));
                         fallback($date,   oneof(datetime($post->fetch("date")), datetime($date[0])));
 
                         $post = Post::add($values, $clean, $url, "text",
