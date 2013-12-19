@@ -4,7 +4,7 @@
     if (version_compare(PHP_VERSION, "5.4.4", "<")) define('USE_ZLIB', true);
     else define('USE_ZLIB', false);
 
-    $valid_files = "jquery.js plugins.js redactor/redactor.min.js";
+    $valid_files = "jquery.js plugins.js redactor/redactor.min.js flexnav/jquery.flexnav.min.js";
     if (!in_array($_GET['file'], explode(" ", $valid_files)) and strpos($_GET['file'], "/themes/") === false)
         exit("Access Denied.");
 

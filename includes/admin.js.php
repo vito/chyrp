@@ -26,6 +26,8 @@ $(function(){
             $(this).val($(this).val().replace(/([^\\]|^)\\ct/gm, "  "))
     })
 
+    $(".flexnav").flexNav({ 'animationSpeed' : 'fast' });
+    
     <?php if (Config::current()->enable_wysiwyg) : ?>
     // Use RedactorJS for <textarea> elements.
     var fullStack = ["#body_field", "#body"]
