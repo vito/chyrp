@@ -144,14 +144,13 @@ class API
      * @param boolean $overwrite Should the file be overwritten? (Default: true)
      * @return stdClass
      */
-    public function chunkedUpload($file, $filename = false, $path = '', $overwrite = true)
+    public function chunkedUpload($file, $filename = false, $path = '', $overwrite = true, $offset = 0, $uploadID = null)
     {
         if (file_exists($file)) {
             if ($handle = @fopen($file, 'r')) {
-                // Set initial upload ID and offset
-                $uploadID = null;
-                $offset = 0;
-                
+            	// Seek to the correct position on the file pointer
+			    fseek($handle, $offset);
+
                 // Read from the file handle until EOF, uploading each chunk
                 while ($data = fread($handle, $this->chunkSize)) {
                     // Open a temporary file handle and write a chunk of data to it
@@ -161,23 +160,40 @@ class API
                     // Set the file, request parameters and send the request
                     $this->OAuth->setInFile($chunkHandle);
                     $params = array('upload_id' => $uploadID, 'offset' => $offset);
-                    $response = $this->fetch('PUT', self::CONTENT_URL, 'chunked_upload', $params);
                     
+                    try {
+                    	// Attempt to upload the current chunk
+                    	$response = $this->fetch('PUT', self::CONTENT_URL, 'chunked_upload', $params);
+                    } catch (Exception $e) {
+                    	$response = $this->OAuth->getLastResponse();
+                    	if ($response['code'] == 400) {
+                    		// Incorrect offset supplied, return expected offset and upload ID
+                    		$uploadID = $response['body']->upload_id;
+                    		$offset = $response['body']->offset;
+                    		return array('uploadID' => $uploadID, 'offset' => $offset);
+                    	} else {
+                    		// Re-throw the caught Exception
+                    		throw $e;
+                    	}
+                    }
+                                     
                     // On subsequent chunks, use the upload ID returned by the previous request
                     if (isset($response['body']->upload_id)) {
                         $uploadID = $response['body']->upload_id;
                     }
                     
                     // Set the data offset
-                    $offset += mb_strlen($data, '8bit');
-                    
+                    if (isset($response['body']->offset)) {
+                        $offset = $response['body']->offset;
+                    }
+
                     // Close the file handle for this chunk
                     fclose($chunkHandle);
                 }
-                
+
                 // Complete the chunked upload
                 $filename = (is_string($filename)) ? $filename : basename($file);
-                $call = 'commit_chunked_upload/' . $this->root . '/' . $this->encodePath($path . $filename);
+                $call = 'commit_chunked_upload/' . $this->root . '/' . $this->encodePath(rtrim($path, '/') . '/' . $filename);
                 $params = array('overwrite' => (int) $overwrite, 'upload_id' => $uploadID);
                 $response = $this->fetch('POST', self::CONTENT_URL, $call, $params);
                 return $response;
@@ -327,10 +343,11 @@ class API
      * @param string $path The path to the file/folder you want a sharable link to
      * @return object stdClass
      */
-    public function shares($path)
+    public function shares($path, $shortUrl = true)
     {
         $call = 'shares/' . $this->root . '/' .$this->encodePath($path);
-        $response = $this->fetch('POST', self::API_URL, $call);
+        $params = array('short_url' => ($shortUrl) ? 1 : 0);
+        $response = $this->fetch('POST', self::API_URL, $call, $params);
         return $response;
     }
     
