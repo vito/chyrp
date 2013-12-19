@@ -17,18 +17,6 @@
                     <hr />
                     <br />
                     {% endif %}
-                    <p>
-                        <label for="app_key">${ "Dropbox App Key" | translate }</label>
-                        <input class="text" type="text" name="app_key" value="${ site.module_dropbox.app_key | escape }" id="app_key" />
-                    </p>
-                    <p>
-                        <label for="app_secret">${ "Dropbox App Secret" | translate }</label>
-                        <input class="text" type="text" name="app_secret" value="${ site.module_dropbox.app_secret | escape }" id="app_secret" />
-                    </p>
-                    <p class="buttons">
-                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.svg" alt="success" />${ "Update" | translate }</button>
-                    </p>
-
                     <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
                 </fieldset>
             </form>

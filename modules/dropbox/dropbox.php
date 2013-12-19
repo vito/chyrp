@@ -1,9 +1,16 @@
 <?php
     # Register the AutoLoad function
     require_once("lib/Dropbox/AutoLoader.php");
-    require_once(INCLUDES_DIR."/lib/FrontMatter.php");
+    require_once(INCLUDES_DIR."/lib/frontmatter.php");
 
     class Dropbox extends Modules {
+        /**
+         * The API endpoint.
+         *
+         * @var string
+         */
+        protected $endpoint = "http://chyrp.net/api/1/";
+
         static function __install() {
             $set = array(Config::current()->set("module_dropbox",
                                           array("app_key"      => null,
@@ -50,8 +57,9 @@
                 show_403(__("Access Denied"), __("Invalid security key."));
 
             if (isset($_POST['authorize'])) {
-                $app_key    = $config->module_dropbox["app_key"];
-                $app_secret = $config->module_dropbox["app_secret"];
+                $data   = json_decode(file_get_contents($endpoint."dropboxsync.php?keys"), true);
+                $app_key    = $data["key"];
+                $app_secret = $data["secret"];
                 $callback   = url("/admin/?action=dropbox_oauth");
 
                 try {
@@ -68,9 +76,7 @@
             }
 
             $set = array($config->set("module_dropbox",
-                                array("app_key"    => trim($_POST['app_key']),
-                                      "app_secret" => trim($_POST['app_secret']),
-                                      "cursor"     => null)));
+                                array("cursor"     => null)));
 
             if (!in_array(false, $set))
                 Flash::notice(__("Settings updated."), "/admin/?action=dropbox_settings");
@@ -83,8 +89,10 @@
             if (!empty($_GET["uid"]) and !empty($_GET["oauth_token"])) {
                 # The user is redirected here by Dropbox after the authorization screen
                 $config = Config::current();
-                $app_key    = $config->module_dropbox["app_key"];
-                $app_secret = $config->module_dropbox["app_secret"];
+                $data   = json_decode(file_get_contents($endpoint."dropboxsync.php?keys"), true);
+                $app_key    = $data["key"];
+                $app_secret = $data["secret"];
+
                 $storage = new \Dropbox\OAuth\Storage\Session;
                 $OAuth = new \Dropbox\OAuth\Consumer\Curl($app_key, $app_secret, $storage);
 
@@ -92,9 +100,7 @@
                 $token_data = get_object_vars($storage->get("access_token"));
 
                 $set = array($config->set("module_dropbox",
-                                    array("app_key"    => $app_key,
-                                          "app_secret" => $app_secret,
-                                          "cursor"     => null)));
+                                    array("cursor" => null)));
 
                 if (!in_array(false, $set))
                     Flash::notice(__("Dropbox was successfully authorized.", "dropbox"), "/admin/?action=dropbox_settings");
@@ -111,8 +117,9 @@
                 return $admin->display("manage_dropbox");
 
             $config = Config::current();
-            $app_key    = $config->module_dropbox["app_key"];
-            $app_secret = $config->module_dropbox["app_secret"];
+            $data   = json_decode(file_get_contents($endpoint."dropboxsync.php?keys"), true);
+            $app_key    = $data["key"];
+            $app_secret = $data["secret"];
 
             $storage = new \Dropbox\OAuth\Storage\Session;
             $OAuth = new \Dropbox\OAuth\Consumer\Curl($app_key, $app_secret, $storage);
@@ -147,9 +154,7 @@
                 }
 
                 $set = array($config->set("module_dropbox",
-                                    array("app_key"      => $app_key,
-                                          "app_secret"   => $app_secret,
-                                          "cursor"       => $delta->cursor)));
+                                    array("cursor" => $delta->cursor)));
 
                 if (!in_array(false, $set))
                     Flash::notice(_f("Post imported successfully."), "/admin/?action=manage_posts");
