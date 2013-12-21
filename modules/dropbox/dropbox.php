@@ -108,6 +108,10 @@
                 return $admin->display("manage_dropbox");
 
             $config = Config::current();
+
+            if (!isset($config->module_dropbox["oauth_token"]))
+                Flash::notice(__("You need to authorize Dropbox first.", "dropbox"), "/admin/?action=dropbox_settings");
+
             $data   = json_decode(file_get_contents("http://chyrp.net/api/1/dropboxsync.php?keys"), true);
             $app_key    = $data["key"];
             $app_secret = $data["secret"];
@@ -145,7 +149,10 @@
                 }
 
                 $set = array($config->set("module_dropbox",
-                                    array("cursor" => $delta->cursor)));
+                                    array("oauth_token_secret" => $config->module_dropbox['oauth_token_secret'],
+                                          "oauth_token" => $config->module_dropbox['oauth_token'],
+                                          "uid" => $config->module_dropbox['uid'],
+                                          "cursor" => $delta->cursor)));
 
                 if (!in_array(false, $set))
                     Flash::notice(_f("Post imported successfully."), "/admin/?action=manage_posts");
