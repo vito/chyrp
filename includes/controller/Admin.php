@@ -222,6 +222,9 @@
         public function update_post() {
             $post = new Post($_POST['id'], array("drafts" => true));
 
+            if (isset($_POST['publish']))
+                $_POST['status'] = "public";
+
             if ($post->no_results)
                 Flash::warning(__("Post not found."), "/admin/?action=manage_posts");
 

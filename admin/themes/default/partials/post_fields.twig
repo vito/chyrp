@@ -38,8 +38,13 @@
 
                     <div class="buttons">
                         {% if route.action == "edit_post" %}
-                        <button type="submit" class="yay right" accesskey="s" id="save">
-                            <img src="$theme_url/images/icons/success.svg" alt="success" />${ "Save" | translate }
+                        {% if visitor.group.can("add_post") %}
+                        <button type="submit" class="yay right" accesskey="s" id="publish" name="publish">
+                            <img src="$theme_url/images/icons/success.svg" alt="success" />${ "Publish" | translate }
+                        </button>
+                        {% endif %}
+                        <button type="submit" class="right" accesskey="s" id="save">
+                            <img src="$theme_url/images/icons/save.svg" alt="success" />${ "Save" | translate }
                         </button>
                         {% else %}
                         {% if visitor.group.can("add_post") %}
