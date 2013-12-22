@@ -137,10 +137,9 @@
         }
 
         public function image_tag($post, $max_width = 510, $max_height = null, $more_args = "quality=100") {
-            $filename = $post->filename;
             $config = Config::current();
-            $alt = !empty($post->alt_text) ? fix($post->alt_text, true) : $filename ;
-            return '<img src="'.$config->chyrp_url.$config->uploads_path.($filename).'" class="image" />';
+            $alt = !empty($post->alt_text) ? fix($post->alt_text, true) : $post->filename ;
+            return '<img src="'.$config->chyrp_url.'/includes/thumb.php?file=..'.$config->uploads_path.urlencode($post->filename).'&amp;max_width='.$max_width.'&amp;max_height='.$max_height.'&amp;'.$more_args.'" alt="'.$alt.'" class="image" />';
         }
 
         public function image_link($post, $max_width = 510, $max_height = null, $more_args = "quality=100") {
