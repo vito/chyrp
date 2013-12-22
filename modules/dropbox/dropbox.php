@@ -7,9 +7,10 @@
 
         static function __install() {
             $set = array(Config::current()->set("module_dropbox",
-                                          array("app_key"      => null,
-                                                "app_secret"   => null,
-                                                "cursor"       => null)));
+                                          array("oauth_token_secret" => null,
+                                                "oauth_token" => null,
+                                                "uid" => null,
+                                                "cursor" => null)));
         }
 
         static function __uninstall() {
