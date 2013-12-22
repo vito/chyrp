@@ -78,9 +78,9 @@
             } else
                 $filename = $_POST['filename'];
                 
-                // Prepend scheme if a URL is detected
-    			if (preg_match('~^((([a-z]|[0-9]|\-)+)\.)+([a-z]){2,6}/~', @$_POST['option']['source']))
-					$_POST['option']['source'] = "http://".$_POST['option']['source'];
+            // Prepend scheme if a URL is detected
+            if (preg_match('~^((([a-z]|[0-9]|\-)+)\.)+([a-z]){2,6}/~', @$_POST['option']['source']))
+            $_POST['option']['source'] = "http://".$_POST['option']['source'];
                 
             fallback($_POST['slug'], sanitize($_POST['title']));
 
@@ -107,9 +107,9 @@
             }
             
             // Prepend scheme if a URL is detected
-			if (preg_match('~^((([a-z]|[0-9]|\-)+)\.)+([a-z]){2,6}/~', @$_POST['option']['source']))
-				$_POST['option']['source'] = "http://".$_POST['option']['source'];
-
+            if (preg_match('~^((([a-z]|[0-9]|\-)+)\.)+([a-z]){2,6}/~', @$_POST['option']['source']))
+            $_POST['option']['source'] = "http://".$_POST['option']['source'];
+            
             $post->update(array("title" => $_POST['title'],
                                 "filename" => $filename,
                                 "caption" => $_POST['caption']));
