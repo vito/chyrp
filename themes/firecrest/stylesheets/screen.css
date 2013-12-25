@@ -796,7 +796,7 @@ div.page span.controls {
 /* Start Content Control Links */
 a.comment_delete_link,
 a.comment_edit_link,
-a.comment_replyto_link,
+a.comment_reply_link,
 a.delete_link,
 a.edit_link,
 a.next_page,
@@ -812,7 +812,7 @@ a.logout {
 
 a.comment_delete_link,
 a.comment_edit_link,
-a.comment_replyto_link {
+a.comment_reply_link {
     float: right;
     margin: 0 0 0 .5em;
 }
@@ -824,7 +824,7 @@ a.edit_link {
     color: #93ba52 !important;
     padding: 0;
 }
-a.comment_replyto_link {
+a.comment_reply_link {
 
 }
 a.next_page, a.next_page:visited,
