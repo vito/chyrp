@@ -780,11 +780,11 @@
          */
         function featured_image($width = 210, $order = 0, $html = true) {
             $config = Config::current();
-            
-            $pattern = '/<img[^>]+src=[\'"]' . preg_quote($path, '/') . '([^\'"]+)[\'"][^>]*>/i';
-            $output = preg_match_all($pattern, $this->body, $matches);
-            $image = $matches[1][$order];
 
+            $pattern = '/<img[^>]+src=[\'"]' . preg_quote($config->chyrp_url.$config->uploads_path, '/') . '([^\'"]+)[\'"][^>]*>/i';
+            $output = preg_match_all($pattern, $this->body, $matches);
+            
+            $image = $matches[1][$order];
             if (empty($image)) return;
 
             if (!$html) return $config->chyrp_url.'/includes/thumb.php?file=..'.$config->uploads_path.urlencode($image).'&amp;max_width='.$width;
