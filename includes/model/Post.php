@@ -774,6 +774,24 @@
         }
 
         /**
+         * Function: featured_image
+         * Returns:
+         *     A selected post image. Usage: $post->featured_image
+         */
+        function featured_image($width = 210, $order = 0, $html = true) {
+            $config = Config::current();
+            
+            $pattern = '/<img[^>]+src=[\'"]' . preg_quote($path, '/') . '([^\'"]+)[\'"][^>]*>/i';
+            $output = preg_match_all($pattern, $this->body, $matches);
+            $image = $matches[1][$order];
+
+            if (empty($image)) return;
+
+            if (!$html) return $config->chyrp_url.'/includes/thumb.php?file=..'.$config->uploads_path.urlencode($image).'&amp;max_width='.$width;
+            else return '<img src="'.$config->chyrp_url.'/includes/thumb.php?file=..'.$config->uploads_path.urlencode($image).'&amp;max_width='.$width.'" alt="'.$this->title.'" class="featured_image" />';
+        }
+
+        /**
          * Function: user
          * Returns a post's user. Example: $post->user->login
          * 
