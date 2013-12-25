@@ -216,7 +216,6 @@
                 $trigger->filter($options, "bookmarklet_submit_options");
             }
 
-
             $new_values = array("feather"    => $feather,
                                 "user_id"    => $user_id,
                                 "pinned"     => $pinned,
@@ -783,7 +782,7 @@
 
             $pattern = '/<img[^>]+src=[\'"]' . preg_quote($config->chyrp_url.$config->uploads_path, '/') . '([^\'"]+)[\'"][^>]*>/i';
             $output = preg_match_all($pattern, $this->body, $matches);
-            
+
             $image = $matches[1][$order];
             if (empty($image)) return;
 
