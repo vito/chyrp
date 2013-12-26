@@ -777,7 +777,7 @@
          * Returns:
          *     A selected post image. Usage: $post->featured_image
          */
-        function featured_image($width = 210, $order = 0, $html = true) {
+        public function featured_image($width = 210, $order = 0, $html = true) {
             $config = Config::current();
 
             $pattern = '/<img[^>]+src=[\'"]' . preg_quote($config->chyrp_url.$config->uploads_path, '/') . '([^\'"]+)[\'"][^>]*>/i';
