@@ -4,7 +4,8 @@
             $this->setField(array("attr" => "title",
                                   "type" => "text",
                                   "label" => __("Title", "chat"),
-                                  "optional" => true));
+                                  "optional" => true,
+                                  "bookmarklet" => "title"));
             $this->setField(array("attr" => "dialogue",
                                   "type" => "text_block",
                                   "label" => __("Dialogue", "chat"),
