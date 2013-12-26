@@ -537,6 +537,33 @@
             return $linked;
         }
 
+        public function post_list_related_attr($attr, $post) {
+            if (Route::current()->action != "view") return;
+
+            $posts = array();
+            foreach ($post->tags as $key => $tag) {
+                $posts = SQL::current()->query("SELECT DISTINCT __posts.id
+                          FROM __posts
+                          LEFT JOIN __post_attributes ON __posts.id = __post_attributes.post_id
+                            AND __post_attributes.name = 'tags'
+                            AND __posts.id != $post->id
+                          WHERE __post_attributes.value LIKE '%$key: \"$tag\"%'
+                          GROUP BY __posts.id
+                          ORDER BY __posts.created_at DESC
+                          LIMIT 5")->fetchAll();
+            }
+
+            $output = '<ul class="related_posts">
+                       <h3>Related Posts:</h3>';
+            foreach ($posts as $p) {
+                $post = new Post($p['id']);
+                $output.= '<li><h5><a href="'.$post->url().'">'.$post->title().'</a></h5></li>';
+            }
+            $output.= "</ul>";
+
+            return $output;
+        }
+
         public function post($post) {
             $post->tags = !empty($post->tags) ? YAML::load($post->tags) : array() ;
             $post->linked_tags = self::linked_tags($post->tags);
