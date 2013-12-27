@@ -67,7 +67,7 @@
                     # Build authorize URL and redirect to Dropbox
                     redirect($OAuth->getAuthoriseURL());
                 } catch(\Dropbox\Exception $e) {
-                    error("Dropbox Sync Error!", $e->getMessage());
+                    error(__("Dropbox Sync Error!", "dropbox"), $e->getMessage());
                 }
             }
         }
@@ -156,7 +156,7 @@
                                           "cursor" => $delta->cursor)));
 
                 if (!in_array(false, $set))
-                    Flash::notice(_f("Post imported successfully."), "/admin/?action=manage_posts");
+                    Flash::notice(__("Post imported successfully.", "dropbox"), "/admin/?action=manage_posts");
             }
         }
 

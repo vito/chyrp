@@ -71,7 +71,7 @@
                 $this->rrmdir("../{$type}/__MACOSX");
             }
 
-            Flash::notice(__("Extension downloaded successfully."), "/admin/?action=extend_manager");
+            Flash::notice(__("Extension downloaded successfully.", "extension_manager"), "/admin/?action=extend_manager");
         }
     
         // from http://www.php.net/manual/en/function.rmdir.php#98622
