@@ -3,13 +3,13 @@
         public function __init() {
             $this->setField(array("attr" => "title",
                                   "type" => "text",
-                                  "label" => __("Title", "text"),
+                                  "label" => __("Title", "audio"),
                                   "optional" => true,
                                   "bookmarklet" => "title"));
             $this->setField(array("attr" => "audio",
                                   "type" => "file",
                                   "label" => __("Audio File", "audio"),
-                                  "note" => "<small>(Max. file size: ".ini_get('upload_max_filesize').")</small>"));
+                                  "note" => _f("<small>(Max. file size: %s)</small>", array(ini_get('upload_max_filesize')))));
             if (isset($_GET['action']) and $_GET['action'] == "bookmarklet")
                 $this->setField(array("attr" => "from_url",
                                       "type" => "text",
@@ -18,7 +18,7 @@
                                       "no_value" => true));
             $this->setField(array("attr" => "description",
                                   "type" => "text_block",
-                                  "label" => __("Description", "audio"),
+                                  "label" => __("Description"),
                                   "optional" => true,
                                   "preview" => true,
                                   "bookmarklet" => "selection"));
@@ -55,7 +55,7 @@
                 elseif (!empty($_POST['from_url']))
                     $filename = upload_from_url($_POST['from_url'], array("mp3", "m4a", "mp4", "oga", "ogg", "webm"));
                 else
-                    error(__("Error"), __("Couldn't upload audio file."));
+                    error(__("Error"), __("Couldn't upload audio file.", "audio"));
             } else
                 $filename = $_POST['filename'];
 
