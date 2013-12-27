@@ -29,8 +29,6 @@
             $this->respondTo("delete_post", "delete_file");
             $this->respondTo("filter_post", "filter_post");
             $this->respondTo("post_options", "add_option");
-            $this->respondTo("admin_write_post", "swfupload");
-            $this->respondTo("admin_edit_post", "swfupload");
 
             if (isset($_GET['url']) and
                 preg_match("/http:\/\/(www\.)?flickr\.com\/photos\/([^\/]+)\/([0-9]+)/", $_GET['url'])) {
@@ -57,14 +55,6 @@
                                       "optional" => true,
                                       "value" => $_GET['url']));
             }
-        }
-
-        public function swfupload($admin, $post = null) {
-            if (isset($post) and $post->feather != "photo" or
-                isset($_GET['feather']) and $_GET['feather'] != "photo")
-                return;
-
-            Trigger::current()->call("prepare_swfupload", "photo", "*.jpg;*.jpeg;*.png;*.gif;*.bmp");
         }
 
         public function submit() {

@@ -51,16 +51,6 @@
             $this->respondTo("delete_post", "delete_file");
             $this->respondTo("filter_post","filter_post");
             $this->respondTo("post_options", "add_option");
-            $this->respondTo("admin_write_post", "swfupload");
-            $this->respondTo("admin_edit_post", "swfupload");
-        }
-
-        public function swfupload($admin, $post = null) {
-            if (isset($post) and $post->feather != "file" or
-                isset($_GET['feather']) and $_GET['feather'] != "file")
-                return;
-
-            Trigger::current()->call("prepare_swfupload", "filename");
         }
 
         public function add_option($options, $post = null) {

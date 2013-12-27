@@ -29,8 +29,6 @@
             $this->respondTo("delete_post", "delete_file");
             $this->respondTo("feed_item", "enclose_audio");
             $this->respondTo("filter_post", "filter_post");
-            $this->respondTo("admin_write_post", "swfupload");
-            $this->respondTo("admin_edit_post", "swfupload");
             $this->respondTo("post_options", "add_option");
             $this->respondTo("scripts", "add_jplayer_script");
         }
@@ -38,14 +36,6 @@
         public function add_jplayer_script($scripts) {
             $scripts[] = Config::current()->chyrp_url."/feathers/audio/jplayer/jquery.jplayer.js";
             return $scripts;
-        }
-
-        public function swfupload($admin, $post = null) {
-            if (isset($post) and $post->feather != "audio" or
-                isset($_GET['feather']) and $_GET['feather'] != "audio")
-                return;
-
-            Trigger::current()->call("prepare_swfupload", "audio", "*.mp3;*.m4a;*.mp4;*.oga;*.ogg;*.webm");
         }
 
         public function submit() {
