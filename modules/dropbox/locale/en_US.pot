@@ -1,5 +1,5 @@
 # Chyrp v2.5 Translation File.
-# Copyright (C) 2012 Chyrp Team
+# Copyright (C) 2013 Chyrp Team
 # This file is distributed under the same license as the Chyrp v2.5 package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.5\n"
 "Report-Msgid-Bugs-To: email@chyrp.net\n"
-"POT-Creation-Date: 2012-12-09 19:24+0000\n"
+"POT-Creation-Date: 2013-12-27 18:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -17,64 +17,52 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: modules/dropbox/dropbox.php:47
-#: modules/dropbox/dropbox.php:53
-#: modules/dropbox/dropbox.php:83
-#: modules/dropbox/dropbox.php:114
-msgid "Access Denied"
-msgstr ""
-
-#: modules/dropbox/dropbox.php:47
-#: modules/dropbox/dropbox.php:83
-msgid "You do not have sufficient privileges to change settings."
-msgstr ""
-
-#: modules/dropbox/dropbox.php:53
-msgid "Invalid security key."
-msgstr ""
-
-#: modules/dropbox/dropbox.php:78
-msgid "Settings updated."
-msgstr ""
-
-#: modules/dropbox/dropbox.php:114
-msgid "You do not have sufficient privileges to create posts."
-msgstr ""
-
-#: modules/dropbox/info.yaml:1
+#: modules/dropbox/info.yaml:6
 msgid "Dropbox"
 msgstr ""
 
-#: modules/dropbox/info.yaml:4
-msgid "Interacts with the Dropbox API, fetches posts in Markdown/YAML format."
+#: modules/dropbox/pages/admin/manage_dropbox.twig:18
+msgid "Synchronize"
 msgstr ""
 
-#: modules/dropbox/pages/admin/dropbox_settings.twig:3
-msgid "Dropbox Settings"
+#: modules/dropbox/dropbox.php:46
+#: modules/dropbox/dropbox.php:77
+msgid "You do not have sufficient privileges to change settings."
 msgstr ""
 
 #: modules/dropbox/pages/admin/dropbox_settings.twig:10
 msgid "Authorize"
 msgstr ""
 
-#: modules/dropbox/pages/admin/dropbox_settings.twig:21
-msgid "Dropbox App Key"
+#: modules/dropbox/pages/admin/dropbox_settings.twig:17
+msgid "Go sync some posts"
 msgstr ""
 
-#: modules/dropbox/pages/admin/dropbox_settings.twig:25
-msgid "Dropbox App Secret"
+#: modules/dropbox/pages/admin/dropbox_settings.twig:3
+msgid "Dropbox Settings"
 msgstr ""
 
-#: modules/dropbox/pages/admin/dropbox_settings.twig:29
-msgid "Update"
+#: modules/dropbox/dropbox.php:52
+msgid "Invalid security key."
+msgstr ""
+
+#: modules/dropbox/dropbox.php:106
+msgid "You do not have sufficient privileges to create posts."
+msgstr ""
+
+#: modules/dropbox/info.yaml:1
+msgid "Interacts with the Dropbox API, fetches posts in Markdown/YAML format."
+msgstr ""
+
+#: modules/dropbox/dropbox.php:46
+#: modules/dropbox/dropbox.php:52
+#: modules/dropbox/dropbox.php:77
+#: modules/dropbox/dropbox.php:106
+msgid "Access Denied"
 msgstr ""
 
 #: modules/dropbox/pages/admin/manage_dropbox.twig:3
-#: modules/dropbox/pages/admin/manage_dropbox.twig:8
+#: modules/dropbox/pages/admin/manage_dropbox.twig:16
 msgid "Synchronize Dropbox Posts"
-msgstr ""
-
-#: modules/dropbox/pages/admin/manage_dropbox.twig:10
-msgid "Synchronize"
 msgstr ""
 

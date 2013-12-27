@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.5\n"
 "Report-Msgid-Bugs-To: email@chyrp.net\n"
-"POT-Creation-Date: 2013-12-27 16:43+0000\n"
+"POT-Creation-Date: 2013-12-27 18:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -17,24 +17,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: modules/extension_manager/pages/admin/extend_manager.twig:34
-msgid "Themes"
-msgstr ""
-
-#: modules/extension_manager/pages/admin/extend_manager.twig:15
-#: modules/extension_manager/pages/admin/extend_manager.twig:40
-#: modules/extension_manager/pages/admin/extend_manager.twig:65
-msgid "Version"
-msgstr ""
-
-#: modules/extension_manager/pages/admin/extend_manager.twig:9
-msgid "Modules"
-msgstr ""
-
 #: modules/extension_manager/pages/admin/extend_manager.twig:14
 #: modules/extension_manager/pages/admin/extend_manager.twig:39
 #: modules/extension_manager/pages/admin/extend_manager.twig:64
 msgid "Description"
+msgstr ""
+
+#: modules/extension_manager/info.yaml:5
+msgid "Allows to easily install extensions directly from Chyrp site."
+msgstr ""
+
+#: modules/extension_manager/pages/admin/extend_manager.twig:3
+#: modules/extension_manager/info.yaml:4
+msgid "Extension Manager"
 msgstr ""
 
 #: modules/extension_manager/pages/admin/extend_manager.twig:13
@@ -43,9 +38,16 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: modules/extension_manager/pages/admin/extend_manager.twig:3
-#: modules/extension_manager/info.yaml:1
-msgid "Extension Manager"
+#: modules/extension_manager/pages/admin/extend_manager.twig:9
+msgid "Modules"
+msgstr ""
+
+#: modules/extension_manager/pages/admin/extend_manager.twig:34
+msgid "Themes"
+msgstr ""
+
+#: modules/extension_manager/pages/admin/extend_manager.twig:59
+msgid "Feathers"
 msgstr ""
 
 #: modules/extension_manager/pages/admin/extend_manager.twig:16
@@ -54,11 +56,9 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
-#: modules/extension_manager/info.yaml:5
-msgid "Allows to easily install extensions directly from Chyrp site."
-msgstr ""
-
-#: modules/extension_manager/pages/admin/extend_manager.twig:59
-msgid "Feathers"
+#: modules/extension_manager/pages/admin/extend_manager.twig:15
+#: modules/extension_manager/pages/admin/extend_manager.twig:40
+#: modules/extension_manager/pages/admin/extend_manager.twig:65
+msgid "Version"
 msgstr ""
 

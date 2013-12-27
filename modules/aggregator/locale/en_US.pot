@@ -1,5 +1,5 @@
 # Chyrp v2.5 Translation File.
-# Copyright (C) 2012 Chyrp Team
+# Copyright (C) 2013 Chyrp Team
 # This file is distributed under the same license as the Chyrp v2.5 package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chyrp v2.5\n"
 "Report-Msgid-Bugs-To: email@chyrp.net\n"
-"POT-Creation-Date: 2012-12-09 19:24+0000\n"
+"POT-Creation-Date: 2013-12-27 18:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -17,106 +17,95 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: modules/aggregator/aggregator.php:10
-#: modules/aggregator/pages/admin/manage_aggregates.twig:57
-#: modules/aggregator/pages/admin/new_aggregate.twig:3
-#: modules/aggregator/pages/admin/new_aggregate.twig:63
-msgid "Add Aggregate"
-msgstr ""
-
-#: modules/aggregator/aggregator.php:11
-#: modules/aggregator/pages/admin/edit_aggregate.twig:3
-#: modules/aggregator/pages/admin/edit_aggregate.twig:7
-msgid "Edit Aggregate"
-msgstr ""
-
-#: modules/aggregator/aggregator.php:12
-msgid "Delete Aggregate"
-msgstr ""
-
-#: modules/aggregator/aggregator.php:262
-#: modules/aggregator/aggregator.php:268
-#: modules/aggregator/aggregator.php:282
-#: modules/aggregator/aggregator.php:288
-#: modules/aggregator/aggregator.php:320
-#: modules/aggregator/aggregator.php:342
-#: modules/aggregator/aggregator.php:365
-#: modules/aggregator/aggregator.php:385
-#: modules/aggregator/aggregator.php:388
-msgid "Access Denied"
-msgstr ""
-
-#: modules/aggregator/aggregator.php:262
-msgid "You do not have sufficient privileges to change settings."
-msgstr ""
-
-#: modules/aggregator/aggregator.php:268
-#: modules/aggregator/aggregator.php:288
-#: modules/aggregator/aggregator.php:342
-#: modules/aggregator/aggregator.php:385
-msgid "Invalid security key."
-msgstr ""
-
-#: modules/aggregator/aggregator.php:275
-msgid "Settings updated."
-msgstr ""
-
-#: modules/aggregator/aggregator.php:291
-msgid "Please enter the attributes for the Feather."
-msgstr ""
-
-#: modules/aggregator/aggregator.php:294
-msgid "Please enter a name for the aggregate."
-msgstr ""
-
-#: modules/aggregator/aggregator.php:297
-msgid "What are you, crazy?! I can't create an aggregate without a source!"
-msgstr ""
-
-#: modules/aggregator/aggregator.php:317
-#: modules/aggregator/aggregator.php:362
-#: modules/aggregator/aggregator.php:379
-msgid "No ID Specified"
-msgstr ""
-
-#: modules/aggregator/aggregator.php:418
 #: modules/aggregator/aggregator.php:422
 #: modules/aggregator/aggregator.php:426
+#: modules/aggregator/aggregator.php:430
 msgid "Usage"
-msgstr ""
-
-#: modules/aggregator/info.yaml:1
-msgid "Aggregator"
-msgstr ""
-
-#: modules/aggregator/info.yaml:4
-msgid "Pulls content RSS2/Atom feeds into your Chyrp installation as posts."
-msgstr ""
-
-#: modules/aggregator/info.yaml:6
-msgid "Please remember to update the permission settings for your group in order to add aggregates."
-msgstr ""
-
-#: modules/aggregator/pages/admin/aggregation_settings.twig:3
-msgid "Aggregation Settings"
 msgstr ""
 
 #: modules/aggregator/pages/admin/aggregation_settings.twig:9
 msgid "Check Feeds Every %s Minutes"
 msgstr ""
 
-#: modules/aggregator/pages/admin/aggregation_settings.twig:10
-msgid "disable"
+#: modules/aggregator/pages/admin/aggregation_settings.twig:3
+msgid "Aggregation Settings"
 msgstr ""
 
-#: modules/aggregator/pages/admin/aggregation_settings.twig:14
-#: modules/aggregator/pages/admin/edit_aggregate.twig:64
-msgid "Update"
+#: modules/aggregator/pages/admin/delete_aggregate.twig:11
+msgid "Source URL:"
 msgstr ""
 
-#: modules/aggregator/pages/admin/delete_aggregate.twig:3
+#: modules/aggregator/pages/admin/new_aggregate.twig:30
+#: modules/aggregator/pages/admin/edit_aggregate.twig:31
+msgid "Private"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:298
+msgid "Please enter a name for the aggregate."
+msgstr ""
+
+#: modules/aggregator/info.yaml:5
+msgid "Pulls content RSS2/Atom feeds into your Chyrp installation as posts."
+msgstr ""
+
+#: modules/aggregator/pages/admin/manage_aggregates.twig:51
 #, php-format
-msgid "Delete Aggregate &#8220;%s&#8221;?"
+msgid "Page %d of %d"
+msgstr ""
+
+#: modules/aggregator/pages/admin/manage_aggregates.twig:3
+msgid "Manage Aggregates"
+msgstr ""
+
+#: modules/aggregator/pages/admin/new_aggregate.twig:43
+#: modules/aggregator/pages/admin/manage_aggregates.twig:12
+#: modules/aggregator/pages/admin/edit_aggregate.twig:44
+msgid "Author"
+msgstr ""
+
+#: modules/aggregator/pages/admin/new_aggregate.twig:32
+#: modules/aggregator/pages/admin/edit_aggregate.twig:33
+msgid "Registered Only"
+msgstr ""
+
+#: modules/aggregator/pages/admin/new_aggregate.twig:18
+#: modules/aggregator/pages/admin/manage_aggregates.twig:10
+#: modules/aggregator/pages/admin/edit_aggregate.twig:19
+msgid "Feather"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:295
+msgid "Please enter the attributes for the Feather."
+msgstr ""
+
+#: modules/aggregator/info.yaml:2
+msgid "Please remember to update the permission settings for your group in order to add aggregates."
+msgstr ""
+
+#: modules/aggregator/pages/admin/delete_aggregate.twig:21
+msgid "DESTROY!"
+msgstr ""
+
+#: modules/aggregator/pages/admin/new_aggregate.twig:26
+#: modules/aggregator/pages/admin/manage_aggregates.twig:11
+#: modules/aggregator/pages/admin/edit_aggregate.twig:27
+msgid "Default Status"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:279
+msgid "Settings updated."
+msgstr ""
+
+#: modules/aggregator/aggregator.php:266
+#: modules/aggregator/aggregator.php:272
+#: modules/aggregator/aggregator.php:286
+#: modules/aggregator/aggregator.php:292
+#: modules/aggregator/aggregator.php:324
+#: modules/aggregator/aggregator.php:346
+#: modules/aggregator/aggregator.php:369
+#: modules/aggregator/aggregator.php:389
+#: modules/aggregator/aggregator.php:392
+msgid "Access Denied"
 msgstr ""
 
 #: modules/aggregator/pages/admin/delete_aggregate.twig:6
@@ -124,104 +113,51 @@ msgstr ""
 msgid "Are you sure you want to delete aggregate &#8220;%s&#8221;?"
 msgstr ""
 
-#: modules/aggregator/pages/admin/delete_aggregate.twig:11
-msgid "Source URL:"
+#: modules/aggregator/pages/admin/edit_aggregate.twig:3
+#: modules/aggregator/pages/admin/edit_aggregate.twig:7
+#: modules/aggregator/aggregator.php:15
+msgid "Edit Aggregate"
 msgstr ""
 
-#: modules/aggregator/pages/admin/delete_aggregate.twig:21
-msgid "DESTROY!"
-msgstr ""
-
-#: modules/aggregator/pages/admin/delete_aggregate.twig:22
-msgid "Cancel"
-msgstr ""
-
-#: modules/aggregator/pages/admin/edit_aggregate.twig:6
-msgid "Delete"
-msgstr ""
-
-#: modules/aggregator/pages/admin/edit_aggregate.twig:11
-#: modules/aggregator/pages/admin/manage_aggregates.twig:9
-#: modules/aggregator/pages/admin/new_aggregate.twig:10
-msgid "Name"
-msgstr ""
-
-#: modules/aggregator/pages/admin/edit_aggregate.twig:15
-#: modules/aggregator/pages/admin/new_aggregate.twig:14
-msgid "Source URL"
-msgstr ""
-
-#: modules/aggregator/pages/admin/edit_aggregate.twig:19
-#: modules/aggregator/pages/admin/manage_aggregates.twig:10
-#: modules/aggregator/pages/admin/new_aggregate.twig:18
-msgid "Feather"
-msgstr ""
-
-#: modules/aggregator/pages/admin/edit_aggregate.twig:27
-#: modules/aggregator/pages/admin/manage_aggregates.twig:11
-#: modules/aggregator/pages/admin/new_aggregate.twig:26
-msgid "Default Status"
-msgstr ""
-
-#: modules/aggregator/pages/admin/edit_aggregate.twig:29
 #: modules/aggregator/pages/admin/new_aggregate.twig:28
+#: modules/aggregator/pages/admin/edit_aggregate.twig:29
 msgid "Draft"
 msgstr ""
 
-#: modules/aggregator/pages/admin/edit_aggregate.twig:30
-#: modules/aggregator/pages/admin/new_aggregate.twig:29
-msgid "Public"
+#: modules/aggregator/aggregator.php:301
+msgid "What are you, crazy?! I can't create an aggregate without a source!"
 msgstr ""
 
-#: modules/aggregator/pages/admin/edit_aggregate.twig:31
-#: modules/aggregator/pages/admin/new_aggregate.twig:30
-msgid "Private"
-msgstr ""
-
-#: modules/aggregator/pages/admin/edit_aggregate.twig:32
-#: modules/aggregator/pages/admin/new_aggregate.twig:31
-msgid "Scheduled"
-msgstr ""
-
-#: modules/aggregator/pages/admin/edit_aggregate.twig:33
-#: modules/aggregator/pages/admin/new_aggregate.twig:32
-msgid "Registered Only"
-msgstr ""
-
-#: modules/aggregator/pages/admin/edit_aggregate.twig:35
-#: modules/aggregator/pages/admin/new_aggregate.twig:34
-msgid "Group"
-msgstr ""
-
-#: modules/aggregator/pages/admin/edit_aggregate.twig:44
-#: modules/aggregator/pages/admin/manage_aggregates.twig:12
-#: modules/aggregator/pages/admin/new_aggregate.twig:43
-msgid "Author"
-msgstr ""
-
-#: modules/aggregator/pages/admin/edit_aggregate.twig:53
-#: modules/aggregator/pages/admin/new_aggregate.twig:52
-msgid "Post Attributes"
-msgstr ""
-
-#: modules/aggregator/pages/admin/manage_aggregates.twig:3
-msgid "Manage Aggregates"
-msgstr ""
-
-#: modules/aggregator/pages/admin/manage_aggregates.twig:13
-msgid "Last Update"
+#: modules/aggregator/aggregator.php:16
+msgid "Delete Aggregate"
 msgstr ""
 
 #: modules/aggregator/pages/admin/manage_aggregates.twig:15
 msgid "Controls"
 msgstr ""
 
-#: modules/aggregator/pages/admin/manage_aggregates.twig:21
-msgid "source"
+#: modules/aggregator/pages/admin/manage_aggregates.twig:13
+msgid "Last Update"
 msgstr ""
 
-#: modules/aggregator/pages/admin/manage_aggregates.twig:25
-msgid "never"
+#: modules/aggregator/pages/admin/new_aggregate.twig:14
+#: modules/aggregator/pages/admin/edit_aggregate.twig:15
+msgid "Source URL"
+msgstr ""
+
+#: modules/aggregator/pages/admin/new_aggregate.twig:10
+#: modules/aggregator/pages/admin/manage_aggregates.twig:9
+#: modules/aggregator/pages/admin/edit_aggregate.twig:11
+msgid "Name"
+msgstr ""
+
+#: modules/aggregator/pages/admin/delete_aggregate.twig:22
+msgid "Cancel"
+msgstr ""
+
+#: modules/aggregator/pages/admin/edit_aggregate.twig:64
+#: modules/aggregator/pages/admin/aggregation_settings.twig:14
+msgid "Update"
 msgstr ""
 
 #: modules/aggregator/pages/admin/manage_aggregates.twig:28
@@ -229,17 +165,81 @@ msgstr ""
 msgid "edit"
 msgstr ""
 
-#: modules/aggregator/pages/admin/manage_aggregates.twig:29
-#: modules/aggregator/pages/admin/manage_aggregates.twig:35
-msgid "delete"
+#: modules/aggregator/pages/admin/new_aggregate.twig:34
+#: modules/aggregator/pages/admin/edit_aggregate.twig:35
+msgid "Group"
+msgstr ""
+
+#: modules/aggregator/pages/admin/new_aggregate.twig:31
+#: modules/aggregator/pages/admin/edit_aggregate.twig:32
+msgid "Scheduled"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:272
+#: modules/aggregator/aggregator.php:292
+#: modules/aggregator/aggregator.php:346
+#: modules/aggregator/aggregator.php:389
+msgid "Invalid security key."
+msgstr ""
+
+#: modules/aggregator/pages/admin/edit_aggregate.twig:6
+msgid "Delete"
 msgstr ""
 
 #: modules/aggregator/pages/admin/manage_aggregates.twig:41
 msgid "(none)"
 msgstr ""
 
-#: modules/aggregator/pages/admin/manage_aggregates.twig:51
+#: modules/aggregator/pages/admin/manage_aggregates.twig:29
+#: modules/aggregator/pages/admin/manage_aggregates.twig:35
+msgid "delete"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:321
+#: modules/aggregator/aggregator.php:366
+#: modules/aggregator/aggregator.php:383
+msgid "No ID Specified"
+msgstr ""
+
+#: modules/aggregator/aggregator.php:266
+msgid "You do not have sufficient privileges to change settings."
+msgstr ""
+
+#: modules/aggregator/info.yaml:7
+msgid "Aggregator"
+msgstr ""
+
+#: modules/aggregator/pages/admin/aggregation_settings.twig:10
+msgid "disable"
+msgstr ""
+
+#: modules/aggregator/pages/admin/manage_aggregates.twig:25
+msgid "never"
+msgstr ""
+
+#: modules/aggregator/pages/admin/manage_aggregates.twig:21
+msgid "source"
+msgstr ""
+
+#: modules/aggregator/pages/admin/new_aggregate.twig:29
+#: modules/aggregator/pages/admin/edit_aggregate.twig:30
+msgid "Public"
+msgstr ""
+
+#: modules/aggregator/pages/admin/new_aggregate.twig:3
+#: modules/aggregator/pages/admin/new_aggregate.twig:63
+#: modules/aggregator/pages/admin/manage_aggregates.twig:57
+#: modules/aggregator/aggregator.php:14
+msgid "Add Aggregate"
+msgstr ""
+
+#: modules/aggregator/pages/admin/delete_aggregate.twig:3
 #, php-format
-msgid "Page %d of %d"
+msgid "Delete Aggregate &#8220;%s&#8221;?"
+msgstr ""
+
+#: modules/aggregator/pages/admin/new_aggregate.twig:52
+#: modules/aggregator/pages/admin/edit_aggregate.twig:53
+msgid "Post Attributes"
 msgstr ""
 
