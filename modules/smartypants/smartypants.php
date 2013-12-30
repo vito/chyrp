@@ -10,10 +10,10 @@
             $this->addAlias("unmarkup_title", "stupify", 9);
         }
         static function smartify($text) {
-            return Smartypants($text);
+            return SmartyPants($text);
         }
 	
 	static function stupify($text, $attr = -1) {
-            return Smartypants($text, $attr);
+            return SmartyPants($text, $attr);
         }
     }
