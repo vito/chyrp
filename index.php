@@ -1,6 +1,6 @@
 <?php
-    if (version_compare(PHP_VERSION, "5.2.0", "<"))
-        exit("Chyrp requires PHP 5.2.0 or greater.");
+    if (version_compare(PHP_VERSION, "5.3.0", "<"))
+        exit("Chyrp requires PHP 5.3.0 or greater.");
 
     require_once "includes/common.php";
 
