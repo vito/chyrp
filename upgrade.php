@@ -11,6 +11,7 @@
     header("Content-type: text/html; charset=UTF-8");
 
     define('DEBUG',        true);
+    define('CHYRP_VERSION', "2.1.2");
     define('CACHE_TWIG',   false);
     define('JAVASCRIPT',   false);
     define('ADMIN',        false);
@@ -283,6 +284,11 @@
      * Downloads the newest version of chyrp 
      */
     function download_new_version() {
+        $version = file_get_contents("http://chyrp.net/api/1/version.php");
+        
+        if (version_compare($version, CHYRP_VERSION, "<="))
+            return;
+
         $e = 0;
         # delete everything from 2 versions back
         if (is_dir("old"))
@@ -319,7 +325,6 @@
                         echo __("Please move the file at root/".$file." to root/old/".$file);
                 }
 
-            $version=file_get_contents("http://api.chyrp.net/v1/chyrp_version.php");
             $fp = fopen ("updates/latest.zip", "w+");
             $ch = curl_init("http://chyrp.net/releases/chyrp_v".$version.".zip"); # Here is the file we are downloading
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
@@ -1328,8 +1333,14 @@
         Config::fallback("chyrp_url", Config::get("url"));
         Config::fallback("sql", Config::$yaml["database"]);
         Config::fallback("timezone", "America/New_York");
-        Config::fallback("email_activation", Config::get("can_register"));
-        Config::fallback("enable_wysiwyg", false);
+
+        // Added in 2.5
+        Config::fallback("admin_theme", "default");
+        Config::fallback("email_activation", true);
+        Config::fallback("enable_recaptcha", true);
+        Config::fallback("enable_wysiwyg", true);
+        Config::fallback("check_updates", true);
+        Config::fallback("enable_emoji", true);
 
         Config::remove("rss_posts");
         Config::remove("time_offset");

@@ -38,7 +38,7 @@
 
                     <div class="buttons">
                         {% if route.action == "edit_post" %}
-                        {% if visitor.group.can("add_post") %}
+                        {% if visitor.group.can("add_post") and post.status == "draft" %}
                         <button type="submit" class="yay right" accesskey="s" id="publish" name="publish">
                             <img src="$theme_url/images/icons/success.svg" alt="success" />${ "Publish" | translate }
                         </button>
