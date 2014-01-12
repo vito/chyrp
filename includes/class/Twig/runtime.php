@@ -242,7 +242,7 @@ function twig_date_format_filter($timestamp, $format='F j, Y, G:i')
     return when($format, $timestamp);
 }
 
-function twig_strftime_format_filter($timestamp, $format='%x %X')
+function twig_strftime_format_filter($timestamp, $format='%Y-%m-%d %T')
 {
     return when($format, $timestamp, true);
 }
