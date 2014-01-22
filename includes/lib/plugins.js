@@ -167,7 +167,7 @@ $.fn.fixsvg = function(){
 		if ( filename.indexOf(".svg") > -1 ) {
 			var fallback = filename.replace("svg","png");
 			$(this).error(function() {
-	    		this.removeAttribute('onerror'); this.src = fallback;
+	    		$(this).off('error'); this.src = fallback;
 			})
     	}
 	})
