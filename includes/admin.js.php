@@ -123,11 +123,11 @@ function togglers() {
             action_all_checked = $(this).prop("checked")
         })
 
-        if ($("#toggler").size())
+        if ($("#toggler").length)
             $("#toggle").prop("checked", action_all_checked);
     })
 
-    if ($("#toggler").size())
+    if ($("#toggler").length)
         $("#toggle").prop("checked", all_checked);
 
     $("td:has(:checkbox)").click(function(e){
