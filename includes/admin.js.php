@@ -96,18 +96,18 @@ function togglers() {
 
     $("#toggle").click(function(){
         $("form#new_group, form#group_edit, table").find(":checkbox").not("#toggle").each(function(){
-            this.checked = document.getElementById("toggle").checked
+            $(this).prop("checked", $("#toggle").prop("checked"))
         })
 
         $(this).parent().parent().find(":checkbox").not("#toggle").each(function(){
-            this.checked = document.getElementById("toggle").checked
+            $(this).prop("checked", $("#toggle").prop("checked"))
         })
     })
 
     // Some checkboxes are already checked when the page is loaded
     $("form#new_group, form#group_edit, table").find(":checkbox").not("#toggle").each(function(){
         if (!all_checked) return
-        all_checked = this.checked
+        all_checked = $(this).prop("checked")
     })
 
     $(":checkbox:not(#toggle)").click(function(){
@@ -115,24 +115,25 @@ function togglers() {
 
         $("form#new_group, form#group_edit, table").find(":checkbox").not("#toggle").each(function(){
             if (!action_all_checked) return
-            action_all_checked = this.checked
+            action_all_checked = $(this).prop("checked")
         })
 
         $("#toggle").parent().parent().find(":checkbox").not("#toggle").each(function(){
             if (!action_all_checked) return
-            action_all_checked = this.checked
+            action_all_checked = $(this).prop("checked")
         })
 
-        document.getElementById("toggle").checked = action_all_checked
+        if ($("#toggler").length)
+            $("#toggle").prop("checked", action_all_checked);
     })
 
-    if ($("#toggler").size())
-        document.getElementById("toggle").checked = all_checked
+    if ($("#toggler").length)
+        $("#toggle").prop("checked", all_checked);
 
     $("td:has(:checkbox)").click(function(e){
         $(this).find(":checkbox").each(function(){
             if (e.target != this)
-                this.checked = !(this.checked)
+                $(this).prop("checked", !($(this).prop("checked")))
         })
     })
 }
