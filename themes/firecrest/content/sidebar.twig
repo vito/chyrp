@@ -60,6 +60,16 @@
                         </ul>
                     </div>
                     {% endif %}
+                    {% if theme.recent_posts %}
+                    <div id="recent_posts">
+                        <h5>${ "Recent Posts" | translate }</h5>
+                        <ul>
+                            {% for post in theme.recent_posts.paginated %}
+                              {% if post.title %}<li><a href="$post.url">${ post.title | normalize | truncate(40) }</a></li>{% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
 ${ trigger.call("sidebar") }
                     {% if categorize %}
                     <div id="category_list">

@@ -162,6 +162,22 @@
         }
 
         /**
+         * Function: recent_posts
+         * Generates an array of recent posts.
+         *
+         * Parameters:
+         *     $limit - Number of posts to list
+         */
+        public function recent_posts($limit = 5) {
+            if (isset($this->recent_posts["$limit"]))
+                return $this->recent_posts["$limit"];
+
+            $result = new Paginator(Post::find(array("placeholders" => true)), $limit);
+
+            return $this->recent_posts["$limit"] = $result;
+        }
+
+        /**
          * Function: file_exists
          * Returns whether the specified Twig file exists or not.
          *
