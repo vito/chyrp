@@ -172,9 +172,14 @@
             if (isset($this->recent_posts["$limit"]))
                 return $this->recent_posts["$limit"];
 
-            $result = new Paginator(Post::find(array("placeholders" => true)), $limit);
+            $results = Post::find(array("placeholders" => true));
+            $posts = array();
 
-            return $this->recent_posts["$limit"] = $result;
+            for ($i = 0; $i < $limit; $i++)
+                if (isset($results[0][$i]))
+                    $posts[] = new Post(null, array("read_from" => $results[0][$i]));
+
+            return $this->recent_posts["$limit"] = $posts;
         }
 
         /**
