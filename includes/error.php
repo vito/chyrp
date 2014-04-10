@@ -52,6 +52,7 @@
                 font-size: 3em;
                 margin: .25em 0 .5em;
                 text-align: center;
+                line-height: 1;
             }
             h2 {
                 font-size: 1.25em;
