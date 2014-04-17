@@ -1696,9 +1696,17 @@
                 fallback($info["help"]);
 
                 $info["description"] = __($info["description"], $folder);
-                $info["description"] = preg_replace(array("/<code>(.+)<\/code>/s", "/<pre>(.+)<\/pre>/s"),
-                                                    array("'<code>'.fix('\\1').'</code>'", "'<pre>'.fix('\\1').'</pre>'"),
-                                                    $info["description"]);
+
+                $info["description"] = preg_replace_callback("/<code>(.+)<\/code>/s",
+                                                             function ($matches) {
+                                                                 return "<code>".fix($matches[1])."</code>";
+                                                             },
+                                                             $info["description"]);
+                $info["description"] = preg_replace_callback("/<pre>(.+)<\/pre>/s",
+                                                             function ($matches) {
+                                                                 return "<pre>".fix($matches[1])."</pre>";
+                                                             },
+                                                             $info["description"]);
 
                 $info["author"]["link"] = !empty($info["author"]["url"]) ?
                                               '<a href="'.fix($info["author"]["url"]).'">'.fix($info["author"]["name"]).'</a>' :
@@ -1756,8 +1764,17 @@
                 fallback($info["help"]);
 
                 $info["description"] = __($info["description"], $folder);
-                $info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.fix('\\1').'</code>'", $info["description"]);
-                $info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.fix('\\1').'</pre>'", $info["description"]);
+
+                $info["description"] = preg_replace_callback("/<code>(.+)<\/code>/s",
+                                                             function ($matches) {
+                                                                 return "<code>".fix($matches[1])."</code>";
+                                                             },
+                                                             $info["description"]);
+                $info["description"] = preg_replace_callback("/<pre>(.+)<\/pre>/s",
+                                                             function ($matches) {
+                                                                 return "<pre>".fix($matches[1])."</pre>";
+                                                             },
+                                                             $info["description"]);
 
                 $info["author"]["link"] = !empty($info["author"]["url"]) ?
                                               '<a href="'.fix($info["author"]["url"]).'">'.fix($info["author"]["name"]).'</a>' :
@@ -1810,13 +1827,17 @@
                 $info["author"]["link"] = !empty($info["author"]["url"]) ?
                     '<a href="'.$info["author"]["url"].'">'.$info["author"]["name"].'</a>' :
                     $info["author"]["name"] ;
-                $info["description"] = preg_replace("/<code>(.+)<\/code>/se",
-                                                    "'<code>'.fix('\\1').'</code>'",
-                                                    $info["description"]);
 
-                $info["description"] = preg_replace("/<pre>(.+)<\/pre>/se",
-                                                    "'<pre>'.fix('\\1').'</pre>'",
-                                                    $info["description"]);
+                $info["description"] = preg_replace_callback("/<code>(.+)<\/code>/s",
+                                                             function ($matches) {
+                                                                 return "<code>".fix($matches[1])."</code>";
+                                                             },
+                                                             $info["description"]);
+                $info["description"] = preg_replace_callback("/<pre>(.+)<\/pre>/s",
+                                                             function ($matches) {
+                                                                 return "<pre>".fix($matches[1])."</pre>";
+                                                             },
+                                                             $info["description"]);
 
                 $this->context["themes"][] = array("name" => $folder,
                                                    "screenshot" => (file_exists(THEMES_DIR."/".$folder."/screenshot.png") ?

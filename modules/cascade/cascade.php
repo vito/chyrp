@@ -32,8 +32,13 @@
 
 
         static function scripts($scripts) {
-            $route = Route::current()->action;
-            if ( $route == "index" or $route == "archive" or $route == "search" ) {
+            if (in_array(Route::current()->action, array("index",
+                                                         "archive",
+                                                         "search",
+                                                         "tag",
+                                                         "category",
+                                                         "alphabetical"))
+            ) {
                 $scripts[] = Config::current()->chyrp_url."/modules/cascade/javascript.php";
                 return $scripts;
             }
