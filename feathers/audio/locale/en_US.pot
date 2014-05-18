@@ -38,6 +38,3 @@ msgstr ""
 msgid "<small>(Max. file size: %s)</small>"
 msgstr ""
 
-#: feathers/audio/audio.php:125
-msgid "Your web browser does not support the <code>audio</code> element."
-msgstr ""

@@ -1,0 +1,37 @@
+{% extends "layouts/default.twig" %}
+
+{% block content %}
+    <h2>${ "Controls" | translate }</h2>
+    <form action="{% url "controls" %}" method="post">
+        <p>
+            <label for="login">${ "Login" | translate }</label>
+            <input class="text" type="text" name="login" value="${ visitor.login | escape }" id="login" disabled="disabled" />
+            <small>
+                ${ "Cannot be changed." | translate }<br />
+            </small>
+        </p>
+        <p>
+            <label for="full_name">${ "Full Name" | translate }</label>
+            <input type="text" name="full_name" value="${ visitor.full_name | escape }" id="full_name" tabindex="1" />
+        </p>
+        <p>
+            <label for="email">${ "E-Mail" | translate }</label>
+            <input type="text" name="email" value="${ visitor.email | escape }" id="email" tabindex="1" />
+        </p>
+        <p>
+            <label for="website">${ "Website" | translate }</label>
+            <input type="text" name="website" value="${ visitor.website | escape }" id="website" tabindex="1" />
+        </p>
+        <p>
+            <label for="new_password1">${ "New Password?" | translate }</label>
+            <input type="password" name="new_password1" value="" id="new_password1" />
+        </p>
+        <p>
+            <label for="new_password2">${ "Confirm" | translate }</label>
+            <input type="password" name="new_password2" value="" id="new_password2" />
+        </p>
+${ trigger.call("user_controls") }
+
+        <p><button name="submit" type="submit" id="submit">${ "Update" | translate }</button></p>
+    </form>
+{% endblock %}

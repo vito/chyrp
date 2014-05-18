@@ -19,8 +19,12 @@ $(function(){
 
 var Write = {
     init: function(){
+        this.auto_expand_fields()
         this.sortable_feathers()
 
+    },
+    auto_expand_fields: function(){
+        $("input.text").expand()
     },
     sortable_feathers: function(){
         // Make the Feathers sortable

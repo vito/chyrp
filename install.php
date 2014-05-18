@@ -139,7 +139,7 @@
             $config->set("timezone", $_POST['timezone']);
             $config->set("locale", "en_US");
             $config->set("check_updates", true);
-            $config->set("theme", "blossom");
+            $config->set("theme", "firecrest");
             $config->set("admin_theme", "default");
             $config->set("posts_per_page", 5);
             $config->set("feed_items", 20);
@@ -149,6 +149,7 @@
             $config->set("send_pingbacks", false);
             $config->set("enable_xmlrpc", true);
             $config->set("enable_ajax", true);
+            $config->set("enable_wysiwyg", true);
             $config->set("enable_emoji", true);
             $config->set("can_register", false);
             $config->set("email_activation", false);

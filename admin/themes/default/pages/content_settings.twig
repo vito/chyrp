@@ -18,9 +18,9 @@
                         <input class="text" type="text" name="feed_url" value="${ site.feed_url | escape }" id="feed_url" />
                         <small>
                             {% if site.clean_urls %}
-                            ${ "Allows you to set an alternative URL for <code>/feed/</code>." | translate }
+                            ${ "Allows you to set an alternative URL for <code>/feed/</code>, e.g. your feed on <a href=\"http://feedburner.com/\">FeedBurner</a>." | translate }
                             {% else %}
-                            ${ "Allows you to set an alternative URL for <code>/?feed</code>." | translate }
+                            ${ "Allows you to set an alternative URL for <code>/?feed</code>, e.g. your feed on FeedBurner." | translate }
                             {% endif %}
                         </small>
                     </p>
@@ -57,6 +57,13 @@
                         <input class="checkbox" type="checkbox" name="enable_ajax" id="enable_ajax"${ site.enable_ajax | checked } />
                         <small>
                             ${ "Harness the power of AJAX for inline post/page editing." | translate }
+                        </small>
+                    </p>
+                    <p>
+                        <label for="enable_wysiwyg">${ "Enable WYSIWYG Text Editor" | translate }</label>
+                        <input class="checkbox" type="checkbox" name="enable_wysiwyg" id="enable_wysiwyg"${ site.enable_wysiwyg | checked } />
+                        <small>
+                            ${ "Use a visual WYSIWYG Text Editor." | translate }
                         </small>
                     </p>
                     <p>

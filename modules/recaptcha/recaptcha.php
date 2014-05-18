@@ -1,6 +1,6 @@
 <?php
     require_once INCLUDES_DIR."/class/Captcha.php";
-    require_once "lib/recaptchalib.php";
+    require_once INCLUDES_DIR."/lib/recaptchalib.php";
 
     class ReCaptcha extends Modules {
         public function __init() {

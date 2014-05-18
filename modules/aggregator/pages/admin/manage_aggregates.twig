@@ -1,0 +1,61 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Manage Aggregates" | translate("aggregator") }{% endblock %}
+
+{% block content %}
+            <table border="0" cellspacing="0" cellpadding="0" class="wide">
+                <thead>
+                    <tr class="head">
+                        <th>${ "Name" | translate("aggregator") }</th>
+                        <th>${ "Feather" | translate("aggregator") }</th>
+                        <th>${ "Default Status" | translate("aggregator") }</th>
+                        <th>${ "Author" | translate("aggregator") }</th>
+                        <th>${ "Last Update" | translate("aggregator") }</th>
+                        ${ trigger.call("manage_aggregates_column_header") }
+                        <th colspan="2">${ "Controls" | translate }</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for aggregate in aggregates.paginated %}
+                    <tr class="aggregate {% if loop.last %} last{% endif %}">
+                        <td class="main">$aggregate.name <span class="sub">(<a href="$aggregate.url">${ "source" | translate("aggregator") }</a>)</a></td>
+                        <td>${ aggregate.feather | capitalize }</td>
+                        <td>${ aggregate.status | capitalize }</td>
+                        <td>${ aggregate.user.full_name | fallback(aggregate.user.login) }</td>
+                        <td>{% if aggregate.last_updated %}${ aggregate.last_updated | strftime }{% else %}<span class="sub">${ "never" | translate }</span>{% endif %}</td>
+                        ${ trigger.call("manage_aggregates_column", aggregate) }
+                        {% if visitor.group.can("edit_aggregate", "delete_aggregate", true) %}
+                        <td class="controls"><a href="{% admin "edit_aggregate&id=" ~ (aggregate.name | urlencode) %}" class="edit_link"><img src="$theme_url/images/icons/edit.svg" alt="edit" /> ${ "edit" | translate }</a></td>
+                        <td class="controls"><a href="{% admin "delete_aggregate&id=" ~ (aggregate.name | urlencode) %}" class="delete_link"><img src="$theme_url/images/icons/delete.svg" alt="delete" /> ${ "delete" | translate }</a></td>
+                        {% elseif visitor.group.can("edit_aggregate", "delete_aggregate") %}
+                        {% if visitor.group.can("edit_aggregate") %}
+                        <td class="controls" colspan="2"><a href="{% admin "edit_aggregate&id=" ~ (aggregate.name | urlencode) %}" class="edit_link"><img src="$theme_url/images/icons/edit.svg" alt="edit" /> ${ "edit" | translate }</a></td>
+                        {% endif %}
+                        {% if visitor.group.can("delete_aggregate") %}
+                        <td class="controls" colspan="2"><a href="{% admin "delete_aggregate&id=" ~ (aggregate.name | urlencode) %}" class="delete_link"><img src="$theme_url/images/icons/delete.svg" alt="delete" /> ${ "delete" | translate }</a></td>
+                        {% endif %}
+                        {% endif %}
+                    </tr>
+                {% else %}
+                    <tr class="last">
+                        <td colspan="6" class="center"><span class="sub">${ "(none)" | translate }</span></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% if aggregates.paginated and aggregates.pages > 1 %}
+            <br />
+            <div class="pagination">
+                $aggregates.next_link
+                $aggregates.prev_link
+                <span class="pages">${ "Page %d of %d" | translate | format(aggregates.page, aggregates.pages) }</span>
+            </div>
+            {% endif %}
+            {% if visitor.group.can("add_aggregate") %}
+            <br />
+            <a href="{% admin "new_aggregate" %}" class="button yay right">
+                <img src="$theme_url/images/icons/add.svg" alt="add" /> ${ "Add Aggregate" | translate("aggregator") }
+            </a>
+            <div class="clear"></div>
+            {% endif %}
+{% endblock %}

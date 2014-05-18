@@ -11,7 +11,3 @@ themes/*
 /.idea/
 
 *.idraw
-
-*.sublime-project
-
-*.sublime-workspace

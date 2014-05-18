@@ -1,0 +1,92 @@
+# Chyrp v2.5 Translation File.
+# Copyright (C) 2013 Chyrp Team
+# This file is distributed under the same license as the Chyrp v2.5 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Chyrp v2.5\n"
+"Report-Msgid-Bugs-To: email@chyrp.net\n"
+"POT-Creation-Date: 2013-12-27 18:14+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
+"Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: modules/emailblog/pages/admin/emailblog_settings.twig:14
+msgid "Username"
+msgstr ""
+
+#: modules/emailblog/pages/admin/emailblog_settings.twig:24
+msgid "Email Filter"
+msgstr ""
+
+#: modules/emailblog/pages/admin/emailblog_settings.twig:16
+msgid "Your username on the IMAP server, usually your email."
+msgstr ""
+
+#: modules/emailblog/emailblog.php:36
+msgid "You do not have sufficient privileges to change settings."
+msgstr ""
+
+#: modules/emailblog/pages/admin/emailblog_settings.twig:36
+msgid "Update"
+msgstr ""
+
+#: modules/emailblog/emailblog.php:36
+#: modules/emailblog/emailblog.php:42
+msgid "Access Denied"
+msgstr ""
+
+#: modules/emailblog/info.yaml:3
+msgid "Allows you to email a gmail account to post a new message."
+msgstr ""
+
+#: modules/emailblog/pages/admin/emailblog_settings.twig:32
+msgid "Decreasing the time between will result in faster posting but a slower site."
+msgstr ""
+
+#: modules/emailblog/pages/admin/emailblog_settings.twig:9
+msgid "IMAP Server"
+msgstr ""
+
+#: modules/emailblog/emailblog.php:52
+msgid "Settings updated."
+msgstr ""
+
+#: modules/emailblog/pages/admin/emailblog_settings.twig:26
+msgid "You must set the subject of your email that you want to post to match this exactly."
+msgstr ""
+
+#: modules/emailblog/pages/admin/emailblog_settings.twig:11
+msgid "The address to your IMAP server. If you don't know it, just leave this at the default and use Gmail."
+msgstr ""
+
+#: modules/emailblog/pages/admin/emailblog_settings.twig:3
+msgid "EmailBlog Settings"
+msgstr ""
+
+#: modules/emailblog/pages/admin/emailblog_settings.twig:21
+msgid "Password to the above email address"
+msgstr ""
+
+#: modules/emailblog/emailblog.php:42
+msgid "Invalid security key."
+msgstr ""
+
+#: modules/emailblog/pages/admin/emailblog_settings.twig:30
+msgid "Check for new Messages Every __ Minutes"
+msgstr ""
+
+#: modules/emailblog/info.yaml:6
+msgid "EmailBlog"
+msgstr ""
+
+#: modules/emailblog/pages/admin/emailblog_settings.twig:19
+msgid "Email Password"
+msgstr ""
+

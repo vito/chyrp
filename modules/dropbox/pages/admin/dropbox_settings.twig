@@ -1,0 +1,25 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Dropbox Settings" | translate("likes") }{% endblock %}
+
+{% block content %}
+            <form id="dropbox_settings" class="split" action="{% admin "dropbox_settings" %}" method="post">
+                <fieldset>
+                    {% if site.module_dropbox.oauth_token == "" %}
+                    <p>
+                        <button name="authorize" value="authorize" class="yay"><img src="$theme_url/images/icons/success.svg" alt="success" />${ "Authorize" | translate }</button>
+                        <small>Authorize with Dropbox</small>
+                    </p>
+                    {% else %}
+                    <br />
+                    <small>Authorized with Dropbox</small>
+                    <p style="text-align: center">
+                        <a href="{% admin "manage_dropbox" %}" class="button yay"><img src="$theme_url/images/icons/success.svg" alt="success" />${ "Go sync some posts" | translate }</a>
+                    </p>
+                    <hr />
+                    <br />
+                    {% endif %}
+                    <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+                </fieldset>
+            </form>
+{% endblock %}

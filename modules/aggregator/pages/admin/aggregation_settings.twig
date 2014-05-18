@@ -1,0 +1,20 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Aggregation Settings" | translate("aggregator") }{% endblock %}
+
+{% block content %}
+            <form id="aggregation_settings" class="split" action="{% admin "aggregation_settings" %}" method="post">
+                <fieldset>
+                    <p>
+                        <label for="aggregate_every">${ "Check Feeds Every %s Minutes" | translate("aggregator") | format("<input class=\"text\" type=\"text\" name=\"aggregate_every\" value=\"" ~ site.aggregate_every | escape ~ "\" size=\"2\" id=\"aggregate_every\" class=\"center\" />") }</label>
+                        <input type="checkbox" class="checkbox" name="disable_aggregation"${ site.disable_aggregation | checked } /> ${ "disable" | translate("aggregator") }
+                    </p>
+
+                    <p class="buttons">
+                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.svg" alt="success" />${ "Update" | translate }</button>
+                    </p>
+
+                    <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+                </fieldset>
+            </form>
+{% endblock %}

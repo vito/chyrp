@@ -1,0 +1,13 @@
+{% extends "layouts/default.twig" %}
+
+{% block content %}
+{% if posts.paginated %}
+                    <h1>${ "Drafts" | translate }</h1>
+{% endif %}
+                    {% for post in posts.paginated %}
+{% include "feathers/" ~ post.feather ~ ".twig" %}
+                    {% else %}
+                    <h1>${ "No Drafts" | translate }</h1>
+                    <p>${ "You don't have any drafts." | translate }</p>
+                    {% endfor %}
+{% endblock %}

@@ -4,10 +4,13 @@
             $this->setField(array("attr" => "title",
                                   "type" => "text",
                                   "label" => __("Title", "text"),
-                                  "optional" => true));
+                                  "optional" => true,
+                                  "bookmarklet" => "title"));
             $this->setField(array("attr" => "body",
                                   "type" => "text_block",
-                                  "label" => __("Body", "text")));
+                                  "label" => __("Body", "text"),
+                                  "preview" => true,
+                                  "bookmarklet" => "selection"));
 
             $this->setFilter("title", array("markup_title", "markup_post_title"));
             $this->setFilter("body", array("markup_text", "markup_post_text"));

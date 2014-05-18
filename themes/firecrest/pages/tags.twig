@@ -1,0 +1,23 @@
+{% extends "layouts/default.twig" %}
+
+{% block content %}
+        {% if tag_cloud %}
+        <h1>${ "Tag Maelstrom" | translate }</h1>
+        <br />
+        {% endif %}
+        {% for tag in tag_cloud %}
+        <a class="tag" href="$tag.url" style="font-size: $tag.size%" title="$tag.title">$tag.name</a>
+        {% else %}
+        <h1>${ "No Tags" | translate }</h1>
+        ${ "There aren't any tags yet. Such a shame." | translate }
+        {% endfor %}
+        {% if tag_cloud %}
+        <br />
+        <br />
+        <br />
+        ${ "To view posts that have tag combinations, separate the tags with \"+\" in the URL (see example below), or view one and click the plus signs next to the tags in the sidebar." | translate }
+        <br />
+        <br />
+        <pre><code>{% url "tag/tag-1+tag-2" %}</code></pre>
+        {% endif %}
+{% endblock %}

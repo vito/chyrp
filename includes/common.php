@@ -2,10 +2,10 @@
     /**
      * File: Common
      *
-     * Chyrp Lite - a lightweight blogging engine
+     * Chyrp - A Lightweight Blogging Engine
      *
      * Version:
-     *     v2.6
+     *     v2.5
      *
      * License:
      *     Modified MIT (See COPYING)
@@ -16,7 +16,7 @@
 
     # Constant: CHYRP_VERSION
     # Chyrp's version number.
-    define('CHYRP_VERSION', "2.6");
+    define('CHYRP_VERSION', "2.5");
 
     # Constant: DEBUG
     # Should Chyrp use debugging processes?

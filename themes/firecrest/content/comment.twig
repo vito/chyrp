@@ -1,0 +1,14 @@
+        <li id="comment_$comment.id" {% if comment.parent_id > 0 %} class="child" {% endif %}>
+            {% if comment.status == "denied" %}
+            <span class="waiting">${ "Your comment is awaiting moderation." | translate }</span>
+            {% endif %}
+            <blockquote>
+                $comment.body
+            </blockquote>
+            <cite>
+                ${ comment.delete_link("Delete" | translate, "") }
+                ${ comment.edit_link("Edit" | translate, "") }
+                {% if comment.parent_id < 1 %} ${ comment.replyto_link("Reply" | translate, "") }{% endif %}
+                ${ "<span class=\"comment_author\">%s</span> on <a href=\"%s\" class=\"permalink\">%s</a>" | translate | format(comment.author_link, comment.post.url ~ "#comment_"~comment.id, comment.created_at | strftime("%B %d, %Y, at %I:%M %p" | translate)) }
+            </cite>
+        </li>

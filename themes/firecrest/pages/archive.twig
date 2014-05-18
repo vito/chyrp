@@ -1,0 +1,45 @@
+{% extends "layouts/default.twig" %}
+
+{% block content %}
+                <div class="archive">
+{% if archives %} {# List? (For all/yearly archives) #}
+                    {% if GET.year != null %}
+                    <h2>${ "Archive of %s" | translate | format((archives | first).year) }</h2>
+                    {% else %}
+                    <h2>${ "Archives" | translate }</h2>
+                    {% endif %}
+                    {% for archive in archives %}
+                    {% if GET.year != null %}
+                    <h3><a href="$archive.url">${ archive.timestamp | strftime("%B" | translate) }</a></h3>
+                    {% else %}
+                    <h3><a href="$archive.url">${ archive.timestamp | strftime("%B %Y" | translate) }</a></h3>
+                    {% endif %}
+                    <ul>
+                        {% for post in archive.posts %}
+                        <li class="post">${ post.created_at | strftime("%d" | translate) }: <a href="$post.url">${ post.title | normalize | truncate(70) }</a></li>
+                        {% endfor %}
+                    </ul>
+                    <br />
+                    {% endfor %}
+{% endif %}
+
+{% if posts.paginated %} {# Posts? (For daily/monthly archives) #}
+                    {% if archive.depth == "day" %}
+                    <h2>${ "Archive of %s" | translate | format(archive.timestamp | strftime("%B %d, %Y" | translate)) }</h2>
+                    {% endif %}
+                    {% if archive.depth == "month" %}
+                    <h2>${ "Archive of %s" | translate | format(archive.timestamp | strftime("%B %Y" | translate)) }</h2>
+                    {% endif %}
+                    <ul>
+                        {% for post in posts.paginated %}
+                        <li class="post">${ post.created_at | strftime("%d" | translate) }: <a href="$post.url">${ post.title | normalize | truncate(70) }</a></li>
+                        {% endfor %}
+                    </ul>
+{% endif %}
+
+{% if not archives and not posts.paginated %} {# No results #}
+                    <h2>${ "No Posts" | translate }</h2>
+                    <p>${ "There aren't any posts in the timeframe you specified." | translate }</p>
+{% endif %}
+                </div>
+{% endblock %}

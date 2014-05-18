@@ -4,14 +4,18 @@
             $this->setField(array("attr" => "name",
                                   "type" => "text",
                                   "label" => __("Title", "link"),
-                                  "optional" => true));
+                                  "optional" => true,
+                                  "bookmarklet" => "title"));
             $this->setField(array("attr" => "source",
                                   "type" => "text",
-                                  "label" => __("URL", "link")));
+                                  "label" => __("URL", "link"),
+                                  "bookmarklet" => "url"));
             $this->setField(array("attr" => "description",
                                   "type" => "text_block",
                                   "label" => __("Description", "link"),
-                                  "optional" => true));
+                                  "optional" => true,
+                                  "preview" => true,
+                                  "bookmarklet" => "selection"));
 
             $this->setFilter("name", array("markup_title", "markup_post_title"));
             $this->setFilter("description", array("markup_text", "markup_post_text"));

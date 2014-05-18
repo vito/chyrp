@@ -1,0 +1,83 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Extension Manager" | translate("extension_manager") }{% endblock %}
+
+{% block content %}
+
+<div id="extension_manager_content">
+    <div id="extension_manger">
+        <h1>${ "Modules" | translate("extension_manager") }</h1>
+        <table border="0" cellspacing="0" cellpadding="0" class="wide">
+            <thead>
+                <tr class="head">
+                    <th>${ "Name" | translate("extension_manager") }</th>
+                    <th>${ "Description" | translate("extension_manager") }</th>
+                    <th>${ "Version" | translate("extension_manager") }</th>
+                    <th colspan="2">${ "Download" | translate }</th>
+                    ${ trigger.call("manage_extensions_column_header") }
+                </tr>
+            </thead>
+            <tbody>
+                {% for module in extensions.modules %}
+                <tr id="module">
+                    <td colspan="1">$module.name</td>
+                    <td colspan="1">${ module.description | truncate(140) }</td>
+                    <td colspan="1">$module.version</td>
+                    <td colspan="1" class="center"><span class="sub"><a href="?action=makeRequest&url=$module.download&type=module">Download to Site</a></span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br/>
+    <div id="extension_manger">
+        <h1>${ "Themes" | translate("extension_manager") }</h1>
+        <table border="0" cellspacing="0" cellpadding="0" class="wide">
+            <thead>
+                <tr class="head">
+                    <th>${ "Name" | translate("extension_manager") }</th>
+                    <th>${ "Description" | translate("extension_manager") }</th>
+                    <th>${ "Version" | translate("extension_manager") }</th>
+                    <th colspan="2">${ "Download" | translate }</th>
+                    ${ trigger.call("manage_extensions_column_header") }
+                </tr>
+            </thead>
+            <tbody>
+                {% for theme in extensions.themes %}
+                <tr id="theme">
+                    <td colspan="1">$theme.name</td>
+                    <td colspan="1">${ theme.description | truncate(140) }</td>
+                    <td colspan="1">$theme.version</td>
+                    <td colspan="1" class="center"><span class="sub"><a href="?action=makeRequest&url=$theme.download&type=theme">Download to Site</a></span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br/>
+    <div id="extension_manger">
+        <h1>${ "Feathers" | translate("extension_manager") }</h1>
+        <table border="0" cellspacing="0" cellpadding="0" class="wide">
+            <thead>
+                <tr class="head">
+                    <th>${ "Name" | translate("extension_manager") }</th>
+                    <th>${ "Description" | translate("extension_manager") }</th>
+                    <th>${ "Version" | translate("extension_manager") }</th>
+                    <th colspan="2">${ "Download" | translate }</th>
+                    ${ trigger.call("manage_extensions_column_header") }
+                </tr>
+            </thead>
+            <tbody>
+                {% for feather in extensions.feathers %}
+                <tr id="feather">
+                    <td colspan="1">$feather.name</td>
+                    <td colspan="1">${ feather.description | truncate(140) }</td>
+                    <td colspan="1">$feather.version</td>
+                    <td colspan="1" class="center"><span class="sub"><a href="?action=makeRequest&url=$feather.download&type=feather">Download to Site</a></span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

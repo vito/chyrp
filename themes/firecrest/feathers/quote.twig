@@ -1,0 +1,8 @@
+{% extends "content/post.twig" %}
+
+{% block content %}
+    <blockquote>
+        ${ post.quote | read_more }
+    </blockquote>
+    <div class="source">${ ("&mdash; " ~ post.source_unfiltered) | markup_post_text(post) | markup_text(post) | read_more }</div>
+{% endblock %}

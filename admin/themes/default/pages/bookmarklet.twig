@@ -1,0 +1,287 @@
+{% if not done %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="$theme.type; charset=utf-8" />
+        <title>${ "Chyrp!" | translate }</title>
+        <style type="text/css">
+            <!--/*--><![CDATA[/*><!--*/
+            /* Reset */
+            body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td { margin: 0; padding: 0; }
+            table { border-collapse: collapse; border-spacing: 0; }
+            fieldset,img { border: 0; }
+            address,caption,cite,code,dfn,em,strong,th,var { font-style: normal; font-weight: normal; }
+            li { list-style: none; }
+            caption,th { text-align: left; }
+            h1,h2,h3,h4,h5,h6 { font-size: 100%; font-weight: normal; }
+            abbr,acronym { border: 0; font-variant: normal; }
+            input, textarea, select { font-family: inherit; font-size: inherit; font-weight: inherit; }
+            /* End Reset */
+
+            html {
+                font-size: 62.5%;
+            }
+            body {
+                font: 1.25em/1.5em normal Verdana, Helvetica, Arial, sans-serif;
+                color: #626262;
+                background: #e8e8e8;
+                margin: 0;
+                padding: 1.25em;
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+            a:link, a:visited {
+                text-decoration: none;
+                color: #222;
+                border-bottom: 1px solid #ddd;
+            }
+            a:hover {
+                color: #555;
+                border-bottom-color: #aaa;
+            }
+            label {
+                display: block;
+                font-weight: bold;
+            }
+            p {
+                margin: 0 0 1em;
+            }
+            input.text, textarea {
+                font-size: 1.25em;
+                padding: 3px;
+                border: 1px solid #ddd;
+                background: #fff;
+            }
+            input.code, code {
+                font-family: "Consolas", "Monaco", monospace;
+            }
+            .navigation {
+                _border: 1px solid #e8e8e8;
+            }
+            .navigation li a {
+                float: left;
+                padding: .4em .75em;
+                background: #dfdfdf;
+                border-top: .2em solid #e8e8e8;
+                border-bottom: 0 !important;
+                color: #737373;
+            }
+            .navigation li.selected a {
+                background: #fff;
+                border-top-color: #c7c7c7;
+            }
+            .navigation li.right {
+                margin: .75em 0 0;
+            }
+            .navigation li.right a {
+                float: none;
+                background: transparent;
+                padding: 0;
+                font-size: .95em;
+                color: #777;
+            }
+            .navigation li.right a {
+                color: #444;
+            }
+            .content {
+                background: #fff;
+                padding: 1em;
+                position: absolute;
+                z-index: 100;
+                {% if site.enabled_feathers | length == 1 %}
+                position: absolute;
+                border: 0;
+                top: 1em;
+                left: 1em;
+                bottom: 1em;
+                right: 1em;
+                height: auto;
+                {% endif %}
+            }
+            .clear {
+                clear: both;
+            }
+            .wide {
+                width: 100%;
+            }
+            textarea.wide, input.text.wide {
+                width: 98%; /* Compensating for the 6px added from the padding */
+                _width: 100%;
+            }
+            .sub {
+                display: none;
+            }
+            .buttons {
+                text-align: center;
+            }
+            button {
+                background: #eee;
+                padding: .75em 1.5em;
+                color: #777;
+                text-shadow: #fff .1em .1em 0;
+                font: 1em normal "Lucida Grande", Verdana, Helvetica, Arial, sans-serif;
+                text-decoration: none;
+                border: 0;
+                cursor: pointer;
+                -webkit-border-radius: .5em;
+                -moz-border-radius: .5em;
+            }
+            button:hover {
+                background: #f5f5f5;
+            }
+            button:active {
+                background: #e0e0e0;
+            }
+            /*]]>*/-->
+        </style>
+        <script src="$site.chyrp_url/includes/lib/gz.php?file=jquery.js" type="text/javascript" charset="utf-8"></script>
+        <script src="$site.chyrp_url/includes/lib/gz.php?file=plugins.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript">
+            <!--//--><![CDATA[//><!--
+            function activate_nav_tab(id) {
+                $$("[class^='nav_']").removeClass("selected")
+                $$("[id$$='_form']").hide()
+                $$("#"+id+"_form").show()
+                $$(".nav_" + id).addClass("selected")
+
+                $$("#"+id+"_form input.text").expand()
+            }
+            $$(function(){
+                $$("form:visible input.text").expand()
+
+                $$(".navigation li").css("float", "left")
+                $$(".navigation").sortable({
+                    axis: "x",
+                    containment: ".navigation",
+                    placeholder: "feathers_sort",
+                    opacity: 0.8,
+                    delay: 1,
+                    revert: true,
+                    update: function(){
+                        $$.post("$site.chyrp_url/includes/ajax.php", "action=reorder_feathers&"+$$(".navigation").sortable("serialize"))
+                    }
+                })
+            })
+            //--><!]]>
+        </script>
+    </head>
+    <body>
+        {% if site.enabled_feathers | length > 1 %}
+        <ul class="navigation">
+            {% for feather in feathers %}
+            <li id="list_feathers[$feather.safename]" class="nav_$feather.safename${ feather.safename | selected(selected_feather.safename, true) }">
+                <a href="javascript:activate_nav_tab('$feather.safename')">$feather.name</a>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="clear"></div>
+        {% endif %}
+        <div class="content">
+            {% for feather in feathers %}
+            <form action="$site.chyrp_url/admin/?action=add_post" id="${ feather.safename }_form"{% if feather.safename != selected_feather.safename %} style="display: none"{% endif %} method="post" accept-charset="utf-8" enctype="multipart/form-data">
+                <fieldset>
+                    ${ trigger.call("before_bookmarklet_fields", feather) }
+                    {% for field in feather.fields %}
+                    <p>
+                        <label for="$field.attr">
+                            $field.label
+                            {% if field.optional %}
+                            <span class="sub">${ "(optional)" | translate }</span>
+                            {% endif %}
+                            {% if field.help %}
+                            <span class="sub">
+                                <a href="{% admin "help&id="~field.help %}" class="help emblem"><img src="$theme_url/images/icons/help.svg" alt="help" /></a>
+                            </span>
+                            {% endif %}
+                        </label>
+                        {% if field.type == "text" or field.type == "file" %}
+                        <input class="$field.type{% if field.classes %} ${ field.classes | join(" ") }{% endif %}" type="$field.type" name="$field.attr" value="{% if not field.no_value %}${ field.value | fallback(args[field.bookmarklet] | escape) }{% endif %}" id="$field.attr" />
+                        {% elseif field.type == "text_block" %}
+                        <textarea class="wide{% if field.classes %} ${ field.classes | join(" ") }{% endif %}" rows="${ field.rows | fallback(10) }" name="$field.attr" id="$field.attr" cols="50">{% if not field.no_value %}${ field.value | fallback(args[field.bookmarklet] | escape) }{% endif %}</textarea>
+                        {% elseif field.type == "select" %}
+                        <select name="$field.attr" id="$field.attr"{% if field.classes %} class="${ field.classes | join(" ") }"{% endif %}>
+                            {% for value, name in field.options | items %}
+                            <option value="${ value | escape }"{% if not field.no_value %}${ value | option_selected(field.value | fallback(args[field.bookmarklet] | escape)) }{% endif %}>${ name | escape }</option>
+                            {% endfor %}
+                        </select>
+                        {% endif %}
+                    </p>
+                    {% endfor %}
+                    ${ trigger.call("after_post_fields", feather) }
+                    <div class="buttons">
+                        <button type="submit">
+                            ${ "Publish" | translate }
+                        </button>
+                        <input type="hidden" name="feather" value="$feather.safename" id="feather" />
+                        <input type="hidden" name="slug" value="" id="slug" />
+                        <input type="hidden" name="bookmarklet" value="true" id="bookmarklet" />
+                        <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+                    </div>
+${ trigger.call("bookmarklet_fields") }
+                </fieldset>
+            </form>
+            {% endfor %}
+        </div>
+    </body>
+</html>
+{% else %} {# This one is 100% credited to Tumblr. They did it perfectly, didn't want to muck it up. #}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="$theme.type; charset=utf-8"/>
+        <title>${ "Chyrp!" | translate }</title>
+        <style type="text/css">
+            <!--/*--><![CDATA[/*><!--*/
+            body {
+                background-color: #e1e1e1;
+                margin:           0px;
+                font:             15px normal 'Trebuchet MS',Verdana,Helvetica,sans-serif;
+                text-align:       center;
+            }
+
+            div#content {
+                margin:           137px 30px 0px 30px;
+                padding:          15px;
+            }
+            /*]]>*/-->
+        </style>
+        <script type="text/javascript">
+            <!--//--><![CDATA[//><!--
+            function countdown_func() {
+                countdown--
+
+                el = document.getElementById('countdown')
+
+                if (countdown == 1)
+                    el.firstChild.nodeValue = "${ "or wait 1 seconds." | translate }"
+                else if (countdown > 0)
+                    el.firstChild.nodeValue = "${ "or wait 2 seconds." | translate }"
+                else
+                    self.close()
+
+                if (countdown > 0)
+                    setTimeout('countdown_func()', 1000)
+            }
+
+            var countdown = 3;
+            //--><!]]>
+        </script>
+    </head>
+    <body>
+        <div id="content">
+            <div style="margin-bottom: 10px; font-size: 40px; color: #777;">${ "Done!" | translate }</div>
+
+            <a href="javascript:void(0)" onclick="javascript:self.close(); return false;" style="color: #777;">${ "Close this window" | translate }</a>
+
+            <span id="countdown" style="color:#777;">
+                ${ "or wait 3 seconds." | translate }
+            </span>
+        </div>
+        <script type="text/javascript">
+            setTimeout('countdown_func()', 1000);
+        </script>
+    </body>
+</html>
+{% endif %}

@@ -1,0 +1,69 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Add Aggregate" | translate("aggregator") }{% endblock %}
+
+{% block content %}
+            <h1>${ "New Aggregate" | translare("aggregator") }</h1>
+            <form id="new_aggregate" class="split" action="{% admin "new_aggregate" %}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+                <fieldset>
+                    <p>
+                        <label for="name">${ "Name" | translate("aggregator") }</label>
+                        <input class="text" type="text" name="name" value="${ POST.name | escape }" id="name" />
+                    </p>
+                    <p>
+                        <label for="url">${ "Source URL" | translate("aggregator") }</label>
+                        <input class="text code" type="text" name="url" value="${ url | escape }" id="url" size="50" />
+                    </p>
+                    <p>
+                        <label for="feather">${ "Feather" | translate("aggregator") }</label>
+                        <select name="feather" id="feather">
+                        {% for feather in feathers %}
+                            <option value="$feather.safename"${ user.id | option_selected(POST.author) }>$feather.name</option>
+                        {% endfor %}
+                        </select>
+                    </p>
+                    <p>
+                        <label for="status">${ "Default Status" | translate("aggregator") }</label>
+                        <select name="status" id="status">
+                            <option value="draft">${ "Draft" | translate("aggregator") }</option>
+                            <option value="public" selected="selected">${ "Public" | translate("aggregator") }</option>
+                            <option value="private">${ "Private" | translate("aggregator") }</option>
+                            <option value="scheduled">${ "Scheduled" | translate("aggregator") }</option>
+                            <option value="registered_only">${ "Registered Only" | translate("aggregator") }</option>
+                            {% if groups %}
+                            <optgroup label="${ "Group" | translate("aggregator") }">
+                                {% for group in groups %}
+                                <option value="{$group.id}">${ group.name | escape }</option>
+                                {% endfor %}
+                            </optgroup>
+                            {% endif %}
+                        </select>
+                    </p>
+                    <p>
+                        <label for="author">${ "Author" | translate("aggregator") }</label>
+                        <select name="author" id="author">
+                        {% for user in users %}
+                            <option value="$user.id"${ user.id | option_selected(POST.author) }>${ user.full_name | fallback(user.login) }</option>
+                        {% endfor %}
+                        </select>
+                    </p>
+                    <p>
+                        <label for="data">
+                            ${ "Post Attributes" | translate("aggregator") }
+                            <span class="sub">
+                                <a href="{% admin "help&id=aggregation_syntax" %}" class="help emblem"><img src="$theme_url/images/icons/help.svg" alt="help" /></a>
+                            </span>
+                        </label>
+                        <textarea class="code" name="data" rows="9" cols="50" class="wide" id="data">${ POST.data | escape }</textarea>
+                    </p>
+
+                    <br />
+
+                    <p>
+                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.svg" alt="success" />${ "Add Aggregate" | translate("aggregator") }</button>
+                    </p>
+
+                    <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+                </fieldset>
+            </form>
+{% endblock %}

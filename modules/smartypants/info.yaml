@@ -1,0 +1,9 @@
+name: SmartyPants
+url: http://chyrp.net/
+version: 2.5
+description: A SmartyPants wrapper for posts, pages, and comments. Uses <a href="http://michelf.ca/projects/php-smartypants/">SmartyPants Typographer 1.0.1</a>.
+author:
+  name: Chyrp Team
+  url: http://chyrp.net/
+conflicts:
+  - textilize

@@ -17,27 +17,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: feathers/video/video.php:21
-msgid "Description"
+#: feathers/video/info.yaml:1
+msgid "Lets you post videos to your site."
 msgstr ""
 
-#: feathers/video/video.php:48
+#: feathers/video/video.php:38
+#: feathers/video/video.php:52
 msgid "Error"
 msgstr ""
 
-#: feathers/video/info.yaml:4
+#: feathers/video/info.yaml:5
 msgid "Video"
 msgstr ""
 
-#: feathers/video/info.yaml:1
-msgid "An video feather, including a flash player."
+#: feathers/video/video.php:38
+#: feathers/video/video.php:52
+msgid "Video can't be blank."
 msgstr ""
 
-#: feathers/video/video.php:12
-#, php-format
-msgid "<small>(Max. file size: %s)</small>"
-msgstr ""
-
-#: feathers/video/video.php:125
-msgid "Your web browser does not support the <code>video</code> element."
-msgstr ""

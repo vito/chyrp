@@ -1,0 +1,10 @@
+name: Textilize
+url: http://chyrp.net/
+version: 2.2
+description: A Textile wrapper for posts, pages, and comments. Uses <a href="http://textile.thresholdstate.com/">Textile 2.2</a>.
+author:
+  name: Chyrp Team
+  url: http://chyrp.net/
+conflicts:
+  - markdown
+  - smartypants

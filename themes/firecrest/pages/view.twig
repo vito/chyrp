@@ -1,0 +1,32 @@
+{% extends "layouts/default.twig" %}
+
+{% block content %}
+{% include "feathers/" ~ post.feather ~ ".twig" %}
+            <div class="clear"></div>
+            {% if not post.next.no_results %}<a class="right next_post" href="$post.next.url"><span class="arrow"></span> ${ post.next.title | truncate(40) }</a>{% endif %}
+            {% if not post.prev.no_results %}<a class="left prev_post" href="$post.prev.url"><span class="arrow"></span> ${ post.prev.title | truncate(40) }</a>{% endif %}
+            <div class="clear"></div>
+{% if enabled_modules.comments and (post.comment_count > 0 or post.commentable) %}
+            <div id="comment_form" id="comments">
+                <h3 class="comments">${ "Comments" | translate }</h3>
+                <ol class="comments" id="comments_$post.id">
+                    {% paginate site.comments_per_page comments in post.comments as comment %}
+                    {% include "content/comment.twig" %}
+                    {% else %}
+                    <li class="no_comments"></li> {# Needed for AJAX commenting and XHTML Strict validation. #}
+                    {% endpaginate %}
+                </ol>
+                $comments.prev_link
+                $comments.next_link
+                {% if comments.pages > 1 %}
+                <span class="pages">${ "Page %d of %d" | translate | format(comments.page, comments.pages) }</span>
+                {% endif %}
+                {% if post.commentable %}
+                {% include "forms/comment/new.twig" %}
+                {% endif %}
+                {% if post.comment_status == "closed" %}
+                ${ "Comments are not accepted on this entry." | translate }
+                {% endif %}
+            </div>
+{% endif %}
+{% endblock %}

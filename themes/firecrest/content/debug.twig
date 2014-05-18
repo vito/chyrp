@@ -1,0 +1,23 @@
+{% if debug and visitor.group.name == "Admin" %}
+<div id="debug">
+    <h5>
+        <a class="toggle" href="javascript:void(0)">${ "Toggle" | translate }</a>
+        ${ "Stats" | translate }
+    </h5>
+    <ul>
+        <li><strong>${ "Queries:" | translate }</strong> $sql_queries</li>
+        <li><strong>${ "Load Time:" | translate }</strong> $theme.load_time ${ "seconds" | translate }</li>
+    </ul>
+    <br />
+    <h5>${ "Queries" | translate }</h5>
+    <ol class="queries">
+        {% for debug in sql_debug %}
+        <li>
+            <pre>${ debug.query | replace("\t", "    ") | escape }</pre>
+            <em>${ "Called from <strong>%s</strong> on line <strong>%d</strong> at %ss." | translate | format(debug.file, debug.line, debug.time) }</em>
+        </li>
+        {% endfor %}
+    </ol>
+    <div class="clear"></div>
+</div>
+{% endif %}

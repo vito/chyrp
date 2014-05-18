@@ -1,0 +1,53 @@
+# Chyrp v2.5 Translation File.
+# Copyright (C) 2013 Chyrp Team
+# This file is distributed under the same license as the Chyrp v2.5 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Chyrp v2.5\n"
+"Report-Msgid-Bugs-To: email@chyrp.net\n"
+"POT-Creation-Date: 2013-12-27 18:14+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
+"Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: modules/theme_editor/pages/admin/theme_editor.twig:9
+msgid "Theme Files"
+msgstr ""
+
+#: modules/theme_editor/info.yaml:1
+msgid "Allows you to edit twig files from the dashboard"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:25
+#: modules/theme_editor/theme_editor.php:30
+msgid "Access Denied"
+msgstr ""
+
+#: modules/theme_editor/pages/admin/theme_editor.twig:3
+#: modules/theme_editor/info.yaml:4
+msgid "Theme Editor"
+msgstr ""
+
+#: modules/theme_editor/pages/admin/theme_editor.twig:25
+msgid "Update"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:35
+msgid "File Updated"
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:30
+msgid "Invalid security key."
+msgstr ""
+
+#: modules/theme_editor/theme_editor.php:25
+msgid "You do not have sufficient privileges to change settings."
+msgstr ""
+
