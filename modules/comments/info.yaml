@@ -1,6 +1,6 @@
-name: Comment System
+name: Comments
 url: http://chyrp.net/
-version: 2.5
+version: 2.6
 description: Adds commenting functionality to posts, including Akismet spam protection, auto-reloading, pagination, threading etc.
 author:
   name: Chyrp Team

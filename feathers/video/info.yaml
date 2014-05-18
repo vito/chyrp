@@ -1,7 +1,8 @@
 name: Video
 url: http://chyrp.net/
 version: 2.0
-description: Lets you post videos to your site.
+description: A feather for video.
 author:
   name: Alex Suraci
   url: http://ecks.tc/
+uploader: true

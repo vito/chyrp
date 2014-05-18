@@ -4,16 +4,12 @@
             $this->setField(array("attr" => "quote",
                                   "type" => "text_block",
                                   "rows" => 5,
-                                  "label" => __("Quote", "quote"),
-                                  "preview" => true,
-                                  "bookmarklet" => "selection"));
+                                  "label" => __("Quote", "quote")));
             $this->setField(array("attr" => "source",
                                   "type" => "text_block",
                                   "rows" => 5,
                                   "label" => __("Source", "quote"),
-                                  "optional" => true,
-                                  "preview" => true,
-                                  "bookmarklet" => "page_link"));
+                                  "optional" => true));
 
             $this->setFilter("quote", array("markup_text", "markup_post_text"));
             $this->setFilter("source", array("markup_text", "markup_post_text"));
@@ -50,9 +46,9 @@
         }
 
         public function feed_content($post) {
-            $body = "<blockquote>\n\t";
+            $body = "<blockquote>";
             $body.= $post->quote;
-            $body.= "\n</blockquote>\n";
+            $body.= "</blockquote>";
             $body.= $post->source;
             return $body;
         }

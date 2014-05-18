@@ -75,12 +75,7 @@
          *     attr - The technical name for the field. Think $post->attr.
          *     type - The field type. (text, file, text_block, or select)
          *     label - The label for the field.
-         *     preview - Is this field previewable?
          *     optional - Is this field optional?
-         *     bookmarklet - What to fill this field by in the bookmarklet.
-         *                   url or page_url - The URL of the page they're viewing when they open the bookmarklet.
-         *                   title or page_title - The title of the page they're viewing when they open the bookmarklet.
-         *                   selection - Their selection on the page they're viewing when they open the bookmarklet.
          *     extra - Stuff to output after the input field. Can be anything.
          *     note - A minor note to display next to the label text.
          */
@@ -90,17 +85,6 @@
             if (isset($options["class"]))
                 $options["classes"][] = $options["class"];
 
-            if (isset($options["preview"]) and $options["preview"])
-                $options["classes"][] = "preview_me";
-
             $this->fields[$options["attr"]] = $options;
-        }
-
-        /**
-         * Function: bookmarkletSelected
-         * The Feather that this function is called from will be selected when they open the Bookmarklet.
-         */
-        protected function bookmarkletSelected() {
-            AdminController::current()->selected_bookmarklet = $this->safename;
         }
     }

@@ -8,7 +8,7 @@
                 <fieldset>
                     <p>
                         <label for="body">${ "Body" | translate }</label>
-                        <textarea class="wide preview_me" rows="12" name="body" id="body" cols="50">${ comment.body | escape }</textarea>
+                        <textarea class="wide" rows="12" name="body" id="body" cols="50">${ comment.body | escape }</textarea>
                     </p>
 
                     <div class="buttons">
@@ -20,7 +20,7 @@
 
                     <div class="clear"></div>
                     <noscript><br /></noscript>
-                    <div id="more_options" class="more_options js_disabled">
+                    <div id="more_options" class="more_options">
                         <p>
                             <label for="author">${ "Author" | translate }</label>
                             <input class="text" type="text" name="author" value="${ comment.author | escape }" id="author" />

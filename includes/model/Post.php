@@ -211,11 +211,6 @@
             if (isset($clean) and !isset($url))
                 $url = self::check_url($clean);
 
-            if (isset($_POST['bookmarklet'])) {
-                $trigger->filter($values, "bookmarklet_submit_values");
-                $trigger->filter($options, "bookmarklet_submit_options");
-            }
-
             $new_values = array("feather"    => $feather,
                                 "user_id"    => $user_id,
                                 "pinned"     => $pinned,
@@ -261,7 +256,7 @@
                 foreach ($values as $key => $value)
                     send_pingbacks($value, $post);
 
-            $post->redirect = isset($_POST['bookmarklet']) ? url("/admin/?action=bookmarklet&done") : $post->url() ;
+            $post->redirect = $post->url();
 
             $trigger->call("add_post", $post, $options);
 

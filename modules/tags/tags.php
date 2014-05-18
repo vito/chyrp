@@ -53,32 +53,6 @@
             return $fields;
         }
 
-        public function bookmarklet_submit_values(&$values) {
-            $tags = array();
-            foreach ($values as $key =>&$value) {
-                $paragraphs = preg_split("/([\r\n]{2,4})/", $value);
-                $rejoin = ((strlen($value) - strlen(implode("", $paragraphs)) / count($paragraphs)) == 4) ? "\r\n\r\n" : "\n\n" ;
-
-                foreach ($paragraphs as $index => &$paragraph)
-                    # Look for #spaced tags# that get removed only in the last paragraph.
-                    if ($index + 1 == count($paragraphs) and trim(preg_replace("/(\s|^)#([^#]+)(?!\\\\)#/", "\\1", $paragraph)) == "") {
-                        if (preg_match_all("/(\s|^)#([^#]+)(?!\\\\)#/", $paragraph, $double)) { # Look for normal tags.
-                            $tags = array_merge($double[2], $tags);
-                            $paragraph = preg_replace("/(\s|^)#([^#]+)(?!\\\\)#/", "\\1", $paragraph);
-                        }
-
-                        break;
-                    } elseif (preg_match_all("/(\s|^)#([^ .,]+)(?!#)/", $paragraph, $single)) {
-                        $tags = array_merge($single[2], $tags);
-                        $paragraph = preg_replace("/(\s|^)#([^ .,]+)(?!#)/", "\\1\\2", $paragraph);
-                    }
-
-                $value = str_replace("\\#", "#", implode($rejoin, $paragraphs));
-            }
-
-            $_POST['tags'] = implode(", ", $tags);
-        }
-
         public function add_post($post) {
             if (empty($_POST['tags'])) return;
 

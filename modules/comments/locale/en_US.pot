@@ -364,7 +364,7 @@ msgid "Comment added."
 msgstr ""
 
 #: modules/comments/info.yaml:8
-msgid "Comment System"
+msgid "Comments"
 msgstr ""
 
 #: modules/comments/comments.php:346
