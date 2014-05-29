@@ -1249,7 +1249,7 @@
 
             $xml = simplexml_load_string($sane_xml, "SimpleXMLElement", LIBXML_NOCDATA);
 
-            if (!$xml or !substr_count($xml->channel->generator, "wordpress.org"))
+            if (!$xml or !(substr_count($xml->channel->generator, "wordpress.org") || substr_count($xml->channel->generator, "wordpress.com")))
                 Flash::warning(__("File does not seem to be a valid WordPress export file, or could not be parsed. Please check your PHP error log."),
                                "/admin/?action=import");
 
