@@ -1,0 +1,8 @@
+name: Wordpress Type Importer
+url: http://eye48.com/go/chyrp
+version: 1.0
+description: Supports various post types on Wordpress import.
+author:
+  name: Haschek
+  url: http://michael.haschke.biz/
+conflicts:
