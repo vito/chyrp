@@ -1269,7 +1269,7 @@
                         $content->encoded = str_replace($matched_url, $config->url.$config->uploads_path.$filename, $content->encoded);
                     }
 
-                $clean = (isset($wordpress->post_name)) ? $wordpress->post_name : sanitize($item->title) ;
+                $clean = (isset($wordpress->post_name) && $wordpress->post_name != '') ? $wordpress->post_name : sanitize($item->title) ;
 
                 $pinned = (isset($wordpress->is_sticky)) ? $wordpress->is_sticky : 0 ;
 
@@ -1283,14 +1283,41 @@
                                               "future"  => "draft",
                                               "pending" => "draft");
 
-                    $data = array("title" => trim($item->title),
-                                  "body" => trim($content->encoded),
-                                  "imported_from" => "wordpress");
-
-                    $post = Post::add($data,
+                    $data = array(
+                                "content" => array(
+                                                "title" => trim($item->title),
+                                                "body" => trim($content->encoded),
+                                                "imported_from" => "wordpress"
+                                             ),
+                                "feather" => "text"
+                            );
+                    
+                    $wp_post_format = null;
+                    if (isset($item->category)) {
+                        foreach ($item->category as $category) {
+                            if (!empty($category) and
+                                isset($category->attributes()->domain) and
+                                (substr_count($category->attributes()->domain, "post_format") > 0) and
+                                isset($category->attributes()->nicename)
+                               ) {
+                                $wp_post_format = (string) $category->attributes()->nicename;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if ($wp_post_format) {
+                        $trigger->filter(
+                            $data,
+                            "import_wordpress_post_".str_replace('post-format-', '', $wp_post_format),
+                            $item
+                         );
+                    }
+                    
+                    $post = Post::add($data["content"],
                                       $clean,
                                       Post::check_url($clean),
-                                      "text",
+                                      $data["feather"],
                                       null,
                                       $pinned,
                                       $status_translate[(string) $wordpress->status],
