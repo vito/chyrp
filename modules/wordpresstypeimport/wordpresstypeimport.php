@@ -46,4 +46,46 @@
             return $content;
         }
         
+        public function import_wordpress_post_quote($content, $item) {
+
+            // test if quote feather is activated
+
+            $config = Config::current();
+            if (!in_array("quote", $config->enabled_feathers)) {
+                return $content;
+            }
+            
+            $quotedata = array();
+        
+            $body = $content['content']['body'];
+            
+            // get first blockquote in content body
+            
+            $source_link_start = strpos($content['content']['body'], '<blockquote>');
+            
+            if ($source_link_start !== false) {
+                $source_link_end = strpos($content['content']['body'], '</blockquote>', $source_link_start + 12);
+                
+                if ($source_link_end !== false) {
+                    $quotedata['quote'] = substr($content['content']['body'], $source_link_start + 12, $source_link_end - $source_link_start - 12);
+                }
+            }
+            
+            // source description is everything after the first paragraph
+            
+            $quotedata['source'] = substr($content['content']['body'], strpos($content['content']['body'], '</blockquote>') + 13);
+
+            if (
+                isset($quotedata['quote']) &&
+                isset($quotedata['source'])
+               ) {
+                $content['feather'] = 'quote';
+                $content['content'] = $quotedata;
+                return $content;
+            }
+            
+            // fallback, return standard text post data
+            
+            return $content;
+        }
     }
