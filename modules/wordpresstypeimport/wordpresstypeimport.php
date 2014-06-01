@@ -88,4 +88,51 @@
             
             return $content;
         }
+        
+        public function import_wordpress_post_video($content, $item) {
+
+            // test if quote feather is activated
+
+            $config = Config::current();
+            if (!in_array("video", $config->enabled_feathers)) {
+                return $content;
+            }
+            
+            $videodata = array();
+            
+            // keep title
+            
+            $videodata['title'] = $content['content']['title'];
+        
+            $body = $content['content']['body'];
+            
+            // get first link in post body, it's the video url
+            
+            $urls = array();
+            if (preg_match('$https?\://{1}\S+$', $body, $urls) && count($urls) > 0) {
+                $videodata['video'] = $urls[0];
+                $videodata['embed'] = Video::embed_tag($videodata['video']);
+            }
+            
+            // everything else is the video caption
+            
+            if (isset($videodata['video'])) {
+                $videodata['caption'] = str_replace($videodata['video'], '', $body);
+            }
+            
+            if (
+                isset($videodata['title']) &&
+                isset($videodata['video']) &&
+                isset($videodata['embed']) &&
+                isset($videodata['caption'])
+               ) {
+                $content['feather'] = 'video';
+                $content['content'] = $videodata;
+                return $content;
+            }
+            
+            // fallback, return standard text post data
+            
+            return $content;
+        }
     }
