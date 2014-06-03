@@ -147,7 +147,7 @@
                 return;
 
             fallback($text, __("Next &rarr;"));
-            echo '<a class="'.$class.'" id="next_page_'.$this->name.'" href="'.$this->next_page_url($page).'">'.
+            echo '<a  rel="next" class="'.$class.'" id="next_page_'.$this->name.'" href="'.$this->next_page_url($page).'">'.
                      $text.
                  '</a>';
         }
@@ -166,7 +166,7 @@
                 return;
 
             fallback($text, __("&larr; Previous"));
-            echo '<a class="'.$class.'" id="prev_page_'.$this->name.'" href="'.$this->prev_page_url($page).'">'.
+            echo '<a rel="prev" class="'.$class.'" id="prev_page_'.$this->name.'" href="'.$this->prev_page_url($page).'">'.
                      $text.
                  '</a>';
         }

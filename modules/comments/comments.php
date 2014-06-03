@@ -471,11 +471,12 @@
             switch($_POST['action']) {
                 case "reload_comments":
                     $post = new Post($_POST['post_id']);
+                    $last_comment = fallback($_POST['last_comment'], $post->created_at);
 
                     if ($post->no_results)
                         break;
 
-                    if ($post->latest_comment > $_POST['last_comment']) {
+                    if ($post->latest_comment > $last_comment) {
                         $new_comments = $sql->select("comments",
                                                      "id, created_at",
                                                      array("post_id" => $_POST['post_id'],
@@ -495,9 +496,11 @@
                             if (strtotime($last_comment) < strtotime($the_comment->created_at))
                                 $last_comment = $the_comment->created_at;
                         }
-?>
-{ comment_ids: [ <?php echo implode(", ", $ids); ?> ], last_comment: "<?php echo $last_comment; ?>" }
-<?php
+
+                        $responseObj = array();
+                        $responseObj["comment_ids"] = $ids;
+                        $responseObj["last_comment"] = $last_comment;
+                        echo json_encode($responseObj);
                     }
                     break;
                 case "show_comment":

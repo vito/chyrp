@@ -1239,6 +1239,7 @@
                 font-size: 3em;
                 margin: 1em 0 .5em;
                 text-align: center;
+                line-height: 1;
             }
             h1.first {
                 margin-top: .25em;

@@ -162,6 +162,27 @@
         }
 
         /**
+         * Function: recent_posts
+         * Generates an array of recent posts.
+         *
+         * Parameters:
+         *     $limit - Number of posts to list
+         */
+        public function recent_posts($limit = 5) {
+            if (isset($this->recent_posts["$limit"]))
+                return $this->recent_posts["$limit"];
+
+            $results = Post::find(array("placeholders" => true));
+            $posts = array();
+
+            for ($i = 0; $i < $limit; $i++)
+                if (isset($results[0][$i]))
+                    $posts[] = new Post(null, array("read_from" => $results[0][$i]));
+
+            return $this->recent_posts["$limit"] = $posts;
+        }
+
+        /**
          * Function: file_exists
          * Returns whether the specified Twig file exists or not.
          *

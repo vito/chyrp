@@ -25,6 +25,7 @@
 
         public function post_options($fields, $post = null) {
             $tags = self::list_tags(false);
+            usort($tags, array($this, "sort_tags_name_desc"));
 
             $selector = '<span class="tags_select">'."\n";
 
@@ -565,16 +566,18 @@
         }
 
         public function post($post) {
-            $post->tags = !empty($post->tags) ? YAML::load($post->tags) : array() ;
+            $tags = !empty($post->tags) ? YAML::load($post->tags) : array() ;
+            ksort($tags, SORT_STRING);
+            $post->tags = $tags;
             $post->linked_tags = self::linked_tags($post->tags);
         }
 
         public function sort_tags_name_asc($a, $b) {
-            return strcmp($a["name"], $b["name"]);
+            return $this->mb_strcasecmp($a["name"], $b["name"], "UTF-8");
         }
 
         public function sort_tags_name_desc($a, $b) {
-            return strcmp($b["name"], $a["name"]);
+            return $this->mb_strcasecmp($b["name"], $a["name"], "UTF-8");
         }
 
         public function sort_tags_popularity_asc($a, $b) {
@@ -583,6 +586,14 @@
 
         public function sort_tags_popularity_desc($a, $b) {
             return $a["popularity"] < $b["popularity"];
+        }
+
+        private function mb_strcasecmp($str1, $str2, $encoding = null) {
+            if (null === $encoding)
+                $encoding = mb_internal_encoding();
+            $str1 = preg_replace("/[[:punct:]]+/", "", $str1);
+            $str2 = preg_replace("/[[:punct:]]+/", "", $str2);
+            return substr_compare(mb_strtoupper($str1, $encoding), mb_strtoupper($str2, $encoding), 0);
         }
 
         public function list_tags($limit = 10, $order_by = "popularity", $order = "desc") {
