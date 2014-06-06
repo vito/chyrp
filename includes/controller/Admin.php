@@ -1256,17 +1256,20 @@
             foreach ($xml->channel->item as $item) {
                 $wordpress = $item->children("http://wordpress.org/export/1.2/");
                 $content   = $item->children("http://purl.org/rss/1.0/modules/content/");
-                if ($wordpress->status == "attachment" or $item->title == "zz_placeholder")
+                $contentencoded = $content->encoded;
+                if ($wordpress->post_type == "attachment" or $wordpress->status == "attachment" or $item->title == "zz_placeholder")
                     continue;
 
+                $media = array();
                 $regexp_url = preg_quote($_POST['media_url'], "/");
                 if (!empty($_POST['media_url']) and
                     preg_match_all("/{$regexp_url}([^\.\!,\?;\"\'<>\(\)\[\]\{\}\s\t ]+)\.([a-zA-Z0-9]+)/",
-                                   $content->encoded,
+                                   $contentencoded,
                                    $media))
-                    foreach ($media[0] as $matched_url) {
+                    $media_uris = array_unique($media[0]);
+                    foreach ($media_uris as $matched_url) {
                         $filename = upload_from_url($matched_url);
-                        $content->encoded = str_replace($matched_url, $config->url.$config->uploads_path.$filename, $content->encoded);
+                        $contentencoded = str_replace($matched_url, $config->url.$config->uploads_path.$filename, $contentencoded);
                     }
 
                 $clean = (isset($wordpress->post_name) && $wordpress->post_name != '') ? $wordpress->post_name : sanitize($item->title) ;
@@ -1286,7 +1289,7 @@
                     $data = array(
                                 "content" => array(
                                                 "title" => trim($item->title),
-                                                "body" => trim($content->encoded),
+                                                "body" => trim($contentencoded),
                                                 "imported_from" => "wordpress"
                                              ),
                                 "feather" => "text"
