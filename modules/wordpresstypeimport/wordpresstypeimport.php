@@ -1,5 +1,11 @@
 <?php
     class WordpressTypeImport extends Modules {
+    
+        public function import_wordpress_enhancement() {
+            
+            return '<p>'.__('When importing posts make sure that the required feathers are enabled otherwise the posts will be imported as text feathers.').'</p>';
+        }
+    
         public function import_wordpress_post_link($content, $item) {
 
             // test if link feather is activated
