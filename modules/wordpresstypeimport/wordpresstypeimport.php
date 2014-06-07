@@ -29,7 +29,7 @@
             
             // description is everything after the first paragraph
             
-            $linkdata['description'] = substr($content['content']['body'], strpos($content['content']['body'], '</p>') + 4);
+            $linkdata['description'] = trim(substr($content['content']['body'], strpos($content['content']['body'], '</p>') + 4));
 
             if (
                 isset($linkdata['name']) &&
@@ -73,7 +73,7 @@
             
             // source description is everything after the first paragraph
             
-            $quotedata['source'] = substr($content['content']['body'], strpos($content['content']['body'], '</blockquote>') + 13);
+            $quotedata['source'] = trim(substr($content['content']['body'], strpos($content['content']['body'], '</blockquote>') + 13));
 
             if (
                 isset($quotedata['quote']) &&
@@ -102,7 +102,7 @@
             
             // keep title
             
-            $videodata['title'] = $content['content']['title'];
+            $videodata['title'] = trim($content['content']['title']);
         
             $body = $content['content']['body'];
             
@@ -117,7 +117,7 @@
             // everything else is the video caption
             
             if (isset($videodata['video'])) {
-                $videodata['caption'] = str_replace($videodata['video'], '', $body);
+                $videodata['caption'] = trim(str_replace($videodata['video'], '', $body));
             }
             
             if (
@@ -128,6 +128,87 @@
                ) {
                 $content['feather'] = 'video';
                 $content['content'] = $videodata;
+                return $content;
+            }
+            
+            // fallback, return standard text post data
+            
+            return $content;
+        }
+
+        public function import_wordpress_post_image($content, $item) {
+
+            // test if quote feather is activated
+
+            $config = Config::current();
+            if (!in_array("photo", $config->enabled_feathers)) {
+                return $content;
+            }
+            
+            $photodata = array();
+            
+            // keep title
+            
+            $photodata['title'] = $content['content']['title'];
+        
+            $body = $content['content']['body'];
+            
+            // get href of first link and/or src of first image tag
+            
+            $images = array();
+
+            $a_hrefs = array();
+            $img_src = array();
+            if (preg_match('$<a href="([^>^"]*)"[^>]*>[S]*<img[^>]*src="([^>^"]*)"[^>]*>[S]*</a>$', $body, $a_hrefs) && count($a_hrefs) > 0) {
+                $images[] = str_replace($config->url.$config->uploads_path, '', $a_hrefs[1]);
+                $images[] = str_replace($config->url.$config->uploads_path, '', $a_hrefs[2]);
+            }
+            elseif (preg_match('$<img[^>]*src="([^>^"]*)"[^>]*>$', $body, $img_src) && count($img_src) > 0) {
+                $images[] = str_replace($config->url.$config->uploads_path, '', $img_src[1]);
+            }
+            
+            $images = array_unique($images);
+            $images_sizes = array();
+            
+            foreach($images as $image) {
+                // check image dimensions to choose the biggest image as source
+                if (is_readable(MAIN_DIR.$config->uploads_path.$image)) {
+                    $imginfo = getimagesize(MAIN_DIR.$config->uploads_path.$image);
+                    $squarepixel = $imginfo[0] * $imginfo[1]; // size in square pixel
+                    $images_sizes[$squarepixel] = $image;
+                }
+            }
+            
+            if (count($images_sizes) > 0) {
+                ksort($images_sizes, SORT_NUMERIC);
+                $photodata['filename'] = array_pop($images_sizes);
+            }
+            elseif (count($images) > 0) {
+                $photodata['filename'] = $images[0];
+            }
+            
+            // everything else is the photo caption
+            
+            if (count($a_hrefs) > 0) {
+                $photodata['caption'] = trim(str_replace($a_hrefs[0], '', $body));
+            }
+            elseif (count($img_src) > 0) {
+                $photodata['caption'] = trim(str_replace($img_src[0], '', $body));
+            }
+            
+            $captions = array();
+            if (preg_match('$\[caption[^\]]*\]([^\[]*)\[/caption\]$', $photodata['caption'], $captions) && count($captions) > 0) {
+                // in some cases there is an caption element without image now
+                $photodata['caption'] = str_replace($captions[0], '<p class="wp-caption-import">'.trim($captions[1]).'</p>'.PHP_EOL, $photodata['caption']);
+            }
+            
+            if (
+                isset($photodata['title']) &&
+                isset($photodata['filename']) &&
+                isset($photodata['caption'])
+               ) {
+                $content['feather'] = 'photo';
+                $content['content'] = $photodata;
                 return $content;
             }
             
