@@ -1,4 +1,10 @@
 <?php
+    /**
+     * Class: WordpressTypeImport
+     * Importing Wordpress post types Link, Quote, Video and Image as the correct feather if it is enabled.
+     *
+     * @author http://michael.haschke.biz/
+     */
     class WordpressTypeImport extends Modules {
     
         public function import_wordpress_enhancement() {
