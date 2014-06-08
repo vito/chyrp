@@ -1257,21 +1257,29 @@
                 $wordpress = $item->children("http://wordpress.org/export/1.2/");
                 $content   = $item->children("http://purl.org/rss/1.0/modules/content/");
                 $contentencoded = $content->encoded;
-                if ($wordpress->post_type == "attachment" or $wordpress->status == "attachment" or $item->title == "zz_placeholder")
+                if ($wordpress->post_type == "attachment" ||
+                    $wordpress->status == "attachment" ||
+                    $item->title == "zz_placeholder"
+                ) {
                     continue;
+                }
 
                 $media = array();
                 $regexp_url = preg_quote($_POST['media_url'], "/");
-                if (!empty($_POST['media_url']) and
-                    preg_match_all("/{$regexp_url}([^\.\!,\?;\"\'<>\(\)\[\]\{\}\s\t ]+)\.([a-zA-Z0-9]+)/",
-                                   $contentencoded,
-                                   $media))
+                if (!empty($_POST['media_url']) &&
+                    preg_match_all(
+                        "/{$regexp_url}([^\.\!,\?;\"\'<>\(\)\[\]\{\}\s\t ]+)\.([a-zA-Z0-9]+)/",
+                        $contentencoded,
+                        $media
+                    )
+                ) {
                     $media_uris = array_unique($media[0]);
                     foreach ($media_uris as $matched_url) {
                         $filename = upload_from_url($matched_url);
                         $contentencoded = str_replace($matched_url, $config->url.$config->uploads_path.$filename, $contentencoded);
                     }
-
+                }
+                
                 $clean = (isset($wordpress->post_name) && $wordpress->post_name != '') ? $wordpress->post_name : sanitize($item->title) ;
 
                 $pinned = (isset($wordpress->is_sticky)) ? $wordpress->is_sticky : 0 ;
