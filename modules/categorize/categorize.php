@@ -250,4 +250,61 @@
             Category::deleteCategory($_REQUEST['id']);
             Flash::notice(__("Category deleted.", "categorize"), "/admin/?action=manage_category");
         }
+        
+        /* Import Hooks */
+        
+        public function import_wordpress_post($item, $post) {
+            if (!isset($item->category)) return;
+
+            $categories = array();
+            foreach ($item->category as $category)
+                if (!empty($category) and isset($category->attributes()->domain) and (substr_count($category->attributes()->domain, "category") > 0) and isset($category->attributes()->nicename))
+                    $categories[strip_tags(trim($category))] = (string) $category->attributes()->nicename;
+
+            if (!empty($categories)) {
+                foreach($categories as $catname => $catclean) {
+                
+                    if ($catname === 'Uncategorized') {
+                        // do not use the uncategorized category, just let it empty
+                        break;
+                    }
+                    
+                    $category = Category::getCategoryIDbyName($catname);
+                    
+                    if (!$category || !isset($category->id)) {
+
+                        // add new category to store
+                        
+                        SQL::current()->insert(
+                                            "categorize",
+                                            array(
+                                                "name" => ":name",
+                                                "clean" => ":clean",
+                                                "show_on_home" => ":show_on_home"
+                                            ),
+                                            array(
+                                                ":name" => $catname,
+                                                ":clean" => $catclean,
+                                                ":show_on_home" => 1
+                                            )
+                                        );
+
+                        $category = Category::getCategoryIDbyName($catname);
+                    }
+                    
+                    if ($category && isset($category->id)) {
+                        SQL::current()->insert(
+                                            "post_attributes",
+                                            array(
+                                                "name" => "category_id",
+                                                "value" => $category->id,
+                                                "post_id" => $post->id
+                                            )
+                                        );
+                        // only use first category, chyrp cat module only allows one
+                        break;
+                    }
+                }
+            }
+        }
     }

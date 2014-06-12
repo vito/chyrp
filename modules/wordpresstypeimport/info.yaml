@@ -1,0 +1,9 @@
+name: Wordpress Post Types Importer
+url: http://eye48.com/go/chyrpwordpressimport
+version: 1.0
+description: Importing Wordpress post types Link, Quote, Video and Image as the correct feather if it is enabled.
+author:
+  name: Haschek
+  url: http://michael.haschke.biz/
+notifications:
+  - When importing posts make sure that the required feathers are enabled otherwise the posts will be imported as text feathers.
