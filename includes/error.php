@@ -1,4 +1,15 @@
 <?php
+    if (!class_exists("MainController")) {
+        if (defined("INCLUDES_DIR")) {
+            require INCLUDES_DIR."controller/Main.php";
+        } else {
+            header("Status: 403"); exit("Access denied."); # Undefined constants: xss protection.
+        }
+    }
+
+    if (class_exists("Route"))
+        Route::current(MainController::current());
+
     if (defined('AJAX') and AJAX or isset($_POST['ajax'])) {
         foreach ($backtrace as $trace)
             $body.= "\n"._f("%s on line %d", array($trace["file"], fallback($trace["line"], 0)));
@@ -8,12 +19,6 @@
     $jquery = is_callable(array("Config", "current")) ?
               Config::current()->url."/includes/lib/gz.php?file=jquery.js" :
               "http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js" ;
-
-    if (!class_exists("MainController"))
-        require INCLUDES_DIR."/controller/Main.php";
-
-    if (class_exists("Route"))
-        Route::current(MainController::current());
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
