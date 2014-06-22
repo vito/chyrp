@@ -53,13 +53,6 @@ $(function(){
     })
     <?php endif; ?>
 
-    // "Help" links should open in popup windows.
-    $(".help").live("click", function(){
-        window.open($(this).attr("href"), "help", "status=0, scrollbars=1, location=0, menubar=0, "+
-                                                  "toolbar=0, resizable=1, height=450, width=400")
-        return false
-    })
-
     // SVG fallback for browsers that do not support SVG images
     $("img").fixsvg()
 

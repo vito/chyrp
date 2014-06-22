@@ -15,6 +15,62 @@ $(function(){
 
     if (Route.action == "modules" || Route.action == "feathers")
         Extend.init()
+
+    // Open help text in an iframe overlay
+    $(".help").on("click", function(){
+        $("<div>", {
+            "id": "ChyrpHelp-div",
+            "role": "region",
+        }).css({
+            "display": "block",
+            "position": "fixed",
+            "width": "100%",
+            "height": "100%",
+            "top": "0px",
+            "left": "0px",
+            "background-color": "rgba(79, 79, 79, 0.5)"
+        }).append(
+            [$("<iframe>", {
+                "id": "ChyrpHelp-frame",
+                "src": $(this).attr("href"),
+                "role": "contentinfo",
+                "aria-label": "Help"
+            }).css({
+                "display": "block",
+                "position": "absolute",
+                "width": "80%",
+                "height": "80%",
+                "max-height": "640px",
+                "top": "10%",
+                "left": "10%",
+                "overflow-x": "hidden",
+                "overflow-y": "auto",
+                "border": "none",
+                "box-shadow": "0px 4px 16px 2px rgba(79, 79, 79, 0.5)"    
+            }),
+            $("<img>", {
+                "src": "<?php echo $config->chyrp_url."/admin/themes/".$config->admin_theme; ?>/images/icons/cancel.svg",
+                "alt": "<?php echo ( __("Cancel") ) ?>",
+                "role": "button",
+                "aria-label": "<?php echo ( __("Cancel") ) ?>"
+            }).css({
+                "display": "block",
+                "position": "absolute",
+                "width": "16px",
+                "height": "16px",
+                "top": "10%",
+                "right": "10%",
+                "padding-top": "8px",
+                "padding-right": "8px",
+                "cursor": "pointer"
+            }).click(function() {
+                $(this).parent().remove();
+            })]
+        ).click(function() {
+            $(this).remove();
+        }).insertAfter("#content");
+        return false;
+    });
 })
 
 var Write = {
