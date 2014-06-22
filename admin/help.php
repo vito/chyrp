@@ -49,6 +49,7 @@
                 padding: .25em 1em;
                 background: #f0f0f0;
                 margin: 0 -1em 1em;
+                white-space: pre-wrap;
             }
             .body ul,
             .body ol {
