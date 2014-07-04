@@ -173,10 +173,6 @@
          *     $updated_at - The new comment's "last updated" timestamp.
          */
         static function add($body, $author, $url, $email, $ip, $agent, $status, $post, $user_id, $parent, $notify, $created_at = null, $updated_at = null) {
-            # Strip <script> tags
-            $body = str_replace("<script", "&lt;script", $body);
-            $body = str_replace("</script", "&lt;/script", $body);
-
             if (!empty($url)) # Add the http:// if it isn't there.
                 if (!@parse_url($url, PHP_URL_SCHEME))
                     $url = "http://".$url;
@@ -187,7 +183,7 @@
 
             $sql = SQL::current();
             $sql->insert("comments",
-                         array("body" => $body,
+                         array("body" => sanitize_html($body),
                                "author" => strip_tags($author),
                                "author_url" => strip_tags($url),
                                "author_email" => strip_tags($email),
@@ -208,14 +204,10 @@
         }
 
         public function update($body, $author, $url, $email, $status, $notify, $timestamp, $update_timestamp = true) {
-            # Strip <script> tags
-            $body = str_replace("<script", "&lt;script", $body);
-            $body = str_replace("</script", "&lt;/script", $body);
-
             $sql = SQL::current();
             $sql->update("comments",
                          array("id" => $this->id),
-                         array("body" => $body,
+                         array("body" => sanitize_html($body),
                                "author" => strip_tags($author),
                                "author_url" => strip_tags($url),
                                "author_email" => strip_tags($email),
