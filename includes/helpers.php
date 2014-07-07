@@ -545,6 +545,20 @@
     }
 
     /**
+     * Function: sanitize_html
+     * Sanitize html to disable scripts and obnoxious attributes.
+     *
+     * Parameters:
+     *     $string - String to sanitize.
+     */
+    function sanitize_html($text) {
+        $text = preg_replace("/<([a-z][a-z0-9]*)[^>]*?(\/?)>/i","<$1$2>", $text);
+        $text = preg_replace("/<script[^>]*?>/i","&lt;script&gt;", $text);
+        $text = preg_replace("/<\/script[^>]*?>/i","&lt;/script&gt;", $text);
+        return $text;
+    }
+
+    /**
      * Function: sanitize_input
      * Makes sure no inherently broken ideas such as magic_quotes break our application
      *
