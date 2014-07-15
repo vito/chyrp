@@ -1346,6 +1346,9 @@
         Config::remove("rss_posts");
         Config::remove("time_offset");
 
+        // Added in 2.6
+        Config::fallback("check_updates_last", 0);
+
         move_upload();
 
         remove_database_config_file();
