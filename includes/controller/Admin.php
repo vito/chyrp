@@ -471,7 +471,7 @@
                     if (isset($_POST['destroy_children']))
                         Page::delete($child->id, true);
                     else
-                        $child->update($child->title, $child->body, 0, $child->show_in_list, $child->list_order, $child->url);
+                        $child->update($child->title, $child->body, null, 0, $child->show_in_list, $child->list_order, null, $child->url);
 
             Page::delete($_POST['id']);
 
