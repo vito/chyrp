@@ -1202,6 +1202,36 @@
         echo " -".test(true);
     }
 
+    /**
+     * Function: pages_public_column
+     * Adds the @public@ column to the "pages" table.
+     *
+     * Versions: 2.5 => Chyrp 2.6
+     */
+    function pages_public_column() {
+        if (SQL::current()->query("SELECT public FROM __pages"))
+            return;
+
+        echo __("Adding public column to pages table...").
+             test(SQL::current()->query("ALTER TABLE __pages ADD public BOOLEAN DEFAULT '1' AFTER body"));
+    }
+
+    /**
+     * Function: add_view_page_permission
+     * Adds the "View Pages" permission to the Groups table.
+     *
+     * Versions: 2.5 => Chyrp 2.6
+     */
+    function add_view_page_permission() {
+        if (SQL::current()->count("permissions", array("id" => "view_page", "group_id" => 0)))
+            return; # Permission already exists.
+
+        echo _f("Inserting permission \"%s\"...", "View Pages").
+            test(SQL::current()->insert("permissions",
+                                             array("id" => "view_page",
+                                                   "name" => "View Pages")));
+    }
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -1404,6 +1434,10 @@
         update_user_password_column();
 
         add_user_approved_column();
+
+        pages_public_column();
+
+        add_view_page_permission();
 
         # Perform Module/Feather upgrades.
 

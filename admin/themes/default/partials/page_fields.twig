@@ -27,6 +27,10 @@
                             <input type="checkbox" name="show_in_list" id="show_in_list" tabindex="3"{% if page.show_in_list or route.action == "write_page" %} checked="checked"{% endif %} />&nbsp;
                         </p>
                         <p>
+                            <label for="public">${ "Allow everyone to view?" | translate }</label>
+                            <input type="checkbox" name="public" id="public" tabindex="3"{% if page.public %} checked="checked"{% endif %} />&nbsp;
+                        </p>
+                        <p>
                             <label for="slug">${ "Slug" | translate }</label>
                             <input class="text" type="text" name="slug" value="${ page.slug | escape }" id="slug" />
                         </p>
