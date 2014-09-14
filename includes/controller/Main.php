@@ -480,6 +480,17 @@
         }
 
         /**
+         * Function: cookies_notification
+         * Deliver a notification to comply with EU Directive 2002/58 on Privacy and Electronic Communications.
+         */
+        public function cookies_notification() {
+            if (!isset($_SESSION['cookies_notified'])) {
+                Flash::notice(__("By browsing this website you are agreeing to our use of cookies."));
+                $_SESSION['cookies_notified'] = true;
+            }
+        }
+
+        /**
          * Function: register
          * Process registration. If registration is disabled or if the user is already logged in, it will error.
          */
@@ -786,6 +797,8 @@
                 if (isset($context["posts"]))
                     return $this->feed($context["posts"]);
             }
+
+            $this->cookies_notification();
 
             $this->context = array_merge($context, $this->context);
 
