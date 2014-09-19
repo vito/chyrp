@@ -11,3 +11,5 @@ themes/*
 /.idea/
 
 *.idraw
+
+*.DS_Store
