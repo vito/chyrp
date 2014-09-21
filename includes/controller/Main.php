@@ -6,16 +6,15 @@
     class MainController {
         # Array: $urls
         # An array of clean URL => dirty URL translations.
-        public $urls = array('|/id/([0-9]+)/|'          => '/?action=view&id=$1',
-                             '|/page/(([^/]+)/)+|'      => '/?action=page&url=$2',
-                             '|/search/|'               => '/?action=search',
-                             '|/search/([^/]+)/|'       => '/?action=search&query=$1',
-                             '|/archive/([0-9]{4})/([0-9]{2})/|'
-                                                        => '/?action=archive&year=$1&month=$2',
-                             '|/archive/([0-9]{4})/([0-9]{2})/([0-9]{2})/|'
-                                                        => '/?action=archive&year=$1&month=$2&day=$3',
-                             '|/([^/]+)/feed/([^/]+)/|' => '/?action=$1&feed&title=$2',
-                             '|/([^/]+)/feed/|'         => '/?action=$1&feed');
+        public $urls = array('|/id/([0-9]+)/|'                              => '/?action=view&id=$1',
+                             '|/page/(([^/]+)/)+|'                          => '/?action=page&url=$2',
+                             '|/search/|'                                   => '/?action=search',
+                             '|/search/([^/]+)/|'                           => '/?action=search&query=$1',
+                             '|/archive/([0-9]{4})/([0-9]{2})/([0-9]{2})/|' => '/?action=archive&year=$1&month=$2&day=$3',
+                             '|/archive/([0-9]{4})/([0-9]{2})/|'            => '/?action=archive&year=$1&month=$2',
+                             '|/archive/([0-9]{4})/|'                       => '/?action=archive&year=$1',
+                             '|/([^/]+)/feed/([^/]+)/|'                     => '/?action=$1&feed&title=$2',
+                             '|/([^/]+)/feed/|'                             => '/?action=$1&feed');
 
         # Boolean: $displayed
         # Has anything been displayed?
@@ -441,6 +440,11 @@
             if ($page->no_results)
                 return false; # Page not found; the 404 handling is handled externally.
 
+            $visitor = Visitor::current();
+
+            if (!$page->public and !$visitor->group->can("view_page"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to view this page."));
+
             $this->display(array("pages/page", "pages/".$page->url), array("page" => $page), $page->title);
         }
 
@@ -473,6 +477,17 @@
                 unset($_SESSION['hide_admin']);
 
             redirect("/");
+        }
+
+        /**
+         * Function: cookies_notification
+         * Deliver a notification to comply with EU Directive 2002/58 on Privacy and Electronic Communications.
+         */
+        public function cookies_notification() {
+            if (!isset($_SESSION['cookies_notified'])) {
+                Flash::notice(__("By browsing this website you are agreeing to our use of cookies."));
+                $_SESSION['cookies_notified'] = true;
+            }
         }
 
         /**
@@ -628,18 +643,28 @@
             if (!empty($_POST)) {
                 $visitor = Visitor::current();
 
-                $password = (!empty($_POST['new_password1']) and $_POST['new_password1'] == $_POST['new_password2']) ?
-                                User::hashPassword($_POST['new_password1']) :
-                                $visitor->password ;
+                if (!empty($_POST['new_password1']) and $_POST['new_password1'] != $_POST['new_password2'])
+                    Flash::warning(__("Passwords do not match."));
 
-                $visitor->update($visitor->login,
-                                 $password,
-                                 $_POST['email'],
-                                 $_POST['full_name'],
-                                 $_POST['website'],
-                                 $visitor->group->id);
+                if (empty($_POST['email']))
+                    Flash::warning(__("E-mail address cannot be blank."));
+                elseif (!preg_match("/^[_A-z0-9-]+((\.|\+)[_A-z0-9-]+)*@[A-z0-9-]+(\.[A-z0-9-]+)*(\.[A-z]{2,4})$/", $_POST['email']))
+                    Flash::warning(__("Invalid e-mail address."));
 
-                Flash::notice(__("Your profile has been updated."), "/");
+                if (!Flash::exists("warning")) {
+                    $password = (!empty($_POST['new_password1']) and $_POST['new_password1'] == $_POST['new_password2']) ?
+                                    User::hashPassword($_POST['new_password1']) :
+                                    $visitor->password ;
+
+                    $visitor->update($visitor->login,
+                                     $password,
+                                     $_POST['email'],
+                                     $_POST['full_name'],
+                                     $_POST['website'],
+                                     $visitor->group->id);
+
+                    Flash::notice(__("Your profile has been updated."), "/");
+                }
             }
 
             $this->display("forms/user/controls", array(), __("Controls"));
@@ -782,6 +807,8 @@
                 if (isset($context["posts"]))
                     return $this->feed($context["posts"]);
             }
+
+            $this->cookies_notification();
 
             $this->context = array_merge($context, $this->context);
 
