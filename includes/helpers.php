@@ -121,7 +121,7 @@
         if (error_reporting() === 0)
             return; # Suppressed error.
 
-        exit("ERROR: ".$message." (".$file." on line ".$line.")");
+        exit("ERROR: ".$errno." ".$message." (".$file." on line ".$line.")");
     }
 
     /**

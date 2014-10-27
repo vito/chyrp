@@ -45,6 +45,7 @@
 
             $ext = array("css", "js", "php", "pot", "twig", "yaml");
             $context["editor"]["list_all"] = php_file_tree($theme_dir, "?action=theme_editor&file=[link]", $ext);
+
             if (isset($cur_file) and is_file($cur_file)) {
                 $context["editor"]["file_name"] = $file;
                 $context["editor"]["file_path"] = $cur_file;
