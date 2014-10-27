@@ -1,4 +1,3 @@
-.DS_Store
 .htaccess
 feathers/photo/lib/cache/*
 includes/config.yaml.php
@@ -11,5 +10,3 @@ themes/*
 /.idea/
 
 *.idraw
-
-*.DS_Store

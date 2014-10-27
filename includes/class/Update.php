@@ -101,7 +101,7 @@
          * Grabs update off the server.
          */
         public static function get_update() {
-            if (self::check_update() == false)
+            if (self::check_update() === false)
                 $message = __("<h2>Chyrp is up to date!</h2>");
             else {
                 $ch = curl_init(self::update_url());
@@ -111,7 +111,7 @@
                 $filedata = curl_exec($ch);
                 curl_close($ch);
                 file_put_contents(MAIN_DIR."/update.zip", $filedata);
-                
+
                 if (file_exists(MAIN_DIR."/update.zip"))
                     $message = __("<h2>File downloaded!</h2>");
 

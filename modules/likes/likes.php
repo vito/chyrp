@@ -76,13 +76,13 @@
             header("Content-Type: application/x-javascript", true);
 
             if (!isset($_REQUEST["action"]) or !isset($_REQUEST["post_id"])) exit();
-            
+
             $user_id = Visitor::current()->id;
             $likeSetting = Config::current()->module_like;
             $responseObj = array();
             $responseObj["uid"] = $user_id;
             $responseObj["success"] = true;
-            
+
             try {
                 $like = new Like($_REQUEST, $user_id);
                 $likeText = "";
@@ -121,13 +121,13 @@
             header("Content-Type: application/x-javascript", true);
 
             if (!isset($_REQUEST["action"]) or !isset($_REQUEST["post_id"])) exit();
-            
+
             $user_id = Visitor::current()->id;
             $likeSetting = Config::current()->module_like;
             $responseObj = array();
             $responseObj["uid"] = $user_id;
             $responseObj["success"] = true;
-            
+
             try {
                 $like = new Like($_REQUEST, $user_id);
                 $likeText = "";
@@ -176,7 +176,7 @@
             $likeSetting = $config->module_like;
 
             if (!$visitor->group->can("like_post")) return;
-            if ($likeSetting["showOnFront"] == false and $route->action == "index") return;
+            if ($likeSetting["showOnFront"] === false && $route->action === "index") return;
 
             $request["action"] = $route->action;
             $request["post_id"] = $post->id;
@@ -184,7 +184,7 @@
             $like->cookieInit();
             $hasPersonLiked = false;
 
-            if ($like->session_hash != null) {
+            if ($like->session_hash !== null) {
                 $people = $like->fetchPeople();
                 if (count($people) != 0)
                     foreach ($people as $person)

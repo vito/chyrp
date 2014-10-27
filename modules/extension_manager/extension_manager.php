@@ -11,13 +11,13 @@
         static function admin_context($context) {
             if ($_GET['action'] == "extend_manager") {
                 $types = array('feathers', 'modules', 'themes');
-                
+
                 foreach ($types as $type) {
                     $ids = file_get_contents("http://chyrp.net/api/1/extensions.php?type=$type");
                     $ids = explode(",", $ids);
                     array_pop($ids);
                     $ids = array_reverse($ids);
-                    
+
                     $content = array();
                     foreach($ids as $id) {
                         $info = file_get_contents("http://chyrp.net/api/1/extensions.php?id=$id");
@@ -27,7 +27,7 @@
                                            'version' => $data['version'],
                                            'download' => $data['download']);
                     }
-                    
+
                     $context["extensions"]["$type"] = $content;
                 }
             }
@@ -51,7 +51,7 @@
             fclose($fp);
 
             $zip = new ZipArchive;
-            if ($zip->open("../{$type}/latest.zip") == true) {
+            if ($zip->open("../{$type}/latest.zip") === true) {
                 mkdir("../{$type}/latest", 0777);
                 $zip->extractTo("../{$type}/latest");
                 $zip->close();
@@ -73,9 +73,9 @@
 
             Flash::notice(__("Extension downloaded successfully.", "extension_manager"), "/admin/?action=extend_manager");
         }
-    
+
         // from http://www.php.net/manual/en/function.rmdir.php#98622
-        function rrmdir($dir) { 
+        function rrmdir($dir) {
             if (is_dir($dir)) {
                 $objects = scandir($dir);
                 foreach ($objects as $object) {
