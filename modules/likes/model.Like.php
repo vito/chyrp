@@ -40,14 +40,14 @@
          * Adds a like to the database.
          */
         public function like() {
-        	if ($this->action == "like" and $this->post_id > 0) {
-            	SQL::current()->insert("likes",
+            if ($this->action == "like" and $this->post_id > 0) {
+                SQL::current()->insert("likes",
                                  array("post_id" => $this->post_id,
                                        "user_id" => $this->user_id,
                                        "timestamp" => datetime(),
                                        "session_hash" => $this->session_hash));
-        	}
-        	else throw new Exception("invalid params- action = $this->action and post_id = $this->post_id");
+            }
+            else throw new Exception("invalid params- action = $this->action and post_id = $this->post_id");
         }
 
         /**
@@ -56,38 +56,38 @@
          */
         public function unlike() {
             if ($this->action == "unlike" and $this->post_id > 0) {
-            	SQL::current()->delete("likes", array("post_id" => $this->post_id,
+                SQL::current()->delete("likes", array("post_id" => $this->post_id,
                                                       "session_hash" => $this->session_hash),
                                                 array("LIMIT" => 1));
-        	}
-        	else throw new Exception("invalid params");
+            }
+            else throw new Exception("invalid params");
         }
 
         public function fetchPeople() {
-        	$people = SQL::current()->select("likes",
-        	                                 "session_hash",
-        	                                 array("post_id" => $this->post_id))->fetchAll();
+            $people = SQL::current()->select("likes",
+                                             "session_hash",
+                                             array("post_id" => $this->post_id))->fetchAll();
 
-        	$this->total_count = count($people);
-        	return $people;
+            $this->total_count = count($people);
+            return $people;
         }
 
         public function fetchCount(){
             $count = SQL::current()->count("likes",
                                      array("post_id" => $this->post_id));
 
-        	$this->total_count = $count;
-        	return $count;
+            $this->total_count = $count;
+            return $count;
         }
 
         public function cookieInit() {
-            if(!isset($_COOKIE["likes_sh"]))    
-                # cookie not there 
+            if(!isset($_COOKIE["likes_sh"]))
+                # cookie not there
                 # set null session if action is null
-                if ($this->action == null)
+                if ($this->action === null)
                     $this->session_hash = null;
                 else {
-                    $time = time();	
+                    $time = time();
                     setcookie("likes_sh", md5($this->getIP().$time), $time + 31104000, "/");
                     # print($_SERVER["REMOTE_ADDR"]);
                     # print(md5($_SERVER["REMOTE_ADDR"]));
@@ -97,32 +97,32 @@
         }
 
         private function getIP() {
-        	if (isset($_SERVER['HTTP_X_CLUSTER_CLIENT_IP']) === TRUE)
-            	return $_SERVER['HTTP_X_CLUSTER_CLIENT_IP'];
-        	elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) === TRUE)
-            	return $_SERVER['HTTP_X_FORWARDED_FOR'];
-        	else return $_SERVER['REMOTE_ADDR'];
-        
+            if (isset($_SERVER['HTTP_X_CLUSTER_CLIENT_IP']) === TRUE)
+                return $_SERVER['HTTP_X_CLUSTER_CLIENT_IP'];
+            elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) === TRUE)
+                return $_SERVER['HTTP_X_FORWARDED_FOR'];
+            else return $_SERVER['REMOTE_ADDR'];
+
         }
 
         public function getText($count, $text) {
-        	global $likes_replace_count;
-        	$likes_replace_count = $count;
-        	if (!function_exists('likes_preg_cb')) {
-        		function likes_preg_cb($matches) {
-		        	global $likes_replace_count;
-        			$new_count = $likes_replace_count;
-        			if (isset($matches[2])) {
-        				$operator = $matches[3];
-        				$num = $matches[4];
-        				$new_count = $operator == "+" ? $likes_replace_count + $num : $likes_replace_count - $num;
-        			}
-        			return "<b>$new_count</b>";
-        		}
-        	}
+            global $likes_replace_count;
+            $likes_replace_count = $count;
+            if (!function_exists('likes_preg_cb')) {
+                function likes_preg_cb($matches) {
+                    global $likes_replace_count;
+                    $new_count = $likes_replace_count;
+                    if (isset($matches[2])) {
+                        $operator = $matches[3];
+                        $num = $matches[4];
+                        $new_count = $operator == "+" ? $likes_replace_count + $num : $likes_replace_count - $num;
+                    }
+                    return "<b>$new_count</b>";
+                }
+            }
 
-        	$text = preg_replace_callback('/(%NUM(([+-])([0-9]+))?%)/', "likes_preg_cb", $text);
-        	return $text;
+            $text = preg_replace_callback('/(%NUM(([+-])([0-9]+))?%)/', "likes_preg_cb", $text);
+            return $text;
         }
 
         static function install() {

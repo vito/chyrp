@@ -317,15 +317,15 @@
             # Ask modules to pitch in by adding their own <link> tag items to $links.
             # Each item must be an array with "href" and "rel" properties (and optionally "title" and "type"):
             Trigger::current()->filter($links, "links");
-            
+
             # Generate <link> tags:
             $tags = array();
             foreach ($links as $link) {
                 $rel = oneof(@$link["rel"], "alternate");
-                $href = $link["href"];
+                $href = @$link["href"];
                 $type = @$link["type"];
                 $title = @$link["title"];
-                $tag = '<link rel="'.$rel.'" href="'.$link["href"].'"';
+                $tag = '<link rel="'.$rel.'" href="'.$href.'"';
 
                 if ($type)
                     $tag.= ' type="'.$type.'"';
