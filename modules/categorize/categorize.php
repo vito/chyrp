@@ -28,7 +28,8 @@
         }
 
         /* Begin XML-RPC Support */
-        public function metaWeblog_getPost($struct, $post) {
+        public function metaWeblog_getPost($struct, $post)
+        {
             if (empty($post->category_id)) {
                 $struct['categories'][] = "";
             } else {
@@ -40,20 +41,21 @@
             return $struct;
         }
 
-        public function metaWeblog_editPost($args, $post) {
-            if (empty($args['categories'][0])) # if we don't have it, then leave.
-                $category->id = 0;
-            else
-                $category = Category::getCategoryIDbyName($args['categories'][0]);
+        public function metaWeblog_editPost($args, $post)
+        {
+            if (empty($args['categories'][0])) return;
+            $category = Category::getCategoryIDbyName($args['categories'][0]);
 
             SQL::current()->replace("post_attributes",
+                              array("post_id", "name"),
                               array("name" => "category_id",
                                     "value" => $category->id,
                                     "post_id" => $post->id));
         }
 
-        public function metaWeblog_newPost($args, $post) {
-            if (empty($args['categories'][0])) return; # if we don't have it, then leave.
+        public function metaWeblog_newPost($args, $post)
+        {
+            if (empty($args['categories'][0])) return;
             $category = Category::getCategoryIDbyName($args['categories'][0]);
 
             SQL::current()->insert("post_attributes",
@@ -70,6 +72,18 @@
             $struct[] = array('categoryId' => $category->id, 'categoryName' => $category->name);
 
             return $struct;
+        }
+
+        public function mt_setPostCategories($args, $post)
+        {
+            if (empty($args[0]['categoryId'])) return;
+            $category = Category::getCategoryIDbyName($args[0]['categoryName']);
+
+            SQL::current()->replace("post_attributes",
+                              array("post_id", "name"),
+                              array("name" => "category_id",
+                                    "value" => $category->id,
+                                    "post_id" => $post->id));
         }
 
         # return a list of categories to the XMLRPC system.
