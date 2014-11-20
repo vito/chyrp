@@ -1078,11 +1078,18 @@
          * Chyrp importing.
          */
         public function import_chyrp() {
+            $config  = Config::current();
+            $visitor = Visitor::current();
+            $trigger = Trigger::current();
+
+            if (!$visitor->group->can("add_post"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+
             if (empty($_POST))
                 redirect("/admin/?action=import");
 
-            if (!Visitor::current()->group->can("add_post"))
-                show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+            if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
+                show_403(__("Access Denied"), __("Invalid security key."));
 
             if (isset($_FILES['posts_file']) and $_FILES['posts_file']['error'] == 0)
                 if (!$posts = simplexml_load_file($_FILES['posts_file']['tmp_name']) or $posts->generator != "Chyrp")
@@ -1095,8 +1102,6 @@
             if (ini_get("memory_limit") < 20)
                 ini_set("memory_limit", "20M");
 
-            $trigger = Trigger::current();
-            $visitor = Visitor::current();
             $sql = SQL::current();
 
             function media_url_scan(&$value) {
@@ -1204,11 +1209,14 @@
          * WordPress importing.
          */
         public function import_wordpress() {
+            if (!Visitor::current()->group->can("add_post"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+
             if (empty($_POST))
                 redirect("/admin/?action=import");
 
-            if (!Visitor::current()->group->can("add_post"))
-                show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+            if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+                show_403(__("Access Denied"), __("Invalid security key."));
 
             $config = Config::current();
 
@@ -1284,7 +1292,7 @@
                         $contentencoded = str_replace($matched_url, $config->url.$config->uploads_path.$filename, $contentencoded);
                     }
                 }
-                
+
                 $clean = (isset($wordpress->post_name) && $wordpress->post_name != '') ? $wordpress->post_name : sanitize($item->title) ;
 
                 $pinned = (isset($wordpress->is_sticky)) ? $wordpress->is_sticky : 0 ;
@@ -1307,7 +1315,7 @@
                                              ),
                                 "feather" => "text"
                             );
-                    
+
                     $wp_post_format = null;
                     if (isset($item->category)) {
                         foreach ($item->category as $category) {
@@ -1321,7 +1329,7 @@
                             }
                         }
                     }
-                    
+
                     if ($wp_post_format) {
                         $trigger->filter(
                             $data,
@@ -1329,7 +1337,7 @@
                             $item
                          );
                     }
-                    
+
                     $post = Post::add($data["content"],
                                       $clean,
                                       Post::check_url($clean),
@@ -1366,11 +1374,14 @@
          * Tumblr importing.
          */
         public function import_tumblr() {
+            if (!Visitor::current()->group->can("add_post"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+
             if (empty($_POST))
                 redirect("/admin/?action=import");
 
-            if (!Visitor::current()->group->can("add_post"))
-                show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+            if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+                show_403(__("Access Denied"), __("Invalid security key."));
 
             $config = Config::current();
             if (!in_array("text", $config->enabled_feathers) or
@@ -1497,31 +1508,36 @@
          * TextPattern importing.
          */
         public function import_textpattern() {
+            $config  = Config::current();
+            $visitor = Visitor::current();
+            $trigger = Trigger::current();
+
+            if (!$visitor->group->can("add_post"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+
             if (empty($_POST))
                 redirect("/admin/?action=import");
 
-            if (!Visitor::current()->group->can("add_post"))
-                show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+            if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
+                show_403(__("Access Denied"), __("Invalid security key."));
 
-            $config = Config::current();
-            $trigger = Trigger::current();
+            @$mysqli = new mysqli($_POST['host'], $_POST['username'], $_POST['password'], $_POST['database']);
 
-            $dbcon = $dbsel = false;
-            if ($link = @mysql_connect($_POST['host'], $_POST['username'], $_POST['password'])) {
-                $dbcon = true;
-                $dbsel = @mysql_select_db($_POST['database'], $link);
+            if ($mysqli->connect_errno) {
+                Flash::warning(__("Could not connect to the specified TextPattern database."),
+                    "/admin/?action=import");
             }
 
-            if (!$dbcon or !$dbsel)
-                Flash::warning(__("Could not connect to the specified TextPattern database."),
-                               "/admin/?action=import");
+            $mysqli->query("SET NAMES 'utf8'");
 
-            mysql_query("SET NAMES 'utf8'");
+            $prefix = $mysqli->real_escape_string($_POST['prefix']);
+            $result = $mysqli->query("SELECT * FROM {$prefix}textpattern ORDER BY ID ASC") or error(__("Database Error"), $mysqli->error);
 
-            $get_posts = mysql_query("SELECT * FROM {$_POST['prefix']}textpattern ORDER BY ID ASC", $link) or error(__("Database Error"), mysql_error());
             $posts = array();
-            while ($post = mysql_fetch_array($get_posts))
+            while ($post = $result->fetch_assoc())
                 $posts[$post["ID"]] = $post;
+
+            $mysqli->close();
 
             foreach ($posts as $post) {
                 $regexp_url = preg_quote($_POST['media_url'], "/");
@@ -1559,8 +1575,6 @@
                 $trigger->call("import_textpattern_post", $post, $new_post);
             }
 
-            mysql_close($link);
-
             Flash::notice(__("TextPattern content successfully imported!"), "/admin/?action=import");
         }
 
@@ -1569,56 +1583,61 @@
          * MovableType importing.
          */
         public function import_movabletype() {
+            $config = Config::current();
+            $visitor = Visitor::current();
+            $trigger = Trigger::current();
+
+            if (!$visitor->group->can("add_post"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+
             if (empty($_POST))
                 redirect("/admin/?action=import");
 
-            if (!Visitor::current()->group->can("add_post"))
-                show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+            if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
+                show_403(__("Access Denied"), __("Invalid security key."));
 
-            $config = Config::current();
-            $trigger = Trigger::current();
+            @$mysqli = new mysqli($_POST['host'], $_POST['username'], $_POST['password'], $_POST['database']);
 
-            $dbcon = $dbsel = false;
-            if ($link = @mysql_connect($_POST['host'], $_POST['username'], $_POST['password'])) {
-                $dbcon = true;
-                $dbsel = @mysql_select_db($_POST['database'], $link);
-            }
-
-            if (!$dbcon or !$dbsel)
+            if ($mysqli->connect_errno) {
                 Flash::warning(__("Could not connect to the specified MovableType database."),
-                               "/admin/?action=import");
-
-            mysql_query("SET NAMES 'utf8'");
-
-            $get_authors = mysql_query("SELECT * FROM mt_author ORDER BY author_id ASC", $link) or error(__("Database Error"), mysql_error());
-            $users = array();
-            while ($author = mysql_fetch_array($get_authors)) {
-                # Try to figure out if this author is the same as the person doing the import.
-                if ($author["author_name"] == Visitor::current()->login or
-                    $author["author_nickname"] == Visitor::current()->login or
-                    $author["author_nickname"] == Visitor::current()->full_name or
-                    $author["author_url"] == Visitor::current()->website or
-                    $author["author_email"] == Visitor::current()->email)
-                    $users[$author["author_id"]] = Visitor::current();
-                else
-                    $users[$author["author_id"]] = User::add($author["author_name"],
-                                                             $author["author_password"],
-                                                             $author["author_email"],
-                                                             ($author["author_nickname"] != $author["author_name"] ?
-                                                                 $author["author_nickname"] :
-                                                                 ""),
-                                                             $author["author_url"],
-                                                             ($author["author_can_create_blog"] == "1" ?
-                                                                 Visitor::current()->group :
-                                                                 null),
-                                                             $author["author_created_on"],
-                                                             false);
+                    "/admin/?action=import");
             }
 
-            $get_posts = mysql_query("SELECT * FROM mt_entry ORDER BY entry_id ASC", $link) or error(__("Database Error"), mysql_error());
+            $mysqli->query("SET NAMES 'utf8'");
+
+            $authors = array();
+            $result = $mysqli->query("SELECT * FROM mt_author ORDER BY author_id ASC") or error(__("Database Error"), $mysqli->error);
+
+            while ($author = $result->fetch_assoc()) {
+                # Try to figure out if this author is the same as the person doing the import.
+                if ($author["author_name"] == $visitor->login
+                    || $author["author_nickname"] == $visitor->login
+                    || $author["author_nickname"] == $visitor->full_name
+                    || $author["author_url"]      == $visitor->website
+                    || $author["author_email"]    == $visitor->email) {
+                    $users[$author["author_id"]] = $visitor;
+                } else {
+                    $users[$author["author_id"]] = User::add(
+                        $author["author_name"],
+                        $author["author_password"],
+                        $author["author_email"],
+                        ($author["author_nickname"] != $author["author_name"] ?
+                                                       $author["author_nickname"] : ""),
+                        $author["author_url"],
+                        ($author["author_can_create_blog"] == "1" ? $visitor->group : null),
+                        $author["author_created_on"],
+                        false
+                    );
+                }
+            }
+
+            $result = $mysqli->query("SELECT * FROM mt_entry ORDER BY entry_id ASC") or error(__("Database Error"), $mysqli->error);
+
             $posts = array();
-            while ($post = mysql_fetch_array($get_posts))
+            while ($post = $result->fetch_assoc())
                 $posts[$post["entry_id"]] = $post;
+
+            $mysqli->close();
 
             foreach ($posts as $post) {
                 $body = $post["entry_text"];
@@ -1663,8 +1682,6 @@
                     $trigger->call("import_movabletype_page", $post, $new_page, $link);
                 }
             }
-
-            mysql_close($link);
 
             Flash::notice(__("MovableType content successfully imported!"), "/admin/?action=import");
         }
