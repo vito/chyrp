@@ -1248,6 +1248,20 @@
              test(SQL::current()->query("ALTER TABLE __users ADD bio varchar(250) DEFAULT '' AFTER full_name"));
     }
 
+    /**
+     * Function: add_user_avatar_column
+     * Adds the @avatar@ column on the "users" table.
+     *
+     * Versions: 2.5 => 2.6
+     */
+    function add_user_avatar_column() {
+        if (SQL::current()->query("SELECT avatar FROM __users"))
+            return;
+
+        echo __("Adding avatar column to users table...").
+             test(SQL::current()->query("ALTER TABLE __users ADD avatar VARCHAR(250) DEFAULT NULL"));
+    }
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -1456,6 +1470,8 @@
         add_view_page_permission();
 
         add_user_bio_column();
+
+        add_user_avatar_column();
 
         # Perform Module/Feather upgrades.
 

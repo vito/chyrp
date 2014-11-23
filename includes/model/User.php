@@ -83,7 +83,10 @@
          *     $password - The Password for the new user. Don't hash this, it's done in the function.
          *     $email - The E-Mail for the new user.
          *     $full_name - The full name of the user.
+         *     $bio - The user's short bio.
          *     $website - The user's website.
+         *     $avatar - The user's avatar image.
+         *     $avatar - The user's approved status.
          *     $group - The user's group (defaults to the configured default group).
          *     $joined_at - Join date (defaults to now).
          *     $hash_password - Hash the password automatically? (defaults to true)
@@ -100,6 +103,7 @@
                             $full_name = "",
                             $bio = "",
                             $website = "",
+                            $avatar = null,
                             $approved = true,
                             $group_ = null,
                             $joined_at = null,
@@ -119,6 +123,7 @@
                                 "full_name" => strip_tags($full_name),
                                 "bio"       => strip_tags($bio),
                                 "website"   => strip_tags($website),
+                                "avatar"    => strip_tags($avatar),
                                 "approved"  => oneof($approved, true),
                                 "group_id"  => $group_id,
                                 "joined_at" => oneof($joined_at, datetime()));
@@ -143,9 +148,12 @@
          * Parameters:
          *     $login - The new Login to set.
          *     $password - The new Password to set, already encoded.
-         *     $full_name - The new Full Name to set.
          *     $email - The new E-Mail to set.
+         *     $full_name - The new Full Name to set.
+         *     $bio - The new Bio to set.
          *     $website - The new Website to set.
+         *     $avatar - The new Avatar to set.
+         *     $approved - The new Approved value to set.
          *     $group_id - The new <Group> to set.
          *
          * See Also:
@@ -157,6 +165,7 @@
                                $full_name = null,
                                $bio       = null,
                                $website   = null,
+                               $avatar    = null,
                                $approved  = null,
                                $group_id  = null,
                                $joined_at = null) {
@@ -177,6 +186,7 @@
                                 "full_name" => strip_tags($full_name),
                                 "bio"       => strip_tags($bio),
                                 "website"   => strip_tags($website),
+                                "avatar"    => strip_tags($avatar),
                                 "approved"  => $approved,
                                 "group_id"  => $group_id,
                                 "joined_at" => $joined_at);
@@ -231,6 +241,16 @@
         static function checkPassword($password, $storedHash) {
             $hasher = new PasswordHash(8, false);
             return $hasher->CheckPassword($password, $storedHash);
+        }
+
+        public function avatar($size = 80, $tag = false)
+        {
+            if (!empty($this->avatar)) {
+                $config = Config::current();
+                return $config->chyrp_url.'/includes/thumb.php?file=..'.$config->uploads_path.urlencode($this->avatar).'&amp;max_width='.$size;
+            }
+            else
+                return get_gravatar($this->email, $size, 'm', 'g', $tag);
         }
 
         /**

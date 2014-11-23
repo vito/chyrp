@@ -656,12 +656,18 @@
                                     User::hashPassword($_POST['new_password1']) :
                                     $visitor->password ;
 
+                    if (empty($_FILES['avatar']['size']))
+                        $avatar = $this->avatar ?: null;
+                    else
+                        $avatar = upload($_FILES['avatar'], array("jpg", "png", "jpeg", "gif"));
+
                     $visitor->update($visitor->login,
                                      $password,
                                      $_POST['email'],
                                      $_POST['full_name'],
                                      $_POST['bio'],
                                      $_POST['website'],
+                                     $avatar,
                                      $visitor->approved,
                                      $visitor->group->id);
 
@@ -837,7 +843,7 @@
             $this->context["GET"]          = $_GET;
             $this->context["sql_queries"] =& SQL::current()->queries;
             $this->context["captcha"]      = generate_captcha();
-            $this->context["admin"]        = new User(1);
+            $this->context["author"]       = new User(1);
 
             $this->context["visitor"]->logged_in = logged_in();
 
@@ -886,4 +892,3 @@
             return $instance = (empty($instance)) ? new self() : $instance ;
         }
     }
-
