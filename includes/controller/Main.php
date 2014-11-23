@@ -753,25 +753,15 @@
          * Grabs a random post and redirects to it.
          */
         public function random() {
-            $sql = SQL::current();
-            if (isset($_GET['feather'])) {
-                $feather = preg_replace( '|[^a-z]|i', '', $_GET['feather'] );
-                $random = $sql->select("posts",
-                                       "posts.url",
+            $param = preg_replace('|[^a-z]|i', '', $_GET['feather']);
+            $feather = isset($param) ? $param : 'text';
+            $random = SQL::current()->select("posts",
+                                             "posts.url",
                                        array("posts.feather" => $feather,
                                              "posts.status" => "public"),
                                        array("ORDER BY" => "RAND()"),
                                        array("LIMIT" => 1))->fetchObject();
-                $post = new Post(array("url" => $random->url));
-        	} else {
-                $random = $sql->select("posts",
-                                       "posts.url",
-                                       array("posts.status" => "public"),
-                                       array("ORDER BY" => "RAND()"),
-                                       array("LIMIT" => 1))->fetchObject();
-                $post = new Post(array("url" => $random->url));
-        	}
-
+            $post = new Post(array("url" => $random->url));
             redirect($post->url());
         }
 
