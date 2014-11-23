@@ -6,15 +6,17 @@
     class MainController {
         # Array: $urls
         # An array of clean URL => dirty URL translations.
-        public $urls = array('|/id/([0-9]+)/|'                              => '/?action=view&id=$1',
-                             '|/page/(([^/]+)/)+|'                          => '/?action=page&url=$2',
-                             '|/search/|'                                   => '/?action=search',
-                             '|/search/([^/]+)/|'                           => '/?action=search&query=$1',
-                             '|/archive/([0-9]{4})/([0-9]{2})/([0-9]{2})/|' => '/?action=archive&year=$1&month=$2&day=$3',
-                             '|/archive/([0-9]{4})/([0-9]{2})/|'            => '/?action=archive&year=$1&month=$2',
-                             '|/archive/([0-9]{4})/|'                       => '/?action=archive&year=$1',
-                             '|/([^/]+)/feed/([^/]+)/|'                     => '/?action=$1&feed&title=$2',
-                             '|/([^/]+)/feed/|'                             => '/?action=$1&feed');
+        public $urls = array(
+            '|/id/([0-9]+)/|'                              => '/?action=view&id=$1',
+            '|/page/(([^/]+)/)+|'                          => '/?action=page&url=$2',
+            '|/author/(([^/]+)/)+|'                        => '/?action=author&login=$2',
+            '|/search/|'                                   => '/?action=search',
+            '|/search/([^/]+)/|'                           => '/?action=search&query=$1',
+            '|/archive/([0-9]{4})/([0-9]{2})/([0-9]{2})/|' => '/?action=archive&year=$1&month=$2&day=$3',
+            '|/archive/([0-9]{4})/([0-9]{2})/|'            => '/?action=archive&year=$1&month=$2',
+            '|/archive/([0-9]{4})/|'                       => '/?action=archive&year=$1',
+            '|/([^/]+)/feed/([^/]+)/|'                     => '/?action=$1&feed&title=$2',
+            '|/([^/]+)/feed/|'                             => '/?action=$1&feed');
 
         # Boolean: $displayed
         # Has anything been displayed?
@@ -115,6 +117,14 @@
                     $_GET['query'] = $route->arg[1];
 
                 return $route->action = "search";
+            }
+
+            # Author
+            if ($route->arg[0] == "author") {
+                if (isset($route->arg[1]))
+                    $_GET['login'] = $route->arg[1];
+
+                return $route->action = "author";
             }
 
             # Custom pages added by Modules, Feathers, Themes, etc.
@@ -449,6 +459,22 @@
         }
 
         /**
+         * Function: author
+         * Handles author viewing.
+         */
+        public function author($urls = null) {
+            if (isset($urls)) { # Viewing with clean URLs, e.g. /author/login/
+                $author = User::find(array("where" => array("login" => $urls)));
+            } else
+                $author = new User(array("login" => $_GET['login']));
+
+            if ($author->no_results)
+                Flash::notice(_f("We're sorry, but there was no <strong>\"%s\"</strong> author found.", strip_tags($_GET['login'])), "/");
+
+            $this->display(array("pages/author"), array("author" => $author), $author->login);
+        }
+
+        /**
          * Function: rss
          * Redirects to /feed (backwards compatibility).
          */
@@ -727,25 +753,15 @@
          * Grabs a random post and redirects to it.
          */
         public function random() {
-            $sql = SQL::current();
-            if (isset($_GET['feather'])) {
-                $feather = preg_replace( '|[^a-z]|i', '', $_GET['feather'] );
-                $random = $sql->select("posts",
-                                       "posts.url",
+            $param = preg_replace('|[^a-z]|i', '', $_GET['feather']);
+            $feather = isset($param) ? $param : 'text';
+            $random = SQL::current()->select("posts",
+                                             "posts.url",
                                        array("posts.feather" => $feather,
                                              "posts.status" => "public"),
                                        array("ORDER BY" => "RAND()"),
                                        array("LIMIT" => 1))->fetchObject();
-                $post = new Post(array("url" => $random->url));
-        	} else {
-                $random = $sql->select("posts",
-                                       "posts.url",
-                                       array("posts.status" => "public"),
-                                       array("ORDER BY" => "RAND()"),
-                                       array("LIMIT" => 1))->fetchObject();
-                $post = new Post(array("url" => $random->url));
-        	}
-
+            $post = new Post(array("url" => $random->url));
             redirect($post->url());
         }
 
@@ -843,7 +859,7 @@
             $this->context["GET"]          = $_GET;
             $this->context["sql_queries"] =& SQL::current()->queries;
             $this->context["captcha"]      = generate_captcha();
-            $this->context["author"]       = new User(1);
+            $this->context["site_author"]  = new User(1);
 
             $this->context["visitor"]->logged_in = logged_in();
 
