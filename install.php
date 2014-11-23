@@ -220,10 +220,11 @@
                              login VARCHAR(64) DEFAULT '',
                              password VARCHAR(60) DEFAULT '',
                              full_name VARCHAR(250) DEFAULT '',
+                             bio VARCHAR(250) DEFAULT '',
                              email VARCHAR(128) DEFAULT '',
                              website VARCHAR(128) DEFAULT '',
-                             group_id INTEGER DEFAULT 0,
                              approved BOOLEAN DEFAULT '1',
+                             group_id INTEGER DEFAULT 0,
                              joined_at DATETIME DEFAULT NULL,
                              UNIQUE (login)
                          ) DEFAULT CHARSET=utf8");

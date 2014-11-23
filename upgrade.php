@@ -281,31 +281,31 @@
 
     /**
      * Function: download_new_version
-     * Downloads the newest version of chyrp 
+     * Downloads the newest version of chyrp
      */
     function download_new_version() {
         $version = file_get_contents("http://chyrp.net/api/1/version.php");
-        
+
         if (version_compare($version, CHYRP_VERSION, "<="))
             return;
 
         $e = 0;
         # delete everything from 2 versions back
         if (is_dir("old"))
-            if (!rmdir("old")) 
+            if (!rmdir("old"))
                 echo __("Please manually delete the directory root/updates");
                 $e = 1;
 
         if (is_dir("updates"))
-            if (!rmdir("updates")) 
+            if (!rmdir("updates"))
                 echo __("Please manually delete the directory root/updates");
                 $e = 1;
 
-        if (!mkdir("updates")) 
+        if (!mkdir("updates"))
             echo __("Please manually create the directory root/updates");
             $e = 1;
 
-        if (!mkdir("old")) 
+        if (!mkdir("old"))
             echo __("Please manually create the directory root/old");
             $e = 1;
 
@@ -353,7 +353,7 @@
                         echo __("Please manually copy the file root/old/includes/config.yaml.php to root/includes/config.yaml.php");
 
                 if (is_dir("updates"))
-                    if (!rmdir("updates")) 
+                    if (!rmdir("updates"))
                         echo __("Please manually delete the directory root/updates");
             }
         }
@@ -1104,10 +1104,11 @@
                                             `login` varchar(64) DEFAULT '',
                                             `password` varchar(60) DEFAULT NULL,
                                             `full_name` varchar(250) DEFAULT '',
+                                            `bio` varchar(250) DEFAULT '',
                                             `email` varchar(128) DEFAULT '',
                                             `website` varchar(128) DEFAULT '',
-                                            `group_id` int(11) DEFAULT '0',
                                             `approved` BOOLEAN DEFAULT '1',
+                                            `group_id` int(11) DEFAULT '0',
                                             `joined_at` datetime DEFAULT NULL,
                                             PRIMARY KEY (`id`),
                                             UNIQUE KEY `login` (`login`)
@@ -1140,7 +1141,7 @@
             return;
 
         echo __("Adding approved column to users table...").
-             test(SQL::current()->query("ALTER TABLE __users ADD approved BOOLEAN DEFAULT '1' AFTER group_id"));
+             test(SQL::current()->query("ALTER TABLE __users ADD approved BOOLEAN DEFAULT '1' BEFORE group_id"));
     }
 
     /**
@@ -1177,10 +1178,11 @@
                                             `login` varchar(64) DEFAULT '',
                                             `password` varchar(60) DEFAULT NULL,
                                             `full_name` varchar(250) DEFAULT '',
+                                            `bio` varchar(250) DEFAULT '',
                                             `email` varchar(128) DEFAULT '',
                                             `website` varchar(128) DEFAULT '',
-                                            `group_id` int(11) DEFAULT '0',
                                             `approved` tinyint(1) DEFAULT '1',
+                                            `group_id` int(11) DEFAULT '0',
                                             `joined_at` datetime DEFAULT NULL,
                                             PRIMARY KEY (`id`),
                                             UNIQUE KEY `login` (`login`)
@@ -1230,6 +1232,20 @@
             test(SQL::current()->insert("permissions",
                                              array("id" => "view_page",
                                                    "name" => "View Pages")));
+    }
+
+    /**
+     * Function: add_user_bio_column
+     * Adds the @bio@ column on the "users" table.
+     *
+     * Versions: 2.5 => 2.6
+     */
+    function add_user_bio_column() {
+        if (SQL::current()->query("SELECT bio FROM __users"))
+            return;
+
+        echo __("Adding bio column to users table...").
+             test(SQL::current()->query("ALTER TABLE __users ADD bio varchar(250) DEFAULT '' AFTER full_name"));
     }
 
 ?>
@@ -1438,6 +1454,8 @@
         pages_public_column();
 
         add_view_page_permission();
+
+        add_user_bio_column();
 
         # Perform Module/Feather upgrades.
 

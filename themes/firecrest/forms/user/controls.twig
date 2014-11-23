@@ -23,6 +23,10 @@
             <input type="text" name="website" value="${ visitor.website | escape }" id="website" tabindex="1" />
         </p>
         <p>
+            <label for="bio">${ "Bio" | translate }</label>
+            <textarea name="bio" rows="3" cols="31" id="bio">${ visitor.bio | escape }</textarea>
+        </p>
+        <p>
             <label for="new_password1">${ "New Password?" | translate }</label>
             <input type="password" name="new_password1" value="" id="new_password1" />
         </p>

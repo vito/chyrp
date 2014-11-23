@@ -300,7 +300,7 @@
                                               "timestamp" => $month,
                                               "url" => url("archive/".when("Y/m/", $time->created_at)));
 
-                    $archive_hierarchy[$year][$month] = $posts; 
+                    $archive_hierarchy[$year][$month] = $posts;
                 }
 
                 $this->display("pages/archive",
@@ -530,7 +530,7 @@
                                    "Reply-To:".$config->email. "\r\n" .
                                    "X-Mailer: PHP/".phpversion() ;
 
-                        $user = User::add($_POST['login'], $_POST['password1'], $_POST['email'], "", "", 5, false);
+                        $user = User::add($_POST['login'], $_POST['password1'], $_POST['email'], '', '', '', false, 5);
                         $sent = email($to, $subject, $message, $headers);
 
                         if ($sent)
@@ -660,7 +660,9 @@
                                      $password,
                                      $_POST['email'],
                                      $_POST['full_name'],
+                                     $_POST['bio'],
                                      $_POST['website'],
+                                     $visitor->approved,
                                      $visitor->group->id);
 
                     Flash::notice(__("Your profile has been updated."), "/");
@@ -835,6 +837,7 @@
             $this->context["GET"]          = $_GET;
             $this->context["sql_queries"] =& SQL::current()->queries;
             $this->context["captcha"]      = generate_captcha();
+            $this->context["admin"]        = new User(1);
 
             $this->context["visitor"]->logged_in = logged_in();
 

@@ -98,9 +98,10 @@
                             $password,
                             $email,
                             $full_name = "",
+                            $bio = "",
                             $website = "",
-                            $group_ = null,
                             $approved = true,
+                            $group_ = null,
                             $joined_at = null,
                             $hash_password = true) {
             $config = Config::current();
@@ -111,14 +112,15 @@
                 $group_id = $config->default_group;
             else
                 $group_id = ($group instanceof Group) ? $group->id : $group ;
-            
+
             $new_values = array("login"     => strip_tags($login),
                                 "password"  => ($hash_password ? self::hashPassword($password) : $password),
                                 "email"     => strip_tags($email),
                                 "full_name" => strip_tags($full_name),
+                                "bio"       => strip_tags($bio),
                                 "website"   => strip_tags($website),
-                                "group_id"  => $group_id,
                                 "approved"  => oneof($approved, true),
+                                "group_id"  => $group_id,
                                 "joined_at" => oneof($joined_at, datetime()));
 
             $trigger->filter($new_values, "before_add_user");
@@ -153,7 +155,9 @@
                                $password  = null,
                                $email     = null,
                                $full_name = null,
+                               $bio       = null,
                                $website   = null,
+                               $approved  = null,
                                $group_id  = null,
                                $joined_at = null) {
             if ($this->no_results)
@@ -164,14 +168,16 @@
 
             $old = clone $this;
 
-            foreach (array("login", "password", "email", "full_name", "website", "group_id", "joined_at") as $attr)
+            foreach (array("login", "password", "email", "full_name", "bio", "website", "approved", "group_id", "joined_at") as $attr)
                 $this->$attr = $$attr = ($$attr !== null ? $$attr : $this->$attr);
 
             $new_values = array("login"     => strip_tags($login),
                                 "password"  => $password,
                                 "email"     => strip_tags($email),
                                 "full_name" => strip_tags($full_name),
+                                "bio"       => strip_tags($bio),
                                 "website"   => strip_tags($website),
+                                "approved"  => $approved,
                                 "group_id"  => $group_id,
                                 "joined_at" => $joined_at);
 
@@ -201,7 +207,7 @@
          *
          * Parameters:
          *     $password - The unhashed password.
-         * 
+         *
          * Returns:
          *     The securely hashed password to be stored in the database.
          */
@@ -218,7 +224,7 @@
          * Parameters:
          *     $password - The unhashed password given during a login attempt.
          *     $storedHash - The stored hash for the user.
-         * 
+         *
          * Returns:
          *     @true@ or @false@
          */
@@ -230,7 +236,7 @@
         /**
          * Function: group
          * Returns a user's group. Example: $user->group->can("do_something")
-         * 
+         *
          * !! DEPRECATED AFTER 2.0 !!
          */
         public function group() {
@@ -243,7 +249,7 @@
         /**
          * Function: posts
          * Returns all the posts of the user.
-         * 
+         *
          * !! DEPRECATED AFTER 2.0 !!
          */
         public function posts() {
@@ -256,7 +262,7 @@
         /**
          * Function: pages
          * Returns all the pages of the user.
-         * 
+         *
          * !! DEPRECATED AFTER 2.0 !!
          */
         public function pages() {
