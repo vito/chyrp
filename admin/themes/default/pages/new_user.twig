@@ -42,7 +42,14 @@
                         <label for="website">${ "Website" | translate }</label>
                         <input class="text" type="text" name="website" value="" id="website" />
                     </p>
-
+                    <p>
+                        <label for="bio">${ "Bio" | translate }</label>
+                        <textarea name="bio" rows="3" cols="24" id="bio"></textarea>
+                    </p>
+                    <p>
+                        <label for="approved">${ "Approved?" | translate }</label>
+                        <input class="checkbox" type="checkbox" name="approved" id="approved" />
+                    </p>
 
                     ${ trigger.call("new_user_fields") }
 

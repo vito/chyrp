@@ -508,10 +508,17 @@
             $config = Config::current();
 
             $this->display("new_user",
-                           array("default_group" => new Group($config->default_group),
-                                 "groups" => Group::find(array("where" => array("id not" => array($config->guest_group,
-                                                                                                  $config->default_group)),
-                                                               "order" => "id DESC"))));
+                array("default_group" => new Group($config->default_group),
+                    "groups" => Group::find(
+                        array("where" =>
+                            array("id not" =>
+                                array($config->guest_group, $config->default_group)
+                            ),
+                            "order" => "id DESC"
+                        )
+                    )
+                )
+            );
         }
 
         /**
@@ -550,7 +557,9 @@
                       $_POST['password1'],
                       $_POST['email'],
                       $_POST['full_name'],
+                      $_POST['bio'],
                       $_POST['website'],
+                      isset($_POST['approved']) ? 1 : 0,
                       $_POST['group']);
 
             Flash::notice(__("User added."), "/admin/?action=manage_users");
@@ -568,9 +577,14 @@
                 error(__("No ID Specified"), __("An ID is required to edit a user."));
 
             $this->display("edit_user",
-                           array("user" => new User($_GET['id']),
-                                 "groups" => Group::find(array("order" => "id ASC",
-                                                               "where" => array("id not" => Config::current()->guest_group)))));
+                array("user" => new User($_GET['id']),
+                      "groups" => Group::find(
+                        array("order" => "id ASC",
+                              "where" => array("id not" => Config::current()->guest_group)
+                        )
+                    )
+                )
+            );
         }
 
         /**
@@ -612,7 +626,9 @@
                            $_POST['website'] = 'http://' . $_POST['website'] :
                            $_POST['website'] ;
 
-            $user->update($_POST['login'], $password, $_POST['email'], $_POST['full_name'], $website, $_POST['group']);
+            $approved = (isset($_POST['approved'])) ? 1 : 0;
+
+            $user->update($_POST['login'], $password, $_POST['email'], $_POST['full_name'], $_POST['bio'], $website, $approved, $_POST['group']);
 
             if ($_POST['id'] == $visitor->id)
                 $_SESSION['password'] = $password;
