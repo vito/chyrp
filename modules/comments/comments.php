@@ -698,7 +698,7 @@
             return fallback($this->latest_comments[$post->id], null);
         }
 
-        public function comments_get($options) {
+        public function comments_get(&$options) {
             if (ADMIN)
                 return;
 
