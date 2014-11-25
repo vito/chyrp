@@ -53,7 +53,12 @@
          *     <Model::search>
          */
         static function find($options = array(), $options_for_object = array()) {
-            return parent::search(get_class(), $options, $options_for_object);
+            $comments = parent::search(get_class(), $options, $options_for_object);
+            
+            $trigger = Trigger::current();
+            $trigger->filter($comments, "comments_process");
+            
+            return $comments;
         }
 
         /**
@@ -367,7 +372,7 @@
 
         function __construct($comments) {
             foreach ($comments as $comment) {
-                if ($comment['parent_id'] === 0)
+                if ($comment['parent_id'] == 0)
                     $this->parents[$comment['id']][] = $comment;
                 else
                     $this->children[$comment['parent_id']][] = $comment;

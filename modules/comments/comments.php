@@ -76,7 +76,7 @@
             if (empty($_POST['author'])) error(__("Error"), __("Author can't be blank.", "comments"));
             if (empty($_POST['email']))  error(__("Error"), __("E-Mail address can't be blank.", "comments"));
 
-            fallback($parent, (int) !empty($_POST['parent_id']));
+            fallback($parent, intval($_POST['parent_id']));
             fallback($notify, (int) !empty($_POST['notify']));
 
             Comment::create($_POST['body'],
@@ -708,6 +708,36 @@
                                        id IN ".self::visitor_comments()."))";
             $options["order"] = "created_at ASC";
             $options["params"][":visitor_id"] = Visitor::current()->id;
+        }
+        
+        public function comments_process(&$comments) {
+            $config = Config::current();
+            
+            if($config->allow_nested_comments)
+            {
+                $comments_threaded = new Threaded($comments[0]);
+                $comment_ids = array_unique(array_merge(array_keys($comments_threaded->parents), array_keys($comments_threaded->children)));
+                
+				sort($comment_ids);
+                
+                $comments_processed = array();
+                foreach($comment_ids as $comment_id)
+                {
+                    if(array_key_exists($comment_id, $comments_threaded->parents))
+                    {
+                        $comments_processed[] = $comments_threaded->parents[$comment_id][0];
+                    }
+                    
+                    if(array_key_exists($comment_id, $comments_threaded->children))
+                    {
+                        foreach($comments_threaded->children[$comment_id] as $comment_child)
+                        {
+                            $comments_processed[] = $comment_child;
+                        }
+                    }
+                }
+                $comments[0] = $comments_processed;
+            }
         }
 
         public function post_commentable_attr($attr, $post) {
