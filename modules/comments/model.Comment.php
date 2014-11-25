@@ -127,9 +127,6 @@
                                          $parent,
                                          $notify);
 
-                    fallback($_SESSION['comments'], array());
-                    $_SESSION['comments'][] = $comment->id;
-
                     if (isset($_POST['ajax']))
                         exit("{ \"comment_id\": \"".$comment->id."\", \"comment_timestamp\": \"".$comment->created_at."\" }");
 
@@ -147,9 +144,6 @@
                                      $visitor->id,
                                      $parent,
                                      $notify);
-
-                fallback($_SESSION['comments'], array());
-                $_SESSION['comments'][] = $comment->id;
 
                 if (isset($_POST['ajax']))
                     exit("{ \"comment_id\": \"".$comment->id."\", \"comment_timestamp\": \"".$comment->created_at."\" }");
@@ -202,7 +196,12 @@
                                "created_at" => oneof($created_at, datetime()),
                                "updated_at" => oneof($updated_at, "0000-00-00 00:00:00")));
 
-            $new = new self($sql->latest("comments"));
+            $comment_id = $sql->latest("comments");
+			fallback($_SESSION['comments'], array());
+            $_SESSION['comments'][] = $comment->id;
+			
+			$new = new self($comment_id);
+			
             Trigger::current()->call("add_comment", $new);
             self::notify(strip_tags($author), $body, $post);
             return $new;
