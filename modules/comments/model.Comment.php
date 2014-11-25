@@ -198,7 +198,7 @@
 
             $comment_id = $sql->latest("comments");
 			fallback($_SESSION['comments'], array());
-            $_SESSION['comments'][] = $comment->id;
+            $_SESSION['comments'][] = $comment_id;
 			
 			$new = new self($comment_id);
 			
