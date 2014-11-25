@@ -53,7 +53,12 @@
          *     <Model::search>
          */
         static function find($options = array(), $options_for_object = array()) {
-            return parent::search(get_class(), $options, $options_for_object);
+            $comments = parent::search(get_class(), $options, $options_for_object);
+            
+            $trigger = Trigger::current();
+            $trigger->filter($comments, "comments_process");
+            
+            return $comments;
         }
 
         /**
@@ -122,9 +127,6 @@
                                          $parent,
                                          $notify);
 
-                    fallback($_SESSION['comments'], array());
-                    $_SESSION['comments'][] = $comment->id;
-
                     if (isset($_POST['ajax']))
                         exit("{ \"comment_id\": \"".$comment->id."\", \"comment_timestamp\": \"".$comment->created_at."\" }");
 
@@ -142,9 +144,6 @@
                                      $visitor->id,
                                      $parent,
                                      $notify);
-
-                fallback($_SESSION['comments'], array());
-                $_SESSION['comments'][] = $comment->id;
 
                 if (isset($_POST['ajax']))
                     exit("{ \"comment_id\": \"".$comment->id."\", \"comment_timestamp\": \"".$comment->created_at."\" }");
@@ -197,7 +196,12 @@
                                "created_at" => oneof($created_at, datetime()),
                                "updated_at" => oneof($updated_at, "0000-00-00 00:00:00")));
 
-            $new = new self($sql->latest("comments"));
+            $comment_id = $sql->latest("comments");
+			fallback($_SESSION['comments'], array());
+            $_SESSION['comments'][] = $comment_id;
+			
+			$new = new self($comment_id);
+			
             Trigger::current()->call("add_comment", $new);
             self::notify(strip_tags($author), $body, $post);
             return $new;
@@ -369,7 +373,7 @@
 
         function __construct($comments) {
             foreach ($comments as $comment) {
-                if ($comment['parent_id'] === 0)
+                if ($comment['parent_id'] == 0)
                     $this->parents[$comment['id']][] = $comment;
                 else
                     $this->children[$comment['parent_id']][] = $comment;
