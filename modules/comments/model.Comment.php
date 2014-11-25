@@ -127,6 +127,9 @@
                                          $parent,
                                          $notify);
 
+                    fallback($_SESSION['comments'], array());
+                    $_SESSION['comments'][] = $comment->id;
+
                     if (isset($_POST['ajax']))
                         exit("{ \"comment_id\": \"".$comment->id."\", \"comment_timestamp\": \"".$comment->created_at."\" }");
 
@@ -144,6 +147,9 @@
                                      $visitor->id,
                                      $parent,
                                      $notify);
+
+                fallback($_SESSION['comments'], array());
+                $_SESSION['comments'][] = $comment->id;
 
                 if (isset($_POST['ajax']))
                     exit("{ \"comment_id\": \"".$comment->id."\", \"comment_timestamp\": \"".$comment->created_at."\" }");
@@ -196,11 +202,7 @@
                                "created_at" => oneof($created_at, datetime()),
                                "updated_at" => oneof($updated_at, "0000-00-00 00:00:00")));
 
-            $comment_id = $sql->latest("comments");
-            fallback($_SESSION['comments'], array());
-            $_SESSION['comments'][] = $comment_id;
-            
-            $new = new self($comment_id);
+            $new = new self($sql->latest("comments"));
             Trigger::current()->call("add_comment", $new);
             self::notify(strip_tags($author), $body, $post);
             return $new;
@@ -230,12 +232,12 @@
             SQL::current()->delete("comments", array("id" => $comment_id));
         }
 
-        public function editable($user = null) {
+        public function editable(User $user = null) {
             fallback($user, Visitor::current());
             return ($user->group->can("edit_comment") or ($user->group->can("edit_own_comment") and $user->id == $this->user_id));
         }
 
-        public function deletable($user = null) {
+        public function deletable(User $user = null) {
             fallback($user, Visitor::current());
             return ($user->group->can("delete_comment") or ($user->group->can("delete_own_comment") and $user->id == $this->user_id));
         }
@@ -366,7 +368,7 @@
     }
 
     class Threaded extends Comment {
-    
+
         public $parents  = array();
         public $children = array();
 
@@ -378,11 +380,11 @@
                     $this->children[$comment['parent_id']][] = $comment;
             }
         }
-    
+
         private function format_comment($comment, $depth) {
             for ($depth; $depth > 0; $depth--)
                 echo "\t";
-    
+
             echo $comment['text'];
             echo "\n";
         }
@@ -390,15 +392,15 @@
         private function print_parent($comment, $depth = 0) {
             foreach ($comment as $c) {
                 $this->format_comment($c, $depth);
-    
+
                 if (isset($this->children[$c['id']]))
                     $this->print_parent($this->children[$c['id']], $depth + 1);
             }
         }
-    
+
         public function print_comments() {
             foreach ($this->parents as $c)
                 $this->print_parent($c);
         }
-    
+
     }

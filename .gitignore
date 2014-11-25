@@ -10,3 +10,4 @@ themes/*
 /.idea/
 
 *.idraw
+*.db
