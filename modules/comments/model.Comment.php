@@ -54,10 +54,10 @@
          */
         static function find($options = array(), $options_for_object = array()) {
             $comments = parent::search(get_class(), $options, $options_for_object);
-            
+
             $trigger = Trigger::current();
             $trigger->filter($comments, "comments_process");
-            
+
             return $comments;
         }
 
@@ -197,11 +197,11 @@
                                "updated_at" => oneof($updated_at, "0000-00-00 00:00:00")));
 
             $comment_id = $sql->latest("comments");
-			fallback($_SESSION['comments'], array());
+            fallback($_SESSION['comments'], array());
             $_SESSION['comments'][] = $comment_id;
-			
-			$new = new self($comment_id);
-			
+
+            $new = new self($comment_id);
+
             Trigger::current()->call("add_comment", $new);
             self::notify(strip_tags($author), $body, $post);
             return $new;
