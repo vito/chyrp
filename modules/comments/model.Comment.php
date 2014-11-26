@@ -312,14 +312,15 @@
          *     $after - If the link can be shown, show this after it.
          *     $classes - Extra CSS classes for the link, space-delimited.
          */
-        public function replyto_link($text = null, $before = null, $after = null, $classes = "") {
+        public function reply_link($text = null, $before = null, $after = null, $classes = "") {
             if (!Config::current()->allow_nested_comments) return;
+            if ($this->parent_id != 0) return;
 
             fallback($text, __("Reply"));
 
             $name = strtolower(get_class($this));
 
-            echo $before.'<a href="'.self_url().'&amp;replyto'.$name.'='.$this->id.'#add_comment" title="Reply to '.$this->author.'" class="'.($classes ? $classes." " : '').$name.'_reply_link replyto" id="comment_reply">'.$text.'</a>'.$after;
+            echo $before.'<a href="#add_comment" title="Reply to '.$this->author.'" class="'.($classes ? $classes." " : '').$name.'_reply_link reply_to" id="comment_reply_to_'.$this->id.'">'.$text.'</a>'.$after;
         }
 
         /**
