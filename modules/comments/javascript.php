@@ -28,8 +28,24 @@ $(function(){
         }, complete: function(){
             $("#add_comment").loader(true)
         } })
+<?php if ($config->allow_nested_comments): ?>
+        $("#add_comment").append($(document.createElement("input")).attr({ type: "hidden", name: "parent_id", value: 0, id: "parent_id" }))
+<?php endif; ?>
     }
 <?php echo "\n"; if (!isset($config->enable_ajax) or $config->enable_ajax): ?>
+    $(".comment_reply_link").on("click", function(e) {
+        var id = $(this).attr("id").replace(/comment_reply_to_/, "");
+        $("#add_comment").find("#parent_id").prop({ value: id });
+
+        e.preventDefault();
+
+        var target = this.hash;
+        $target = $(target);
+
+        $('html, body').stop().animate({
+            'scrollTop': $target.offset().top
+        }, 1000, 'swing');
+    })
     $(".comment_edit_link").live("click", function() {
         var id = $(this).attr("id").replace(/comment_edit_/, "")
         Comment.edit(id)

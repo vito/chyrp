@@ -54,10 +54,10 @@
          */
         static function find($options = array(), $options_for_object = array()) {
             $comments = parent::search(get_class(), $options, $options_for_object);
-            
+
             $trigger = Trigger::current();
             $trigger->filter($comments, "comments_process");
-            
+
             return $comments;
         }
 
@@ -197,11 +197,11 @@
                                "updated_at" => oneof($updated_at, "0000-00-00 00:00:00")));
 
             $comment_id = $sql->latest("comments");
-			fallback($_SESSION['comments'], array());
+            fallback($_SESSION['comments'], array());
             $_SESSION['comments'][] = $comment_id;
-			
-			$new = new self($comment_id);
-			
+
+            $new = new self($comment_id);
+
             Trigger::current()->call("add_comment", $new);
             self::notify(strip_tags($author), $body, $post);
             return $new;
@@ -312,14 +312,15 @@
          *     $after - If the link can be shown, show this after it.
          *     $classes - Extra CSS classes for the link, space-delimited.
          */
-        public function replyto_link($text = null, $before = null, $after = null, $classes = "") {
+        public function reply_link($text = null, $before = null, $after = null, $classes = "") {
             if (!Config::current()->allow_nested_comments) return;
+            if ($this->parent_id != 0) return;
 
             fallback($text, __("Reply"));
 
             $name = strtolower(get_class($this));
 
-            echo $before.'<a href="'.self_url().'&amp;replyto'.$name.'='.$this->id.'#add_comment" title="Reply to '.$this->author.'" class="'.($classes ? $classes." " : '').$name.'_reply_link replyto" id="comment_reply">'.$text.'</a>'.$after;
+            echo $before.'<a href="#add_comment" title="Reply to '.$this->author.'" class="'.($classes ? $classes." " : '').$name.'_reply_link reply_to" id="comment_reply_to_'.$this->id.'">'.$text.'</a>'.$after;
         }
 
         /**
