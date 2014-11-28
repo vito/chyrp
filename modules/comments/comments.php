@@ -76,7 +76,7 @@
             if (empty($_POST['author'])) error(__("Error"), __("Author can't be blank.", "comments"));
             if (empty($_POST['email']))  error(__("Error"), __("E-Mail address can't be blank.", "comments"));
 
-            fallback($parent, intval($_POST['parent_id']));
+            fallback($parent, (int) $_POST['parent_id'], 0);
             fallback($notify, (int) !empty($_POST['notify']));
 
             Comment::create($_POST['body'],
