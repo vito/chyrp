@@ -481,7 +481,7 @@
 
             $tags = array();
             foreach ($item->category as $tag)
-                if (isset($tag->attributes()->domain) and $tag->attributes()->domain == "tag" and !empty($tag) and isset($tag->attributes()->nicename))
+                if (!empty($tag) and isset($tag->attributes()->domain) and (substr_count($tag->attributes()->domain, "tag") > 0) and isset($tag->attributes()->nicename))
                     $tags[strip_tags(trim($tag))] = sanitize(strip_tags(trim($tag)));
 
             if (!empty($tags))

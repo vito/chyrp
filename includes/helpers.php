@@ -121,7 +121,7 @@
         if (error_reporting() === 0)
             return; # Suppressed error.
 
-        exit("ERROR: ".$message." (".$file." on line ".$line.")");
+        exit("ERROR: ".$errno." ".$message." (".$file." on line ".$line.")");
     }
 
     /**
@@ -172,7 +172,7 @@
      *     $v Chyrp version that deprecated the function
      *     $r Optional. The function that should have been called
      */
-    function deprecated($f, $v, $r = null, $trace) {    
+    function deprecated($f, $v, $r = null, $trace) {
         if (!logged_in())
             return;
 
@@ -257,7 +257,7 @@
         foreach($emoji as $key => $value) {
             $text =  str_ireplace($key, '<span class="emoji">'.$value.'</span>', $text);
         }
-        
+
         return $text;
     }
 
@@ -743,7 +743,7 @@
      *     $post - The post we're sending from.
      *     $target - The URL we're sending to.
      */
-    function trackback_send($post, $target) {
+    function trackback_send(Post $post, $target) {
         if (empty($target)) return false;
 
         $target = parse_url($target);
@@ -783,7 +783,7 @@
      *     $string - The string to crawl for pingback URLs.
      *     $post - The post we're sending from.
      */
-    function send_pingbacks($string, $post) {
+    function send_pingbacks($string, Post $post) {
         foreach (grab_urls($string) as $url)
             if ($ping_url = pingback_url($url)) {
                 require_once INCLUDES_DIR."/lib/ixr.php";
@@ -1765,8 +1765,8 @@
                        if (!delete_dir($dir.$obj))
                            return false;
                    elseif (is_file($dir.$obj))
-                       if (!unlink($dir.$obj)) 
-                           return false; 
+                       if (!unlink($dir.$obj))
+                           return false;
            }
 
            closedir($handle);

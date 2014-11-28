@@ -36,7 +36,6 @@
         <input type="hidden" name="email" value="$visitor.email" id="email" />
         <input type="hidden" name="url" value="$visitor.website" id="url" />
         {% endif %}
-        <input type="hidden" name="parent_id" value="${ GET.replytocomment | escape }" id="parent_id" />
         <input type="hidden" name="post_id" value="$post.id" id="post_id" />
         <button type="submit">${ "Speak" | translate }</button>
     </p>

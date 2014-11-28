@@ -118,7 +118,7 @@
                     return "application/octet-stream";
             }
         }
-        
+
         public function audio_ext($filename) {
             $file_split = explode(".", $filename);
             $audio_type = strtolower(end($file_split));
@@ -141,7 +141,6 @@
         }
 
         public function enclose_audio($post) {
-            $config = Config::current();
             if ($post->feather != "audio" or !file_exists(uploaded($post->filename, false)))
                 return;
 

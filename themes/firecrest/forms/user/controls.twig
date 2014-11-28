@@ -2,7 +2,7 @@
 
 {% block content %}
     <h2>${ "Controls" | translate }</h2>
-    <form action="{% url "controls" %}" method="post">
+    <form action="{% url "controls" %}" method="post" enctype="multipart/form-data">
         <p>
             <label for="login">${ "Login" | translate }</label>
             <input class="text" type="text" name="login" value="${ visitor.login | escape }" id="login" disabled="disabled" />
@@ -23,12 +23,24 @@
             <input type="text" name="website" value="${ visitor.website | escape }" id="website" tabindex="1" />
         </p>
         <p>
+            <label for="bio">${ "Bio" | translate }</label>
+            <textarea name="bio" rows="3" cols="31" id="bio">${ visitor.bio | escape }</textarea>
+        </p>
+        <p>
             <label for="new_password1">${ "New Password?" | translate }</label>
             <input type="password" name="new_password1" value="" id="new_password1" />
         </p>
         <p>
             <label for="new_password2">${ "Confirm" | translate }</label>
             <input type="password" name="new_password2" value="" id="new_password2" />
+        </p>
+        <p>
+            <label for="avatar">${ "Avatar" | translate }</label>
+            {% if visitor.avatar %}
+            <img src="${ visitor.avatar }" alt="${ visitor.login }">
+            {% endif %}
+            <small>If no image is uploaded, a Gavatar photo will be served instead.</small>
+            <input type="file" name="avatar">
         </p>
 ${ trigger.call("user_controls") }
 

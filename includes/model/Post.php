@@ -188,7 +188,6 @@
             $user_id = ($user instanceof User) ? $user->id : $user ;
 
             $sql = SQL::current();
-            $visitor = Visitor::current();
             $trigger = Trigger::current();
 
             fallback($feather,    oneof(@$_POST['feather'], ""));
@@ -364,7 +363,7 @@
          * Function: deletable
          * Checks if the <User> can delete the post.
          */
-        public function deletable($user = null) {
+        public function deletable(User $user = null) {
             if ($this->no_results)
                 return false;
 
@@ -381,7 +380,7 @@
          * Function: editable
          * Checks if the <User> can edit the post.
          */
-        public function editable($user = null) {
+        public function editable(User $user = null) {
             if ($this->no_results)
                 return false;
 
@@ -492,7 +491,6 @@
                 return false;
 
             $config = Config::current();
-            $visitor = Visitor::current();
 
             if (!$config->clean_urls)
                 return $config->url."/?action=view&amp;url=".urlencode($this->url);
@@ -788,7 +786,7 @@
         /**
          * Function: user
          * Returns a post's user. Example: $post->user->login
-         * 
+         *
          * !! DEPRECATED AFTER 2.0 !!
          */
         public function user() {

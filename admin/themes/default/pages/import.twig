@@ -62,7 +62,9 @@
                             ${ "Usually something like <code>http://example.com/wp-content/uploads/</code>." | translate }
                         </small>
                     </p>
-
+                    
+                    ${ trigger.call("import_wordpress_enhancement") }
+                    
                     <p class="buttons">
                         <button type="submit" class="yay"><img src="$theme_url/images/icons/success.svg" alt="success" />${ "Import" | translate }</button>
                     </p>

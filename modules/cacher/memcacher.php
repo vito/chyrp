@@ -1,6 +1,6 @@
 <?php
     class MemCacher{
-        public function __construct($url, $config){
+        public function __construct($url, Config $config){
             $raw_hosts = (array)$config->cache_memcached_hosts;
             $this->user = (logged_in()) ? Visitor::current()->login : "guest" ;
             $this->memcache = new Memcache();
@@ -23,7 +23,7 @@
                     $host = $stack[0];
                 }
                 if(count($stack) == 8){ # ipv6 is 8 entries
-                    $host = implode(':', $stack); 
+                    $host = implode(':', $stack);
                 }
                 if($host === false and count($stack) > 0){ # probably a uri for other transit
                     $host = implode(':', $stack);
@@ -90,7 +90,7 @@
             $cache = array('contents' => $hash['value'], 'headers' => array());
             return $cache;
         }
-  
+
         public function set($value){
             $hash = array( 'timestamp' => time(), 'value' => $value );
             $result = $this->memcache->set($this->user_url_key, $hash, false, Config::current()->cache_expire);
@@ -98,13 +98,13 @@
               exit("Memcache: set failed for " . $this->user_url_key);
             }
         }
-  
+
         public function regenerate() {
             $this->memcache->set($this->build_key('global'), time());
         }
 
         public function regenerate_local($user = null) {
-            if($user == null) $user = 'guest';
+            if($user === null) $user = 'guest';
             $this->memcache->set($this->build_key("user=" . $user), time());
         }
 
@@ -112,4 +112,3 @@
             $this->memcache->set($this->build_key("url=" . $url), time());
         }
     }
-

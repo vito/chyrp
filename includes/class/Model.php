@@ -394,7 +394,7 @@
          * Function: deletable
          * Checks if the <User> can delete the post.
          */
-        public function deletable($user = null) {
+        public function deletable(User $user = null) {
             if ($this->no_results)
                 return false;
 
@@ -408,7 +408,7 @@
          * Function: editable
          * Checks if the <User> can edit the post.
          */
-        public function editable($user = null) {
+        public function editable(User $user = null) {
             if ($this->no_results)
                 return false;
 

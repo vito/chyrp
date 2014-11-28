@@ -38,7 +38,7 @@
                 error(__("Error"), __("Video can't be blank."));
 
             fallback($_POST['slug'], sanitize($_POST['title']));
-            
+
             return Post::add(array("title" => $_POST['title'],
                                    "embed" => $this->embed_tag($_POST['video']),
                                    "video" => $_POST['video'],
@@ -97,7 +97,9 @@
                 $new_height = (int) (($max_width / $original_width) * $original_height);
             }
 
-            $post->embed = str_replace(array($width[0], $height[0]), array("width".$sep_w.$max_width, "height".$sep_h.$new_height), $post->embed);
+            $post->embed = str_replace(array($width[0], $height[0]),
+                array("width".$sep_w.$max_width, "height".$sep_h.$new_height),
+                $post->embed);
 
             return $post->embed;
         }
@@ -107,7 +109,7 @@
                 return false;
 
             $AE = new AutoEmbed();
-            return $result = $AE->parseUrl($_GET['url']) ? true : false ;
+            return $AE->parseUrl($_GET['url']) ? true : false ;
         }
 
         public function help() {

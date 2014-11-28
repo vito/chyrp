@@ -53,7 +53,12 @@
          *     <Model::search>
          */
         static function find($options = array(), $options_for_object = array()) {
-            return parent::search(get_class(), $options, $options_for_object);
+            $comments = parent::search(get_class(), $options, $options_for_object);
+
+            $trigger = Trigger::current();
+            $trigger->filter($comments, "comments_process");
+
+            return $comments;
         }
 
         /**
@@ -122,9 +127,6 @@
                                          $parent,
                                          $notify);
 
-                    fallback($_SESSION['comments'], array());
-                    $_SESSION['comments'][] = $comment->id;
-
                     if (isset($_POST['ajax']))
                         exit("{ \"comment_id\": \"".$comment->id."\", \"comment_timestamp\": \"".$comment->created_at."\" }");
 
@@ -142,9 +144,6 @@
                                      $visitor->id,
                                      $parent,
                                      $notify);
-
-                fallback($_SESSION['comments'], array());
-                $_SESSION['comments'][] = $comment->id;
 
                 if (isset($_POST['ajax']))
                     exit("{ \"comment_id\": \"".$comment->id."\", \"comment_timestamp\": \"".$comment->created_at."\" }");
@@ -197,7 +196,12 @@
                                "created_at" => oneof($created_at, datetime()),
                                "updated_at" => oneof($updated_at, "0000-00-00 00:00:00")));
 
-            $new = new self($sql->latest("comments"));
+            $comment_id = $sql->latest("comments");
+            fallback($_SESSION['comments'], array());
+            $_SESSION['comments'][] = $comment_id;
+
+            $new = new self($comment_id);
+
             Trigger::current()->call("add_comment", $new);
             self::notify(strip_tags($author), $body, $post);
             return $new;
@@ -227,12 +231,12 @@
             SQL::current()->delete("comments", array("id" => $comment_id));
         }
 
-        public function editable($user = null) {
+        public function editable(User $user = null) {
             fallback($user, Visitor::current());
             return ($user->group->can("edit_comment") or ($user->group->can("edit_own_comment") and $user->id == $this->user_id));
         }
 
-        public function deletable($user = null) {
+        public function deletable(User $user = null) {
             fallback($user, Visitor::current());
             return ($user->group->can("delete_comment") or ($user->group->can("delete_own_comment") and $user->id == $this->user_id));
         }
@@ -308,14 +312,15 @@
          *     $after - If the link can be shown, show this after it.
          *     $classes - Extra CSS classes for the link, space-delimited.
          */
-        public function replyto_link($text = null, $before = null, $after = null, $classes = "") {
+        public function reply_link($text = null, $before = null, $after = null, $classes = "") {
             if (!Config::current()->allow_nested_comments) return;
+            if ($this->parent_id != 0) return;
 
             fallback($text, __("Reply"));
 
             $name = strtolower(get_class($this));
 
-            echo $before.'<a href="'.self_url().'&amp;replyto'.$name.'='.$this->id.'#add_comment" title="Reply to '.$this->author.'" class="'.($classes ? $classes." " : '').$name.'_reply_link replyto" id="comment_reply">'.$text.'</a>'.$after;
+            echo $before.'<a href="#add_comment" title="Reply to '.$this->author.'" class="'.($classes ? $classes." " : '').$name.'_reply_link reply_to" id="comment_reply_to_'.$this->id.'">'.$text.'</a>'.$after;
         }
 
         /**
@@ -363,23 +368,23 @@
     }
 
     class Threaded extends Comment {
-    
+
         public $parents  = array();
         public $children = array();
 
         function __construct($comments) {
             foreach ($comments as $comment) {
-                if ($comment['parent_id'] === 0)
+                if ($comment['parent_id'] == 0)
                     $this->parents[$comment['id']][] = $comment;
                 else
                     $this->children[$comment['parent_id']][] = $comment;
             }
         }
-    
+
         private function format_comment($comment, $depth) {
             for ($depth; $depth > 0; $depth--)
                 echo "\t";
-    
+
             echo $comment['text'];
             echo "\n";
         }
@@ -387,15 +392,15 @@
         private function print_parent($comment, $depth = 0) {
             foreach ($comment as $c) {
                 $this->format_comment($c, $depth);
-    
+
                 if (isset($this->children[$c['id']]))
                     $this->print_parent($this->children[$c['id']], $depth + 1);
             }
         }
-    
+
         public function print_comments() {
             foreach ($this->parents as $c)
                 $this->print_parent($c);
         }
-    
+
     }

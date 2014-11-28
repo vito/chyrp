@@ -15,10 +15,9 @@
                     </ul>
                 </div>
                 <div id="about_info">
-                    <p><img src="$theme.url/images/profile.jpg" alt="Arian Xhezairi" />
-                        Firecrest is a Premium Chyrp Theme designed and developed with detail in mind.
-                        It serves as a great example of how cool and easy is to create Chyrp themes and the benefit behind using Template Engines.
-                        Finally, you can delete all this text and replace it with your stunning About You bio. :)</p>
+                    <p><img src="${ site_author.avatar(60) }" alt="${ site_author.full_name }" />
+                        <strong>${ site_author.full_name }</strong>
+                        ${ site_author.bio }</p>
                 </div>
                 <div id="asides">
                     <div id="elsewhere">
@@ -49,7 +48,7 @@
                             {% for item in theme.pages_list %}
                             <li>
                                 <a href="$item.page.url">$item.page.title</a>
-        
+
                                 {% if item.has_children %}<ul>{% endif %}
                             {% if not item.has_children %}</li>{% endif %}
                             {% for ul, li in item.end_tags %}
