@@ -11,3 +11,4 @@ themes/*
 
 *.idraw
 *.db
+*.DS_Store
