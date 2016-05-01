@@ -53,7 +53,7 @@
         /**
          * Function: group
          * Returns the user's <Group> or the "Guest Group".
-         * 
+         *
          * !! DEPRECATED AFTER 2.0 !!
          */
         public function group() {
@@ -74,6 +74,7 @@
          */
         public static function & current() {
             static $instance = null;
-            return $instance = (empty($instance)) ? new self() : $instance ;
+            $instance = (empty($instance)) ? new self() : $instance ;
+            return $instance;
         }
     }

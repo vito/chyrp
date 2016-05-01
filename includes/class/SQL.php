@@ -465,7 +465,8 @@
                 return $loaded_settings = new self($settings);
             } else {
                 static $instance = null;
-                return $instance = (empty($instance)) ? new self() : $instance ;
+                $instance = (empty($instance)) ? new self() : $instance ;
+                return $instance;
             }
         }
     }
