@@ -22,7 +22,7 @@
          */
         private function __construct() {
             if (Config::current()->enable_emoji)
-                $this->priorities["markup_text"][] = array("priority" => 10, "function" => "emote");   
+                $this->priorities["markup_text"][] = array("priority" => 10, "function" => "emote");
         }
 
         /**
@@ -180,6 +180,7 @@
          */
         public static function & current() {
             static $instance = null;
-            return $instance = (empty($instance)) ? new self() : $instance ;
+            $instance = (empty($instance)) ? new self() : $instance ;
+            return $instance;
         }
     }

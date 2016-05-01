@@ -99,7 +99,7 @@
         header("Cache-Control: no-cache, must-revalidate");
         header("Expires: Mon, 03 Jun 1991 05:30:00 GMT");
     } else
-        error_reporting(E_ALL | E_STRICT); # Make sure E_STRICT is on so Chyrp remains errorless.
+        error_reporting( ( E_ALL | E_STRICT ) ^ E_NOTICE );  # Make sure E_STRICT is on so Chyrp remains errorless.
 
     # Use GZip compression if available.
     if (!AJAX and
