@@ -1,0 +1,18 @@
+{% extends "layouts/default.twig" %}
+
+{% block content %}
+                <div class="page author">
+                    <h2 class="title">$author.full_name</h2>
+                    <p>$author.email</p>
+
+                    {% if author.posts > 0 %}
+                    <h4>${ author.login ~ "Posts" | translate }</h4>
+                        <ul>
+                        {% for post in author.posts %}
+                            <li><a href="${ post.url() }">${ post.title }</a></li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                <div class="page_shadow"></div>
+                </div>
+{% endblock %}

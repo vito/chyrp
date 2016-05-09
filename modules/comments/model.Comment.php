@@ -9,7 +9,9 @@
     class Comment extends Model {
         public $no_results = false;
 
-        public $belongs_to = array("post", "user");
+        public $belongs_to = array("post", "user", "parent" => array("model" => "comment"));
+
+        public $has_many = array("children" => array("model" => "comment", "by" => "parent"));
 
         /**
          * Function: __construct
@@ -34,7 +36,7 @@
             $trigger->filter($this, "comment");
 
             if ($this->filtered) {
-                if (($this->status != "pingback" and !$this->status != "trackback") and !$group->can("code_in_comments"))
+                if (($this->status != "pingback" and $this->status != "trackback") and !$group->can("code_in_comments"))
                     $this->body = strip_tags($this->body, "<".join("><", Config::current()->allowed_comment_html).">");
 
                 $this->body_unfiltered = $this->body;
@@ -51,22 +53,29 @@
          *     <Model::search>
          */
         static function find($options = array(), $options_for_object = array()) {
-            return parent::search(get_class(), $options, $options_for_object);
+            $comments = parent::search(get_class(), $options, $options_for_object);
+
+            $trigger = Trigger::current();
+            $trigger->filter($comments, "comments_process");
+
+            return $comments;
         }
 
         /**
          * Function: create
-         * Attempts to create a comment using the passed information. If a Defensio API key is present, it will check it.
+         * Attempts to create a comment using the passed information. If the Akismet API key is present, it will check it.
          *
          * Parameters:
-         *     $author - The name of the commenter.
-         *     $email - The commenter's email.
-         *     $url - The commenter's website.
          *     $body - The comment.
+         *     $author - The name of the commenter.
+         *     $url - The commenter's website.
+         *     $email - The commenter's email.
          *     $post - The <Post> they're commenting on.
+         *     $parent - The <Comment> they're replying to.
+         *     $notify - Notification on follow-up comments.
          *     $type - The type of comment. Optional, used for trackbacks/pingbacks.
          */
-        static function create($author, $email, $url, $body, $post, $type = null) {
+        static function create($body, $author, $url, $email, $post, $parent, $notify, $type = null) {
             if (!self::user_can($post->id) and !in_array($type, array("trackback", "pingback")))
                 return;
 
@@ -80,22 +89,19 @@
             } else
                 $status = $type;
 
-            if (!empty($config->defensio_api_key)) {
-                $comment = array("user-ip" => $_SERVER['REMOTE_ADDR'],
-                                 "article-date" => when("Y/m/d", $post->created_at),
-                                 "comment-author" => $author,
-                                 "comment-type" => $type,
-                                 "comment-content" => $body,
-                                 "comment-author-email" => $email,
-                                 "comment-author-url" => $url,
-                                 "permalink" => $post->url(),
-                                 "referrer" => $_SERVER['HTTP_REFERER'],
-                                 "user-logged-in" => logged_in());
+            if (!empty($config->akismet_api_key)) {
+                $akismet = new Akismet($config->url, $config->akismet_api_key);
 
-                $defensio = new Defensio($config->url, $config->defensio_api_key);
-                list($spam, $spaminess, $signature) = $defensio->auditComment($comment);
+                $akismet->setCommentContent($body);
+                $akismet->setCommentAuthor($author);
+                $akismet->setCommentAuthorURL($url);
+                $akismet->setCommentAuthorEmail($email);
+                $akismet->setPermalink($post->url());
+                $akismet->setCommentType($type);
+                $akismet->setReferrer($_SERVER['HTTP_REFERER']);
+                $akismet->setUserIP($_SERVER['REMOTE_ADDR']);
 
-                if ($spam) {
+                if ($akismet->isCommentSpam()) {
                     self::add($body,
                               $author,
                               $url,
@@ -103,12 +109,11 @@
                               $_SERVER['REMOTE_ADDR'],
                               $_SERVER['HTTP_USER_AGENT'],
                               "spam",
-                              $signature,
-                              null,
-                              null,
-                              $post,
-                              $visitor->id);
-                    error(__("Spam Comment"), __("Your comment has been marked as spam. It will have to be approved before it will show up.", "comments"));
+                              $post->id,
+                              $visitor->id,
+                              $parent,
+                              $notify);
+                    error(__("Spam Comment"), __("Your comment has been marked as spam. It has to be reviewed and/or approved by an admin.", "comments"));
                 } else {
                     $comment = self::add($body,
                                          $author,
@@ -117,19 +122,15 @@
                                          $_SERVER['REMOTE_ADDR'],
                                          $_SERVER['HTTP_USER_AGENT'],
                                          $status,
-                                         $signature,
-                                         null,
-                                         null,
-                                         $post,
-                                         $visitor->id);
-
-                    fallback($_SESSION['comments'], array());
-                    $_SESSION['comments'][] = $comment->id;
+                                         $post->id,
+                                         $visitor->id,
+                                         $parent,
+                                         $notify);
 
                     if (isset($_POST['ajax']))
-                        exit("{ \"comment_id\": ".$comment->id.", \"comment_timestamp\": \"".$comment->created_at."\" }");
+                        exit("{ \"comment_id\": \"".$comment->id."\", \"comment_timestamp\": \"".$comment->created_at."\" }");
 
-                    Flash::notice(__("Comment added."), $post->url()."#comment_".$comment->id);
+                    Flash::notice(__("Comment added."), $post->url()."#comments");
                 }
             } else {
                 $comment = self::add($body,
@@ -139,19 +140,15 @@
                                      $_SERVER['REMOTE_ADDR'],
                                      $_SERVER['HTTP_USER_AGENT'],
                                      $status,
-                                     "",
-                                     null,
-                                     null,
-                                     $post,
-                                     $visitor->id);
-
-                fallback($_SESSION['comments'], array());
-                $_SESSION['comments'][] = $comment->id;
+                                     $post->id,
+                                     $visitor->id,
+                                     $parent,
+                                     $notify);
 
                 if (isset($_POST['ajax']))
-                    exit("{ \"comment_id\": ".$comment->id.", \"comment_timestamp\": \"".$comment->created_at."\" }");
+                    exit("{ \"comment_id\": \"".$comment->id."\", \"comment_timestamp\": \"".$comment->created_at."\" }");
 
-                Flash::notice(__("Comment added."), $post->url()."#comment_".$comment->id);
+                Flash::notice(__("Comment added."), $post->url()."#comment");
             }
         }
 
@@ -167,14 +164,14 @@
          *     $ip - The commenter's IP address.
          *     $agent - The commenter's user agent.
          *     $status - The new comment's status.
-         *     $signature - Defensio's data signature of the comment, generated when it is checked
-         *                  if it's spam in <Comment.create>. Optional.
-         *     $created_at - The new comment's "created" timestamp.
-         *     $updated_at - The new comment's "last updated" timestamp.
          *     $post - The <Post> they're commenting on.
          *     $user_id - The ID of this <User> this comment was made by.
+         *     $parent - The <Comment> they're replying to.
+         *     $notify - Notification on follow-up comments.
+         *     $created_at - The new comment's "created" timestamp.
+         *     $updated_at - The new comment's "last updated" timestamp.
          */
-        static function add($body, $author, $url, $email, $ip, $agent, $status, $signature, $created_at = null, $updated_at = null, $post, $user_id) {
+        static function add($body, $author, $url, $email, $ip, $agent, $status, $post, $user_id, $parent, $notify, $created_at = null, $updated_at = null) {
             if (!empty($url)) # Add the http:// if it isn't there.
                 if (!@parse_url($url, PHP_URL_SCHEME))
                     $url = "http://".$url;
@@ -185,37 +182,45 @@
 
             $sql = SQL::current();
             $sql->insert("comments",
-                         array("body" => $body,
+                         array("body" => sanitize_html($body),
                                "author" => strip_tags($author),
                                "author_url" => strip_tags($url),
                                "author_email" => strip_tags($email),
                                "author_ip" => $ip,
                                "author_agent" => $agent,
                                "status" => $status,
-                               "signature" => $signature,
-                               "post_id" => $post->id,
+                               "post_id" => $post,
                                "user_id"=> $user_id,
+                               "parent_id" => $parent,
+                               "notify" => $notify,
                                "created_at" => oneof($created_at, datetime()),
-                               "updated_at" => oneof($updated_at, null)));
-            $new = new self($sql->latest("comments"));
+                               "updated_at" => oneof($updated_at, "0000-00-00 00:00:00")));
+
+            $comment_id = $sql->latest("comments");
+            fallback($_SESSION['comments'], array());
+            $_SESSION['comments'][] = $comment_id;
+
+            $new = new self($comment_id);
 
             Trigger::current()->call("add_comment", $new);
+            self::notify(strip_tags($author), $body, $post);
             return $new;
         }
 
-        public function update($author, $author_email, $author_url, $body, $status, $timestamp, $update_timestamp = true) {
+        public function update($body, $author, $url, $email, $status, $notify, $timestamp, $update_timestamp = true) {
             $sql = SQL::current();
             $sql->update("comments",
                          array("id" => $this->id),
-                         array("body" => $body,
+                         array("body" => sanitize_html($body),
                                "author" => strip_tags($author),
-                               "author_email" => strip_tags($author_email),
-                               "author_url" => strip_tags($author_url),
+                               "author_url" => strip_tags($url),
+                               "author_email" => strip_tags($email),
                                "status" => $status,
+                               "notify" => $notify,
                                "created_at" => $timestamp,
                                "updated_at" => ($update_timestamp) ? datetime() : $this->updated_at));
 
-            Trigger::current()->call("update_comment", $this, $author, $author_email, $author_url, $body, $status, $timestamp, $update_timestamp);
+            Trigger::current()->call("update_comment", $this, $body, $author, $url, $email, $status, $notify, $timestamp, $update_timestamp);
         }
 
         static function delete($comment_id) {
@@ -226,12 +231,12 @@
             SQL::current()->delete("comments", array("id" => $comment_id));
         }
 
-        public function editable($user = null) {
+        public function editable(User $user = null) {
             fallback($user, Visitor::current());
             return ($user->group->can("edit_comment") or ($user->group->can("edit_own_comment") and $user->id == $this->user_id));
         }
 
-        public function deletable($user = null) {
+        public function deletable(User $user = null) {
             fallback($user, Visitor::current());
             return ($user->group->can("delete_comment") or ($user->group->can("delete_own_comment") and $user->id == $this->user_id));
         }
@@ -285,7 +290,7 @@
             $visitor = Visitor::current();
             if (!$visitor->group->can("add_comment")) return false;
 
-            // assume allowed comments by default
+            # assume allowed comments by default
             return empty($post->comment_status) or
                    !($post->comment_status == "closed" or
                     ($post->comment_status == "registered_only" and !logged_in()) or
@@ -295,6 +300,57 @@
         static function user_count($user_id) {
             $count = SQL::current()->count("comments", array("user_id" => $user_id));
             return $count;
+        }
+
+        /**
+         * Function: reply_to_link
+         * Outputs a Reply to comment link, if the <User.can> add comment and allow_nested_comments is checked.
+         *
+         * Parameters:
+         *     $text - The text to show for the link.
+         *     $before - If the link can be shown, show this before it.
+         *     $after - If the link can be shown, show this after it.
+         *     $classes - Extra CSS classes for the link, space-delimited.
+         */
+        public function reply_link($text = null, $before = null, $after = null, $classes = "") {
+            if (!Config::current()->allow_nested_comments) return;
+            if ($this->parent_id != 0) return;
+
+            fallback($text, __("Reply"));
+
+            $name = strtolower(get_class($this));
+
+            echo $before.'<a href="#add_comment" title="Reply to '.$this->author.'" class="'.($classes ? $classes." " : '').$name.'_reply_link reply_to" id="comment_reply_to_'.$this->id.'">'.$text.'</a>'.$after;
+        }
+
+        /**
+         * Function: notify
+         * Emails everyone that wants to be notified for a new comment
+         *
+         * Parameters:
+         *     $author - The new comment author
+         *     $body - The new comment message
+         *     $post - The new comment post ID
+         */
+        static function notify($author, $body, $post) {
+            $post = new Post($post);
+            $emails = SQL::current()->select("comments",
+                                             "author_email",
+                                             array("notify" => 1, "post_id" => $post->id))->fetchAll();
+
+            $list = array();
+            foreach ($emails as $email)
+                $list[] = $email["author_email"];
+
+            $config = Config::current();
+
+            $to = implode(", ", $list);
+            $subject = $config->name.__("New Comment");
+            $message = __("There is a new comment at ").$post->url()."\n Poster: ".fix($author)."\n Message: ".fix($body);
+            $headers = "From:".$config->email."\r\n" .
+                                   "Reply-To:".$config->email."\r\n".
+                                   "X-Mailer: PHP/".phpversion();
+            $sent = email($to, $subject, $message, $headers);
         }
 
         # !! DEPRECATED AFTER 2.0 !!
@@ -309,4 +365,42 @@
             else
                 return false;
         }
+    }
+
+    class Threaded extends Comment {
+
+        public $parents  = array();
+        public $children = array();
+
+        function __construct($comments) {
+            foreach ($comments as $comment) {
+                if ($comment['parent_id'] == 0)
+                    $this->parents[$comment['id']][] = $comment;
+                else
+                    $this->children[$comment['parent_id']][] = $comment;
+            }
+        }
+
+        private function format_comment($comment, $depth) {
+            for ($depth; $depth > 0; $depth--)
+                echo "\t";
+
+            echo $comment['text'];
+            echo "\n";
+        }
+
+        private function print_parent($comment, $depth = 0) {
+            foreach ($comment as $c) {
+                $this->format_comment($c, $depth);
+
+                if (isset($this->children[$c['id']]))
+                    $this->print_parent($this->children[$c['id']], $depth + 1);
+            }
+        }
+
+        public function print_comments() {
+            foreach ($this->parents as $c)
+                $this->print_parent($c);
+        }
+
     }

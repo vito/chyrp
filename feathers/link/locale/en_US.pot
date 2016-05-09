@@ -1,14 +1,14 @@
-# Chyrp v2.0 RC3 Translation File.
-# Copyright (C) YEAR Alex Suraci
-# This file is distributed under the same license as the Chyrp v2.0 RC3 package.
+# Chyrp v2.5 Translation File.
+# Copyright (C) 2013 Chyrp Team
+# This file is distributed under the same license as the Chyrp v2.5 package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Chyrp v2.0 RC3\n"
-"Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2009-07-15 21:41+0000\n"
+"Project-Id-Version: Chyrp v2.5\n"
+"Report-Msgid-Bugs-To: email@chyrp.net\n"
+"POT-Creation-Date: 2013-12-27 18:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -17,23 +17,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: feathers/link/info.yaml:4
-msgid "Link to other sites, name it, and add an optional description."
+#: feathers/link/link.php:28
+#: feathers/link/link.php:44
+msgid "URL can't be empty."
 msgstr ""
 
-#: feathers/link/link.php:14
-msgid "Description"
+#: feathers/link/link.php:28
+#: feathers/link/link.php:44
+msgid "Error"
 msgstr ""
 
-#: feathers/link/link.php:6
-msgid "URL"
-msgstr ""
-
-#: feathers/link/info.yaml:1
+#: feathers/link/info.yaml:5
 msgid "Link"
 msgstr ""
 
-#: feathers/link/link.php:10
-msgid "Name"
+#: feathers/link/info.yaml:2
+msgid "Link to other sites, name it, and add an optional description."
 msgstr ""
 

@@ -88,8 +88,8 @@
          */
         static function gc() {
             SQL::current()->delete("sessions",
-                                   "created_at >= :thirty_days OR data = '' OR data IS NULL",
-                                   array(":thirty_days" => datetime(strtotime("+30 days"))));
+                                   "created_at <= :thirty_days OR data = '' OR data IS NULL",
+                                   array(":thirty_days" => datetime(strtotime("-30 days"))));
             return true;
         }
     }

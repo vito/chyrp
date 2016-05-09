@@ -76,7 +76,10 @@
                 $array[$page->id]["page"] = $page;
             }
 
-            return $this->pages_list[$start] = $array;
+            if (!isset($exclude))
+                return $this->pages_list[$start] = $array;
+            else
+                return $array;
         }
 
         /**
@@ -162,6 +165,27 @@
         }
 
         /**
+         * Function: recent_posts
+         * Generates an array of recent posts.
+         *
+         * Parameters:
+         *     $limit - Number of posts to list
+         */
+        public function recent_posts($limit = 5) {
+            if (isset($this->recent_posts["$limit"]))
+                return $this->recent_posts["$limit"];
+
+            $results = Post::find(array("placeholders" => true));
+            $posts = array();
+
+            for ($i = 0; $i < $limit; $i++)
+                if (isset($results[0][$i]))
+                    $posts[] = new Post(null, array("read_from" => $results[0][$i]));
+
+            return $this->recent_posts["$limit"] = $posts;
+        }
+
+        /**
          * Function: file_exists
          * Returns whether the specified Twig file exists or not.
          *
@@ -177,22 +201,20 @@
          * Outputs the default stylesheet links.
          */
         public function stylesheets() {
-            $visitor = Visitor::current();
             $config = Config::current();
-            $trigger = Trigger::current();
 
             $stylesheets = array();
             Trigger::current()->filter($stylesheets, "stylesheets");
 
             if (!empty($stylesheets))
                 $stylesheets = '<link rel="stylesheet" href="'.
-                               implode('" type="text/css" media="screen" charset="utf-8" /'."\n\t\t".'<link rel="stylesheet" href="', $stylesheets).
+                               implode('" type="text/css" media="screen" charset="utf-8" />'."\n\t".'<link rel="stylesheet" href="', $stylesheets).
                                '" type="text/css" media="screen" charset="utf-8" />';
             else
                 $stylesheets = "";
 
             if (file_exists(THEME_DIR."/style.css"))
-                $stylesheets = '<link rel="stylesheet" href="'.THEME_URL.'/style.css" type="text/css" media="screen" charset="utf-8" />'."\n\t\t";
+                $stylesheets = '<link rel="stylesheet" href="'.THEME_URL.'/style.css" type="text/css" media="screen" charset="utf-8" />'."\n\t";
 
             if (!file_exists(THEME_DIR."/stylesheets/") and !file_exists(THEME_DIR."/css/"))
                 return $stylesheets;
@@ -220,7 +242,7 @@
                 if ($file == "ie.css" or preg_match("/(lt|gt)?ie([0-9\.]+)\.css/", $file))
                     $stylesheets.= "<![endif]-->";
 
-                $stylesheets.= "\n\t\t";
+                $stylesheets.= "\n\t";
             }
 
             return $stylesheets;
@@ -231,6 +253,7 @@
          * Outputs the default JavaScript script references.
          */
         public function javascripts() {
+            $config = Config::current();
             $route = Route::current();
 
             $args = "";
@@ -238,16 +261,13 @@
                 if (!empty($val) and $val != $route->action)
                     $args.= "&amp;".$key."=".urlencode($val);
 
-            $config = Config::current();
-            $trigger = Trigger::current();
-
             $javascripts = array($config->chyrp_url."/includes/lib/gz.php?file=jquery.js",
                                  $config->chyrp_url."/includes/lib/gz.php?file=plugins.js",
                                  $config->chyrp_url.'/includes/javascript.php?action='.$route->action.$args);
             Trigger::current()->filter($javascripts, "scripts");
 
             $javascripts = '<script src="'.
-                           implode('" type="text/javascript" charset="utf-8"></script>'."\n\t\t".'<script src="', $javascripts).
+                           implode('" type="text/javascript" charset="utf-8"></script>'."\n\t".'<script src="', $javascripts).
                            '" type="text/javascript" charset="utf-8"></script>';
 
             if (file_exists(THEME_DIR."/javascripts/") or file_exists(THEME_DIR."/js/")) {
@@ -256,13 +276,13 @@
 
                 foreach(array_merge($long, $short) as $file)
                     if ($file and !substr_count($file, ".inc.js"))
-                        $javascripts.= "\n\t\t".'<script src="'.$config->chyrp_url.'/includes/lib/gz.php?file='.preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file).'" type="text/javascript" charset="utf-8"></script>';
+                        $javascripts.= "\n\t".'<script src="'.$config->chyrp_url.'/includes/lib/gz.php?file='.preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file).'" type="text/javascript" charset="utf-8"></script>';
 
                 $long  = (array) glob(THEME_DIR."/javascripts/*.php");
                 $short = (array) glob(THEME_DIR."/js/*.php");
                 foreach(array_merge($long, $short) as $file)
                     if ($file)
-                        $javascripts.= "\n\t\t".'<script src="'.$config->chyrp_url.preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file).'" type="text/javascript" charset="utf-8"></script>';
+                        $javascripts.= "\n\t".'<script src="'.$config->chyrp_url.preg_replace("/(.+)\/themes\/(.+)/", "/themes/\\2", $file).'" type="text/javascript" charset="utf-8"></script>';
             }
 
             return $javascripts;
@@ -273,9 +293,9 @@
          * Outputs the Feed references.
          */
         public function feeds() {
-            // Compute the URL of the per-page feed (if any):
+            # Compute the URL of the per-page feed (if any):
             $config = Config::current();
-            $request = ($config->clean_urls) ? rtrim(Route::current()->request, "/") : fix($_SERVER['REQUEST_URI']) ;
+            $request = ($config->clean_urls) ? rtrim(Route::current()->request, "/") : fix(Route::current()->request) ;
             $append = $config->clean_urls ?
                           "/feed" :
                           ((count($_GET) == 1 and Route::current()->action == "index") ?
@@ -289,21 +309,23 @@
             $feedurl = oneof(@$config->feed_url, url("feed"));
             $pagefeedurl = $config->url.$request.$append;
             $links = array(array("href" => $feedurl, "type" => "application/atom+xml", "title" => $config->name));
-            if ($pagefeedurl != $feedurl)
-                $links[] = array("href" => $pagefeedurl, "type" => "application/atom+xml", "title" => "Current Page (if applicable)");
+
+            if ($request !== "/")
+                if ($pagefeedurl != $feedurl)
+                    $links[] = array("href" => $pagefeedurl, "type" => "application/atom+xml", "title" => "$this->title");
 
             # Ask modules to pitch in by adding their own <link> tag items to $links.
             # Each item must be an array with "href" and "rel" properties (and optionally "title" and "type"):
             Trigger::current()->filter($links, "links");
-            
+
             # Generate <link> tags:
             $tags = array();
             foreach ($links as $link) {
                 $rel = oneof(@$link["rel"], "alternate");
-                $href = $link["href"];
+                $href = @$link["href"];
                 $type = @$link["type"];
                 $title = @$link["title"];
-                $tag = '<link rel="'.$rel.'" href="'.$link["href"].'"';
+                $tag = '<link rel="'.$rel.'" href="'.$href.'"';
 
                 if ($type)
                     $tag.= ' type="'.$type.'"';
@@ -327,6 +349,7 @@
          */
         public static function & current() {
             static $instance = null;
-            return $instance = (empty($instance)) ? new self() : $instance ;
+            $instance = (empty($instance)) ? new self() : $instance ;
+            return $instance;
         }
     }

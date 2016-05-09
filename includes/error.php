@@ -1,4 +1,15 @@
 <?php
+    if (!class_exists("MainController")) {
+        if (defined("INCLUDES_DIR")) {
+            require INCLUDES_DIR."/controller/Main.php";
+        } else {
+            header("Status: 403"); exit("Access denied."); # Undefined constants: xss protection.
+        }
+    }
+
+    if (class_exists("Route"))
+        Route::current(MainController::current());
+
     if (defined('AJAX') and AJAX or isset($_POST['ajax'])) {
         foreach ($backtrace as $trace)
             $body.= "\n"._f("%s on line %d", array($trace["file"], fallback($trace["line"], 0)));
@@ -6,14 +17,8 @@
     }
 
     $jquery = is_callable(array("Config", "current")) ?
-                  Config::current()->url."/includes/lib/gz.php?file=jquery.js" :
-                  "http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js" ;
-
-    if (!class_exists("MainController"))
-        require INCLUDES_DIR."/controller/Main.php";
-
-    if (class_exists("Route"))
-        Route::current(MainController::current());
+              Config::current()->url."/includes/lib/gz.php?file=jquery.js" :
+              "http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js" ;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -52,6 +57,7 @@
                 font-size: 3em;
                 margin: .25em 0 .5em;
                 text-align: center;
+                line-height: 1;
             }
             h2 {
                 font-size: 1.25em;
@@ -132,23 +138,23 @@
             <h1><?php echo $title; ?></h1>
             <div class="message">
                 <?php echo $body; ?>
-<?php if (!empty($backtrace)): ?>
+            <?php if (!empty($backtrace)): ?>
                 <h2><?php echo __("Backtrace"); ?></h2>
                 <ol class="backtrace">
-<?php foreach ($backtrace as $trace): ?>
+                <?php foreach ($backtrace as $trace): ?>
                     <li><code><?php echo _f("%s on line %d", array($trace["file"], fallback($trace["line"], 0))); ?></code></li>
-<?php endforeach; ?>
+                <?php endforeach; ?>
                 </ol>
-<?php endif; ?>
+            <?php endif; ?>
                 <div class="clear"></div>
-<?php if (class_exists("Route") and !logged_in() and $body != __("Route was initiated without a Controller.")): ?>
+            <?php if (class_exists("Route") and !logged_in() and $body != __("Route was initiated without a Controller.")): ?>
                 <a href="<?php echo url("login", MainController::current()); ?>" class="big login"><?php echo __("Log In"); ?> &rarr;</a>
-<?php endif; ?>
+            <?php endif; ?>
                 <div class="clear last"></div>
             </div>
         </div>
-<?php if (defined("CHYRP_VERSION")): ?>
-        <p class="footer">Chyrp <?php echo CHYRP_VERSION; ?> &copy; 2009 Alex Suraci</p>
-<?php endif; ?>
+    <?php if (defined("CHYRP_VERSION")): ?>
+        <p class="footer">Chyrp <?php echo CHYRP_VERSION; ?> &copy; Chyrp Team <?php echo date("Y"); ?></p>
+    <?php endif; ?>
     </body>
 </html>

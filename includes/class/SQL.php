@@ -46,9 +46,7 @@
             if (!UPGRADING and !INSTALLING and !isset(Config::current()->sql))
                 error(__("Error"), __("Database configuration is not set. Please run the upgrader."));
 
-            $database = !UPGRADING ?
-                            oneof(@Config::current()->sql, array()) :
-                            Config::get("sql") ;
+            $database = (!UPGRADING) ? oneof(@Config::current()->sql, array()) : Config::get("sql") ;
 
             if (is_array($settings))
                 fallback($database, $settings);
@@ -467,7 +465,8 @@
                 return $loaded_settings = new self($settings);
             } else {
                 static $instance = null;
-                return $instance = (empty($instance)) ? new self() : $instance ;
+                $instance = (empty($instance)) ? new self() : $instance ;
+                return $instance;
             }
         }
     }

@@ -1,0 +1,45 @@
+{% extends "layouts/default.twig" %}
+
+{% block content %}
+    <form action="{% url "submit" %}" enctype="multipart/form-data" accept-charset="utf-8" method="post" class="regular_post" onsubmit="if (! document.getElementById('confirm_submit_tos').checked) { alert('You must accept the Terms of Submission.'); return false; } else return true;">
+        
+        <span id="post_type_title" style="position: relative; font-size: 20px;">
+        ${ "Submit a Text Post" | translate }
+        </span>
+        
+        <div id="form_container">
+            <h4 class="first">Title <span class="optional">(optional)</span></h4>
+            <input class="text_field big wide" id="title" name="title" type="text" value="">
+
+            <h4>Body</h4>
+            <textarea class="big wide" id="body" name="body" rows="8"></textarea>
+        </div>
+
+        <label for="confirm_submit_tos">
+            <div id="confirm_tos">
+                <input type="checkbox" id="confirm_submit_tos" name="confirm_tos">
+            I accept the <a href="{% url "terms_of_submission" %}" target="_blank">
+            Terms of Submission</a>
+            </div>
+        </label>
+        <br>
+
+        <input type="text" value="Name (required)" maxlength="25" name="name" id="name"
+                        onfocus="if (this.value == 'Name (required)') {
+                                    this.value = '';
+                                 }" onblur="if (this.value == '') {
+                                              this.value = 'Name (required)';
+                                            }">
+        <input type="text" value="Email (required)" maxlength="100" name="email" id="email"
+                        onfocus="if (this.value == 'Email (required)') {
+                                    this.value = '';
+                                 }" onblur="if (this.value == '') {
+                                             this.value = 'Email (required)';
+                                           }">
+        <br>
+        <p><button name="submit" type="submit" id="submit">${ "Submit" | translate }</button></p>
+        <input type="hidden" name="status" value="draft" id="draft" />
+        <input type="hidden" name="feather" value="text" id="feather" />
+        <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
+    </form>
+{% endblock %}

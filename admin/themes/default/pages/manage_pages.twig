@@ -10,7 +10,7 @@
                     <div class="pad">
                         <h3>
                             ${ "Search&hellip;" | translate }
-                            <a href="{% admin "help&id=filtering_results" %}" class="help emblem"><img src="$theme_url/images/icons/help.png" alt="help" /></a>
+                            <a href="{% admin "help&id=filtering_results" %}" class="help emblem"><img src="$theme_url/images/icons/help.svg" alt="help" /></a>
                         </h3>
                         <input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" /> <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
                     </div>
@@ -38,11 +38,11 @@
                         <td>$page.user.login</td>
                         ${ trigger.call("manage_pages_column", page) }
                         {% if page.editable and page.deletable %}
-                        <td class="controls">${ page.edit_link('<img src="'~ theme_url ~'/images/icons/edit.png" alt="edit" /> '~("edit" | translate)) }</td>
-                        <td class="controls">${ page.delete_link('<img src="'~ theme_url ~'/images/icons/delete.png" alt="delete" /> '~("delete" | translate)) }</td>
+                        <td class="controls">${ page.edit_link('<img src="'~ theme_url ~'/images/icons/edit.svg" alt="edit" /> '~("edit" | translate)) }</td>
+                        <td class="controls">${ page.delete_link('<img src="'~ theme_url ~'/images/icons/delete.svg" alt="delete" /> '~("delete" | translate)) }</td>
                         {% else %}
-                        ${ page.edit_link('<img src="'~ theme_url ~'/images/icons/edit.png" alt="edit" /> '~("edit" | translate), '<td class="controls" colspan="2">', '</td>') }
-                        ${ page.delete_link('<img src="'~ theme_url ~'/images/icons/delete.png" alt="delete" /> '~("delete" | translate), '<td class="controls" colspan="2">', '</td>') }
+                        ${ page.edit_link('<img src="'~ theme_url ~'/images/icons/edit.svg" alt="edit" /> '~("edit" | translate), '<td class="controls" colspan="2">', '</td>') }
+                        ${ page.delete_link('<img src="'~ theme_url ~'/images/icons/delete.svg" alt="delete" /> '~("delete" | translate), '<td class="controls" colspan="2">', '</td>') }
                         {% endif %}
                     </tr>
                 {% else %}
@@ -67,8 +67,11 @@
                 <ul class="sort_pages">
                 {% for item in theme.pages_list %}
                     <li class="page-item" id="page_list_$item.page.id">
-                        <noscript><input type="text" size="2" name="list_order[$item.page.id]" value="$item.page.list_order" class="center" /></noscript>
+                        <noscript>
+                            <input type="text" size="2" name="list_order[$item.page.id]" value="$item.page.list_order" class="center desktop" />
+                        </noscript>
                         <div>$item.page.title</div>
+                        <input type="text" size="2" name="list_order[$item.page.id]" value="$item.page.list_order" class="center mobile" />
 
                         {% if item.has_children %}<ul>{% endif %}
                     {% if not item.has_children %}</li>{% endif %}
@@ -79,10 +82,15 @@
                     {% endfor %}
                 {% endfor %}
                 </ul>
+                <div class="buttons mobile">
+                    <button type="submit" class="yay">
+                        <img src="$theme_url/images/icons/success.svg" alt="success" />${ "Reorder" | translate }
+                    </button>
+                </div>
                 <noscript>
-                    <div class="buttons">
+                    <div class="buttons desktop">
                         <button type="submit" class="yay">
-                            <img src="$theme_url/images/icons/success.png" alt="success" />${ "Reorder" | translate }
+                            <img src="$theme_url/images/icons/success.svg" alt="success" />${ "Reorder" | translate }
                         </button>
                     </div>
                 </noscript>

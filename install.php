@@ -20,8 +20,8 @@
 
     ob_start();
 
-    if (version_compare(PHP_VERSION, "5.1.3", "<"))
-        exit("Chyrp requires PHP 5.1.3 or greater. Installation cannot continue.");
+    if (version_compare(PHP_VERSION, "5.3.0", "<"))
+        exit("Chyrp requires PHP 5.3.0 or greater. Installation cannot continue.");
 
     require_once INCLUDES_DIR."/helpers.php";
 
@@ -50,7 +50,8 @@
     sanitize_input($_COOKIE);
     sanitize_input($_REQUEST);
 
-    $url = "http://".$_SERVER['HTTP_HOST'].str_replace("/install.php", "", $_SERVER['REQUEST_URI']);
+    $protocol = (!empty($_SERVER['HTTPS']) and $_SERVER['HTTPS'] !== "off" or $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://" ;
+    $url = $protocol.$_SERVER['HTTP_HOST'].str_replace("/install.php", "", $_SERVER['REQUEST_URI']);
     $index = (parse_url($url, PHP_URL_PATH)) ? "/".trim(parse_url($url, PHP_URL_PATH), "/")."/" : "/" ;
     $htaccess = "<IfModule mod_rewrite.c>\nRewriteEngine On\nRewriteBase {$index}\nRewriteCond %{REQUEST_FILENAME} !-f\n".
                 "RewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule ^.+$ index.php [L]\n</IfModule>";
@@ -82,12 +83,12 @@
         if ($_POST['adapter'] == "sqlite" and !@is_writable(dirname($_POST['database'])))
             $errors[] = __("SQLite database file could not be created. Please make sure your server has write permissions to the location for the database.");
         else {
-            $sql = SQL::current(array("host" => $_POST['host'],
+            $sql = SQL::current(array("host"     => $_POST['host'],
                                       "username" => $_POST['username'],
                                       "password" => $_POST['password'],
                                       "database" => $_POST['database'],
-                                      "prefix" => $_POST['prefix'],
-                                      "adapter" => $_POST['adapter']));
+                                      "prefix"   => $_POST['prefix'],
+                                      "adapter"  => $_POST['adapter']));
 
             if (!$sql->connect(true))
                 $errors[] = _f("Could not connect to the specified database:\n<pre>%s</pre>", array($sql->error));
@@ -134,23 +135,31 @@
             $config->set("description", $_POST['description']);
             $config->set("url", $url);
             $config->set("chyrp_url", $url);
-            $config->set("feed_url", "");
             $config->set("email", $_POST['email']);
+            $config->set("timezone", $_POST['timezone']);
             $config->set("locale", "en_US");
-            $config->set("theme", "stardust");
+            $config->set("cookies_notification", true);
+            $config->set("check_updates", true);
+            $config->set("check_updates_last", 0);
+            $config->set("theme", "firecrest");
+            $config->set("admin_theme", "default");
             $config->set("posts_per_page", 5);
             $config->set("feed_items", 20);
-            $config->set("clean_urls", false);
-            $config->set("post_url", "(year)/(month)/(day)/(url)/");
-            $config->set("timezone", $_POST['timezone']);
-            $config->set("can_register", true);
-            $config->set("default_group", 0);
-            $config->set("guest_group", 0);
+            $config->set("feed_url", "");
+            $config->set("uploads_path", "/uploads/");
             $config->set("enable_trackbacking", true);
             $config->set("send_pingbacks", false);
             $config->set("enable_xmlrpc", true);
             $config->set("enable_ajax", true);
-            $config->set("uploads_path", "/uploads/");
+            $config->set("enable_wysiwyg", true);
+            $config->set("enable_emoji", true);
+            $config->set("can_register", false);
+            $config->set("email_activation", false);
+            $config->set("enable_recaptcha", false);
+            $config->set("default_group", 0);
+            $config->set("guest_group", 0);
+            $config->set("clean_urls", false);
+            $config->set("post_url", "(year)/(month)/(day)/(url)/");
             $config->set("enabled_modules", array());
             $config->set("enabled_feathers", array("text"));
             $config->set("routes", array());
@@ -194,6 +203,7 @@
                              id INTEGER PRIMARY KEY AUTO_INCREMENT,
                              title VARCHAR(250) DEFAULT '',
                              body LONGTEXT,
+                             public BOOLEAN DEFAULT '1',
                              show_in_list BOOLEAN DEFAULT '1',
                              list_order INTEGER DEFAULT 0,
                              clean VARCHAR(128) DEFAULT '',
@@ -209,9 +219,12 @@
                              id INTEGER PRIMARY KEY AUTO_INCREMENT,
                              login VARCHAR(64) DEFAULT '',
                              password VARCHAR(60) DEFAULT '',
-                             full_name VARCHAR(250) DEFAULT '',
                              email VARCHAR(128) DEFAULT '',
+                             full_name VARCHAR(250) DEFAULT '',
+                             bio VARCHAR(250) DEFAULT '',
                              website VARCHAR(128) DEFAULT '',
+                             avatar VARCHAR(250) DEFAULT '',
+                             approved BOOLEAN DEFAULT 1,
                              group_id INTEGER DEFAULT 0,
                              joined_at DATETIME DEFAULT NULL,
                              UNIQUE (login)
@@ -249,6 +262,7 @@
                                      __("Toggle Extensions"),
                                      __("View Site"),
                                      __("View Private Posts"),
+                                     __("View Scheduled Posts"),
                                      __("View Drafts"),
                                      __("View Own Drafts"),
                                      __("Add Posts"),
@@ -261,6 +275,7 @@
                                      __("Delete Drafts"),
                                      __("Delete Own Posts"),
                                      __("Delete Own Drafts"),
+                                     __("View Pages"),
                                      __("Add Pages"),
                                      __("Edit Pages"),
                                      __("Delete Pages"),
@@ -271,31 +286,33 @@
                                      __("Edit Groups"),
                                      __("Delete Groups")); */
 
-            $names = array("change_settings" => "Change Settings",
+            $names = array("change_settings"   => "Change Settings",
                            "toggle_extensions" => "Toggle Extensions",
-                           "view_site" => "View Site",
-                           "view_private" => "View Private Posts",
-                           "view_draft" => "View Drafts",
-                           "view_own_draft" => "View Own Drafts",
-                           "add_post" => "Add Posts",
-                           "add_draft" => "Add Drafts",
-                           "edit_post" => "Edit Posts",
-                           "edit_draft" => "Edit Drafts",
-                           "edit_own_post" => "Edit Own Posts",
-                           "edit_own_draft" => "Edit Own Drafts",
-                           "delete_post" => "Delete Posts",
-                           "delete_draft" => "Delete Drafts",
-                           "delete_own_post" => "Delete Own Posts",
-                           "delete_own_draft" => "Delete Own Drafts",
-                           "add_page" => "Add Pages",
-                           "edit_page" => "Edit Pages",
-                           "delete_page" => "Delete Pages",
-                           "add_user" => "Add Users",
-                           "edit_user" => "Edit Users",
-                           "delete_user" => "Delete Users",
-                           "add_group" => "Add Groups",
-                           "edit_group" => "Edit Groups",
-                           "delete_group" => "Delete Groups");
+                           "view_site"         => "View Site",
+                           "view_private"      => "View Private Posts",
+                           "view_scheduled"    => "View Scheduled Posts",
+                           "view_draft"        => "View Drafts",
+                           "view_own_draft"    => "View Own Drafts",
+                           "add_post"          => "Add Posts",
+                           "add_draft"         => "Add Drafts",
+                           "edit_post"         => "Edit Posts",
+                           "edit_draft"        => "Edit Drafts",
+                           "edit_own_post"     => "Edit Own Posts",
+                           "edit_own_draft"    => "Edit Own Drafts",
+                           "delete_post"       => "Delete Posts",
+                           "delete_draft"      => "Delete Drafts",
+                           "delete_own_post"   => "Delete Own Posts",
+                           "delete_own_draft"  => "Delete Own Drafts",
+                           "view_page"         => "View Pages",
+                           "add_page"          => "Add Pages",
+                           "edit_page"         => "Edit Pages",
+                           "delete_page"       => "Delete Pages",
+                           "add_user"          => "Add Users",
+                           "edit_user"         => "Edit Users",
+                           "delete_user"       => "Delete Users",
+                           "add_group"         => "Add Groups",
+                           "edit_group"        => "Edit Groups",
+                           "delete_group"      => "Delete Groups");
 
             foreach ($names as $id => $name)
                 $sql->replace("permissions",
@@ -304,15 +321,15 @@
                                     "name" => $name,
                                     "group_id" => 0));
 
-            $groups = array("admin" => array_keys($names),
+            $groups = array("admin"  => array_keys($names),
                             "member" => array("view_site"),
-                            "friend" => array("view_site", "view_private"),
+                            "friend" => array("view_site", "view_private", "view_scheduled"),
                             "banned" => array(),
-                            "guest" => array("view_site"));
+                            "guest"  => array("view_site"));
 
             # Insert the default groups (see above)
             $group_id = array();
-            foreach($groups as $name => $permissions) {
+            foreach ($groups as $name => $permissions) {
                 $sql->replace("groups", "name", array("name" => ucfirst($name)));
 
                 $group_id[$name] = $sql->latest("groups");
@@ -330,11 +347,11 @@
 
             if (!$sql->select("users", "id", array("login" => $_POST['login']))->fetchColumn())
                 $sql->insert("users",
-                             array("login" => $_POST['login'],
-                                   "password" => User::hashPassword($_POST['password_1']),
-                                   "email" => $_POST['email'],
-                                   "website" => $config->url,
-                                   "group_id" => $group_id["admin"],
+                             array("login"     => $_POST['login'],
+                                   "password"  => User::hashPassword($_POST['password_1']),
+                                   "email"     => $_POST['email'],
+                                   "website"   => $config->url,
+                                   "group_id"  => $group_id["admin"],
                                    "joined_at" => datetime()));
 
             $installed = true;
@@ -342,7 +359,7 @@
     }
 
     function value_fallback($index, $fallback = "") {
-        echo (isset($_POST[$index])) ? $_POST[$index] : $fallback ;
+        echo (isset($_POST[$index])) ? fix($_POST[$index]) : $fallback ;
     }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -406,7 +423,7 @@
                 padding: .6em .8em .5em 2.75em;
                 border-bottom: .1em solid #FBC2C4;
                 color: #D12F19;
-                background: #FBE3E4 url('./admin/images/icons/failure.png') no-repeat .7em center;
+                background: #FBE3E4 url('./admin/themes/default/images/icons/failure.png') no-repeat .7em center;
             }
             .error.last {
                 margin: 0 0 1em 0;
@@ -424,6 +441,7 @@
                 font-size: 3em;
                 margin: .25em 0 .5em;
                 text-align: center;
+                line-height: 1;
             }
             code {
                 color: #06B;
@@ -502,12 +520,15 @@
                             .animate({ opacity: "show" })
 
                         $("#host_field, #username_field, #password_field, #prefix_field")
-                            .parent()
-                                .animate({ height: "hide", opacity: "hide" })
+                            .children()
+                                .val("")
+                                    .closest("div")
+                                        .animate({ height: "hide", opacity: "hide" })
                     } else {
                         $("#database_field label .sub")
                             .animate({ opacity: "hide" },
-                                     function(){ $(this).remove() })
+                                function(){ $(this).remove() })
+
                         $("#host_field, #username_field, #password_field, #prefix_field")
                             .parent()
                                 .animate({ height: "show", opacity: "show" })
@@ -517,11 +538,11 @@
         </script>
     </head>
     <body>
-<?php foreach ($errors as $error): ?>
+        <?php foreach ($errors as $error): ?>
         <div class="error<?php if ($index + 1 == count($errors)) echo " last"; ?>"><?php echo $error; ?></div>
-<?php endforeach; ?>
+        <?php endforeach; ?>
         <div class="window">
-<?php if (!$installed): ?>
+        <?php if (!$installed): ?>
             <form action="install.php" method="post" accept-charset="utf-8">
                 <h1><?php echo __("Database Setup"); ?></h1>
                 <p id="adapter_field">
@@ -558,9 +579,7 @@
                     </p>
                 </div>
                 <p id="database_field">
-                    <label for="database">
-                        <?php echo __("Database"); ?>
-                        <?php echo (isset($_POST['adapter']) and $_POST['adapter'] == "sqlite") ? '<span class="sub">'.__("(full path)").'</span>' : "" ; ?></label>
+                    <label for="database"><?php echo __("Database"); ?> <?php echo (isset($_POST['adapter']) and $_POST['adapter'] == "sqlite") ? '<span class="sub">'.__("(full path)").'</span>' : "" ; ?></label>
                     <input type="text" name="database" value="<?php value_fallback("database"); ?>" id="database" />
                 </p>
                 <div<?php echo (isset($_POST['adapter']) and $_POST['adapter'] == "sqlite") ? ' style="display: none"' : "" ; ?>>
@@ -584,12 +603,12 @@
                 <p id="timezone_field">
                     <label for="timezone"><?php echo __("What time is it?"); ?></label>
                     <select name="timezone" id="timezone">
-<?php foreach (timezones() as $zone): ?>
+                    <?php foreach (timezones() as $zone): ?>
                         <option value="<?php echo $zone["name"]; ?>"<?php selected($zone["name"], oneof(@$_POST['timezone'], $default_timezone)); ?>>
                             <?php echo strftime("%I:%M %p on %B %d, %Y", $zone["now"]); ?> &mdash;
                             <?php echo str_replace(array("_", "St "), array(" ", "St. "), $zone["name"]); ?>
                         </option>
-<?php endforeach; ?>
+                    <?php endforeach; ?>
                     </select>
                 </p>
 
@@ -615,26 +634,24 @@
 
                 <button type="submit"><?php echo __("Install! &rarr;"); ?></button>
             </form>
-<?php else: ?>
+        <?php else: ?>
             <h1><?php echo __("Done!"); ?></h1>
             <p>
-                <?php echo __("Chyrp has been successfully installed."); ?>
+                <?php echo __("Chyrp has been successfully installed and you have been logged in."); ?>
             </p>
             <h2><?php echo __("So, what now?"); ?></h2>
             <ol>
                 <li><?php echo __("<strong>Delete install.php</strong>, you won't need it anymore."); ?></li>
-<?php if (!is_writable(INCLUDES_DIR."/caches")): ?>
+            <?php if (!is_writable(INCLUDES_DIR."/caches")): ?>
                 <li><?php echo __("CHMOD <code>/includes/caches</code> to 777."); ?></li>
-<?php endif; ?>
+            <?php endif; ?>
                 <li><a href="http://chyrp.net/extend/type/translation"><?php echo __("Look for a translation for your language."); ?></a></li>
                 <li><a href="http://chyrp.net/extend/type/module"><?php echo __("Install some Modules."); ?></a></li>
                 <li><a href="http://chyrp.net/extend/type/feather"><?php echo __("Find some Feathers you want."); ?></a></li>
                 <li><a href="README.markdown"><?php echo __("Read &#8220;Getting Started&#8221;"); ?></a></li>
             </ol>
             <a class="big" href="<?php echo $config->chyrp_url; ?>"><?php echo __("Take me to my site! &rarr;"); ?></a>
-<?php
-    endif;
-?>
+        <?php endif; ?>
         </div>
     </body>
 </html>

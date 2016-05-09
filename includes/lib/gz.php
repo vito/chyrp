@@ -1,16 +1,17 @@
 <?php
     # Constant: USE_ZLIB
     # Use zlib to provide GZIP compression
-    define('USE_ZLIB', true);
+    if (version_compare(PHP_VERSION, "5.4.4", "<")) define('USE_ZLIB', true);
+    else define('USE_ZLIB', false);
 
-    $valid_files = "jquery.js plugins.js";
+    $valid_files = "jquery.js plugins.js redactor/redactor.min.js flexnav/jquery.flexnav.min.js";
     if (!in_array($_GET['file'], explode(" ", $valid_files)) and strpos($_GET['file'], "/themes/") === false)
         exit("Access Denied.");
 
     if (substr_count($_GET['file'], "..") > 0 )
         exit("GTFO.");
 
-    if (extension_loaded('zlib') and USE_ZLIB) {
+    if (extension_loaded('zlib') and USE_ZLIB and !ini_get("zlib.output_compression")) {
         ob_start("ob_gzhandler");
         header("Content-Encoding: gzip");
     } else
@@ -36,4 +37,3 @@
         echo "alert('File not found: ".addslashes($_GET['file'])."')";
 
     ob_end_flush();
-

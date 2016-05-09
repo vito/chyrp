@@ -1,0 +1,17 @@
+{% extends "layouts/default.twig" %}
+
+{% block content %}
+    <h2>${ "Log In" | translate }</h2>
+    <form action="{% url "login" %}" method="post">
+        <p>
+            <label for="login">${ "Username" | translate }</label>
+            <input type="text" name="login" autofocus="autofocus" value="${ POST.login | escape }" id="login" tabindex="1" />
+        </p>
+        <p>
+            <label for="password">${ "Password" | translate }</label>
+            <input type="password" name="password" value="" id="password" tabindex="1" />
+        </p>
+
+        <p><button name="submit" type="submit" id="submit">${ "Log In" | translate }</button></p>
+    </form>
+{% endblock %}

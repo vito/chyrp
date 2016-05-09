@@ -96,3 +96,71 @@
 .post_tags li a.tag:hover {
     background: #f0f0f0;
 }
+
+/* @Conform style to core admin pages */
+.post_tags li h3, .post_tags li h3 {
+    font-family: sans-serif !important;
+    font-size: 1em !important;
+}
+
+.post_tags li a:link, .post_tags li a:visited {
+    text-decoration: none;
+}
+/* @end */
+
+/* @media-query for small screens */
+@media screen and (max-width: 768px) {
+    form.left, form.margin_left {
+        width: 100%;
+        margin: 0em;
+    }
+    h2.left {
+        clear: both;
+    }
+    .tag_cloud span {
+        display: block;
+        width: 48%;
+        float: left;
+        overflow: hidden;
+    }
+    .tag_cloud span:nth-child(odd) {
+        margin-right: 4%;
+        clear: both;
+    }
+    .tag_cloud span .controls {
+        opacity: 1 !important;
+        padding: 2em 0em;
+        margin-bottom: 1em;
+    }
+    .tag_cloud span  a {
+        font-size: 100% !important;
+    }
+    .tag_cloud span .controls a {
+        padding: 0em 1em;
+    }
+    .post_tags li {
+        padding-top: 1em;
+        border-top: 1px solid #ddd;
+    }
+    .post_tags li.toggler {
+        border: 1px solid transparent;
+        margin-top: 0em;
+    }
+    .post_tags li.odd,
+    .post_tags li.even {
+        background-color: inherit;
+    }
+    .post_tags input[type="checkbox"] {
+        width: auto !important;
+        float: left !important;
+        margin: 0em 1em 1em 0em !important;
+    }
+    .post_tags li a.tag, .post_tags li a.edit_tag {
+        float: none;
+        clear: both;
+        display: block;
+        margin: 1em 0em;
+        padding: 0.5em 1em;
+        text-align: center;
+    }
+}

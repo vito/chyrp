@@ -12,9 +12,9 @@
                     <div class="buttons">
                         <button type="submit" class="yay right" accesskey="s">
                             {% if route.action == "write_page" %}
-                            <img src="$theme_url/images/icons/success.png" alt="success" />${ "Publish" | translate }
+                            <img src="$theme_url/images/icons/success.svg" alt="success" />${ "Publish" | translate }
                             {% else %}
-                            <img src="$theme_url/images/icons/success.png" alt="success" />${ "Save" | translate }
+                            <img src="$theme_url/images/icons/success.svg" alt="success" />${ "Save" | translate }
                             {% endif %}
                         </button>
                     </div>
@@ -25,6 +25,10 @@
                         <p>
                             <label for="show_in_list">${ "Show in pages list?" | translate }</label>
                             <input type="checkbox" name="show_in_list" id="show_in_list" tabindex="3"{% if page.show_in_list or route.action == "write_page" %} checked="checked"{% endif %} />&nbsp;
+                        </p>
+                        <p>
+                            <label for="public">${ "Allow everyone to view?" | translate }</label>
+                            <input type="checkbox" name="public" id="public" tabindex="4"{% if page.public %} checked="checked"{% endif %} />&nbsp;
                         </p>
                         <p>
                             <label for="slug">${ "Slug" | translate }</label>

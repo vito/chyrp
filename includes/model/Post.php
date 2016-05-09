@@ -86,9 +86,9 @@
 
             fallback($this->clean, $this->url);
 
-            foreach ($this->attributes as $key => $val)
+            foreach($this->attributes as $key => $val)
                 if (!empty($key))
-                    $this->$key = $val;
+                    $this->$key =  $val;
 
             Trigger::current()->filter($this, "post");
 
@@ -188,18 +188,17 @@
             $user_id = ($user instanceof User) ? $user->id : $user ;
 
             $sql = SQL::current();
-            $visitor = Visitor::current();
             $trigger = Trigger::current();
 
             fallback($feather,    oneof(@$_POST['feather'], ""));
             fallback($user_id,    oneof(@$_POST['user_id'], Visitor::current()->id));
-            fallback($pinned,     !empty($_POST['pinned']));
+            fallback($pinned,     (int) !empty($_POST['pinned']));
             fallback($status,     (isset($_POST['draft'])) ? "draft" : oneof(@$_POST['status'], "public"));
             fallback($created_at, (!empty($_POST['created_at']) and
-                                   (!isset($_POST['original_time']) or $_POST['created_at'] != $_POST['original_time'])) ?
+                                  (!isset($_POST['original_time']) or $_POST['created_at'] != $_POST['original_time'])) ?
                                       datetime($_POST['created_at']) :
                                       datetime());
-            fallback($updated_at, oneof(@$_POST['updated_at'], null));
+            fallback($updated_at, oneof(@$_POST['updated_at'], $created_at));
             fallback($trackbacks, oneof(@$_POST['trackbacks'], ""));
             fallback($options,    oneof(@$_POST['option'], array()));
 
@@ -211,10 +210,9 @@
                 $trigger->filter($options, "bookmarklet_submit_options");
             }
 
-
             $new_values = array("feather"    => $feather,
                                 "user_id"    => $user_id,
-                                "pinned"     => (int) $pinned,
+                                "pinned"     => $pinned,
                                 "status"     => $status,
                                 "clean"      => $clean,
                                 "url"        => $url,
@@ -365,7 +363,7 @@
          * Function: deletable
          * Checks if the <User> can delete the post.
          */
-        public function deletable($user = null) {
+        public function deletable(User $user = null) {
             if ($this->no_results)
                 return false;
 
@@ -382,7 +380,7 @@
          * Function: editable
          * Checks if the <User> can edit the post.
          */
-        public function editable($user = null) {
+        public function editable(User $user = null) {
             if ($this->no_results)
                 return false;
 
@@ -493,7 +491,6 @@
                 return false;
 
             $config = Config::current();
-            $visitor = Visitor::current();
 
             if (!$config->clean_urls)
                 return $config->url."/?action=view&amp;url=".urlencode($this->url);
@@ -521,7 +518,7 @@
          * Generates an acceptable Title from the post's excerpt.
          *
          * Returns:
-         *     The post's excerpt. iltered -> first line -> ftags stripped -> truncated to 75 characters -> normalized.
+         *     The post's excerpt. filtered -> first line -> ftags stripped -> truncated to 75 characters -> normalized.
          */
         public function title_from_excerpt() {
             if ($this->no_results)
@@ -597,7 +594,7 @@
         /**
          * Function: next
          * Returns:
-         *     The next post (the post made after this one).
+         *     The next post (the post made before this one).
          */
         public function next() {
             if ($this->no_results)
@@ -606,17 +603,17 @@
             if (isset($this->next))
                 return $this->next;
 
-            return $this->next = new self(null, array("where" => array("created_at >" => $this->created_at,
+            return $this->next = new self(null, array("where" => array("created_at <" => $this->created_at,
                                                                        $this->status == "draft" ?
                                                                            self::statuses(array("draft")) :
                                                                            self::statuses()),
-                                                      "order" => "created_at ASC, id ASC"));
+                                                      "order" => "created_at DESC, id DESC"));
         }
 
         /**
          * Function: prev
          * Returns:
-         *     The next post (the post made after this one).
+         *     The previous post (the post made after this one).
          */
         public function prev() {
             if ($this->no_results)
@@ -625,11 +622,11 @@
             if (isset($this->prev))
                 return $this->prev;
 
-            return $this->prev = new self(null, array("where" => array("created_at <" => $this->created_at,
+            return $this->prev = new self(null, array("where" => array("created_at >" => $this->created_at,
                                                                        ($this->status == "draft" ?
                                                                            self::statuses(array("draft")) :
                                                                            self::statuses())),
-                                                      "order" => "created_at DESC, id DESC"));
+                                                      "order" => "created_at ASC, id ASC"));
         }
 
         /**
@@ -723,7 +720,7 @@
          * Returns a SQL query "chunk" for the "status" column permissions of the current user.
          *
          * Parameters:
-         *     $start - An array of additional statuses to allow; "registered_only" and "private" are added deterministically.
+         *     $start - An array of additional statuses to allow; "registered_only", "private" and "scheduled" are added deterministically.
          */
         static function statuses($start = array()) {
             $visitor = Visitor::current();
@@ -735,6 +732,9 @@
 
             if ($visitor->group->can("view_private"))
                 $statuses[] = "private";
+
+            if ($visitor->group->can("view_scheduled"))
+                $statuses[] = "scheduled";
 
             return "(posts.status IN ('".implode("', '", $statuses)."') OR posts.status LIKE '%{".$visitor->group->id."}%') OR (posts.status LIKE '%{%' AND posts.user_id = ".$visitor->id.")";
         }
@@ -748,16 +748,50 @@
         }
 
         /**
-         * Function: user
-         * Returns a post's user. Example: $post->user->login
-         * 
-         * !! DEPRECATED AFTER 2.0 !!
+         * Function: author
+         * Returns a post's author. Example: $post->author->name
          */
-        public function user() {
+        public function author() {
             if ($this->no_results)
                 return false;
 
-            return new User($this->user_id);
+            $author = array("nick"    => $this->user->login,
+                            "name"    => oneof($this->user->full_name, $this->user->login),
+                            "website" => $this->user->website,
+                            "email"   => $this->user->email,
+                            "joined"  => $this->user->joined_at,
+                            "group"   => $this->user->group->name);
+
+            return (object) $author;
+        }
+
+        /**
+         * Function: featured_image
+         * Returns:
+         *     A selected post image. Usage: $post->featured_image
+         */
+        public function featured_image($width = 210, $order = 0, $html = true) {
+            $config = Config::current();
+
+            $pattern = '/<img[^>]+src=[\'"]' . preg_quote($config->chyrp_url.$config->uploads_path, '/') . '([^\'"]+)[\'"][^>]*>/i';
+            $output = preg_match_all($pattern, $this->body, $matches);
+
+            $image = $matches[1][$order];
+            if (empty($image)) return;
+
+            if (!$html) return $config->chyrp_url.'/includes/thumb.php?file=..'.$config->uploads_path.urlencode($image).'&amp;max_width='.$width;
+            else return '<img src="'.$config->chyrp_url.'/includes/thumb.php?file=..'.$config->uploads_path.urlencode($image).'&amp;max_width='.$width.'" alt="'.$this->title.'" class="featured_image" />';
+        }
+
+        /**
+         * Function: user
+         * Returns a post's user. Example: $post->user->login
+         *
+         * !! DEPRECATED AFTER 2.0 !!
+         */
+        public function user() {
+            deprecated("\$post.user", "2.0", "\$post.author", debug_backtrace());
+            return self::author();
         }
 
         /**
@@ -779,29 +813,5 @@
             }
 
             return list_notate($names);
-        }
-
-        /**
-         * Function: edit_link
-         * Outputs an edit link for the model, if the visitor's <Group.can> edit_[model].
-         *
-         * Parameters:
-         *     $text - The text to show for the link.
-         *     $before - If the link can be shown, show this before it.
-         *     $after - If the link can be shown, show this after it.
-         *     $classes - Extra CSS classes for the link, space-delimited.
-         */
-        public function edit_link($text = null, $before = null, $after = null, $classes = "") {
-            if (!$this->editable())
-                return false;
-
-            fallback($text, __("Edit"));
-
-            $name = strtolower(get_class($this));
-
-            if (@Feathers::$instances[$this->feather]->disable_ajax_edit)
-                $classes = empty($classes) ? "no_ajax" : $classes." no_ajax" ;
-
-            echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=edit_'.$name.'&amp;id='.$this->id.'" title="Edit" class="'.($classes ? $classes." " : '').$name.'_edit_link edit_link" id="'.$name.'_edit_'.$this->id.'">'.$text.'</a>'.$after;
         }
     }

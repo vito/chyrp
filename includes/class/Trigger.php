@@ -17,6 +17,15 @@
         private $exists = array();
 
         /**
+         * Function: __construct
+         * Add a filter to implement Unicode emoji support
+         */
+        private function __construct() {
+            if (Config::current()->enable_emoji)
+                $this->priorities["markup_text"][] = array("priority" => 10, "function" => "emote");
+        }
+
+        /**
          * Function: cmp
          * Sorts actions by priority when used with usort.
          */
@@ -171,6 +180,7 @@
          */
         public static function & current() {
             static $instance = null;
-            return $instance = (empty($instance)) ? new self() : $instance ;
+            $instance = (empty($instance)) ? new self() : $instance ;
+            return $instance;
         }
     }

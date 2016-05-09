@@ -6,16 +6,17 @@
     class MainController {
         # Array: $urls
         # An array of clean URL => dirty URL translations.
-        public $urls = array('|/id/([0-9]+)/|'          => '/?action=view&id=$1',
-                             '|/page/(([^/]+)/)+|'      => '/?action=page&url=$2',
-                             '|/search/|'               => '/?action=search',
-                             '|/search/([^/]+)/|'       => '/?action=search&query=$1',
-                             '|/archive/([0-9]{4})/([0-9]{2})/|'
-                                                        => '/?action=archive&year=$1&month=$2',
-                             '|/archive/([0-9]{4})/([0-9]{2})/([0-9]{2})/|'
-                                                        => '/?action=archive&year=$1&month=$2&day=$3',
-                             '|/([^/]+)/feed/([^/]+)/|' => '/?action=$1&feed&title=$2',
-                             '|/([^/]+)/feed/|'         => '/?action=$1&feed');
+        public $urls = array(
+            '|/id/([0-9]+)/|'                              => '/?action=view&id=$1',
+            '|/page/(([^/]+)/)+|'                          => '/?action=page&url=$2',
+            '|/author/(([^/]+)/)+|'                        => '/?action=author&login=$2',
+            '|/search/|'                                   => '/?action=search',
+            '|/search/([^/]+)/|'                           => '/?action=search&query=$1',
+            '|/archive/([0-9]{4})/([0-9]{2})/([0-9]{2})/|' => '/?action=archive&year=$1&month=$2&day=$3',
+            '|/archive/([0-9]{4})/([0-9]{2})/|'            => '/?action=archive&year=$1&month=$2',
+            '|/archive/([0-9]{4})/|'                       => '/?action=archive&year=$1',
+            '|/([^/]+)/feed/([^/]+)/|'                     => '/?action=$1&feed&title=$2',
+            '|/([^/]+)/feed/|'                             => '/?action=$1&feed');
 
         # Boolean: $displayed
         # Has anything been displayed?
@@ -118,6 +119,14 @@
                 return $route->action = "search";
             }
 
+            # Author
+            if ($route->arg[0] == "author") {
+                if (isset($route->arg[1]))
+                    $_GET['login'] = $route->arg[1];
+
+                return $route->action = "author";
+            }
+
             # Custom pages added by Modules, Feathers, Themes, etc.
             foreach ($config->routes as $path => $action) {
                 if (is_numeric($action))
@@ -175,36 +184,27 @@
          */
         public function post_from_url($route, $request, $return_post = false) {
             $config = Config::current();
+            $post_url_parts = preg_split("!(\([^)]+\))!", $config->post_url, null, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
+            $url_regex = "";
+            $url_parameters = array();
+            Trigger::current()->filter(Post::$url_attrs, "url_code");
 
-            $post_url = $config->post_url;
+            foreach ($post_url_parts as $part)
+                if (isset(Post::$url_attrs[$part])) {
+                    $url_regex .= Post::$url_attrs[$part];
+                    $url_parameters[] = trim($part, "()");
+                } else
+                    $url_regex .= preg_quote($part, "/");
 
-            foreach (explode("/", $post_url) as $path)
-                foreach (preg_split("/\(([^\)]+)\)/", $path) as $leftover) {
-                    $request  = preg_replace("/".preg_quote($leftover)."/", "", $request, 1);
-                    $post_url = preg_replace("/".preg_quote($leftover)."/", "", $post_url, 1);
-                }
-
-            $args = array_map("urldecode", explode("/", trim($request, "/")));
-
-            $post_url = $this->key_regexp(rtrim($post_url, "/"));
-            $post_url_attrs = array();
-            preg_match_all("/\(([^\/]+)\)/", $config->post_url, $parameters);
-            if (preg_match("/".$post_url."/", rtrim($request, "/"), $matches)) {
-                array_shift($matches);
-
-                foreach ($parameters[0] as $index => $parameter)
-                    if ($parameter[0] == "(") {
-                        if ($parameter == "(id)") {
-                            $post_url_attrs = array("id" => $args[$index]);
-                            break;
-                        } else
-                            $post_url_attrs[rtrim(ltrim($parameter, "("), ")")] = $args[$index];
-                    }
+            if (preg_match("/^$url_regex/", ltrim($request, "/"), $matches)) {
+                $post_url_attrs = array();
+                for ($i = 0; $i < count($url_parameters); $i++)
+                    $post_url_attrs[$url_parameters[$i]] = urldecode($matches[$i + 1]);
 
                 if ($return_post)
                     return Post::from_url($post_url_attrs);
                 else
-                    $route->try["view"] = array($post_url_attrs, $args);
+                    $route->try["view"] = array($post_url_attrs);
             }
         }
 
@@ -228,6 +228,18 @@
          * Grabs the posts for the main page.
          */
         public function index() {
+            $sql = SQL::current();
+            $posts = $sql->select("posts",
+                                  "posts.id",
+                                  array("posts.created_at <=" => datetime(),
+                                        "posts.status" => "scheduled"))->fetchAll();
+
+            if (!empty($posts))
+                foreach ($posts as $post)
+                    $sql->update("posts",
+                                 array("id" => $post),
+                                 array("status" => "public"));
+
             $this->display("pages/index",
                            array("posts" => new Paginator(Post::find(array("placeholders" => true)),
                                                           $this->post_limit)));
@@ -246,12 +258,14 @@
                 $posts = new Paginator(Post::find(array("placeholders" => true,
                                                         "where" => array("YEAR(created_at)" => $_GET['year'],
                                                                          "MONTH(created_at)" => $_GET['month'],
-                                                                         "DAY(created_at)" => $_GET['day']))),
+                                                                         "DAY(created_at)" => $_GET['day'],
+                                                                         "status" => "public"))),
                                        $this->post_limit);
             elseif (isset($_GET['year']) and isset($_GET['month']))
                 $posts = new Paginator(Post::find(array("placeholders" => true,
                                                         "where" => array("YEAR(created_at)" => $_GET['year'],
-                                                                         "MONTH(created_at)" => $_GET['month']))),
+                                                                         "MONTH(created_at)" => $_GET['month'],
+                                                                         "status" => "public"))),
                                        $this->post_limit);
 
             $sql = SQL::current();
@@ -261,26 +275,24 @@
                     $timestamps = $sql->select("posts",
                                                array("DISTINCT YEAR(created_at) AS year",
                                                      "MONTH(created_at) AS month",
-                                                     "created_at AS created_at",
-                                                     "id"),
-                                               array("YEAR(created_at)" => $_GET['year']),
-                                               array("created_at DESC", "id DESC"),
+                                                     "created_at AS created_at"),
+                                               array("YEAR(created_at)" => $_GET['year'], "status" => "public"),
+                                               array("created_at DESC"),
                                                array(),
                                                null,
                                                null,
-                                               array("YEAR(created_at)", "MONTH(created_at)", "created_at", "id"));
+                                               array("YEAR(created_at)", "MONTH(created_at)"));
                 else
                     $timestamps = $sql->select("posts",
                                                array("DISTINCT YEAR(created_at) AS year",
                                                      "MONTH(created_at) AS month",
-                                                     "created_at AS created_at",
-                                                     "id"),
-                                               null,
-                                               array("created_at DESC", "id DESC"),
+                                                     "created_at AS created_at"),
+                                               array("status" => "public"),
+                                               array("created_at DESC"),
                                                array(),
                                                null,
                                                null,
-                                               array("YEAR(created_at)", "MONTH(created_at)", "created_at", "id"));
+                                               array("YEAR(created_at)", "MONTH(created_at)"));
 
                 $archives = array();
                 $archive_hierarchy = array();
@@ -289,7 +301,8 @@
                     $month = mktime(0, 0, 0, $time->month + 1, 0, $time->year);
 
                     $posts = Post::find(array("where" => array("YEAR(created_at)" => when("Y", $time->created_at),
-                                                               "MONTH(created_at)" => when("m", $time->created_at))));
+                                                               "MONTH(created_at)" => when("m", $time->created_at),
+                                                               "status" => "public")));
 
                     $archives[$month] = array("posts" => $posts,
                                               "year" => $time->year,
@@ -297,7 +310,7 @@
                                               "timestamp" => $month,
                                               "url" => url("archive/".when("Y/m/", $time->created_at)));
 
-                   $archive_hierarchy[$year][$month] = $posts; 
+                    $archive_hierarchy[$year][$month] = $posts;
                 }
 
                 $this->display("pages/archive",
@@ -329,6 +342,7 @@
         public function search() {
             fallback($_GET['query'], "");
             $config = Config::current();
+            $_GET['query'] = strip_tags($_GET['query']);
 
             if ($config->clean_urls and
                 substr_count($_SERVER['REQUEST_URI'], "?") and
@@ -336,7 +350,7 @@
                 redirect("search/".urlencode($_GET['query'])."/");
 
             if (empty($_GET['query']))
-                return Flash::warning(__("Please enter a search term."));
+                Flash::warning(__("Please enter a search term."));
 
             list($where, $params) = keywords($_GET['query'], "post_attributes.value LIKE :query OR url LIKE :query", "posts");
 
@@ -389,13 +403,13 @@
             if (isset($attrs))
                 $post = Post::from_url($attrs, array("drafts" => true));
             else
-                $post = new Post(array("url" => @$_GET['url']));
+                $post = new Post(array("url" => @$_GET['url']), array("drafts" => true));
 
             if ($post->no_results)
                 return false;
 
             if ((oneof(@$attrs["url"], @$attrs["clean"]) == "feed") and # do some checking to see if they're trying
-                (count(explode("/", trim($post_url, "/"))) > count($args) or              # to view the post or the post's feed.
+                (count(explode("/", trim($post_url, "/"))) > count($args) or # to view the post or the post's feed.
                  end($args) != "feed"))
                 $this->feed = false;
 
@@ -404,6 +418,9 @@
 
             if ($post->status == "draft")
                 Flash::message(__("This post is a draft."));
+
+            if ($post->status == "scheduled")
+                Flash::message(_f("This post is scheduled to be published ".relative_time($post->created_at)));
 
             if ($post->groups() and !substr_count($post->status, "{".Visitor::current()->group->id."}"))
                 Flash::message(_f("This post is only visible by the following groups: %s.", $post->groups()));
@@ -433,7 +450,28 @@
             if ($page->no_results)
                 return false; # Page not found; the 404 handling is handled externally.
 
+            $visitor = Visitor::current();
+
+            if (!$page->public and !$visitor->group->can("view_page"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to view this page."));
+
             $this->display(array("pages/page", "pages/".$page->url), array("page" => $page), $page->title);
+        }
+
+        /**
+         * Function: author
+         * Handles author viewing.
+         */
+        public function author($urls = null) {
+            if (isset($urls)) { # Viewing with clean URLs, e.g. /author/login/
+                $author = User::find(array("where" => array("login" => $urls)));
+            } else
+                $author = new User(array("login" => $_GET['login']));
+
+            if ($author->no_results)
+                Flash::notice(_f("We're sorry, but there was no <strong>\"%s\"</strong> author found.", strip_tags($_GET['login'])), "/");
+
+            $this->display(array("pages/author"), array("author" => $author), $author->login);
         }
 
         /**
@@ -468,6 +506,17 @@
         }
 
         /**
+         * Function: cookies_notification
+         * Deliver a notification to comply with EU Directive 2002/58 on Privacy and Electronic Communications.
+         */
+        public function cookies_notification() {
+            if (!isset($_SESSION['cookies_notified']) and Config::current()->cookies_notification) {
+                Flash::notice(__("By browsing this website you are agreeing to our use of cookies."));
+                $_SESSION['cookies_notified'] = true;
+            }
+        }
+
+        /**
          * Function: register
          * Process registration. If registration is disabled or if the user is already logged in, it will error.
          */
@@ -480,14 +529,12 @@
                 error(__("Error"), __("You're already logged in."));
 
             if (!empty($_POST)) {
-                $route = Route::current();
-
                 if (empty($_POST['login']))
                     Flash::warning(__("Please enter a username for your account."));
                 elseif (count(User::find(array("where" => array("login" => $_POST['login'])))))
                     Flash::warning(__("That username is already in use."));
 
-                if (empty($_POST['password1']) and empty($_POST['password2']))
+                if (empty($_POST['password1']))
                     Flash::warning(__("Password cannot be blank."));
                 elseif ($_POST['password1'] != $_POST['password2'])
                     Flash::warning(__("Passwords do not match."));
@@ -497,18 +544,67 @@
                 elseif (!preg_match("/^[_A-z0-9-]+((\.|\+)[_A-z0-9-]+)*@[A-z0-9-]+(\.[A-z0-9-]+)*(\.[A-z]{2,4})$/", $_POST['email']))
                     Flash::warning(__("Invalid e-mail address."));
 
+                if ($config->enable_recaptcha and !check_captcha())
+                    Flash::warning(__("Incorrect captcha code. Please try again."));
+
                 if (!Flash::exists("warning")) {
-                    $user = User::add($_POST['login'], $_POST['password1'], $_POST['email']);
+                    if ($config->email_activation) {
+                        $to      = $_POST['email'];
+                        $subject = _f($config->name." Registration Pending");
+                        $message = _f("Hello, ".fix($_POST['login']).".\n\nYou are receiving this message because you recently registered at ".$config->chyrp_url."\nTo complete your registration, go to ".$config->chyrp_url."/?action=validate&login=".fix($_POST['login'])."&token=".sha1($_POST['login'].$_POST['email']));
+                        $headers = "From:".$config->email."\r\n" .
+                                   "Reply-To:".$config->email. "\r\n" .
+                                   "X-Mailer: PHP/".phpversion() ;
 
-                    Trigger::current()->call("user_registered", $user);
+                        $user = User::add($_POST['login'], $_POST['password1'], $_POST['email'], '', '', '', false, 5);
+                        $sent = email($to, $subject, $message, $headers);
 
-                    $_SESSION['user_id'] = $user->id;
+                        if ($sent)
+                            Flash::notice(__("The email address you provided has been sent details to confirm registration."), "/");
+                        else
+                            Flash::notice(__("There was an error emailing the activation link to your email address."), "/");
+                    } else {
+                        $user = User::add($_POST['login'], $_POST['password1'], $_POST['email']);
 
-                    Flash::notice(__("Registration successful."), "/");
+                        Trigger::current()->call("user_registered", $user);
+
+                        $_SESSION['user_id'] = $user->id;
+
+                        Flash::notice(__("Registration successful."), "/");
+                    }
                 }
             }
 
             $this->display("forms/user/register", array(), __("Register"));
+        }
+
+        /**
+         * Function: validate
+         * Approves a user registration for a given email.
+         */
+        public function validate() {
+            if (logged_in())
+                error(__("Error"), __("You're already logged in."));
+
+            if (empty($_GET['token']))
+                error(__("Error"), __("No token found."));
+
+            $user = new User(array("login" => strip_tags($_GET['login'])));
+
+            if ($user->no_results)
+                Flash::warning(__("A user with that email doesn't seem to exist in our database."), "/");
+
+            if (sha1($user->login.$user->email) !== $_GET['token'])
+                error(__("Error"), __("Invalid token."));
+
+            if (!$user->approved or $user->group_id = 5) {
+                SQL::current()->update("users",
+                                 array("login" => $user->login),
+                                 array("approved" => true, "group_id" => 2));
+
+                Flash::notice(__("Your account is now active. Welcome aboard!"), "/?action=login");
+            } else
+                Flash::notice(__("Your account has already been activated."), "/");
         }
 
         /**
@@ -529,19 +625,18 @@
                     return $trigger->call("authenticate");
 
                 if (!User::authenticate($_POST['login'], $_POST['password']))
-                    if (!count(User::find(array("where" => array("login" => $_POST['login'])))))
-                        Flash::warning(__("There is no user with that login name."));
-                    else
-                        Flash::warning(__("Password incorrect."));
+                    Flash::warning(__("Incorrect username and/or password, please try again."));
 
                 if (!Flash::exists("warning")) {
                     $user = new User(array("login" => $_POST['login']));
                     $_SESSION['user_id'] = $user->id;
 
-                    $redirect = @$_SESSION['redirect_to'];
-                    unset($_SESSION['redirect_to']);
+                    if (!isset($redirect)) {
+                        $redirect = oneof(@$_SESSION['redirect_to'], "/");
+                        unset($_SESSION['redirect_to']);
+                    }
 
-                    Flash::notice(__("Logged in."), oneof($redirect, "/"));
+                    Flash::notice(__("Logged in."), $redirect);
                 }
             }
 
@@ -574,18 +669,36 @@
             if (!empty($_POST)) {
                 $visitor = Visitor::current();
 
-                $password = (!empty($_POST['new_password1']) and $_POST['new_password1'] == $_POST['new_password2']) ?
-                                User::hashPassword($_POST['new_password1']) :
-                                $visitor->password ;
+                if (!empty($_POST['new_password1']) and $_POST['new_password1'] != $_POST['new_password2'])
+                    Flash::warning(__("Passwords do not match."));
 
-                $visitor->update($visitor->login,
-                                 $password,
-                                 $_POST['email'],
-                                 $_POST['full_name'],
-                                 $_POST['website'],
-                                 $visitor->group->id);
+                if (empty($_POST['email']))
+                    Flash::warning(__("E-mail address cannot be blank."));
+                elseif (!preg_match("/^[_A-z0-9-]+((\.|\+)[_A-z0-9-]+)*@[A-z0-9-]+(\.[A-z0-9-]+)*(\.[A-z]{2,4})$/", $_POST['email']))
+                    Flash::warning(__("Invalid e-mail address."));
 
-                Flash::notice(__("Your profile has been updated."), "/");
+                if (!Flash::exists("warning")) {
+                    $password = (!empty($_POST['new_password1']) and $_POST['new_password1'] == $_POST['new_password2']) ?
+                                    User::hashPassword($_POST['new_password1']) :
+                                    $visitor->password ;
+
+                    if (empty($_FILES['avatar']['size']))
+                        $avatar = $this->avatar ?: null;
+                    else
+                        $avatar = upload($_FILES['avatar'], array("jpg", "png", "jpeg", "gif"));
+
+                    $visitor->update($visitor->login,
+                                     $password,
+                                     $_POST['email'],
+                                     $_POST['full_name'],
+                                     $_POST['bio'],
+                                     $_POST['website'],
+                                     $avatar,
+                                     $visitor->approved,
+                                     $visitor->group->id);
+
+                    Flash::notice(__("Your profile has been updated."), "/");
+                }
             }
 
             $this->display("forms/user/controls", array(), __("Controls"));
@@ -605,22 +718,21 @@
 
                 $new_password = random(16);
 
-                $user->update($user->login,
-                              User::hashPassword($new_password),
-                              $user->email,
-                              $user->full_name,
-                              $user->website,
-                              $user->group_id);
-
                 $sent = email($user->email,
                               __("Lost Password Request"),
                               _f("%s,\n\nWe have received a request for a new password for your account at %s.\n\nPlease log in with the following password, and feel free to change it once you've successfully logged in:\n\t%s",
                                  array($user->login, Config::current()->name, $new_password)));
 
-                if ($sent)
-                    Flash::notice(_f("An e-mail has been sent to your e-mail address that contains a new password. Once you have logged in, you can change it at <a href=\"%s\">User Controls</a>.",
-                                  array(url("controls"))));
-                else {
+                if ($sent) {
+                    $user->update($user->login,
+                                  User::hashPassword($new_password),
+                                  $user->email,
+                                  $user->full_name,
+                                  $user->website,
+                                  $user->group_id);
+
+                    Flash::notice(_f("An e-mail has been sent to your e-mail address that contains a new password. Once you have logged in, you can change it at <a href=\"%s\">User Controls</a>.", array(url("controls"))));
+                } else {
                     # Set their password back to what it was originally.
                     $user->update($user->login,
                                   $user->password,
@@ -637,11 +749,39 @@
         }
 
         /**
+         * Function: random
+         * Grabs a random post and redirects to it.
+         */
+        public function random() {
+            $param = preg_replace('|[^a-z]|i', '', $_GET['feather']);
+            $feather = isset($param) ? $param : 'text';
+            $random = SQL::current()->select("posts",
+                                             "posts.url",
+                                       array("posts.feather" => $feather,
+                                             "posts.status" => "public"),
+                                       array("ORDER BY" => "RAND()"),
+                                       array("LIMIT" => 1))->fetchObject();
+            $post = new Post(array("url" => $random->url));
+            redirect($post->url());
+        }
+
+        /**
          * Function: feed
          * Grabs posts for the feed.
          */
         public function feed($posts = null) {
-            fallback($posts, Post::find(array("limit" => Config::current()->feed_items)));
+            $result = SQL::current()->select("posts",
+                                             "posts.id",
+                                             array("posts.status" => "public"),
+                                             array("posts.id DESC"),
+                                             array(),
+                                             Config::current()->feed_items);
+            $ids = array();
+            foreach ($result->fetchAll() as $index => $row)
+                $ids[] = $row["id"];
+
+            if (!empty($ids))
+                fallback($posts, Post::find(array("where" => array("id" => $ids))));
 
             header("Content-Type: application/atom+xml; charset=UTF-8");
 
@@ -650,7 +790,7 @@
 
             $latest_timestamp = 0;
             foreach ($posts as $post)
-                if (strtotime($post->created_at) > $latest_timestamp)
+                if ($latest_timestamp < strtotime($post->created_at))
                     $latest_timestamp = strtotime($post->created_at);
 
             require INCLUDES_DIR."/feed.php";
@@ -692,6 +832,8 @@
                     return $this->feed($context["posts"]);
             }
 
+            $this->cookies_notification();
+
             $this->context = array_merge($context, $this->context);
 
             $visitor = Visitor::current();
@@ -716,6 +858,8 @@
             $this->context["POST"]         = $_POST;
             $this->context["GET"]          = $_GET;
             $this->context["sql_queries"] =& SQL::current()->queries;
+            $this->context["captcha"]      = generate_captcha();
+            $this->context["site_author"]  = new User(1);
 
             $this->context["visitor"]->logged_in = logged_in();
 
@@ -761,7 +905,7 @@
          */
         public static function & current() {
             static $instance = null;
-            return $instance = (empty($instance)) ? new self() : $instance ;
+            $instance = (empty($instance)) ? new self() : $instance ;
+            return $instance;
         }
     }
-

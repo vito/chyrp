@@ -1,0 +1,12 @@
+name: Submission
+url: http://chyrp.net/
+version: 1.0
+description: Add feature to allow visitors submit content for your blog.
+author:
+  name: Chyrp Team
+  url: http://chyrp.net/
+conflicts:
+notifications:
+  - Please remember to update the permission settings for each group.
+
+* 1.0.0: Initial release

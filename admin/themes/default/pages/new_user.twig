@@ -42,14 +42,21 @@
                         <label for="website">${ "Website" | translate }</label>
                         <input class="text" type="text" name="website" value="" id="website" />
                     </p>
-
+                    <p>
+                        <label for="bio">${ "Bio" | translate }</label>
+                        <textarea name="bio" rows="3" cols="24" id="bio"></textarea>
+                    </p>
+                    <p>
+                        <label for="approved">${ "Approved?" | translate }</label>
+                        <input class="checkbox" type="checkbox" name="approved" id="approved" />
+                    </p>
 
                     ${ trigger.call("new_user_fields") }
 
                     <br />
 
                     <p>
-                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.png" alt="success" />${ "Add User" | translate }</button>
+                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.svg" alt="success" />${ "Add User" | translate }</button>
                     </p>
 
                     <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />

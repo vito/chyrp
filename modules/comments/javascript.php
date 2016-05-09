@@ -11,7 +11,7 @@ $(function(){
         var updater = setInterval("Comment.reload()", <?php echo $config->auto_reload_comments * 1000; ?>);
 <?php endif; ?>
         $("#add_comment").append($(document.createElement("input")).attr({ type: "hidden", name: "ajax", value: "true", id: "ajax" }))
-        $("#add_comment").ajaxForm({ dataType: "json", resetForm: true, beforeSubmit: function(){
+        $("#add_comment").ajaxForm({ dataType: "json", resetForm: true, beforeSubmit: function() {
             $("#add_comment").loader();
         }, success: function(json){
             $.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "show_comment", comment_id: json.comment_id, reason: "added" }, function(data) {
@@ -23,19 +23,35 @@ $(function(){
                     $(".comment_plural").text(plural)
                 }
                 $("#last_comment").val(json.comment_timestamp)
-                $(data).appendTo(".comments:not(:header)").hide().fadeIn("slow")
-            })
+                $(data).prependTo(".comments:not(:header)").hide().fadeIn("slow")
+            }, "html")
         }, complete: function(){
             $("#add_comment").loader(true)
         } })
+<?php if ($config->allow_nested_comments): ?>
+        $("#add_comment").append($(document.createElement("input")).attr({ type: "hidden", name: "parent_id", value: 0, id: "parent_id" }))
+<?php endif; ?>
     }
 <?php echo "\n"; if (!isset($config->enable_ajax) or $config->enable_ajax): ?>
-    $(".comment_edit_link").live("click", function(){
+    $(".comment_reply_link").on("click", function(e) {
+        var id = $(this).attr("id").replace(/comment_reply_to_/, "");
+        $("#add_comment").find("#parent_id").prop({ value: id });
+
+        e.preventDefault();
+
+        var target = this.hash;
+        $target = $(target);
+
+        $('html, body').stop().animate({
+            'scrollTop': $target.offset().top
+        }, 1000, 'swing');
+    })
+    $(".comment_edit_link").live("click", function() {
         var id = $(this).attr("id").replace(/comment_edit_/, "")
         Comment.edit(id)
         return false
     })
-    $(".comment_delete_link").live("click", function(){
+    $(".comment_delete_link").live("click", function() {
         var id = $(this).attr("id").replace(/comment_delete_/, "")
 
         notice++
@@ -56,7 +72,7 @@ $(function(){
 var editing = 0
 var notice = 0
 var Comment = {
-    delete_animations: { height: "hide", opacity: "hide" },
+    delete_animations: { height: "hide", margin: "hide", opacity: "hide" },
     delete_wrap: "",
     reload: function() {
         if ($(".comments:not(:header)").attr("id") == undefined) return;
@@ -68,7 +84,7 @@ var Comment = {
                 $.each(json.comment_ids, function(i, id) {
                     $.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "show_comment", comment_id: id }, function(data){
                         $(data).appendTo(".comments:not(:header)").hide().fadeIn("slow")
-                    })
+                    }, "html")
                 })
             } })
         }
@@ -92,7 +108,7 @@ var Comment = {
                 $("#comment_cancel_edit_"+id).click(function(){
                     $("#comment_"+id).loader()
                     $.post("<?php echo $config->chyrp_url; ?>/includes/ajax.php", { action: "show_comment", comment_id: id }, function(data){
-                        $("#comment_"+id).replaceWith(data).loader(true)
+                        $("#comment_"+id).loader(true).replaceWith(data)
                     })
                 })
                 $("#comment_edit_"+id).ajaxForm({ beforeSubmit: function(){
@@ -106,10 +122,10 @@ var Comment = {
                         $("#comment_"+id).fadeOut("fast", function(){
                             $(this).replaceWith(data).fadeIn("fast")
                         })
-                    })
+                    }, "html")
                 } })
             }) })
-        })
+        }, "html")
     },
     destroy: function(id) {
         notice--
@@ -134,7 +150,7 @@ var Comment = {
                 var plural = (count == 1) ? "" : "s"
                 $(".comment_plural").text(plural)
             }
-        })
+        }, "html")
     }
 }
 <?php Trigger::current()->call("comments_javascript"); ?>

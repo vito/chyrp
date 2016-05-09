@@ -1,0 +1,20 @@
+{% extends "layout.twig" %}
+
+{% block title %}${ "Synchronize Dropbox Posts" | translate("comments") }{% endblock %}
+
+{% block content %}
+            <form class="split" action="{% admin "manage_dropbox" %}" method="post" accept-charset="utf-8">
+                <fieldset>
+                    {% if site.module_dropbox.oauth_token != "" %}
+                    <br />
+                    <p>
+                        <span class="yay">Authorized</span>
+                    </p>
+                    <hr />
+                    <br />
+                    {% endif %}
+                    <h2>${ "Synchronize Dropbox Posts" | translate }</h2>
+                    <p>
+                        <button name="synchronize" value="synchronize" class="yay"><img src="$theme_url/images/icons/success.svg" alt="success" />${ "Synchronize" | translate }</button>
+                    </p>
+{% endblock %}

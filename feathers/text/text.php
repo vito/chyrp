@@ -23,7 +23,7 @@
             fallback($_POST['slug'], sanitize($_POST['title']));
 
             return Post::add(array("title" => $_POST['title'],
-                                    "body" => $_POST['body']),
+                                   "body" => $_POST['body']),
                              $_POST['slug'],
                              Post::check_url($_POST['slug']));
         }

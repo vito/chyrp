@@ -29,17 +29,17 @@
          * Prepares Twig.
          */
         private function __construct() {
-            $this->admin_theme = fallback($_SESSION['admin_theme'], "default");
+            $this->admin_theme = fallback(Config::current()->admin_theme, "default");
 
             $this->theme = new Twig_Loader(MAIN_DIR."/admin/themes/".$this->admin_theme,
-                                           (is_writable(INCLUDES_DIR."/caches") and !DEBUG) ?
-                                               INCLUDES_DIR."/caches" :
-                                               null);
+                                            (is_writable(INCLUDES_DIR."/caches") and !DEBUG) ?
+                                                INCLUDES_DIR."/caches" :
+                                                null);
 
             $this->default = new Twig_Loader(MAIN_DIR."/admin/themes/default",
-                                             (is_writable(INCLUDES_DIR."/caches") and !DEBUG) ?
-                                                 INCLUDES_DIR."/caches" :
-                                                 null);
+                                            (is_writable(INCLUDES_DIR."/caches") and !DEBUG) ?
+                                                INCLUDES_DIR."/caches" :
+                                                null);
         }
 
         /**
@@ -62,6 +62,8 @@
                 # "Write > Page", if they can add pages.
                 if ($visitor->group->can("add_page"))
                     return $route->action = "write_page";
+                else
+                    show_403(__("Access Denied"), __("You do not have sufficient privileges to view this area."));
             }
 
             if (empty($route->action) or $route->action == "manage") {
@@ -80,18 +82,24 @@
                 # "Manage > Groups", if they can manage groups.
                 if ($visitor->group->can("edit_group") or $visitor->group->can("delete_group"))
                     return $route->action = "manage_groups";
+                else
+                    show_403(__("Access Denied"), __("You do not have sufficient privileges to view this area."));
             }
 
             if (empty($route->action) or $route->action == "settings") {
                 # "General Settings", if they can configure the installation.
                 if ($visitor->group->can("change_settings"))
                     return $route->action = "general_settings";
+                else
+                    show_403(__("Access Denied"), __("You do not have sufficient privileges to view this area."));
             }
 
             if (empty($route->action) or $route->action == "extend") {
-                # "Modules", if they can configure the installation.
+                # "Modules", if they can can enable/disable extensions.
                 if ($visitor->group->can("toggle_extensions"))
                     return $route->action = "modules";
+                else
+                    show_403(__("Access Denied"), __("You do not have sufficient privileges to view this area."));
             }
 
             Trigger::current()->filter($route->action, "admin_determine_action");
@@ -101,37 +109,11 @@
         }
 
         /**
-         * Function: write
-         * Post writing.
-         */
-        public function write_post() {
-            $visitor = Visitor::current();
-            if (!$visitor->group->can("add_post", "add_draft"))
-                show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
-
-            $config = Config::current();
-
-            if (empty($config->enabled_feathers))
-                error(__("No Feathers"), __("Please install a feather or two in order to add a post."));
-
-            Trigger::current()->filter($options, array("write_post_options", "post_options"));
-
-            fallback($_GET['feather'], $config->enabled_feathers[0]);
-
-            $this->display("write_post",
-                           array("groups" => Group::find(array("order" => "id ASC")),
-                                 "options" => $options,
-                                 "feathers" => Feathers::$instances,
-                                 "feather" => Feathers::$instances[$_GET['feather']]));
-        }
-
-        /**
          * Function: bookmarklet
          * Post writing, from the bookmarklet.
          */
         public function bookmarklet() {
-            $visitor = Visitor::current();
-            if (!$visitor->group->can("add_post", "add_draft"))
+            if (!Visitor::current()->group->can("add_post", "add_draft"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
             $config = Config::current();
@@ -161,11 +143,36 @@
         }
 
         /**
+         * Function: write
+         * Post writing.
+         */
+        public function write_post() {
+            if (!Visitor::current()->group->can("add_post", "add_draft"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
+
+            $config = Config::current();
+
+            if (empty($config->enabled_feathers))
+                error(__("No Feathers"), __("Please install a feather or two in order to add a post."));
+
+            Trigger::current()->filter($options, array("write_post_options", "post_options"));
+
+            fallback($_GET['feather'], reset($config->enabled_feathers));
+
+            $this->display("write_post",
+                           array("groups" => Group::find(array("order" => "id ASC")),
+                                 "options" => $options,
+                                 "feathers" => Feathers::$instances,
+                                 "feather" => Feathers::$instances[$_GET['feather']]));
+        }
+
+        /**
          * Function: add_post
          * Adds a post when the form is submitted.
          */
         public function add_post() {
             $visitor = Visitor::current();
+
             if (!$visitor->group->can("add_post", "add_draft"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to create posts."));
 
@@ -214,6 +221,9 @@
          */
         public function update_post() {
             $post = new Post($_POST['id'], array("drafts" => true));
+
+            if (isset($_POST['publish']))
+                $_POST['status'] = "public";
 
             if ($post->no_results)
                 Flash::warning(__("Post not found."), "/admin/?action=manage_posts");
@@ -360,6 +370,7 @@
                               $_POST['body'],
                               null,
                               $_POST['parent_id'],
+                              !empty($_POST['public']),
                               !empty($_POST['show_in_list']),
                               0,
                               (!empty($_POST['slug']) ? $_POST['slug'] : sanitize($_POST['title'])));
@@ -402,7 +413,7 @@
             if ($page->no_results)
                 Flash::warning(__("Page not found."), "/admin/?action=manage_pages");
 
-            $page->update($_POST['title'], $_POST['body'], null, $_POST['parent_id'], !empty($_POST['show_in_list']), $page->list_order, null, $_POST['slug']);
+            $page->update($_POST['title'], $_POST['body'], null, $_POST['parent_id'], !empty($_POST['public']), !empty($_POST['show_in_list']), $page->list_order, null, $_POST['slug']);
 
             if (!isset($_POST['ajax']))
                 Flash::notice(_f("Page updated. <a href=\"%s\">View Page &rarr;</a>",
@@ -417,7 +428,7 @@
         public function reorder_pages() {
             foreach ($_POST['list_order'] as $id => $order) {
                 $page = new Page($id);
-                $page->update($page->title, $page->body, null, $page->parent_id, $page->show_in_list, $order, null, $page->url);
+                $page->update($page->title, $page->body, null, $page->parent_id, $page->public, $page->show_in_list, $order, null, $page->url);
             }
 
             Flash::notice(__("Pages reordered."), "/admin/?action=manage_pages");
@@ -461,7 +472,7 @@
                     if (isset($_POST['destroy_children']))
                         Page::delete($child->id, true);
                     else
-                        $child->update($child->title, $child->body, 0, $child->show_in_list, $child->list_order, $child->url);
+                        $child->update($child->title, $child->body, null, 0, $child->public, $child->show_in_list, $child->list_order, null, $child->url);
 
             Page::delete($_POST['id']);
 
@@ -497,10 +508,17 @@
             $config = Config::current();
 
             $this->display("new_user",
-                           array("default_group" => new Group($config->default_group),
-                                 "groups" => Group::find(array("where" => array("id not" => array($config->guest_group,
-                                                                                                  $config->default_group)),
-                                                               "order" => "id DESC"))));
+                array("default_group" => new Group($config->default_group),
+                    "groups" => Group::find(
+                        array("where" =>
+                            array("id not" =>
+                                array($config->guest_group, $config->default_group)
+                            ),
+                            "order" => "id DESC"
+                        )
+                    )
+                )
+            );
         }
 
         /**
@@ -531,11 +549,17 @@
             elseif (!preg_match("/^[_A-z0-9-]+((\.|\+)[_A-z0-9-]+)*@[A-z0-9-]+(\.[A-z0-9-]+)*(\.[A-z]{2,4})$/", $_POST['email']))
                 error(__("Error"), __("Invalid e-mail address."));
 
+            if (!empty($_POST['website']) and strpos($_POST['website'], '://') === false) {
+                $_POST['website'] = 'http://' . $_POST['website'];
+            }
+
             User::add($_POST['login'],
                       $_POST['password1'],
                       $_POST['email'],
                       $_POST['full_name'],
+                      $_POST['bio'],
                       $_POST['website'],
+                      isset($_POST['approved']) ? 1 : 0,
                       $_POST['group']);
 
             Flash::notice(__("User added."), "/admin/?action=manage_users");
@@ -553,9 +577,14 @@
                 error(__("No ID Specified"), __("An ID is required to edit a user."));
 
             $this->display("edit_user",
-                           array("user" => new User($_GET['id']),
-                                 "groups" => Group::find(array("order" => "id ASC",
-                                                               "where" => array("id not" => Config::current()->guest_group)))));
+                array("user" => new User($_GET['id']),
+                      "groups" => Group::find(
+                        array("order" => "id ASC",
+                              "where" => array("id not" => Config::current()->guest_group)
+                        )
+                    )
+                )
+            );
         }
 
         /**
@@ -581,17 +610,25 @@
                 Flash::notice(_f("Login &#8220;%s&#8221; is already in use.", array($_POST['login'])),
                               "/admin/?action=edit_user&id=".$_POST['id']);
 
-
             $user = new User($_POST['id']);
 
             if ($user->no_results)
-                Flash::warning(__("User not found."), "/admin/?action=manage_user");
+                Flash::warning(__("User not found."), "/admin/?action=manage_users");
+
+            if (!empty($_POST['new_password1']) and $_POST['new_password1'] != $_POST['new_password2'])
+                Flash::warning(__("Passwords do not match."), "/admin/?action=manage_users");
 
             $password = (!empty($_POST['new_password1']) and $_POST['new_password1'] == $_POST['new_password2']) ?
                             User::hashPassword($_POST['new_password1']) :
                             $user->password ;
 
-            $user->update($_POST['login'], $password, $_POST['email'], $_POST['full_name'], $_POST['website'], $_POST['group']);
+            $website = (!empty($_POST['website']) and strpos($_POST['website'], '://') === false) ?
+                           $_POST['website'] = 'http://' . $_POST['website'] :
+                           $_POST['website'] ;
+
+            $approved = (isset($_POST['approved'])) ? 1 : 0;
+
+            $user->update($_POST['login'], $password, $_POST['email'], $_POST['full_name'], $_POST['bio'], $website, $approved, $_POST['group']);
 
             if ($_POST['id'] == $visitor->id)
                 $_SESSION['password'] = $password;
@@ -974,7 +1011,7 @@
                     $pages_atom.= '        </author>'."\r";
                     $pages_atom.= '        <content type="html">'.fix($page->body).'</content>'."\r";
 
-                    foreach (array("show_in_list", "list_order", "clean", "url") as $attr)
+                    foreach (array("public", "show_in_list", "list_order", "clean", "url") as $attr)
                         $pages_atom.= '        <chyrp:'.$attr.'>'.fix($page->$attr).'</chyrp:'.$attr.'>'."\r";
 
 
@@ -1057,11 +1094,18 @@
          * Chyrp importing.
          */
         public function import_chyrp() {
+            $config  = Config::current();
+            $visitor = Visitor::current();
+            $trigger = Trigger::current();
+
+            if (!$visitor->group->can("add_post"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+
             if (empty($_POST))
                 redirect("/admin/?action=import");
 
-            if (!Visitor::current()->group->can("add_post"))
-                show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+            if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
+                show_403(__("Access Denied"), __("Invalid security key."));
 
             if (isset($_FILES['posts_file']) and $_FILES['posts_file']['error'] == 0)
                 if (!$posts = simplexml_load_file($_FILES['posts_file']['tmp_name']) or $posts->generator != "Chyrp")
@@ -1074,8 +1118,6 @@
             if (ini_get("memory_limit") < 20)
                 ini_set("memory_limit", "20M");
 
-            $trigger = Trigger::current();
-            $visitor = Visitor::current();
             $sql = SQL::current();
 
             function media_url_scan(&$value) {
@@ -1164,6 +1206,7 @@
                                       $entry->content,
                                       ($user_id ? $user_id : $visitor->id),
                                       $attr->parent_id,
+                                      (bool) (int) $chyrp->public,
                                       (bool) (int) $chyrp->show_in_list,
                                       $chyrp->list_order,
                                       $chyrp->clean,
@@ -1182,11 +1225,14 @@
          * WordPress importing.
          */
         public function import_wordpress() {
+            if (!Visitor::current()->group->can("add_post"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+
             if (empty($_POST))
                 redirect("/admin/?action=import");
 
-            if (!Visitor::current()->group->can("add_post"))
-                show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+            if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+                show_403(__("Access Denied"), __("Invalid security key."));
 
             $config = Config::current();
 
@@ -1207,9 +1253,18 @@
                                     array("<![CDATA[", "]]>"),
                                     $sane_xml);
 
+            $sane_xml = str_replace(array("xmlns:excerpt=\"http://wordpress.org/excerpt/1.0/\"",
+                                          "xmlns:excerpt=\"http://wordpress.org/export/1.1/excerpt/\""),
+                                    "xmlns:excerpt=\"http://wordpress.org/export/1.2/excerpt/\"",
+                                    $sane_xml);
+            $sane_xml = str_replace(array("xmlns:wp=\"http://wordpress.org/export/1.0/\"",
+                                          "xmlns:wp=\"http://wordpress.org/export/1.1/\""),
+                                    "xmlns:wp=\"http://wordpress.org/export/1.2/\"",
+                                    $sane_xml);
+
             if (!substr_count($sane_xml, "xmlns:excerpt"))
                 $sane_xml = preg_replace("/xmlns:content=\"([^\"]+)\"(\s+)/m",
-                                         "xmlns:content=\"\\1\"\\2xmlns:excerpt=\"http://wordpress.org/excerpt/1.0/\"\\2",
+                                         "xmlns:content=\"\\1\"\\2xmlns:excerpt=\"http://wordpress.org/export/1.2/excerpt/\"\\2",
                                          $sane_xml);
 
             $fix_amps_count = 1;
@@ -1218,32 +1273,45 @@
                                          "<wp:meta_value>\\1&amp;\\2</wp:meta_value>",
                                          $sane_xml, -1, $fix_amps_count);
 
-            # Remove null (x00) characyers
+            # Remove null (x00) characters
             $sane_xml = str_replace("", "", $sane_xml);
 
             $xml = simplexml_load_string($sane_xml, "SimpleXMLElement", LIBXML_NOCDATA);
 
-            if (!$xml or !substr_count($xml->channel->generator, "wordpress.org"))
+            if (!$xml or !(substr_count($xml->channel->generator, "wordpress.org") || substr_count($xml->channel->generator, "wordpress.com")))
                 Flash::warning(__("File does not seem to be a valid WordPress export file, or could not be parsed. Please check your PHP error log."),
                                "/admin/?action=import");
 
             foreach ($xml->channel->item as $item) {
-                $wordpress = $item->children("http://wordpress.org/export/1.0/");
+                $wordpress = $item->children("http://wordpress.org/export/1.2/");
                 $content   = $item->children("http://purl.org/rss/1.0/modules/content/");
-                if ($wordpress->status == "attachment" or $item->title == "zz_placeholder")
+                $contentencoded = $content->encoded;
+                if ($wordpress->post_type == "attachment" ||
+                    $wordpress->status == "attachment" ||
+                    $item->title == "zz_placeholder"
+                ) {
                     continue;
+                }
 
+                $media = array();
                 $regexp_url = preg_quote($_POST['media_url'], "/");
-                if (!empty($_POST['media_url']) and
-                    preg_match_all("/{$regexp_url}([^\.\!,\?;\"\'<>\(\)\[\]\{\}\s\t ]+)\.([a-zA-Z0-9]+)/",
-                                   $content->encoded,
-                                   $media))
-                    foreach ($media[0] as $matched_url) {
+                if (!empty($_POST['media_url']) &&
+                    preg_match_all(
+                        "/{$regexp_url}([^\.\!,\?;\"\'<>\(\)\[\]\{\}\s\t ]+)\.([a-zA-Z0-9]+)/",
+                        $contentencoded,
+                        $media
+                    )
+                ) {
+                    $media_uris = array_unique($media[0]);
+                    foreach ($media_uris as $matched_url) {
                         $filename = upload_from_url($matched_url);
-                        $content->encoded = str_replace($matched_url, $config->url.$config->uploads_path.$filename, $content->encoded);
+                        $contentencoded = str_replace($matched_url, $config->url.$config->uploads_path.$filename, $contentencoded);
                     }
+                }
 
-                $clean = (isset($wordpress->post_name)) ? $wordpress->post_name : sanitize($item->title) ;
+                $clean = (isset($wordpress->post_name) && $wordpress->post_name != '') ? $wordpress->post_name : sanitize($item->title) ;
+
+                $pinned = (isset($wordpress->is_sticky)) ? $wordpress->is_sticky : 0 ;
 
                 if (empty($wordpress->post_type) or $wordpress->post_type == "post") {
                     $status_translate = array("publish" => "public",
@@ -1255,16 +1323,43 @@
                                               "future"  => "draft",
                                               "pending" => "draft");
 
-                    $data = array("title" => trim($item->title),
-                                  "body" => trim($content->encoded),
-                                  "imported_from" => "wordpress");
+                    $data = array(
+                                "content" => array(
+                                                "title" => trim($item->title),
+                                                "body" => trim($contentencoded),
+                                                "imported_from" => "wordpress"
+                                             ),
+                                "feather" => "text"
+                            );
 
-                    $post = Post::add($data,
+                    $wp_post_format = null;
+                    if (isset($item->category)) {
+                        foreach ($item->category as $category) {
+                            if (!empty($category) and
+                                isset($category->attributes()->domain) and
+                                (substr_count($category->attributes()->domain, "post_format") > 0) and
+                                isset($category->attributes()->nicename)
+                               ) {
+                                $wp_post_format = (string) $category->attributes()->nicename;
+                                break;
+                            }
+                        }
+                    }
+
+                    if ($wp_post_format) {
+                        $trigger->filter(
+                            $data,
+                            "import_wordpress_post_".str_replace('post-format-', '', $wp_post_format),
+                            $item
+                         );
+                    }
+
+                    $post = Post::add($data["content"],
                                       $clean,
                                       Post::check_url($clean),
-                                      "text",
+                                      $data["feather"],
                                       null,
-                                      false,
+                                      $pinned,
                                       $status_translate[(string) $wordpress->status],
                                       (string) ($wordpress->post_date == "0000-00-00 00:00:00" ? datetime() : $wordpress->post_date),
                                       null,
@@ -1295,11 +1390,14 @@
          * Tumblr importing.
          */
         public function import_tumblr() {
+            if (!Visitor::current()->group->can("add_post"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+
             if (empty($_POST))
                 redirect("/admin/?action=import");
 
-            if (!Visitor::current()->group->can("add_post"))
-                show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+            if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+                show_403(__("Access Denied"), __("Invalid security key."));
 
             $config = Config::current();
             if (!in_array("text", $config->enabled_feathers) or
@@ -1324,8 +1422,8 @@
             $xml = simplexml_load_string($api);
 
             if (!isset($xml->tumblelog))
-                Flash::warning(__("The URL you specified does not seem to be a valid Tumblr site."),
-                               "/admin/?action=import");
+                Flash::warning(_f("Content could not be retrieved from the given URL. ". get_remote($url)),
+                                  "/admin/?action=import");
 
             $already_in = $posts = array();
             foreach ($xml->posts->post as $post) {
@@ -1356,7 +1454,7 @@
             foreach ($posts as $key => $post) {
                 set_time_limit(3600);
                 if ($post->attributes()->type == "audio")
-                    continue; # Can't import Audio posts since Tumblr has the files locked in to Amazon.
+                    break; # Can't import Audio posts since Tumblr has the files locked in to Amazon.
 
                 $translate_types = array("regular" => "text", "conversation" => "chat");
 
@@ -1408,7 +1506,7 @@
                                       Post::check_url($clean),
                                       fallback($translate_types[(string) $post->attributes()->type], (string) $post->attributes()->type),
                                       null,
-                                      false,
+                                      null,
                                       "public",
                                       datetime((int) $post->attributes()->unix_timestamp),
                                       null,
@@ -1426,31 +1524,36 @@
          * TextPattern importing.
          */
         public function import_textpattern() {
+            $config  = Config::current();
+            $visitor = Visitor::current();
+            $trigger = Trigger::current();
+
+            if (!$visitor->group->can("add_post"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+
             if (empty($_POST))
                 redirect("/admin/?action=import");
 
-            if (!Visitor::current()->group->can("add_post"))
-                show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+            if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
+                show_403(__("Access Denied"), __("Invalid security key."));
 
-            $config = Config::current();
-            $trigger = Trigger::current();
+            @$mysqli = new mysqli($_POST['host'], $_POST['username'], $_POST['password'], $_POST['database']);
 
-            $dbcon = $dbsel = false;
-            if ($link = @mysql_connect($_POST['host'], $_POST['username'], $_POST['password'])) {
-                $dbcon = true;
-                $dbsel = @mysql_select_db($_POST['database'], $link);
+            if ($mysqli->connect_errno) {
+                Flash::warning(__("Could not connect to the specified TextPattern database."),
+                    "/admin/?action=import");
             }
 
-            if (!$dbcon or !$dbsel)
-                Flash::warning(__("Could not connect to the specified TextPattern database."),
-                               "/admin/?action=import");
+            $mysqli->query("SET NAMES 'utf8'");
 
-            mysql_query("SET NAMES 'utf8'");
+            $prefix = $mysqli->real_escape_string($_POST['prefix']);
+            $result = $mysqli->query("SELECT * FROM {$prefix}textpattern ORDER BY ID ASC") or error(__("Database Error"), $mysqli->error);
 
-            $get_posts = mysql_query("SELECT * FROM {$_POST['prefix']}textpattern ORDER BY ID ASC", $link) or error(__("Database Error"), mysql_error());
             $posts = array();
-            while ($post = mysql_fetch_array($get_posts))
+            while ($post = $result->fetch_assoc())
                 $posts[$post["ID"]] = $post;
+
+            $mysqli->close();
 
             foreach ($posts as $post) {
                 $regexp_url = preg_quote($_POST['media_url'], "/");
@@ -1488,8 +1591,6 @@
                 $trigger->call("import_textpattern_post", $post, $new_post);
             }
 
-            mysql_close($link);
-
             Flash::notice(__("TextPattern content successfully imported!"), "/admin/?action=import");
         }
 
@@ -1498,56 +1599,61 @@
          * MovableType importing.
          */
         public function import_movabletype() {
+            $config = Config::current();
+            $visitor = Visitor::current();
+            $trigger = Trigger::current();
+
+            if (!$visitor->group->can("add_post"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+
             if (empty($_POST))
                 redirect("/admin/?action=import");
 
-            if (!Visitor::current()->group->can("add_post"))
-                show_403(__("Access Denied"), __("You do not have sufficient privileges to import content."));
+            if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
+                show_403(__("Access Denied"), __("Invalid security key."));
 
-            $config = Config::current();
-            $trigger = Trigger::current();
+            @$mysqli = new mysqli($_POST['host'], $_POST['username'], $_POST['password'], $_POST['database']);
 
-            $dbcon = $dbsel = false;
-            if ($link = @mysql_connect($_POST['host'], $_POST['username'], $_POST['password'])) {
-                $dbcon = true;
-                $dbsel = @mysql_select_db($_POST['database'], $link);
-            }
-
-            if (!$dbcon or !$dbsel)
+            if ($mysqli->connect_errno) {
                 Flash::warning(__("Could not connect to the specified MovableType database."),
-                               "/admin/?action=import");
-
-            mysql_query("SET NAMES 'utf8'");
-
-            $get_authors = mysql_query("SELECT * FROM mt_author ORDER BY author_id ASC", $link) or error(__("Database Error"), mysql_error());
-            $users = array();
-            while ($author = mysql_fetch_array($get_authors)) {
-                # Try to figure out if this author is the same as the person doing the import.
-                if ($author["author_name"] == Visitor::current()->login or
-                    $author["author_nickname"] == Visitor::current()->login or
-                    $author["author_nickname"] == Visitor::current()->full_name or
-                    $author["author_url"] == Visitor::current()->website or
-                    $author["author_email"] == Visitor::current()->email)
-                    $users[$author["author_id"]] = Visitor::current();
-                else
-                    $users[$author["author_id"]] = User::add($author["author_name"],
-                                                             $author["author_password"],
-                                                             $author["author_email"],
-                                                             ($author["author_nickname"] != $author["author_name"] ?
-                                                                 $author["author_nickname"] :
-                                                                 ""),
-                                                             $author["author_url"],
-                                                             ($author["author_can_create_blog"] == "1" ?
-                                                                 Visitor::current()->group :
-                                                                 null),
-                                                             $author["author_created_on"],
-                                                             false);
+                    "/admin/?action=import");
             }
 
-            $get_posts = mysql_query("SELECT * FROM mt_entry ORDER BY entry_id ASC", $link) or error(__("Database Error"), mysql_error());
+            $mysqli->query("SET NAMES 'utf8'");
+
+            $authors = array();
+            $result = $mysqli->query("SELECT * FROM mt_author ORDER BY author_id ASC") or error(__("Database Error"), $mysqli->error);
+
+            while ($author = $result->fetch_assoc()) {
+                # Try to figure out if this author is the same as the person doing the import.
+                if ($author["author_name"] == $visitor->login
+                    || $author["author_nickname"] == $visitor->login
+                    || $author["author_nickname"] == $visitor->full_name
+                    || $author["author_url"]      == $visitor->website
+                    || $author["author_email"]    == $visitor->email) {
+                    $users[$author["author_id"]] = $visitor;
+                } else {
+                    $users[$author["author_id"]] = User::add(
+                        $author["author_name"],
+                        $author["author_password"],
+                        $author["author_email"],
+                        ($author["author_nickname"] != $author["author_name"] ?
+                                                       $author["author_nickname"] : ""),
+                        $author["author_url"],
+                        ($author["author_can_create_blog"] == "1" ? $visitor->group : null),
+                        $author["author_created_on"],
+                        false
+                    );
+                }
+            }
+
+            $result = $mysqli->query("SELECT * FROM mt_entry ORDER BY entry_id ASC") or error(__("Database Error"), $mysqli->error);
+
             $posts = array();
-            while ($post = mysql_fetch_array($get_posts))
+            while ($post = $result->fetch_assoc())
                 $posts[$post["entry_id"]] = $post;
+
+            $mysqli->close();
 
             foreach ($posts as $post) {
                 $body = $post["entry_text"];
@@ -1592,8 +1698,6 @@
                     $trigger->call("import_movabletype_page", $post, $new_page, $link);
                 }
             }
-
-            mysql_close($link);
 
             Flash::notice(__("MovableType content successfully imported!"), "/admin/?action=import");
         }
@@ -1668,9 +1772,17 @@
                 fallback($info["help"]);
 
                 $info["description"] = __($info["description"], $folder);
-                $info["description"] = preg_replace(array("/<code>(.+)<\/code>/se", "/<pre>(.+)<\/pre>/se"),
-                                                    array("'<code>'.fix('\\1').'</code>'", "'<pre>'.fix('\\1').'</pre>'"),
-                                                    $info["description"]);
+
+                $info["description"] = preg_replace_callback("/<code>(.+)<\/code>/s",
+                                                             function ($matches) {
+                                                                 return "<code>".fix($matches[1])."</code>";
+                                                             },
+                                                             $info["description"]);
+                $info["description"] = preg_replace_callback("/<pre>(.+)<\/pre>/s",
+                                                             function ($matches) {
+                                                                 return "<pre>".fix($matches[1])."</pre>";
+                                                             },
+                                                             $info["description"]);
 
                 $info["author"]["link"] = !empty($info["author"]["url"]) ?
                                               '<a href="'.fix($info["author"]["url"]).'">'.fix($info["author"]["name"]).'</a>' :
@@ -1712,7 +1824,8 @@
                 return Flash::warning(__("Could not read feathers directory."));
 
             while (($folder = readdir($open)) !== false) {
-                if (!file_exists(FEATHERS_DIR."/".$folder."/".$folder.".php") or !file_exists(FEATHERS_DIR."/".$folder."/info.yaml")) continue;
+                if (!file_exists(FEATHERS_DIR."/".$folder."/".$folder.".php") or !file_exists(FEATHERS_DIR."/".$folder."/info.yaml"))
+                    continue;
 
                 if (file_exists(FEATHERS_DIR."/".$folder."/locale/".$config->locale.".mo"))
                     load_translator($folder, FEATHERS_DIR."/".$folder."/locale/".$config->locale.".mo");
@@ -1727,8 +1840,17 @@
                 fallback($info["help"]);
 
                 $info["description"] = __($info["description"], $folder);
-                $info["description"] = preg_replace("/<code>(.+)<\/code>/se", "'<code>'.fix('\\1').'</code>'", $info["description"]);
-                $info["description"] = preg_replace("/<pre>(.+)<\/pre>/se", "'<pre>'.fix('\\1').'</pre>'", $info["description"]);
+
+                $info["description"] = preg_replace_callback("/<code>(.+)<\/code>/s",
+                                                             function ($matches) {
+                                                                 return "<code>".fix($matches[1])."</code>";
+                                                             },
+                                                             $info["description"]);
+                $info["description"] = preg_replace_callback("/<pre>(.+)<\/pre>/s",
+                                                             function ($matches) {
+                                                                 return "<pre>".fix($matches[1])."</pre>";
+                                                             },
+                                                             $info["description"]);
 
                 $info["author"]["link"] = !empty($info["author"]["url"]) ?
                                               '<a href="'.fix($info["author"]["url"]).'">'.fix($info["author"]["name"]).'</a>' :
@@ -1751,6 +1873,9 @@
          * Theme switching/previewing.
          */
         public function themes() {
+            if (!Visitor::current()->group->can("change_settings"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+
             $config = Config::current();
 
             $this->context["preview"] = !empty($_SESSION['theme']) ? $_SESSION['theme'] : "" ;
@@ -1778,13 +1903,17 @@
                 $info["author"]["link"] = !empty($info["author"]["url"]) ?
                     '<a href="'.$info["author"]["url"].'">'.$info["author"]["name"].'</a>' :
                     $info["author"]["name"] ;
-                $info["description"] = preg_replace("/<code>(.+)<\/code>/se",
-                                                    "'<code>'.fix('\\1').'</code>'",
-                                                    $info["description"]);
 
-                $info["description"] = preg_replace("/<pre>(.+)<\/pre>/se",
-                                                    "'<pre>'.fix('\\1').'</pre>'",
-                                                    $info["description"]);
+                $info["description"] = preg_replace_callback("/<code>(.+)<\/code>/s",
+                                                             function ($matches) {
+                                                                 return "<code>".fix($matches[1])."</code>";
+                                                             },
+                                                             $info["description"]);
+                $info["description"] = preg_replace_callback("/<pre>(.+)<\/pre>/s",
+                                                             function ($matches) {
+                                                                 return "<pre>".fix($matches[1])."</pre>";
+                                                             },
+                                                             $info["description"]);
 
                 $this->context["themes"][] = array("name" => $folder,
                                                    "screenshot" => (file_exists(THEMES_DIR."/".$folder."/screenshot.png") ?
@@ -1824,8 +1953,8 @@
 
                 $this->context["admin_themes"][] = array("name" => $folder,
                                                          "screenshot" => (file_exists(ADMIN_THEMES_DIR."/".$folder."/screenshot.png") ?
-                                                                              $config->chyrp_url."/admin/themes/".$folder."/screenshot.png" :
-                                                                              ""),
+                                                         $config->chyrp_url."/admin/themes/".$folder."/screenshot.png" :
+                                                         ""),
                                                          "info" => $info);
             }
 
@@ -1955,11 +2084,11 @@
         public function change_theme() {
             if (!Visitor::current()->group->can("change_settings"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+
             if (empty($_GET['theme']))
                 error(__("No Theme Specified"), __("You did not specify a theme to switch to."));
 
             $config = Config::current();
-
             $config->set("theme", $_GET['theme']);
 
             if (file_exists(THEMES_DIR."/".$_GET['theme']."/locale/".$config->locale.".mo"))
@@ -1982,16 +2111,18 @@
         }
 
         /**
-         * Function: theme
+         * Function: change_admin_theme
          * Changes the admin theme.
          */
         public function change_admin_theme() {
+            if (!Visitor::current()->group->can("change_settings"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+
             if (empty($_GET['theme']))
                 error(__("No Theme Specified"), __("You did not specify a theme to switch to."));
 
             $config = Config::current();
-
-            $_SESSION['admin_theme'] = $_GET['theme'];
+            $config->set("admin_theme", $_GET['theme']);
 
             if (file_exists(ADMIN_THEMES_DIR."/".$_GET['theme']."/locale/".$config->locale.".mo"))
                 load_translator($_GET['theme'], ADMIN_THEMES_DIR."/".$_GET['theme']."/locale/".$config->locale.".mo");
@@ -2019,6 +2150,7 @@
         public function preview_theme() {
             if (!Visitor::current()->group->can("change_settings"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to preview themes."));
+
             if (empty($_GET['theme']))
                 error(__("No Theme Specified"), __("You did not specify a theme to preview."));
 
@@ -2057,9 +2189,8 @@
             }
 
             if (empty($_POST))
-                return $this->display("general_settings",
-                                      array("locales" => $locales,
-                                            "timezones" => timezones()));
+                return $this->display("general_settings", array("locales" => $locales,
+                                                                "timezones" => timezones()));
 
             if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
                 show_403(__("Access Denied"), __("Invalid security key."));
@@ -2071,33 +2202,12 @@
                          $config->set("url", rtrim(oneof($_POST['url'], $_POST['chyrp_url']), "/")),
                          $config->set("email", $_POST['email']),
                          $config->set("timezone", $_POST['timezone']),
-                         $config->set("locale", $_POST['locale']));
+                         $config->set("locale", $_POST['locale']),
+                         $config->set("cookies_notification", !empty($_POST['cookies_notification'])),
+                         $config->set("check_updates", !empty($_POST['check_updates'])));
 
             if (!in_array(false, $set))
                 Flash::notice(__("Settings updated."), "/admin/?action=general_settings");
-        }
-
-        /**
-         * Function: user_settings
-         * User Settings page.
-         */
-        public function user_settings() {
-            if (!Visitor::current()->group->can("change_settings"))
-                show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
-
-            if (empty($_POST))
-                return $this->display("user_settings", array("groups" => Group::find(array("order" => "id DESC"))));
-
-            if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
-                show_403(__("Access Denied"), __("Invalid security key."));
-
-            $config = Config::current();
-            $set = array($config->set("can_register", !empty($_POST['can_register'])),
-                         $config->set("default_group", $_POST['default_group']),
-                         $config->set("guest_group", $_POST['guest_group']));
-
-            if (!in_array(false, $set))
-                Flash::notice(__("Settings updated."), "/admin/?action=user_settings");
         }
 
         /**
@@ -2122,10 +2232,37 @@
                          $config->set("enable_trackbacking", !empty($_POST['enable_trackbacking'])),
                          $config->set("send_pingbacks", !empty($_POST['send_pingbacks'])),
                          $config->set("enable_xmlrpc", !empty($_POST['enable_xmlrpc'])),
-                         $config->set("enable_ajax", !empty($_POST['enable_ajax'])));
+                         $config->set("enable_ajax", !empty($_POST['enable_ajax'])),
+                         $config->set("enable_wysiwyg", !empty($_POST['enable_wysiwyg'])),
+                         $config->set("enable_emoji", !empty($_POST['enable_emoji'])));
 
             if (!in_array(false, $set))
                 Flash::notice(__("Settings updated."), "/admin/?action=content_settings");
+        }
+
+        /**
+         * Function: user_settings
+         * User Settings page.
+         */
+        public function user_settings() {
+            if (!Visitor::current()->group->can("change_settings"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to change settings."));
+
+            if (empty($_POST))
+                return $this->display("user_settings", array("groups" => Group::find(array("order" => "id DESC"))));
+
+            if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+                show_403(__("Access Denied"), __("Invalid security key."));
+
+            $config = Config::current();
+            $set = array($config->set("can_register", !empty($_POST['can_register'])),
+                         $config->set("email_activation", !empty($_POST['email_activation'])),
+                         $config->set("enable_recaptcha", !empty($_POST['enable_recaptcha'])),
+                         $config->set("default_group", $_POST['default_group']),
+                         $config->set("guest_group", $_POST['guest_group']));
+
+            if (!in_array(false, $set))
+                Flash::notice(__("Settings updated."), "/admin/?action=user_settings");
         }
 
         /**
@@ -2151,6 +2288,22 @@
         }
 
         /**
+         * Function: update
+         * Chyrp Update.
+         */
+        public function update() {
+            if (!Visitor::current()->group->can("change_settings"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to perform the update."));
+
+            if (isset($_GET['get_update']))
+                return $this->display("update",
+                                array("updating" => Update::get_update()));
+            else
+                return $this->display("update",
+                                array("changelog" => Update::get_changelog()));
+        }
+
+        /**
          * Function: help
          * Sets the $title and $body for various help IDs.
          */
@@ -2166,7 +2319,7 @@
                     break;
                 case "slugs":
                     $title = __("Post Slugs");
-                    $body = __("Post slugs are strings to use for the URL of a post. They are directly respondible for the <code>(url)</code> attribute in a post's clean URL, or the <code>/?action=view&amp;url=<strong>foo</strong></code> in a post's dirty URL. A post slug should not contain any special characters other than hyphens.");
+                    $body = __("Post slugs are strings to use for the URL of a post. They are directly responsible for the <code>(url)</code> attribute in a post's clean URL, or the <code>/?action=view&amp;url=<strong>foo</strong></code> in a post's dirty URL. A post slug should not contain any special characters other than hyphens.");
                     break;
                 case "trackbacks":
                     $title = __("Trackbacks");
@@ -2223,13 +2376,13 @@
                                                                "selected" => array("edit_page", "delete_page")),
                                       "manage_users"  => array("title" => __("Users"),
                                                                "show" => ($visitor->group->can("add_user",
-                                                                                                 "edit_user",
-                                                                                                 "delete_user")),
+                                                                                               "edit_user",
+                                                                                               "delete_user")),
                                                                "selected" => array("edit_user", "delete_user", "new_user")),
                                       "manage_groups" => array("title" => __("Groups"),
                                                                "show" => ($visitor->group->can("add_group",
-                                                                                                 "edit_group",
-                                                                                                 "delete_group")),
+                                                                                               "edit_group",
+                                                                                               "delete_group")),
                                                                "selected" => array("edit_group", "delete_group", "new_group")));
             $trigger->filter($subnav["manage"], "manage_nav");
 
@@ -2242,12 +2395,14 @@
             $pages["manage"][] = "new_group";
             foreach (array_keys($subnav["manage"]) as $manage)
                 $pages["manage"] = array_merge($pages["manage"], array($manage,
-                                                                       preg_replace("/manage_(.+)/e",
-                                                                                    "'edit_'.depluralize('\\1')",
-                                                                                    $manage),
-                                                                       preg_replace("/manage_(.+)/e",
-                                                                                    "'delete_'.depluralize('\\1')",
-                                                                                    $manage)));
+                                                                       preg_replace_callback("/manage_(.+)/",
+                                                                            function($m) {
+                                                                                return "edit_".depluralize($m[1]);
+                                                                            }, $manage),
+                                                                       preg_replace_callback("/manage_(.+)/",
+                                                                            function($m) {
+                                                                                return "delete_".depluralize($m[1]);
+                                                                            }, $manage)));
 
             # Settings navs
             $subnav["settings"] = array("general_settings" => array("title" => __("General"),
@@ -2321,6 +2476,7 @@
             $this->context["site"]       = Config::current();
             $this->context["visitor"]    = $visitor;
             $this->context["logged_in"]  = logged_in();
+            $this->context["new_update"] = Update::check_update();
             $this->context["route"]      = $route;
             $this->context["hide_admin"] = isset($_SESSION["hide_admin"]);
             $this->context["now"]        = time();
@@ -2337,22 +2493,22 @@
 
             $show = array("write" => array($visitor->group->can("add_draft", "add_post", "add_page")),
                           "manage" => array($visitor->group->can("view_own_draft",
-                                                                   "view_draft",
-                                                                   "edit_own_draft",
-                                                                   "edit_own_post",
-                                                                   "edit_post",
-                                                                   "delete_own_draft",
-                                                                   "delete_own_post",
-                                                                   "delete_post",
-                                                                   "add_page",
-                                                                   "edit_page",
-                                                                   "delete_page",
-                                                                   "add_user",
-                                                                   "edit_user",
-                                                                   "delete_user",
-                                                                   "add_group",
-                                                                   "edit_group",
-                                                                   "delete_group")),
+                                                                 "view_draft",
+                                                                 "edit_own_draft",
+                                                                 "edit_own_post",
+                                                                 "edit_post",
+                                                                 "delete_own_draft",
+                                                                 "delete_own_post",
+                                                                 "delete_post",
+                                                                 "add_page",
+                                                                 "edit_page",
+                                                                 "delete_page",
+                                                                 "add_user",
+                                                                 "edit_user",
+                                                                 "delete_user",
+                                                                 "add_group",
+                                                                 "edit_group",
+                                                                 "delete_group")),
                           "settings" => array($visitor->group->can("change_settings")),
                           "extend" => array($visitor->group->can("toggle_extensions")));
 
@@ -2379,7 +2535,9 @@
 
             $this->context["navigation"]["extend"] = array("title" => __("Extend"),
                                                            "show" => in_array(true, $show["extend"]),
-                                                           "selected" => (in_array($action, $extend)));
+                                                           "selected" => (in_array($action, $extend) or
+                                                                         match(array("/_extend$/",
+                                                                                     "/_editor$/"), $action)));
 
             $this->subnav_context($route->action);
 

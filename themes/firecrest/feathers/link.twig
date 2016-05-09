@@ -1,0 +1,8 @@
+{% extends "content/post.twig" %}
+
+{% block content %}
+    <h2 class="title">
+        <a href="$post.source" class="link">${ "%s" | format(post.name | fallback(post.source)) }</a>
+    </h2>
+    ${ post.description | read_more }
+{% endblock %}

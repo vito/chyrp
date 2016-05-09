@@ -76,6 +76,7 @@ $twig_filters = array(
     'inspect' =>          'twig_inspect_filter',
 
     'uploaded' =>         'uploaded',
+    'gravatar' =>         'twig_get_gravatar',
     'fallback' =>         'oneof',
     'selected' =>         'twig_selected_filter',
     'checked' =>          'twig_checked_filter',
@@ -242,7 +243,7 @@ function twig_date_format_filter($timestamp, $format='F j, Y, G:i')
     return when($format, $timestamp);
 }
 
-function twig_strftime_format_filter($timestamp, $format='%x %X')
+function twig_strftime_format_filter($timestamp, $format='%Y-%m-%d %T')
 {
     return when($format, $timestamp, true);
 }
@@ -482,4 +483,8 @@ function twig_excerpt_filter($text, $length = 200, $ending = "...", $exact = fal
 function twig_sort_filter($array) {
     asort($array);
     return $array;
+}
+
+function twig_get_gravatar($text, $size = 80, $tag = false) {
+    return get_gravatar($text, $size, 'mm', 'g', $tag);
 }

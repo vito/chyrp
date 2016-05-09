@@ -5,18 +5,18 @@
      * Chyrp - A Lightweight Blogging Engine
      *
      * Version:
-     *     v2.1 git
+     *     v2.5.2
      *
      * License:
      *     Modified MIT (See COPYING)
      *
      * Chyrp Copyright:
-     *     Copyright (c) 2009 Alex Suraci, <http://toogeneric.com/>
+     *     Copyright (c) 2012 Chyrp Team (See AUTHORS)
      */
 
     # Constant: CHYRP_VERSION
     # Chyrp's version number.
-    define('CHYRP_VERSION', "2.1 git");
+    define('CHYRP_VERSION', "2.5.2");
 
     # Constant: DEBUG
     # Should Chyrp use debugging processes?
@@ -89,7 +89,8 @@
 
     # Constant: USE_ZLIB
     # Use zlib to provide GZIP compression
-    define('USE_ZLIB', true);
+    if (version_compare(PHP_VERSION, "5.4.4", "<")) define('USE_ZLIB', true);
+    else define('USE_ZLIB', false);
 
     # Set error reporting levels, and headers for Chyrp's JS files.
     if (JAVASCRIPT) {
@@ -98,7 +99,7 @@
         header("Cache-Control: no-cache, must-revalidate");
         header("Expires: Mon, 03 Jun 1991 05:30:00 GMT");
     } else
-        error_reporting(E_ALL | E_STRICT); # Make sure E_STRICT is on so Chyrp remains errorless.
+        error_reporting( ( E_ALL | E_STRICT ) ^ E_NOTICE );  # Make sure E_STRICT is on so Chyrp remains errorless.
 
     # Use GZip compression if available.
     if (!AJAX and
@@ -216,6 +217,11 @@
     #     <Route>
     require_once INCLUDES_DIR."/class/Route.php";
 
+    # File: Update
+    # See Also:
+    #     <Update>
+    require_once INCLUDES_DIR."/class/Update.php";
+
     # File: Main
     # See Also:
     #     <Main Controller>
@@ -286,6 +292,8 @@
 
     # Load the Visitor.
     $visitor = Visitor::current();
+
+    $captchaHooks = array();
 
     # Prepare the notifier.
     $flash = Flash::current();

@@ -1,14 +1,15 @@
 <?php
     class Link extends Feathers implements Feather {
         public function __init() {
+            $this->setField(array("attr" => "name",
+                                  "type" => "text",
+                                  "label" => __("Title", "link"),
+                                  "optional" => true,
+                                  "bookmarklet" => "title"));
             $this->setField(array("attr" => "source",
                                   "type" => "text",
                                   "label" => __("URL", "link"),
                                   "bookmarklet" => "url"));
-            $this->setField(array("attr" => "name",
-                                  "type" => "text",
-                                  "label" => __("Name", "link"),
-                                  "bookmarklet" => "title"));
             $this->setField(array("attr" => "description",
                                   "type" => "text_block",
                                   "label" => __("Description", "link"),
@@ -67,6 +68,6 @@
 
         public function set_feed_url($url, $post) {
             if ($post->feather != "link") return;
-            return $url = $post->source;
+            return $post->source;
         }
     }

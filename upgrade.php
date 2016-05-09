@@ -11,6 +11,7 @@
     header("Content-type: text/html; charset=UTF-8");
 
     define('DEBUG',        true);
+    define('CHYRP_VERSION', "2.1.2");
     define('CACHE_TWIG',   false);
     define('JAVASCRIPT',   false);
     define('ADMIN',        false);
@@ -23,9 +24,10 @@
     define('INDEX',        false);
     define('MAIN_DIR',     dirname(__FILE__));
     define('INCLUDES_DIR', dirname(__FILE__)."/includes");
-    define('MODULES_DIR', MAIN_DIR."/modules");
+    define('MODULES_DIR',  MAIN_DIR."/modules");
     define('FEATHERS_DIR', MAIN_DIR."/feathers");
-    define('THEMES_DIR', MAIN_DIR."/themes");
+    define('THEMES_DIR',   MAIN_DIR."/themes");
+    define('USE_ZLIB',     true);
 
     if (!AJAX and
         extension_loaded("zlib") and
@@ -160,7 +162,7 @@
 
         /**
          * Function: check
-         * Goes a config exist?
+         * Does a config exist?
          *
          * Parameters:
          *     $setting - Name of the config to check.
@@ -211,9 +213,7 @@
         Config::$yaml["config"] = YAML::load(preg_replace("/<\?php(.+)\?>\n?/s", "", file_get_contents(config_file())));
 
         if (database_file())
-            Config::$yaml["database"] = YAML::load(preg_replace("/<\?php(.+)\?>\n?/s",
-                                                                        "",
-                                                                        file_get_contents(database_file())));
+            Config::$yaml["database"] = YAML::load(preg_replace("/<\?php(.+)\?>\n?/s", "", file_get_contents(database_file())));
         else
             Config::$yaml["database"] = oneof(@Config::$yaml["config"]["sql"], array());
     } else {
@@ -277,6 +277,86 @@
         else
             echo __("Appending to .htaccess file...").
                  test(@file_put_contents(MAIN_DIR."/.htaccess", "\n\n".$htaccess, FILE_APPEND), __("Try creating the file and/or CHMODding it to 777 temporarily."));
+    }
+
+    /**
+     * Function: download_new_version
+     * Downloads the newest version of chyrp
+     */
+    function download_new_version() {
+        $version = file_get_contents("http://chyrp.net/api/1/version.php");
+
+        if (version_compare($version, CHYRP_VERSION, "<="))
+            return;
+
+        $e = 0;
+        # delete everything from 2 versions back
+        if (is_dir("old"))
+            if (!rmdir("old"))
+                echo __("Please manually delete the directory root/updates");
+                $e = 1;
+
+        if (is_dir("updates"))
+            if (!rmdir("updates"))
+                echo __("Please manually delete the directory root/updates");
+                $e = 1;
+
+        if (!mkdir("updates"))
+            echo __("Please manually create the directory root/updates");
+            $e = 1;
+
+        if (!mkdir("old"))
+            echo __("Please manually create the directory root/old");
+            $e = 1;
+
+        $files = array("includes",
+                       "admin",
+                       "index.php",
+                       "upgrade.php",
+                       "modules",
+                       "feathers",
+                       "themes");
+        if ($e == 0) {
+            foreach ($files as $file)
+                if (file_exists($file)) {
+                   # move stuff to the old dir so we can download the new one
+                   rename($file, "old/".$file);
+                   if (!rename($file, "old/".$file))
+                        echo __("Please move the file at root/".$file." to root/old/".$file);
+                }
+
+            $fp = fopen ("updates/latest.zip", "w+");
+            $ch = curl_init("http://chyrp.net/releases/chyrp_v".$version.".zip"); # Here is the file we are downloading
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+            curl_setopt($ch, CURLOPT_FILE, $fp);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_exec($ch);
+            curl_close($ch);
+            fclose($fp);
+            if (function_exists("zip_open")) {
+                $zip = new ZipArchive();
+                $x = $zip->open("updates/latest.zip");
+                if ($x === true) {
+                    $zip->extractTo("updates/");
+                    $zip->close();
+                    unlink("updates/latest.zip");
+                }
+
+                foreach($files as $file)
+                    if (file_exists("updates/chyrp/".$file))
+                       if (!rename("updates/chyrp/".$file, $file))
+                            echo __("Please move the file at root/updates/chyrp/".$file." to root/".$file);
+
+                if (file_exists("old/includes/config.yaml.php"))
+                    if (!copy("old/includes/config.yaml.php", "includes/config.yaml.php"))
+                        echo __("Please manually copy the file root/old/includes/config.yaml.php to root/includes/config.yaml.php");
+
+                if (is_dir("updates"))
+                    if (!rmdir("updates"))
+                        echo __("Please manually delete the directory root/updates");
+            }
+        }
     }
 
     /**
@@ -379,8 +459,8 @@
 
         $contents = file_get_contents(INCLUDES_DIR."/config.yaml.php");
         $new_error = preg_replace("/<\?php (.+) \?>/",
-                             "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>",
-                             $contents);
+                                  "<?php header(\"Status: 403\"); exit(\"Access denied.\"); ?>",
+                                  $contents);
 
         echo __("Updating protection code in config.yaml.php...").
              test(@file_put_contents(INCLUDES_DIR."/config.yaml.php", $new_error), __("Try CHMODding the file to 777."));
@@ -1024,8 +1104,10 @@
                                             `login` varchar(64) DEFAULT '',
                                             `password` varchar(60) DEFAULT NULL,
                                             `full_name` varchar(250) DEFAULT '',
+                                            `bio` varchar(250) DEFAULT '',
                                             `email` varchar(128) DEFAULT '',
                                             `website` varchar(128) DEFAULT '',
+                                            `approved` BOOLEAN DEFAULT '1',
                                             `group_id` int(11) DEFAULT '0',
                                             `joined_at` datetime DEFAULT NULL,
                                             PRIMARY KEY (`id`),
@@ -1047,6 +1129,139 @@
 
         echo " -".test(true);
     }
+
+    /**
+     * Function: add_user_approved_column
+     * Adds the @is_approved@ column on the "users" table, and approves all current users.
+     *
+     * Versions: 2.1 => 2.5
+     */
+    function add_user_approved_column() {
+        if (SQL::current()->query("SELECT approved FROM __users"))
+            return;
+
+        echo __("Adding approved column to users table...").
+             test(SQL::current()->query("ALTER TABLE __users ADD approved BOOLEAN DEFAULT '1' BEFORE group_id"));
+    }
+
+    /**
+     * Function: update_user_approved_column
+     * Updates the @is_approved@ column on the "users" table.
+     *
+     * Versions: 2.5b3 => 2.5rc1
+     */
+    function update_user_approved_column() {
+        $sql = SQL::current();
+        if (!$column = $sql->query("SHOW COLUMNS FROM __users WHERE Field = 'is_approved'"))
+             return;
+
+        if ($column->fetchObject()->Type == "boolean")
+            return;
+
+        echo __("Updating `approved` column on `users` table...")."\n";
+
+        echo " - ".__("Backing up `users` table...").
+             test($backup = $sql->select("users"));
+
+        if (!$backup) return;
+
+        $backups = $backup->fetchAll();
+
+        echo " - ".__("Dropping `users` table...").
+             test($drop = $sql->query("DROP TABLE __users"));
+
+        if (!$drop) return;
+
+        echo " - ".__("Creating `users` table...").
+             test($create = $sql->query("CREATE TABLE IF NOT EXISTS `__users` (
+                                            `id` int(11) NOT NULL AUTO_INCREMENT,
+                                            `login` varchar(64) DEFAULT '',
+                                            `password` varchar(60) DEFAULT NULL,
+                                            `full_name` varchar(250) DEFAULT '',
+                                            `bio` varchar(250) DEFAULT '',
+                                            `email` varchar(128) DEFAULT '',
+                                            `website` varchar(128) DEFAULT '',
+                                            `approved` tinyint(1) DEFAULT '1',
+                                            `group_id` int(11) DEFAULT '0',
+                                            `joined_at` datetime DEFAULT NULL,
+                                            PRIMARY KEY (`id`),
+                                            UNIQUE KEY `login` (`login`)
+                                        ) DEFAULT CHARSET=utf8"));
+
+        if (!$create) {
+            echo " -".test(false, _f("Backup written to %s.", array("./_users.bak.txt")));
+            return file_put_contents("./_users.bak.txt", var_export($backups, true));
+        }
+
+        foreach ($backups as $backup) {
+            echo " - "._f("Restoring user #%d...", array($backup["id"])).
+                 test($insert = $sql->insert("users", $backup), _f("Backup written to %s.", array("./_users.bak.txt")));
+
+            if (!$insert)
+                return file_put_contents("./_users.bak.txt", var_export($backups, true));
+        }
+
+        echo " -".test(true);
+    }
+
+    /**
+     * Function: pages_public_column
+     * Adds the @public@ column to the "pages" table.
+     *
+     * Versions: 2.5 => Chyrp 2.6
+     */
+    function pages_public_column() {
+        if (SQL::current()->query("SELECT public FROM __pages"))
+            return;
+
+        echo __("Adding public column to pages table...").
+             test(SQL::current()->query("ALTER TABLE __pages ADD public BOOLEAN DEFAULT '1' AFTER body"));
+    }
+
+    /**
+     * Function: add_view_page_permission
+     * Adds the "View Pages" permission to the Groups table.
+     *
+     * Versions: 2.5 => Chyrp 2.6
+     */
+    function add_view_page_permission() {
+        if (SQL::current()->count("permissions", array("id" => "view_page", "group_id" => 0)))
+            return; # Permission already exists.
+
+        echo _f("Inserting permission \"%s\"...", "View Pages").
+            test(SQL::current()->insert("permissions",
+                                             array("id" => "view_page",
+                                                   "name" => "View Pages")));
+    }
+
+    /**
+     * Function: add_user_bio_column
+     * Adds the @bio@ column on the "users" table.
+     *
+     * Versions: 2.5 => 2.6
+     */
+    function add_user_bio_column() {
+        if (SQL::current()->query("SELECT bio FROM __users"))
+            return;
+
+        echo __("Adding bio column to users table...").
+             test(SQL::current()->query("ALTER TABLE __users ADD bio varchar(250) DEFAULT '' AFTER full_name"));
+    }
+
+    /**
+     * Function: add_user_avatar_column
+     * Adds the @avatar@ column on the "users" table.
+     *
+     * Versions: 2.5 => 2.6
+     */
+    function add_user_avatar_column() {
+        if (SQL::current()->query("SELECT avatar FROM __users"))
+            return;
+
+        echo __("Adding avatar column to users table...").
+             test(SQL::current()->query("ALTER TABLE __users ADD avatar VARCHAR(250) DEFAULT NULL"));
+    }
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -1084,6 +1299,7 @@
                 font-size: 3em;
                 margin: 1em 0 .5em;
                 text-align: center;
+                line-height: 1;
             }
             h1.first {
                 margin-top: .25em;
@@ -1155,9 +1371,10 @@
     </head>
     <body>
         <div class="window">
-<?php if (!empty($_POST) and $_POST['upgrade'] == "yes"): ?>
+<?php if ((!empty($_POST) and $_POST['upgrade'] == "yes") or isset($_GET['task']) == "upgrade") : ?>
             <pre class="pane"><?php
         # Begin with file/config upgrade tasks.
+        download_new_version();
 
         fix_htaccess();
 
@@ -1178,8 +1395,19 @@
         Config::fallback("sql", Config::$yaml["database"]);
         Config::fallback("timezone", "America/New_York");
 
+        // Added in 2.5
+        Config::fallback("admin_theme", "default");
+        Config::fallback("email_activation", true);
+        Config::fallback("enable_recaptcha", true);
+        Config::fallback("enable_wysiwyg", true);
+        Config::fallback("check_updates", true);
+        Config::fallback("enable_emoji", true);
+
         Config::remove("rss_posts");
         Config::remove("time_offset");
+
+        // Added in 2.6
+        Config::fallback("check_updates_last", 0);
 
         move_upload();
 
@@ -1235,6 +1463,16 @@
 
         update_user_password_column();
 
+        add_user_approved_column();
+
+        pages_public_column();
+
+        add_view_page_permission();
+
+        add_user_bio_column();
+
+        add_user_avatar_column();
+
         # Perform Module/Feather upgrades.
 
         foreach ((array) Config::get("enabled_modules") as $module)
@@ -1267,7 +1505,7 @@
 </pre>
             <h1 class="what_now"><?php echo __("What now?"); ?></h1>
             <ol>
-                <li><?php echo __("Look through the results up there for any failed tasks. If you see any and you can't figure out why, you can ask for help at the <a href=\"http://chyrp.net/community/\">Chyrp Community</a>."); ?></li>
+                <li><?php echo __("Look through the results up there for any failed tasks. If you see any and you can't figure out why, you can ask for help at the <a href=\"http://chyrp.net/discuss/\">Chyrp Community</a>."); ?></li>
                 <li><?php echo __("If any of your Modules or Feathers have new versions available for this release, check if an <code>upgrades.php</code> file exists in their main directory. If that file exists, run this upgrader again after enabling the Module or Feather and it will run the upgrade tasks."); ?></li>
                 <li><?php echo __("When you are done, you can delete this file. It doesn't pose any real threat on its own, but you should delete it anyway, just to be sure."); ?></li>
             </ol>
@@ -1286,7 +1524,7 @@
                 <li><?php echo __("Disable any third-party Modules and Feathers."); ?></li>
                 <li><?php echo __("Ensure that the Chyrp installation directory is writable by the server."); ?></li>
             </ol>
-            <p><?php echo __("If any of the upgrade processes fail, you can safely keep refreshing &ndash; it will only attempt to do tasks that are not already successfully completed. If you cannot figure something out, please make a topic (with details!) at the <a href=\"http://chyrp.net/community/\">Chyrp Community</a>."); ?></p>
+            <p><?php echo __("If any of the upgrade processes fail, you can safely keep refreshing &ndash; it will only attempt to do tasks that are not already successfully completed. If you cannot figure something out, please make a topic (with details!) at the <a href=\"http://chyrp.net/discuss/\">Chyrp Community</a>."); ?></p>
             <form action="upgrade.php" method="post">
                 <button type="submit" name="upgrade" value="yes"><?php echo __("Upgrade me!"); ?></button>
             </form>

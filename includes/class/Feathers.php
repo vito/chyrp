@@ -5,7 +5,7 @@
      */
     class Feathers {
         # Array: $instances
-        # Holds all Module instantiations.
+        # Holds all Feather instantiations.
         static $instances = array();
 
         # Array: $custom_filters

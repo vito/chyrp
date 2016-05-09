@@ -1,5 +1,9 @@
 <?php
     class Aggregator extends Modules {
+        public function __construct() {
+            $this->setPriority("main_index", 5);
+        }
+
         static function __install() {
             $config = Config::current();
             $config->set("last_aggregation", 0);
@@ -37,7 +41,7 @@
             foreach ($aggregates as $name => $feed) {
                 $xml_contents = preg_replace(array("/<(\/?)dc:date>/", "/xmlns=/"),
                                              array("<\\1date>", "a="),
-                                             get_remote($feed["url"]));
+                                             $this->get_xml_remote($feed["url"]));
                 $xml = simplexml_load_string($xml_contents, "SimpleXMLElement", LIBXML_NOCDATA);
 
                 if ($xml === false)
@@ -67,7 +71,7 @@
                         $created = @$item->created ? strtotime($item->created) : 0;
                         if ($created <= 0)
                             $created = $updated;
-                        
+
                         # Construct the post data from the user-defined XPath mapping:
                         $data = array("aggregate" => $name);
                         foreach ($feed["data"] as $attr => $field) {
@@ -79,7 +83,7 @@
 
                         Post::add($data, $clean, null, $feed["feather"], $feed["author"],
                                   false,
-                                  "public",
+                                  $feed["status"],
                                   datetime($created),
                                   datetime($updated));
 
@@ -98,7 +102,8 @@
             foreach ((array) Config::current()->aggregates as $name => $aggregate)
                 $aggregates[] = array_merge(array("name" => $name), array("user" => new User($aggregate["author"])), $aggregate);
 
-            $admin->display("manage_aggregates", array("aggregates" => new Paginator($aggregates, 25)));
+            $admin->display("manage_aggregates", array("aggregates" => new Paginator($aggregates, 25),
+                                                       "groups" => Group::find(array("order" => "id ASC"))));
         }
 
         public function manage_nav($navs) {
@@ -133,6 +138,54 @@
                 $navs["aggregation_settings"] = array("title" => __("Aggregation", "aggregator"));
 
             return $navs;
+        }
+
+        private function get_xml_remote($url) {
+            extract(parse_url($url), EXTR_SKIP);
+
+            if (ini_get("allow_url_fopen")) {
+                $context = stream_context_create(array('http'=>array('user_agent'=>"Chyrp/".CHYRP_VERSION)));
+                $content = @file_get_contents($url,false,$context);
+                if (!((strpos($http_response_header[0], " 200 ")) || (strpos($http_response_header[0], " 301 ")) || (strpos($http_response_header[0], " 302 ")) || (strpos($http_response_header[0], " 303 ")) || (strpos($http_response_header[0], " 307 "))))
+                    $content = "Server returned a message: $http_response_header[0]";
+            } elseif (function_exists("curl_init")) {
+                $handle = curl_init();
+                curl_setopt($handle, CURLOPT_URL, $url);
+                curl_setopt($handle, CURLOPT_CONNECTTIMEOUT, 1);
+                curl_setopt($handle, CURLOPT_FOLLOWLOCATION, True);
+                curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($handle, CURLOPT_TIMEOUT, 60);
+                curl_setopt($handle, CURLOPT_USERAGENT, 'Chyrp/'.CHYRP_VERSION);
+                $content = curl_exec($handle);
+                $status = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+                curl_close($handle);
+                if (!(($status == 200) || ($status == 301) || ($status == 302) || ($status == 303) || ($status == 307)))
+                    $content = "Server returned a message: $status";
+            } else {
+                $path = (!isset($path)) ? '/' : $path ;
+                if (isset($query)) $path.= '?'.$query;
+                $port = (isset($port)) ? $port : 80 ;
+
+                $connect = @fsockopen($host, $port, $errno, $errstr, 2);
+                if (!$connect) return false;
+
+                # Send the GET headers
+                fwrite($connect, "GET ".$path." HTTP/1.1\r\n");
+                fwrite($connect, "Host: ".$host."\r\n");
+                fwrite($connect, "User-Agent: Chyrp/".CHYRP_VERSION."\r\n\r\n");
+
+                $content = "";
+                while (!feof($connect)) {
+                    $line = fgets($connect, 128);
+                    if (preg_match("/\r\n/", $line)) continue;
+
+                    $content.= $line;
+                }
+
+                fclose($connect);
+            }
+
+            return $content;
         }
 
         private function flatten(&$start) {
@@ -253,21 +306,22 @@
                                "last_updated" => 0,
                                "feather" => $_POST['feather'],
                                "author" => $_POST['author'],
+                               "status" => $_POST['status'],
                                "data" => YAML::load($_POST['data']));
 
             $config->aggregates[$_POST['name']] = $aggregate;
             $config->set("aggregates", $config->aggregates);
-            $config->set("last_aggregation", 0); # to force a refresh
+            $config->set("last_aggregation", 0);    # to force a refresh
 
             Flash::notice(__("Aggregate created.", "aggregator"), "/admin/?action=manage_aggregates");
         }
 
         public function admin_edit_aggregate($admin) {
             if (empty($_GET['id']))
-                error(__("No ID Specified"), __("An ID is required to delete an aggregate.", "aggregator"));
+                error(__("No ID Specified"), __("An ID is required to edit an aggregate.", "aggregator"));
 
             if (!Visitor::current()->group->can("edit_aggregate"))
-                show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this aggregate.", "aggregator"));
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to edit this aggregate.", "aggregator"));
 
             $admin->context["users"] = User::find();
 
@@ -278,28 +332,31 @@
             if (empty($_POST))
                 return $admin->display("edit_aggregate",
                                        array("users" => User::find(),
+                                             "groups" => Group::find(array("order" => "id ASC")),
                                              "aggregate" => array("name" => $_GET['id'],
                                                                   "url" => $aggregate["url"],
                                                                   "feather" => $aggregate["feather"],
                                                                   "author" => $aggregate["author"],
+                                                                  "status" => $aggregate["status"],
                                                                   "data" => preg_replace("/---\n/",
                                                                                          "",
                                                                                          YAML::dump($aggregate["data"])))));
 
-            if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+            if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
                 show_403(__("Access Denied"), __("Invalid security key."));
 
             $aggregate = array("url" => $_POST['url'],
-                               "last_updated" => 0,
+                               "last_updated" => $aggregate["last_updated"],
                                "feather" => $_POST['feather'],
                                "author" => $_POST['author'],
+                               "status" => $_POST['status'],
                                "data" => YAML::load($_POST['data']));
 
             unset($config->aggregates[$_GET['id']]);
             $config->aggregates[$_POST['name']] = $aggregate;
 
             $config->set("aggregates", $config->aggregates);
-            $config->set("last_aggregation", 0);    // to force a refresh
+            $config->set("last_aggregation", 0); # to force a refresh
 
             Flash::notice(__("Aggregate updated.", "aggregator"), "/admin/?action=manage_aggregates");
         }
@@ -311,9 +368,7 @@
             if (!Visitor::current()->group->can("delete_aggregate"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this aggregate.", "aggregator"));
 
-            $config = Config::current();
-
-            $aggregate = $config->aggregates[$_GET['id']];
+            $aggregate = Config::current()->aggregates[$_GET['id']];
 
             $admin->context["aggregate"] = array("name" => $_GET['id'],
                                                  "url" => $aggregate["url"]);
@@ -322,27 +377,27 @@
         }
 
         public function admin_destroy_aggregate($admin) {
+            $config = Config::current();
+
             if (empty($_POST['id']))
                 error(__("No ID Specified"), __("An ID is required to delete an aggregate.", "aggregator"));
 
             if ($_POST['destroy'] == "bollocks")
                 redirect("/admin/?action=manage_aggregates");
 
-            if (!isset($_POST['hash']) or $_POST['hash'] != Config::current()->secure_hashkey)
+            if (!isset($_POST['hash']) or $_POST['hash'] != $config->secure_hashkey)
                 show_403(__("Access Denied"), __("Invalid security key."));
 
             if (!Visitor::current()->group->can("delete_aggregate"))
                 show_403(__("Access Denied"), __("You do not have sufficient privileges to delete this aggregate.", "aggregator"));
-            
+
             $name = $_POST['id'];
             if ($_POST["delete_posts"]) {
                 $this->delete_posts($name);
                 $notice = __("Aggregate and its posts deleted.", "aggregator");
-            } else {
+            } else
                 $notice = __("Aggregate deleted.", "aggregator");
-            }
 
-            $config = Config::current();
             unset($config->aggregates[$name]);
             $config->set("aggregates", $config->aggregates);
             Flash::notice($notice, "/admin/?action=manage_aggregates");
@@ -353,10 +408,9 @@
             $attrs = $sql->select("post_attributes",
                                   "post_id",
                                   array("name" => "aggregate", "value" => $aggregate_name))->fetchAll();
-            foreach( $attrs as $attr) {
+
+            foreach ($attrs as $attr)
                 Post::delete($attr["post_id"]);
-            }
-            
         }
 
         public function help_aggregation_syntax() {

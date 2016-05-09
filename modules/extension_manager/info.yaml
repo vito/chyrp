@@ -1,0 +1,8 @@
+name: Extension Manager
+url: http://chyrp.net
+version: 2.0
+description: Allows to easily install extensions directly from Chyrp site.
+author:
+  name: Chyrp Team
+  url: http://chyrp.net/
+conflicts:

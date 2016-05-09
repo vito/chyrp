@@ -1,0 +1,16 @@
+div.likes {
+	position: relative;
+	display: inline;
+}
+div.likes a {
+	display: none;
+}
+div.likes a.like img, div.likes a.liked img {
+    vertical-align: middle;
+}
+div.likes a.like span.unlike {
+	display: none;
+}
+div.likes a.liked span.like {
+	display: none;
+}

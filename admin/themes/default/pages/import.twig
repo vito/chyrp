@@ -32,11 +32,11 @@
                             ${ "Usually something like <code>http://example.com/uploads/</code>." | translate }
                         </small>
                     </p>
-
+                    <p>${ "When importing posts make sure that the required feathers are enabled otherwise the posts won't display." | translate }</p>
                     ${ trigger.call("import_choose") }
 
                     <p class="buttons">
-                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.png" alt="success" />${ "Import" | translate }</button>
+                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.svg" alt="success" />${ "Import" | translate }</button>
                     </p>
 
                     <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
@@ -62,9 +62,11 @@
                             ${ "Usually something like <code>http://example.com/wp-content/uploads/</code>." | translate }
                         </small>
                     </p>
-
+                    
+                    ${ trigger.call("import_wordpress_enhancement") }
+                    
                     <p class="buttons">
-                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.png" alt="success" />${ "Import" | translate }</button>
+                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.svg" alt="success" />${ "Import" | translate }</button>
                     </p>
 
                     <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
@@ -83,7 +85,7 @@
                     </p>
 
                     <p class="buttons">
-                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.png" alt="success" />${ "Import" | translate }</button>
+                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.svg" alt="success" />${ "Import" | translate }</button>
                     </p>
 
                     <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
@@ -127,7 +129,7 @@
                         </small>
                     </p>
                     <p class="buttons">
-                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.png" alt="success" />${ "Import" | translate }</button>
+                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.svg" alt="success" />${ "Import" | translate }</button>
                     </p>
 
                     <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />
@@ -166,7 +168,7 @@
                         </small>
                     </p>
                     <p class="buttons">
-                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.png" alt="success" />${ "Import" | translate }</button>
+                        <button type="submit" class="yay"><img src="$theme_url/images/icons/success.svg" alt="success" />${ "Import" | translate }</button>
                     </p>
 
                     <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />

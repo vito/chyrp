@@ -10,7 +10,7 @@
         redirect($post->url());
 
     if (!Post::exists($_GET['id']))
-        trackback_respond(true, __("Fake post ID, or nonexistant post."));
+        trackback_respond(true, __("Fake post ID, or nonexistent post."));
 
     if (!empty($_POST['url'])) {
         header('Content-Type: text/xml; charset=utf-8');

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head profile="http://gmpg.org/xfn/11">
+        <meta http-equiv="Content-type" content="$theme.type; charset=utf-8" />
+        <title>{% block title %}$site.name{% if title %} &raquo; ${ title | escape }{% endif %}{% endblock %}</title>
+        <meta name="description" content="$site.description" />
+        <meta name="generator" content="Chyrp" />
+        <link rel="pingback" href="$site.chyrp_url/includes/xmlrpc.php" />
+        <link rel="EditURI" type="application/rsd+xml" href="$site.chyrp_url/includes/rsd.php" />
+        <link rel="shortcut icon" href="$site.url/favicon.ico" />
+        <link rel="canonical" href="{% url route.request %}" />
+        {% if post.next.url %}<link rel="next" href="$post.next.url" />{% endif %}
+        {% if post.prev.url %}<link rel="prev" href="$post.prev.url" />{% endif %}
+        $theme.feeds
+        $theme.stylesheets
+        $theme.javascripts
+    ${ trigger.call("head") }
+    </head>
+    <body>
+        {% if visitor.group.can("add_post", "add_draft", "add_page", "view_own_draft", "view_draft", "change_settings", "toggle_extensions") %}
+        <div id="controls"{% if hide_admin %} style="display: none"{% endif %}>
+            <ul>
+                {% if visitor.group.can("add_post") %}
+                <li><a id="add_post" href="{% admin "write_post" %}">${ "Write" | translate }</a></li>
+                {% elseif visitor.group.can("add_draft") %}
+                <li><a id="add_draft" href="{% admin "write_post" %}">${ "Write Draft" | translate }</a></li>
+                {% endif %}
+                {% if visitor.group.can("add_page") %}
+                <li><a id="add_page" href="{% admin "write_page" %}">${ "Add Page" | translate }</a></li>
+                {% endif %}
+                {% if visitor.group.can("view_own_draft", "view_draft") %}
+                <li><a id="your_drafts" href="{% url "drafts" %}">${ "Your Drafts" | translate }</a></li>
+                {% endif %}
+                {% if visitor.group.can("change_settings", "toggle_extensions") %}
+                <li><a id="site_settings" href="$site.chyrp_url/admin/">${ "Admin" | translate }</a></li>
+                {% endif %}
+                <li class="close"><a class="toggle_admin" href="{% url "toggle_admin" %}">${ "Close" | translate }</a></li>
+            </ul>
+        </div>
+        {% endif %}
+        <div id="container">
+            {% if site.name %}
+            <div id="header">
+                <div id="search_box">
+                    <form action="$site.url" method="get" accept-charset="utf-8">
+                        <fieldset>
+                            <input type="hidden" name="action" value="search" id="action" />
+                            <input type="text" id="search" name="query" value="${ GET.query | escape }" x-webkit-speech />
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="header_box">
+                    <h1><a href="$site.url">$site.name</a>
+                        {% if site.description %}<span class="description">$site.description</span>{% endif %}
+                    </h1>
+                </div>
+            </div>
+            {% endif %}
+            <div id="wrapper">
+                {% for type, messages in flash.all | items %}
+                {% for message in messages %}
+                <div class="${ type | depluralize }">$message</div>
+                {% endfor %}
+                {% endfor %}
+                {% include "content/sidebar.twig" %}
+                <div id="content">
+                {% block content %}{% endblock %}
+                <div class="clear"></div>
+                <div class="page_nav">
+                    $posts.prev_link
+                    {% if posts.paginated and posts.pages > 1 %}
+                    <span class="pages">${ "Page %d of %d" | translate | format(posts.page, posts.pages) }</span>
+                    {% endif %}
+                    $posts.next_link
+                </div>
+                </div>
+                <div class="clear"></div>
+                <div id="footer">
+                    <p>${ "Powered by <a class=\"chyrp\" href=\"http://chyrp.net/\">Chyrp</a>" | translate } | 
+                       ${ "Firecrest Theme &copy; %d, Chyrp Team" | format("now" | date("Y")) }</p>
+                    <a class="atom" href="{% url "feed" %}">atom</a>
+                </div>
+            </div>
+        </div>
+        ${ trigger.call("end_content") }
+        {% include "content/debug.twig" %}
+        <!-- Queries: $sql_queries | Load Time: $theme.load_time -->
+    </body>
+</html>

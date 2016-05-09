@@ -55,11 +55,27 @@
                     <p>
                         <label for="enable_ajax">${ "Enable Inline Post Management" | translate }</label>
                         <input class="checkbox" type="checkbox" name="enable_ajax" id="enable_ajax"${ site.enable_ajax | checked } />
+                        <small>
+                            ${ "Harness the power of AJAX for inline post/page editing." | translate }
+                        </small>
                     </p>
-
+                    <p>
+                        <label for="enable_wysiwyg">${ "Enable WYSIWYG Text Editor" | translate }</label>
+                        <input class="checkbox" type="checkbox" name="enable_wysiwyg" id="enable_wysiwyg"${ site.enable_wysiwyg | checked } />
+                        <small>
+                            ${ "Use a visual WYSIWYG Text Editor." | translate }
+                        </small>
+                    </p>
+                    <p>
+                        <label for="enable_emoji">${ "Enable Unicode Emoticons" | translate }</label>
+                        <input class="checkbox" type="checkbox" name="enable_emoji" id="enable_emoji"${ site.enable_emoji | checked } />
+                        <small>
+                            ${ "Use Unicode Emoticons." | translate }
+                        </small>
+                    </p>
                     <p class="buttons">
                         <button type="submit" class="yay">
-                            <img src="$theme_url/images/icons/success.png" alt="success" />${ "Update" | translate }
+                            <img src="$theme_url/images/icons/success.svg" alt="success" />${ "Update" | translate }
                         </button>
                     </p>
 

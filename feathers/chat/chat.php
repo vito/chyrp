@@ -4,7 +4,8 @@
             $this->setField(array("attr" => "title",
                                   "type" => "text",
                                   "label" => __("Title", "chat"),
-                                  "optional" => true));
+                                  "optional" => true,
+                                  "bookmarklet" => "title"));
             $this->setField(array("attr" => "dialogue",
                                   "type" => "text_block",
                                   "label" => __("Dialogue", "chat"),
@@ -28,7 +29,7 @@
             fallback($_POST['slug'], sanitize($_POST['title']));
 
             return Post::add(array("title" => $_POST['title'],
-                                    "dialogue" => $_POST['dialogue']),
+                                   "dialogue" => $_POST['dialogue']),
                              $_POST['slug'],
                              Post::check_url($_POST['slug']));
         }

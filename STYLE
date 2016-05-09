@@ -45,7 +45,7 @@ below. Thank you!
             "bar",
             $bazz);
 
-* Keep function names simple, preferrably one word. Use snake_case for most
+* Keep function names simple, preferably one word. Use snake_case for most
   names, but halfCamelCase where appropriate (e.g. class methods).
 
 * Use NaturalDocs for docstrings. Use hashmarks for docstrings on

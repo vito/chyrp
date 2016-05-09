@@ -3,15 +3,15 @@
 {% block title %}${ "Manage Tags" | translate("tags") }{% endblock %}
 
 {% block content %}
-            <h2>${ "All Tags" | translate("tags") } <span class="sub right">${ "(hover for controls)" | translate("tags") }</span></h2>
+            <h2>${ "All Tags" | translate("tags") } <small class="sub right desktop">${ "(hover for controls)" | translate("tags") }</small></h2>
             <br />
             <div class="tag_cloud">
                 {% for tag in tag_cloud %}
                 <span class="tag_wrap">
                     <a class="tag" href="$tag.url" style="font-size: $tag.size%" title="$tag.title">$tag.name</a>
                     <div class="controls">
-                        <a class="edit_tag" href="{% admin "rename_tag&name="~ tag.clean %}"><img src="$theme_url/images/icons/edit.png" alt="edit" /></a>
-                        <a class="delete_tag" href="{% admin "delete_tag&name="~ (tag.name | urlencode) ~"&clean="~ tag.clean %}"><img src="$theme_url/images/icons/delete.png" alt="edit" /></a>
+                        <a class="edit_tag" href="{% admin "rename_tag&name="~ tag.clean %}"><img src="$theme_url/images/icons/edit.svg" alt="edit" /></a>
+                        <a class="delete_tag" href="{% admin "delete_tag&name="~ (tag.name | urlencode) ~"&clean="~ tag.clean %}"><img src="$theme_url/images/icons/delete.svg" alt="edit" /></a>
                     </div>
                 </span>
                 {% else %}
@@ -21,19 +21,17 @@
             </div>
             <hr />
             <br />
-            <h2>${ "Post Tags" | translate("tags") }</h2>
+            <h2 class="left">${ "Post Tags" | translate("tags") }</h2>
+            <form class="left margin-left" action="index.php" method="get" accept-charset="utf-8">
+                <fieldset>
+                    <input type="hidden" name="action" value="manage_tags" />
+                    <input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" size="15" />
+                    <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
+                    <a href="{% admin "help&id=filtering_results" %}" class="help emblem"><img src="$theme_url/images/icons/help.svg" alt="help" /></a>
+                </fieldset>
+            </form>
+            <div class="clear"></div>
             <br />
-            <h2>
-                {% if GET.query %}${ "Search Results" | translate }{% else %}${ "Last 25 Posts" | translate }{% endif %}
-                <form class="detail inline" action="index.php" method="get" accept-charset="utf-8">
-                    <fieldset>
-                        <input type="hidden" name="action" value="manage_tags" />
-                        <input class="text" type="text" name="query" value="${ GET.query | escape }" id="query" size="15" />
-                        <button type="submit" class="inline">${ "Search &rarr;" | translate }</button>
-                        <a href="{% admin "help&id=filtering_results" %}" class="help emblem"><img src="$theme_url/images/icons/help.png" alt="help" /></a>
-                    </fieldset>
-                </form>
-            </h2>
             <form class="detail" action="{% admin "bulk_tag" %}" method="post" accept-charset="utf-8">
                 <fieldset>
                     <ul class="post_tags">
@@ -45,9 +43,9 @@
                             <input type="checkbox" name="post[$loop.index0]" value="$post.id" id="post_checkbox_$post.id" />
                             <h3 class="inline"><a href="$post.url">${ post.title | truncate | fallback((post.feather | capitalize) ~ " #" ~ post.id) }</a></h3>
                             {% for name, clean in post.tags | items %}
-                            <a class="tag" href="{% url "tag/"~ (clean | escape) %}">$name</a>
+                            <a class="tag" href="index.php?action=$route.action&amp;query=${ clean | escape }">$name</a>
                             {% endfor %}
-                            <a class="edit_tag" href="{% admin "edit_tags&id="~ post.id %}"><img src="$theme_url/images/icons/edit.png" alt="edit" /></a>
+                            <a class="edit_tag" href="{% admin "edit_tags&id="~ post.id %}"><img src="$theme_url/images/icons/edit.svg" alt="edit" /></a>
                         </li>
                         {% else %}
                         <li>
@@ -56,7 +54,7 @@
                         {% endfor %}
                     </ul>
                     <div class="left pad">
-                        <h3>${ "Tag Selected:" | translate("tags") }</h3>
+                        <h3>${ "Tag Selected Post(s) with:" | translate("tags") }</h3>
                         <input type="text" name="name" value="" id="name" />
                         <button type="submit" class="inline">${ "Tag &rarr;" | translate("tags") }</button>
                         <input type="hidden" name="hash" value="$site.secure_hashkey" id="hash" />

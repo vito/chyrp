@@ -11,20 +11,31 @@
 
         static function __uninstall($confirm) {
             Route::current()->remove("tag/(name)/");
+
+            if ($confirm) {
+                $sql = SQL::current();
+
+                foreach($sql->select("post_attributes",
+                                     "*",
+                                     array("name" => "tags"))->fetchAll() as $post)  {
+                    $sql->delete("post_attributes", array("name" => "tags", "post_id" => $post["post_id"]));
+                }
+            }
         }
 
         public function admin_head() {
             $config = Config::current();
 ?>
+        <link rel="stylesheet" href="<?php echo $config->chyrp_url; ?>/modules/tags/admin.css" type="text/css" media="screen" />
         <script type="text/javascript">
-<?php $this->tagsJS(); ?>
+        <?php $this->tagsJS(); ?>
         </script>
-        <link rel="stylesheet" href="<?php echo $config->chyrp_url; ?>/modules/tags/admin.css" type="text/css" media="screen" title="no title" charset="utf-8" />
 <?php
         }
 
         public function post_options($fields, $post = null) {
             $tags = self::list_tags(false);
+            usort($tags, array($this, "sort_tags_name_desc"));
 
             $selector = '<span class="tags_select">'."\n";
 
@@ -97,14 +108,16 @@
         }
 
         public function update_post($post) {
-            if (empty($_POST['tags']))
+            if (empty($_POST['tags'])) {
                 SQL::current()->delete("post_attributes",
                                        array("name" => "tags",
                                              "post_id" => $post->id));
+                return;
+            }
 
             $tags = explode(",", $_POST['tags']); # Split at the comma
-            $tags = array_map('trim', $tags); # Remove whitespace
-            $tags = array_map('strip_tags', $tags); # Remove HTML
+            $tags = array_map("trim", $tags); # Remove whitespace
+            $tags = array_map("strip_tags", $tags); # Remove HTML
             $tags = array_unique($tags); # Remove duplicates
             $tags = array_diff($tags, array("")); # Remove empties
             $tags_cleaned = array_map("sanitize", $tags);
@@ -176,7 +189,7 @@
                 if ($spread == 0)
                     $spread = 1;
 
-                $step = 75 / $spread;
+                $step = 60 / $spread;
 
                 foreach ($popularity as $tag => $count)
                     $cloud[] = array("size" => (100 + (($count - $min_qty) * $step)),
@@ -304,6 +317,9 @@
         }
 
         public function admin_delete_tag($admin) {
+            if (!Visitor::current()->group->can("edit_post"))
+                show_403(__("Access Denied"), __("You do not have sufficient privileges to delete tags.", "tags"));
+
             $sql = SQL::current();
 
             foreach($sql->select("post_attributes",
@@ -361,11 +377,16 @@
             Flash::notice(__("Posts tagged.", "tags"), "/admin/?action=manage_tags");
         }
 
+        public function main_context($context) {
+            $context["tags"] = self::list_tags();
+            return $context;
+        }
+
         public function main_tag($main) {
             if (!isset($_GET['name']))
                 return $main->resort(array("pages/tag", "pages/index"),
                                      array("reason" => "no_tag_specified"),
-                                     __("No Tag", "tags"));
+                                        __("No Tag", "tags"));
 
             $sql = SQL::current();
 
@@ -395,7 +416,7 @@
             if (empty($ids))
                 return $main->resort(array("pages/tag", "pages/index"),
                                      array("reason" => "tag_not_found"),
-                                     __("Invalid Tag", "tags"));
+                                        __("Invalid Tag", "tags"));
 
             $posts = new Paginator(Post::find(array("placeholders" => true,
                                                     "where" => array("id" => $ids))),
@@ -463,7 +484,7 @@
 
             $tags = array();
             foreach ($item->category as $tag)
-                if (isset($tag->attributes()->domain) and $tag->attributes()->domain == "tag" and !empty($tag) and isset($tag->attributes()->nicename))
+                if (!empty($tag) and isset($tag->attributes()->domain) and (substr_count($tag->attributes()->domain, "tag") > 0) and isset($tag->attributes()->nicename))
                     $tags[strip_tags(trim($tag))] = sanitize(strip_tags(trim($tag)));
 
             if (!empty($tags))
@@ -519,11 +540,6 @@
                 $_POST['tags'] = '';
         }
 
-        public function main_context($context) {
-            $context["tags"] = self::list_tags();
-            return $context;
-        }
-
         static function linked_tags($tags) {
             if (empty($tags))
                 return array();
@@ -535,17 +551,46 @@
             return $linked;
         }
 
+        public function post_list_related_attr($attr, $post) {
+            if (Route::current()->action != "view") return;
+
+            $posts = array();
+            foreach ($post->tags as $key => $tag) {
+                $posts = SQL::current()->query("SELECT DISTINCT __posts.id
+                          FROM __posts
+                          LEFT JOIN __post_attributes ON __posts.id = __post_attributes.post_id
+                            AND __post_attributes.name = 'tags'
+                            AND __posts.id != $post->id
+                          WHERE __post_attributes.value LIKE '%$key: \"$tag\"%'
+                          GROUP BY __posts.id
+                          ORDER BY __posts.created_at DESC
+                          LIMIT 5")->fetchAll();
+            }
+
+            $output = '<ul class="related_posts">
+                       <h3>Related Posts:</h3>';
+            foreach ($posts as $p) {
+                $post = new Post($p['id']);
+                $output.= '<li><h5><a href="'.$post->url().'">'.$post->title().'</a></h5></li>';
+            }
+            $output.= "</ul>";
+
+            return $output;
+        }
+
         public function post($post) {
-            $post->tags = !empty($post->tags) ? YAML::load($post->tags) : array() ;
+            $tags = !empty($post->tags) ? YAML::load($post->tags) : array() ;
+            ksort($tags, SORT_STRING);
+            $post->tags = $tags;
             $post->linked_tags = self::linked_tags($post->tags);
         }
 
         public function sort_tags_name_asc($a, $b) {
-            return strcmp($a["name"], $b["name"]);
+            return $this->mb_strcasecmp($a["name"], $b["name"], "UTF-8");
         }
 
         public function sort_tags_name_desc($a, $b) {
-            return strcmp($b["name"], $a["name"]);
+            return $this->mb_strcasecmp($b["name"], $a["name"], "UTF-8");
         }
 
         public function sort_tags_popularity_asc($a, $b) {
@@ -554,6 +599,14 @@
 
         public function sort_tags_popularity_desc($a, $b) {
             return $a["popularity"] < $b["popularity"];
+        }
+
+        private function mb_strcasecmp($str1, $str2, $encoding = null) {
+            if (null === $encoding)
+                $encoding = mb_internal_encoding();
+            $str1 = preg_replace("/[[:punct:]]+/", "", $str1);
+            $str2 = preg_replace("/[[:punct:]]+/", "", $str2);
+            return substr_compare(mb_strtoupper($str1, $encoding), mb_strtoupper($str2, $encoding), 0);
         }
 
         public function list_tags($limit = 10, $order_by = "popularity", $order = "desc") {
@@ -652,11 +705,11 @@
                                 name: $(ui.draggable).text()
                             },
                             beforeSend: function(){
-                                $(self).loader();
+                                $(self).loader()
                             },
                             success: function(json){
-                                $(self).loader(true);
-                                $(document.createElement("a")).attr("href", json.url).addClass("tag").addClass("dropped").text(json.tag).insertBefore($(self).find(".edit_tag"));
+                                $(self).loader(true)
+                                $(document.createElement("a")).attr("href", json.url).addClass("tag dropped").text(json.tag).insertBefore($(self).find(".edit_tag"))
                             }
                         });
                     }
@@ -721,7 +774,7 @@
                                 "value" => YAML::dump($tags),
                                 "post_id" => $post->id));
 
-            exit("{ \"url\": \"".url("tag/".$tags[$tag], MainController::current())."\", tag: \"".$_POST['name']."\" }");
+            exit("{ \"url\": \"".url("tag/".$tags[$tag], MainController::current())."\", \"tag\": \"".$_POST['name']."\" }");
         }
 
         function feed_item($post) {

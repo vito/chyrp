@@ -118,8 +118,8 @@
                 return $this->$name = new $model(null, $opts);
             }
 
-			if (isset($this->$name))
-				return $this->$name;
+            if (isset($this->$name))
+                return $this->$name;
         }
 
         /**
@@ -394,7 +394,7 @@
          * Function: deletable
          * Checks if the <User> can delete the post.
          */
-        public function deletable($user = null) {
+        public function deletable(User $user = null) {
             if ($this->no_results)
                 return false;
 
@@ -408,7 +408,7 @@
          * Function: editable
          * Checks if the <User> can edit the post.
          */
-        public function editable($user = null) {
+        public function editable(User $user = null) {
             if ($this->no_results)
                 return false;
 
@@ -435,6 +435,10 @@
             fallback($text, __("Edit"));
 
             $name = strtolower(get_class($this));
+
+            if (@Feathers::$instances[$this->feather]->disable_ajax_edit)
+                $classes = empty($classes) ? "no_ajax" : $classes." no_ajax" ;
+
             echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=edit_'.$name.'&amp;id='.$this->id.'" title="Edit" class="'.($classes ? $classes." " : '').$name.'_edit_link edit_link" id="'.$name.'_edit_'.$this->id.'">'.$text.'</a>'.$after;
         }
 
@@ -455,7 +459,7 @@
             fallback($text, __("Delete"));
 
             $name = strtolower(get_class($this));
+
             echo $before.'<a href="'.Config::current()->chyrp_url.'/admin/?action=delete_'.$name.'&amp;id='.$this->id.'" title="Delete" class="'.($classes ? $classes." " : '').$name.'_delete_link delete_link" id="'.$name.'_delete_'.$this->id.'">'.$text.'</a>'.$after;
         }
     }
-

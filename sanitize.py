@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from path import *
 import re
 

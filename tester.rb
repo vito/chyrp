@@ -2,12 +2,32 @@ require "test/unit"
 require "net/http"
 require "rubygems"
 require "hpricot"
+require "yaml"
+
+open("includes/config.yaml.php") do |config_file|
+  CONFIG = YAML::load(config_file.read.sub(%Q{<?php header("Status: 403"); exit("Access denied."); ?>\n}, ''))
+end
 
 `rm -Rfv uploads/*`
 `mysql -f --user=root -D chyrp -e 'TRUNCATE TABLE posts; TRUNCATE TABLE post_attributes; TRUNCATE TABLE pages; TRUNCATE TABLE comments;'`
 
 FUZZER = {
-  :textarea => "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam urna. Vivamus nisl. Mauris iaculis rutrum elit. Cras ornare congue mi. Nullam mi quam, luctus dapibus, euismod ut, dapibus sed, dui. Praesent est lectus, rutrum ac, blandit vitae, hendrerit at, massa. Morbi mauris purus, lobortis vel, commodo vitae, aliquet vehicula, ante. Nunc commodo. Pellentesque vel lacus. Quisque eros. Maecenas et quam. Curabitur eget justo a ante dignissim dapibus. Sed et lacus. Suspendisse potenti. Vivamus ipsum mi, blandit vitae, scelerisque a, pellentesque vitae, nisl. Donec vitae est et est egestas laoreet. Vestibulum commodo elit ut nisl. Nullam volutpat nisi non elit. Morbi sapien eros, ornare et, dapibus id, mattis id, nibh. Suspendisse ut nisl id est scelerisque faucibus.\n\nPraesent viverra felis nec justo. Duis gravida tempor massa. Aliquam lobortis tortor eu purus. Phasellus volutpat, justo eget molestie rhoncus, nibh tortor suscipit justo, non vehicula tortor tortor id sapien. Vivamus quis nisl et neque ullamcorper viverra. Vestibulum accumsan, elit luctus auctor fermentum, lorem tellus dignissim odio, a lobortis magna nulla eget arcu. Phasellus vel erat at dolor sagittis luctus. Nulla facilisi. In eros eros, molestie sit amet, ornare a, fermentum et, dui. Vivamus vel turpis quis diam iaculis dapibus. Nunc lacinia. Integer commodo, urna interdum imperdiet pretium, libero nulla pellentesque turpis, in ultrices neque tortor at arcu. Sed mollis odio eget mauris ultricies bibendum. Vivamus malesuada metus vel arcu. Nam sit amet metus. Pellentesque quis felis non nibh adipiscing adipiscing.",
+  :textarea => "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam urna. Vivamus nisl. Mauris iaculis rutrum elit. 
+                Cras ornare congue mi. Nullam mi quam, luctus dapibus, euismod ut, dapibus sed, dui. 
+                Praesent est lectus, rutrum ac, blandit vitae, hendrerit at, massa. 
+                Morbi mauris purus, lobortis vel, commodo vitae, aliquet vehicula, ante. 
+                Nunc commodo. Pellentesque vel lacus. Quisque eros. Maecenas et quam. Curabitur eget justo a ante dignissim dapibus. 
+                Sed et lacus. Suspendisse potenti. Vivamus ipsum mi, blandit vitae, scelerisque a, pellentesque vitae, nisl. 
+                Donec vitae est et est egestas laoreet. Vestibulum commodo elit ut nisl. Nullam volutpat nisi non elit. 
+                Morbi sapien eros, ornare et, dapibus id, mattis id, nibh. Suspendisse ut nisl id est scelerisque faucibus.
+                \n\nPraesent viverra felis nec justo. Duis gravida tempor massa. Aliquam lobortis tortor eu purus. 
+                Phasellus volutpat, justo eget molestie rhoncus, nibh tortor suscipit justo, non vehicula tortor tortor id sapien. 
+                Vivamus quis nisl et neque ullamcorper viverra. Vestibulum accumsan, elit luctus auctor fermentum, 
+                lorem tellus dignissim odio, a lobortis magna nulla eget arcu. 
+                Phasellus vel erat at dolor sagittis luctus. Nulla facilisi. In eros eros, molestie sit amet, ornare a, fermentum et, dui. 
+                Vivamus vel turpis quis diam iaculis dapibus. Nunc lacinia. Integer commodo, urna interdum imperdiet pretium, 
+                libero nulla pellentesque turpis, in ultrices neque tortor at arcu. Sed mollis odio eget mauris ultricies bibendum. 
+                Vivamus malesuada metus vel arcu. Nam sit amet metus. Pellentesque quis felis non nibh adipiscing adipiscing.",
   :text => "Test Input"
 }
 
@@ -54,6 +74,7 @@ class Chyrp < Test::Unit::TestCase
       end
 
       data['feather'] = feather.to_s
+      data['hash'] = CONFIG['secure_hashkey']
 
       post (page/"form").attr("action"), data
     end
@@ -72,6 +93,7 @@ class Chyrp < Test::Unit::TestCase
       data['feather'] = feather.to_s
       data['draft'] = "true"
       data['status'] = "draft"
+      data['hash'] = CONFIG['secure_hashkey']
 
       post (page/"form").attr("action"), data
     end
@@ -91,8 +113,10 @@ class Chyrp < Test::Unit::TestCase
     resp, write = get "/admin/?action=write_page"
 
     page = Hpricot(write)
+    data = form_fuzz(page/"form")
+    data['hash'] = CONFIG['secure_hashkey']
 
-    post (page/"form").attr("action"), form_fuzz(page/"form")
+    post (page/"form").attr("action"), data
   end
 
   def test_view_page

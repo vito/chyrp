@@ -28,25 +28,32 @@
             $methods = array('pingback.ping'             => 'this:pingback_ping',
 
                              # MetaWeblog
-                             'metaWeblog.getRecentPosts' => 'this:metaWeblog_getRecentPosts',
                              'metaWeblog.getCategories'  => 'this:metaWeblog_getCategories',
+                             'metaWeblog.getRecentPosts' => 'this:metaWeblog_getRecentPosts',
                              'metaWeblog.newMediaObject' => 'this:metaWeblog_newMediaObject',
-                             'metaWeblog.newPost'        => 'this:metaWeblog_newPost',
                              'metaWeblog.getPost'        => 'this:metaWeblog_getPost',
+                             'metaWeblog.newPost'        => 'this:metaWeblog_newPost',
                              'metaWeblog.editPost'       => 'this:metaWeblog_editPost',
 
-                             # Blogger
-                             'blogger.deletePost'        => 'this:blogger_deletePost',
-                             'blogger.getUsersBlogs'     => 'this:blogger_getUsersBlogs',
-                             'blogger.getUserInfo'       => 'this:blogger_getUserInfo',
+                             # MetaWeblog API aliases for Blogger API
+                             'metaWeblog.deletePost'     => 'this:blogger_deletePost',
+                             'metaWeblog.getUsersBlogs'  => 'this:blogger_getUsersBlogs',
 
                              # MovableType
-                             'mt.getRecentPostTitles'    => 'this:mt_getRecentPostTitles',
                              'mt.getCategoryList'        => 'this:mt_getCategoryList',
                              'mt.getPostCategories'      => 'this:mt_getPostCategories',
                              'mt.setPostCategories'      => 'this:mt_setPostCategories',
+                             'mt.getRecentPostTitles'    => 'this:mt_getRecentPostTitles',
                              'mt.supportedTextFilters'   => 'this:mt_supportedTextFilters',
+                             'mt.getTrackbackPings'      => 'this:mt_getTrackbackPings',
+                             'mt.publishPost'            => 'this:mt_publishPost',
+                             'mt.getTagList'             => 'this:mt_getTagList',
                              'mt.supportedMethods'       => 'this:listMethods',
+
+                             # Blogger
+                             'blogger.deletePost'        => 'this:blogger_deletePost',
+                             'blogger.getUserInfo'       => 'this:blogger_getUserInfo',
+                             'blogger.getUsersBlogs'     => 'this:blogger_getUsersBlogs',
 
                              # Chyrp
                              "chyrp.getRecentPosts"      => "this:chyrp_getRecentPosts",
@@ -312,10 +319,11 @@
             $trigger->call('metaWeblog_editPost_preQuery', $args[3], $post);
 
             $post->update(
-                          array('title' => $args[3]['title'], 'body' => $body ),
+                          array('title' => $args[3]['title'], 'body' => $body),
                           null,
                           null,
                           $status,
+                          null,
                           sanitize(oneof(@$args[3]['mt_basename'], $args[3]['title'])),
                           oneof($this->convertFromDateCreated($args[3]), $post->created_at));
 
@@ -402,9 +410,7 @@
             $this->auth($args[1], $args[2]);
 
             $categories = array();
-            return Trigger::current()->filter(
-                                              $categories,
-                                              'mt_getCategoryList');
+            return Trigger::current()->filter($categories, 'mt_getCategoryList');
         }
 
         #
@@ -502,15 +508,7 @@
             if (!User::authenticate($login, $password))
                 throw new Exception(__("Login incorrect."));
             else
-                $user = new User(
-                                 null,
-                                 array(
-                                       'where' => array(
-                                                        'login' => $login
-                                                        )
-                                       )
-                                 );
-
+                $user = new User(null, array('where' => array('login' => $login)));
 
             if (!$user->group->can("{$do}_own_post", "{$do}_post", "{$do}_draft", "{$do}_own_draft"))
                 throw new Exception(_f("You don't have permission to %s posts/drafts.", array($do)));
@@ -533,5 +531,5 @@
         }
 
     }
+
     $server = new XMLRPC();
-    ?>

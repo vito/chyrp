@@ -8,9 +8,9 @@
                 <ul class="extend">
                     {% for safename, module in enabled_modules | items %}
                     <li class="${ module.classes | join(" ") }" id="module_$safename">
-                        <a class="$safename info_link" href="javascript:void(0)"><img src="$theme_url/images/icons/info.png" class="info right" /></a>
+                        <a class="$safename info_link" href="javascript:void(0)"><img src="$theme_url/images/icons/info.svg" class="info right" /></a>
                         {% if module.help %}
-                        <a href="{% admin "help&id="~module.help %}" class="help emblem"><img src="$theme_url/images/icons/help.png" alt="help" /></a>
+                        <a href="{% admin "help&id="~module.help %}" class="help emblem"><img src="$theme_url/images/icons/help.svg" alt="help" /></a>
                         {% endif %}
                         ${ "<a href=\"%s\">%s</a> v%s <span class=\"sub\">by %s</span>" | translate | format(module.url, module.name | translate(safename), module.version, module.author.link) }
                         <div class="expand">
@@ -27,7 +27,10 @@
                                 </ul>
                             </div>
                             {% if not module.dependencies_needed %}
-                            <noscript><a class="enable_button" href="{% admin "disable&module="~safename %}">${ "Disable" | translate }</a></noscript>
+                            <a class="enable_button mobile" href="{% admin "disable&module="~safename %}">${ "Disable" | translate }</a>
+                            <noscript>
+                                <a class="enable_button desktop" href="{% admin "disable&module="~safename %}">${ "Disable" | translate }</a>
+                            </noscript>
                             {% endif %}
                         </div>
                     </li>
@@ -39,9 +42,9 @@
                 <ul class="extend">
                     {% for safename, module in disabled_modules | items %}
                     <li class="${ module.classes | join(" ") }" id="module_$safename">
-                        <a class="$safename info_link" href="javascript:void(0)"><img src="$theme_url/images/icons/info.png" class="info right" /></a>
+                        <a class="$safename info_link" href="javascript:void(0)"><img src="$theme_url/images/icons/info.svg" class="info right" /></a>
                         {% if module.help %}
-                        <a href="{% admin "help&id="~module.help %}" class="help emblem"><img src="$theme_url/images/icons/help.png" alt="help" /></a>
+                        <a href="{% admin "help&id="~module.help %}" class="help emblem"><img src="$theme_url/images/icons/help.svg" alt="help" /></a>
                         {% endif %}
                         ${ "<a href=\"%s\">%s</a> v%s <span class=\"sub\">by %s</span>" | translate | format(module.url, module.name | translate(safename), module.version, module.author.link) }
                         <div class="expand">
@@ -58,7 +61,10 @@
                                 </ul>
                             </div>
                             {% if not module.dependencies_needed %}
-                            <noscript><a class="disable_button" href="{% admin "enable&module="~safename %}">${ "Enable" | translate }</a></noscript>
+                            <a class="disable_button mobile" href="{% admin "enable&module="~safename %}">${ "Enable" | translate }</a>
+                            <noscript>
+                                <a class="disable_button desktop" href="{% admin "enable&module="~safename %}">${ "Enable" | translate }</a>
+                            </noscript>
                             {% endif %}
                         </div>
                     </li>

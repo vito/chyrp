@@ -1,0 +1,57 @@
+#theme_editor_content { overflow: hidden; position: relative; }
+#theme_editor { float: left; font-size: 11px; width: 80%; }
+#newcontent { background: #f9f9f9; }
+#theme_files { float: left; width: 180px; word-wrap: break-word; margin: 4px; }
+#theme_files .theme-file-tree {
+	font-family: Georgia;
+	font-size: 13px;
+	letter-spacing: 1px;
+	line-height: 1.5;
+    padding-bottom: 5px;
+    padding-right: 3px;
+    padding-left: 25px;
+}
+
+    #theme_files .theme-file-tree li { margin-bottom: 5px; }
+    #theme_files .theme-file-tree li.pft-file,
+    #theme_files .theme-file-tree > li.pft-file { margin-left: 5px; font-size: 12px; }
+    #theme_files .theme-file-tree li > ul { margin-left: 10px; }
+    #theme_files .theme-file-tree .active { font-weight: bold; }
+	#theme_files .theme-file-tree a { color: #000000; text-decoration: none; }
+	#theme_files .theme-file-tree a:hover { color: #666666; }
+	#theme_files .theme-file-tree .open { font-style: italic; }
+	#theme_files .theme-file-tree .closed { font-style: normal; }
+	
+	#theme_files .theme-file-tree .pft-dir {
+		list-style: none;
+		padding-left: 18px;
+		background: transparent url(images/folder.svg) no-repeat left 0.33em;
+	}
+	#theme_files .theme-file-tree .pft-file {
+		list-style: none;
+		padding-left: 18px;
+		background: transparent url(images/document.svg) no-repeat left 0.33em;
+	}
+
+    p.editor-buttons { float: left; }
+    p.editor-buttons button { margin: 0!important; }
+
+/* @media-query for small screens */
+@media screen and (max-width: 768px) {
+	#theme_files {
+		width: 100%;
+	}
+	#theme_editor {
+		width: 100%;
+	}
+	textarea#newcontent {
+		height: 640px;
+		white-space: pre;
+		word-wrap: normal;
+		overflow: scroll;
+	}
+	p.editor-buttons {
+		width: 100%;
+	}
+}
+/* @end */

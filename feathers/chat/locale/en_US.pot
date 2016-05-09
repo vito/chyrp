@@ -1,14 +1,14 @@
-# Chyrp v2.0 RC3 Translation File.
-# Copyright (C) YEAR Alex Suraci
-# This file is distributed under the same license as the Chyrp v2.0 RC3 package.
+# Chyrp v2.5 Translation File.
+# Copyright (C) 2013 Chyrp Team
+# This file is distributed under the same license as the Chyrp v2.5 package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Chyrp v2.0 RC3\n"
-"Report-Msgid-Bugs-To: suracil.icio.us@gmail.com\n"
-"POT-Creation-Date: 2009-07-15 21:41+0000\n"
+"Project-Id-Version: Chyrp v2.5\n"
+"Report-Msgid-Bugs-To: email@chyrp.net\n"
+"POT-Creation-Date: 2013-12-27 18:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FIRST LAST <EMAIL@EXAMPLE.COM>\n"
 "Language-Team: LANGUAGE <EMAIL@EXAMPLE.COM>\n"
@@ -17,39 +17,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: feathers/chat/chat.php:116
-msgid "To give yourself a special CSS class, append \" (me)\" to your username, like so:"
+#: feathers/chat/chat.php:27
+#: feathers/chat/chat.php:39
+msgid "Dialogue can't be blank."
 msgstr ""
 
 #: feathers/chat/info.yaml:1
 msgid "Chat"
 msgstr ""
 
+#: feathers/chat/chat.php:27
+#: feathers/chat/chat.php:39
+msgid "Error"
+msgstr ""
+
 #: feathers/chat/info.yaml:4
 msgid "Post logs of IRC or other chat formats."
-msgstr ""
-
-#: feathers/chat/chat.php:121
-msgid "This only has to be done to the first occurrence of the username."
-msgstr ""
-
-#: feathers/chat/chat.php:114
-msgid "Dialogue Formatting"
-msgstr ""
-
-#: feathers/chat/chat.php:6
-msgid "Title"
-msgstr ""
-
-#: feathers/chat/chat.php:128
-msgid "This also only has to be done to the first occurrence of the username. It cannot be combined with attributing someone as yourself (because they're already at your site anyway)."
-msgstr ""
-
-#: feathers/chat/chat.php:10
-msgid "Dialogue"
-msgstr ""
-
-#: feathers/chat/chat.php:123
-msgid "To attribute a name to a URL, append the URL in parentheses, preceded by a space, to the username:"
 msgstr ""
 
